@@ -3,7 +3,7 @@
 **Status:** Confirmed by Steve on 2026-09-04  
 **Recovery repository:** `warblersafety/wilson-next`  
 **Prepared:** 2026-09-04  
-**Phase:** Product definition confirmed; architecture and implementation not started
+**Phase:** Product and UI/UX recovery definitions confirmed; architecture and implementation not started
 
 This brief is the governing handoff for Wilson's recovery. It records the
 product intent, conclusions, decisions, constraints, evidence, and open
@@ -183,6 +183,12 @@ untouched.
     constraints, decisions, divergences, and unresolved challenges must be
     summarized in the repository and confirmed rather than left only in a
     transcript.
+13. **UI/UX constrains architecture.** Interaction design may not again arrive
+    after foundational machinery. The bounded
+    [UI/UX recovery checkpoint](UX-RECOVERY.md) precedes architecture
+    comparison, and the first implementation experiment must be an assembled
+    browser journey. Mockups and design tokens are inputs, not acceptance
+    evidence.
 
 ## Product-quality floor
 
@@ -238,7 +244,9 @@ architecture work and must name the evidence used to revalidate the asset.
 ## Evidence basis
 
 The complete source inventory, review status, corrections, and preservation
-risks are in [POSTMORTEM-REVIEW.md](POSTMORTEM-REVIEW.md). That evidence index
+risks are in [POSTMORTEM-REVIEW.md](POSTMORTEM-REVIEW.md). The confirmed product
+definition is [PRODUCT.md](PRODUCT.md), and the bounded product-to-architecture
+interaction contract is [UX-RECOVERY.md](UX-RECOVERY.md). The evidence index
 supports this brief but is not product or architecture authority.
 
 The main retrospective corpus is the clean local `nightjar-research` commit
@@ -263,30 +271,30 @@ history and require privacy-aware preservation decisions.
 
 ## Open decisions before implementation
 
-1. Exact v1 user, setting, workflow boundaries, and explicit non-goals.
-2. Privacy, persistence, provider-retention, logging, and synthetic-versus-real
+1. Privacy, provider-retention, logging, and synthetic-versus-real
    data boundaries.
-3. Representative clinician journeys and unacceptable outcomes used to
-   compare candidate knowledge models.
-4. Candidate canonical representations and the evidence that would falsify
+2. Candidate canonical representations and the evidence that would falsify
    each one.
-5. The single authoritative write boundary and which invariants it must own.
-6. Model responsibilities versus authored/deterministic conversation and
+3. The single authoritative write boundary and which invariants it must own.
+4. Model responsibilities versus authored/deterministic conversation and
    follow-up behavior.
-7. The first production-shaped architectural experiment and its success,
+5. The bounded interaction and composition choices required for the first
+   browser experiment, including its primary form factor and viewport.
+6. The first production-shaped architectural experiment and its success,
    stopping, and disposal criteria.
-8. Evaluation metrics, thresholds, run/cost caps, and the minimum evidence for
+7. Evaluation metrics, thresholds, run/cost caps, and the minimum evidence for
    completing a slice.
-9. Which legacy assets, if any, pass the reuse policy.
-10. Technology stack, deployment shape, and repository controls.
-11. Legacy Wilson's operational and evidence-preservation disposition.
+8. Which legacy assets, if any, pass the reuse policy.
+9. Technology stack, deployment shape, and repository controls.
+10. Legacy Wilson's operational and evidence-preservation disposition.
 
 ## Phase boundary
 
-The retrospective review is complete enough to stop archaeology. The next
-phase begins only after Steve confirms or amends this brief. That phase may
-clarify product scope and compare architectural alternatives; it must not treat
-the working hypotheses above as settled design.
+The retrospective review is complete enough to stop broad archaeology. Product
+definition and the bounded UI/UX recovery checkpoint are confirmed. The next
+phase compares architectural alternatives and defines the first
+production-shaped browser experiment; it must not treat the working hypotheses
+above as settled design.
 
-No production design or implementation has been authorized or performed by
-this brief.
+No production architecture or implementation has been authorized or performed
+by this brief.

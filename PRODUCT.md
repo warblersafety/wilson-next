@@ -274,3 +274,6 @@ unacceptable outcomes, and non-goals on 2026-09-04.
 This confirmation authorizes architecture comparison against the product
 definition. It does not authorize implementation or silently select any data
 model, framework, provider, storage mechanism, UI composition, or legacy asset.
+
+The interaction obligations and UI/UX evidence floor that constrain that
+comparison are recorded in [UX-RECOVERY.md](UX-RECOVERY.md).
