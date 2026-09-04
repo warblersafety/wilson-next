@@ -192,8 +192,8 @@ an audit-compliance system, or an event source from which the case must replay.
 ## Authoritative write boundary
 
 Every consequential change goes through one server-side `applyCaseCommand`
-boundary. The browser, model adapter, PDF adapter, and future input paths cannot
-mutate a case directly.
+boundary. The browser, model adapter, FDA PDF-filler adapter, and future input
+paths cannot mutate a case directly.
 
 The first experiment needs only these command shapes:
 
@@ -281,9 +281,15 @@ Use ports and adapters inside one modular TypeScript application:
 ```text
 browser UI -> application commands and queries -> case domain
                                          |-> model adapter
-                                         |-> PDF adapter
+                                         |-> FDA PDF-filler adapter
                                          |-> case repository
 ```
+
+The bounded architecture, semantic data model, authority flow, and proposed
+implementation sequence are shown in the
+[Experiment 1 system diagrams](docs/experiment-1-system-diagrams.md). Those
+diagrams distinguish what the experiment builds from replaceable seams and
+explicitly excluded future scope.
 
 The experiment uses one server process, one in-memory case per random session,
 and no durable database. Server restart may lose the case, which is within the

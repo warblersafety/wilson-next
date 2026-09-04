@@ -189,6 +189,13 @@ untouched.
     comparison, and the first implementation experiment must be an assembled
     browser journey. Mockups and design tokens are inputs, not acceptance
     evidence.
+14. **Implementation friction challenges the premise.** When implementing an
+    approved decision requires a semantic special case, duplicated authority,
+    weakened invariant, hidden fallback, or user-visible behavior not described
+    by the governing artifacts, stop the affected work and classify the
+    mismatch. Correct an ordinary implementation defect locally; reopen and
+    update the owning product, interaction, architecture, experiment, or
+    preflight decision before working around a faulty premise.
 
 ## Product-quality floor
 

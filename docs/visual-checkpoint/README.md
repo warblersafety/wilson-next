@@ -7,6 +7,10 @@
 **Purpose:** Make the experiment's composition and friction hypotheses visible
 before production code
 
+The companion [Experiment 1 system diagrams](../experiment-1-system-diagrams.md)
+show the bounded architecture, semantic data model, authority boundary, and
+major journey and output flows behind these screens.
+
 These four realistic mockups are deliberately bounded design artifacts. They
 show one possible visual expression of the confirmed product and proposed
 experiment. They do not define a component library, responsive behavior,

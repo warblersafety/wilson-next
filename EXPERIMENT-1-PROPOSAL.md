@@ -295,6 +295,10 @@ synthetic fixture rather than placeholder copy:
 
 The proposed screens and their review annotations are in the
 [visual checkpoint](docs/visual-checkpoint/README.md).
+The companion
+[system diagrams](docs/experiment-1-system-diagrams.md) show the bounded
+architecture, semantic data model, authority boundary, fixed journey, and
+case-to-PDF flow without expanding the experiment's scope.
 
 Annotations identify the intended action, information hierarchy, retained or
 rejected legacy-Wilson ideas, and behavior that a static image cannot prove. A
@@ -353,7 +357,8 @@ makes no general reliability claim.
 The experiment is incomplete without:
 
 - the focused critical tests named in `VERIFICATION-STRATEGY.md`;
-- one fixed headless-browser journey using the fake model;
+- one fixed headless-browser journey using predetermined model responses so it
+  tests the application rather than the model's reasoning;
 - one operator completion of the same journey through the deployed browser at
   1440 x 900 using the real model;
 - an inspectable browser and command trace sufficient to diagnose the journey,
@@ -410,6 +415,13 @@ conflict, or disagreement between case and PDF. Also stop if:
 - a view maintains its own authoritative values;
 - the grouped indication question causes product confusion; or
 - unsupported content is silently accepted.
+
+These examples are not exhaustive. Any implementation discovery that would
+change clinician-visible behavior, semantic meaning, authority, model
+responsibility, projection meaning, experiment scope, privacy, or a stopping
+criterion invokes the preflight's
+[stop-and-reconcile rule](DEPLOYMENT-PREFLIGHT.md#stop-and-reconcile-rule). It
+must not be converted into a local workaround merely to preserve this plan.
 
 The experiment ends after the physician feedback review whether it passes or
 fails. It does not expand automatically into deferred features. A technical

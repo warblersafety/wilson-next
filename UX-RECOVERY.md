@@ -93,7 +93,8 @@ product judgment capable of resolving their output.
 ### 4. Verification measured surfaces and machinery before experience
 
 The v1.1 rebuild had hundreds of tests, per-surface mockup comparisons, manual
-browser passes, and a scripted end-to-end flow using a fake model. Its first
+browser passes, and a scripted end-to-end flow using predetermined model
+responses instead of a live model. Its first
 realistic deployed contact nevertheless exposed roughly 58–82 asks, generated
 robotic wording, raw manifest labels, and visual composition that did not feel
 like the intended canvas.

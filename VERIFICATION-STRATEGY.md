@@ -31,8 +31,8 @@ an LLM judge, a browser matrix, and a general testing platform are deferred.
 Approve this minimum evidence floor before the first physician session:
 
 1. A few focused tests protect the six critical case behaviors below.
-2. One deterministic headless-browser test completes the fixed journey using a
-   fake model response.
+2. One deterministic headless-browser test completes the fixed journey using
+   predetermined model responses instead of calling the live model.
 3. The selected real model is tried on the fixed inputs no more than four times
    or USD 5, whichever comes first, and every result is inspected.
 4. One operator smoke test completes the journey in the protected deployed
@@ -79,9 +79,11 @@ clear enough to inspect directly.
 
 ### 2. One deterministic browser journey
 
-Playwright drives the approved seven-state journey with the fixed fixture and a
-deterministic fake model adapter. It uses visible labels and accessible roles and
-checks the important user-visible results:
+Playwright drives the approved seven-state journey with the fixed fixture and
+predetermined model responses. The scripted responses stand in only for the
+live model call; all browser, review, case, correction, conflict, projection,
+and PDF behavior remains real. The test uses visible labels and accessible roles
+and checks the important user-visible results:
 
 - all three products remain distinct;
 - the one follow-up is asked;
@@ -95,8 +97,10 @@ experiment; do not build a visual-regression service. Playwright supports
 [API mocking](https://playwright.dev/docs/mock) and retains browser evidence in
 its [Trace Viewer](https://playwright.dev/docs/trace-viewer-intro).
 
-The fake model proves that Wilson's workflow works predictably. It does not
-prove that the real model understands the case.
+The scripted responses prove that Wilson behaves predictably when given known
+proposals. They test rendering, flow, and deterministic safeguards around model
+output; they do not test whether the real model understood the case or reasoned
+well. The real-model samples and physician preview use the live model.
 
 ### 3. A very small real-model check
 
@@ -127,8 +131,8 @@ guidance says will shut down on 2026-11-30.
 
 After local checks pass, the operator completes the same synthetic journey in
 the protected deployed preview at 1440 x 900 using the selected real model and
-real PDF adapter. If it uses the same inputs and configuration, count it as one
-of the permitted model samples.
+the real FDA PDF filler. If it uses the same inputs and configuration, count it
+as one of the permitted model samples.
 
 The operator confirms only that the journey can be completed without coaching,
 the important states are understandable, the PDF agrees with the reviewed case,
