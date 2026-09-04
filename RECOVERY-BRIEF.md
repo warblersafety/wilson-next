@@ -3,7 +3,7 @@
 **Status:** Confirmed by Steve on 2026-09-04  
 **Recovery repository:** `warblersafety/wilson-next`  
 **Prepared:** 2026-09-04  
-**Phase:** Evidence review complete; product and architecture design not started
+**Phase:** Product definition confirmed; architecture and implementation not started
 
 This brief is the governing handoff for Wilson's recovery. It records the
 product intent, conclusions, decisions, constraints, evidence, and open
