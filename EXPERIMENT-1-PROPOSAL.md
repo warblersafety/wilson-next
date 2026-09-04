@@ -1,11 +1,12 @@
 # Wilson Experiment 1 proposal: multi-product correction and conflict
 
-**Status:** Approved by Steve on 2026-09-04; implementation awaits selection
-and approval of the deployment-preflight stack
+**Status:** Approved by Steve on 2026-09-04, including the doctor-first
+verification amendment; implementation awaits deployment-preflight stack
+approval
 
 **Prepared:** 2026-09-04
 
-**Depends on:** `ARCHITECTURE-PROPOSAL.md`
+**Depends on:** `ARCHITECTURE-PROPOSAL.md` and `VERIFICATION-STRATEGY.md`
 
 ## Executive summary
 
@@ -28,7 +29,9 @@ decision instead of being hidden with a local patch.
 This is intentionally not a complete Wilson release. It does not cover devices,
 reporter entry, saved cases, every form path, or real clinical data. It is a
 small end-to-end test of the hardest architectural assumptions, conducted in a
-real browser before the product is allowed to expand.
+real browser before the product is allowed to expand. As soon as its minimum
+integrity checks pass, one physician will use the synthetic journey and provide
+the experiment's most important early product feedback.
 
 ## Purpose
 
@@ -42,7 +45,9 @@ conflict. It crosses natural input, model proposals, clinician review, one
 follow-up, correction, conflict resolution, Form 3500 inspection, and PDF
 download.
 
-It is not a general Form 3500 release or a clinician-usability study.
+It is not a general Form 3500 release or a formal clinician-usability study. It
+does include one formative physician session to decide what Wilson should do
+next.
 
 ## Dominant risk
 
@@ -83,7 +88,9 @@ system-failure recovery do not help discriminate this risk and are deferred.
   realistic static mockups of the fixed journey;
 - a browser review, PDF preview, and PDF download; and
 - one deployed synthetic-only operator run plus a four-run real-model smoke
-  sample.
+  sample; and
+- one observed physician session using synthetic information after the minimum
+  doctor-ready evidence passes.
 
 ### Deferred
 
@@ -98,7 +105,7 @@ system-failure recovery do not help discriminate this risk and are deferred.
 - a broad accessibility audit beyond semantic HTML, labels, focus, and keyboard
   operation;
 - accounts, collaboration, FDA submission, analytics, or durable storage; and
-- representative-clinician usability or preference claims.
+- a multi-participant usability study or general clinician-preference claim.
 
 The visual checkpoint is a design artifact, not a coded prototype. It does not
 authorize production components, a clickable flow, responsive variants, or
@@ -313,8 +320,9 @@ The fixed journey traverses these states:
 6. explicit resolution to 13-Aug-2026 and the updated review/projection; and
 7. successful PDF download.
 
-Backward editing is allowed. Screenshots capture every distinct user-visible
-state actually traversed; the list does not require one page per item.
+Backward editing is allowed. Retain the browser trace and screenshots only for
+the understanding, unresolved-conflict, and final-output states; the other
+steps need to work but do not each need a separate evidence artifact.
 
 ## Model smoke sample
 
@@ -344,27 +352,27 @@ makes no general reliability claim.
 
 The experiment is incomplete without:
 
-- focused tests proving that model proposals are not authoritative, product
-  identity is stable, correction supersedes the old value, unresolved conflicts
-  cannot project, stale/duplicate commands do not duplicate changes, and
-  resolved review and projection agree;
-- one headless fixed-input-to-case-to-projection check against the oracle;
-- the same journey through the deployed browser at 1440 x 900;
-- an ordered trace of commands, revisions, affected entities/facts, sources,
-  and projection results;
-- screenshots of every traversed state;
+- the focused critical tests named in `VERIFICATION-STRATEGY.md`;
+- one fixed headless-browser journey using the fake model;
+- one operator completion of the same journey through the deployed browser at
+  1440 x 900 using the real model;
+- an inspectable browser and command trace sufficient to diagnose the journey,
+  plus screenshots of the three discriminating states;
 - a visual PDF check and programmatic comparison of supported PDF values and
   checkboxes with the semantic projection;
 - the four-run-or-USD-5 model report; and
-- an operator verdict answering the six questions in `UX-RECOVERY.md`.
+- an operator smoke-test verdict; and
+- brief observations and feedback from one physician using the synthetic
+  journey.
 
 The browser uses semantic HTML, programmatic labels, visible focus, and a
 keyboard-operable main path. Broader accessibility testing is deferred.
 
-Record unaided task completion, total and per-stage time, user-visible errors,
-path deviations, proposal corrections, Wilson-initiated question groups, and a
-short ease rating. Report these observations separately; do not collapse them
-into one score or call them clinician evidence.
+For the operator run, record unaided completion, visible errors, important path
+deviations, proposal corrections, and whether the planned question repeated
+known information. For the physician session, retain concise observations and
+their own feedback. Do not turn one person's response into a general usability
+or preference claim.
 
 ## Success and stopping criteria
 
@@ -388,8 +396,10 @@ The experiment passes only if:
    every flagged conflict, correction, or material uncertainty still requires
    an explicit decision.
 10. The model smoke sample passes its gates.
-11. Operator review finds no severe reason to prefer direct Form 3500 for this
-    fixed journey.
+11. Operator review finds no severe reason to withhold the synthetic preview
+    from the physician.
+12. One physician exercises the journey and their observations and feedback are
+    recorded as the input to the next product decision.
 
 Immediately stop and classify the owning premise if there is silent loss,
 invention, reversal, wrong-entity attribution, a bypassed invariant, a hidden
@@ -401,18 +411,21 @@ conflict, or disagreement between case and PDF. Also stop if:
 - the grouped indication question causes product confusion; or
 - unsupported content is silently accepted.
 
-The experiment ends after this evidence review whether it passes or fails. It
-does not expand automatically into deferred features.
+The experiment ends after the physician feedback review whether it passes or
+fails. It does not expand automatically into deferred features. A technical
+pass cannot overrule feedback that the direction is confusing or not useful;
+that feedback determines whether to continue, revise, or stop.
 
-An experiment pass is architecture evidence, not clinician usability proof.
-Before making a clinician-facing product claim, an appropriate domain reviewer
-must confirm the fixture and oracle are plausible and a representative
-clinician must exercise the running journey.
+An experiment pass is architecture evidence plus formative product feedback,
+not clinician usability proof. Before making a broader clinician-facing claim,
+the fixture and oracle require appropriate domain review and later evidence must
+include more than this single formative session.
 
 ## Retention and disposal
 
 - Retain the synthetic fixture, oracle, source revision, tests, screenshots,
-  trace, model summary, cost, and operator verdict as repository evidence.
+  trace, model summary, cost, operator verdict, and concise physician-session
+  notes as repository evidence.
 - Do not retain credentials, raw infrastructure logs, browser storage, or
   deployed ephemeral case state.
 - Remove the protected preview after review unless continued access is
@@ -433,7 +446,8 @@ Implementation may begin only after explicit approval of:
 3. the model/provider and synthetic-only retention boundary;
 4. the preview host and access control;
 5. the success, stopping, and disposal criteria; and
-6. the experiment stack selected during the deployment preflight.
+6. the evidence contract in `VERIFICATION-STRATEGY.md`; and
+7. the experiment stack selected during the deployment preflight.
 
 Until then these proposal documents are the only authorized changes for this
 phase.
@@ -446,4 +460,6 @@ model/provider responsibility and synthetic-only retention boundary, and the
 success, stopping, and disposal criteria. The exact framework, PDF library,
 model provider, preview host, and access-control mechanism were deliberately
 not selected in those proposals. Their deployment-preflight selection remains
-the final decision required before implementation begins.
+the final technical decision required before implementation begins. The
+verification strategy and doctor-first amendment were added as the evidence
+checkpoint before that preflight. Steve approved both on 2026-09-04.
