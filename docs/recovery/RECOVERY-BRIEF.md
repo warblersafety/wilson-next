@@ -296,6 +296,23 @@ history and require privacy-aware preservation decisions.
 9. Technology stack, deployment shape, and repository controls.
 10. Legacy Wilson's operational and evidence-preservation disposition.
 
+### Later disposition for Experiment 1
+
+The later approved product, interaction, architecture, experiment,
+verification, deployment-preflight, and delivery-process artifacts close items
+1–7 and 9 for Experiment 1. The development workflow, independent-review
+protocol, repository organization, and no-runtime-cap review correction close
+the additional pre-implementation planning topics recorded after this brief.
+Only Steve's explicit implementation go-ahead remains before Slice 0 may begin.
+
+Items 8 and 10 remain deliberately bounded rather than globally closed. A
+legacy asset is accepted or rejected only inside the slice that proposes to use
+it; Slice 0 can use the official FDA artifact and independently validated
+mapping evidence without approving any legacy architecture or broad reuse.
+Legacy Wilson's operational and evidence-preservation disposition is separate
+work and does not block the synthetic, isolated Slice 0 PDF proof. Neither item
+authorizes changes to legacy Wilson or Nightjar.
+
 ## Phase boundary
 
 The retrospective review is complete enough to stop broad archaeology. Product

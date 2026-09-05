@@ -6,8 +6,9 @@ supported Form FDA 3500 projection.
 
 **Current status:** Product, interaction, architecture, Experiment 1,
 verification, deployment preflight, and delivery-process decisions are
-approved. Application implementation has not begun and still requires an
-explicit go-ahead.
+approved. The identified pre-implementation planning topics are closed.
+Application implementation has not begun and still requires Steve's explicit
+go-ahead.
 
 This README is a navigation aid, not a separate source of product authority.
 The linked documents contain the approved decisions and evidence.

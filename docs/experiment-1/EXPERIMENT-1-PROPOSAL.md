@@ -2,7 +2,8 @@
 
 **Status:** Approved by Steve on 2026-09-04, including the doctor-first
 verification, question-budget, and deployment-preflight amendments;
-implementation awaits an explicit go-ahead after the remaining topics
+the identified planning topics are closed and implementation awaits Steve's
+explicit go-ahead
 
 **Prepared:** 2026-09-04
 
@@ -207,10 +208,12 @@ reopens the question policy rather than expanding the budget automatically.
 > Also, the medication administration record lists apixaban starting
 > 13-Aug-2026, but my note says 12-Aug-2026. I can't resolve that yet.
 
-The active naproxen dose must become 250 mg everywhere while 500 mg remains
-visible only as superseded history. Both apixaban date statements remain
-visible with their excerpts, but neither becomes resolved or reaches the first
-PDF projection.
+The model may identify and propose the naproxen correction, but 500 mg remains
+the active dose until the clinician explicitly accepts that correction. The
+acceptance command makes 250 mg active everywhere while 500 mg remains visible
+only as superseded history. Both apixaban date statements remain visible with
+their excerpts, but neither becomes resolved or reaches the first PDF
+projection.
 
 ### Conflict resolution
 
@@ -287,8 +290,11 @@ This composition is authoritative only for the fixed journey and viewport.
 
 ### Pre-implementation visual checkpoint
 
-Before browser implementation, four annotated 1440 x 900 mockups use the exact
-synthetic fixture rather than placeholder copy:
+Before browser implementation, four annotated 1440 x 900 mockups are designed
+against the exact synthetic fixture rather than placeholder content. The
+written fixture and semantic result remain content authority; the visual
+checkpoint records bounded errata where a generated image abbreviates or
+misstates that content:
 
 1. `Describe`: the populated natural-language case account and the limited
    experiment boundary;
@@ -329,6 +335,12 @@ The fixed journey traverses these states:
 5. pre-resolution output inspection with the date omitted and explained;
 6. explicit resolution to 13-Aug-2026 and the updated review/projection; and
 7. successful PDF download.
+
+The fixed experiment deliberately disables download in the pre-resolution
+state, then exercises explicit resolution before download. The conflicted
+projection is still inspected and tested before resolution. This sequence is
+not a product-wide rule that every unresolved optional fact must block a useful
+partial report.
 
 Backward editing is allowed. Retain the browser trace and screenshots only for
 the understanding, unresolved-conflict, and final-output states; the other
@@ -481,6 +493,7 @@ not selected in those proposals. The verification strategy and doctor-first
 amendment were added as the evidence checkpoint before deployment preflight;
 Steve approved both on 2026-09-04. Steve then approved the
 deployment-preflight stack and the one-question-budget amendment on 2026-09-04.
-All listed planning gates are therefore closed, but the identified remaining
-topics and explicit implementation authorization are still required before
-implementation begins.
+The later development-workflow, independent-review, repository-organization,
+and review-runtime decisions close the identified remaining planning topics.
+All planning gates are therefore closed, but Steve's explicit implementation
+authorization is still required before implementation begins.

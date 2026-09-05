@@ -137,3 +137,32 @@ Decorative marks, icons, exact type metrics, and small spacing differences are
 placeholders. In particular, the varying header symbols are not Wilson logo
 proposals. Product decisions should be made from the labeled composition and
 interaction hypotheses, not by copying pixels from these images.
+
+## Content authority and bounded errata
+
+The fixed narrative and expected semantic result in
+[`EXPERIMENT-1-PROPOSAL.md`](../EXPERIMENT-1-PROPOSAL.md) govern all fixture
+content. The generated images remain useful composition hypotheses, but these
+known content differences must not become implementation authority:
+
+- `01-describe.png` abridges the opening account and omits the two start dates,
+  lisinopril's concomitant role, and the undated statement that apixaban and
+  naproxen were stopped. The running journey uses the complete written account.
+- `03-correct-resolve.png` shows naproxen as both `Ready to update` and already
+  `Updated`. A model-extracted correction remains proposed until the clinician
+  explicitly accepts it; 500 mg remains active until that command makes 250 mg
+  active and retains 500 mg as superseded history.
+- `04-inspect-output.png` says `No additional relevant history reported` even
+  though the fixture never establishes that absence. The field must remain
+  blank or be described as not addressed. Its compact summary also must not
+  cause hemoglobin 7.8 g/dL, transfusion, recovery, or discharge information to
+  disappear from the supported projection or event narrative.
+- `04-inspect-output.png` shows 18-Aug-2026 stop dates for both suspect
+  products. The fixture says only that they were stopped and does not support
+  an exact date; implementation retains the undated fact and leaves both stop
+  dates blank.
+
+The disabled pre-resolution download in `04-inspect-output.png` is intentional
+for this fixed seven-state experiment: the conflicted projection is inspected,
+the date is explicitly resolved, and the PDF is then downloaded. It does not
+establish a product-wide rule for every unresolved optional fact.

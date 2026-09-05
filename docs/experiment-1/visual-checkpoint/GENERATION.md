@@ -63,3 +63,16 @@ apixaban stop 18-Aug-2026 with VTE-prophylaxis indication, naproxen start
 lisinopril only as a concomitant product in Section F.
 A second targeted edit disabled PDF download in the pictured pre-resolution
 state and labeled the required next step `Resolve date before download`.
+
+## Readiness-review corrections
+
+The generation history above describes what appears in the retained images; it
+does not make every rendered value authoritative. The approved content errata
+are recorded in the visual-checkpoint
+[`README.md`](README.md#content-authority-and-bounded-errata). In particular,
+the written fixture governs the abridged opening account, model-extracted
+corrections require explicit clinician acceptance, unaddressed relevant history
+is not a reported absence, and the narrative supports no exact suspect-product
+stop dates. The images were not regenerated because the smallest useful
+response is to retain their composition evidence while preventing their known
+content defects from entering implementation.

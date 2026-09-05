@@ -270,9 +270,12 @@ only in the final versioned adapter. A projection or rendering error leaves the
 case unchanged.
 
 The current authority is Form FDA 3500 (09/2025), OMB expiry 09-30-2027. Its
-[PDF](https://www.fda.gov/media/76299/download?attachment=) and
+[PDF](https://www.fda.gov/media/76299/download?attachment=) must be versioned
+and checksummed before the adapter is implemented. The accompanying
 [FDA instructions](https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500)
-must be versioned and checksummed before the adapter is implemented.
+must be identified by their authoritative URL and retrieval date before mapping
+decisions are accepted. The live guidance page is not a byte-consumed adapter
+input and does not require an artificial checksum.
 
 ## Application shape
 

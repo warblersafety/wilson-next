@@ -288,9 +288,9 @@ flowchart LR
 
 This order is approved in
 [`DEPLOYMENT-PREFLIGHT.md`](DEPLOYMENT-PREFLIGHT.md), but implementation still
-requires an explicit go-ahead after the remaining topics. In particular, the
-shared preview lock is late deployment plumbing rather than an initial product
-subsystem.
+requires Steve's explicit go-ahead. The identified planning topics are closed.
+In particular, the shared preview lock is late deployment plumbing rather than
+an initial product subsystem.
 
 ## Implementation divergence flow
 

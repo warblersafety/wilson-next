@@ -63,9 +63,9 @@ decisions can be assembled and deployed without choosing infrastructure that
 quietly contradicts them.
 
 This preflight closes that stack gap. It does not start implementation. Steve's
-remaining topics must be discussed, and implementation still requires an
-explicit go-ahead. When that happens, work starts with a narrow technical proof
-and then follows the approved journey to the physician.
+later-approved process and repository topics are now closed, but implementation
+still requires his explicit go-ahead. When that happens, work starts with a
+narrow technical proof and then follows the approved journey to the physician.
 
 The doctor-first rule is still the filter. Every selected tool either enables
 the browser-to-PDF journey, protects the canonical case, or makes the physician
@@ -221,14 +221,31 @@ explicit.
 ### First implementation gate
 
 Before building substantial UI, create the versioned FDA PDF filler behind the
-approved narrow adapter boundary for only the Experiment 1 fields. It must:
+approved narrow adapter boundary and prove only this representative
+compatibility set. Slice 0 does not define or implement the complete supported
+semantic projection; that mapping lands with the projection and assembled
+journey in Slices 1 and 2. The Slice 0 gate must:
 
 1. reject any source PDF whose version or checksum differs;
 2. fill a representative text field, multiline narrative, choice, checkbox,
    and both supported product rows;
-3. read the supported values back programmatically;
-4. render the relevant pages in Chromium and inspect them visually; and
+3. read the representative values back programmatically through ordinary,
+   supported APIs;
+4. open without a password prompt, render the relevant pages in Chromium, and
+   pass visual inspection; and
 5. preserve the expected eight-page form and approved visible form identity.
+
+The known residual encryption marker does not fail the gate by itself if the
+output opens normally without a password prompt, Chromium renders it, and an
+independent parser reads the expected values. Record the marker as a retained
+compatibility observation. A password prompt, corrupted rendering, failed
+independent readback, or a consumer-specific inspection-mode requirement fails
+the TypeScript candidate and activates the bounded fallback.
+
+Before mapping evidence is accepted, record the FDA instructions' authoritative
+URL and retrieval date. The code-consumed PDF remains pinned by form version and
+checksum; the live instructions page is identified rather than assigned a
+misleading binary checksum.
 
 Time-box this to half a working day. If it passes, `@cantoo/pdf-lib` is the
 Experiment 1 adapter and no Python or container is introduced.
@@ -314,6 +331,10 @@ that known setup is simpler than introducing a new runner merely to remove one
 development dependency. WN does not port prior Wilson's hundreds of tests; it
 uses Vitest only for the approved focused behaviors. See the official
 [Vitest 4 guide](https://v4.vitest.dev/guide/).
+
+By Slice 1, `npm test` also includes the one narrow source-boundary assertion
+required by the architecture and verification strategy. This is not a general
+dependency-rule platform and does not add another CI stage.
 
 Use Playwright Test with Chromium only for the one approved deterministic
 browser journey. Playwright supplies isolation, accessible locators, tracing,
@@ -437,13 +458,13 @@ substituting a provider or host. Do not broaden the stack silently.
 ## Approval consequence
 
 Approval closes the deployment-preflight topic for Experiment 1. It does not
-start implementation: Steve has identified additional topics to discuss, and
-an explicit implementation go-ahead remains required. When that authorization
-arrives, work follows the order above under the approved architecture,
-experiment, UX checkpoint, and verification strategy. The first external
-milestone is not “finish the application”; it is “put the smallest credible
-assembled Wilson journey in front of one physician and learn whether the
-direction deserves another slice.”
+start implementation: the later-approved process and repository topics are
+closed, and Steve's explicit implementation go-ahead remains required. When
+that authorization arrives, work follows the order above under the approved
+architecture, experiment, UX checkpoint, and verification strategy. The first
+external milestone is not “finish the application”; it is “put the smallest
+credible assembled Wilson journey in front of one physician and learn whether
+the direction deserves another slice.”
 
 ### Approval record
 

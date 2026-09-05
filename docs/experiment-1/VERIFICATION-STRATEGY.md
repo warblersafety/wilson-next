@@ -74,8 +74,12 @@ function or component. A runtime-schema rejection test should also show that a
 malformed model response fails before it reaches review.
 
 No architectural test framework or broad dependency-rule system is required for
-Experiment 1. The implementation should still keep the single write boundary
-clear enough to inspect directly.
+Experiment 1. Slice 1 does require one narrow automated dependency assertion
+showing that application routes and UI modules cannot import lower-level case
+mutation helpers. It may run as a focused Vitest/source-boundary test under
+`npm test`; it does not require a separate framework or CI step. The
+implementation must also keep the single write boundary clear enough to inspect
+directly.
 
 ### 2. One deterministic browser journey
 
@@ -209,8 +213,8 @@ a desire to look complete before anyone has used the product.
 
 Approval makes this the complete verification requirement for getting
 Experiment 1 in front of one physician. The deployment preflight is now
-approved. Steve's identified remaining topics and an explicit implementation
-go-ahead are still required before work begins.
+approved and the identified planning topics are closed. Steve's explicit
+implementation go-ahead is still required before work begins.
 
 ### Approval record
 
