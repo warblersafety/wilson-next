@@ -1,0 +1,18 @@
+.main {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.notice {
+  border: 1px solid #c7ced8;
+  border-radius: 0.75rem;
+  max-width: 40rem;
+  padding: 2rem;
+}
+
+.notice h1 {
+  margin-top: 0;
+}

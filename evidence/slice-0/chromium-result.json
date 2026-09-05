@@ -1,0 +1,36 @@
+{
+  "chromiumVersion": "153.0.8010.12",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "zoomPercent": 80,
+  "source": "evidence/slice-0/filled-form.pdf",
+  "capturedPages": [
+    {
+      "page": 1,
+      "screenshot": "evidence/slice-0/chromium-page-1.png",
+      "viewerLoaded": true
+    },
+    {
+      "page": 2,
+      "screenshot": "evidence/slice-0/chromium-page-2.png",
+      "viewerLoaded": true
+    },
+    {
+      "page": 4,
+      "screenshot": "evidence/slice-0/chromium-page-4.png",
+      "viewerLoaded": true
+    },
+    {
+      "page": 5,
+      "screenshot": "evidence/slice-0/chromium-page-5.png",
+      "viewerLoaded": true
+    }
+  ],
+  "manualInspectionRequired": [
+    "No password prompt is visible",
+    "FDA/Form 3500 identity is preserved",
+    "Representative text, multiline, choice, checkbox, and both product rows render"
+  ]
+}

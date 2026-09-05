@@ -368,9 +368,9 @@ capability before substantial UI work:
 5. Preserve eight pages and the approved visible form identity.
 
 The residual marker alone does not fail if the output opens normally, renders,
-and an independent parser reads expected values. Record it. A password prompt,
-corruption, failed independent readback, or consumer-specific inspection-mode
-requirement fails the TypeScript candidate.
+and `pypdf` 6.16.2 independently reads expected values. Record it. A password
+prompt, corruption, failed independent readback, or consumer-specific
+inspection-mode requirement fails the TypeScript candidate.
 
 Time-box the TypeScript gate to half a working day. If it fails, use `pypdf`
 plus its AES dependency in a small Python subprocess behind the same adapter,
@@ -431,6 +431,10 @@ npm test
 npm run build
 npm run test:e2e
 ```
+
+Create the `verify` workflow with the Slice 0 scaffold. Add each command when
+the slice that first produces its evidence arrives; do not create empty
+placeholder tests for later slices merely to populate the initial workflow.
 
 The deterministic browser test needs no credentials. Real-model samples and
 deployed smoke checks are explicit capped operator actions, not push-triggered

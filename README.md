@@ -6,8 +6,8 @@ a supported Form FDA 3500 projection.
 
 **Current status:** Product, interaction, Experiment 1 architecture, execution,
 verification, deployment, and delivery decisions are approved. The planning
-topics are closed. Application implementation has not begun and requires
-Steve's explicit go-ahead.
+topics are closed. Steve authorized only Experiment 1 Slice 0 under Issue #11;
+later slices and deployment remain unauthorized.
 
 ## Active corpus
 
@@ -38,7 +38,8 @@ document before continuing.
 ## Minimum reading path
 
 - **Slice 0:** this README; the projection and adapter boundary in Architecture;
-  the Slice 0 and PDF-gate sections in Experiment 1; and Delivery.
+  the Selected stack, Slice 0 PDF gate, CI and implementation order, and
+  Retention sections in Experiment 1; and Delivery.
 - **Slices 1–4:** read Product, Architecture, Experiment 1, and Delivery in
   full.
 - **Premise challenge or legacy reuse:** additionally read the relevant

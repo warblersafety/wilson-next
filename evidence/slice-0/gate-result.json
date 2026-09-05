@@ -1,0 +1,38 @@
+{
+  "gate": "Experiment 1 Slice 0",
+  "source": {
+    "form": "Form FDA 3500",
+    "version": "09/2025",
+    "sha256": "1147d7c86bb002cba7fb9352ca8e3402524d8fa0236916b7bf7e5dcdcf88bf9c",
+    "expectedSha256": "1147d7c86bb002cba7fb9352ca8e3402524d8fa0236916b7bf7e5dcdcf88bf9c"
+  },
+  "output": {
+    "sha256": "51c3967c7054823ec726c166942df2d188193a9a856072cf939ae19de448a3c6",
+    "cantooReload": {
+      "status": "residual-encryption-marker",
+      "message": "NEEDS PASSWORD"
+    },
+    "ordinarySupportedApiReadback": {
+      "patientIdentifier": "SLICE0-TEST-57",
+      "eventNarrative": "Synthetic compatibility evidence only.\nTwo-line narrative proves multiline rendering.",
+      "hospitalized": true,
+      "productOneName": "SLICE0 APIXABAN",
+      "productOneRoute": "Oral",
+      "productTwoName": "SLICE0 NAPROXEN",
+      "pageCount": 8
+    },
+    "independentReadback": {
+      "encrypted": false,
+      "fieldValues": [
+        "/1",
+        "Oral",
+        "SLICE0 APIXABAN",
+        "SLICE0 NAPROXEN",
+        "SLICE0-TEST-57",
+        "Synthetic compatibility evidence only.\nTwo-line narrative proves multiline rendering."
+      ],
+      "pageCount": 8,
+      "pypdfVersion": "6.16.2"
+    }
+  }
+}
