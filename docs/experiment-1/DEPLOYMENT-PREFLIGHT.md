@@ -71,7 +71,7 @@ The doctor-first rule is still the filter. Every selected tool either enables
 the browser-to-PDF journey, protects the canonical case, or makes the physician
 session safe and interpretable.
 
-The [Experiment 1 system diagrams](docs/experiment-1-system-diagrams.md) show
+The [Experiment 1 system diagrams](experiment-1-system-diagrams.md) show
 where these selected runtime choices fit while separating the experiment's
 actual build from future possibilities. They do not independently authorize
 implementation.
@@ -337,7 +337,8 @@ explicit, capped operator actions; they do not run on every push. Coverage
 collection and thresholds remain deferred.
 
 Implementation follows the approved
-[development process](DEVELOPMENT-PROCESS.md): one short-lived `codex/` issue
+[development process](../process/DEVELOPMENT-PROCESS.md): one short-lived
+`codex/` issue
 branch and one pull request per meaningful slice, one fresh-context technical
 review, and Steve's approval before squash merge. `main` rejects direct pushes,
 force pushes, deletion, and administrator or application bypass. The single

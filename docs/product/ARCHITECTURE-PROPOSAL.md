@@ -287,7 +287,7 @@ browser UI -> application commands and queries -> case domain
 
 The bounded architecture, semantic data model, authority flow, and proposed
 implementation sequence are shown in the
-[Experiment 1 system diagrams](docs/experiment-1-system-diagrams.md). Those
+[Experiment 1 system diagrams](../experiment-1/experiment-1-system-diagrams.md). Those
 diagrams distinguish what the experiment builds from replaceable seams and
 explicitly excluded future scope.
 

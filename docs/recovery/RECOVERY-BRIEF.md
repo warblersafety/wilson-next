@@ -185,7 +185,7 @@ untouched.
     transcript.
 13. **UI/UX constrains architecture.** Interaction design may not again arrive
     after foundational machinery. The bounded
-    [UI/UX recovery checkpoint](UX-RECOVERY.md) precedes architecture
+    [UI/UX recovery checkpoint](../product/UX-RECOVERY.md) precedes architecture
     comparison, and the first implementation experiment must be an assembled
     browser journey. Mockups and design tokens are inputs, not acceptance
     evidence.
@@ -252,8 +252,9 @@ architecture work and must name the evidence used to revalidate the asset.
 
 The complete source inventory, review status, corrections, and preservation
 risks are in [POSTMORTEM-REVIEW.md](POSTMORTEM-REVIEW.md). The confirmed product
-definition is [PRODUCT.md](PRODUCT.md), and the bounded product-to-architecture
-interaction contract is [UX-RECOVERY.md](UX-RECOVERY.md). The evidence index
+definition is [PRODUCT.md](../product/PRODUCT.md), and the bounded
+product-to-architecture interaction contract is
+[UX-RECOVERY.md](../product/UX-RECOVERY.md). The evidence index
 supports this brief but is not product or architecture authority.
 
 The main retrospective corpus is the clean local `nightjar-research` commit
