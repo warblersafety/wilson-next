@@ -1,7 +1,7 @@
 # Wilson Experiment 1
 
-**Status:** Approved by Steve; planning topics closed; implementation requires
-Steve's explicit go-ahead
+**Status:** Approved by Steve; course-adjusted after Slice 2 on 2026-09-05;
+implementation requires Steve's explicit go-ahead
 
 **Owns:** The fixed journey, supported and deferred scope, interaction
 composition, selected stack, implementation sequence, verification, deployment,
@@ -209,8 +209,19 @@ evidence.
 The pre-resolution download restriction is specific to this fixed experiment,
 which deliberately exercises resolution before download. It does not establish
 a product-wide rule that every unresolved optional fact blocks partial output.
-Backward editing remains allowed. Retain screenshots only for understanding,
-unresolved conflict, and final output unless another state diagnoses a failure.
+Before physician testing, browser evidence must check both the visible control
+and direct access to every official-PDF route: before resolution, download and
+preview access return a no-store `409` response. A disabled button alone does
+not prove the gate.
+
+Backward editing remains allowed. Any visible Change or Remove control is a
+real affordance. In Check understanding, Change records a clinician correction
+and Remove rejects the proposed semantic group through `applyCaseCommand`;
+controls are absent wherever this fixed experiment does not support the action.
+Before physician testing, separate synthetic browser runs exercise at least one
+Change and one Remove path without altering the authoritative golden journey.
+Retain screenshots only for understanding, unresolved conflict, and final
+output unless another state diagnoses a failure.
 
 ## Success and stopping
 
@@ -276,7 +287,10 @@ real browser, command, case, projection, and PDF behavior remain intact. Use
 visible labels and accessible roles. Assert three distinct products, exactly one
 question group, accepted correction everywhere, conflicted date omitted,
 resolution updating review/output, and successful download. Retain the useful
-trace and screenshots, not a visual-regression service.
+trace and screenshots, not a visual-regression service. Here, useful trace
+means a sanitized ordered checkpoint record with no cookies, browser storage,
+request bodies, page snapshots, or raw network/session state; do not retain a
+raw Playwright trace archive.
 
 ### Real-model sample
 
@@ -440,7 +454,7 @@ The deterministic browser test needs no credentials. Real-model samples and
 deployed smoke checks are explicit capped operator actions, not push-triggered
 automation. Require `verify` on `main` after the workflow exists.
 
-Implementation follows five short-lived issue branches:
+Core implementation follows five short-lived slice branches:
 
 1. **Slice 0 — prove the FDA PDF filler:** scaffold and pass the bounded gate
    or its pre-approved fallback.
@@ -456,6 +470,13 @@ Implementation follows five short-lived issue branches:
    instance, run operator smoke/PDF inspection, and meet one physician as soon
    as the minimum evidence is green.
 
+Slice 2 established the assembled path but also exposed a false-affordance
+risk: visible Change and Remove controls were not functional. Close that gap in
+a bounded remediation before Slice 4 deployment or physician use. Do not add it
+to Slice 3, whose real-model scope and caps remain unchanged.
+Approved planning amendments and independently valuable defects follow the
+ordinary issue-and-branch rule without renumbering these five slices.
+
 No slice waits for broad coverage, eval infrastructure, general form support,
 durable data, or polish unrelated to the approved journey.
 
@@ -465,6 +486,8 @@ Retain only the synthetic fixture/oracle, source revision, focused results,
 useful trace/screenshots, short model table and cost, checked PDF, operator
 verdict, and concise physician notes. Never retain credentials, real clinical
 data, raw infrastructure logs, browser storage, or deployed ephemeral cases.
+The retained browser trace is the sanitized checkpoint record defined above,
+not a Playwright archive or another capture of browser/network session state.
 Remove preview access after review unless continued access is approved.
 
 A passing implementation remains an experiment until separately accepted as a
