@@ -155,11 +155,21 @@ export interface AttachGroundedProposalsCommand extends CommandEnvelope {
 
 export interface ReviewProposalGroupsCommand extends CommandEnvelope {
   type: "review-proposal-groups";
-  decisions: Array<{
-    groupId: string;
-    action: "accept" | "reject";
-  }>;
+  decisions: ProposalGroupDecision[];
 }
+
+export type ProposalGroupDecision =
+  | {
+      groupId: string;
+      action: "accept";
+      corrections?: Array<{
+        proposalId: string;
+        replacementId: string;
+        value: CaseValue<unknown>;
+        source: Source;
+      }>;
+    }
+  | { groupId: string; action: "reject" };
 
 export interface RecordClinicianFactsCommand extends CommandEnvelope {
   type: "record-clinician-facts";

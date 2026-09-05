@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { applyCaseCommand, StaleCaseRevisionError } from "../../src/domain/case/commands";
 import { createSemanticCase } from "../../src/domain/case/create";
-import type { CaseValue, Source } from "../../src/domain/case/types";
+import type { CaseCommand, CaseValue, Source } from "../../src/domain/case/types";
 import {
   acceptCorrectionAndConflict,
   acceptOpeningCase,
@@ -34,6 +34,38 @@ describe("applyCaseCommand", () => {
       ["product-naproxen", "resolved"],
       ["product-lisinopril", "resolved"],
     ]);
+  });
+
+  it("accepts a clinician correction during group review without making the model proposal authoritative", () => {
+    const proposed = createOpeningCase();
+    const text = "Correct age: 58 years";
+    const reviewed = applyCaseCommand(proposed, {
+      type: "review-proposal-groups",
+      commandId: "command-review-patient-corrected",
+      expectedRevision: proposed.revision,
+      decisions: [{
+        groupId: "patient",
+        action: "accept",
+        corrections: [{
+          proposalId: "patient-age",
+          replacementId: "patient-age-corrected",
+          value: { kind: "known", value: 58 },
+          source: {
+            id: "source-patient-age-correction",
+            inputId: "input-patient-age-correction",
+            inputType: "correction",
+            excerpt: text,
+            start: 0,
+            end: text.length,
+            actor: "clinician",
+            recordedAt: "2026-09-05T20:00:00.000Z",
+          },
+        }],
+      }],
+    }).case;
+    expect(reviewed.patient.facts.ageYears.resolvedValue?.value).toEqual({ kind: "known", value: 58 });
+    expect(reviewed.patient.facts.ageYears.resolvedValue?.sourceIds).toEqual(["source-patient-age-correction"]);
+    expect(reviewed.patient.facts.ageYears.supersededValues).toEqual([]);
   });
 
   it("supersedes an accepted correction and keeps incompatible dates unresolved until explicit resolution", () => {
@@ -131,5 +163,33 @@ describe("applyCaseCommand", () => {
       conflictingValues: [],
     });
     expect(fact.resolvedValue).toBeUndefined();
+  });
+
+  it("rejects malformed runtime meanings without changing the current revision", () => {
+    const current = createSemanticCase("case-malformed");
+    const text = "Patient declined";
+    const malformed = {
+      type: "record-clinician-facts",
+      commandId: "command-malformed",
+      expectedRevision: 0,
+      source: {
+        id: "source-malformed",
+        inputId: "input-malformed",
+        inputType: "answer",
+        excerpt: text,
+        start: 0,
+        end: text.length,
+        actor: "clinician",
+        recordedAt: "2026-09-05T20:00:00.000Z",
+      },
+      facts: [{
+        id: "fact-malformed",
+        target: { entity: "patient", entityId: "patient", field: "identifier" },
+        intent: "fact",
+        value: { kind: "declined", value: "silently retained" },
+      }],
+    } as unknown as CaseCommand;
+    expect(() => applyCaseCommand(current, malformed)).toThrow("mixes mutually exclusive resolved meanings");
+    expect(current).toEqual(createSemanticCase("case-malformed"));
   });
 });

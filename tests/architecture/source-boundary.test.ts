@@ -19,6 +19,30 @@ describe("case mutation source boundary", () => {
     }
     expect(violations).toEqual([]);
   });
+
+  it("keeps lower-level mutation modules reachable only from the authoritative server boundary", async () => {
+    const sourceFilesUnderSrc = await sourceFiles(join(root, "src"));
+    const allowedCommandImporters = new Set(["src/server/case/apply-command.ts"]);
+    const allowedInternalImporters = new Set([
+      "src/domain/case/commands.ts",
+      "src/domain/case/create.ts",
+      "src/server/case/repository.ts",
+    ]);
+    const violations: string[] = [];
+
+    for (const path of sourceFilesUnderSrc) {
+      const name = relative(root, path);
+      const source = await readFile(path, "utf8");
+      if (/from ["'][^"']*domain\/case\/commands["']/.test(source) && !allowedCommandImporters.has(name)) {
+        violations.push(`${name} imports commands`);
+      }
+      if (/from ["'][^"']*(?:domain\/case\/)?internal["']/.test(source) && !allowedInternalImporters.has(name)) {
+        violations.push(`${name} imports internal helpers`);
+      }
+    }
+
+    expect(violations).toEqual([]);
+  });
 });
 
 async function sourceFiles(directory: string): Promise<string[]> {

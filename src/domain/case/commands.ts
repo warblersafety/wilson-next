@@ -20,6 +20,7 @@ import type {
   FactTarget,
   GroundedProposal,
   GroundedValue,
+  ProposalGroupDecision,
   SemanticCase,
   Source,
 } from "./types";
@@ -30,6 +31,10 @@ export function applyCaseCommand(
   current: SemanticCase,
   command: CaseCommand,
 ): ApplyCaseCommandResult {
+  if (!command.commandId.trim()) throw new Error("Command ID is required");
+  if (!Number.isInteger(command.expectedRevision) || command.expectedRevision < 0) {
+    throw new Error("Expected revision must be a non-negative integer");
+  }
   if (current.changes.some(({ commandId }) => commandId === command.commandId)) {
     return { case: current, applied: false };
   }
@@ -59,6 +64,7 @@ export function applyCaseCommand(
       reviewProposalGroups(next, command.decisions, change);
       break;
     case "record-clinician-facts":
+      if (command.facts.length === 0) throw new Error("A clinician fact command requires facts");
       addSource(next, command.source);
       change.sourceIds.push(command.source.id);
       for (const item of command.facts) {
@@ -89,6 +95,8 @@ export function applyCaseCommand(
       addSource(next, command.source);
       resolveConflict(next, command.target, command.chosenValueId, command.source, change);
       break;
+    default:
+      throw new Error(`Unsupported case command ${String((command as { type?: unknown }).type)}`);
   }
 
   next.revision += 1;
@@ -106,10 +114,12 @@ function attachGroundedProposals(
   proposals: GroundedProposal[],
   change: Change,
 ): void {
+  if (proposals.length === 0) throw new Error("A proposal command requires proposals");
   for (const source of sources) addSource(caseState, source);
   change.sourceIds.push(...sources.map(({ id }) => id));
 
   for (const product of products) {
+    if (!product.id.trim() || !product.groupId.trim()) throw new Error("Proposed product identity is required");
     if (caseState.products.some(({ id }) => id === product.id)) {
       throw new Error(`Product ${product.id} already exists`);
     }
@@ -123,6 +133,7 @@ function attachGroundedProposals(
   }
 
   for (const proposal of proposals) {
+    if (!proposal.proposalId.trim() || !proposal.groupId.trim()) throw new Error("Proposal identity is required");
     const fact = getFact(caseState, proposal.target);
     if (allFactValues(fact).some(({ id }) => id === proposal.proposalId)) {
       throw new Error(`Proposal ${proposal.proposalId} already exists`);
@@ -144,22 +155,39 @@ function attachGroundedProposals(
 
 function reviewProposalGroups(
   caseState: SemanticCase,
-  decisions: Array<{ groupId: string; action: "accept" | "reject" }>,
+  decisions: ProposalGroupDecision[],
   change: Change,
 ): void {
+  if (decisions.length === 0) throw new Error("A review command requires decisions");
   if (new Set(decisions.map(({ groupId }) => groupId)).size !== decisions.length) {
     throw new Error("Each proposal group may be reviewed only once per command");
   }
 
   for (const decision of decisions) {
     let found = false;
+    const appliedCorrections = new Set<string>();
     for (const { target, fact } of everyFact(caseState)) {
       const matching = fact.proposedValues.filter(({ groupId }) => groupId === decision.groupId);
       for (const proposal of matching) {
         found = true;
         removeProposal(fact, proposal.id);
         if (decision.action === "accept") {
-          applyAcceptedValue(fact, proposal, target, change);
+          const correction = decision.corrections?.find(({ proposalId }) => proposalId === proposal.id);
+          if (correction) {
+            if (!correction.replacementId.trim()) throw new Error("Correction replacement identity is required");
+            addSource(caseState, correction.source);
+            change.sourceIds.push(correction.source.id);
+            appliedCorrections.add(correction.proposalId);
+            applyAcceptedValue(fact, {
+              id: correction.replacementId,
+              groupId: decision.groupId,
+              intent: "correction",
+              value: correction.value,
+              sourceIds: [correction.source.id],
+            }, target, change);
+          } else {
+            applyAcceptedValue(fact, proposal, target, change);
+          }
         } else {
           refreshFactState(fact);
           change.affectedTargets.push(targetKey(target));
@@ -181,6 +209,9 @@ function reviewProposalGroups(
     if (product) {
       product.state = decision.action === "accept" ? "resolved" : "rejected";
       found = true;
+    }
+    if (decision.action === "accept" && appliedCorrections.size !== (decision.corrections?.length ?? 0)) {
+      throw new Error(`A correction did not match a proposal in group ${decision.groupId}`);
     }
     if (!found) throw new Error(`Unknown or already reviewed proposal group ${decision.groupId}`);
   }
@@ -265,6 +296,7 @@ function resolveConflict(
   resolutionSource: Source,
   change: Change,
 ): void {
+  if (!chosenValueId.trim()) throw new Error("Conflict resolution choice is required");
   const fact = getFact(caseState, target);
   if (fact.state !== "conflicted") throw new Error(`${targetKey(target)} is not conflicted`);
   const chosen = fact.conflictingValues.find(({ id }) => id === chosenValueId);
@@ -346,8 +378,20 @@ function everyFact(caseState: SemanticCase): Array<{ target: FactTarget; fact: F
 }
 
 function assertValueMatchesTarget(target: FactTarget, value: CaseValue<unknown>): void {
-  if (value.kind !== "known") return;
-  const actual = value.value;
+  if (!value || typeof value !== "object") throw new Error(`${targetKey(target)} requires a case value`);
+  const raw = value as unknown as Record<string, unknown>;
+  const kind = raw.kind;
+  if (!["known", "unknown", "explicitly-absent", "inapplicable", "declined"].includes(kind as string)) {
+    throw new Error(`${targetKey(target)} has an unsupported resolved meaning`);
+  }
+  if (kind !== "known") {
+    if ("value" in raw || "qualifier" in raw) {
+      throw new Error(`${targetKey(target)} mixes mutually exclusive resolved meanings`);
+    }
+    return;
+  }
+  if (!("value" in raw)) throw new Error(`${targetKey(target)} requires a known value`);
+  const actual = raw.value;
   const stringFields = new Set([
     "identifier", "onsetDate", "hemoglobin", "outcome", "dischargeDate",
     "name", "dose", "frequency", "route", "startDate", "indication",
