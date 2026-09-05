@@ -22,7 +22,8 @@ review perspectives are reserved for changes with distinct, consequential
 risks and for the integrated checkpoint before the first physician session.
 The standard is Sonnet at high effort; Opus at `xhigh` is the ceiling, and
 Fable is never used. Claude does not run a second time without Steve's explicit
-permission.
+permission. Every review uses Steve's Anthropic subscription, never a metered
+API call.
 
 ## Standard review
 
@@ -41,6 +42,13 @@ This is Wilson's minimum review tier: do not use Haiku, a Sonnet effort below
 `high`, or another less-capable configuration for substantive review. Record
 the canonical model identifier returned by the run rather than relying only on
 the moving `sonnet` alias.
+
+Before every run, confirm that `claude auth status` reports `claude.ai`
+authentication and Steve's active subscription, and that `ANTHROPIC_API_KEY`,
+`ANTHROPIC_AUTH_TOKEN`, and `ANTHROPIC_BASE_URL` are unset. Record only that the
+subscription preflight passed; never copy account identifiers or credentials to
+the repository or GitHub. If the preflight fails, stop. Do not fall back to a
+paid Anthropic API call, another API provider, or a gateway.
 
 Give the reviewer:
 
@@ -160,6 +168,7 @@ The comment and pull-request summary record:
 - review mode: standard or expanded;
 - reviewed commit SHA;
 - Claude model and CLI version reported for the run;
+- confirmation that the subscription-authentication preflight passed;
 - prompt version, prompt-source commit, and complete invocation prompt;
 - inputs inspected and checks run;
 - complete findings and their severity;
