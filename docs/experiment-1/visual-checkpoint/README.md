@@ -3,7 +3,7 @@
 **Status:** Approved by Steve on 2026-09-04 as the Experiment 1 visual hypothesis; not implementation or product-acceptance authority
 **Viewport:** 1440 x 900 desktop
 **Fixture:** The fixed synthetic multi-product journey in
-[`EXPERIMENT-1-PROPOSAL.md`](../../EXPERIMENT-1-PROPOSAL.md)
+[`EXPERIMENT-1-PROPOSAL.md`](../EXPERIMENT-1-PROPOSAL.md)
 **Purpose:** Make the experiment's composition and friction hypotheses visible
 before production code
 

@@ -300,9 +300,9 @@ synthetic fixture rather than placeholder copy:
    the Form 3500 projection.
 
 The proposed screens and their review annotations are in the
-[visual checkpoint](docs/visual-checkpoint/README.md).
+[visual checkpoint](visual-checkpoint/README.md).
 The companion
-[system diagrams](docs/experiment-1-system-diagrams.md) show the bounded
+[system diagrams](experiment-1-system-diagrams.md) show the bounded
 architecture, semantic data model, authority boundary, fixed journey, and
 case-to-PDF flow without expanding the experiment's scope.
 

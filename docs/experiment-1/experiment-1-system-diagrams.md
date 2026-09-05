@@ -3,8 +3,9 @@
 **Status:** Working visual companion to the approved architecture and browser
 experiment; not implementation authorization  
 **Scope:** The first production-shaped Wilson experiment only  
-**Companions:** [`ARCHITECTURE-PROPOSAL.md`](../ARCHITECTURE-PROPOSAL.md),
-[`EXPERIMENT-1-PROPOSAL.md`](../EXPERIMENT-1-PROPOSAL.md), and the
+**Companions:**
+[`ARCHITECTURE-PROPOSAL.md`](../product/ARCHITECTURE-PROPOSAL.md),
+[`EXPERIMENT-1-PROPOSAL.md`](EXPERIMENT-1-PROPOSAL.md), and the
 [`visual checkpoint`](visual-checkpoint/README.md)
 
 These diagrams make the approved boundaries, data model, and major flows easier
@@ -286,7 +287,7 @@ flowchart LR
 ```
 
 This order is approved in
-[`DEPLOYMENT-PREFLIGHT.md`](../DEPLOYMENT-PREFLIGHT.md), but implementation still
+[`DEPLOYMENT-PREFLIGHT.md`](DEPLOYMENT-PREFLIGHT.md), but implementation still
 requires an explicit go-ahead after the remaining topics. In particular, the
 shared preview lock is late deployment plumbing rather than an initial product
 subsystem.
@@ -315,7 +316,7 @@ flowchart TD
 ```
 
 This is the preflight's
-[stop-and-reconcile rule](../DEPLOYMENT-PREFLIGHT.md#stop-and-reconcile-rule).
+[stop-and-reconcile rule](DEPLOYMENT-PREFLIGHT.md#stop-and-reconcile-rule).
 It prevents an implementation workaround from silently becoming a product or
 architecture decision without turning routine coding choices into governance.
 

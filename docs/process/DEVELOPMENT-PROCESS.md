@@ -108,7 +108,7 @@ merge.
 
 ## Stop and reconcile
 
-The [preflight stop-and-reconcile rule](DEPLOYMENT-PREFLIGHT.md#stop-and-reconcile-rule)
+The [preflight stop-and-reconcile rule](../experiment-1/DEPLOYMENT-PREFLIGHT.md#stop-and-reconcile-rule)
 applies throughout implementation. When continuing would change user-visible
 behavior, semantic truth, authority, scope, privacy, evidence, or a
 consequential technical commitment:

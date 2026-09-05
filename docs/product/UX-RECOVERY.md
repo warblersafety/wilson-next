@@ -58,7 +58,7 @@ It could disguise some field walking, but it could not remove the field model's
 effects on questioning, correction, completeness, and review.
 
 This is established in the recovered evidence indexed by the
-[post-mortem review](POSTMORTEM-REVIEW.md) and in legacy Wilson
+[post-mortem review](../recovery/POSTMORTEM-REVIEW.md) and in legacy Wilson
 [issue #39](https://github.com/warblersafety/wilson/issues/39) and
 [PR #46](https://github.com/warblersafety/wilson/pull/46).
 
