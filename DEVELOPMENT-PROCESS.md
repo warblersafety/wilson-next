@@ -14,9 +14,9 @@ must become durable authority.
 
 Every meaningful change starts with a short issue, happens on its own temporary
 branch, and reaches `main` through a pull request. Automated checks and a
-fresh-context technical review examine the work. Steve receives a plain-English
-summary and the evidence needed to approve or reject the merge. Direct work on
-`main` is not allowed.
+fresh-context Claude review normally examine the work. Steve receives a
+plain-English summary and the evidence needed to approve or reject the merge.
+Direct work on `main` is not allowed.
 
 The issue explains why. The branch isolates the work. The pull request explains
 what changed and carries its evidence and review. Governing Markdown records
@@ -83,7 +83,10 @@ Before a pull request is ready:
    artifacts.
 2. The narrow checks required by the slice pass.
 3. A fresh-context technical reviewer inspects the diff, issue, governing
-   artifacts, and evidence. The reviewer did not implement the change.
+   artifacts, and evidence. When Codex implements or coordinates the change,
+   Claude is the default reviewer under the
+   [Claude review protocol](CLAUDE-REVIEW.md). The reviewer did not implement
+   the change.
 4. Review findings are only `blocking` or `follow-up`. Blocking findings are
    fixed or explicitly resolved; follow-ups become issues only when they are
    independently worth doing.
@@ -92,7 +95,8 @@ Before a pull request is ready:
 
 The technical review checks both code correctness and whether implementation
 has hidden a bad premise. It must not treat conformance to an incorrect local
-contract as sufficient evidence.
+contract as sufficient evidence. It runs against an exact final commit before
+Steve's approval; a material change requires re-review.
 
 Steve's required GitHub approval is the merge authorization. It means the
 delivered scope, evidence, review result, and disclosed risks are acceptable;
@@ -155,8 +159,8 @@ Use each surface for one purpose:
 - **Commits:** meaningful implementation checkpoints on the issue branch.
 - **Pull request:** implementation summary, evidence, review, and merge
   decision.
-- **Issue and review comments:** material discoveries, challenges, and
-  dispositions—not routine narration.
+- **Issue and review comments:** attributed review results, material
+  discoveries, challenges, and dispositions—not routine narration.
 - **Governing Markdown:** lasting requirements and decisions.
 - **CI and retained experiment artifacts:** reproducible evidence.
 
