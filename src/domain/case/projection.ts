@@ -61,9 +61,25 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
 
   for (const product of caseState.products.filter(({ state }) => state === "resolved")) {
     const role = known(product.facts.role);
-    if (!role || (role.value !== "suspect" && role.value !== "concomitant")) continue;
+    if (!role || (role.value !== "suspect" && role.value !== "concomitant")) {
+      projection.omissions.push({
+        concept: `report role for ${product.id}`,
+        target: `product:${product.id}:role`,
+        reason: omissionReason(product.facts.role),
+        sourceIds: product.facts.role.sourceIds,
+      });
+      continue;
+    }
     const target = role.value === "suspect" ? projection.sections.D.suspectProducts : projection.sections.F.concomitantProducts;
     target.push(projectProduct(product, projection, role.value === "suspect" ? "D" : "F", target.length));
+    if (role.value === "suspect") {
+      projection.omissions.push({
+        concept: `stop date for ${product.id}`,
+        target: `product:${product.id}:stopDate`,
+        reason: "empty",
+        sourceIds: product.facts.stopped.resolvedValue?.sourceIds ?? [],
+      });
+    }
   }
 
   return projection;
@@ -127,5 +143,18 @@ function buildEventDescription(caseState: SemanticCase): { value?: string; sourc
   append(caseState.event.facts.treatments, (value) => `Treatment: ${value.join("; ")}.`);
   append(caseState.event.facts.outcome, (value) => `Outcome: ${value}.`);
   append(caseState.event.facts.dischargeDate, (value) => `Discharged ${value}.`);
+  const stopped = caseState.products.flatMap((product) => {
+    const name = known(product.facts.name);
+    const wasStopped = known(product.facts.stopped);
+    if (!name || !wasStopped?.value) return [];
+    sourceIds.push(...name.sourceIds, ...wasStopped.sourceIds);
+    return [name.value];
+  });
+  if (stopped.length > 0) parts.push(`Products stopped: ${joinWithAnd(stopped)}.`);
   return { value: parts.length > 0 ? parts.join(" ") : undefined, sourceIds: [...new Set(sourceIds)] };
+}
+
+function joinWithAnd(values: string[]): string {
+  if (values.length === 1) return values[0];
+  return `${values.slice(0, -1).join(", ")} and ${values.at(-1)}`;
 }

@@ -87,7 +87,7 @@ export function applyCaseCommand(
       break;
     case "resolve-conflict":
       addSource(next, command.source);
-      resolveConflict(next, command.target, command.chosenSourceId, command.source, change);
+      resolveConflict(next, command.target, command.chosenValueId, command.source, change);
       break;
   }
 
@@ -261,14 +261,14 @@ function recordAskedNeed(
 function resolveConflict(
   caseState: SemanticCase,
   target: FactTarget,
-  chosenSourceId: string,
+  chosenValueId: string,
   resolutionSource: Source,
   change: Change,
 ): void {
   const fact = getFact(caseState, target);
   if (fact.state !== "conflicted") throw new Error(`${targetKey(target)} is not conflicted`);
-  const chosen = fact.conflictingValues.find(({ sourceIds }) => sourceIds.includes(chosenSourceId));
-  if (!chosen) throw new Error(`Conflict has no alternative from source ${chosenSourceId}`);
+  const chosen = fact.conflictingValues.find(({ id }) => id === chosenValueId);
+  if (!chosen) throw new Error(`Conflict has no alternative ${chosenValueId}`);
 
   const inactive = fact.conflictingValues.filter(({ id }) => id !== chosen.id);
   fact.supersededValues.push(...inactive);
@@ -281,7 +281,7 @@ function resolveConflict(
   fact.conflictingValues = [];
   addSources(fact, [resolutionSource.id]);
   refreshFactState(fact);
-  change.sourceIds.push(resolutionSource.id, chosenSourceId);
+  change.sourceIds.push(resolutionSource.id, ...chosen.sourceIds);
   change.affectedTargets.push(targetKey(target));
   change.resolutions.push(targetKey(target));
 }

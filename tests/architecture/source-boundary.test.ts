@@ -9,7 +9,7 @@ describe("case mutation source boundary", () => {
   it("prevents application routes and UI modules from importing lower-level mutation helpers", async () => {
     const applicationFiles = await sourceFiles(join(root, "app"));
     const forbidden = [
-      /(?:from|import\s*\()["'][^"']*domain\/case\/(?:commands|internal)["']/, 
+      /(?:from|import\s*\()["'][^"']*domain\/case\/(?:commands|internal)["']/,
       /(?:from|import\s*\()["'][^"']*server\/case\/repository["']/,
     ];
     const violations: string[] = [];

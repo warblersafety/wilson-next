@@ -182,7 +182,7 @@ export interface RecordAskedNeedCommand extends CommandEnvelope {
 export interface ResolveConflictCommand extends CommandEnvelope {
   type: "resolve-conflict";
   target: FactTarget;
-  chosenSourceId: string;
+  chosenValueId: string;
   source: Source;
 }
 

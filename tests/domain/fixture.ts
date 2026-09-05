@@ -197,7 +197,7 @@ export function resolveApixabanDate(caseState: SemanticCase): SemanticCase {
     commandId: "command-resolve-apixaban-date",
     expectedRevision: caseState.revision,
     target: { entity: "product", entityId: "product-apixaban", field: "startDate" },
-    chosenSourceId: "source-apixaban-date-alternative",
+    chosenValueId: "apixaban-date-alternative",
     source: {
       id: "source-date-resolution",
       inputId: "input-date-resolution",

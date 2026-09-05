@@ -81,6 +81,7 @@ describe("pure case views and semantic Form 3500 projection", () => {
       relevantTests: "7.8 g/dL",
     });
     expect(resolved.sections.B.eventDescription).toContain("melena and dizziness");
+    expect(resolved.sections.B.eventDescription).toContain("Products stopped: apixaban and naproxen.");
     expect(resolved.sections.D.suspectProducts).toEqual([
       expect.objectContaining({
         productId: "product-apixaban",
@@ -118,5 +119,9 @@ describe("pure case views and semantic Form 3500 projection", () => {
       target: "product:product-lisinopril:startDate",
       reason: "empty",
     }));
+    expect(resolved.omissions).toEqual(expect.arrayContaining([
+      expect.objectContaining({ target: "product:product-apixaban:stopDate", reason: "empty" }),
+      expect.objectContaining({ target: "product:product-naproxen:stopDate", reason: "empty" }),
+    ]));
   });
 });

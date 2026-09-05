@@ -1,4 +1,4 @@
-import { cloneCase, freezeCase } from "../../domain/case/internal";
+import { assertCaseInvariants, cloneCase, freezeCase } from "../../domain/case/internal";
 import type { SemanticCase } from "../../domain/case/types";
 
 export interface CaseRepository {
@@ -37,6 +37,10 @@ export class InMemoryCaseRepository implements CaseRepository {
     this.#prune();
     if (this.#entries.has(caseState.id)) throw new Error(`Case ${caseState.id} already exists`);
     if (this.#entries.size >= this.#maxCases) throw new RepositoryCapacityError("Temporary case capacity reached");
+    if (caseState.revision !== 0 || caseState.changes.length !== 0) {
+      throw new Error("A new temporary case must begin at revision zero");
+    }
+    assertCaseInvariants(caseState);
     this.#entries.set(caseState.id, { caseState: freezeCase(cloneCase(caseState)), touchedAt: this.#now() });
   }
 
@@ -57,9 +61,14 @@ export class InMemoryCaseRepository implements CaseRepository {
         `Expected stored revision ${expectedRevision}, received ${stored.caseState.revision}`,
       );
     }
-    if (caseState.revision < expectedRevision || caseState.revision > expectedRevision + 1) {
-      throw new RepositoryRevisionError("A save must preserve or advance exactly one revision");
+    const lastChange = caseState.changes.at(-1);
+    if (caseState.revision !== expectedRevision + 1
+      || caseState.changes.length !== stored.caseState.changes.length + 1
+      || lastChange?.priorRevision !== expectedRevision
+      || lastChange.resultingRevision !== caseState.revision) {
+      throw new RepositoryRevisionError("A save must contain exactly one complete command revision");
     }
+    assertCaseInvariants(caseState);
     this.#entries.set(caseState.id, { caseState: freezeCase(cloneCase(caseState)), touchedAt: this.#now() });
   }
 
