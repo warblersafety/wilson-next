@@ -6,8 +6,8 @@ a supported Form FDA 3500 projection.
 
 **Current status:** Product, interaction, Experiment 1 architecture, execution,
 verification, deployment, and delivery decisions are approved. The planning
-topics are closed. Application implementation has not begun and requires
-Steve's explicit go-ahead.
+topics are closed. Steve authorized only Experiment 1 Slice 0 under Issue #11;
+later slices and deployment remain unauthorized.
 
 ## Active corpus
 

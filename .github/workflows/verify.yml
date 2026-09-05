@@ -1,0 +1,36 @@
+name: verify
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.20.0
+          cache: npm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install Node dependencies
+        run: npm ci
+      - name: Install independent PDF reader
+        run: |
+          python -m venv .venv-pdf-evidence
+          .venv-pdf-evidence/bin/pip install -r requirements/pdf-evidence.txt
+          echo "PYPDF_PYTHON=$PWD/.venv-pdf-evidence/bin/python" >> "$GITHUB_ENV"
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Test
+        run: npm test
+      - name: Build
+        run: npm run build
