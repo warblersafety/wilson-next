@@ -1,0 +1,34 @@
+{
+  "kind": "sanitized deterministic checkpoint trace",
+  "browserStorageRetained": false,
+  "checkpoints": [
+    {
+      "state": "describe",
+      "assertion": "Synthetic-use boundary and fixed account are visible."
+    },
+    {
+      "state": "understanding",
+      "assertion": "Two suspect products and one other product are visible for review."
+    },
+    {
+      "state": "clarify",
+      "assertion": "The single authored indication question is visible."
+    },
+    {
+      "state": "update",
+      "assertion": "The fixed later account is ready to submit."
+    },
+    {
+      "state": "correct",
+      "assertion": "The dose correction and both dated sources are visible separately."
+    },
+    {
+      "state": "output-unresolved",
+      "assertion": "The conflicted date is omitted and PDF download is disabled."
+    },
+    {
+      "state": "output-resolved",
+      "assertion": "The selected date is reflected in review and preview."
+    }
+  ]
+}

@@ -144,7 +144,7 @@ function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>): stri
   if (value.kind !== "known") return undefined;
   const actual = value.value;
   const stringFields = new Set([
-    "identifier", "onsetDate", "hemoglobin", "outcome", "dischargeDate",
+    "identifier", "reportType", "onsetDate", "hemoglobin", "outcome", "dischargeDate",
     "name", "dose", "frequency", "route", "startDate", "stopDate", "indication",
   ]);
   if (stringFields.has(target.field) && typeof actual !== "string") return `${target.field} requires a string`;
@@ -155,5 +155,6 @@ function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>): stri
   if (["symptoms", "treatments"].includes(target.field) && (!Array.isArray(actual) || actual.some((item) => typeof item !== "string"))) return `${target.field} requires a string array`;
   if (["hospitalized", "stopped"].includes(target.field) && typeof actual !== "boolean") return `${target.field} requires a boolean`;
   if (target.field === "role" && !["suspect", "concomitant"].includes(actual as string)) return "role requires suspect or concomitant";
+  if (target.field === "reportType" && actual !== "adverse-event") return "reportType requires adverse-event";
   return undefined;
 }

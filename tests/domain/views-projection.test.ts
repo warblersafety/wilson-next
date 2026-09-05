@@ -112,9 +112,10 @@ describe("pure case views and semantic Form 3500 projection", () => {
     const resolved = projectForm3500(completeResolvedCase());
     expect(resolved.sections.A).toEqual({ patientIdentifier: "TEST-57", ageYears: 57, sex: "female" });
     expect(resolved.sections.B).toMatchObject({
+      reportType: "adverse-event",
       eventDate: "2026-08-18",
       hospitalized: true,
-      relevantTests: "7.8 g/dL",
+      relevantTests: "Hemoglobin: 7.8 g/dL",
     });
     expect(resolved.sections.B.eventDescription).toContain("melena and dizziness");
     expect(resolved.sections.B.eventDescription).toContain("Products stopped: apixaban and naproxen.");
@@ -139,14 +140,12 @@ describe("pure case views and semantic Form 3500 projection", () => {
       }),
     ]);
     expect(resolved.sections.F.concomitantProducts).toEqual([
-      expect.objectContaining({
+      {
         productId: "product-lisinopril",
         name: "lisinopril",
-        dose: "10 mg",
-        frequency: "daily",
-        route: "oral",
-      }),
+      },
     ]);
+    expect(resolved.notIncluded).toContain("Concomitant dose, frequency, and route (Section F has no fields for them)");
     expect(resolved.sourceTrace["sections.D.suspectProducts.0.startDate"]).toEqual(expect.arrayContaining([
       "source-apixaban-date-alternative",
       "source-date-resolution",

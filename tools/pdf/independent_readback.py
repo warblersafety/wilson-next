@@ -23,6 +23,12 @@ def main() -> None:
         "pageCount": len(reader.pages),
         "fieldValues": field_values,
     }
+    if len(sys.argv) > 2 and sys.argv[2] == "--named":
+        result["namedFields"] = {
+            name: str(field.get("/V"))
+            for name, field in fields.items()
+            if field.get("/V") not in (None, "")
+        }
     print(json.dumps(result, sort_keys=True))
 
 

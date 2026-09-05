@@ -24,6 +24,8 @@ jobs:
           cache-dependency-path: requirements/pdf-evidence.txt
       - name: Install Node dependencies
         run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
       - name: Install independent PDF reader
         run: |
           python -m venv .venv-pdf-evidence
@@ -35,3 +37,5 @@ jobs:
         run: npm test
       - name: Build
         run: npm run build
+      - name: Browser journey
+        run: npm run test:e2e

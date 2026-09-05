@@ -30,6 +30,7 @@ export function emptyPatientFacts(): PatientFacts {
 
 export function emptyEventFacts(): EventFacts {
   return {
+    reportType: emptyFact(),
     symptoms: emptyFact(),
     onsetDate: emptyFact(),
     hospitalized: emptyFact(),

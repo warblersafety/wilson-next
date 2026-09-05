@@ -341,7 +341,7 @@ function addSource(caseState: SemanticCase, source: Source): void {
     throw new Error("Source identity and excerpt are required");
   }
   if (source.actor !== "clinician") throw new Error("Only clinician input may establish case evidence");
-  if (!["narrative", "answer", "correction", "resolution"].includes(source.inputType)) {
+  if (!["narrative", "selection", "answer", "correction", "resolution"].includes(source.inputType)) {
     throw new Error(`Unsupported source input type ${String(source.inputType)}`);
   }
   if (Number.isNaN(Date.parse(source.recordedAt))) throw new Error("Source recordedAt must be an ISO date-time");
@@ -401,7 +401,7 @@ function assertValueMatchesTarget(target: FactTarget, value: CaseValue<unknown>)
   if (!("value" in raw)) throw new Error(`${targetKey(target)} requires a known value`);
   const actual = raw.value;
   const stringFields = new Set([
-    "identifier", "onsetDate", "hemoglobin", "outcome", "dischargeDate",
+    "identifier", "reportType", "onsetDate", "hemoglobin", "outcome", "dischargeDate",
     "name", "dose", "frequency", "route", "startDate", "stopDate", "indication",
   ]);
   if (stringFields.has(target.field) && typeof actual !== "string") {
@@ -425,5 +425,8 @@ function assertValueMatchesTarget(target: FactTarget, value: CaseValue<unknown>)
   }
   if (target.field === "role" && !["suspect", "concomitant"].includes(actual as string)) {
     throw new Error(`${targetKey(target)} requires a supported role`);
+  }
+  if (target.field === "reportType" && actual !== "adverse-event") {
+    throw new Error(`${targetKey(target)} requires the supported report type`);
   }
 }
