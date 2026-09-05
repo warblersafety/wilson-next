@@ -3,7 +3,7 @@ import type { Fact, ProductEntity, SemanticCase } from "./types";
 export interface ProjectionOmission {
   concept: string;
   target: string;
-  reason: "empty" | "unknown" | "explicitly-absent" | "inapplicable" | "declined" | "conflicted" | "unsupported";
+  reason: "empty" | "unknown" | "explicitly-absent" | "inapplicable" | "declined" | "conflicted";
   sourceIds: string[];
 }
 
@@ -32,6 +32,7 @@ export interface ProjectedProduct {
   frequency?: string;
   route?: string;
   startDate?: string;
+  stopDate?: string;
   indication?: string;
 }
 
@@ -72,14 +73,6 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     }
     const target = role.value === "suspect" ? projection.sections.D.suspectProducts : projection.sections.F.concomitantProducts;
     target.push(projectProduct(product, projection, role.value === "suspect" ? "D" : "F", target.length));
-    if (role.value === "suspect") {
-      projection.omissions.push({
-        concept: `stop date for ${product.id}`,
-        target: `product:${product.id}:stopDate`,
-        reason: "empty",
-        sourceIds: product.facts.stopped.resolvedValue?.sourceIds ?? [],
-      });
-    }
   }
 
   return projection;
@@ -93,7 +86,7 @@ function projectProduct(
 ): ProjectedProduct {
   const result: ProjectedProduct = { productId: product.id };
   const prefix = `sections.${section}.${section === "D" ? "suspectProducts" : "concomitantProducts"}.${index}`;
-  for (const field of ["name", "dose", "frequency", "route", "startDate", "indication"] as const) {
+  for (const field of ["name", "dose", "frequency", "route", "startDate", "stopDate", "indication"] as const) {
     assign(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field], result, field);
   }
   return result;

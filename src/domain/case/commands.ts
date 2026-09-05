@@ -82,6 +82,14 @@ export function applyCaseCommand(
         if (!need || need.status !== "open") {
           throw new Error(`No open semantic need ${command.answersNeed}`);
         }
+        const answeredProductIds = command.facts.flatMap(({ target }) =>
+          target.entity === "product" && target.field === "indication" ? [target.entityId] : [],
+        );
+        if (command.facts.length !== need.productIds.length
+          || new Set(answeredProductIds).size !== need.productIds.length
+          || need.productIds.some((productId) => !answeredProductIds.includes(productId))) {
+          throw new Error(`Answer must address every product in semantic need ${command.answersNeed}`);
+        }
         need.status = command.facts.every(({ value }) => value.kind === "declined")
           ? "declined"
           : "answered";
@@ -394,12 +402,12 @@ function assertValueMatchesTarget(target: FactTarget, value: CaseValue<unknown>)
   const actual = raw.value;
   const stringFields = new Set([
     "identifier", "onsetDate", "hemoglobin", "outcome", "dischargeDate",
-    "name", "dose", "frequency", "route", "startDate", "indication",
+    "name", "dose", "frequency", "route", "startDate", "stopDate", "indication",
   ]);
   if (stringFields.has(target.field) && typeof actual !== "string") {
     throw new Error(`${targetKey(target)} requires a string value`);
   }
-  if (["onsetDate", "dischargeDate", "startDate"].includes(target.field)
+  if (["onsetDate", "dischargeDate", "startDate", "stopDate"].includes(target.field)
     && (typeof actual !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(actual))) {
     throw new Error(`${targetKey(target)} requires an ISO calendar date`);
   }

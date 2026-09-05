@@ -48,6 +48,7 @@ export function emptyProductFacts(): ProductFacts {
     frequency: emptyFact(),
     route: emptyFact(),
     startDate: emptyFact(),
+    stopDate: emptyFact(),
     indication: emptyFact(),
     stopped: emptyFact(),
   };

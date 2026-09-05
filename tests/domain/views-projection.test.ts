@@ -37,6 +37,42 @@ describe("pure case views and semantic Form 3500 projection", () => {
     expect(createClarificationView(answerIndications(opening))).toBeNull();
   });
 
+  it("does not close the indication need when an answer omits one named product", () => {
+    const opening = acceptOpeningCase();
+    const asked = applyCaseCommand(opening, {
+      type: "record-asked-need",
+      commandId: "command-ask-indications",
+      expectedRevision: opening.revision,
+      key: "suspect-product-indications",
+      productIds: ["product-apixaban", "product-naproxen"],
+    }).case;
+    const text = "Apixaban was for postoperative VTE prophylaxis.";
+    expect(() => applyCaseCommand(asked, {
+      type: "record-clinician-facts",
+      commandId: "command-partial-indication-answer",
+      expectedRevision: asked.revision,
+      source: {
+        id: "source-partial-indication-answer",
+        inputId: "input-partial-indication-answer",
+        inputType: "answer",
+        excerpt: text,
+        start: 0,
+        end: text.length,
+        actor: "clinician",
+        recordedAt: "2026-09-05T20:00:00.000Z",
+      },
+      answersNeed: "suspect-product-indications",
+      facts: [{
+        id: "partial-apixaban-indication",
+        target: { entity: "product", entityId: "product-apixaban", field: "indication" },
+        intent: "fact",
+        value: { kind: "known", value: "postoperative VTE prophylaxis" },
+      }],
+    })).toThrow("must address every product");
+    expect(createClarificationView(asked)?.status).toBe("open");
+    expect(asked.products.find(({ id }) => id === "product-apixaban")?.facts.indication.state).toBe("empty");
+  });
+
   it("shows a proposed correction and exact conflict evidence without mutating the case", () => {
     const attached = attachCorrectionAndContradiction(answerIndications(acceptOpeningCase()));
     const before = structuredClone(attached);

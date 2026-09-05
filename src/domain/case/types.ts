@@ -52,6 +52,7 @@ export interface ProductFacts {
   frequency: Fact<string>;
   route: Fact<string>;
   startDate: Fact<string>;
+  stopDate: Fact<string>;
   indication: Fact<string>;
   stopped: Fact<boolean>;
 }

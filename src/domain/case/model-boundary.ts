@@ -36,6 +36,7 @@ const targetSchema = z.discriminatedUnion("entity", [
       "frequency",
       "route",
       "startDate",
+      "stopDate",
       "indication",
       "stopped",
     ]),
@@ -144,10 +145,10 @@ function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>): stri
   const actual = value.value;
   const stringFields = new Set([
     "identifier", "onsetDate", "hemoglobin", "outcome", "dischargeDate",
-    "name", "dose", "frequency", "route", "startDate", "indication",
+    "name", "dose", "frequency", "route", "startDate", "stopDate", "indication",
   ]);
   if (stringFields.has(target.field) && typeof actual !== "string") return `${target.field} requires a string`;
-  if (["onsetDate", "dischargeDate", "startDate"].includes(target.field)
+  if (["onsetDate", "dischargeDate", "startDate", "stopDate"].includes(target.field)
     && (typeof actual !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(actual))) return `${target.field} requires an ISO calendar date`;
   if (target.field === "ageYears" && (!Number.isInteger(actual) || (actual as number) < 0 || (actual as number) > 150)) return "ageYears requires a valid age";
   if (target.field === "sex" && !["female", "male", "intersex"].includes(actual as string)) return "sex requires a supported value";
