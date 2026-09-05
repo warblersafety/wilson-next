@@ -1,82 +1,58 @@
 # Wilson Next
 
 Wilson Next is the clean implementation path for Wilson: a clinician-facing
-system that turns a natural account into reviewed, traceable knowledge and a
-supported Form FDA 3500 projection.
+system that turns a natural account into reviewed, traceable case knowledge and
+a supported Form FDA 3500 projection.
 
-**Current status:** Product, interaction, architecture, Experiment 1,
-verification, deployment preflight, and delivery-process decisions are
-approved. The identified pre-implementation planning topics are closed.
-Application implementation has not begun and still requires Steve's explicit
-go-ahead.
+**Current status:** Product, interaction, Experiment 1 architecture, execution,
+verification, deployment, and delivery decisions are approved. The planning
+topics are closed. Application implementation has not begun and requires
+Steve's explicit go-ahead.
 
-This README is a navigation aid, not a separate source of product authority.
-The linked documents contain the approved decisions and evidence.
+## Active corpus
 
-## Start here
+The repository has five active documents. Each lasting decision has one owner;
+other documents link to it or apply it only where their narrower scope requires.
 
-For a concise understanding of what Wilson is and what happens next, read:
+1. [`docs/PRODUCT.md`](docs/PRODUCT.md) owns the product promise, scope,
+   interaction contract, and unacceptable outcomes.
+2. [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) owns the semantic case,
+   authoritative write boundary, model role, projections, and falsification
+   conditions approved for Experiment 1.
+3. [`docs/EXPERIMENT-1.md`](docs/EXPERIMENT-1.md) owns the fixed journey,
+   supported and deferred scope, selected stack, implementation slices,
+   verification, deployment, and disposal contract.
+4. [`docs/DELIVERY.md`](docs/DELIVERY.md) owns issues, branches, pull requests,
+   independent review, approval, merge controls, and durable traceability.
+5. [`docs/RECOVERY.md`](docs/RECOVERY.md) preserves the evidence and lessons
+   behind the active decisions. It is historical evidence, not a second
+   backlog or competing source of product authority.
 
-1. [Product definition](docs/product/PRODUCT.md) — the problem, user, outcome,
-   and product boundary.
-2. [Experiment 1 proposal](docs/experiment-1/EXPERIMENT-1-PROPOSAL.md) — the
-   first fixed journey and what it must teach us.
-3. [Architecture proposal](docs/product/ARCHITECTURE-PROPOSAL.md) — the semantic
-   case, authority boundary, and deliberately small application shape.
-4. [Deployment preflight](docs/experiment-1/DEPLOYMENT-PREFLIGHT.md) — the
-   selected stack, implementation order, and stop-and-reconcile rule.
-5. [Development process](docs/process/DEVELOPMENT-PROCESS.md) — how changes are
-   scoped, reviewed, approved, and merged.
+When documents interact, Product governs the user outcome, Architecture governs
+semantic and authority boundaries, Experiment 1 narrows those decisions for the
+current experiment, and Delivery governs how changes reach `main`. A narrower
+document may specialize a higher-level decision within its declared scope; it
+may not contradict it. Stop and reconcile a material conflict in the owning
+document before continuing.
 
-## Documentation index
+## Minimum reading path
 
-### Product and design
-
-| Artifact | Purpose |
-|---|---|
-| [Product definition](docs/product/PRODUCT.md) | Defines Wilson's intended user, problem, outcome, boundaries, and product principles. |
-| [UI/UX recovery](docs/product/UX-RECOVERY.md) | Defines the approved interaction direction and identifies which prior-Wilson design ideas help or hinder it. |
-| [Architecture proposal](docs/product/ARCHITECTURE-PROPOSAL.md) | Defines the semantic case, write authority, model boundary, projections, and application shape. |
-
-### Experiment 1
-
-| Artifact | Purpose |
-|---|---|
-| [Experiment proposal](docs/experiment-1/EXPERIMENT-1-PROPOSAL.md) | Defines the supported synthetic journey, success criteria, stopping conditions, and physician-feedback goal. |
-| [System diagrams](docs/experiment-1/experiment-1-system-diagrams.md) | Shows the bounded components, data model, authority boundary, and major flows. |
-| [Visual checkpoint](docs/experiment-1/visual-checkpoint/README.md) | Indexes the four realistic mockups and explains what each screen is meant to test. |
-| [Mockup generation record](docs/experiment-1/visual-checkpoint/GENERATION.md) | Records how the visual checkpoint was produced and what it does and does not prove. |
-| [Verification strategy](docs/experiment-1/VERIFICATION-STRATEGY.md) | Defines the smallest useful deterministic, browser, model, PDF, operator, and physician evidence. |
-| [Deployment preflight](docs/experiment-1/DEPLOYMENT-PREFLIGHT.md) | Selects the initial stack and orders the five implementation slices. |
-
-### Delivery process
-
-| Artifact | Purpose |
-|---|---|
-| [Development process](docs/process/DEVELOPMENT-PROCESS.md) | Defines issues, branches, pull requests, review, approval, merge controls, and durable traceability. |
-| [Claude review protocol](docs/process/CLAUDE-REVIEW.md) | Defines independent model review, permitted model and effort bounds, subscription-only authentication, and additional-review approval. |
-
-### Recovery record
-
-| Artifact | Purpose |
-|---|---|
-| [Recovery brief](docs/recovery/RECOVERY-BRIEF.md) | Records the governing recovery principles and the transition from prior Wilson to Wilson Next. |
-| [Postmortem review](docs/recovery/POSTMORTEM-REVIEW.md) | Preserves evidence about prior implementation failures and the lessons that constrain this effort. |
-
-Recovery material explains why the current direction exists; it is not a
-second product backlog. Legacy Wilson is evidence only. Nightjar remains
-excluded except where the recovery record discusses historical Wilson evidence.
+- **Slice 0:** this README; the projection and adapter boundary in Architecture;
+  the Slice 0 and PDF-gate sections in Experiment 1; and Delivery.
+- **Slices 1–4:** read Product, Architecture, Experiment 1, and Delivery in
+  full.
+- **Premise challenge or legacy reuse:** additionally read the relevant
+  evidence and policy in Recovery.
 
 ## Repository surfaces
 
-- `docs/` contains approved definitions, the bounded experiment, process, and
-  recovery evidence.
-- `.github/` contains the issue and pull-request templates used to create the
-  implementation audit trail.
-- `src/`, tests, package metadata, and build configuration will be introduced
-  by the approved implementation slices. Empty application scaffolding is not
-  created merely to make the repository look complete.
+- `docs/` contains the active corpus.
+- `.github/` contains the work-item and pull-request templates.
+- Application source, tests, package metadata, and CI arrive only in their
+  approved implementation slices.
 
-The repository remains one application, not a monorepo. Documentation and code
-stay together so a pull request can update an owning decision when
-implementation evidence shows that it is wrong.
+Wilson Next remains one application, not a monorepo. Documentation and code
+stay together so implementation evidence can correct its owning decision.
+Legacy Wilson is evidence and a selective donor, not the foundation to evolve.
+Nightjar remains excluded except as historical Wilson evidence recorded in
+Recovery.
