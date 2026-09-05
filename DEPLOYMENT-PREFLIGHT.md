@@ -45,8 +45,9 @@ The approved stack and execution boundary for Experiment 1 are:
   journey, following prior Wilson's established test setup;
 - one paid, single-instance Render web service with in-memory session state;
 - a shared preview password followed by a signed, secure browser cookie; and
-- one implementation branch, a committed npm lockfile, one small CI workflow,
-  and no Nightjar involvement.
+- one short-lived `codex/` issue branch and reviewed pull request per meaningful
+  slice, a committed npm lockfile, one small CI workflow, and no Nightjar
+  involvement.
 
 Approval also authorizes the time-boxed `pypdf` fallback described below if the
 TypeScript PDF candidate fails its compatibility gate. It does not authorize
@@ -335,10 +336,14 @@ not model reasoning. Real-model samples and deployed smoke checks remain
 explicit, capped operator actions; they do not run on every push. Coverage
 collection and thresholds remain deferred.
 
-Implementation happens on one `codex/` experiment branch and is merged only
-after the approved evidence is reviewed. Branch-protection administration,
-release automation, and a multi-package repository would add process without
-protecting the first physician session.
+Implementation follows the approved
+[development process](DEVELOPMENT-PROCESS.md): one short-lived `codex/` issue
+branch and one pull request per meaningful slice, one fresh-context technical
+review, and Steve's approval before squash merge. `main` rejects direct pushes,
+force pushes, deletion, and routine bypass. The single `verify` job becomes a
+required status check after the initial workflow exists. Multiple promotion
+branches, merge queues, release automation, and a multi-package repository
+would add process without protecting the first physician session.
 
 ## Stop-and-reconcile rule
 
