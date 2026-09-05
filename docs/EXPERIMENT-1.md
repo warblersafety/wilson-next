@@ -1,0 +1,485 @@
+# Wilson Experiment 1
+
+**Status:** Approved by Steve; planning topics closed; implementation requires
+Steve's explicit go-ahead
+
+**Owns:** The fixed journey, supported and deferred scope, interaction
+composition, selected stack, implementation sequence, verification, deployment,
+retention, and stopping criteria
+
+**Depends on:** [`PRODUCT.md`](PRODUCT.md),
+[`ARCHITECTURE.md`](ARCHITECTURE.md), and [`DELIVERY.md`](DELIVERY.md)
+
+## Purpose and outcome
+
+Build the smallest production-shaped browser journey that can falsify the
+semantic case, single write boundary, and interaction composition under the
+failure pressure that broke legacy Wilson.
+
+One entirely fictional report contains two suspect medicines, one concomitant
+medicine, a later dose correction, and two sources that disagree about a
+treatment date. The clinician describes the case, checks Wilson's proposals,
+answers one useful question, submits the correction and contradiction, resolves
+the conflict, inspects the supported Form 3500 projection, and downloads the
+official PDF.
+
+The dominant risk is **reviewable information density with correct entity
+identity**. The experiment asks whether similar products remain distinct,
+whether source excerpts make proposals reviewable, whether incompatible
+evidence stays visible without leaking into the form, and whether review and
+PDF agree at one case revision.
+
+The experiment is not a general Form 3500 release or a usability study. Once
+its minimum integrity evidence is green, one physician uses the synthetic
+journey and supplies the highest-value early product feedback.
+
+## Scope
+
+### Included
+
+- one adult adverse-event report;
+- exactly two suspect drugs and one concomitant drug;
+- the patient, event, treatment, outcome, and product facts in the fixed
+  narrative;
+- one authored follow-up about both suspect-product indications;
+- one natural-language update containing a correction and contradiction;
+- explicit review of the correction and resolution of the conflict;
+- supported Form FDA 3500 Sections A, B, D, and F;
+- four screen compositions covering Describe, Check understanding, Correct and
+  resolve, and Inspect output;
+- one seven-state desktop Chromium journey at 1440 × 900 CSS pixels;
+- browser review, form preview, and official PDF download;
+- one deterministic browser run, no more than four real-model samples or USD 5,
+  one deployed operator run, and one formative physician session; and
+- synthetic information only.
+
+### Deferred
+
+- reporter entry and Section G;
+- devices and Section E;
+- product-problem-only, medication-error-only, pregnancy, congenital, death,
+  no-patient, and more-than-two-suspect-product paths;
+- New case, interrupted-session recovery, and browser-level model/PDF failure
+  branches;
+- model-generated questions or a general question planner;
+- mobile, a second viewport, and a browser matrix;
+- broad accessibility audit beyond semantic HTML, labels, visible focus,
+  keyboard operation, and the main path;
+- accounts, collaboration, submission, analytics, and durable storage; and
+- a multi-participant study or general preference claim.
+
+The UI discloses the experiment's limited coverage before input and identifies
+Wilson as an experimental, synthetic-only tool that must not be used for a real
+report. Unsupported content is not accepted, approximated, or silently dropped,
+and unsupported form sections do not masquerade as unknown or complete.
+
+## Fixed synthetic journey
+
+All people, identifiers, events, and clinical details are fictional.
+
+### Opening account
+
+> Patient TEST-57 is a 57-year-old woman. She was taking apixaban 5 mg by mouth
+> twice daily; I recorded the start as 12-Aug-2026. She also took naproxen 500
+> mg by mouth twice daily starting 10-Aug-2026, and lisinopril 10 mg by mouth
+> daily as a concomitant medicine. On 18-Aug-2026 she developed melena and
+> dizziness and was hospitalized. Her hemoglobin was 7.8 g/dL. Apixaban and
+> naproxen were stopped, she received two units of packed red cells, and she
+> recovered and was discharged on 21-Aug-2026. I suspect apixaban and naproxen.
+
+The clinician's `I suspect` statement supplies report roles; Wilson does not
+make a causality judgment.
+
+### One consequential follow-up
+
+Wilson asks exactly one authored group:
+
+> What was apixaban being used for, and what was naproxen being used for?
+
+Fixture answer:
+
+> Apixaban was for postoperative VTE prophylaxis after knee replacement.
+> Naproxen was for postoperative pain.
+
+This is the complete question budget. No other blank or unsupported field earns
+a question. An additional group, a repeated request for known information, or
+splitting the group without evidence that clarity requires it fails the
+interaction hypothesis and reopens the question policy.
+
+### Correction and contradiction
+
+> Correction: the naproxen dose was 250 mg twice daily, not 500 mg twice daily.
+> Also, the medication administration record lists apixaban starting
+> 13-Aug-2026, but my note says 12-Aug-2026. I can't resolve that yet.
+
+The model may propose the correction, but 500 mg remains active until the
+clinician explicitly accepts it. Acceptance activates 250 mg everywhere and
+retains 500 mg only as superseded history.
+
+Both apixaban dates remain visible with their excerpts. Neither is active or
+reaches the pre-resolution projection.
+
+### Conflict resolution
+
+The clinician selects the medication administration record and confirms:
+
+> Use 13-Aug-2026 as the apixaban start date.
+
+The next revision, review, projection, and PDF use 13-Aug-2026. The 12-Aug
+statement remains traceable but inactive.
+
+### Semantic oracle
+
+| Entity | Required result |
+|---|---|
+| Patient | `TEST-57`; 57 years; female |
+| Event | melena and dizziness; onset 18-Aug-2026; hospitalization; hemoglobin 7.8 g/dL; transfusion; recovered; discharge 21-Aug-2026 |
+| Apixaban | suspect; 5 mg; twice daily; oral; postoperative VTE-prophylaxis indication; resolved start 13-Aug-2026 after explicit resolution |
+| Naproxen | suspect; corrected 250 mg; twice daily; oral; start 10-Aug-2026; postoperative-pain indication |
+| Lisinopril | concomitant; 10 mg; daily; oral; never promoted to suspect |
+| Evidence | every material result points to the exact account, answer, correction, or resolution supporting it |
+| History | naproxen 500 mg inactive; both apixaban dates traceable; neither date active before resolution |
+
+The narrative says both suspect products were stopped but supplies no stop
+date. Both Form 3500 stop-date fields remain blank; the undated discontinuation
+fact may remain in the supported event narrative. Unaddressed relevant medical
+history also remains blank and is never translated into a reported absence.
+
+## Interaction composition
+
+Primary form factor is keyboard-and-mouse desktop or laptop, stable Chromium,
+at 1440 × 900 CSS pixels.
+
+```text
++-----------------------------------------------------------------------+
+| Wilson                  Synthetic experiment                 Status   |
++-----------------------------------+-----------------------------------+
+| Active task                       | Case so far / needs attention     |
+| Describe, check, answer, or       | Patient                           |
+| resolve one focused item          | Event                             |
+|                                   | Suspect products as separate cards|
+| Compact evidence; exact excerpt   | Other products                    |
+| expands when attention is needed  |                                   |
++-----------------------------------+-----------------------------------+
+
+Output only:
++-----------------------------------+-----------------------------------+
+| Included / not included /         | Form FDA 3500 preview             |
+| needs resolution                  |                                   |
++-----------------------------------+-----------------------------------+
+```
+
+The four compositions are:
+
+1. **Describe:** full populated narrative, clear experiment boundary, native
+   dictation hint, and no form preview.
+2. **Check understanding:** patient, event, two suspect-product cards, and one
+   concomitant-product card with Change, Remove, compact evidence, and one
+   case-level Continue action.
+3. **Correct and resolve:** proposed naproxen correction with expanded source,
+   both apixaban dates with exact sources, and explicit actions for either date
+   or leaving the conflict unresolved for now. The old dose remains active
+   until a separate explicit acceptance applies the correction.
+4. **Inspect output:** Included, Needs resolution, and Not included summaries
+   beside the supported Form 3500 projection. Before resolution the start date
+   is blank and explained; download is disabled for this fixed sequence.
+
+Ordinary groups do not require one confirmation per fact. Flagged conflict,
+material uncertainty, role ambiguity, correction, or rejection always requires
+an explicit decision; a case-level Continue cannot silently resolve it.
+Evidence is compact by default and expands automatically where it affects a
+decision. Corrected/resolved knowledge is primary and superseded history is
+available but quieter. No model rationale or confidence percentage is shown.
+
+This written composition is authoritative. Create visuals before Slice 2 only
+if they answer a remaining composition question; visuals are never acceptance
+evidence.
+
+## Browser sequence
+
+1. Describe and submit the full narrative; show extraction loading.
+2. Check five semantic groups and their evidence.
+3. Answer the one indication question.
+4. Submit the combined correction/contradiction and explicitly accept the
+   proposed dose correction.
+5. Inspect the pre-resolution projection with the start date omitted.
+6. Resolve the conflict to 13-Aug-2026 and regenerate review/projection.
+7. Download the official PDF.
+
+The pre-resolution download restriction is specific to this fixed experiment,
+which deliberately exercises resolution before download. It does not establish
+a product-wide rule that every unresolved optional fact blocks partial output.
+Backward editing remains allowed. Retain screenshots only for understanding,
+unresolved conflict, and final output unless another state diagnoses a failure.
+
+## Success and stopping
+
+The experiment passes only if:
+
+1. Every case write uses `applyCaseCommand`.
+2. Every oracle fact survives with the correct entity, role, and source.
+3. Explicit acceptance makes naproxen 250 mg active everywhere; 500 mg remains
+   only in history.
+4. Neither apixaban date reaches the conflicted projection; explicit resolution
+   updates every view and the projection together.
+5. Wilson asks only the one indication group and repeats nothing known.
+6. No surface exposes widget IDs or implementation/model vocabulary.
+7. Semantic projection and downloaded PDF agree for every supported value;
+   unsupported and omitted content has a truthful explanation.
+8. Full realistic content, evidence, and conflict remain understandable.
+9. Ordinary groups avoid repetitive confirmation while flagged knowledge
+   requires explicit action.
+10. The model sample passes its gates.
+11. Operator review finds no severe reason to withhold the synthetic preview.
+12. One physician completes the journey and their observations inform the next
+    product decision.
+
+Immediately stop and classify the owning premise for silent loss, invention,
+reversal, wrong-entity attribution, bypassed authority, hidden conflict, or
+case/PDF disagreement. Also stop if domain behavior needs widget identity,
+correction/conflict requires UI-specific writes, a view owns case values, the
+grouped question confuses products, or unsupported content is accepted.
+
+More generally, stop the affected slice before changing user behavior,
+semantic truth, authority, scope, privacy, evidence, or a consequential
+technical commitment. Preserve the smallest failing example, record expected
+versus observed behavior and options in the issue/PR, update the owning active
+document, and obtain approval before resuming. Ordinary defects and reversible
+implementation choices remain local.
+
+The experiment ends after physician-feedback review whether it passes or
+fails. It never expands automatically. A technical pass cannot overrule
+feedback that the direction is confusing or not useful.
+
+## Verification
+
+### Deterministic evidence
+
+Use focused, table-driven tests where useful to prove:
+
+- proposals cannot resolve without review;
+- stable product identity and suspect/concomitant roles;
+- accepted correction with inactive retained history;
+- conflict with no active/projected value before resolution;
+- stale/duplicate command idempotency; and
+- agreement among reviewed case, semantic projection, and supported PDF.
+
+Also reject malformed model output before review and run one narrow automated
+source-boundary assertion preventing route/UI imports of lower-level mutation
+helpers. This runs under the ordinary test command; do not build an architecture
+test platform or coverage regime.
+
+### Deterministic browser journey
+
+Playwright drives the seven states with predetermined model responses while
+real browser, command, case, projection, and PDF behavior remain intact. Use
+visible labels and accessible roles. Assert three distinct products, exactly one
+question group, accepted correction everywhere, conflicted date omitted,
+resolution updating review/output, and successful download. Retain the useful
+trace and screenshots, not a visual-regression service.
+
+### Real-model sample
+
+Use the opening account and combined update for no more than four complete
+samples or USD 5 total, whichever comes first. Disable automatic retries and
+record model ID, parameters, prompt/schema revisions, token use, latency, and
+cost. A human scores every result against the semantic oracle and verifies that
+each excerpt supports the proposed value and relationship.
+
+Require zero invented material facts, zero wrong-product/role attachments,
+supporting text for every material proposal, and every projection-required fact
+in every run. Any failure stops expansion and reopens prompt, schema, model, or
+responsibility. Passing makes no general reliability claim.
+
+### PDF, operator, and physician evidence
+
+Compare supported semantic projection values and checkboxes programmatically
+with the PDF and inspect its rendered pages visually. Then the operator
+completes the deployed synthetic journey unaided using the real model and PDF
+filler. This run may count toward the model cap if inputs and configuration
+match.
+
+When all minimum evidence is green, one physician uses the experimental,
+synthetic-only preview and discusses confusion, effort, fidelity, reviewability,
+the value of the one follow-up, missing emphasis, and preference versus the
+direct form. Keep concise observations, not a pseudo-scientific score.
+
+Before that session, proposed work must protect case integrity, enable the
+complete browser-to-PDF journey, or make the feedback safer or interpretable.
+Otherwise defer it.
+
+Do not add coverage targets, a simulated-clinician harness, broad adapter
+matrices, property or mutation testing, an LLM judge, large eval corpus,
+scheduled model runs, visual regression, multiple browsers/viewports, load
+testing, production monitoring, or browser tests for deferred failure branches
+without evidence that the first physician decision needs them.
+
+## Selected stack
+
+- Node.js 24.20.0 LTS, npm, strict TypeScript, React, Next.js 16.3.3.
+- Plain CSS Modules; no UI kit or CSS framework.
+- Zod 4 for the runtime model/case boundary.
+- `claude-sonnet-5` through Anthropic's TypeScript SDK with structured output,
+  default sampling, no tools, and synthetic text only.
+- `@cantoo/pdf-lib` 2.9.1 subject to the Slice 0 gate; bounded `pypdf` 6.16.2
+  fallback if it fails.
+- Vitest 4.1.11 and Playwright Chromium.
+- One paid, continuously running, single-instance Render web service.
+- One shared preview password and signed secure browser cookie.
+- One npm lockfile, one `verify` CI job, and one issue branch/PR per slice.
+
+This is one ordinary Node server. No database, cache, worker, queue, persistent
+disk, object store, agent framework, serverless runtime, custom domain, or
+multi-package repository is approved. Confirm current price and permission
+before purchasing the Render service.
+
+Next.js is an application shell: explicit route handlers call application
+commands/queries; domain modules have no Next imports; model and PDF adapters
+are server-only; and Experiment 1 uses no Server Actions, edge runtime, static
+regeneration, framework cache, or browser-owned case state.
+
+The model receives the fixed transcript and returns grounded proposals. Authored
+application copy supplies the one question. It does not browse, use tools,
+maintain hidden conversation state, establish truth, resolve conflict, or
+produce form fields.
+
+## Slice 0 PDF gate
+
+The official Form FDA 3500 (09/2025) recorded on 2026-09-04 has SHA-256:
+
+```text
+1147d7c86bb002cba7fb9352ca8e3402524d8fa0236916b7bf7e5dcdcf88bf9c
+```
+
+The encrypted source uses an empty viewing password. A preliminary probe found
+that `@cantoo/pdf-lib` opened it, enumerated fields, filled representative
+values, allowed readback, and rendered visible text/checkmarks. The library's
+reload path reported a residual encryption marker, so Slice 0 remains a real
+compatibility gate.
+
+Scaffold the pinned application and prove only this representative adapter
+capability before substantial UI work:
+
+1. Reject a source PDF whose form version or checksum differs.
+2. Fill a text field, multiline narrative, choice, checkbox, and both supported
+   product rows.
+3. Read those representative values through ordinary supported APIs.
+4. Open without a password prompt and render relevant pages in Chromium.
+5. Preserve eight pages and the approved visible form identity.
+
+The residual marker alone does not fail if the output opens normally, renders,
+and an independent parser reads expected values. Record it. A password prompt,
+corruption, failed independent readback, or consumer-specific inspection-mode
+requirement fails the TypeScript candidate.
+
+Time-box the TypeScript gate to half a working day. If it fails, use `pypdf`
+plus its AES dependency in a small Python subprocess behind the same adapter,
+packaged with Node in one Render container. Give the fallback no more than one
+additional working day against the same gate; otherwise stop and reopen the PDF
+premise. Do not repair or fork a PDF engine. PyMuPDF remains unselected because
+its proprietary/AGPL licensing decision is unnecessary.
+
+Slice 0 does not define the complete Experiment 1 semantic projection. Full
+supported mapping lands with the projection and browser integration in Slices 1
+and 2. Before mapping evidence is accepted, record the FDA instructions'
+authoritative URL and retrieval date.
+
+## Runtime and preview
+
+The server holds cases in a module-owned `Map` behind a repository interface.
+A cryptographically random secure-cookie session ID selects a case. Entries
+expire after eight inactive hours and only a small fixed number of simultaneous
+sessions is accepted. Restart or redeploy loses cases.
+
+The deployment-only preview lock is not a product account:
+
+1. An unknown browser sees a Wilson-branded password screen.
+2. The server compares the shared secret with the Render environment secret.
+3. Success sets a signed, non-persistent `__Host-` cookie with `Secure`,
+   `HttpOnly`, `SameSite=Strict`, and `Path=/`.
+4. Every page and API route except login, static assets, and content-free
+   `/healthz` requires the cookie.
+
+State changes use non-GET methods and reject mismatched Origin. Case/PDF
+responses use `Cache-Control: no-store`; all pages send `X-Robots-Tag: noindex,
+nofollow`, which is not treated as access control.
+
+Deploy one instance in one US Render region with managed TLS, environment
+secrets, pinned Node, and readiness health check. Do not use the sleeping free
+plan, multiple instances, or Vercel's dynamically routed compute with in-memory
+state. Do not deploy or restart during the physician session. Remove service
+access after the approved review window.
+
+Application API credentials live only in an app-loaded, git-ignored local
+secret file or Render environment; never export them into the shell used for
+subscription-backed code review. Narratives, model payloads, case facts, and
+PDFs are never logged.
+
+## CI and implementation order
+
+Commit `package-lock.json`; pin direct dependencies, Node patch, PDF checksum,
+model/prompt/schema revisions, and Playwright Chromium through the lockfile.
+Dependabot, Renovate, automated releases, and multi-environment infrastructure
+are deferred.
+
+One GitHub Actions `verify` job runs:
+
+```text
+npm ci
+npm run typecheck
+npm test
+npm run build
+npm run test:e2e
+```
+
+The deterministic browser test needs no credentials. Real-model samples and
+deployed smoke checks are explicit capped operator actions, not push-triggered
+automation. Require `verify` on `main` after the workflow exists.
+
+Implementation follows five short-lived issue branches:
+
+1. **Slice 0 — prove the FDA PDF filler:** scaffold and pass the bounded gate
+   or its pre-approved fallback.
+2. **Slice 1 — protect the case:** semantic case, `applyCaseCommand`, temporary
+   repository, pure views/projection, Zod boundary, focused tests, and the one
+   source-boundary assertion.
+3. **Slice 2 — assemble locally:** implement the four compositions and
+   seven-state journey with predetermined model responses and checked PDF.
+4. **Slice 3 — try the real model:** connect Claude and inspect the capped
+   sample; failures reopen the model boundary without hidden retries or an
+   automatic second-provider comparison.
+5. **Slice 4 — physician-ready preview:** add the preview lock, deploy one
+   instance, run operator smoke/PDF inspection, and meet one physician as soon
+   as the minimum evidence is green.
+
+No slice waits for broad coverage, eval infrastructure, general form support,
+durable data, or polish unrelated to the approved journey.
+
+## Retention, disposal, and inputs
+
+Retain only the synthetic fixture/oracle, source revision, focused results,
+useful trace/screenshots, short model table and cost, checked PDF, operator
+verdict, and concise physician notes. Never retain credentials, real clinical
+data, raw infrastructure logs, browser storage, or deployed ephemeral cases.
+Remove preview access after review unless continued access is approved.
+
+A passing implementation remains an experiment until separately accepted as a
+production seed. Preserve a failed branch or named commit as falsification
+evidence rather than merging it. Copy nothing into legacy Wilson or Nightjar.
+
+Later slices require an Anthropic API organization/key, Render workspace and
+spend permission, high-entropy preview/cookie secrets, and physician-session
+logistics. Missing access is a concrete blocker; it does not authorize silent
+provider or host substitution.
+
+## Authorization boundary
+
+The product, interaction, architecture, fixed journey, question budget,
+supported/deferred scope, stack, verification, deployment, retention, stopping,
+and delivery topics are closed for Experiment 1. Legacy reuse is decided only
+when a slice proposes a specific asset, and legacy Wilson's operational
+disposition is separate work; neither blocks Slice 0.
+
+Nothing in this document authorizes application implementation, external
+deployment, spending, real clinical data, production release, or expanded
+scope. Slice 0 begins only after Steve's explicit implementation go-ahead.
