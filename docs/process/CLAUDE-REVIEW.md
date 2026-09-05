@@ -50,6 +50,14 @@ subscription preflight passed; never copy account identifiers or credentials to
 the repository or GitHub. If the preflight fails, stop. Do not fall back to a
 paid Anthropic API call, another API provider, or a gateway.
 
+Do not impose a budget, token, turn, or wall-clock ceiling on a review run.
+Once authorized, it runs until Claude returns a verdict or a genuine tool,
+authentication, or service failure prevents completion. Subscription usage and
+elapsed time are calibration evidence, not reasons to terminate a productive
+run. In particular, do not pass `--max-budget-usd` or wrap the reviewer in a
+timeout. An incomplete run provides no review verdict and wastes the work
+already performed.
+
 Give the reviewer:
 
 - the issue and intended outcome;
@@ -136,8 +144,9 @@ distinct consequential risk, such as:
 
 Expanded review requires Steve's explicit permission for that run. It may use
 Claude Opus at `high` or `xhigh` effort; Opus `xhigh` is the maximum permitted
-Wilson review tier. Do not use Opus `max`, Fable, or an unbounded model or effort
-setting. A multi-agent review or separate fresh passes also require explicit
+Wilson review tier. Do not use Opus `max`, Fable, or a model or effort outside
+these approved bounds. These capability bounds do not authorize a runtime or
+usage cap. A multi-agent review or separate fresh pass also requires explicit
 permission. Assign perspectives from the actual risks in the issue rather than
 maintaining a permanent swarm of generic personas. Consolidate duplicate
 findings, but retain disagreement and provenance.
