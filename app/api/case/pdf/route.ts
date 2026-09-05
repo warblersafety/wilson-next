@@ -12,11 +12,11 @@ export async function GET(request: NextRequest) {
   const session = caseSession(request);
   const snapshot = await getJourneySnapshot(getCaseRepository(), session.caseId);
   const preview = request.nextUrl.searchParams.get("mode") === "preview";
-  if (!preview && !snapshot.downloadReady) {
-    return NextResponse.json({ error: "Resolve the start-date conflict before downloading" }, { status: 409 });
-  }
-  if (snapshot.stage !== "output-unresolved" && snapshot.stage !== "output-resolved") {
-    return NextResponse.json({ error: "The form preview is not available yet" }, { status: 409 });
+  if (!snapshot.downloadReady || snapshot.stage !== "output-resolved") {
+    return NextResponse.json({ error: "Resolve the start-date conflict before opening the official PDF" }, {
+      status: 409,
+      headers: { "Cache-Control": "no-store" },
+    });
   }
 
   const source = new Uint8Array(await readFile(join(process.cwd(), "assets/fda/form-fda-3500-09-2025.pdf")));

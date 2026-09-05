@@ -54,6 +54,10 @@ test("completes the seven-state fixed journey and downloads the checked form", a
     await expect(page.getByRole("heading", { name: "Inspect what the form can include" })).toBeVisible();
     await expect(page.getByText("Apixaban start date is omitted until one source is selected.")).toBeVisible();
     await expect(page.getByRole("button", { name: "Download official PDF" })).toBeDisabled();
+    await expect(page.getByRole("link", { name: "Open PDF preview" })).toHaveCount(0);
+    const unresolvedPdf = await page.request.get("/api/case/pdf?mode=preview");
+    expect(unresolvedPdf.status()).toBe(409);
+    expect(unresolvedPdf.headers()["cache-control"]).toContain("no-store");
     await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("Omitted — conflicting sources");
     journeyTrace.push({ state: "output-unresolved", assertion: "The conflicted date is omitted and PDF download is disabled." });
     await retainScreenshot(page, "unresolved-output.png");
@@ -62,6 +66,7 @@ test("completes the seven-state fixed journey and downloads the checked form", a
     await expect(page.getByRole("heading", { name: "The reviewed form is ready" })).toBeVisible();
     await expect(page.getByText("Apixaban start date 13-Aug-2026")).toBeVisible();
     await expect(page.getByText("Nothing in the fixed journey.")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Open PDF preview" })).toBeVisible();
     await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("Started: 13-Aug-2026");
     journeyTrace.push({ state: "output-resolved", assertion: "The selected date is reflected in review and preview." });
     await retainScreenshot(page, "final-output.png");

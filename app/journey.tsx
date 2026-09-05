@@ -147,7 +147,7 @@ export default function Journey() {
           <section className={styles.casePanel} aria-labelledby="case-title">
             <div className={styles.panelHeading}>
               <div>
-                <p className={styles.eyebrow}>Revision {snapshot.revision}</p>
+                <p className={styles.eyebrow}>{snapshot.stage === "understanding" ? "Proposed case" : "Reviewed case"}</p>
                 <h2 id="case-title">Case so far</h2>
               </div>
               <span>{snapshot.stage === "understanding" ? "5 groups to review" : snapshot.review.attention.length > 0 ? `${snapshot.review.attention.length} decisions` : "Reviewed"}</span>
@@ -214,7 +214,7 @@ function OutputComposition({ snapshot, busy, act }: { snapshot: JourneySnapshot;
   return (
     <div className={styles.outputWorkspace}>
       <section className={styles.outputSummary} aria-labelledby="output-title">
-        <p className={styles.eyebrow}>Step {unresolved ? "6" : "7"} of 7 · revision {snapshot.revision}</p>
+        <p className={styles.eyebrow}>Step {unresolved ? "6" : "7"} of 7</p>
         <h1 id="output-title">{unresolved ? "Inspect what the form can include" : "The reviewed form is ready"}</h1>
 
         <Summary title="Included" tone="included">
@@ -260,7 +260,7 @@ function OutputComposition({ snapshot, busy, act }: { snapshot: JourneySnapshot;
       <section className={styles.previewPanel} aria-labelledby="preview-title">
         <div className={styles.panelHeading}>
           <div><p className={styles.eyebrow}>Supported projection</p><h2 id="preview-title">Form FDA 3500 preview</h2></div>
-          <a href={`/api/case/pdf?mode=preview&revision=${snapshot.revision}`} target="_blank" rel="noreferrer">Open PDF preview</a>
+          {!unresolved && <a href="/api/case/pdf?mode=preview" target="_blank" rel="noreferrer">Open PDF preview</a>}
         </div>
         <FormPreview snapshot={snapshot} unresolved={unresolved} />
       </section>
@@ -293,7 +293,7 @@ function FormPreview({ snapshot, unresolved }: { snapshot: JourneySnapshot; unre
           <div className={styles.previewProduct} key={product.productId}>
             <strong>#{index + 1} {product.name}</strong>
             <span>{[product.dose, product.frequency, product.route].filter(Boolean).join(" · ")}</span>
-            <span>Started: {product.startDate ? displayDate(product.startDate) : unresolved && index === 0 ? "Omitted — conflicting sources" : "Not provided"}</span>
+            <span>Started: {product.startDate ? displayDate(product.startDate) : unresolved && product.productId === "product-apixaban" ? "Omitted — conflicting sources" : "Not provided"}</span>
             <span>Used for: {product.indication ?? "Not provided"}</span>
           </div>
         ))}
