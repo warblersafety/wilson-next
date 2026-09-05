@@ -22,8 +22,8 @@ process authority that constrains this work.
 
 ## Acceptance evidence
 
-- [ ] Name the smallest automated and human evidence that will establish the
-      outcome.
+- [ ] Name the smallest appropriate automated and/or human evidence that will
+      establish the outcome.
 
 ## Stop conditions
 

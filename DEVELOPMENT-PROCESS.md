@@ -1,6 +1,6 @@
 # Wilson development process
 
-**Status:** Approved by Steve on 2026-09-04  
+**Status:** Approved by Steve on 2026-09-04
 **Purpose:** Preserve useful implementation history and independent review
 without recreating sofa-claude's process weight
 
@@ -131,7 +131,7 @@ Protect `main` with:
 - review conversations resolved;
 - linear history required;
 - force pushes and deletion prohibited; and
-- no routine administrator or application bypass.
+- no administrator or application bypass.
 
 Once the initial `verify` GitHub Actions job exists, require that single status
 check before merge. Do not invent a placeholder required check before the
@@ -144,7 +144,8 @@ shows they protect Wilson.
 
 No external deployment, purchase, or production action is implied by a merged
 pull request. Those actions retain their separate product and operator approval
-boundaries.
+boundaries. Any future bypass exception requires a reviewed amendment to this
+process; it is not an implementation-time discretion.
 
 ## Durable trace
 

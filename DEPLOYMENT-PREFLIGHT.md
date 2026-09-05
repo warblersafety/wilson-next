@@ -340,10 +340,11 @@ Implementation follows the approved
 [development process](DEVELOPMENT-PROCESS.md): one short-lived `codex/` issue
 branch and one pull request per meaningful slice, one fresh-context technical
 review, and Steve's approval before squash merge. `main` rejects direct pushes,
-force pushes, deletion, and routine bypass. The single `verify` job becomes a
-required status check after the initial workflow exists. Multiple promotion
-branches, merge queues, release automation, and a multi-package repository
-would add process without protecting the first physician session.
+force pushes, deletion, and administrator or application bypass. The single
+`verify` job becomes a required status check after the initial workflow exists.
+Multiple promotion branches, merge queues, release automation, and a
+multi-package repository would add process without protecting the first
+physician session.
 
 ## Stop-and-reconcile rule
 
