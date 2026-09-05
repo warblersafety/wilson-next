@@ -20,6 +20,9 @@ Claude cannot edit, approve, or merge the work. Its attributed findings are
 posted on the pull request. Most changes receive one broad review. Multiple
 review perspectives are reserved for changes with distinct, consequential
 risks and for the integrated checkpoint before the first physician session.
+The standard is Sonnet at high effort; Opus at `xhigh` is the ceiling, and
+Fable is never used. Claude does not run a second time without Steve's explicit
+permission.
 
 ## Standard review
 
@@ -32,6 +35,12 @@ Run one standard review after:
 
 Run it before the pull request is ready for Steve's approval. Review the full
 `main...HEAD` change, not only the latest commit.
+
+The standard reviewer is the current Claude Sonnet model at `high` effort.
+This is Wilson's minimum review tier: do not use Haiku, a Sonnet effort below
+`high`, or another less-capable configuration for substantive review. Record
+the canonical model identifier returned by the run rather than relying only on
+the moving `sonnet` alias.
 
 Give the reviewer:
 
@@ -73,7 +82,7 @@ criteria or suspected-defect hints make it a different prompt and require a
 different label. The structured labels organize Claude's result; they do not
 constrain what it may investigate.
 
-## Findings and re-review
+## Findings and additional review
 
 - A **BLOCKING** finding identifies a material reason the change should not
   merge. Fix it or explicitly resolve the owning premise.
@@ -85,13 +94,23 @@ If a finding exposes a bad product, interaction, architecture, verification,
 privacy, or process premise, apply the stop-and-reconcile rule. Do not patch
 around it.
 
-After a blocking fix or any other material change, give Claude the complete
-final diff in a fresh re-review. It may see the previous findings and their
-dispositions at that point. The reviewed commit recorded on the pull request
-must equal the commit Steve approves unless the only later commits contain
-disclosed administrative text changes that cannot affect the delivered result.
-List each exempt commit and why it is non-material; if there is doubt, re-run
-the review. GitHub still requires Steve to approve the latest commit.
+After a finding is addressed, record its disposition and the resolving commit
+on the pull request. Do not run Claude again—whether to verify one fix or repeat
+the complete review—without Steve's explicit permission for that run. A request
+for permission states why the existing review and disposition are insufficient,
+the proposed target commit, whether the review is targeted or complete, and the
+model and effort.
+
+When Steve authorizes additional review, use a targeted check for a narrow,
+local fix. Repeat the complete review only when the response materially changes
+behavior, scope, contracts, architecture, privacy, evidence, or another owning
+premise. The additional reviewer may see the earlier findings and dispositions.
+Never retry, escalate, or multiply an incomplete review automatically.
+
+The pull request records the commit Claude reviewed and every later commit that
+resolves findings or otherwise changes the reviewed result. Steve's GitHub
+approval of the latest commit remains the final judgment that the review,
+dispositions, later changes, evidence, and remaining risk are acceptable.
 
 ## Expanded review
 
@@ -107,9 +126,12 @@ distinct consequential risk, such as:
 - a broad architectural change; or
 - an integrated product checkpoint before physician use.
 
-An expanded review may use Claude's multi-agent review capability or separate
-fresh passes. Assign perspectives from the actual risks in the issue rather
-than maintaining a permanent swarm of generic personas. Consolidate duplicate
+Expanded review requires Steve's explicit permission for that run. It may use
+Claude Opus at `high` or `xhigh` effort; Opus `xhigh` is the maximum permitted
+Wilson review tier. Do not use Opus `max`, Fable, or an unbounded model or effort
+setting. A multi-agent review or separate fresh passes also require explicit
+permission. Assign perspectives from the actual risks in the issue rather than
+maintaining a permanent swarm of generic personas. Consolidate duplicate
 findings, but retain disagreement and provenance.
 
 Before the first physician session, review the integrated journey across four
@@ -142,7 +164,8 @@ The comment and pull-request summary record:
 - inputs inspected and checks run;
 - complete findings and their severity;
 - material limitations; and
-- finding disposition and re-review result when applicable.
+- finding disposition, resolving commits, and any authorized additional-review
+  result when applicable.
 
 The pull request is the canonical code-review record. Put a premise challenge
 or consequential discovery on the issue as well, and update governing Markdown
@@ -157,6 +180,7 @@ substituting another fresh-context reviewer. The substitute still cannot be
 the implementer.
 
 Do not routinely review after merge. Use a post-merge review for an escaped
-defect, incident, contradicted premise, or other concrete learning event. At
-the end of Experiment 1, compare what Claude caught, what was noise, and what
-escaped; simplify or strengthen this protocol using that evidence.
+defect, incident, contradicted premise, or other concrete learning event, and
+only with Steve's permission. At the end of Experiment 1, compare what Claude
+caught, what was noise, elapsed time and reported cost, and what escaped;
+simplify or strengthen this protocol using that evidence.

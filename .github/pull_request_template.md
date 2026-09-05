@@ -26,8 +26,9 @@ of hiding a deviation here.
 - [ ] Fresh-context technical review completed and blocking findings resolved.
 - Review mode, reviewer, model, and CLI:
 - Reviewed commit, prompt version/source, and verbatim prompt:
-- Review and re-review comments:
-- Material limitations and finding dispositions:
+- Review comment:
+- Material limitations, finding dispositions, and resolving commits:
+- Additional review: not requested / authorization and result links
 - Stop-and-reconcile triggered: no / link
 - Known limitations or follow-ups:
 
