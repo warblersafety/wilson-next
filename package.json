@@ -11,7 +11,9 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "evidence:pdf": "node --experimental-strip-types tools/pdf/generate_evidence.ts",
+    "evidence:chromium": "node --experimental-strip-types tools/pdf/capture_rendering.ts"
   },
   "dependencies": {
     "@cantoo/pdf-lib": "2.9.1",

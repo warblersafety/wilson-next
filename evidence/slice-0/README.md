@@ -59,3 +59,25 @@ on 2026-09-05 confirmed:
 
 [`chromium-result.json`](chromium-result.json) records the browser version,
 viewport, page targets, and screenshot names.
+
+## Regenerate
+
+Use the pinned Node runtime and install the independent parser in an isolated,
+git-ignored environment:
+
+```text
+python3 -m venv .venv-pdf-evidence
+.venv-pdf-evidence/bin/pip install -r requirements/pdf-evidence.txt
+PYPDF_PYTHON=.venv-pdf-evidence/bin/python npm run evidence:pdf
+node_modules/@playwright/test/cli.js install chromium
+npm run evidence:chromium
+```
+
+`evidence:chromium` uses Playwright's pinned Chromium executable by default;
+`CHROMIUM_EXECUTABLE_PATH` may override it for a named compatible Chromium
+binary. Inspect all four regenerated screenshots before accepting them.
+
+Chromium rendering is intentionally retained manual evidence in Slice 0, not a
+CI browser check. Until Slice 2 adds the approved `test:e2e` command, any change
+to the PDF adapter, official source, `@cantoo/pdf-lib`, or Playwright must
+regenerate and manually inspect this evidence in the same PR.

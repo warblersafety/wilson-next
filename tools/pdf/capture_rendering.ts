@@ -3,10 +3,8 @@ import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { chromium } from "@playwright/test";
 
-const executablePath = process.env.CHROMIUM_EXECUTABLE_PATH;
-if (!executablePath) {
-  throw new Error("CHROMIUM_EXECUTABLE_PATH is required");
-}
+const executablePath =
+  process.env.CHROMIUM_EXECUTABLE_PATH ?? chromium.executablePath();
 
 const pdfUrl = pathToFileURL(resolve("evidence/slice-0/filled-form.pdf")).href;
 const capturedPages = [1, 2, 4, 5];
