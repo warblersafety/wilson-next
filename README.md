@@ -38,7 +38,8 @@ document before continuing.
 ## Minimum reading path
 
 - **Slice 0:** this README; the projection and adapter boundary in Architecture;
-  the Slice 0 and PDF-gate sections in Experiment 1; and Delivery.
+  the Selected stack, Slice 0 PDF gate, CI and implementation order, and
+  Retention sections in Experiment 1; and Delivery.
 - **Slices 1–4:** read Product, Architecture, Experiment 1, and Delivery in
   full.
 - **Premise challenge or legacy reuse:** additionally read the relevant
