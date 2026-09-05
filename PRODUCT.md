@@ -64,6 +64,27 @@ case account—not like completing a PDF one box at a time.
 The experience must not expose PDF widget identifiers, internal enum values,
 record paths, model mechanics, or implementation vocabulary.
 
+### Every question must earn its turn
+
+Wilson may ask a follow-up only when all of these are true:
+
+1. The information is genuinely missing, unresolved, or contradictory.
+2. The answer would materially improve the supported report or resolve an
+   important ambiguity.
+3. The answer is not already present, previously declined, or truthfully
+   representable as unknown, omitted, or inapplicable.
+4. The question can be asked clearly without confusing entities or products.
+
+Closely related needs may share one question when attribution remains clear.
+Optional or unsupported blanks do not earn a question merely because the form
+contains them. Each implementation slice declares a small question budget and
+must justify any increase with assembled-journey evidence.
+
+This is a value-per-turn rule, not a universal numerical cap. Review of proposed
+knowledge and explicit resolution of a consequential conflict are deliberate
+safeguards, not avoidable interrogation. Wilson must not combine questions so
+aggressively that the clinician cannot answer or attribute them reliably.
+
 ## Representative journeys
 
 These journeys define product behavior before architecture. Their narratives
@@ -269,7 +290,9 @@ than freeze today's category list into the product definition.
 ## Product-definition decision
 
 Steve confirmed the product promise, v1 direction, representative journeys,
-unacceptable outcomes, and non-goals on 2026-09-04.
+unacceptable outcomes, and non-goals on 2026-09-04. Steve approved the explicit
+“every question must earn its turn” rule and per-slice question-budget policy
+on 2026-09-04.
 
 This confirmation authorizes architecture comparison against the product
 definition. It does not authorize implementation or silently select any data

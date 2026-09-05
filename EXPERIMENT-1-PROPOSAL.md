@@ -1,8 +1,8 @@
 # Wilson Experiment 1 proposal: multi-product correction and conflict
 
 **Status:** Approved by Steve on 2026-09-04, including the doctor-first
-verification amendment; implementation awaits deployment-preflight stack
-approval
+verification, question-budget, and deployment-preflight amendments;
+implementation awaits an explicit go-ahead after the remaining topics
 
 **Prepared:** 2026-09-04
 
@@ -194,6 +194,12 @@ Fixture answer:
 The experiment records whether combining these two closely related asks is
 clear or causes wrong-product attribution. A confusing result reopens the copy
 and composition; it does not justify a general question engine.
+
+This authored group is the complete question budget for Experiment 1. No other
+missing or unsupported field earns a follow-up in this journey. An additional
+question, a repeated request for known information, or separating the group
+without evidence that clarity requires it fails the interaction hypothesis and
+reopens the question policy rather than expanding the budget automatically.
 
 ### Combined correction and contradiction
 
@@ -471,7 +477,10 @@ supported/deferred boundary, four-screen visual checkpoint and composition,
 model/provider responsibility and synthetic-only retention boundary, and the
 success, stopping, and disposal criteria. The exact framework, PDF library,
 model provider, preview host, and access-control mechanism were deliberately
-not selected in those proposals. Their deployment-preflight selection remains
-the final technical decision required before implementation begins. The
-verification strategy and doctor-first amendment were added as the evidence
-checkpoint before that preflight. Steve approved both on 2026-09-04.
+not selected in those proposals. The verification strategy and doctor-first
+amendment were added as the evidence checkpoint before deployment preflight;
+Steve approved both on 2026-09-04. Steve then approved the
+deployment-preflight stack and the one-question-budget amendment on 2026-09-04.
+All listed planning gates are therefore closed, but the identified remaining
+topics and explicit implementation authorization are still required before
+implementation begins.

@@ -86,11 +86,16 @@ and PDF behavior remains real. The test uses visible labels and accessible roles
 and checks the important user-visible results:
 
 - all three products remain distinct;
-- the one follow-up is asked;
+- the one follow-up group is asked exactly once and no other question appears;
 - the corrected naproxen dose appears everywhere it should;
 - the unresolved apixaban date remains visible but absent from the form;
 - resolving the date updates review and output together; and
 - a PDF downloads successfully.
+
+The retained trace records the number of Wilson question groups, whether any
+known information was requested again, and whether every question belongs to
+the slice's declared budget. This is a simple trace assertion, not an analytics
+system or a universal turn-count target.
 
 Keep the trace and key screenshots when diagnosing a failure or recording the
 experiment; do not build a visual-regression service. Playwright supports
@@ -150,7 +155,8 @@ Form FDA 3500 experience. We want a few high-value observations:
 
 - What was confusing or unexpectedly effortful?
 - Did Wilson's understanding feel faithful and reviewable?
-- Were its question and correction interactions natural?
+- Did the one follow-up earn the interruption, and were its question and
+  correction interactions natural?
 - Was anything important missing or given the wrong emphasis?
 - Would this direction be preferable to completing the form directly, and why?
 
@@ -202,13 +208,15 @@ a desire to look complete before anyone has used the product.
 ## Approval consequence
 
 Approval makes this the complete verification requirement for getting
-Experiment 1 in front of one physician. Deployment preflight is the only
-remaining planning gate. It must recommend the smallest stack that can implement
-this slice, protect the synthetic preview, and produce the evidence above.
+Experiment 1 in front of one physician. The deployment preflight is now
+approved. Steve's identified remaining topics and an explicit implementation
+go-ahead are still required before work begins.
 
 ### Approval record
 
 On 2026-09-04, Steve approved the simplified doctor-first strategy, including
 the minimum automated evidence, early formative physician session, explicit
 deferrals, and the rule that pre-physician work must protect integrity, enable
-the complete journey, or make the physician's feedback interpretable.
+the complete journey, or make the physician's feedback interpretable. Steve
+also approved the later trace assertions enforcing Experiment 1's one-question
+budget on 2026-09-04.

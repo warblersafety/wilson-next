@@ -272,7 +272,7 @@ identifiers. The Form 3500 projection decides which supported concepts are
 included, omitted, or unresolved. Only the final versioned filler knows the
 official PDF's widget names and encodings.
 
-## Proposed implementation order after authorization
+## Approved implementation order after authorization
 
 ```mermaid
 flowchart LR
@@ -285,9 +285,11 @@ flowchart LR
     S0 --> S1 --> S2 --> S3 --> S4
 ```
 
-This order is proposed by [`DEPLOYMENT-PREFLIGHT.md`](../DEPLOYMENT-PREFLIGHT.md)
-and remains subject to preflight approval. In particular, the shared preview
-lock is late deployment plumbing rather than an initial product subsystem.
+This order is approved in
+[`DEPLOYMENT-PREFLIGHT.md`](../DEPLOYMENT-PREFLIGHT.md), but implementation still
+requires an explicit go-ahead after the remaining topics. In particular, the
+shared preview lock is late deployment plumbing rather than an initial product
+subsystem.
 
 ## Implementation divergence flow
 

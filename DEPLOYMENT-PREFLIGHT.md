@@ -1,7 +1,7 @@
 # Wilson deployment preflight
 
-**Status:** Proposed for Steve's approval; no implementation authorized by this
-document
+**Status:** Approved by Steve on 2026-09-04; no implementation authorized by
+this document
 
 **Prepared:** 2026-09-04
 
@@ -29,9 +29,9 @@ physician session while preserving the case-integrity rules already approved.
 The first implementation slice resolves the only meaningful library risk—the
 FDA PDF—before substantial UI work is built.
 
-## Decision requested
+## Approved decision
 
-Approve this stack and execution boundary for Experiment 1:
+The approved stack and execution boundary for Experiment 1 are:
 
 - Node.js 24.20.0 LTS, npm, strict TypeScript, React, and Next.js 16.3.3;
 - plain CSS with CSS Modules and the approved Wilson visual tokens, with no UI
@@ -71,9 +71,9 @@ the browser-to-PDF journey, protects the canonical case, or makes the physician
 session safe and interpretable.
 
 The [Experiment 1 system diagrams](docs/experiment-1-system-diagrams.md) show
-where these proposed runtime choices fit while separating the experiment's
-actual build from future possibilities. They do not approve this preflight or
-authorize implementation.
+where these selected runtime choices fit while separating the experiment's
+actual build from future possibilities. They do not independently authorize
+implementation.
 
 ## What comes from prior Wilson and Lucy
 
@@ -437,3 +437,12 @@ experiment, UX checkpoint, and verification strategy. The first external
 milestone is not “finish the application”; it is “put the smallest credible
 assembled Wilson journey in front of one physician and learn whether the
 direction deserves another slice.”
+
+### Approval record
+
+On 2026-09-04, Steve approved the complete Experiment 1 deployment preflight,
+including the selected stack, PDF compatibility gate and bounded fallback,
+model boundary, single-instance Render deployment, temporary in-memory state,
+shared preview lock, minimal test and repository controls, implementation
+sequence, and stop-and-reconcile rule. This approval closes the preflight; it
+does not start implementation.
