@@ -12,8 +12,10 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "evidence:pdf": "node --experimental-strip-types tools/pdf/generate_evidence.ts",
-    "evidence:chromium": "node --experimental-strip-types tools/pdf/capture_rendering.ts"
+    "evidence:chromium": "node --experimental-strip-types tools/pdf/capture_rendering.ts",
+    "evidence:slice2:pdf-render": "node --experimental-strip-types tools/pdf/capture_slice_2_rendering.ts"
   },
   "dependencies": {
     "@cantoo/pdf-lib": "2.9.1",

@@ -27,7 +27,7 @@ describe("applyCaseCommand", () => {
     }).toThrow();
 
     const reviewed = acceptOpeningCase(proposed);
-    expect(reviewed.revision).toBe(2);
+    expect(reviewed.revision).toBe(3);
     expect(reviewed.patient.facts.identifier.resolvedValue?.value).toEqual({ kind: "known", value: "TEST-57" });
     expect(reviewed.products.map(({ id, state }) => [id, state])).toEqual([
       ["product-apixaban", "resolved"],
@@ -116,7 +116,7 @@ describe("applyCaseCommand", () => {
       key: "suspect-product-indications",
       productIds: ["product-apixaban", "product-naproxen"],
     })).toThrow(StaleCaseRevisionError);
-    expect(current.revision).toBe(2);
+    expect(current.revision).toBe(3);
     expect(current.askedNeeds).toEqual([]);
   });
 

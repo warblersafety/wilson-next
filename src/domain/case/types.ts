@@ -36,6 +36,7 @@ export interface PatientFacts {
 }
 
 export interface EventFacts {
+  reportType: Fact<"adverse-event">;
   symptoms: Fact<string[]>;
   onsetDate: Fact<string>;
   hospitalized: Fact<boolean>;
@@ -76,7 +77,7 @@ export interface ProductEntity {
   facts: ProductFacts;
 }
 
-export type InputType = "narrative" | "answer" | "correction" | "resolution";
+export type InputType = "narrative" | "selection" | "answer" | "correction" | "resolution";
 
 export interface Source {
   id: string;

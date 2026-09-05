@@ -12,13 +12,14 @@ export interface Form3500Projection {
   sections: {
     A: { patientIdentifier?: string; ageYears?: number; sex?: "female" | "male" | "intersex" };
     B: {
+      reportType?: "adverse-event";
       eventDate?: string;
       eventDescription?: string;
       hospitalized?: boolean;
       relevantTests?: string;
     };
     D: { suspectProducts: ProjectedProduct[] };
-    F: { concomitantProducts: ProjectedProduct[] };
+    F: { concomitantProducts: ProjectedConcomitantProduct[] };
   };
   sourceTrace: Record<string, string[]>;
   omissions: ProjectionOmission[];
@@ -36,21 +37,42 @@ export interface ProjectedProduct {
   indication?: string;
 }
 
+export interface ProjectedConcomitantProduct {
+  productId: string;
+  name?: string;
+  startDate?: string;
+  stopDate?: string;
+}
+
 export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   const projection: Form3500Projection = {
     revision: caseState.revision,
     sections: { A: {}, B: {}, D: { suspectProducts: [] }, F: { concomitantProducts: [] } },
     sourceTrace: {},
     omissions: [],
-    notIncluded: ["Section E device products", "Section G reporter information"],
+    notIncluded: [
+      "Section E device products",
+      "Section G reporter information",
+      "Concomitant dose, frequency, and route (Section F has no fields for them)",
+    ],
   };
 
   assign(projection, "sections.A.patientIdentifier", "patient identifier", "patient:patient:identifier", caseState.patient.facts.identifier, projection.sections.A, "patientIdentifier");
   assign(projection, "sections.A.ageYears", "patient age", "patient:patient:ageYears", caseState.patient.facts.ageYears, projection.sections.A, "ageYears");
   assign(projection, "sections.A.sex", "patient sex", "patient:patient:sex", caseState.patient.facts.sex, projection.sections.A, "sex");
+  assign(projection, "sections.B.reportType", "report type", "event:event:reportType", caseState.event.facts.reportType, projection.sections.B, "reportType");
   assign(projection, "sections.B.eventDate", "event date", "event:event:onsetDate", caseState.event.facts.onsetDate, projection.sections.B, "eventDate");
   assign(projection, "sections.B.hospitalized", "hospitalization outcome", "event:event:hospitalized", caseState.event.facts.hospitalized, projection.sections.B, "hospitalized");
-  assign(projection, "sections.B.relevantTests", "relevant tests", "event:event:hemoglobin", caseState.event.facts.hemoglobin, projection.sections.B, "relevantTests");
+  assign(
+    projection,
+    "sections.B.relevantTests",
+    "relevant tests",
+    "event:event:hemoglobin",
+    caseState.event.facts.hemoglobin,
+    projection.sections.B,
+    "relevantTests",
+    (value) => `Hemoglobin: ${value}`,
+  );
 
   const eventDescription = buildEventDescription(caseState);
   if (eventDescription.value) {
@@ -71,8 +93,13 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       });
       continue;
     }
-    const target = role.value === "suspect" ? projection.sections.D.suspectProducts : projection.sections.F.concomitantProducts;
-    target.push(projectProduct(product, projection, role.value === "suspect" ? "D" : "F", target.length));
+    if (role.value === "suspect") {
+      const target = projection.sections.D.suspectProducts;
+      target.push(projectProduct(product, projection, target.length));
+    } else {
+      const target = projection.sections.F.concomitantProducts;
+      target.push(projectConcomitantProduct(product, projection, target.length));
+    }
   }
 
   return projection;
@@ -81,12 +108,24 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
 function projectProduct(
   product: ProductEntity,
   projection: Form3500Projection,
-  section: "D" | "F",
   index: number,
 ): ProjectedProduct {
   const result: ProjectedProduct = { productId: product.id };
-  const prefix = `sections.${section}.${section === "D" ? "suspectProducts" : "concomitantProducts"}.${index}`;
+  const prefix = `sections.D.suspectProducts.${index}`;
   for (const field of ["name", "dose", "frequency", "route", "startDate", "stopDate", "indication"] as const) {
+    assign(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field], result, field);
+  }
+  return result;
+}
+
+function projectConcomitantProduct(
+  product: ProductEntity,
+  projection: Form3500Projection,
+  index: number,
+): ProjectedConcomitantProduct {
+  const result: ProjectedConcomitantProduct = { productId: product.id };
+  const prefix = `sections.F.concomitantProducts.${index}`;
+  for (const field of ["name", "startDate", "stopDate"] as const) {
     assign(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field], result, field);
   }
   return result;
@@ -100,10 +139,11 @@ function assign<T extends string | number | boolean>(
   fact: Fact<T>,
   output: object,
   key: string,
+  transform: (value: T) => unknown = (value) => value,
 ): void {
   const resolved = known(fact);
   if (resolved) {
-    (output as Record<string, unknown>)[key] = resolved.value;
+    (output as Record<string, unknown>)[key] = transform(resolved.value);
     projection.sourceTrace[path] = resolved.sourceIds;
     return;
   }
@@ -135,7 +175,7 @@ function buildEventDescription(caseState: SemanticCase): { value?: string; sourc
   append(caseState.event.facts.symptoms, (value) => `Symptoms: ${value.join(" and ")}.`);
   append(caseState.event.facts.treatments, (value) => `Treatment: ${value.join("; ")}.`);
   append(caseState.event.facts.outcome, (value) => `Outcome: ${value}.`);
-  append(caseState.event.facts.dischargeDate, (value) => `Discharged ${value}.`);
+  append(caseState.event.facts.dischargeDate, (value) => `Discharged ${displayDate(value)}.`);
   const stopped = caseState.products.flatMap((product) => {
     const name = known(product.facts.name);
     const wasStopped = known(product.facts.stopped);
@@ -145,6 +185,12 @@ function buildEventDescription(caseState: SemanticCase): { value?: string; sourc
   });
   if (stopped.length > 0) parts.push(`Products stopped: ${joinWithAnd(stopped)}.`);
   return { value: parts.length > 0 ? parts.join(" ") : undefined, sourceIds: [...new Set(sourceIds)] };
+}
+
+function displayDate(value: string): string {
+  const [year, month, day] = value.split("-");
+  const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][Number(month) - 1];
+  return `${Number(day)}-${monthName}-${year}`;
 }
 
 function joinWithAnd(values: string[]): string {
