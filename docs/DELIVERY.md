@@ -49,6 +49,45 @@ Successful branches are deleted after squash merge. If an experiment falsifies
 its premise, close without merging and retain a named branch or commit until its
 disposition is decided.
 
+## GitHub access
+
+Wilson uses one GitHub identity and path. The credential broker is
+`seed/scripts/gh_token.py` in the `smansf/sofa-claude` repository; it runs on
+the mini as the `sofa-claude` macOS account and mints a short-lived token for
+the `sofa-claude-ops` GitHub App. `gh` is the API client. `git` over HTTPS is
+the repository transport and authenticates through `gh auth git-credential`
+under that same token. These names describe distinct components.
+
+Task-relevant read-only research may include any repository already available
+to the App, with every repository named to the broker's fixed `read` profile.
+This does not authorize expanding the App installation. Routine writes stay in
+the active approved repository: issue, comment, label, and milestone work;
+branches and pushes; pull-request creation and management; review requests,
+comments, readiness, and conversation resolution; approved workflow-file
+changes; check inspection; and, after Steve's GitHub approval and all gates,
+squash merge.
+
+Cross-repository writes; Actions dispatch, rerun, or cancellation; release
+management; and deployment or environment operations each need separate
+explicit authorization. App installation or permission changes; repository
+creation, deletion, transfer, archive, or visibility; protections, rulesets,
+collaborators, default branch, secrets, keys, webhooks, or billing; approval as
+Steve; and force or bypass operations remain human-only.
+
+No PAT, personal account, SSH, browser automation, connector, or raw API is a
+fallback. Preserve the exact failure and diagnose it without changing identity,
+credential, client, transport, repository scope, token permissions, or
+protections merely to succeed. A malformed local invocation may be corrected
+after identification when the operation and authority are unchanged. A clearly
+transient network or GitHub-service failure may receive one identical retry.
+Otherwise repair the canonical path within existing authority or stop for
+Steve.
+
+The project-local Codex rule permits only the broker's fixed read profile. It
+must not be activated against a broker version that lacks that profile. After
+both governing changes merge and the checkout is synced, retire superseded
+user-level GitHub read rules and restart Codex so the project rule is loaded.
+
 ## Verification and review flow
 
 Before a PR is ready:
