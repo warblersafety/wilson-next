@@ -47,8 +47,10 @@ Use a fresh Claude session. Do not provide the implementer's expected findings,
 self-review conclusions, or another review's findings until Claude completes
 its independent first pass. The reviewer may inspect files and run safe,
 relevant checks, but it must not edit the worktree, commit, push, approve, post
-to GitHub directly, or merge. Do not give it repository write credentials or
-use a permission-bypass mode.
+to GitHub directly, or merge. Enforce that boundary with a read-only tool
+allowlist; a separate disposable checkout may provide additional isolation but
+does not replace the tool boundary. Do not give the reviewer repository write
+credentials or use a permission-bypass mode.
 
 Use this prompt as `wilson-review-v1`, supplying the named inputs without
 adding hints about suspected defects:
@@ -62,8 +64,14 @@ adding hints about suspected defects:
 > evidence and precise locations. State what you inspected and ran, material
 > limitations, and explicitly say when no findings remain.
 
-The structured labels organize Claude's result; they do not constrain what it
-may investigate.
+The `wilson-review-v1` label binds to the quoted review directive in this file
+at the commit recorded for the prompt source. Changing its review criteria or
+instructions requires a new version label. A run may add neutral target
+metadata, input locations, and output formatting around the directive. Record
+the complete invocation prompt on the pull request; additional evaluation
+criteria or suspected-defect hints make it a different prompt and require a
+different label. The structured labels organize Claude's result; they do not
+constrain what it may investigate.
 
 ## Findings and re-review
 
@@ -80,9 +88,10 @@ around it.
 After a blocking fix or any other material change, give Claude the complete
 final diff in a fresh re-review. It may see the previous findings and their
 dispositions at that point. The reviewed commit recorded on the pull request
-must equal the commit Steve approves. Administrative text changes that cannot
-affect the delivered result may be disclosed without manufacturing another
-review.
+must equal the commit Steve approves unless the only later commits contain
+disclosed administrative text changes that cannot affect the delivered result.
+List each exempt commit and why it is non-material; if there is doubt, re-run
+the review. GitHub still requires Steve to approve the latest commit.
 
 ## Expanded review
 
@@ -129,11 +138,11 @@ The comment and pull-request summary record:
 - review mode: standard or expanded;
 - reviewed commit SHA;
 - Claude model and CLI version reported for the run;
-- prompt version;
+- prompt version, prompt-source commit, and complete invocation prompt;
 - inputs inspected and checks run;
 - complete findings and their severity;
 - material limitations; and
-- disposition and re-review result when applicable.
+- finding disposition and re-review result when applicable.
 
 The pull request is the canonical code-review record. Put a premise challenge
 or consequential discovery on the issue as well, and update governing Markdown

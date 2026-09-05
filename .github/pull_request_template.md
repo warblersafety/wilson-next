@@ -24,10 +24,10 @@ of hiding a deviation here.
 
 - [ ] Complete diff reviewed against the issue and governing artifacts.
 - [ ] Fresh-context technical review completed and blocking findings resolved.
-- Review mode and reviewer:
-- Reviewed commit and prompt version:
-- Review comment:
-- Material review limitations:
+- Review mode, reviewer, model, and CLI:
+- Reviewed commit, prompt version/source, and verbatim prompt:
+- Review and re-review comments:
+- Material limitations and finding dispositions:
 - Stop-and-reconcile triggered: no / link
 - Known limitations or follow-ups:
 

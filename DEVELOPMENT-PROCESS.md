@@ -14,9 +14,11 @@ must become durable authority.
 
 Every meaningful change starts with a short issue, happens on its own temporary
 branch, and reaches `main` through a pull request. Automated checks and a
-fresh-context Claude review normally examine the work. Steve receives a
-plain-English summary and the evidence needed to approve or reject the merge.
-Direct work on `main` is not allowed.
+required fresh-context technical review examine the work. Claude is the default
+reviewer when Codex implements or coordinates the change; substituting another
+reviewer requires Steve's agreement. Steve receives a plain-English summary and
+the evidence needed to approve or reject the merge. Direct work on `main` is
+not allowed.
 
 The issue explains why. The branch isolates the work. The pull request explains
 what changed and carries its evidence and review. Governing Markdown records
