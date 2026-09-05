@@ -81,7 +81,8 @@ editorial consolidation may rely on its approved source decisions, when the PR:
 - links the attributed review or source approvals;
 - maps findings or source authority to the final diff;
 - introduces no unapproved behavior, semantics, architecture, privacy, scope,
-  evidence, or process premise;
+  evidence, or process premise, and removes or weakens no approved decision
+  without naming that change in the PR;
 - passes an implementer audit and its narrow checks; and
 - receives Steve's explicit approval of the final result.
 

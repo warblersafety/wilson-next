@@ -23,7 +23,9 @@ of hiding a deviation here.
 ## Review and risk
 
 - [ ] Complete diff reviewed against the issue and governing artifacts.
-- [ ] Fresh-context technical review completed and blocking findings resolved.
+- [ ] Applicable independent-review requirement satisfied and blocking findings
+      resolved (fresh-context review or proportional closure under
+      `docs/DELIVERY.md`).
 - Review mode, reviewer, model/effort, CLI, and subscription preflight:
 - Reviewed commit, prompt version/source, and verbatim prompt:
 - Review comment:

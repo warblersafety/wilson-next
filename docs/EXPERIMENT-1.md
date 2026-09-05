@@ -68,9 +68,10 @@ journey and supplies the highest-value early product feedback.
 - accounts, collaboration, submission, analytics, and durable storage; and
 - a multi-participant study or general preference claim.
 
-The UI discloses the experiment's limited coverage before input. Unsupported
-content is not accepted, approximated, or silently dropped, and unsupported
-form sections do not masquerade as unknown or complete.
+The UI discloses the experiment's limited coverage before input and identifies
+Wilson as an experimental, synthetic-only tool that must not be used for a real
+report. Unsupported content is not accepted, approximated, or silently dropped,
+and unsupported form sections do not masquerade as unknown or complete.
 
 ## Fixed synthetic journey
 
@@ -316,7 +317,7 @@ without evidence that the first physician decision needs them.
 ## Selected stack
 
 - Node.js 24.20.0 LTS, npm, strict TypeScript, React, Next.js 16.3.3.
-- Plain CSS Modules and Wilson visual tokens; no UI kit or CSS framework.
+- Plain CSS Modules; no UI kit or CSS framework.
 - Zod 4 for the runtime model/case boundary.
 - `claude-sonnet-5` through Anthropic's TypeScript SDK with structured output,
   default sampling, no tools, and synthetic text only.
