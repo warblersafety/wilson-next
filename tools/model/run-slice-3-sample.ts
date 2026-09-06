@@ -57,7 +57,7 @@ async function runLockedSample(): Promise<void> {
       );
     },
   );
-  if (!openingCompleted) return;
+  if (!openingCompleted) throw new Error("The opening call stopped Slice 3; no retry was attempted.");
   await performJourneyAction(repository, caseId, { action: "accept-understanding" });
   await performJourneyAction(repository, caseId, { action: "answer-indications", text: indicationAnswer });
 
@@ -75,7 +75,7 @@ async function runLockedSample(): Promise<void> {
       );
     },
   );
-  if (!correctionCompleted) return;
+  if (!correctionCompleted) throw new Error("The correction call stopped Slice 3; no retry was attempted.");
 
   sample.status = "awaiting-human-review";
   await saveSampleState(state);
@@ -105,7 +105,6 @@ async function runTurn(
     sample.status = "stopped";
     await saveSampleState(state);
     process.stderr.write(`${turn} call failed safely; no retry was attempted. Slice 3 is stopped.\n`);
-    process.exitCode = 1;
     return false;
   }
   if (!result.metrics) throw new Error("A real-model sample must report call metrics.");
@@ -126,7 +125,6 @@ async function runTurn(
     sample.status = "stopped";
     await saveSampleState(state);
     process.stderr.write(`${turn} did not match the semantic oracle. Slice 3 is stopped.\n`);
-    process.exitCode = 1;
     return false;
   }
   try {
@@ -140,7 +138,6 @@ async function runTurn(
     sample.status = "stopped";
     await saveSampleState(state);
     process.stderr.write(`${turn} could not enter the authoritative journey path. Slice 3 is stopped.\n`);
-    process.exitCode = 1;
     return false;
   }
   await saveSampleState(state);
