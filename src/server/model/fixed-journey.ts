@@ -5,6 +5,7 @@ import {
   fixedRecordedAt,
   openingAccount,
 } from "../../experiment/fixed-inputs";
+import type { JourneyModel } from "./journey-model";
 
 function known<T>(value: T): CaseValue<T> {
   return { kind: "known", value };
@@ -116,3 +117,13 @@ export function parseFixedCorrectionResponse(text: string) {
     ],
   });
 }
+
+export const fixedJourneyModel: JourneyModel = {
+  async propose(turn, text) {
+    return {
+      envelope: turn === "opening"
+        ? parseFixedOpeningResponse(text)
+        : parseFixedCorrectionResponse(text),
+    };
+  },
+};

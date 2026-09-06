@@ -4,3 +4,6 @@ playwright-report/
 test-results/
 .venv*/
 *.tsbuildinfo
+.wilson-model-sample-state.json
+.wilson-model-sample-state.json.tmp
+.wilson-model-sample-state.lock
