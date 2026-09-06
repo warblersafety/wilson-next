@@ -1,6 +1,7 @@
 # Issue 32 deployed observability evidence
 
-**Status:** In progress; final checkpoint deployment and verification pending
+**Status:** Implementation and protected-preview verification complete;
+independent review pending
 
 **Issue:** [#32](https://github.com/warblersafety/wilson-next/issues/32)
 
@@ -100,6 +101,27 @@ completed case-route operation. This is transient function memory followed by
 one Runtime Log call, not another store. An early crash still leaves the
 immediate events that preceded it.
 
+Commit `f0d4e49d616b29d736cb88bffc0b0733a96279f0` deployed through Git as
+`dpl_EKeAYi9pKz32hXZEmx99gMq6CE2Z`. Vercel reported the exact Git SHA and
+feature branch, `target: null`, `READY`, `STAGED`, and the protected branch
+alias. An unauthenticated request returned HTTP 302.
+
+The final deployed Chromium run was
+`ef94f6a8-1e94-4a78-9fbb-bcd4bff21833`; its opening operation was
+`ae98e534-4d04-46a3-8ed4-3ee10adf8502`. The page and opening action returned
+HTTP 200 and reached `understanding` at revision 2. Vercel delivered the
+operation's checkpoint without truncation at 109,227 bytes. It contained all
+14 preceding events with contiguous sequence numbers and the full relevant
+fixed synthetic input and output for route validation, model request and
+response, proposal validation, both case commands and resulting state,
+transitions, and final response.
+
+Newly generated automation bypasses were not consistently usable after a fixed
+delay. The final procedure therefore polled a protected GET until it actually
+returned Wilson before opening Chromium; the deployment remained protected
+throughout. Attempts that stopped at Vercel's access page did not invoke an
+application route and were not treated as application failures.
+
 For each browser run, an automation bypass was generated only long enough to
 drive the protected preview and revoked immediately afterward. Read-only
 project checks found zero bypasses before and after. Exact-value scans of the
@@ -108,7 +130,5 @@ No credential value was printed, retained, committed, or copied into evidence.
 
 ## Pending evidence
 
-- Protected Git preview of the reconstruction-checkpoint commit.
-- Deployed checkpoint reconstruction and size check at the exact final code
-  commit.
-- Final automated verification and independent review.
+- GitHub `verify` for the final branch head.
+- Independent review of the final material diff.
