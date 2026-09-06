@@ -52,3 +52,32 @@ the non-streaming timeout threshold. The attempt recorded no calls, usage, or
 cost. The adapter now uses the SDK's structured-output streaming path and waits
 for its final parsed message; this is an execution-harness correction, not a
 change to the model, prompt, schema, or Wilson responsibility.
+
+## Sample 3 — stopped during opening after streaming completion
+
+- Local date: 2026-09-05
+- Source revision: `71c1dfc6dd158553b1c89f219ac9991e7ca2f104`
+- Model: `claude-sonnet-5`
+- SDK: `@anthropic-ai/sdk` 0.124.0
+- Prompt revision: `wilson-experiment-1-extraction-v1`
+- Schema revision: `wilson-grounded-proposals-v1`
+- Sampling: provider defaults; no tools; no automatic retry
+- Opening input tokens: 3,112
+- Opening output tokens: 14,012
+- Latency: 110,737 ms
+- Estimated cost: USD 0.146344
+- Correction call: not attempted
+- Automated semantic score: not reached; the response did not safely complete
+  the grounded-proposal boundary
+- Human semantic score: not performed because no accepted structured proposal
+  was available for review
+- Case effect: none; the proposal failed before the journey service or
+  `applyCaseCommand`
+
+This result did not reach the 128,000-token provider ceiling and exceeded the
+removed 8,192-token Wilson ceiling, confirming that the artificial limit was
+no longer controlling the run. The current fail-safe adapter retains usage but
+does not distinguish in its durable record among a non-success stop reason, a
+missing parsed structured output, and rejection by Wilson's domain boundary.
+Slice 3 therefore stops rather than guessing or retrying. Total recorded model
+spend for samples 1 and 3 is USD 0.234488; sample 2 made no provider request.
