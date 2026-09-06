@@ -1,8 +1,8 @@
 # Wilson Experiment 1
 
-**Status:** Approved by Steve; Slices 0–3 complete; Slice 4A deployment-path
-evidence complete under Issue #28 and awaiting review and merge approval; Slice
-4B requires Steve's separate explicit go-ahead
+**Status:** Approved by Steve; Slices 0–4A complete; Git-backed preview delivery
+is the narrow deployment follow-up under Issue #30; Slice 4B requires Steve's
+separate explicit go-ahead
 
 **Owns:** The fixed journey, supported and deferred scope, interaction
 composition, selected stack, implementation sequence, verification, deployment,
@@ -363,9 +363,10 @@ without evidence that the first physician decision needs them.
 - `@cantoo/pdf-lib` 2.9.1 subject to the Slice 0 gate; bounded `pypdf` 6.16.2
   fallback if it fails.
 - Vitest 4.1.11 and Playwright Chromium.
-- One Vercel Hobby project deployed from source with the pinned transient
-  Vercel CLI path established in Slice 4A; direct Git import remains unavailable
-  unless the repository's Vercel GitHub integration is installed later.
+- One Vercel Hobby project. Slice 4A established the pinned transient Vercel CLI
+  fallback; the subsequently installed GitHub integration supplies protected
+  feature-branch previews. Repository configuration disables automatic Git
+  deployment from `main`, leaving production deployment deliberate.
 - Origin- and tab-scoped `sessionStorage` for the disposable synthetic case and
   minimum conversation state; no hosted case persistence.
 - Vercel deployment protection when it provides workable reviewer access;
@@ -644,13 +645,26 @@ Slice 4A selected a distinct `wilson-next` Hobby project created through the
 Vercel REST API and deployed from a clean repository commit with transient,
 pinned Vercel CLI 59.11.7. Direct import of the public
 `warblersafety/wilson-next` repository failed because its Vercel GitHub
-integration was not installed; no installation or paid plan is required for
-the selected fallback. Omit `--target` for preview deployment: the first empty-
-project deployment classified an explicit `--target preview` request as
-production, so that deployment was removed after evidence and the corrected
-command was verified to produce a preview. The complete result, repeatable
-commands, terms basis, and cleanup record live in
+integration was not installed at the time; no installation or paid plan was
+required for the selected fallback. Omit `--target` for preview deployment:
+the first empty-project deployment classified an explicit `--target preview`
+request as production, so that deployment was removed after evidence and the
+corrected command was verified to produce a preview. The complete result,
+repeatable commands, terms basis, and cleanup record live in
 [`evidence/slice-4a/README.md`](../evidence/slice-4a/README.md).
+
+After Slice 4A merged, Steve installed the Vercel GitHub integration for only
+`warblersafety/wilson-next`. Issue #30 adds the no-cost Git delivery path:
+feature branches create protected preview deployments and pull-request comments,
+while `vercel.json` disables automatic Git deployment from `main`. Vercel's
+project-level deployment policies would express the same distinction centrally,
+but its API requires Pro or Enterprise; that paid control remains excluded.
+API verification found previews and fork protection enabled, pull-request
+comments enabled, Vercel Authentication on generated deployment URLs, zero
+protection bypasses, and no paid deployment policy. The Vercel project still
+identifies `main` as its production branch so any later production deployment
+must be an explicit, separately authorized act. The retained evidence is in
+[`evidence/issue-30/README.md`](../evidence/issue-30/README.md).
 
 The merged Slice 1–3 application still keeps case/session state in a
 process-local `Map`. That mechanism is already known to be unreliable across
