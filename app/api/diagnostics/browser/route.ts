@@ -29,24 +29,49 @@ const browserEventSchema = z.object({
   error: z.unknown().optional(),
 }).strict();
 
+const browserReportSchema = z.object({
+  event: browserEventSchema,
+  trace: z.array(browserEventSchema).min(1).max(3),
+}).strict().superRefine(({ event, trace }, context) => {
+  const finalEvent = trace.at(-1);
+  if (!finalEvent
+    || finalEvent.browserSequence !== event.browserSequence
+    || finalEvent.phase !== event.phase
+    || finalEvent.outcome !== event.outcome) {
+    context.addIssue({ code: "custom", message: "The browser trace must end with the reported event" });
+  }
+  if (trace.some((item, index) => index > 0 && item.browserSequence <= trace[index - 1].browserSequence)) {
+    context.addIssue({ code: "custom", message: "Browser trace sequence numbers must increase" });
+  }
+});
+
 export async function POST(request: NextRequest) {
   const context = diagnosticContext(request.headers);
   if (!hasSameOrigin(request)) {
     return new NextResponse(null, { status: 403, headers: diagnosticHeaders(context) });
   }
   try {
-    const event = browserEventSchema.parse(await request.json());
+    const report = browserReportSchema.parse(await request.json());
+    const { event } = report;
     const diagnostics = createRuntimeDiagnosticLogger(context);
     diagnostics.event("browser", event.phase, event.outcome, {
       browserSequence: event.browserSequence,
       ...(event.request ? { request: safeRequest(event.request) } : {}),
       ...(event.response ? { response: event.response } : {}),
       ...(event.error === undefined ? {} : { error: event.error }),
+      trace: report.trace.map(safeBrowserEvent),
     });
     return new NextResponse(null, { status: 204, headers: diagnosticHeaders(context) });
   } catch {
     return new NextResponse(null, { status: 400, headers: diagnosticHeaders(context) });
   }
+}
+
+function safeBrowserEvent(event: z.infer<typeof browserEventSchema>): unknown {
+  return {
+    ...event,
+    ...(event.request ? { request: safeRequest(event.request) } : {}),
+  };
 }
 
 function safeRequest(request: z.infer<typeof browserEventSchema>["request"]): unknown {

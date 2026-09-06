@@ -209,6 +209,12 @@ events still expose an early crash; the checkpoint makes a completed operation
 reconstructable when Vercel's live Runtime Log stream omits individual lines.
 It exists only in function memory until that final log call and is not a second
 diagnostic or case store.
+Browser reporting uses the same pattern within each operation: every event is
+sent immediately, while each later report also carries the browser events that
+preceded it. A received response or browser-side failure can therefore explain
+both the initiating action and what the browser observed even if Vercel omits
+one earlier line. This trace exists only in the reporting closure for that
+request.
 
 Vercel Hobby's one-hour Runtime Log retention is accepted for this immediate
 operator inspection. Logs are not drained, copied into a longer-lived

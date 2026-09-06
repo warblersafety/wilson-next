@@ -178,12 +178,7 @@ function redactCredentialStrings(value: string): string {
 
 function isCredentialKey(key: string): boolean {
   const normalized = key.toLowerCase().replace(/[^a-z0-9]/g, "");
-  return credentialKeys.has(normalized)
-    || normalized.endsWith("apikey")
-    || normalized.endsWith("accesstoken")
-    || normalized.endsWith("refreshtoken")
-    || normalized.endsWith("password")
-    || normalized.endsWith("secret");
+  return Array.from(credentialKeys).some((credentialKey) => normalized.endsWith(credentialKey));
 }
 
 function writeRuntimeEvent(event: RuntimeDiagnosticEvent): void {

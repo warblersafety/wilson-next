@@ -116,7 +116,9 @@ function createBrowserContext(): BrowserContext {
 }
 
 function reporter(context: BrowserContext): BrowserReporter {
+  const trace: BrowserEvent[] = [];
   return async (event) => {
+    trace.push(event);
     try {
       await fetch("/api/diagnostics/browser", {
         method: "POST",
@@ -127,7 +129,7 @@ function reporter(context: BrowserContext): BrowserReporter {
           [runIdHeader]: context.runId,
           [operationIdHeader]: context.operationId,
         },
-        body: JSON.stringify(event),
+        body: JSON.stringify({ event, trace }),
       });
     } catch {
       // Diagnostics must never replace the visible application failure.

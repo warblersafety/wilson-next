@@ -487,6 +487,10 @@ remain the evidence for an early crash; the checkpoint makes a completed
 request reconstructable if Vercel's live stream omits individual log lines. The
 checkpoint is held only in request memory until it is logged and is not a
 second diagnostic or case store.
+Each browser report is likewise immediate and carries the cumulative browser
+events for that operation, so a response or browser failure remains tied to its
+initiating action if Vercel omits an earlier line. That trace exists only in the
+browser reporting closure for the current request.
 
 The preview is disposable, synthetic-only, likely less secure than a production
 healthcare system, and never presented as production-ready. Remove access after

@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { describe, expect, it, vi } from "vitest";
 import { POST as postCase } from "../../app/api/case/route";
+import { POST as postBrowserDiagnostic } from "../../app/api/diagnostics/browser/route";
 import { consumeJourneyJsonResponse } from "../../app/browser-diagnostics";
 import { openingAccount } from "../../src/experiment/fixed-inputs";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
@@ -165,6 +166,7 @@ describe("runtime diagnostics", () => {
     ), {
       authorization: "Bearer nested-value",
       provider: { accessToken: "third-value", type: "synthetic" },
+      "x-vercel-protection-bypass": "prefixed-value",
     });
 
     diagnostics.event("model", "credential-test", "failure", {
@@ -178,7 +180,7 @@ describe("runtime diagnostics", () => {
     diagnostics.checkpoint("credential-test-trace", "failure");
 
     const serialized = JSON.stringify(events);
-    for (const credential of ["visible-value", "another-value", "nested-value", "third-value", "header-value", "cookie-value", "env-value"]) {
+    for (const credential of ["visible-value", "another-value", "nested-value", "third-value", "prefixed-value", "header-value", "cookie-value", "env-value"]) {
       expect(serialized).not.toContain(credential);
     }
     expect(events[0].details).toMatchObject({ inputTokens: 123, outputTokens: 45 });
@@ -213,5 +215,74 @@ describe("runtime diagnostics", () => {
         error: { name: "SyntaxError" },
       },
     ]);
+  });
+
+  it("records a cumulative browser trace so the final report reconstructs the operation", async () => {
+    const browserTrace = [
+      {
+        browserSequence: 1,
+        phase: "request-start" as const,
+        outcome: "start" as const,
+        request: {
+          method: "POST" as const,
+          path: "/api/case" as const,
+          body: { action: "submit-opening", text: openingAccount, reportType: "adverse-event" },
+        },
+      },
+      {
+        browserSequence: 2,
+        phase: "response-received" as const,
+        outcome: "failure" as const,
+        response: {
+          status: 502,
+          statusText: "Bad Gateway",
+          contentType: "text/html",
+          contentLength: "31",
+          body: "upstream returned an HTML error",
+        },
+      },
+      {
+        browserSequence: 3,
+        phase: "response-parse-failed" as const,
+        outcome: "failure" as const,
+        response: {
+          status: 502,
+          statusText: "Bad Gateway",
+          contentType: "text/html",
+          contentLength: "31",
+          body: "upstream returned an HTML error",
+        },
+        error: { name: "SyntaxError", message: "Unexpected token" },
+      },
+    ];
+    const written: string[] = [];
+    const consoleError = vi.spyOn(console, "error").mockImplementation((value) => written.push(String(value)));
+    try {
+      const response = await postBrowserDiagnostic(new NextRequest("https://wilson.test/api/diagnostics/browser", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          host: "wilson.test",
+          origin: "https://wilson.test",
+          "x-forwarded-proto": "https",
+          "x-wilson-run-id": context.runId,
+          "x-wilson-operation-id": context.operationId,
+        },
+        body: JSON.stringify({ event: browserTrace.at(-1), trace: browserTrace }),
+      }));
+
+      expect(response.status).toBe(204);
+      const event = JSON.parse(written[0]) as RuntimeDiagnosticEvent;
+      expect(event).toMatchObject({ source: "browser", phase: "response-parse-failed", outcome: "failure", ...context });
+      expect(event.details).toMatchObject({
+        trace: [
+          { browserSequence: 1, phase: "request-start", request: { body: { text: openingAccount } } },
+          { browserSequence: 2, phase: "response-received", response: { status: 502 } },
+          { browserSequence: 3, phase: "response-parse-failed", error: { name: "SyntaxError" } },
+        ],
+      });
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 });
