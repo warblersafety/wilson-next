@@ -15,10 +15,8 @@ import {
 } from "../../experiment/fixed-inputs";
 import { applyCaseCommandToRepository } from "../case/apply-command";
 import type { CaseRepository } from "../case/repository";
-import {
-  parseFixedCorrectionResponse,
-  parseFixedOpeningResponse,
-} from "../model/fixed-journey";
+import { fixedJourneyModel } from "../model/fixed-journey";
+import type { JourneyModel } from "../model/journey-model";
 
 export type JourneyStage =
   | "describe"
@@ -74,6 +72,7 @@ export async function performJourneyAction(
   repository: CaseRepository,
   caseId: string,
   action: JourneyAction,
+  model: JourneyModel = fixedJourneyModel,
 ): Promise<JourneySnapshot> {
   let current = await ensureJourneyCase(repository, caseId);
   const expectedStage = stageFor(current);
@@ -81,11 +80,12 @@ export async function performJourneyAction(
   switch (action.action) {
     case "submit-opening":
       requireStage(expectedStage, "describe");
+      const opening = await model.propose("opening", action.text);
       current = await applyCaseCommandToRepository(repository, caseId, {
         type: "attach-grounded-proposals",
         commandId: "command-attach-opening",
         expectedRevision: current.revision,
-        ...parseFixedOpeningResponse(action.text),
+        ...opening.envelope,
       });
       current = await applyCaseCommandToRepository(repository, caseId, {
         type: "record-clinician-facts",
@@ -151,11 +151,12 @@ export async function performJourneyAction(
     }
     case "submit-correction":
       requireStage(expectedStage, "update");
+      const correction = await model.propose("correction", action.text);
       current = await applyCaseCommandToRepository(repository, caseId, {
         type: "attach-grounded-proposals",
         commandId: "command-attach-correction",
         expectedRevision: current.revision,
-        ...parseFixedCorrectionResponse(action.text),
+        ...correction.envelope,
       });
       break;
     case "accept-dose-correction":

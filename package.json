@@ -13,11 +13,14 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "sample:model": "vitest run --config tools/model/vitest.config.ts",
+    "sample:model:verdict": "node --experimental-strip-types tools/model/record-slice-3-verdict.ts",
     "evidence:pdf": "node --experimental-strip-types tools/pdf/generate_evidence.ts",
     "evidence:chromium": "node --experimental-strip-types tools/pdf/capture_rendering.ts",
     "evidence:slice2:pdf-render": "node --experimental-strip-types tools/pdf/capture_slice_2_rendering.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "0.124.0",
     "@cantoo/pdf-lib": "2.9.1",
     "next": "16.3.3",
     "react": "19.2.8",
