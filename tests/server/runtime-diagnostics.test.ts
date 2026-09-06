@@ -39,7 +39,20 @@ describe("runtime diagnostics", () => {
       expect(await response.json()).toMatchObject({ stage: "understanding", revision: 2 });
       const events = written.map((value) => JSON.parse(value) as RuntimeDiagnosticEvent);
       expect(events.at(0)).toMatchObject({ source: "route", phase: "case-post", outcome: "start", ...context });
-      expect(events.at(-1)).toMatchObject({ source: "response", phase: "case-post", outcome: "success", ...context });
+      expect(events.at(-2)).toMatchObject({ source: "response", phase: "case-post", outcome: "success", ...context });
+      expect(events.at(-1)).toMatchObject({ source: "response", phase: "case-post-trace", outcome: "success", ...context });
+      const checkpoint = events.at(-1)?.details as { events: RuntimeDiagnosticEvent[] };
+      expect(checkpoint.events.slice(0, 2)).toMatchObject([
+        { sequence: 1, source: "route", phase: "case-post", outcome: "start" },
+        { sequence: 2, source: "schema-domain", phase: "request-action", outcome: "success" },
+      ]);
+      expect(checkpoint.events.at(-1)).toMatchObject({
+        sequence: 14,
+        source: "response",
+        phase: "case-post",
+        outcome: "success",
+      });
+      expect(JSON.stringify(events.at(-1)).length).toBeLessThan(256_000);
       expect(events.every((event) => event.runId === context.runId && event.operationId === context.operationId)).toBe(true);
     } finally {
       consoleLog.mockRestore();
@@ -162,12 +175,14 @@ describe("runtime diagnostics", () => {
       outputTokens: 45,
       error,
     });
+    diagnostics.checkpoint("credential-test-trace", "failure");
 
     const serialized = JSON.stringify(events);
     for (const credential of ["visible-value", "another-value", "nested-value", "third-value", "header-value", "cookie-value", "env-value"]) {
       expect(serialized).not.toContain(credential);
     }
     expect(events[0].details).toMatchObject({ inputTokens: 123, outputTokens: 45 });
+    expect(events[1]).toMatchObject({ source: "response", phase: "credential-test-trace", outcome: "failure" });
     expect(serialized).toContain("[REDACTED]");
   });
 

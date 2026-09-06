@@ -203,6 +203,12 @@ exception does not authorize real clinical data or another store. Authorization
 headers, cookies, API or deployment tokens, environment values, protection
 bypasses, and other credential-bearing material are never logged. PDF bytes are
 also excluded because they do not help explain model or control-flow behavior.
+Each case-route response also emits one in-request reconstruction checkpoint
+containing the already-sanitized events from that operation. Immediate phase
+events still expose an early crash; the checkpoint makes a completed operation
+reconstructable when Vercel's live Runtime Log stream omits individual lines.
+It exists only in function memory until that final log call and is not a second
+diagnostic or case store.
 
 Vercel Hobby's one-hour Runtime Log retention is accepted for this immediate
 operator inspection. Logs are not drained, copied into a longer-lived

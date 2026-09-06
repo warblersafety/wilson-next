@@ -481,6 +481,13 @@ retention is accepted because the operator inspects logs during or immediately
 after each run; no drain, dashboard, trace archive, or second diagnostic store
 is added.
 
+Each case-route response also emits a single reconstruction checkpoint with the
+already-sanitized events accumulated during that request. The immediate events
+remain the evidence for an early crash; the checkpoint makes a completed
+request reconstructable if Vercel's live stream omits individual log lines. The
+checkpoint is held only in request memory until it is logged and is not a
+second diagnostic or case store.
+
 The preview is disposable, synthetic-only, likely less secure than a production
 healthcare system, and never presented as production-ready. Remove access after
 the approved review window unless continued access is separately approved. An

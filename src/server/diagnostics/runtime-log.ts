@@ -67,6 +67,7 @@ export type DiagnosticEventSink = (event: RuntimeDiagnosticEvent) => void;
 export interface RuntimeDiagnosticLogger {
   readonly context: DiagnosticContext;
   event(source: DiagnosticSource, phase: string, outcome: DiagnosticOutcome, details?: unknown): void;
+  checkpoint(phase: string, outcome: DiagnosticOutcome): void;
 }
 
 export function diagnosticContext(headers: Headers, createId: () => string = randomUUID): DiagnosticContext {
@@ -82,20 +83,34 @@ export function createRuntimeDiagnosticLogger(
   now: () => Date = () => new Date(),
 ): RuntimeDiagnosticLogger {
   let sequence = 0;
+  const trace: RuntimeDiagnosticEvent[] = [];
+
+  const nextEvent = (
+    source: DiagnosticSource,
+    phase: string,
+    outcome: DiagnosticOutcome,
+    details?: unknown,
+  ): RuntimeDiagnosticEvent => ({
+    schemaVersion: diagnosticSchemaVersion,
+    timestamp: now().toISOString(),
+    runId: context.runId,
+    operationId: context.operationId,
+    sequence: ++sequence,
+    source,
+    phase,
+    outcome,
+    ...(details === undefined ? {} : { details: sanitizeDiagnosticValue(details) }),
+  });
+
   return {
     context,
     event(source, phase, outcome, details) {
-      sink({
-        schemaVersion: diagnosticSchemaVersion,
-        timestamp: now().toISOString(),
-        runId: context.runId,
-        operationId: context.operationId,
-        sequence: ++sequence,
-        source,
-        phase,
-        outcome,
-        ...(details === undefined ? {} : { details: sanitizeDiagnosticValue(details) }),
-      });
+      const event = nextEvent(source, phase, outcome, details);
+      trace.push(event);
+      sink(event);
+    },
+    checkpoint(phase, outcome) {
+      sink(nextEvent("response", phase, outcome, { events: trace }));
     },
   };
 }
@@ -147,6 +162,7 @@ export function caughtErrorDetails(error: unknown, seen = new WeakSet<object>())
 export const silentDiagnosticLogger: RuntimeDiagnosticLogger = {
   context: { runId: "00000000-0000-4000-8000-000000000000", operationId: "00000000-0000-4000-8000-000000000000" },
   event() {},
+  checkpoint() {},
 };
 
 function validCorrelationId(value: string | null): string | undefined {

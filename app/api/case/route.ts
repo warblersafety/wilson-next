@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
   try {
     const snapshot = await getJourneySnapshot(getCaseRepository(), session.caseId);
     diagnostics.event("response", "case-get", "success", responseMetadata(200, snapshot));
+    diagnostics.checkpoint("case-get-trace", "success");
     return responseWithSession(snapshot, session.sessionId, isSecure(request), context);
   } catch (error) {
     const body = { error: "The temporary case could not be loaded" };
@@ -39,6 +40,7 @@ export async function GET(request: NextRequest) {
       ...responseMetadata(500, body),
       error: caughtErrorDetails(error),
     });
+    diagnostics.checkpoint("case-get-trace", "failure");
     return errorResponse(body, 500, context);
   }
 }
@@ -51,6 +53,7 @@ export async function POST(request: NextRequest) {
     const body = { error: "The request origin was not accepted" };
     diagnostics.event("schema-domain", "same-origin", "rejected", { reason: body.error });
     diagnostics.event("response", "case-post", "rejected", responseMetadata(403, body));
+    diagnostics.checkpoint("case-post-trace", "rejected");
     return errorResponse(body, 403, context);
   }
   const session = caseSession(request);
@@ -65,6 +68,7 @@ export async function POST(request: NextRequest) {
       diagnostics,
     );
     diagnostics.event("response", "case-post", "success", responseMetadata(200, snapshot));
+    diagnostics.checkpoint("case-post-trace", "success");
     return responseWithSession(snapshot, session.sessionId, isSecure(request), context);
   } catch (error) {
     const body = { error: safeClientError(error) };
@@ -75,6 +79,7 @@ export async function POST(request: NextRequest) {
       ...responseMetadata(400, body),
       error: caughtErrorDetails(error),
     });
+    diagnostics.checkpoint("case-post-trace", "failure");
     return errorResponse(body, 400, context);
   }
 }
