@@ -4,6 +4,8 @@ import { correctionAccount, openingAccount } from "../../src/experiment/fixed-in
 import {
   ANTHROPIC_MODEL_ID,
   createAnthropicJourneyModel,
+  createAnthropicRequest,
+  createStreamingRequester,
   MODEL_MAX_RETRIES,
   MODEL_PROMPT_REVISION,
   MODEL_SCHEMA_REVISION,
@@ -54,6 +56,17 @@ describe("Anthropic fixed-journey adapter", () => {
       latencyMs: 250,
       estimatedCostUsd: 0.00055,
     });
+  });
+
+  it("streams the request so the SDK accepts the provider's full output capacity", async () => {
+    const finalMessage = vi.fn(async () => responseFor("opening"));
+    const stream = vi.fn(() => ({ finalMessage }));
+    const requester = createStreamingRequester({ messages: { stream } });
+    const request = createAnthropicRequest("opening", openingAccount);
+
+    await expect(requester(request)).resolves.toEqual(responseFor("opening"));
+    expect(stream).toHaveBeenCalledWith(request);
+    expect(finalMessage).toHaveBeenCalledOnce();
   });
 
   it("rejects malformed grounded output with a safe error before it reaches case commands", async () => {

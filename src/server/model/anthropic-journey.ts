@@ -109,6 +109,14 @@ export type AnthropicRequester = (
   request: AnthropicModelRequest,
 ) => Promise<AnthropicModelResponse>;
 
+export interface AnthropicStreamingClient {
+  messages: {
+    stream(request: AnthropicModelRequest): {
+      finalMessage(): Promise<AnthropicModelResponse>;
+    };
+  };
+}
+
 const SYSTEM_PROMPT = `You extract grounded semantic proposals from one fictional clinician input for Wilson Experiment 1.
 
 Rules:
@@ -232,7 +240,11 @@ export function createAnthropicJourneyModel(
 
 function defaultRequester(): AnthropicRequester {
   const client = new Anthropic({ maxRetries: MODEL_MAX_RETRIES, logLevel: "off" });
-  return async (request) => client.messages.parse(request);
+  return createStreamingRequester(client);
+}
+
+export function createStreamingRequester(client: AnthropicStreamingClient): AnthropicRequester {
+  return async (request) => client.messages.stream(request).finalMessage();
 }
 
 function requireFixedInput(turn: ModelTurn, text: string): void {

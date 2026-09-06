@@ -44,3 +44,11 @@ the follow-up implementation uses Sonnet 5's full 128,000-token provider output
 capacity rather than a Wilson-selected budget. The model, default effort and
 sampling, provider, prompt responsibility, schema, no-retry rule, and USD 5
 experiment cap remain unchanged. Sample 1 remains recorded as stopped.
+
+The first follow-up operator attempt (ledger sample 2) stopped locally before a
+provider request was sent. Anthropic documents 128,000 as Sonnet 5's standard
+maximum, but its TypeScript SDK requires streaming when `max_tokens` is above
+the non-streaming timeout threshold. The attempt recorded no calls, usage, or
+cost. The adapter now uses the SDK's structured-output streaming path and waits
+for its final parsed message; this is an execution-harness correction, not a
+change to the model, prompt, schema, or Wilson responsibility.
