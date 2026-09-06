@@ -5,9 +5,11 @@ system that turns a natural account into reviewed, traceable case knowledge and
 a supported Form FDA 3500 projection.
 
 **Current status:** Product, interaction, Experiment 1 architecture, execution,
-verification, deployment, and delivery decisions are approved. The planning
-topics are closed. Steve authorized and completed Experiment 1 Slices 0–3 under
-Issues #11, #15, #17, and #23; Slice 4 and deployment remain unauthorized.
+verification, deployment, and delivery decisions are approved as amended.
+Steve authorized and completed Experiment 1 Slices 0–3 under Issues #11, #15,
+#17, and #23. Slice 4 is now split into the Vercel Hobby deployment-path gate
+(4A) and physician-ready live preview (4B); implementation and deployment remain
+unauthorized until Steve separately approves the next slice.
 
 ## Active corpus
 
@@ -40,7 +42,7 @@ document before continuing.
 - **Slice 0:** this README; the projection and adapter boundary in Architecture;
   the Selected stack, Slice 0 PDF gate, CI and implementation order, and
   Retention sections in Experiment 1; and Delivery.
-- **Slices 1–4:** read Product, Architecture, Experiment 1, and Delivery in
+- **Slices 1–4B:** read Product, Architecture, Experiment 1, and Delivery in
   full.
 - **Premise challenge or legacy reuse:** additionally read the relevant
   evidence and policy in Recovery.
