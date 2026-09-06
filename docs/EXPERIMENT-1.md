@@ -359,7 +359,8 @@ without evidence that the first physician decision needs them.
 - `@cantoo/pdf-lib` 2.9.1 subject to the Slice 0 gate; bounded `pypdf` 6.16.2
   fallback if it fails.
 - Vitest 4.1.11 and Playwright Chromium.
-- One Vercel Hobby project, subject to the Slice 4A deployment-path gate.
+- One Vercel Hobby project, subject to the Slice 4A deployment-path and usage-
+  terms eligibility gate.
 - Origin- and tab-scoped `sessionStorage` for the disposable synthetic case and
   minimum conversation state; no hosted case persistence.
 - Vercel deployment protection when it provides workable reviewer access;
@@ -443,7 +444,9 @@ Before an Anthropic secret is installed or a reviewer link is shared, every
 model, case, and PDF route must be behind the selected protection; the
 Anthropic key never reaches the browser. An unprotected 4A gate deployment may
 contain only the existing deterministic synthetic experience, remain unshared,
-and be removed when the gate ends.
+and be removed when the gate ends. Its checks stop at build completion, initial
+page/static delivery, and access-path discovery; they do not exercise or make
+claims about the multi-request journey.
 
 State changes use non-GET methods and reject mismatched Origin. Case/PDF
 responses use `Cache-Control: no-store`; all pages send `X-Robots-Tag: noindex,
@@ -605,9 +608,11 @@ Core implementation follows the completed Slices 0–3 and the split Slice 4:
    `main`, attempt direct import of the public `warblersafety/wilson-next`
    repository first. If Vercel refuses or cannot use that Git connection on
    Hobby, deploy the same application commit with the reusable Vercel CLI or
-   REST API. Create/link a distinct Wilson Next project, prove a basic build
-   is reachable, determine the practical non-technical reviewer access path,
-   record exact repeatable steps and cost, and make no live-model call or
+   REST API. Create/link a distinct Wilson Next project; prove that the build,
+   initial page, and static assets are reachable; determine the practical
+   non-technical reviewer access path; confirm that this non-commercial,
+   open-source organization-repository use is eligible under the current Hobby
+   terms; record exact repeatable steps and cost; and make no live-model call or
    physician-facing product change. Stop rather than purchasing Pro.
 6. **Slice 4B — physician-ready live preview:** connect the real browser journey
    to the live model, move disposable case/conversation continuity to the
@@ -616,17 +621,26 @@ Core implementation follows the completed Slices 0–3 and the split Slice 4:
    conversation/PDF acceptance, and then meet one physician when the minimum
    evidence is green.
 
-Slice 4A passes only when a basic Wilson Next build has a Vercel URL, the Hobby
-Git-import result is conclusive, the CLI/API fallback works if needed, a
-non-technical access path is identified, the process is documented and
-repeatable, no credential is retained or committed, and no paid plan is
-purchased. Its result selects the deployment mechanism for 4B; it does not
-select hosted persistence.
+Slice 4A passes only when the Wilson Next build, initial page, and static assets
+have a Vercel URL; the Hobby Git-import result is conclusive; the CLI/API
+fallback works if needed; current Hobby terms permit this non-commercial,
+open-source organization-repository use; a non-technical access path is
+identified; the process is documented and repeatable; no credential is retained
+or committed; and no paid plan is purchased. Its result selects the deployment
+mechanism for 4B; it does not select hosted persistence or claim that the
+current multi-request journey works on Vercel.
+
+The merged Slice 1–3 application still keeps case/session state in a
+process-local `Map`. That mechanism is already known to be unreliable across
+Vercel requests and is intentionally replaced only in 4B. Do not exercise the
+seven-state journey as 4A acceptance, interpret warm-instance success as
+continuity evidence, or repair session behavior under the deployment gate.
 
 Slice 4A may change only deployment metadata, secret-ignore rules, and the
 documentation needed to establish that result. If Vercel requires an
 application behavior change, dependency, persistence mechanism, or paid plan,
-stop and bring that finding back for approval instead of expanding the gate.
+or if current Hobby terms do not permit the planned use, stop and bring that
+finding back for approval instead of expanding the gate.
 
 Slice 4B passes only when the operator and remote physician can open the
 protected synthetic preview without technical setup; complete a meaningful

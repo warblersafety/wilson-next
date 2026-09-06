@@ -107,8 +107,9 @@ The active corpus carries these evidence-backed constraints:
 - Delivery is by complete user-visible journeys with assembled evidence.
 - Questions are semantic and consequential, not blank-field traversal.
 - UI/UX constrains architecture rather than decorating it later.
-- Real-model contact occurs in a small capped sample when model behavior
-  matters; deterministic tests cannot substitute for it.
+- Slice 3 real-model contact occurred in a small capped sample when model
+  behavior mattered; deterministic tests could not substitute for it. Later
+  operator-initiated use follows Experiment 1's uncapped Wilson runtime policy.
 - Severe friction or recurrence challenges the owning premise instead of
   producing path-specific patches.
 - Consequential decisions are written once into their owning active document.
