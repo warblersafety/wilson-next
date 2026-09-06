@@ -65,9 +65,10 @@ const sampleStateSchema = z.object({
       "none",
       "approved-remove-artificial-output-ceiling",
       "approved-add-diagnostics",
+      "approved-source-and-measurement-contract",
     ]).default("none"),
     lastFailure: failureDiagnosticSchema.nullable().default(null),
-  }).strict()).max(SAMPLE_LIMIT),
+  }).strict()),
 }).strict();
 
 export interface RecordedCall extends ModelCallMetrics {
@@ -84,7 +85,8 @@ export interface RecordedSample {
   disposition:
     | "none"
     | "approved-remove-artificial-output-ceiling"
-    | "approved-add-diagnostics";
+    | "approved-add-diagnostics"
+    | "approved-source-and-measurement-contract";
   lastFailure: ModelFailureDiagnostic | null;
 }
 
@@ -148,7 +150,10 @@ export function cumulativeCost(state: SampleState): number {
 }
 
 export function assertMayStartSample(state: SampleState): void {
-  if (state.samples.length >= SAMPLE_LIMIT) throw new Error("The four-sample cap has been reached.");
+  const completeSamples = state.samples.filter((sample) => (
+    sample.status === "complete" || (sample.calls.length === 2 && sample.humanVerdict !== null)
+  )).length;
+  if (completeSamples >= SAMPLE_LIMIT) throw new Error("The four-complete-sample cap has been reached.");
   const prior = state.samples.at(-1);
   const priorPassed = prior?.status === "complete" && prior.humanVerdict === "pass";
   const priorAdjustmentApproved = prior?.status === "stopped" && prior.disposition !== "none";

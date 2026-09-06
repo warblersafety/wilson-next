@@ -212,5 +212,5 @@ function assertCredentialRuntime(): void {
   if (!process.env.ANTHROPIC_API_KEY) {
     throw new Error("The Wilson-specific model credential is not ready.");
   }
-  process.stdout.write(`Starting one capped complete sample (maximum ${SAMPLE_LIMIT} samples / $${COST_LIMIT_USD}).\n`);
+  process.stdout.write(`Starting one capped complete sample (maximum ${SAMPLE_LIMIT} complete samples / $${COST_LIMIT_USD}).\n`);
 }

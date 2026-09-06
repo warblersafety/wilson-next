@@ -231,7 +231,7 @@ function toModelOutput(parsed: ParsedModelProposalEnvelope) {
         intent: proposal.intent,
         target: proposal.target,
         value: proposal.value,
-        source: { id: source.id, start: source.start, end: source.end },
+        source: { start: source.start, end: source.end },
       };
     }),
   };

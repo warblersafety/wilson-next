@@ -25,7 +25,16 @@ describe("real-model sample caps", () => {
 
   it("refuses a fifth sample", () => {
     const state = withSamples(Array.from({ length: SAMPLE_LIMIT }, () => sample("complete", "pass")));
-    expect(() => assertMayStartSample(state)).toThrow("four-sample cap");
+    expect(() => assertMayStartSample(state)).toThrow("four-complete-sample cap");
+  });
+
+  it("does not mistake stopped attempts for complete samples", () => {
+    const attempts = Array.from({ length: SAMPLE_LIMIT + 1 }, () => {
+      const stopped = sample("stopped", null);
+      stopped.disposition = "approved-source-and-measurement-contract";
+      return stopped;
+    });
+    expect(() => assertMayStartSample(withSamples(attempts))).not.toThrow();
   });
 
   it("counts recorded call cost and reserves room under the USD cap", () => {

@@ -17,8 +17,8 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-experiment-1-extraction-v1";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v1";
+export const MODEL_PROMPT_REVISION = "wilson-experiment-1-extraction-v2";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v2";
 // The Messages API requires max_tokens. Use Sonnet 5's full provider output
 // capacity here so Wilson imposes no development/verification token budget.
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
@@ -78,7 +78,6 @@ const modelOutputSchema = z.object({
       value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]),
     }).strict(),
     source: z.object({
-      id: z.string(),
       start: z.number().int(),
       end: z.number().int(),
     }).strict(),
@@ -129,7 +128,9 @@ Rules:
 - Propose only facts explicitly supported by the supplied input. Do not diagnose, infer causality, classify, fill gaps, or establish truth.
 - Keep each medicine attached to its exact stable product ID. "I suspect" establishes a reported role; it is not your causality judgment.
 - Use normalized ISO dates (YYYY-MM-DD), "oral" for "by mouth", and the literal frequency wording "twice daily" or "daily".
+- Preserve a measurement's value and unit together as a string, for example "7.8 g/dL" rather than 7.8.
 - Every proposal must cite the smallest exact supporting substring using zero-based start-inclusive/end-exclusive character offsets into the clinician input. Offsets must select non-empty text exactly.
+- Supply only the source offsets. Wilson assigns stable source identity; the model does not.
 - Use only the proposal IDs, groups, targets, and intents listed for the requested turn. Emit every listed proposal that the input explicitly supports and no others.
 - Products are declarations for newly proposed product entities, not accepted case knowledge.`;
 
@@ -296,6 +297,14 @@ export function createAnthropicJourneyModel(
               recordedAt: fixedRecordedAt,
             },
             ...structured.data,
+            proposals: structured.data.proposals.map((proposal) => ({
+              ...proposal,
+              source: {
+                id: `source-${proposal.proposalId}`,
+                start: proposal.source.start,
+                end: proposal.source.end,
+              },
+            })),
           }),
           metrics,
           responseArtifact,
