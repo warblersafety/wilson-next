@@ -659,8 +659,12 @@ feature branches create protected preview deployments and pull-request comments,
 while `vercel.json` disables automatic Git deployment from `main`. Vercel's
 project-level deployment policies would express the same distinction centrally,
 but its API requires Pro or Enterprise; that paid control remains excluded.
-The Vercel project still identifies `main` as its production branch so any later
-production deployment must be an explicit, separately authorized act.
+API verification found previews and fork protection enabled, pull-request
+comments enabled, Vercel Authentication on generated deployment URLs, zero
+protection bypasses, and no paid deployment policy. The Vercel project still
+identifies `main` as its production branch so any later production deployment
+must be an explicit, separately authorized act. The retained evidence is in
+[`evidence/issue-30/README.md`](../evidence/issue-30/README.md).
 
 The merged Slice 1–3 application still keeps case/session state in a
 process-local `Map`. That mechanism is already known to be unreliable across
