@@ -233,6 +233,7 @@ export function createAnthropicJourneyModel(
             "Wilson could not retain the fictional model response for diagnosis. Accepted case knowledge is unchanged.",
             { phase: "response-capture", errorName: errorName(error) },
             metrics,
+            response,
           );
         }
       }
@@ -246,6 +247,7 @@ export function createAnthropicJourneyModel(
             responseArtifact,
           },
           metrics,
+          response,
         );
       }
 
@@ -271,6 +273,7 @@ export function createAnthropicJourneyModel(
             }],
           },
           metrics,
+          response,
         );
       }
       const structured = modelOutputSchema.safeParse(decoded);
@@ -284,6 +287,7 @@ export function createAnthropicJourneyModel(
             issues: zodIssues(structured.error),
           },
           metrics,
+          response,
         );
       }
 
@@ -308,6 +312,7 @@ export function createAnthropicJourneyModel(
           }),
           metrics,
           responseArtifact,
+          diagnosticResponse: response,
         };
       } catch (error) {
         throw new ModelCallFailure(
@@ -320,6 +325,7 @@ export function createAnthropicJourneyModel(
             issues: error instanceof z.ZodError ? zodIssues(error) : undefined,
           },
           metrics,
+          response,
         );
       }
     },

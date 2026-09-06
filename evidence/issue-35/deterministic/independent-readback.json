@@ -1,0 +1,21 @@
+{
+  "reader": "pypdf 6.16.2",
+  "encrypted": false,
+  "pageCount": 8,
+  "pdfSha256": "951662c03b1179a952d2c8d8fdc44f915ec1ad135e72f6428c055fc56abb096a",
+  "agreement": {
+    "patientIdentifier": "TEST-57",
+    "patientAge": "57",
+    "patientSexFemale": "/1",
+    "eventDate": "18-AUG-2026",
+    "hospitalized": "/1",
+    "apixabanName": "apixaban",
+    "apixabanDose": "5 mg",
+    "apixabanStartDate": "13-AUG-2026",
+    "naproxenName": "naproxen",
+    "naproxenDose": "250 mg",
+    "naproxenStartDate": "10-AUG-2026",
+    "concomitantProduct": "lisinopril"
+  },
+  "rejectedAlternativeAbsent": "12-AUG-2026"
+}

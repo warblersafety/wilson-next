@@ -3,13 +3,17 @@
 import { useEffect, useState, type ReactNode } from "react";
 import type { CaseValue } from "../src/domain/case/types";
 import type { FactView } from "../src/domain/case/views";
-import {
-  correctionAccount,
-  indicationAnswer,
-  openingAccount,
-} from "../src/experiment/fixed-inputs";
+import { correctionAccount, indicationAnswer, openingAccount } from "../src/experiment/fixed-inputs";
+import type { BrowserJourneyState, JourneyResponse } from "../src/server/case/browser-state";
 import type { JourneyAction, JourneySnapshot } from "../src/server/journey/service";
-import { requestJourneyJson } from "./browser-diagnostics";
+import {
+  clearJourneySession,
+  JourneyRequestError,
+  readStoredJourneyState,
+  requestJourneyJson,
+  requestJourneyPdf,
+  storeJourneyState,
+} from "./browser-diagnostics";
 import styles from "./page.module.css";
 
 const stageLabels: Record<JourneySnapshot["stage"], string> = {
@@ -24,6 +28,7 @@ const stageLabels: Record<JourneySnapshot["stage"], string> = {
 
 export default function Journey() {
   const [snapshot, setSnapshot] = useState<JourneySnapshot>();
+  const [browserState, setBrowserState] = useState<BrowserJourneyState>();
   const [opening, setOpening] = useState(openingAccount);
   const [answer, setAnswer] = useState(indicationAnswer);
   const [correction, setCorrection] = useState(correctionAccount);
@@ -32,29 +37,121 @@ export default function Journey() {
   const [boundaryNotice, setBoundaryNotice] = useState<string>();
 
   useEffect(() => {
-    void fetchSnapshot();
+    void loadJourney();
   }, []);
 
-  async function fetchSnapshot() {
+  function acceptResponse(response: JourneyResponse) {
+    storeJourneyState(response.state);
+    setBrowserState(response.state);
+    setSnapshot(response.snapshot);
+  }
+
+  async function freshJourney(notice?: string) {
+    const response = await requestJourneyJson<JourneyResponse>(
+      {},
+      "The temporary case could not be loaded",
+    );
+    acceptResponse(response);
+    if (notice) setBoundaryNotice(notice);
+  }
+
+  async function loadJourney() {
     try {
-      setSnapshot(await requestJourneyJson<JourneySnapshot>({}, "The temporary case could not be loaded"));
+      const stored = readStoredJourneyState();
+      if (stored === undefined) {
+        await freshJourney();
+        return;
+      }
+      try {
+        const response = await requestJourneyJson<JourneyResponse>({
+          method: "POST",
+          body: { operation: "resume", state: stored },
+        }, "The saved synthetic preview could not be resumed");
+        acceptResponse(response);
+        setBoundaryNotice("Restored this tab’s disposable synthetic preview state.");
+      } catch (caught) {
+        if (caught instanceof JourneyRequestError
+          && ["incompatible-browser-state", "malformed-browser-state", "stale-browser-state"].includes(caught.code ?? "")) {
+          clearJourneySession();
+          await freshJourney("The saved preview state was invalid or incompatible, so Wilson started over safely.");
+          return;
+        }
+        throw caught;
+      }
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "The temporary case could not be loaded");
+      setError(displayError(caught, "The temporary case could not be loaded"));
     }
   }
 
   async function act(action: JourneyAction) {
+    if (!snapshot || !browserState) return;
     setBusy(true);
     setError(undefined);
     setBoundaryNotice(undefined);
     try {
-      const body = await requestJourneyJson<JourneySnapshot | { error?: string }>({
+      const response = await requestJourneyJson<JourneyResponse>({
         method: "POST",
-        body: action,
+        body: {
+          operation: "act",
+          state: browserState,
+          expectedRevision: snapshot.revision,
+          action,
+        },
       }, "Wilson could not update the case");
-      setSnapshot(body as JourneySnapshot);
+      acceptResponse(response);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Wilson could not update the case");
+      setError(displayError(caught, "Wilson could not update the case"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function resetJourney() {
+    if (snapshot && snapshot.revision > 0
+      && !window.confirm("Reset this synthetic preview? The current tab’s case will be lost.")) return;
+    setBusy(true);
+    setError(undefined);
+    setBoundaryNotice(undefined);
+    clearJourneySession();
+    setSnapshot(undefined);
+    setBrowserState(undefined);
+    setOpening(openingAccount);
+    setAnswer(indicationAnswer);
+    setCorrection(correctionAccount);
+    try {
+      await freshJourney("The disposable synthetic preview was reset.");
+    } catch (caught) {
+      setError(displayError(caught, "The synthetic preview could not be reset"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function openPdf(mode: "preview" | "download") {
+    if (!browserState) return;
+    const previewWindow = mode === "preview" ? window.open("about:blank", "_blank") : null;
+    if (previewWindow) previewWindow.opener = null;
+    setBusy(true);
+    setError(undefined);
+    try {
+      const { blob, filename } = await requestJourneyPdf(browserState, mode);
+      const url = URL.createObjectURL(blob);
+      if (mode === "preview") {
+        if (!previewWindow) throw new Error("The browser blocked the PDF preview window");
+        previewWindow.location.replace(url);
+        window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      } else {
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      }
+    } catch (caught) {
+      previewWindow?.close();
+      setError(displayError(caught, "The official PDF could not be generated"));
     } finally {
       setBusy(false);
     }
@@ -73,11 +170,14 @@ export default function Journey() {
           <span className={styles.wordmark}>Wilson</span>
           <span className={styles.experiment}>Synthetic experiment</span>
         </div>
-        <span className={styles.status}>{stageLabels[snapshot.stage]}</span>
+        <div className={styles.headerActions}>
+          <span className={styles.status}>{stageLabels[snapshot.stage]}</span>
+          <button disabled={busy} onClick={() => void resetJourney()}>Reset synthetic preview</button>
+        </div>
       </header>
 
       <aside className={styles.boundary} aria-label="Experiment boundary">
-        <strong>Fictional information only.</strong> This experiment supports one fixed adverse-event journey. Do not use it for a real report.
+        <strong>Fictional information only.</strong> This disposable operator preview supports one fixed adverse-event journey. Do not use it for a real report or as a production system. Closing this tab or resetting clears its saved case.
       </aside>
 
       {error && <div className={styles.error} role="alert">{error}</div>}
@@ -85,7 +185,7 @@ export default function Journey() {
       {busy && <div className={styles.progress} role="status">Updating the reviewed case…</div>}
 
       {outputStage ? (
-        <OutputComposition snapshot={snapshot} busy={busy} act={act} />
+        <OutputComposition snapshot={snapshot} busy={busy} act={act} openPdf={openPdf} />
       ) : (
         <div className={styles.workspace}>
           <section className={styles.activeTask} aria-labelledby="task-title">
@@ -150,7 +250,8 @@ export default function Journey() {
             </div>
             <CaseCards
               snapshot={snapshot}
-              onUnsupported={(label) => setBoundaryNotice(`${label} is outside this fixed experiment. Use the later clinical-update step to review the supported correction.`)}
+              busy={busy}
+              act={act}
             />
           </section>
         </div>
@@ -203,10 +304,21 @@ function CorrectionTask({ snapshot, busy, act }: { snapshot: JourneySnapshot; bu
   );
 }
 
-function OutputComposition({ snapshot, busy, act }: { snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void> }) {
+function OutputComposition({
+  snapshot,
+  busy,
+  act,
+  openPdf,
+}: {
+  snapshot: JourneySnapshot;
+  busy: boolean;
+  act: (action: JourneyAction) => Promise<void>;
+  openPdf: (mode: "preview" | "download") => Promise<void>;
+}) {
   const unresolved = snapshot.stage === "output-unresolved";
   const apixaban = snapshot.understanding.products.find(({ id }) => id === "product-apixaban");
   const conflict = apixaban?.facts.startDate.conflicts;
+  const { A, F } = snapshot.projection.sections;
   return (
     <div className={styles.outputWorkspace}>
       <section className={styles.outputSummary} aria-labelledby="output-title">
@@ -214,10 +326,16 @@ function OutputComposition({ snapshot, busy, act }: { snapshot: JourneySnapshot;
         <h1 id="output-title">{unresolved ? "Inspect what the form can include" : "The reviewed form is ready"}</h1>
 
         <Summary title="Included" tone="included">
-          <li>Patient TEST-57, age 57, female</li>
+          <li>
+            Patient {A.patientIdentifier ?? "identifier not provided"}
+            {A.ageYears === undefined ? "" : `, age ${A.ageYears}`}
+            {A.sex === undefined ? "" : `, ${A.sex}`}
+          </li>
           <li>Melena and dizziness with hospitalization and recovery</li>
           <li>Apixaban and naproxen as separate suspect products</li>
-          <li>Lisinopril as a concomitant product</li>
+          {F.concomitantProducts.map((product) => (
+            <li key={product.productId}>{product.name} as a concomitant product</li>
+          ))}
           <li>Naproxen 250 mg; earlier 500 mg retained only in history</li>
           {!unresolved && <li>Apixaban start date 13-Aug-2026</li>}
         </Summary>
@@ -250,13 +368,13 @@ function OutputComposition({ snapshot, busy, act }: { snapshot: JourneySnapshot;
         {unresolved ? (
           <button disabled title="Resolve the apixaban start-date conflict first">Download official PDF</button>
         ) : (
-          <a className={styles.download} href="/api/case/pdf">Download official PDF</a>
+          <button className={styles.download} disabled={busy} onClick={() => void openPdf("download")}>Download official PDF</button>
         )}
       </section>
       <section className={styles.previewPanel} aria-labelledby="preview-title">
         <div className={styles.panelHeading}>
           <div><p className={styles.eyebrow}>Supported projection</p><h2 id="preview-title">Form FDA 3500 preview</h2></div>
-          {!unresolved && <a href="/api/case/pdf?mode=preview" target="_blank" rel="noreferrer">Open PDF preview</a>}
+          {!unresolved && <button disabled={busy} onClick={() => void openPdf("preview")}>Open PDF preview</button>}
         </div>
         <FormPreview snapshot={snapshot} unresolved={unresolved} />
       </section>
@@ -318,15 +436,31 @@ function Summary({ title, tone, children }: { title: string; tone: "included" | 
   return <section className={`${styles.summary} ${styles[tone]}`}><h2>{title}</h2><ul>{children}</ul></section>;
 }
 
-function CaseCards({ snapshot, onUnsupported }: { snapshot: JourneySnapshot; onUnsupported: (label: string) => void }) {
+function CaseCards({
+  snapshot,
+  busy,
+  act,
+}: {
+  snapshot: JourneySnapshot;
+  busy: boolean;
+  act: (action: JourneyAction) => Promise<void>;
+}) {
   const { understanding } = snapshot;
   if (snapshot.revision === 0) {
     return <p className={styles.emptyCase}>Your proposed case knowledge will appear here after Wilson reads the fictional account.</p>;
   }
   return (
     <div className={styles.cards}>
-      <CaseCard title="Patient" facts={understanding.patient} fields={["identifier", "ageYears", "sex"]} onUnsupported={onUnsupported} />
-      <CaseCard title="Event" facts={understanding.event} fields={["reportType", "symptoms", "onsetDate", "hospitalized", "hemoglobin", "treatments", "outcome", "dischargeDate"]} onUnsupported={onUnsupported} />
+      <CaseCard
+        title="Patient"
+        facts={understanding.patient}
+        fields={["identifier", "ageYears", "sex"]}
+        busy={busy}
+        onChangeAge={snapshot.stage === "understanding" && understanding.patient.ageYears.state === "proposed"
+          ? () => act({ action: "change-patient-age", ageYears: 58 })
+          : undefined}
+      />
+      <CaseCard title="Event" facts={understanding.event} fields={["reportType", "symptoms", "onsetDate", "hospitalized", "hemoglobin", "treatments", "outcome", "dischargeDate"]} busy={busy} />
       {understanding.products.map((product) => {
         const role = formatFact(activeValue(product.facts.role));
         const name = formatFact(activeValue(product.facts.name));
@@ -337,7 +471,10 @@ function CaseCards({ snapshot, onUnsupported }: { snapshot: JourneySnapshot; onU
             eyebrow={role === "suspect" ? "Suspect product" : "Other product"}
             facts={product.facts}
             fields={["dose", "frequency", "route", "startDate", "stopDate", "indication"]}
-            onUnsupported={onUnsupported}
+            busy={busy}
+            onRemove={snapshot.stage === "understanding" && product.id === "product-lisinopril"
+              ? () => act({ action: "remove-lisinopril" })
+              : undefined}
           />
         );
       })}
@@ -345,16 +482,32 @@ function CaseCards({ snapshot, onUnsupported }: { snapshot: JourneySnapshot; onU
   );
 }
 
-function CaseCard({ title, eyebrow, facts, fields, onUnsupported }: { title: string; eyebrow?: string; facts: Record<string, FactView>; fields: string[]; onUnsupported: (label: string) => void }) {
+function CaseCard({
+  title,
+  eyebrow,
+  facts,
+  fields,
+  busy,
+  onChangeAge,
+  onRemove,
+}: {
+  title: string;
+  eyebrow?: string;
+  facts: Record<string, FactView>;
+  fields: string[];
+  busy: boolean;
+  onChangeAge?: () => Promise<void>;
+  onRemove?: () => Promise<void>;
+}) {
   const evidence = [...new Set(fields.flatMap((field) => facts[field]?.evidence ?? []))];
   return (
     <article className={styles.caseCard}>
       <div className={styles.cardTitle}>
         <div>{eyebrow && <span>{eyebrow}</span>}<h3>{title}</h3></div>
-        <div className={styles.cardActions}>
-          <button onClick={() => onUnsupported(`Changing ${title}`)}>Change</button>
-          <button onClick={() => onUnsupported(`Removing ${title}`)}>Remove</button>
-        </div>
+        {(onChangeAge || onRemove) && <div className={styles.cardActions}>
+          {onChangeAge && <button disabled={busy} onClick={() => void onChangeAge()}>Change age to 58</button>}
+          {onRemove && <button disabled={busy} onClick={() => void onRemove()}>Remove lisinopril</button>}
+        </div>}
       </div>
       <dl>
         {fields.map((field) => {
@@ -409,4 +562,12 @@ function Evidence({ excerpt, expanded = false }: { excerpt?: string | string[]; 
   return expanded
     ? <blockquote className={styles.evidence}><span>Source evidence</span>{excerpts.map((value) => <span key={value}>“{value}”</span>)}</blockquote>
     : <details className={styles.evidence}><summary>View source evidence</summary>{excerpts.map((value) => <blockquote key={value}>“{value}”</blockquote>)}</details>;
+}
+
+function displayError(caught: unknown, fallback: string): string {
+  if (!(caught instanceof Error)) return fallback;
+  if (caught instanceof JourneyRequestError && caught.diagnosticReference) {
+    return `${caught.message} Diagnostic reference: ${caught.diagnosticReference}`;
+  }
+  return caught.message;
 }

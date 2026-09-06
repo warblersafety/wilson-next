@@ -16,7 +16,7 @@ const browserEventSchema = z.object({
   outcome: z.enum(["start", "success", "failure"]),
   request: z.object({
     method: z.enum(["GET", "POST"]),
-    path: z.literal("/api/case"),
+    path: z.enum(["/api/case", "/api/case/pdf"]),
     body: z.unknown().optional(),
   }).strict().optional(),
   response: z.object({
@@ -81,6 +81,9 @@ function safeRequest(request: z.infer<typeof browserEventSchema>["request"]): un
     return { ...request, body: "[NOT LOGGED: outside fixed synthetic fixture]" };
   }
   const candidate = body as { action?: unknown; text?: unknown };
+  if ("state" in candidate) {
+    return { ...request, body: { ...candidate, state: "[BROWSER STATE NOT LOGGED]" } };
+  }
   const fixedText = candidate.text === openingAccount
     || candidate.text === indicationAnswer
     || candidate.text === correctionAccount;

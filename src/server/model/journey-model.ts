@@ -16,6 +16,7 @@ export interface ModelProposalResult {
   envelope: ParsedModelProposalEnvelope;
   metrics?: ModelCallMetrics;
   responseArtifact?: string;
+  diagnosticResponse?: unknown;
 }
 
 export type ModelFailurePhase =
@@ -48,13 +49,22 @@ export interface ModelFailureDiagnostic {
 }
 
 export class ModelCallFailure extends Error {
+  readonly returnedResponse?: unknown;
+
   constructor(
     message: string,
     readonly diagnostic: ModelFailureDiagnostic,
     readonly metrics?: ModelCallMetrics,
+    returnedResponse?: unknown,
   ) {
     super(message);
     this.name = "ModelCallFailure";
+    Object.defineProperty(this, "returnedResponse", {
+      configurable: false,
+      enumerable: false,
+      value: returnedResponse,
+      writable: false,
+    });
   }
 }
 

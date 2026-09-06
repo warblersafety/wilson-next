@@ -8,8 +8,11 @@ a supported Form FDA 3500 projection.
 verification, deployment, and delivery decisions are approved as amended.
 Steve authorized and completed Experiment 1 Slices 0–3 under Issues #11, #15,
 #17, and #23. Slice 4A established the Vercel Hobby deployment path under Issue
-#28 and was merged in PR #29. Git-backed protected previews are the narrow
-deployment follow-up under Issue #30. Slice 4B remains separately unauthorized.
+#28 and was merged in PR #29. Git-backed protected previews and deployed
+observability followed under Issues #30 and #32. Slice 4B is defined as an
+operator-only live-model checkpoint under Issue #35; Steve authorized
+implementation after the required pre-implementation review and approved its
+planning remediation on 2026-09-06.
 
 ## Active corpus
 

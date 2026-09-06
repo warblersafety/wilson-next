@@ -1,0 +1,12 @@
+{
+  "browser": "Chromium 153.0.8010.12",
+  "node": "v22.23.2",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "states": 7,
+  "downloadedFilename": "wilson-form-fda-3500.pdf",
+  "pdfBytes": 1054321,
+  "pdfSha256": "951662c03b1179a952d2c8d8fdc44f915ec1ad135e72f6428c055fc56abb096a"
+}
