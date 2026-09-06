@@ -7,9 +7,9 @@ a supported Form FDA 3500 projection.
 **Current status:** Product, interaction, Experiment 1 architecture, execution,
 verification, deployment, and delivery decisions are approved as amended.
 Steve authorized and completed Experiment 1 Slices 0–3 under Issues #11, #15,
-#17, and #23. Slice 4 is now split into the Vercel Hobby deployment-path gate
-(4A) and physician-ready live preview (4B); implementation and deployment remain
-unauthorized until Steve separately approves the next slice.
+#17, and #23. Slice 4A established the Vercel Hobby deployment path under Issue
+#28; its result awaits review and merge approval. Slice 4B remains separately
+unauthorized.
 
 ## Active corpus
 

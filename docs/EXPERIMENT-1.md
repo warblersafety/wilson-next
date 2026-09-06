@@ -1,8 +1,8 @@
 # Wilson Experiment 1
 
-**Status:** Approved by Steve; Slices 0–3 complete; Slice 4 split into a Vercel
-deployment-path gate (4A) and physician-ready live preview (4B) on 2026-09-06;
-implementation of either requires Steve's explicit go-ahead
+**Status:** Approved by Steve; Slices 0–3 complete; Slice 4A deployment-path
+evidence complete under Issue #28 and awaiting review and merge approval; Slice
+4B requires Steve's separate explicit go-ahead
 
 **Owns:** The fixed journey, supported and deferred scope, interaction
 composition, selected stack, implementation sequence, verification, deployment,
@@ -351,7 +351,11 @@ without evidence that the first physician decision needs them.
 
 ## Selected stack
 
-- Node.js 24.20.0 LTS, npm, strict TypeScript, React, Next.js 16.3.3.
+- Node.js 24.20.0 LTS for local development and CI, npm, strict TypeScript,
+  React, Next.js 16.3.3. Vercel selects only the Node major and controls minor
+  and patch rollout; the Slice 4A build used Vercel's then-current Node 24.19.0
+  under project setting `24.x`, an accepted deployment-platform variance that
+  does not weaken the repository or CI pin.
 - Plain CSS Modules; no UI kit or CSS framework.
 - Zod 4 for the runtime model/case boundary.
 - `claude-sonnet-5` through Anthropic's TypeScript SDK with structured output,
@@ -359,8 +363,9 @@ without evidence that the first physician decision needs them.
 - `@cantoo/pdf-lib` 2.9.1 subject to the Slice 0 gate; bounded `pypdf` 6.16.2
   fallback if it fails.
 - Vitest 4.1.11 and Playwright Chromium.
-- One Vercel Hobby project, subject to the Slice 4A deployment-path and usage-
-  terms eligibility gate.
+- One Vercel Hobby project deployed from source with the pinned transient
+  Vercel CLI path established in Slice 4A; direct Git import remains unavailable
+  unless the repository's Vercel GitHub integration is installed later.
 - Origin- and tab-scoped `sessionStorage` for the disposable synthetic case and
   minimum conversation state; no hosted case persistence.
 - Vercel deployment protection when it provides workable reviewer access;
@@ -436,10 +441,14 @@ obvious reset action and a concise instruction for clearing the preview after
 review. Do not add a Vercel database, key-value store, encrypted server
 envelope, revision/hash anchor, or affinity mechanism for Experiment 1.
 
-The deployment-only preview lock is not a product account. Slice 4A first
-determines whether Vercel's Hobby deployment protection can give a
-non-technical remote reviewer practical access. If it cannot, Slice 4B may add
-one minimal shared-secret screen and signed, secure, non-persistent cookie.
+The deployment-only preview lock is not a product account. Slice 4A established
+Vercel Authentication on generated deployment URLs plus one revocable
+Shareable Link as the no-cost, non-technical reviewer path. Hobby permits only
+one Shareable Link in total for the account; the link is bearer access and must
+be scoped to the review deployment and revoked afterward. Slice 4B must confirm
+that path end to end before sharing the preview. If it is not practical, Slice
+4B may add one minimal shared-secret screen and signed, secure, non-persistent
+cookie.
 Before an Anthropic secret is installed or a reviewer link is shared, every
 model, case, and PDF route must be behind the selected protection; the
 Anthropic key never reaches the browser. An unprotected 4A gate deployment may
@@ -629,6 +638,18 @@ identified; the process is documented and repeatable; no credential is retained
 or committed; and no paid plan is purchased. Its result selects the deployment
 mechanism for 4B; it does not select hosted persistence or claim that the
 current multi-request journey works on Vercel.
+
+Slice 4A selected a distinct `wilson-next` Hobby project created through the
+Vercel REST API and deployed from a clean repository commit with transient,
+pinned Vercel CLI 59.11.7. Direct import of the public
+`warblersafety/wilson-next` repository failed because its Vercel GitHub
+integration was not installed; no installation or paid plan is required for
+the selected fallback. Omit `--target` for preview deployment: the first empty-
+project deployment classified an explicit `--target preview` request as
+production, so that deployment was removed after evidence and the corrected
+command was verified to produce a preview. The complete result, repeatable
+commands, terms basis, and cleanup record live in
+[`evidence/slice-4a/README.md`](../evidence/slice-4a/README.md).
 
 The merged Slice 1–3 application still keeps case/session state in a
 process-local `Map`. That mechanism is already known to be unreliable across
