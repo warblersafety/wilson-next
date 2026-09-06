@@ -483,7 +483,14 @@ is added.
 
 The preview is disposable, synthetic-only, likely less secure than a production
 healthcare system, and never presented as production-ready. Remove access after
-the approved review window unless continued access is separately approved.
+the approved review window unless continued access is separately approved. An
+Issue #32 delivery exception retains one unshared, protected synthetic Git
+preview until it is replaced by a later verified protected preview or a
+production deployment is separately approved. Vercel treats the first
+deployment of an otherwise empty project as production regardless of the Git
+branch; retaining this one protected deployment prevents the no-production
+project from re-entering that bootstrap state. It is not a release, durable case
+store, or reviewer access grant.
 
 ### Vercel deployment credential handoff
 
@@ -679,6 +686,17 @@ protection bypasses, and no paid deployment policy. The Vercel project still
 identifies `main` as its production branch so any later production deployment
 must be an explicit, separately authorized act. The retained evidence is in
 [`evidence/issue-30/README.md`](../evidence/issue-30/README.md).
+
+Issue #32 found one additional Vercel lifecycle constraint: after every prior
+deployment had been removed, the next feature-branch push was treated as the
+empty project's first deployment and promoted to production even though the
+Git link still named `main` as the production branch. The repository's
+`git.deploymentEnabled.main: false` rule prevents a `main` push from deploying;
+it does not override Vercel's first-deployment bootstrap behavior. The bounded
+recovery creates and verifies a protected Git preview before deleting the
+accidental production deployment, then retains that unshared protected preview
+under the exception above. Evidence and the cleanup record live in
+[`evidence/issue-32/README.md`](../evidence/issue-32/README.md).
 
 The merged Slice 1–3 application still keeps case/session state in a
 process-local `Map`. That mechanism is already known to be unreliable across
