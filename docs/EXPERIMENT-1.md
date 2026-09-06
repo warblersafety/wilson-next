@@ -1,8 +1,9 @@
 # Wilson Experiment 1
 
-**Status:** Approved by Steve; Slices 0–4A and Git-backed preview delivery are
-complete; Issue #32 adds synthetic-only deployed observability before Slice 4B,
-which still requires Steve's separate explicit go-ahead
+**Status:** Approved by Steve; Slices 0–4A, Git-backed preview delivery, and
+Issue #32's synthetic-only deployed observability are complete; Slice 4B is
+defined as an operator-only checkpoint under Issue #35, with implementation
+reserved for a separate explicit go-ahead
 
 **Owns:** The fixed journey, supported and deferred scope, interaction
 composition, selected stack, implementation sequence, verification, deployment,
@@ -30,9 +31,11 @@ whether source excerpts make proposals reviewable, whether incompatible
 evidence stays visible without leaking into the form, and whether review and
 PDF agree at one case revision.
 
-The experiment is not a general Form 3500 release or a usability study. Once
-its minimum integrity evidence is green, one physician uses the synthetic
-journey and supplies the highest-value early product feedback.
+The experiment is not a general Form 3500 release or a usability study. Slice
+4B stops after Steve and Codex complete the live deployed journey as operators.
+Separately authorized later slices develop additional pre-physician evals;
+only after those gates pass does one physician use the synthetic journey and
+supply the highest-value early product feedback.
 
 ## Scope
 
@@ -51,8 +54,9 @@ journey and supplies the highest-value early product feedback.
 - one seven-state desktop Chromium journey at 1440 × 900 CSS pixels;
 - browser review, form preview, and official PDF download;
 - one deterministic browser run, operator-initiated real-model use under an
-  operator-chosen runtime budget, one deployed operator run, and one formative
-  physician session; and
+  operator-chosen runtime budget, and one deployed operator run in Slice 4B;
+- separately authorized later eval work and one later formative physician
+  session; and
 - synthetic information only.
 
 ### Deferred
@@ -246,7 +250,8 @@ The experiment passes only if:
    requires explicit action.
 10. The model sample passes its gates.
 11. Operator review finds no severe reason to withhold the synthetic preview.
-12. One physician completes the journey and their observations inform the next
+12. Separately authorized additional pre-physician evals pass.
+13. One physician completes the journey and their observations inform the next
     product decision.
 
 Immediately stop and classify the owning premise for silent loss, invention,
@@ -334,10 +339,14 @@ with the PDF and inspect its rendered pages visually. Then the operator
 completes the deployed synthetic journey unaided using the real model and PDF
 filler. This is an operator-initiated runtime use under the policy above.
 
-When all minimum evidence is green, one physician uses the experimental,
-synthetic-only preview and discusses confusion, effort, fidelity, reviewability,
-the value of the one follow-up, missing emphasis, and preference versus the
-direct form. Keep concise observations, not a pseudo-scientific score.
+Slice 4B ends when Steve and Codex complete and assess the deployed synthetic
+journey as operators. It makes no claim that the preview is ready to hand to a
+physician. Separately authorized later slices develop the additional
+pre-physician evals and define their gates. Only after those gates pass does one
+physician use the experimental, synthetic-only preview and discuss confusion,
+effort, fidelity, reviewability, the value of the one follow-up, missing
+emphasis, and preference versus the direct form. Keep concise observations,
+not a pseudo-scientific score.
 
 Before that session, proposed work must protect case integrity, enable the
 complete browser-to-PDF journey, or make the feedback safer or interpretable.
@@ -444,20 +453,21 @@ envelope, revision/hash anchor, or affinity mechanism for Experiment 1.
 
 The deployment-only preview lock is not a product account. Slice 4A established
 Vercel Authentication on generated deployment URLs and identified one
-revocable Shareable Link as the no-cost, non-technical reviewer candidate.
-Hobby permits only one Shareable Link in total for the account; a read-only
-account check during Slice 4A found no existing alias-level protection bypass,
-so that slot appeared available. The link is bearer access and must be scoped
-to the review deployment and revoked afterward. Slice 4B must confirm that path
-end to end before sharing the preview. If it is not practical, Slice 4B may add
-one minimal shared-secret screen and signed, secure, non-persistent cookie.
-Before an Anthropic secret is installed or a reviewer link is shared, every
-model, case, and PDF route must be behind the selected protection; the
-Anthropic key never reaches the browser. An unprotected 4A gate deployment may
-contain only the existing deterministic synthetic experience, remain unshared,
-and be removed when the gate ends. Its checks stop at build completion, initial
-page/static delivery, and access-path discovery; they do not exercise or make
-claims about the multi-request journey.
+revocable Shareable Link as a possible later no-cost, non-technical reviewer
+path. Hobby permits only one Shareable Link in total for the account; a
+read-only account check during Slice 4A found no existing alias-level
+protection bypass, so that slot appeared available. Slice 4B uses the existing
+authenticated operator path and neither creates nor tests a physician-facing
+link. A later physician-readiness slice must re-evaluate the practical access
+path; only that separately authorized work may use a deployment-scoped bearer
+link or consider one minimal shared-secret screen and signed, secure,
+non-persistent cookie. Before an Anthropic secret is installed or any reviewer
+link is shared, every model, case, and PDF route must be behind the selected
+protection; the Anthropic key never reaches the browser. An unprotected 4A gate
+deployment may contain only the existing deterministic synthetic experience,
+remain unshared, and be removed when the gate ends. Its checks stop at build
+completion, initial page/static delivery, and access-path discovery; they do
+not exercise or make claims about the multi-request journey.
 
 State changes use non-GET methods and reject mismatched Origin. Case/PDF
 responses use `Cache-Control: no-store`; all pages send `X-Robots-Tag: noindex,
@@ -657,12 +667,19 @@ Core implementation follows the completed Slices 0–3 and the split Slice 4:
    open-source organization-repository use is eligible under the current Hobby
    terms; record exact repeatable steps and cost; and make no live-model call or
    physician-facing product change. Stop rather than purchasing Pro.
-6. **Slice 4B — physician-ready live preview:** connect the real browser journey
-   to the live model, move disposable case/conversation continuity to the
-   browser boundary above, close the Change/Remove false affordances, add the
-   selected preview protection and the approved synthetic-only diagnostics, run operator
-   conversation/PDF acceptance, and then meet one physician when the minimum
-   evidence is green.
+6. **Slice 4B — protected live-model operator checkpoint:** first close Issue
+   #34's diagnostic-taxonomy gap, then connect the real browser journey to the
+   live model, move disposable case/conversation continuity to the browser
+   boundary above, close the Change/Remove false affordances, preserve the
+   selected preview protection and approved synthetic-only diagnostics, and
+   have Steve and Codex run operator conversation/PDF acceptance. Stop there;
+   no physician participates and no new pre-physician eval is developed in
+   this slice.
+
+Later separately authorized slices develop the additional pre-physician evals,
+set their acceptance gates, and only then prepare and run the formative
+physician session. Their scope and numbering remain undecided; Slice 4B does
+not create placeholder infrastructure for them.
 
 Slice 4A passes only when the Wilson Next build, initial page, and static assets
 have a Vercel URL; the Hobby Git-import result is conclusive; the CLI/API
@@ -721,21 +738,24 @@ application behavior change, dependency, persistence mechanism, or paid plan,
 or if current Hobby terms do not permit the planned use, stop and bring that
 finding back for approval instead of expanding the gate.
 
-Slice 4B passes only when the operator and remote physician can open the
-protected synthetic preview without technical setup; complete a meaningful
-multi-turn live-model journey; refresh without losing the current compatible
-state in the same tab; inspect correct product identity, evidence, correction,
-and conflict behavior; and verify that the reviewed case, onscreen projection, PDF
-preview, and downloaded FDA form agree. Failures must return an opaque
-diagnostic reference and enough correlated Runtime Log evidence to diagnose the
-phase and model behavior under the synthetic-only policy above.
-No Anthropic credential reaches the browser, and the preview plainly forbids
-real patient data and disclaims production readiness.
+Slice 4B passes only when Steve and Codex, acting as operators, can open the
+protected synthetic preview through the existing operator access path; complete
+a meaningful multi-turn live-model journey; refresh without losing the current
+compatible state in the same tab; inspect correct product identity, evidence,
+correction, and conflict behavior; and verify that the reviewed case, onscreen
+projection, PDF preview, and downloaded FDA form agree. Failures must return an
+opaque diagnostic reference and enough correlated Runtime Log evidence to
+diagnose the actual provider/transport, returned-content, schema/domain, or
+control-flow phase under the synthetic-only policy above. The Node.js case
+route explicitly uses Vercel Hobby's 300-second function-duration boundary; a
+timeout fails the slice and does not authorize a paid plan or architectural
+workaround. No Anthropic credential reaches the browser, and the preview
+plainly forbids real patient data and disclaims production readiness.
 
 Manual 4B acceptance uses the fixed synthetic journey:
 
-1. Open the remote preview as a non-technical reviewer and confirm the
-   synthetic-only boundary before entering anything.
+1. Open the remote preview through the existing protected operator path and
+   confirm the synthetic-only boundary before entering anything.
 2. Submit the opening account and confirm exactly one live request occurs.
    Inspect every proposed fact, product identity, role, and source excerpt;
    stop on invention, omission, unsupported content, or wrong attachment.
@@ -767,8 +787,8 @@ or disagreement among case, projection, preview, and PDF fails Slice 4B.
 
 Slice 2 established the assembled path but also exposed a false-affordance
 risk: visible Change and Remove controls were not functional. Slice 4A does not
-exercise or repair them; close the gap inside 4B before operator or physician
-use. Slice 3 remains complete and its historical evidence is unchanged.
+exercise or repair them; close the gap inside 4B before operator acceptance.
+Slice 3 remains complete and its historical evidence is unchanged.
 Approved planning amendments and independently valuable defects follow the
 ordinary issue-and-branch rule without otherwise renumbering the slices.
 
@@ -793,10 +813,11 @@ production seed. Preserve a failed branch or named commit as falsification
 evidence rather than merging it. Copy nothing into legacy Wilson or Nightjar.
 
 Slice 4A requires Vercel team/project access and the short-lived credential
-handoff above. Slice 4B additionally requires an Anthropic API organization/key,
-the selected preview/cookie secrets, and physician-session logistics. Missing
-access is a concrete blocker; it does not authorize silent provider, plan, host,
-or persistence substitution.
+handoff above. Slice 4B additionally requires an Anthropic API organization/key
+and the selected protected operator-access secrets. Physician access and
+session logistics belong only to a later separately authorized slice. Missing
+access is a concrete blocker; it does not authorize silent provider, plan,
+host, or persistence substitution.
 
 ## Authorization boundary
 
