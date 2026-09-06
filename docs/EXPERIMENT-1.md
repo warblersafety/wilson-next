@@ -1,7 +1,8 @@
 # Wilson Experiment 1
 
-**Status:** Approved by Steve; course-adjusted after Slice 2 on 2026-09-05;
-implementation requires Steve's explicit go-ahead
+**Status:** Approved by Steve; course-adjusted after Slice 2 and local Slice 3
+credential handoff established on 2026-09-05; implementation requires Steve's
+explicit go-ahead
 
 **Owns:** The fixed journey, supported and deferred scope, interaction
 composition, selected stack, implementation sequence, verification, deployment,
@@ -424,10 +425,71 @@ plan, multiple instances, or Vercel's dynamically routed compute with in-memory
 state. Do not deploy or restart during the physician session. Remove service
 access after the approved review window.
 
-Application API credentials live only in an app-loaded, git-ignored local
-secret file or Render environment; never export them into the shell used for
+Deployment API credentials live only in the host's environment-secret store.
+Local Slice 3 model access uses the Mini-local handoff below; never export its
+credential into an ordinary development shell or the shell used for
 subscription-backed code review. Narratives, model payloads, case facts, and
 PDFs are never logged.
+
+### Local Slice 3 model credential handoff
+
+The local Anthropic credential is stored under the `sofa-claude` Mini account,
+never on the MacBook or in this repository. Its non-secret coordinates are:
+
+```text
+keychain:  ~/Library/Keychains/login.keychain-db
+namespace: wilson-next
+variable:  ANTHROPIC_API_KEY
+envchain:  ~/.local/bin/envchain (version 1.1.0)
+tmux:      socket wilson-next, session wilson-next, pane wilson-next:0.0
+```
+
+The operator entered the value through envchain's hidden prompt. This repository
+records neither the raw value nor the provider-side key identifier. The item is
+approved only for Wilson Next model calls; it is not Claude review
+authentication and must not be reused for legacy Wilson.
+
+The headless Codex execution session cannot unlock this file-based keychain.
+An interactive terminal logged into the Mini as `sofa-claude` therefore starts
+one persistent, credential-bearing Wilson shell:
+
+```sh
+envchain wilson-next tmux -L wilson-next new-session -d -s wilson-next \
+  -c /Users/sofa-claude/code/warblersafety/wilson-next
+```
+
+Run local real-model commands only inside that named tmux session. A fresh task
+first checks `tmux -L wilson-next list-sessions`, then verifies readiness inside
+the pane without displaying the value:
+
+```sh
+node -e 'process.stdout.write(process.env.ANTHROPIC_API_KEY ? "WILSON_KEY_READY\n" : "WILSON_KEY_MISSING\n")'
+```
+
+Do not run `env`, `printenv`, `set`, `tmux show-environment`,
+`envchain --list --show-value`, shell tracing, or any command intended to
+recover the raw value. Do not run the subscription-backed Claude reviewer
+inside this tmux session. Its existing preflight still requires all Anthropic
+API variables to be unset.
+
+The tmux process keeps the credential only until that server exits or the Mini
+restarts. To recover, use an interactive `sofa-claude` terminal, without
+`sudo`:
+
+1. Run
+   `security unlock-keychain "$HOME/Library/Keychains/login.keychain-db"`;
+   enter its password only at the hidden prompt.
+2. If the Anthropic key was intentionally rotated or removed, restore it with
+   `envchain --set --noecho wilson-next ANTHROPIC_API_KEY` and enter the value
+   only at the hidden prompt.
+3. Recreate the named tmux session with the command above and repeat only the
+   non-revealing readiness check.
+
+The envchain binary was built per-user from the upstream version 1.1.0 archive;
+its source SHA-256 matched Homebrew's published
+`832bcf58037db6187f7327282e347e45627ea617c2e09a9e6d18629e7310fff9`.
+`/opt/homebrew` belongs to a different Mini account, so do not change its
+ownership to reinstall envchain.
 
 ## CI and implementation order
 
