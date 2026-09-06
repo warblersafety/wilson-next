@@ -49,6 +49,7 @@ describe("Anthropic fixed-journey adapter", () => {
     expect(captured?.output_config.format).not.toHaveProperty("parse");
     expect(MODEL_MAX_RETRIES).toBe(0);
     expect(result.envelope).toEqual(parseFixedOpeningResponse(openingAccount));
+    expect(result.diagnosticResponse).toEqual(responseFor("opening"));
     expect(result.metrics).toEqual({
       model: ANTHROPIC_MODEL_ID,
       promptRevision: MODEL_PROMPT_REVISION,
@@ -85,6 +86,7 @@ describe("Anthropic fixed-journey adapter", () => {
       requestId: "message-correction",
       issues: [{ code: "custom", message: "Invalid source span source-naproxen-dose-correction" }],
     });
+    expect(failure.returnedResponse).toBe(response);
   });
 
   it("does not retry or expose provider detail after a failed request", async () => {
@@ -131,6 +133,7 @@ describe("Anthropic fixed-journey adapter", () => {
       requestId: "message-opening",
       stopReason: "refusal",
     });
+    expect(failure.returnedResponse).toBe(refusal);
   });
 
   it("distinguishes invalid JSON from a structured-schema failure", async () => {
@@ -173,6 +176,7 @@ describe("Anthropic fixed-journey adapter", () => {
       async () => { throw new Error("disk detail"); },
     ).propose("opening", openingAccount));
     expect(captureFailure.diagnostic).toEqual({ phase: "response-capture", errorName: "Error" });
+    expect(captureFailure.returnedResponse).toMatchObject({ id: "message-opening" });
   });
 
   it("rejects inputs outside the approved fixed experiment without making a request", async () => {

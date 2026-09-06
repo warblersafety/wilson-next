@@ -1,7 +1,8 @@
-# Issue 35 pre-implementation evidence
+# Issue 35 operator-preview evidence
 
-**Status:** Required pre-implementation review and Steve-approved planning
-remediation complete; application implementation may begin
+**Status:** Required pre-implementation review, approved planning remediation,
+implementation, and deterministic verification complete; protected live-preview
+verification pending
 
 **Issues:** [#35](https://github.com/warblersafety/wilson-next/issues/35) and
 [#34](https://github.com/warblersafety/wilson-next/issues/34)
@@ -78,6 +79,42 @@ issue text and local repository artifacts.
   downstream model failures.
 
 Steve approved the consequential PDF transport decision and both finding
-dispositions on 2026-09-06 before application implementation began. These are
-governing-plan changes only; their implementation and verification follow in a
-later branch checkpoint.
+dispositions on 2026-09-06 before application implementation began. At that
+checkpoint only the governing plan had changed; the implementation and
+verification described below followed afterward.
+
+## Deterministic implementation gate
+
+The implementation removes process-global case/session state. Every command and
+PDF operation supplies the same complete, versioned browser-held state; each
+server request validates it and reconstructs a fresh request-local repository.
+The browser keeps the disposable case only in the current tab's
+`sessionStorage`, supports safe reset and same-tab reload, and uses state-bearing
+PDF POST responses only as ephemeral blobs. Unsupported stable-link and generic
+Change/Remove affordances are absent. The two supported controls—changing the
+patient age to 58 and removing lisinopril—execute ordinary reviewed case
+commands and remain truthful through the final projection.
+
+The Issue #34 diagnostic remediation records provider transport failures only
+as model/route/response failures. When a provider returned content, the model
+response is logged before any precise provider-stop, structured JSON, schema,
+or domain-boundary rejection. PDF request/state rejection and PDF-generation
+failure also have distinct diagnostic sources and phases. All visible failures
+carry the request's opaque operation reference.
+
+Local verification on 2026-09-06 passed:
+
+- `npm run typecheck`
+- `PYPDF_PYTHON=.venv-pdf-evidence/bin/python npm test` — 15 files, 74 tests
+- `npm run build`
+- `npm run test:e2e` — both the seven-stage journey and the complete supported
+  Change/Remove alternate path
+
+The bounded `deterministic/` evidence contains three screenshots, the official
+PDF returned by the state-bearing download operation, its hash and runtime
+metadata, a sanitized checkpoint trace, and independent pypdf readback. It does
+not contain browser storage, request bodies, network/session archives,
+credentials, or PDF bytes in diagnostics. Independent readback found an
+unencrypted eight-page form whose accepted fields match the final projection;
+the rejected 12-Aug-2026 alternative is absent and the chosen 13-Aug-2026 value
+is present.

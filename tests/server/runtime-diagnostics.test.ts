@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { describe, expect, it, vi } from "vitest";
-import { POST as postCase } from "../../app/api/case/route";
+import { GET as getCase, postCase } from "../../app/api/case/route";
 import { POST as postBrowserDiagnostic } from "../../app/api/diagnostics/browser/route";
 import { consumeJourneyJsonResponse } from "../../app/browser-diagnostics";
 import { openingAccount } from "../../src/experiment/fixed-inputs";
@@ -11,6 +11,7 @@ import {
   type RuntimeDiagnosticEvent,
 } from "../../src/server/diagnostics/runtime-log";
 import { getJourneySnapshot, performJourneyAction } from "../../src/server/journey/service";
+import { ModelCallFailure, type JourneyModel } from "../../src/server/model/journey-model";
 
 const context = {
   runId: "11111111-1111-4111-8111-111111111111",
@@ -19,6 +20,7 @@ const context = {
 
 describe("runtime diagnostics", () => {
   it("carries browser correlation IDs through the route and ordered response event", async () => {
+    const state = await initialBrowserState();
     const written: string[] = [];
     const consoleLog = vi.spyOn(console, "log").mockImplementation((value) => written.push(String(value)));
     try {
@@ -31,13 +33,21 @@ describe("runtime diagnostics", () => {
           "x-wilson-run-id": context.runId,
           "x-wilson-operation-id": context.operationId,
         },
-        body: JSON.stringify({ action: "submit-opening", text: openingAccount, reportType: "adverse-event" }),
+        body: JSON.stringify({
+          operation: "act",
+          state,
+          expectedRevision: 0,
+          action: { action: "submit-opening", text: openingAccount, reportType: "adverse-event" },
+        }),
       }));
 
       expect(response.status).toBe(200);
       expect(response.headers.get("x-wilson-run-id")).toBe(context.runId);
       expect(response.headers.get("x-wilson-operation-id")).toBe(context.operationId);
-      expect(await response.json()).toMatchObject({ stage: "understanding", revision: 2 });
+      expect(await response.json()).toMatchObject({
+        state: { version: "wilson-browser-state-v1", stage: "understanding", case: { revision: 2 } },
+        snapshot: { stage: "understanding", revision: 2 },
+      });
       const events = written.map((value) => JSON.parse(value) as RuntimeDiagnosticEvent);
       expect(events.at(0)).toMatchObject({ source: "route", phase: "case-post", outcome: "start", ...context });
       expect(events.at(-2)).toMatchObject({ source: "response", phase: "case-post", outcome: "success", ...context });
@@ -45,10 +55,9 @@ describe("runtime diagnostics", () => {
       const checkpoint = events.at(-1)?.details as { events: RuntimeDiagnosticEvent[] };
       expect(checkpoint.events.slice(0, 2)).toMatchObject([
         { sequence: 1, source: "route", phase: "case-post", outcome: "start" },
-        { sequence: 2, source: "schema-domain", phase: "request-action", outcome: "success" },
+        { sequence: 2, source: "schema-domain", phase: "request-envelope", outcome: "success" },
       ]);
       expect(checkpoint.events.at(-1)).toMatchObject({
-        sequence: 14,
         source: "response",
         phase: "case-post",
         outcome: "success",
@@ -150,12 +159,111 @@ describe("runtime diagnostics", () => {
     expect(events.map(({ source, phase, outcome }) => [source, phase, outcome])).toEqual([
       ["state-transition", "action-dispatch", "start"],
       ["model", "request", "start"],
-      ["schema-domain", "proposal-envelope", "rejected"],
-      ["model", "response", "failure"],
+      ["schema-domain", "model-request-input", "rejected"],
       ["state-transition", "action-dispatch", "failure"],
     ]);
     expect(JSON.stringify(events)).not.toContain("not the approved synthetic fixture");
     expect((await getJourneySnapshot(repository, "case-schema-rejection")).revision).toBe(0);
+  });
+
+  it("logs provider transport failure without claiming returned content or schema rejection", async () => {
+    const repository = new InMemoryCaseRepository();
+    const events: RuntimeDiagnosticEvent[] = [];
+    const diagnostics = createRuntimeDiagnosticLogger(context, (event) => events.push(event));
+    const model: JourneyModel = {
+      async propose() {
+        throw new ModelCallFailure("Provider unavailable", {
+          phase: "provider-request",
+          errorName: "APIConnectionError",
+        });
+      },
+    };
+
+    await expect(performJourneyAction(repository, "case-provider-failure", {
+      action: "submit-opening",
+      text: openingAccount,
+      reportType: "adverse-event",
+    }, model, diagnostics)).rejects.toThrow("Provider unavailable");
+
+    expect(events.map(({ source, phase, outcome }) => [source, phase, outcome])).toEqual([
+      ["state-transition", "action-dispatch", "start"],
+      ["model", "request", "start"],
+      ["model", "response", "failure"],
+      ["state-transition", "action-dispatch", "failure"],
+    ]);
+    expect(events.some(({ source, outcome }) => source === "schema-domain" && outcome === "rejected")).toBe(false);
+  });
+
+  it("logs returned model content before the precise structured-content rejection", async () => {
+    const repository = new InMemoryCaseRepository();
+    const events: RuntimeDiagnosticEvent[] = [];
+    const diagnostics = createRuntimeDiagnosticLogger(context, (event) => events.push(event));
+    const returnedResponse = { id: "msg-returned", content: [{ type: "text", text: "not-json" }] };
+    const model: JourneyModel = {
+      async propose() {
+        throw new ModelCallFailure(
+          "Invalid returned content",
+          { phase: "structured-json", requestId: "msg-returned" },
+          {
+            model: "claude-sonnet-5",
+            promptRevision: "prompt-v2",
+            schemaRevision: "schema-v2",
+            inputTokens: 10,
+            outputTokens: 2,
+            latencyMs: 50,
+            estimatedCostUsd: 0.00004,
+          },
+          returnedResponse,
+        );
+      },
+    };
+
+    await expect(performJourneyAction(repository, "case-content-failure", {
+      action: "submit-opening",
+      text: openingAccount,
+      reportType: "adverse-event",
+    }, model, diagnostics)).rejects.toThrow("Invalid returned content");
+
+    expect(events.map(({ source, phase, outcome }) => [source, phase, outcome])).toEqual([
+      ["state-transition", "action-dispatch", "start"],
+      ["model", "request", "start"],
+      ["model", "response", "success"],
+      ["schema-domain", "structured-json", "rejected"],
+      ["state-transition", "action-dispatch", "failure"],
+    ]);
+    expect(events[2].details).toMatchObject({ response: returnedResponse });
+  });
+
+  it("does not relabel a provider failure in the outer case route", async () => {
+    const state = await initialBrowserState();
+    const written: string[] = [];
+    const consoleLog = vi.spyOn(console, "log").mockImplementation((value) => written.push(String(value)));
+    const consoleError = vi.spyOn(console, "error").mockImplementation((value) => written.push(String(value)));
+    const model: JourneyModel = {
+      async propose() {
+        throw new ModelCallFailure("Provider unavailable", { phase: "provider-request", errorName: "APIConnectionError" });
+      },
+    };
+    try {
+      const response = await postCase(casePostRequest({
+        operation: "act",
+        state,
+        expectedRevision: 0,
+        action: { action: "submit-opening", text: openingAccount, reportType: "adverse-event" },
+      }), model);
+      expect(response.status).toBe(502);
+      expect(await response.json()).toMatchObject({
+        code: "model-provider-request",
+        diagnosticReference: context.operationId,
+      });
+      const events = written.map((value) => JSON.parse(value) as RuntimeDiagnosticEvent);
+      expect(events).toContainEqual(expect.objectContaining({ source: "model", phase: "response", outcome: "failure" }));
+      expect(events).toContainEqual(expect.objectContaining({ source: "route", phase: "case-action", outcome: "failure" }));
+      expect(events.some(({ source, outcome }) => source === "schema-domain" && outcome === "rejected")).toBe(false);
+    } finally {
+      consoleLog.mockRestore();
+      consoleError.mockRestore();
+    }
   });
 
   it("redacts credential-bearing fields and credential-shaped caught-error data without hiding token counts", () => {
@@ -286,3 +394,22 @@ describe("runtime diagnostics", () => {
     }
   });
 });
+
+async function initialBrowserState() {
+  const response = await getCase(new NextRequest("http://wilson.test/api/case"));
+  return (await response.json()).state;
+}
+
+function casePostRequest(body: unknown) {
+  return new NextRequest("http://wilson.test/api/case", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      host: "wilson.test",
+      origin: "http://wilson.test",
+      "x-wilson-run-id": context.runId,
+      "x-wilson-operation-id": context.operationId,
+    },
+    body: JSON.stringify(body),
+  });
+}

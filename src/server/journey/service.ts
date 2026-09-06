@@ -21,7 +21,7 @@ import {
   type RuntimeDiagnosticLogger,
 } from "../diagnostics/runtime-log";
 import { fixedJourneyModel } from "../model/fixed-journey";
-import type { JourneyModel } from "../model/journey-model";
+import { ModelCallFailure, type JourneyModel } from "../model/journey-model";
 
 export type JourneyStage =
   | "describe"
@@ -34,6 +34,8 @@ export type JourneyStage =
 
 export type JourneyAction =
   | { action: "submit-opening"; text: string; reportType: "adverse-event" }
+  | { action: "change-patient-age"; ageYears: 58 }
+  | { action: "remove-lisinopril" }
   | { action: "accept-understanding" }
   | { action: "answer-indications"; text: string }
   | { action: "submit-correction"; text: string }
@@ -137,17 +139,16 @@ export async function performJourneyAction(
       break;
     case "accept-understanding":
       requireStage(expectedStage, "understanding");
+      const pendingGroups = [
+        ...(current.patient.state === "proposed" ? ["patient"] : []),
+        ...(current.event.state === "proposed" ? ["event"] : []),
+        ...current.products.filter(({ state }) => state === "proposed").map(({ proposalGroupId }) => proposalGroupId),
+      ];
       await applyCommand({
         type: "review-proposal-groups",
         commandId: "command-review-opening",
         expectedRevision: current.revision,
-        decisions: [
-          { groupId: "patient", action: "accept" },
-          { groupId: "event", action: "accept" },
-          { groupId: "product-apixaban", action: "accept" },
-          { groupId: "product-naproxen", action: "accept" },
-          { groupId: "product-lisinopril", action: "accept" },
-        ],
+        decisions: pendingGroups.map((groupId) => ({ groupId, action: "accept" as const })),
       });
       await applyCommand({
         type: "record-asked-need",
@@ -155,6 +156,40 @@ export async function performJourneyAction(
         expectedRevision: current.revision,
         key: "suspect-product-indications",
         productIds: ["product-apixaban", "product-naproxen"],
+      });
+      break;
+    case "change-patient-age": {
+      requireStage(expectedStage, "understanding");
+      const sourceText = "Synthetic correction: patient age is 58 years.";
+      await applyCommand({
+        type: "review-proposal-groups",
+        commandId: "command-change-patient-age",
+        expectedRevision: current.revision,
+        decisions: [{
+          groupId: "patient",
+          action: "accept",
+          corrections: [{
+            proposalId: "patient-age",
+            replacementId: "patient-age-corrected",
+            value: { kind: "known", value: action.ageYears },
+            source: fullSource(
+              "source-patient-age-correction",
+              "input-patient-age-correction",
+              "correction",
+              sourceText,
+            ),
+          }],
+        }],
+      });
+      break;
+    }
+    case "remove-lisinopril":
+      requireStage(expectedStage, "understanding");
+      await applyCommand({
+        type: "review-proposal-groups",
+        commandId: "command-remove-lisinopril",
+        expectedRevision: current.revision,
+        decisions: [{ groupId: "product-lisinopril", action: "reject" }],
       });
       break;
     case "answer-indications": {
@@ -268,7 +303,15 @@ async function proposeWithDiagnostics(
   diagnostics.event("model", "request", "start", { turn, input: diagnosticInput(text) });
   try {
     const result = await model.propose(turn, text);
-    diagnostics.event("model", "response", "success", { turn, output: result });
+    diagnostics.event("model", "response", "success", {
+      turn,
+      ...(result.diagnosticResponse === undefined ? {} : { response: result.diagnosticResponse }),
+      output: {
+        envelope: result.envelope,
+        metrics: result.metrics,
+        responseArtifact: result.responseArtifact,
+      },
+    });
     diagnostics.event("schema-domain", "proposal-envelope", "success", {
       turn,
       products: result.envelope.products,
@@ -277,14 +320,34 @@ async function proposeWithDiagnostics(
     });
     return result;
   } catch (error) {
-    diagnostics.event("schema-domain", "proposal-envelope", "rejected", {
-      turn,
-      error: caughtErrorDetails(error),
-    });
-    diagnostics.event("model", "response", "failure", {
-      turn,
-      error: caughtErrorDetails(error),
-    });
+    if (error instanceof ModelCallFailure) {
+      if (error.returnedResponse === undefined) {
+        diagnostics.event("model", "response", "failure", {
+          turn,
+          phase: error.diagnostic.phase,
+          error: caughtErrorDetails(error),
+        });
+      } else {
+        diagnostics.event("model", "response", "success", {
+          turn,
+          response: error.returnedResponse,
+          metrics: error.metrics,
+        });
+        const diagnosticSource = error.diagnostic.phase === "provider-stop"
+          || error.diagnostic.phase === "response-capture"
+          ? "model"
+          : "schema-domain";
+        diagnostics.event(diagnosticSource, error.diagnostic.phase, "rejected", {
+          turn,
+          error: caughtErrorDetails(error),
+        });
+      }
+    } else {
+      diagnostics.event("schema-domain", "model-request-input", "rejected", {
+        turn,
+        error: caughtErrorDetails(error),
+      });
+    }
     throw error;
   }
 }
@@ -304,13 +367,15 @@ function diagnosticInput(text: string): string {
 }
 
 function diagnosticCaseState(caseState: SemanticCase): Omit<SemanticCase, "id"> {
-  const { id: _cookieDerivedCaseId, ...diagnosticState } = caseState;
+  const { id: _caseId, ...diagnosticState } = caseState;
   return diagnosticState;
 }
 
-function stageFor(caseState: SemanticCase): JourneyStage {
+export function stageFor(caseState: SemanticCase): JourneyStage {
   if (caseState.revision === 0) return "describe";
-  if (caseState.patient.state === "proposed") return "understanding";
+  if (caseState.patient.state === "proposed"
+    || caseState.event.state === "proposed"
+    || caseState.products.some(({ state }) => state === "proposed")) return "understanding";
   const indicationNeed = caseState.askedNeeds.find(({ key }) => key === "suspect-product-indications");
   if (!indicationNeed || indicationNeed.status === "open") return "clarify";
   if (!caseState.sources.some(({ inputId }) => inputId === "input-correction")) return "update";

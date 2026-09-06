@@ -85,4 +85,35 @@ describe("fixed local journey service", () => {
     expect(snapshot).toMatchObject({ stage: "output-resolved", revision: 9, downloadReady: true });
     expect(snapshot.projection.sections.D.suspectProducts[0].startDate).toBe("2026-08-12");
   });
+
+  it("makes the supported understanding Change and Remove actions authoritative", async () => {
+    const repository = new InMemoryCaseRepository();
+    const caseId = "case-truthful-controls";
+    await performJourneyAction(repository, caseId, {
+      action: "submit-opening",
+      text: openingAccount,
+      reportType: "adverse-event",
+    });
+
+    let snapshot = await performJourneyAction(repository, caseId, {
+      action: "change-patient-age",
+      ageYears: 58,
+    });
+    expect(snapshot).toMatchObject({ stage: "understanding", revision: 3 });
+    expect(snapshot.understanding.patient.ageYears).toMatchObject({
+      state: "resolved",
+      resolved: { kind: "known", value: 58 },
+      evidence: expect.arrayContaining(["Synthetic correction: patient age is 58 years."]),
+    });
+
+    snapshot = await performJourneyAction(repository, caseId, { action: "remove-lisinopril" });
+    expect(snapshot).toMatchObject({ stage: "understanding", revision: 4 });
+    expect(snapshot.understanding.products.map(({ id }) => id)).toEqual([
+      "product-apixaban",
+      "product-naproxen",
+    ]);
+
+    snapshot = await performJourneyAction(repository, caseId, { action: "accept-understanding" });
+    expect(snapshot).toMatchObject({ stage: "clarify", revision: 6 });
+  });
 });
