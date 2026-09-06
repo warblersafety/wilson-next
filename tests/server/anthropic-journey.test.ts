@@ -4,10 +4,10 @@ import { correctionAccount, openingAccount } from "../../src/experiment/fixed-in
 import {
   ANTHROPIC_MODEL_ID,
   createAnthropicJourneyModel,
-  MODEL_MAX_TOKENS,
   MODEL_MAX_RETRIES,
   MODEL_PROMPT_REVISION,
   MODEL_SCHEMA_REVISION,
+  PROVIDER_MAX_OUTPUT_TOKENS,
   type AnthropicModelRequest,
   type AnthropicModelResponse,
   type AnthropicRequester,
@@ -34,7 +34,7 @@ describe("Anthropic fixed-journey adapter", () => {
     expect(requester).toHaveBeenCalledOnce();
     expect(captured).toMatchObject({
       model: ANTHROPIC_MODEL_ID,
-      max_tokens: MODEL_MAX_TOKENS,
+      max_tokens: PROVIDER_MAX_OUTPUT_TOKENS,
       messages: [{ role: "user" }],
       output_config: { format: { type: "json_schema" } },
     });

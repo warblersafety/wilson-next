@@ -37,6 +37,10 @@ The subsequent implementation change makes any stopped inner run throw so the
 operator command also exits nonzero. This is a runner-reporting defect, not a
 second model result.
 
-Resuming the sample requires an explicit disposition of the model-output
-ceiling. Do not change effort, model, provider, prompt responsibility, or schema
-and do not make another call without that decision.
+Steve subsequently directed that artificial token ceilings be removed during
+development and verification; Wilson's eventual runtime budget remains a later
+operator decision. The Anthropic Messages API requires a `max_tokens` value, so
+the follow-up implementation uses Sonnet 5's full 128,000-token provider output
+capacity rather than a Wilson-selected budget. The model, default effort and
+sampling, provider, prompt responsibility, schema, no-retry rule, and USD 5
+experiment cap remain unchanged. Sample 1 remains recorded as stopped.

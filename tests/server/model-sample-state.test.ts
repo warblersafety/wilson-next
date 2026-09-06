@@ -14,6 +14,14 @@ describe("real-model sample caps", () => {
     expect(() => assertMayStartSample(state)).toThrow("passing human review");
   });
 
+  it("requires an explicit disposition before continuing after a stopped sample", () => {
+    const stopped = sample("stopped", null);
+    expect(() => assertMayStartSample(withSamples([stopped]))).toThrow("passing human review");
+
+    stopped.disposition = "approved-remove-artificial-output-ceiling";
+    expect(() => assertMayStartSample(withSamples([stopped]))).not.toThrow();
+  });
+
   it("refuses a fifth sample", () => {
     const state = withSamples(Array.from({ length: SAMPLE_LIMIT }, () => sample("complete", "pass")));
     expect(() => assertMayStartSample(state)).toThrow("four-sample cap");
@@ -31,9 +39,8 @@ describe("real-model sample caps", () => {
 function withSamples(samples: RecordedSample[]): SampleState {
   return { version: 1, samples: samples.map((entry, index) => ({ ...entry, number: index + 1 })) };
 }
-
 function sample(status: RecordedSample["status"], humanVerdict: RecordedSample["humanVerdict"]): RecordedSample {
-  return { number: 0, status, calls: [], humanVerdict };
+  return { number: 0, status, calls: [], humanVerdict, disposition: "none" };
 }
 
 function call(cost: number): RecordedSample["calls"][number] {
@@ -50,4 +57,3 @@ function call(cost: number): RecordedSample["calls"][number] {
     issueCount: 0,
   };
 }
-

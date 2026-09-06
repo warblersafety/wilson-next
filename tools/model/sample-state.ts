@@ -5,7 +5,9 @@ import type { ModelCallMetrics, ModelTurn } from "../../src/server/model/journey
 
 export const SAMPLE_LIMIT = 4;
 export const COST_LIMIT_USD = 5;
-export const PER_CALL_RESERVE_USD = 0.25;
+// This is a spend reservation, not a token budget. It covers one call even if
+// the model uses its full provider output capacity for the fixed short input.
+export const PER_CALL_RESERVE_USD = 1.5;
 export const SAMPLE_STATE_PATH = resolve(".wilson-model-sample-state.json");
 const SAMPLE_LOCK_PATH = resolve(".wilson-model-sample-state.lock");
 
@@ -29,6 +31,7 @@ const sampleStateSchema = z.object({
     status: z.enum(["running", "awaiting-human-review", "complete", "stopped"]),
     calls: z.array(metricsSchema).max(2),
     humanVerdict: z.enum(["pass", "fail"]).nullable(),
+    disposition: z.enum(["none", "approved-remove-artificial-output-ceiling"]).default("none"),
   }).strict()).max(SAMPLE_LIMIT),
 }).strict();
 
@@ -43,6 +46,7 @@ export interface RecordedSample {
   status: "running" | "awaiting-human-review" | "complete" | "stopped";
   calls: RecordedCall[];
   humanVerdict: "pass" | "fail" | null;
+  disposition: "none" | "approved-remove-artificial-output-ceiling";
 }
 
 export interface SampleState {
@@ -101,7 +105,10 @@ export function cumulativeCost(state: SampleState): number {
 export function assertMayStartSample(state: SampleState): void {
   if (state.samples.length >= SAMPLE_LIMIT) throw new Error("The four-sample cap has been reached.");
   const prior = state.samples.at(-1);
-  if (prior && (prior.status !== "complete" || prior.humanVerdict !== "pass")) {
+  const priorPassed = prior?.status === "complete" && prior.humanVerdict === "pass";
+  const priorAdjustmentApproved = prior?.status === "stopped"
+    && prior.disposition === "approved-remove-artificial-output-ceiling";
+  if (prior && !priorPassed && !priorAdjustmentApproved) {
     throw new Error("The prior sample has not received a passing human review.");
   }
   const reserved = PER_CALL_RESERVE_USD * 2;

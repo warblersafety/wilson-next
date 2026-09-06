@@ -36,6 +36,7 @@ async function runLockedSample(): Promise<void> {
     status: "running",
     calls: [],
     humanVerdict: null,
+    disposition: "none",
   };
   state.samples.push(sample);
   await saveSampleState(state);

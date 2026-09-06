@@ -17,7 +17,9 @@ import type {
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
 export const MODEL_PROMPT_REVISION = "wilson-experiment-1-extraction-v1";
 export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v1";
-export const MODEL_MAX_TOKENS = 8_192;
+// The Messages API requires max_tokens. Use Sonnet 5's full provider output
+// capacity here so Wilson imposes no development/verification token budget.
+export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
 export const MODEL_MAX_RETRIES = 0;
 
 const INPUT_USD_PER_MILLION_TOKENS = 2;
@@ -85,7 +87,7 @@ type ModelOutput = z.infer<typeof modelOutputSchema>;
 
 export interface AnthropicModelRequest {
   model: typeof ANTHROPIC_MODEL_ID;
-  max_tokens: typeof MODEL_MAX_TOKENS;
+  max_tokens: typeof PROVIDER_MAX_OUTPUT_TOKENS;
   system: string;
   messages: [{ role: "user"; content: string }];
   output_config: { format: ReturnType<typeof zodOutputFormat<typeof modelOutputSchema>> };
@@ -161,7 +163,7 @@ export function createAnthropicRequest(turn: ModelTurn, text: string): Anthropic
   const catalog = turn === "opening" ? OPENING_CATALOG : CORRECTION_CATALOG;
   return {
     model: ANTHROPIC_MODEL_ID,
-    max_tokens: MODEL_MAX_TOKENS,
+    max_tokens: PROVIDER_MAX_OUTPUT_TOKENS,
     system: SYSTEM_PROMPT,
     messages: [{
       role: "user",
