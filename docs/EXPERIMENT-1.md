@@ -2,8 +2,8 @@
 
 **Status:** Approved by Steve; Slices 0–4A, Git-backed preview delivery, and
 Issue #32's synthetic-only deployed observability are complete; Slice 4B is
-defined as an operator-only checkpoint under Issue #35, with implementation
-reserved for a separate explicit go-ahead
+defined and authorized as an operator-only checkpoint under Issue #35 after
+required pre-implementation review and approved planning remediation
 
 **Owns:** The fixed journey, supported and deferred scope, interaction
 composition, selected stack, implementation sequence, verification, deployment,
@@ -218,9 +218,13 @@ The pre-resolution download restriction is specific to this fixed experiment,
 which deliberately exercises resolution before download. It does not establish
 a product-wide rule that every unresolved optional fact blocks partial output.
 Before physician testing, browser evidence must check both the visible control
-and direct access to every official-PDF route: before resolution, download and
-preview access return a no-store `409` response. A disabled button alone does
-not prove the gate.
+and a direct state-bearing request to every official-PDF operation: before
+resolution, download and preview requests return a no-store `409` response. A
+disabled button alone does not prove the gate. PDF case state is carried only in
+the non-GET request body, never in a URL, cookie-backed repository, server
+revision anchor, or affinity mechanism. After a successful response, the
+browser opens the returned PDF bytes for preview or downloads them with the
+official filename.
 
 Backward editing remains allowed. Any visible Change or Remove control is a
 real affordance. In Check understanding, Change records a clinician correction
@@ -451,6 +455,17 @@ obvious reset action and a concise instruction for clearing the preview after
 review. Do not add a Vercel database, key-value store, encrypted server
 envelope, revision/hash anchor, or affinity mechanism for Experiment 1.
 
+Every case command and PDF operation supplies that complete versioned state to
+a fresh server request. The case route validates it before dispatching the
+command through `applyCaseCommand`; the PDF route validates it before deriving
+the projection and filling the form. PDF preview and download therefore use
+scripted, state-bearing `POST` requests rather than static `GET` anchors. The
+browser may create only an ephemeral object URL for the returned PDF bytes and
+must revoke it after opening or download; neither the object URL nor the bytes
+enter `sessionStorage` or another retained store. This preserves the visible
+preview/download outcomes while intentionally dropping link-only behaviors such
+as copying, opening, or saving a stable PDF endpoint outside the active tab.
+
 The deployment-only preview lock is not a product account. Slice 4A established
 Vercel Authentication on generated deployment URLs and identified one
 revocable Shareable Link as a possible later no-cost, non-technical reviewer
@@ -478,6 +493,15 @@ each request. Structured events are emitted immediately for meaningful browser,
 route, model, schema/domain-boundary, case-command, state-transition, and
 response phases, so a crash or early stop remains reconstructable without a
 final state.
+
+Model diagnostics must also preserve causal ordering across both the model
+service and outer case route. Provider or transport failure is a model-response
+failure followed only by route/response failure; it does not emit a
+schema/domain rejection. When the provider returned content, the content event
+precedes the exact provider-stop, JSON parse, structured-schema, or domain
+rejection. The case route may classify malformed request/state/action input at
+its own schema/domain boundary, but its catch-all may not recast a downstream
+model failure as one.
 
 Those protected logs may include the complete relevant fixed synthetic model
 request and response, proposals, entity and field assignments, values, source
@@ -752,6 +776,13 @@ timeout fails the slice and does not authorize a paid plan or architectural
 workaround. No Anthropic credential reaches the browser, and the preview
 plainly forbids real patient data and disclaims production readiness.
 
+The state-bearing PDF POST is the selected resolution of the stateless-preview
+constraint: it is a read-only projection request, not a semantic command or
+additional authority. A GET to the PDF path carries no case and cannot produce
+a form. The operator controls retain their approved labels and outcomes, while
+stable-link, right-click, and out-of-tab reuse of a PDF endpoint are explicitly
+unsupported for this disposable experiment.
+
 Manual 4B acceptance uses the fixed synthetic journey:
 
 1. Open the remote preview through the existing protected operator path and
@@ -830,4 +861,6 @@ operational disposition is separate work.
 Nothing in this document authorizes application implementation, external
 deployment, spending, real clinical data, production release, or expanded
 scope. Slice 4A and Slice 4B each begin only after Steve's explicit
-implementation go-ahead.
+implementation go-ahead. Steve gave that go-ahead for Slice 4B and approved its
+pre-implementation review dispositions on 2026-09-06; all other boundaries
+remain unchanged.

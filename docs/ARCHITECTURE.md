@@ -177,6 +177,16 @@ The server validates the received shape, expected revision, command, and
 resulting case invariants before returning a complete next state. Browser code
 stores or discards that result; it does not edit semantic case values directly.
 
+PDF preview and download use the same state boundary. They are client-initiated
+non-GET requests carrying the complete versioned browser-held state; the server
+validates that state, derives a fresh semantic projection, and returns only the
+PDF response or a no-store error. The browser opens the returned bytes for
+preview or downloads them without putting case state in a URL. A static PDF
+link, cookie-derived case identity, server revision anchor, or process affinity
+may not stand in for the complete state. This request-shape change is limited to
+the disposable preview and does not create a second write path: PDF generation
+remains a read-only projection of validated case knowledge.
+
 This is deliberately not a secure persistence design. A reviewer can alter or
 delete their own browser storage; another tab, browser, or device cannot
 reliably recover the case; and closing the tab or clearing site data loses it.
@@ -215,6 +225,15 @@ preceded it. A received response or browser-side failure can therefore explain
 both the initiating action and what the browser observed even if Vercel omits
 one earlier line. This trace exists only in the reporting closure for that
 request.
+
+Diagnostic classification follows the phase that actually occurred. A provider
+or transport failure emits a model-response failure and no schema/domain
+rejection. Once returned model content exists, diagnostics emit the returned
+content before the precise provider-stop, JSON parse, structured-schema, or
+domain-boundary rejection. An outer route catch may record route and response
+failure, but it may not relabel a model/transport failure as schema/domain
+rejection. This ordering applies at both the model-service and case-route
+boundaries and preserves the same credential and synthetic-only content rules.
 
 Vercel Hobby's one-hour Runtime Log retention is accepted for this immediate
 operator inspection. Logs are not drained, copied into a longer-lived

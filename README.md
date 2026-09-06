@@ -10,8 +10,9 @@ Steve authorized and completed Experiment 1 Slices 0–3 under Issues #11, #15,
 #17, and #23. Slice 4A established the Vercel Hobby deployment path under Issue
 #28 and was merged in PR #29. Git-backed protected previews and deployed
 observability followed under Issues #30 and #32. Slice 4B is defined as an
-operator-only live-model checkpoint under Issue #35; implementation and
-verification are reserved for Steve's separate go-ahead.
+operator-only live-model checkpoint under Issue #35; Steve authorized
+implementation after the required pre-implementation review and approved its
+planning remediation on 2026-09-06.
 
 ## Active corpus
 
