@@ -1,7 +1,7 @@
 # Slice 4A Vercel Hobby deployment-path evidence
 
-**Status:** Gate evidence complete 2026-09-06; pending independent review and
-Steve's merge approval
+**Status:** Gate evidence complete 2026-09-06; independent review found no
+blockers; pending Steve's merge approval
 
 **Issue:** [#28](https://github.com/warblersafety/wilson-next/issues/28)
 
@@ -168,6 +168,11 @@ protection feature. Slice 4B must test that access path before installing an
 Anthropic secret or sharing the preview. If it proves impractical, the already
 approved minimal application-level lock remains the fallback.
 
+A read-only account check found three projects and five aliases, with no alias
+reporting a protection bypass. The single Hobby Shareable Link slot therefore
+appeared available on 2026-09-06. No Shareable Link was created or exercised:
+end-to-end confirmation remains a Slice 4B prerequisite.
+
 No plan upgrade, trial, add-on, domain, usage purchase, or payment-method change
 occurred. Recorded Slice 4A cost is USD 0.
 
@@ -182,7 +187,8 @@ occurred. Recorded Slice 4A cost is USD 0.
 - The temporary automation bypass was revoked and verified absent.
 - The accidental first deployment was deleted and cannot be restored through
   Instant Rollback.
-- The protected preview above remains for review. Remove it when the approved
-  review window ends unless continued access is separately approved.
-- Remove the local handoff file after final Vercel administration and record
-  only that token revocation or shortest-expiry confirmation passed.
+- The exact protected preview recorded in PR #29 remains for review. Remove it
+  when the approved review window ends unless continued access is separately
+  approved.
+- The seven-day handoff token was explicitly revoked after final Vercel
+  administration, and the local handoff file was removed.

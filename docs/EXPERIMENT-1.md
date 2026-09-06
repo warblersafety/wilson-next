@@ -442,13 +442,14 @@ review. Do not add a Vercel database, key-value store, encrypted server
 envelope, revision/hash anchor, or affinity mechanism for Experiment 1.
 
 The deployment-only preview lock is not a product account. Slice 4A established
-Vercel Authentication on generated deployment URLs plus one revocable
-Shareable Link as the no-cost, non-technical reviewer path. Hobby permits only
-one Shareable Link in total for the account; the link is bearer access and must
-be scoped to the review deployment and revoked afterward. Slice 4B must confirm
-that path end to end before sharing the preview. If it is not practical, Slice
-4B may add one minimal shared-secret screen and signed, secure, non-persistent
-cookie.
+Vercel Authentication on generated deployment URLs and identified one
+revocable Shareable Link as the no-cost, non-technical reviewer candidate.
+Hobby permits only one Shareable Link in total for the account; a read-only
+account check during Slice 4A found no existing alias-level protection bypass,
+so that slot appeared available. The link is bearer access and must be scoped
+to the review deployment and revoked afterward. Slice 4B must confirm that path
+end to end before sharing the preview. If it is not practical, Slice 4B may add
+one minimal shared-secret screen and signed, secure, non-persistent cookie.
 Before an Anthropic secret is installed or a reviewer link is shared, every
 model, case, and PDF route must be behind the selected protection; the
 Anthropic key never reaches the browser. An unprotected 4A gate deployment may
