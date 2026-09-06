@@ -9,6 +9,7 @@ import {
   openingAccount,
 } from "../src/experiment/fixed-inputs";
 import type { JourneyAction, JourneySnapshot } from "../src/server/journey/service";
+import { requestJourneyJson } from "./browser-diagnostics";
 import styles from "./page.module.css";
 
 const stageLabels: Record<JourneySnapshot["stage"], string> = {
@@ -36,9 +37,7 @@ export default function Journey() {
 
   async function fetchSnapshot() {
     try {
-      const response = await fetch("/api/case", { cache: "no-store" });
-      if (!response.ok) throw new Error("The temporary case could not be loaded");
-      setSnapshot(await response.json() as JourneySnapshot);
+      setSnapshot(await requestJourneyJson<JourneySnapshot>({}, "The temporary case could not be loaded"));
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "The temporary case could not be loaded");
     }
@@ -49,13 +48,10 @@ export default function Journey() {
     setError(undefined);
     setBoundaryNotice(undefined);
     try {
-      const response = await fetch("/api/case", {
+      const body = await requestJourneyJson<JourneySnapshot | { error?: string }>({
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(action),
-      });
-      const body = await response.json() as JourneySnapshot | { error?: string };
-      if (!response.ok) throw new Error("error" in body ? body.error : "Wilson could not update the case");
+        body: action,
+      }, "Wilson could not update the case");
       setSnapshot(body as JourneySnapshot);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Wilson could not update the case");

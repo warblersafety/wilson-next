@@ -1,8 +1,8 @@
 # Wilson Experiment 1
 
-**Status:** Approved by Steve; Slices 0–4A complete; Git-backed preview delivery
-is the narrow deployment follow-up under Issue #30; Slice 4B requires Steve's
-separate explicit go-ahead
+**Status:** Approved by Steve; Slices 0–4A and Git-backed preview delivery are
+complete; Issue #32 adds synthetic-only deployed observability before Slice 4B,
+which still requires Steve's separate explicit go-ahead
 
 **Owns:** The fixed journey, supported and deferred scope, interaction
 composition, selected stack, implementation sequence, verification, deployment,
@@ -461,16 +461,47 @@ claims about the multi-request journey.
 
 State changes use non-GET methods and reject mismatched Origin. Case/PDF
 responses use `Cache-Control: no-store`; all pages send `X-Robots-Tag: noindex,
-nofollow`, which is not treated as access control. Logs contain only opaque
-operation references, phase, case revision, model/prompt/schema versions,
-provider request ID and stop reason when available, token counts, latency,
-estimated cost, and precise success/failure stage. They never contain
-narratives, model payloads, case facts, PDFs, browser storage, cookies, or
-credentials.
+nofollow`, which is not treated as access control. For this fixed synthetic-only
+experiment, Vercel Runtime Logs are the single diagnostic location. One opaque
+run identifier spans the browser journey and one operation identifier spans
+each request. Structured events are emitted immediately for meaningful browser,
+route, model, schema/domain-boundary, case-command, state-transition, and
+response phases, so a crash or early stop remains reconstructable without a
+final state.
+
+Those protected logs may include the complete relevant fixed synthetic model
+request and response, proposals, entity and field assignments, values, source
+evidence, validation results, control flow, response metadata and body, and
+caught error details. They never include authorization headers, cookies,
+protection bypasses, API or deployment tokens, environment values, SDK secret
+configuration, browser storage, or other credential-bearing material. Binary
+PDF bytes remain excluded as redundant. Inputs outside the approved fixed
+synthetic fixture are not recorded as content. Hobby's one-hour Runtime Log
+retention is accepted because the operator inspects logs during or immediately
+after each run; no drain, dashboard, trace archive, or second diagnostic store
+is added.
+
+Each case-route response also emits a single reconstruction checkpoint with the
+already-sanitized events accumulated during that request. The immediate events
+remain the evidence for an early crash; the checkpoint makes a completed
+request reconstructable if Vercel's live stream omits individual log lines. The
+checkpoint is held only in request memory until it is logged and is not a
+second diagnostic or case store.
+Each browser report is likewise immediate and carries the cumulative browser
+events for that operation, so a response or browser failure remains tied to its
+initiating action if Vercel omits an earlier line. That trace exists only in the
+browser reporting closure for the current request.
 
 The preview is disposable, synthetic-only, likely less secure than a production
 healthcare system, and never presented as production-ready. Remove access after
-the approved review window unless continued access is separately approved.
+the approved review window unless continued access is separately approved. An
+Issue #32 delivery exception retains one unshared, protected synthetic Git
+preview until it is replaced by a later verified protected preview or a
+production deployment is separately approved. Vercel treats the first
+deployment of an otherwise empty project as production regardless of the Git
+branch; retaining this one protected deployment prevents the no-production
+project from re-entering that bootstrap state. It is not a release, durable case
+store, or reviewer access grant.
 
 ### Vercel deployment credential handoff
 
@@ -514,8 +545,9 @@ copy hosted runtime secrets back to the development machine.
 
 Local Slice 3 model access uses the Mini-local handoff below; never export its
 credential into an ordinary development shell or the shell used for
-subscription-backed code review. Narratives, model payloads, case facts, and
-PDFs are never logged.
+subscription-backed code review. The synthetic diagnostic exception above does
+not permit the local or deployed model credential, its environment, or PDF
+bytes to enter logs.
 
 ### Local Slice 3 model credential handoff
 
@@ -628,7 +660,7 @@ Core implementation follows the completed Slices 0–3 and the split Slice 4:
 6. **Slice 4B — physician-ready live preview:** connect the real browser journey
    to the live model, move disposable case/conversation continuity to the
    browser boundary above, close the Change/Remove false affordances, add the
-   selected preview protection and payload-free diagnostics, run operator
+   selected preview protection and the approved synthetic-only diagnostics, run operator
    conversation/PDF acceptance, and then meet one physician when the minimum
    evidence is green.
 
@@ -666,6 +698,17 @@ identifies `main` as its production branch so any later production deployment
 must be an explicit, separately authorized act. The retained evidence is in
 [`evidence/issue-30/README.md`](../evidence/issue-30/README.md).
 
+Issue #32 found one additional Vercel lifecycle constraint: after every prior
+deployment had been removed, the next feature-branch push was treated as the
+empty project's first deployment and promoted to production even though the
+Git link still named `main` as the production branch. The repository's
+`git.deploymentEnabled.main: false` rule prevents a `main` push from deploying;
+it does not override Vercel's first-deployment bootstrap behavior. The bounded
+recovery creates and verifies a protected Git preview before deleting the
+accidental production deployment, then retains that unshared protected preview
+under the exception above. Evidence and the cleanup record live in
+[`evidence/issue-32/README.md`](../evidence/issue-32/README.md).
+
 The merged Slice 1–3 application still keeps case/session state in a
 process-local `Map`. That mechanism is already known to be unreliable across
 Vercel requests and is intentionally replaced only in 4B. Do not exercise the
@@ -684,7 +727,8 @@ multi-turn live-model journey; refresh without losing the current compatible
 state in the same tab; inspect correct product identity, evidence, correction,
 and conflict behavior; and verify that the reviewed case, onscreen projection, PDF
 preview, and downloaded FDA form agree. Failures must return an opaque
-diagnostic reference and enough payload-free telemetry to diagnose the phase.
+diagnostic reference and enough correlated Runtime Log evidence to diagnose the
+phase and model behavior under the synthetic-only policy above.
 No Anthropic credential reaches the browser, and the preview plainly forbids
 real patient data and disclaims production readiness.
 
@@ -710,8 +754,9 @@ Manual 4B acceptance uses the fixed synthetic journey:
 8. Resolve the date to 13-Aug-2026 and compare the reviewed case, onscreen
    projection, PDF preview, and downloaded FDA form field by field.
 9. Confirm an induced safe failure shows an opaque reference and that the
-   matching logs identify the phase, timing, token use, and model/schema
-   versions without case content or credentials.
+   matching logs reconstruct the synthetic request, model/boundary/control-flow
+   detail, phase, timing, token use, and model/schema versions without
+   credentials.
 10. Record separate judgments for conversational coherence, factual fidelity,
     evidence usefulness, interaction burden, latency, correction/conflict
     handling, and form accuracy; then reset the preview and close the tab.
@@ -733,10 +778,12 @@ durable data, or polish unrelated to the approved journey.
 ## Retention, disposal, and inputs
 
 Retain only the synthetic fixture/oracle, source revision, focused results,
-useful trace/screenshots, short model table and cost, checked PDF, operator
-verdict, and concise physician notes. Never retain credentials, real clinical
-data, raw infrastructure logs, exported browser storage, or deployed case
-state. Reviewers clear the disposable local browser state after the session.
+useful sanitized trace/screenshots, short model table and cost, checked PDF,
+operator verdict, and concise physician notes. Vercel Runtime Logs containing
+complete synthetic diagnostics remain only under Hobby's one-hour retention
+and are inspected in place; do not export or retain them as raw infrastructure
+logs. Never retain credentials, real clinical data, exported browser storage,
+or deployed case state. Reviewers clear the disposable local browser state after the session.
 The retained browser trace is the sanitized checkpoint record defined above,
 not a Playwright archive or another capture of browser/network session state.
 Remove preview access after review unless continued access is approved.

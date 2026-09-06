@@ -192,9 +192,34 @@ imports. The browser-held state is a deployment adapter concern and does not
 change `applyCaseCommand` as the sole semantic write boundary.
 
 Experiment 1 accepts synthetic data only. It has no analytics, session replay,
-payload logging, audio capture, or retained deployed case state. Operational
-logs may contain request IDs, timings, adapter status, token counts, and case
-revisions, but not narratives, model payloads, PDFs, or case facts.
+audio capture, or retained deployed case state. For the fixed, protected,
+operator-driven experiment, Vercel Runtime Logs are the single diagnostic
+location and may contain the complete relevant synthetic request, model output,
+proposal, evidence, validation, command, state-transition, response, and caught-
+error content needed to reconstruct a run. Events are emitted as each phase
+occurs, correlated by one browser-run identifier and one request-operation
+identifier, and need not wait for a final journey state. This narrow diagnostic
+exception does not authorize real clinical data or another store. Authorization
+headers, cookies, API or deployment tokens, environment values, protection
+bypasses, and other credential-bearing material are never logged. PDF bytes are
+also excluded because they do not help explain model or control-flow behavior.
+Each case-route response also emits one in-request reconstruction checkpoint
+containing the already-sanitized events from that operation. Immediate phase
+events still expose an early crash; the checkpoint makes a completed operation
+reconstructable when Vercel's live Runtime Log stream omits individual lines.
+It exists only in function memory until that final log call and is not a second
+diagnostic or case store.
+Browser reporting uses the same pattern within each operation: every event is
+sent immediately, while each later report also carries the browser events that
+preceded it. A received response or browser-side failure can therefore explain
+both the initiating action and what the browser observed even if Vercel omits
+one earlier line. This trace exists only in the reporting closure for that
+request.
+
+Vercel Hobby's one-hour Runtime Log retention is accepted for this immediate
+operator inspection. Logs are not drained, copied into a longer-lived
+diagnostic system, or treated as case persistence. Any later real-data boundary
+must replace this synthetic-only logging policy before use.
 
 ## Deferred architecture
 

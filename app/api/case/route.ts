@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { caseSession, attachCaseCookie, getCaseRepository } from "../../../src/server/case/session";
+import {
+  caughtErrorDetails,
+  createRuntimeDiagnosticLogger,
+  diagnosticContext,
+  operationIdHeader,
+  runIdHeader,
+  type DiagnosticContext,
+} from "../../../src/server/diagnostics/runtime-log";
+import { correctionAccount, indicationAnswer, openingAccount } from "../../../src/experiment/fixed-inputs";
 import { getJourneySnapshot, performJourneyAction } from "../../../src/server/journey/service";
 
 export const dynamic = "force-dynamic";
@@ -16,30 +25,120 @@ const actionSchema = z.discriminatedUnion("action", [
 ]);
 
 export async function GET(request: NextRequest) {
+  const context = diagnosticContext(request.headers);
+  const diagnostics = createRuntimeDiagnosticLogger(context);
+  diagnostics.event("route", "case-get", "start", requestMetadata(request));
   const session = caseSession(request);
-  const snapshot = await getJourneySnapshot(getCaseRepository(), session.caseId);
-  return responseWithSession(snapshot, session.sessionId, isSecure(request));
+  try {
+    const snapshot = await getJourneySnapshot(getCaseRepository(), session.caseId);
+    diagnostics.event("response", "case-get", "success", responseMetadata(200, snapshot));
+    diagnostics.checkpoint("case-get-trace", "success");
+    return responseWithSession(snapshot, session.sessionId, isSecure(request), context);
+  } catch (error) {
+    const body = { error: "The temporary case could not be loaded" };
+    diagnostics.event("response", "case-get", "failure", {
+      ...responseMetadata(500, body),
+      error: caughtErrorDetails(error),
+    });
+    diagnostics.checkpoint("case-get-trace", "failure");
+    return errorResponse(body, 500, context);
+  }
 }
 
 export async function POST(request: NextRequest) {
+  const context = diagnosticContext(request.headers);
+  const diagnostics = createRuntimeDiagnosticLogger(context);
+  diagnostics.event("route", "case-post", "start", requestMetadata(request));
   if (!hasSameOrigin(request)) {
-    return NextResponse.json({ error: "The request origin was not accepted" }, { status: 403 });
+    const body = { error: "The request origin was not accepted" };
+    diagnostics.event("schema-domain", "same-origin", "rejected", { reason: body.error });
+    diagnostics.event("response", "case-post", "rejected", responseMetadata(403, body));
+    diagnostics.checkpoint("case-post-trace", "rejected");
+    return errorResponse(body, 403, context);
   }
   const session = caseSession(request);
   try {
     const action = actionSchema.parse(await request.json());
-    const snapshot = await performJourneyAction(getCaseRepository(), session.caseId, action);
-    return responseWithSession(snapshot, session.sessionId, isSecure(request));
+    diagnostics.event("schema-domain", "request-action", "success", { action: diagnosticAction(action) });
+    const snapshot = await performJourneyAction(
+      getCaseRepository(),
+      session.caseId,
+      action,
+      undefined,
+      diagnostics,
+    );
+    diagnostics.event("response", "case-post", "success", responseMetadata(200, snapshot));
+    diagnostics.checkpoint("case-post-trace", "success");
+    return responseWithSession(snapshot, session.sessionId, isSecure(request), context);
   } catch (error) {
-    const message = error instanceof Error ? error.message : "The case could not be updated";
-    return NextResponse.json({ error: message }, { status: 400, headers: { "Cache-Control": "no-store" } });
+    const body = { error: safeClientError(error) };
+    diagnostics.event("schema-domain", "request-or-action", "rejected", {
+      error: caughtErrorDetails(error),
+    });
+    diagnostics.event("response", "case-post", "failure", {
+      ...responseMetadata(400, body),
+      error: caughtErrorDetails(error),
+    });
+    diagnostics.checkpoint("case-post-trace", "failure");
+    return errorResponse(body, 400, context);
   }
 }
 
-function responseWithSession(body: unknown, sessionId: string, secure: boolean) {
-  const response = NextResponse.json(body, { headers: { "Cache-Control": "no-store" } });
+function responseWithSession(body: unknown, sessionId: string, secure: boolean, context: DiagnosticContext) {
+  const response = NextResponse.json(body, { headers: diagnosticResponseHeaders(context) });
   attachCaseCookie(response, sessionId, secure);
   return response;
+}
+
+function errorResponse(body: unknown, status: number, context: DiagnosticContext) {
+  return NextResponse.json(body, { status, headers: diagnosticResponseHeaders(context) });
+}
+
+function diagnosticResponseHeaders(context: DiagnosticContext): Record<string, string> {
+  return {
+    "Cache-Control": "no-store",
+    [runIdHeader]: context.runId,
+    [operationIdHeader]: context.operationId,
+  };
+}
+
+function requestMetadata(request: NextRequest) {
+  return {
+    method: request.method,
+    path: request.nextUrl.pathname,
+    contentType: request.headers.get("content-type"),
+    contentLength: request.headers.get("content-length"),
+  };
+}
+
+function responseMetadata(status: number, body: unknown) {
+  return {
+    status,
+    contentType: "application/json",
+    cacheControl: "no-store",
+    body,
+  };
+}
+
+function diagnosticAction(action: z.infer<typeof actionSchema>): unknown {
+  if (!("text" in action)) return action;
+  const fixedText = action.text === openingAccount
+    || action.text === indicationAnswer
+    || action.text === correctionAccount;
+  return fixedText ? action : { ...action, text: "[NOT LOGGED: outside fixed synthetic fixture]" };
+}
+
+function safeClientError(error: unknown): string {
+  if (!(error instanceof Error)) return "The case could not be updated";
+  const allowed = [
+    "This action is not available during",
+    "Use the displayed fictional indication answer",
+    "This experiment accepts only the displayed fictional",
+    "Accept or reject the dose correction",
+  ];
+  return allowed.some((prefix) => error.message.startsWith(prefix))
+    ? error.message
+    : "The case could not be updated";
 }
 
 function isSecure(request: NextRequest): boolean {
