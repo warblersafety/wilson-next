@@ -1,7 +1,11 @@
 import { open, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { z } from "zod";
-import type { ModelCallMetrics, ModelTurn } from "../../src/server/model/journey-model";
+import type {
+  ModelCallMetrics,
+  ModelFailureDiagnostic,
+  ModelTurn,
+} from "../../src/server/model/journey-model";
 
 export const SAMPLE_LIMIT = 4;
 export const COST_LIMIT_USD = 5;
@@ -24,6 +28,32 @@ const metricsSchema = z.object({
   issueCount: z.number().int().nonnegative(),
 }).strict();
 
+const failureDiagnosticSchema = z.object({
+  phase: z.enum([
+    "provider-request",
+    "response-capture",
+    "provider-stop",
+    "structured-json",
+    "structured-schema",
+    "domain-boundary",
+    "metrics",
+    "spend-cap",
+    "semantic-oracle",
+    "case-replay",
+  ]),
+  providerStatus: z.number().int().optional(),
+  providerType: z.string().optional(),
+  requestId: z.string().optional(),
+  stopReason: z.string().optional(),
+  errorName: z.string().optional(),
+  responseArtifact: z.string().optional(),
+  issues: z.array(z.object({
+    path: z.string(),
+    code: z.string(),
+    message: z.string(),
+  }).strict()).optional(),
+}).strict();
+
 const sampleStateSchema = z.object({
   version: z.literal(1),
   samples: z.array(z.object({
@@ -31,7 +61,12 @@ const sampleStateSchema = z.object({
     status: z.enum(["running", "awaiting-human-review", "complete", "stopped"]),
     calls: z.array(metricsSchema).max(2),
     humanVerdict: z.enum(["pass", "fail"]).nullable(),
-    disposition: z.enum(["none", "approved-remove-artificial-output-ceiling"]).default("none"),
+    disposition: z.enum([
+      "none",
+      "approved-remove-artificial-output-ceiling",
+      "approved-add-diagnostics",
+    ]).default("none"),
+    lastFailure: failureDiagnosticSchema.nullable().default(null),
   }).strict()).max(SAMPLE_LIMIT),
 }).strict();
 
@@ -46,7 +81,11 @@ export interface RecordedSample {
   status: "running" | "awaiting-human-review" | "complete" | "stopped";
   calls: RecordedCall[];
   humanVerdict: "pass" | "fail" | null;
-  disposition: "none" | "approved-remove-artificial-output-ceiling";
+  disposition:
+    | "none"
+    | "approved-remove-artificial-output-ceiling"
+    | "approved-add-diagnostics";
+  lastFailure: ModelFailureDiagnostic | null;
 }
 
 export interface SampleState {
@@ -98,16 +137,21 @@ export async function saveSampleState(state: SampleState): Promise<void> {
 }
 
 export function cumulativeCost(state: SampleState): number {
-  return state.samples.flatMap(({ calls }) => calls)
-    .reduce((total, call) => total + call.estimatedCostUsd, 0);
+  return state.samples.reduce((total, sample) => {
+    const recorded = sample.calls.reduce((callTotal, call) => callTotal + call.estimatedCostUsd, 0);
+    const unknownProviderSpend = sample.calls.length === 0
+      && sample.lastFailure?.phase === "provider-request"
+      ? PER_CALL_RESERVE_USD
+      : 0;
+    return total + recorded + unknownProviderSpend;
+  }, 0);
 }
 
 export function assertMayStartSample(state: SampleState): void {
   if (state.samples.length >= SAMPLE_LIMIT) throw new Error("The four-sample cap has been reached.");
   const prior = state.samples.at(-1);
   const priorPassed = prior?.status === "complete" && prior.humanVerdict === "pass";
-  const priorAdjustmentApproved = prior?.status === "stopped"
-    && prior.disposition === "approved-remove-artificial-output-ceiling";
+  const priorAdjustmentApproved = prior?.status === "stopped" && prior.disposition !== "none";
   if (prior && !priorPassed && !priorAdjustmentApproved) {
     throw new Error("The prior sample has not received a passing human review.");
   }

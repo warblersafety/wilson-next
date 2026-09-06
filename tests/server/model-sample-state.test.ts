@@ -3,6 +3,7 @@ import {
   assertMayStartSample,
   COST_LIMIT_USD,
   cumulativeCost,
+  PER_CALL_RESERVE_USD,
   SAMPLE_LIMIT,
   type RecordedSample,
   type SampleState,
@@ -34,13 +35,20 @@ describe("real-model sample caps", () => {
     expect(cumulativeCost(state)).toBe(COST_LIMIT_USD - 0.49);
     expect(() => assertMayStartSample(state)).toThrow("USD 5 sample cap");
   });
+
+  it("conservatively reserves spend when a provider request has no final usage", () => {
+    const stopped = sample("stopped", null);
+    stopped.lastFailure = { phase: "provider-request", errorName: "APIConnectionError" };
+
+    expect(cumulativeCost(withSamples([stopped]))).toBe(PER_CALL_RESERVE_USD);
+  });
 });
 
 function withSamples(samples: RecordedSample[]): SampleState {
   return { version: 1, samples: samples.map((entry, index) => ({ ...entry, number: index + 1 })) };
 }
 function sample(status: RecordedSample["status"], humanVerdict: RecordedSample["humanVerdict"]): RecordedSample {
-  return { number: 0, status, calls: [], humanVerdict, disposition: "none" };
+  return { number: 0, status, calls: [], humanVerdict, disposition: "none", lastFailure: null };
 }
 
 function call(cost: number): RecordedSample["calls"][number] {

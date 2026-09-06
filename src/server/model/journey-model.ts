@@ -15,10 +15,44 @@ export interface ModelCallMetrics {
 export interface ModelProposalResult {
   envelope: ParsedModelProposalEnvelope;
   metrics?: ModelCallMetrics;
+  responseArtifact?: string;
+}
+
+export type ModelFailurePhase =
+  | "provider-request"
+  | "response-capture"
+  | "provider-stop"
+  | "structured-json"
+  | "structured-schema"
+  | "domain-boundary"
+  | "metrics"
+  | "spend-cap"
+  | "semantic-oracle"
+  | "case-replay";
+
+export interface ModelDiagnosticIssue {
+  path: string;
+  code: string;
+  message: string;
+}
+
+export interface ModelFailureDiagnostic {
+  phase: ModelFailurePhase;
+  providerStatus?: number;
+  providerType?: string;
+  requestId?: string;
+  stopReason?: string;
+  errorName?: string;
+  responseArtifact?: string;
+  issues?: ModelDiagnosticIssue[];
 }
 
 export class ModelCallFailure extends Error {
-  constructor(message: string, readonly metrics?: ModelCallMetrics) {
+  constructor(
+    message: string,
+    readonly diagnostic: ModelFailureDiagnostic,
+    readonly metrics?: ModelCallMetrics,
+  ) {
     super(message);
     this.name = "ModelCallFailure";
   }

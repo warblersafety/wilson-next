@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { APIError } from "@anthropic-ai/sdk";
 import type { ParsedModelProposalEnvelope } from "../../src/domain/case/model-boundary";
 import { correctionAccount, openingAccount } from "../../src/experiment/fixed-inputs";
 import {
@@ -18,7 +19,7 @@ import {
   parseFixedCorrectionResponse,
   parseFixedOpeningResponse,
 } from "../../src/server/model/fixed-journey";
-import type { ModelTurn } from "../../src/server/model/journey-model";
+import { ModelCallFailure, type ModelTurn } from "../../src/server/model/journey-model";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { performJourneyAction } from "../../src/server/journey/service";
 
@@ -45,6 +46,7 @@ describe("Anthropic fixed-journey adapter", () => {
     expect(captured).not.toHaveProperty("top_k");
     expect(captured).not.toHaveProperty("tools");
     expect(captured).not.toHaveProperty("thinking");
+    expect(captured?.output_config.format).not.toHaveProperty("parse");
     expect(MODEL_MAX_RETRIES).toBe(0);
     expect(result.envelope).toEqual(parseFixedOpeningResponse(openingAccount));
     expect(result.metrics).toEqual({
@@ -71,27 +73,106 @@ describe("Anthropic fixed-journey adapter", () => {
 
   it("rejects malformed grounded output with a safe error before it reaches case commands", async () => {
     const response = responseFor("correction");
-    response.parsed_output!.proposals[0].source.end = correctionAccount.length + 1;
+    const output = responseOutput(response);
+    output.proposals[0].source.end = correctionAccount.length + 1;
+    setResponseOutput(response, output);
     const model = createAnthropicJourneyModel(async () => response);
 
-    await expect(model.propose("correction", correctionAccount)).rejects.toThrow(
-      "Accepted case knowledge is unchanged",
-    );
+    const failure = await modelFailure(model.propose("correction", correctionAccount));
+    expect(failure.message).toContain("Accepted case knowledge is unchanged");
+    expect(failure.diagnostic).toMatchObject({
+      phase: "domain-boundary",
+      requestId: "message-correction",
+      issues: [{ code: "custom", message: "Invalid source span source-naproxen-dose-correction" }],
+    });
   });
 
-  it("does not retry or expose provider detail after a failed request or refusal", async () => {
+  it("does not retry or expose provider detail after a failed request", async () => {
     const failed = vi.fn<AnthropicRequester>(async () => {
       throw new Error("provider detail containing request material");
     });
-    await expect(createAnthropicJourneyModel(failed).propose("opening", openingAccount))
-      .rejects.toThrow("Accepted case knowledge is unchanged");
+    const failure = await modelFailure(
+      createAnthropicJourneyModel(failed).propose("opening", openingAccount),
+    );
+    expect(failure.message).not.toContain("provider detail");
+    expect(failure.diagnostic).toEqual({ phase: "provider-request", errorName: "Error" });
     expect(failed).toHaveBeenCalledOnce();
+  });
 
+  it("retains safe provider status metadata without retaining the provider message", async () => {
+    const providerError = APIError.generate(
+      429,
+      { error: { type: "rate_limit_error", message: "sensitive provider detail" } },
+      undefined,
+      new Headers({ "request-id": "request-test" }),
+    );
+    const failure = await modelFailure(createAnthropicJourneyModel(
+      async () => { throw providerError; },
+    ).propose("opening", openingAccount));
+
+    expect(failure.diagnostic).toEqual({
+      phase: "provider-request",
+      providerStatus: 429,
+      providerType: "rate_limit_error",
+      requestId: "request-test",
+      errorName: "RateLimitError",
+    });
+    expect(JSON.stringify(failure.diagnostic)).not.toContain("sensitive provider detail");
+  });
+
+  it("records a non-success provider stop separately from structured parsing", async () => {
     const refusal = responseFor("opening");
     refusal.stop_reason = "refusal";
-    refusal.parsed_output = null;
-    await expect(createAnthropicJourneyModel(async () => refusal).propose("opening", openingAccount))
-      .rejects.toThrow("Accepted case knowledge is unchanged");
+    const failure = await modelFailure(
+      createAnthropicJourneyModel(async () => refusal).propose("opening", openingAccount),
+    );
+    expect(failure.diagnostic).toMatchObject({
+      phase: "provider-stop",
+      requestId: "message-opening",
+      stopReason: "refusal",
+    });
+  });
+
+  it("distinguishes invalid JSON from a structured-schema failure", async () => {
+    const invalidJson = responseFor("opening");
+    invalidJson.content = [{ type: "text", text: "{" }];
+    const jsonFailure = await modelFailure(
+      createAnthropicJourneyModel(async () => invalidJson).propose("opening", openingAccount),
+    );
+    expect(jsonFailure.diagnostic).toMatchObject({
+      phase: "structured-json",
+      issues: [{ path: "content", code: "invalid_json" }],
+    });
+
+    const invalidSchema = responseFor("opening");
+    const output = responseOutput(invalidSchema);
+    (output.proposals[0] as { intent: string }).intent = "unsupported";
+    setResponseOutput(invalidSchema, output);
+    const schemaFailure = await modelFailure(
+      createAnthropicJourneyModel(async () => invalidSchema).propose("opening", openingAccount),
+    );
+    expect(schemaFailure.diagnostic).toMatchObject({
+      phase: "structured-schema",
+      issues: [{ path: "proposals.0.intent", code: "invalid_value" }],
+    });
+  });
+
+  it("records the response before parsing and stops if protected capture fails", async () => {
+    const recorder = vi.fn(async () => ".wilson-model-samples/sample-1-opening-response.json");
+    const result = await createAnthropicJourneyModel(
+      async () => responseFor("opening"),
+      Date.now,
+      recorder,
+    ).propose("opening", openingAccount);
+    expect(recorder).toHaveBeenCalledOnce();
+    expect(result.responseArtifact).toBe(".wilson-model-samples/sample-1-opening-response.json");
+
+    const captureFailure = await modelFailure(createAnthropicJourneyModel(
+      async () => responseFor("opening"),
+      Date.now,
+      async () => { throw new Error("disk detail"); },
+    ).propose("opening", openingAccount));
+    expect(captureFailure.diagnostic).toEqual({ phase: "response-capture", errorName: "Error" });
   });
 
   it("rejects inputs outside the approved fixed experiment without making a request", async () => {
@@ -125,9 +206,10 @@ function responseFor(turn: ModelTurn): AnthropicModelResponse {
     ? parseFixedOpeningResponse(openingAccount)
     : parseFixedCorrectionResponse(correctionAccount);
   return {
+    id: `message-${turn}`,
     model: ANTHROPIC_MODEL_ID,
     stop_reason: "end_turn",
-    parsed_output: toModelOutput(parsed),
+    content: [{ type: "text", text: JSON.stringify(toModelOutput(parsed)) }],
     usage: {
       input_tokens: 100,
       cache_creation_input_tokens: 10,
@@ -137,20 +219,42 @@ function responseFor(turn: ModelTurn): AnthropicModelResponse {
   };
 }
 
-function toModelOutput(parsed: ParsedModelProposalEnvelope): NonNullable<AnthropicModelResponse["parsed_output"]> {
+function toModelOutput(parsed: ParsedModelProposalEnvelope) {
   const sourceById = new Map(parsed.sources.map((source) => [source.id, source]));
   return {
-    products: parsed.products as NonNullable<AnthropicModelResponse["parsed_output"]>["products"],
+    products: parsed.products,
     proposals: parsed.proposals.map((proposal) => {
       const source = sourceById.get(proposal.sourceIds[0])!;
       return {
         proposalId: proposal.proposalId,
         groupId: proposal.groupId,
         intent: proposal.intent,
-        target: proposal.target as NonNullable<AnthropicModelResponse["parsed_output"]>["proposals"][number]["target"],
-        value: proposal.value as NonNullable<AnthropicModelResponse["parsed_output"]>["proposals"][number]["value"],
+        target: proposal.target,
+        value: proposal.value,
         source: { id: source.id, start: source.start, end: source.end },
       };
     }),
   };
+}
+
+function responseOutput(response: AnthropicModelResponse): ReturnType<typeof toModelOutput> {
+  const block = response.content[0] as { text: string };
+  return JSON.parse(block.text) as ReturnType<typeof toModelOutput>;
+}
+
+function setResponseOutput(
+  response: AnthropicModelResponse,
+  output: ReturnType<typeof toModelOutput>,
+): void {
+  response.content = [{ type: "text", text: JSON.stringify(output) }];
+}
+
+async function modelFailure(promise: Promise<unknown>): Promise<ModelCallFailure> {
+  try {
+    await promise;
+  } catch (error) {
+    expect(error).toBeInstanceOf(ModelCallFailure);
+    return error as ModelCallFailure;
+  }
+  throw new Error("Expected a ModelCallFailure");
 }

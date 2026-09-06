@@ -9,6 +9,7 @@ import { correctionAccount, openingAccount } from "../../src/experiment/fixed-in
 import { indicationAnswer } from "../../src/experiment/fixed-inputs";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { performJourneyAction } from "../../src/server/journey/service";
+import { writeSampleResponseArtifact } from "./sample-artifacts";
 import {
   assertMayStartSample,
   COST_LIMIT_USD,
@@ -37,11 +38,16 @@ async function runLockedSample(): Promise<void> {
     calls: [],
     humanVerdict: null,
     disposition: "none",
+    lastFailure: null,
   };
   state.samples.push(sample);
   await saveSampleState(state);
 
-  const model = createAnthropicJourneyModel();
+  const model = createAnthropicJourneyModel(
+    undefined,
+    Date.now,
+    (turn, response) => writeSampleResponseArtifact(sample.number, turn, response),
+  );
   const repository = new InMemoryCaseRepository();
   const caseId = `case-model-sample-${sample.number}`;
   const openingCompleted = await runTurn(
@@ -84,31 +90,46 @@ async function runLockedSample(): Promise<void> {
   process.stdout.write(`Recorded estimated cost: $${sample.calls.reduce((sum, call) => sum + call.estimatedCostUsd, 0).toFixed(6)}.\n`);
 }
 
-async function runTurn(
+export async function runTurn(
   pending: Promise<ModelProposalResult>,
   turn: ModelTurn,
   sample: RecordedSample,
   state: SampleState,
   applyToJourney: (result: ModelProposalResult) => Promise<void>,
+  persist: (state: SampleState) => Promise<void> = saveSampleState,
 ): Promise<boolean> {
   let result: ModelProposalResult;
   try {
     result = await pending;
   } catch (error) {
-    if (error instanceof ModelCallFailure && error.metrics) {
-      sample.calls.push({
-        turn,
-        ...error.metrics,
-        automaticPass: false,
-        issueCount: 1,
-      });
+    if (error instanceof ModelCallFailure) {
+      sample.lastFailure = error.diagnostic;
+      if (error.metrics) {
+        sample.calls.push({
+          turn,
+          ...error.metrics,
+          automaticPass: false,
+          issueCount: error.diagnostic.issues?.length ?? 1,
+        });
+      }
+    } else {
+      sample.lastFailure = {
+        phase: "provider-request",
+        errorName: error instanceof Error ? error.name : typeof error,
+      };
     }
     sample.status = "stopped";
-    await saveSampleState(state);
+    await persist(state);
+    process.stderr.write(`Diagnostic: ${JSON.stringify(sample.lastFailure)}\n`);
     process.stderr.write(`${turn} call failed safely; no retry was attempted. Slice 3 is stopped.\n`);
     return false;
   }
-  if (!result.metrics) throw new Error("A real-model sample must report call metrics.");
+  if (!result.metrics) {
+    sample.lastFailure = { phase: "metrics", responseArtifact: result.responseArtifact };
+    sample.status = "stopped";
+    await persist(state);
+    throw new Error("A real-model sample must report call metrics.");
+  }
   const assessment = assessModelProposals(turn, result.envelope);
   sample.calls.push({
     turn,
@@ -117,31 +138,44 @@ async function runTurn(
     issueCount: assessment.issues.length,
   });
   if (cumulativeCost(state) > COST_LIMIT_USD) {
+    sample.lastFailure = { phase: "spend-cap", responseArtifact: result.responseArtifact };
     sample.status = "stopped";
-    await saveSampleState(state);
+    await persist(state);
     throw new Error("The recorded cost exceeded the USD 5 cap.");
   }
   printAssessment(turn, assessment);
   if (!assessment.automaticPass) {
+    sample.lastFailure = {
+      phase: "semantic-oracle",
+      responseArtifact: result.responseArtifact,
+      issues: assessment.issues.map((message) => ({ path: turn, code: "oracle_mismatch", message })),
+    };
     sample.status = "stopped";
-    await saveSampleState(state);
+    await persist(state);
+    process.stderr.write(`Diagnostic: ${JSON.stringify(sample.lastFailure)}\n`);
     process.stderr.write(`${turn} did not match the semantic oracle. Slice 3 is stopped.\n`);
     return false;
   }
   try {
     await applyToJourney(result);
-  } catch {
+  } catch (error) {
     const recorded = sample.calls.at(-1);
     if (recorded?.turn === turn) {
       recorded.automaticPass = false;
       recorded.issueCount += 1;
     }
+    sample.lastFailure = {
+      phase: "case-replay",
+      responseArtifact: result.responseArtifact,
+      errorName: error instanceof Error ? error.name : typeof error,
+    };
     sample.status = "stopped";
-    await saveSampleState(state);
+    await persist(state);
+    process.stderr.write(`Diagnostic: ${JSON.stringify(sample.lastFailure)}\n`);
     process.stderr.write(`${turn} could not enter the authoritative journey path. Slice 3 is stopped.\n`);
     return false;
   }
-  await saveSampleState(state);
+  await persist(state);
   return true;
 }
 

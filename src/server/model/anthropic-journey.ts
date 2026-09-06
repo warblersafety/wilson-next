@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
+import Anthropic, { APIError } from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
 import { parseModelProposalEnvelope } from "../../domain/case/model-boundary";
@@ -11,6 +11,8 @@ import { ModelCallFailure } from "./journey-model";
 import type {
   JourneyModel,
   ModelCallMetrics,
+  ModelDiagnosticIssue,
+  ModelFailureDiagnostic,
   ModelTurn,
 } from "./journey-model";
 
@@ -83,20 +85,19 @@ const modelOutputSchema = z.object({
   }).strict()).min(1),
 }).strict();
 
-type ModelOutput = z.infer<typeof modelOutputSchema>;
-
 export interface AnthropicModelRequest {
   model: typeof ANTHROPIC_MODEL_ID;
   max_tokens: typeof PROVIDER_MAX_OUTPUT_TOKENS;
   system: string;
   messages: [{ role: "user"; content: string }];
-  output_config: { format: ReturnType<typeof zodOutputFormat<typeof modelOutputSchema>> };
+  output_config: { format: ProviderOutputFormat };
 }
 
 export interface AnthropicModelResponse {
+  id: string;
   model: string;
   stop_reason: string | null;
-  parsed_output: ModelOutput | null;
+  content: unknown[];
   usage: {
     input_tokens: number;
     cache_creation_input_tokens: number | null;
@@ -108,6 +109,11 @@ export interface AnthropicModelResponse {
 export type AnthropicRequester = (
   request: AnthropicModelRequest,
 ) => Promise<AnthropicModelResponse>;
+
+export type AnthropicResponseRecorder = (
+  turn: ModelTurn,
+  response: AnthropicModelResponse,
+) => Promise<string>;
 
 export interface AnthropicStreamingClient {
   messages: {
@@ -166,6 +172,11 @@ Allowed proposals (proposalId | groupId | intent | target):
 naproxen-dose-correction | naproxen-dose-correction | correction | product-naproxen.dose
 apixaban-date-alternative | apixaban-date-conflict | alternative | product-apixaban.startDate`;
 
+type ProviderOutputFormat = Pick<
+  ReturnType<typeof zodOutputFormat<typeof modelOutputSchema>>,
+  "type" | "schema"
+>;
+
 export function createAnthropicRequest(turn: ModelTurn, text: string): AnthropicModelRequest {
   requireFixedInput(turn, text);
   const catalog = turn === "opening" ? OPENING_CATALOG : CORRECTION_CATALOG;
@@ -177,13 +188,14 @@ export function createAnthropicRequest(turn: ModelTurn, text: string): Anthropic
       role: "user",
       content: `${catalog}\n\nClinician input:\n<input>\n${text}\n</input>`,
     }],
-    output_config: { format: zodOutputFormat(modelOutputSchema) },
+    output_config: { format: providerOutputFormat() },
   };
 }
 
 export function createAnthropicJourneyModel(
   requester: AnthropicRequester = defaultRequester(),
   now: () => number = Date.now,
+  recordResponse?: AnthropicResponseRecorder,
 ): JourneyModel {
   return {
     async propose(turn, text) {
@@ -192,8 +204,11 @@ export function createAnthropicJourneyModel(
       let response: AnthropicModelResponse;
       try {
         response = await requester(request);
-      } catch {
-        throw new ModelCallFailure("Wilson could not interpret the fictional account. Accepted case knowledge is unchanged.");
+      } catch (error) {
+        throw new ModelCallFailure(
+          "Wilson could not interpret the fictional account. Accepted case knowledge is unchanged.",
+          requestFailureDiagnostic(error),
+        );
       }
       const latencyMs = Math.max(0, now() - startedAt);
       const inputTokens = response.usage.input_tokens
@@ -208,9 +223,65 @@ export function createAnthropicJourneyModel(
         latencyMs,
         estimatedCostUsd: estimateCost(inputTokens, response.usage.output_tokens),
       };
-      if (response.stop_reason !== "end_turn" || response.parsed_output === null) {
+      let responseArtifact: string | undefined;
+      if (recordResponse) {
+        try {
+          responseArtifact = await recordResponse(turn, response);
+        } catch (error) {
+          throw new ModelCallFailure(
+            "Wilson could not retain the fictional model response for diagnosis. Accepted case knowledge is unchanged.",
+            { phase: "response-capture", errorName: errorName(error) },
+            metrics,
+          );
+        }
+      }
+      if (response.stop_reason !== "end_turn") {
         throw new ModelCallFailure(
           "Wilson could not interpret the fictional account. Accepted case knowledge is unchanged.",
+          {
+            phase: "provider-stop",
+            requestId: response.id,
+            stopReason: response.stop_reason ?? "missing",
+            responseArtifact,
+          },
+          metrics,
+        );
+      }
+
+      const responseText = response.content
+        .filter(isTextBlock)
+        .map(({ text }) => text)
+        .join("");
+      let decoded: unknown;
+      try {
+        decoded = JSON.parse(responseText);
+      } catch (error) {
+        throw new ModelCallFailure(
+          "Wilson could not interpret the fictional account. Accepted case knowledge is unchanged.",
+          {
+            phase: "structured-json",
+            requestId: response.id,
+            errorName: errorName(error),
+            responseArtifact,
+            issues: [{
+              path: "content",
+              code: "invalid_json",
+              message: responseText.length === 0 ? "The response contained no text block." : "The response text was not valid JSON.",
+            }],
+          },
+          metrics,
+        );
+      }
+      const structured = modelOutputSchema.safeParse(decoded);
+      if (!structured.success) {
+        throw new ModelCallFailure(
+          "Wilson could not interpret the fictional account. Accepted case knowledge is unchanged.",
+          {
+            phase: "structured-schema",
+            requestId: response.id,
+            responseArtifact,
+            issues: zodIssues(structured.error),
+          },
           metrics,
         );
       }
@@ -224,13 +295,21 @@ export function createAnthropicJourneyModel(
               text,
               recordedAt: fixedRecordedAt,
             },
-            ...response.parsed_output,
+            ...structured.data,
           }),
           metrics,
+          responseArtifact,
         };
-      } catch {
+      } catch (error) {
         throw new ModelCallFailure(
           "Wilson could not interpret the fictional account. Accepted case knowledge is unchanged.",
+          {
+            phase: "domain-boundary",
+            requestId: response.id,
+            responseArtifact,
+            errorName: errorName(error),
+            issues: error instanceof z.ZodError ? zodIssues(error) : undefined,
+          },
           metrics,
         );
       }
@@ -245,6 +324,42 @@ function defaultRequester(): AnthropicRequester {
 
 export function createStreamingRequester(client: AnthropicStreamingClient): AnthropicRequester {
   return async (request) => client.messages.stream(request).finalMessage();
+}
+
+function providerOutputFormat(): ProviderOutputFormat {
+  const format = zodOutputFormat(modelOutputSchema);
+  return { type: format.type, schema: format.schema };
+}
+
+function isTextBlock(block: unknown): block is { type: "text"; text: string } {
+  if (typeof block !== "object" || block === null) return false;
+  const candidate = block as { type?: unknown; text?: unknown };
+  return candidate.type === "text" && typeof candidate.text === "string";
+}
+
+function requestFailureDiagnostic(error: unknown): ModelFailureDiagnostic {
+  if (error instanceof APIError) {
+    return {
+      phase: "provider-request",
+      providerStatus: error.status,
+      providerType: error.type ?? undefined,
+      requestId: error.requestID ?? undefined,
+      errorName: errorName(error),
+    };
+  }
+  return { phase: "provider-request", errorName: errorName(error) };
+}
+
+function zodIssues(error: z.ZodError): ModelDiagnosticIssue[] {
+  return error.issues.map((issue) => ({
+    path: issue.path.map(String).join("."),
+    code: issue.code,
+    message: issue.message,
+  }));
+}
+
+function errorName(error: unknown): string {
+  return error instanceof Error ? error.constructor.name : typeof error;
 }
 
 function requireFixedInput(turn: ModelTurn, text: string): void {
