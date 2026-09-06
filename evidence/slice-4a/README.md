@@ -69,7 +69,10 @@ expected preview classification (`target: null`):
 - state: `READY`; and
 - source attribution: the same branch and commit above.
 
-That preview remains protected and unshared while Slice 4A is reviewed. No
+That classification-check preview is removed after the final material commit
+is deployed. PR #29 records the exact retained final commit, deployment, and
+URL so this evidence document does not try to identify its own commit. The
+retained preview remains protected and unshared while Slice 4A is reviewed. No
 automation bypass remains configured.
 
 ## Node runtime variance
