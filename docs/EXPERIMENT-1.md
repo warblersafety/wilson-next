@@ -1,8 +1,8 @@
 # Wilson Experiment 1
 
-**Status:** Approved by Steve; course-adjusted after Slice 2 and local Slice 3
-credential handoff established on 2026-09-05; implementation requires Steve's
-explicit go-ahead
+**Status:** Approved by Steve; Slices 0–3 complete; Slice 4 split into a Vercel
+deployment-path gate (4A) and physician-ready live preview (4B) on 2026-09-06;
+implementation of either requires Steve's explicit go-ahead
 
 **Owns:** The fixed journey, supported and deferred scope, interaction
 composition, selected stack, implementation sequence, verification, deployment,
@@ -50,8 +50,9 @@ journey and supplies the highest-value early product feedback.
   resolve, and Inspect output;
 - one seven-state desktop Chromium journey at 1440 × 900 CSS pixels;
 - browser review, form preview, and official PDF download;
-- one deterministic browser run, no more than four real-model samples or USD 5,
-  one deployed operator run, and one formative physician session; and
+- one deterministic browser run, operator-initiated real-model use under an
+  operator-chosen runtime budget, one deployed operator run, and one formative
+  physician session; and
 - synthetic information only.
 
 ### Deferred
@@ -66,7 +67,9 @@ journey and supplies the highest-value early product feedback.
 - mobile, a second viewport, and a browser matrix;
 - broad accessibility audit beyond semantic HTML, labels, visible focus,
   keyboard operation, and the main path;
-- accounts, collaboration, submission, analytics, and durable storage; and
+- accounts, collaboration, submission, analytics, and durable storage;
+- a public or production launch, general authentication, hosted case
+  persistence, and packaging or distribution for Noah; and
 - a multi-participant study or general preference claim.
 
 The UI discloses the experiment's limited coverage before input and identifies
@@ -293,13 +296,31 @@ means a sanitized ordered checkpoint record with no cookies, browser storage,
 request bodies, page snapshots, or raw network/session state; do not retain a
 raw Playwright trace archive.
 
-### Real-model sample
+### Real-model evidence and runtime policy
 
-Use the opening account and combined update for no more than four complete
-samples or USD 5 total, whichever comes first. Disable automatic retries and
-record model ID, parameters, prompt/schema revisions, token use, latency, and
-cost. A human scores every result against the semantic oracle and verifies that
-each excerpt supports the proposed value and relationship.
+Slice 3's accepted sample remains historical evidence gathered under its then
+approved four-sample/USD 5 gate. That completed gate does not limit later
+development, verification, or interactive use.
+
+For subsequent Wilson operation, provider-default adaptive thinking and effort
+are the default. The API-required output limit uses the provider's full
+supported capacity rather than a Wilson development ceiling. Wilson imposes no
+token, thinking-token, cost, sample-count, turn, or wall-clock maximum on an
+operator-initiated run. Steve chooses the practical runtime budget and may
+explicitly supply a supported effort or output setting at launch. Quality is
+the primary constraint; do not reduce thinking, output, or latency without
+measuring the effect on extraction and correction quality.
+
+Disable automatic retries and record model ID, parameters, prompt/schema
+revisions, token use, latency, and cost. A human scores each retained evidence
+run against the semantic oracle and verifies that each excerpt supports the
+proposed value and relationship. CI, builds, deterministic browser tests, and
+independent review make no paid model call.
+
+Any comparative model/effort experiment is separately authorized with scope
+and a budget selected by Steve. It is never triggered as an automatic response
+to a failure or review finding. This is the governing decision requested by
+[Issue #25](https://github.com/warblersafety/wilson-next/issues/25).
 
 Require zero invented material facts, zero wrong-product/role attachments,
 supporting text for every material proposal, and every projection-required fact
@@ -311,8 +332,7 @@ responsibility. Passing makes no general reliability claim.
 Compare supported semantic projection values and checkboxes programmatically
 with the PDF and inspect its rendered pages visually. Then the operator
 completes the deployed synthetic journey unaided using the real model and PDF
-filler. This run may count toward the model cap if inputs and configuration
-match.
+filler. This is an operator-initiated runtime use under the policy above.
 
 When all minimum evidence is green, one physician uses the experimental,
 synthetic-only preview and discusses confusion, effort, fidelity, reviewability,
@@ -339,19 +359,25 @@ without evidence that the first physician decision needs them.
 - `@cantoo/pdf-lib` 2.9.1 subject to the Slice 0 gate; bounded `pypdf` 6.16.2
   fallback if it fails.
 - Vitest 4.1.11 and Playwright Chromium.
-- One paid, continuously running, single-instance Render web service.
-- One shared preview password and signed secure browser cookie.
+- One Vercel Hobby project, subject to the Slice 4A deployment-path and usage-
+  terms eligibility gate.
+- Origin- and tab-scoped `sessionStorage` for the disposable synthetic case and
+  minimum conversation state; no hosted case persistence.
+- Vercel deployment protection when it provides workable reviewer access;
+  otherwise one minimal application-level preview lock.
 - One npm lockfile, one `verify` CI job, and one issue branch/PR per slice.
 
-This is one ordinary Node server. No database, cache, worker, queue, persistent
-disk, object store, agent framework, serverless runtime, custom domain, or
-multi-package repository is approved. Confirm current price and permission
-before purchasing the Render service.
+This remains one Next.js application. No database, cache, worker, queue,
+persistent disk, object store, agent framework, custom domain, or multi-package
+repository is approved. No paid Vercel plan is authorized by this document;
+Slice 4A must stop and report if Hobby cannot provide a workable path.
 
 Next.js is an application shell: explicit route handlers call application
 commands/queries; domain modules have no Next imports; model and PDF adapters
 are server-only; and Experiment 1 uses no Server Actions, edge runtime, static
-regeneration, framework cache, or browser-owned case state.
+regeneration, or framework cache. Browser retention follows the narrow
+synthetic-preview exception in Architecture and does not create a browser-side
+semantic write path.
 
 The model receives the fixed transcript and returns grounded proposals. Authored
 application copy supplies the one question. It does not browse, use tools,
@@ -389,10 +415,10 @@ inspection-mode requirement fails the TypeScript candidate.
 
 Time-box the TypeScript gate to half a working day. If it fails, use `pypdf`
 plus its AES dependency in a small Python subprocess behind the same adapter,
-packaged with Node in one Render container. Give the fallback no more than one
-additional working day against the same gate; otherwise stop and reopen the PDF
-premise. Do not repair or fork a PDF engine. PyMuPDF remains unselected because
-its proprietary/AGPL licensing decision is unnecessary.
+packaged with Node in the same deployable application. Give the fallback no
+more than one additional working day against the same gate; otherwise stop and
+reopen the PDF premise. Do not repair or fork a PDF engine. PyMuPDF remains
+unselected because its proprietary/AGPL licensing decision is unnecessary.
 
 Slice 0 does not define the complete Experiment 1 semantic projection. Full
 supported mapping lands with the projection and browser integration in Slices 1
@@ -401,31 +427,80 @@ authoritative URL and retrieval date.
 
 ## Runtime and preview
 
-The server holds cases in a module-owned `Map` behind a repository interface.
-A cryptographically random secure-cookie session ID selects a case. Entries
-expire after eight inactive hours and only a small fixed number of simultaneous
-sessions is accepted. Restart or redeploy loses cases.
+The browser retains the latest complete server-returned case, revision, and
+minimum conversation stage in origin- and tab-scoped `sessionStorage`.
+Refreshing that tab may continue the preview; closing it, opening another tab,
+using a new browser/device, clearing site data, or encountering an incompatible
+state version starts over. Concurrent-tab use is unsupported. Provide an
+obvious reset action and a concise instruction for clearing the preview after
+review. Do not add a Vercel database, key-value store, encrypted server
+envelope, revision/hash anchor, or affinity mechanism for Experiment 1.
 
-The deployment-only preview lock is not a product account:
-
-1. An unknown browser sees a Wilson-branded password screen.
-2. The server compares the shared secret with the Render environment secret.
-3. Success sets a signed, non-persistent `__Host-` cookie with `Secure`,
-   `HttpOnly`, `SameSite=Strict`, and `Path=/`.
-4. Every page and API route except login, static assets, and content-free
-   `/healthz` requires the cookie.
+The deployment-only preview lock is not a product account. Slice 4A first
+determines whether Vercel's Hobby deployment protection can give a
+non-technical remote reviewer practical access. If it cannot, Slice 4B may add
+one minimal shared-secret screen and signed, secure, non-persistent cookie.
+Before an Anthropic secret is installed or a reviewer link is shared, every
+model, case, and PDF route must be behind the selected protection; the
+Anthropic key never reaches the browser. An unprotected 4A gate deployment may
+contain only the existing deterministic synthetic experience, remain unshared,
+and be removed when the gate ends. Its checks stop at build completion, initial
+page/static delivery, and access-path discovery; they do not exercise or make
+claims about the multi-request journey.
 
 State changes use non-GET methods and reject mismatched Origin. Case/PDF
 responses use `Cache-Control: no-store`; all pages send `X-Robots-Tag: noindex,
-nofollow`, which is not treated as access control.
+nofollow`, which is not treated as access control. Logs contain only opaque
+operation references, phase, case revision, model/prompt/schema versions,
+provider request ID and stop reason when available, token counts, latency,
+estimated cost, and precise success/failure stage. They never contain
+narratives, model payloads, case facts, PDFs, browser storage, cookies, or
+credentials.
 
-Deploy one instance in one US Render region with managed TLS, environment
-secrets, pinned Node, and readiness health check. Do not use the sleeping free
-plan, multiple instances, or Vercel's dynamically routed compute with in-memory
-state. Do not deploy or restart during the physician session. Remove service
-access after the approved review window.
+The preview is disposable, synthetic-only, likely less secure than a production
+healthcare system, and never presented as production-ready. Remove access after
+the approved review window unless continued access is separately approved.
 
-Deployment API credentials live only in the host's environment-secret store.
+### Vercel deployment credential handoff
+
+The Vercel access token is a short-lived local administration credential, not
+an application runtime secret. It is never sent through chat, committed,
+stored in the repository, or installed as ambient Codex/builder authentication.
+Do not reuse the legacy Wilson token.
+
+For Slice 4A, use this handoff:
+
+1. Before requesting a token, ignore `.vercel/`, `.env.vercel`, and equivalent
+   local credential files. Vercel project-link metadata is local and
+   non-secret but still remains uncommitted.
+2. Codex prepares
+   `/Users/sofa-claude/.config/wilson-next/vercel.env` outside the repository,
+   with its directory readable only by the owner and the file mode `0600`.
+3. Steve creates a new Vercel token with the shortest practical expiry—one day
+   by default—and scopes it to the `warblersafety` team when that scope permits
+   the required project operations. Broader account scope requires Steve's
+   explicit approval after a narrower attempt fails.
+4. Steve pastes the value directly into that file as `VERCEL_TOKEN=...` using
+   an interactive editor or hidden prompt, then reports only that the handoff is
+   ready. The value is never pasted into the Codex conversation.
+5. Codex sources the file only for the bounded Vercel CLI/API commands. It may
+   check presence and account/team access without printing the value, and must
+   not use shell tracing, echo the environment, write the token to command
+   output, or persist a Vercel login.
+6. After the gate is complete, Codex removes the local handoff file and Steve
+   revokes the token (or confirms its expiry). Documentation records only that
+   the handoff and revocation/expiry checks passed.
+
+Any later Vercel administration session repeats this process with a new
+short-lived token; the 4A token is not retained for 4B.
+
+Runtime secrets are separate. Slice 4A requires no Anthropic key. Before Slice
+4B, Steve enters the Anthropic API key and any human-chosen preview secret
+directly in Vercel's environment-secret interface; Codex verifies names and
+availability without retrieving values. Generated cookie-signing material may
+be created and installed without displaying it. Never use `vercel env pull` to
+copy hosted runtime secrets back to the development machine.
+
 Local Slice 3 model access uses the Mini-local handoff below; never export its
 credential into an ordinary development shell or the shell used for
 subscription-backed code review. Narratives, model payloads, case facts, and
@@ -512,11 +587,12 @@ Create the `verify` workflow with the Slice 0 scaffold. Add each command when
 the slice that first produces its evidence arrives; do not create empty
 placeholder tests for later slices merely to populate the initial workflow.
 
-The deterministic browser test needs no credentials. Real-model samples and
-deployed smoke checks are explicit capped operator actions, not push-triggered
-automation. Require `verify` on `main` after the workflow exists.
+The deterministic browser test needs no credentials. Real-model use and
+deployed smoke checks are explicit operator actions, never push-triggered
+automation; their runtime budget remains Steve's decision. Require `verify` on
+`main` after the workflow exists.
 
-Core implementation follows five short-lived slice branches:
+Core implementation follows the completed Slices 0–3 and the split Slice 4:
 
 1. **Slice 0 — prove the FDA PDF filler:** scaffold and pass the bounded gate
    or its pre-approved fallback.
@@ -528,16 +604,92 @@ Core implementation follows five short-lived slice branches:
 4. **Slice 3 — try the real model:** connect Claude and inspect the capped
    sample; failures reopen the model boundary without hidden retries or an
    automatic second-provider comparison.
-5. **Slice 4 — physician-ready preview:** add the preview lock, deploy one
-   instance, run operator smoke/PDF inspection, and meet one physician as soon
-   as the minimum evidence is green.
+5. **Slice 4A — prove the Vercel Hobby deployment path:** from synchronized
+   `main`, attempt direct import of the public `warblersafety/wilson-next`
+   repository first. If Vercel refuses or cannot use that Git connection on
+   Hobby, deploy the same application commit with the reusable Vercel CLI or
+   REST API. Create/link a distinct Wilson Next project; prove that the build,
+   initial page, and static assets are reachable; determine the practical
+   non-technical reviewer access path; confirm that this non-commercial,
+   open-source organization-repository use is eligible under the current Hobby
+   terms; record exact repeatable steps and cost; and make no live-model call or
+   physician-facing product change. Stop rather than purchasing Pro.
+6. **Slice 4B — physician-ready live preview:** connect the real browser journey
+   to the live model, move disposable case/conversation continuity to the
+   browser boundary above, close the Change/Remove false affordances, add the
+   selected preview protection and payload-free diagnostics, run operator
+   conversation/PDF acceptance, and then meet one physician when the minimum
+   evidence is green.
+
+Slice 4A passes only when the Wilson Next build, initial page, and static assets
+have a Vercel URL; the Hobby Git-import result is conclusive; the CLI/API
+fallback works if needed; current Hobby terms permit this non-commercial,
+open-source organization-repository use; a non-technical access path is
+identified; the process is documented and repeatable; no credential is retained
+or committed; and no paid plan is purchased. Its result selects the deployment
+mechanism for 4B; it does not select hosted persistence or claim that the
+current multi-request journey works on Vercel.
+
+The merged Slice 1–3 application still keeps case/session state in a
+process-local `Map`. That mechanism is already known to be unreliable across
+Vercel requests and is intentionally replaced only in 4B. Do not exercise the
+seven-state journey as 4A acceptance, interpret warm-instance success as
+continuity evidence, or repair session behavior under the deployment gate.
+
+Slice 4A may change only deployment metadata, secret-ignore rules, and the
+documentation needed to establish that result. If Vercel requires an
+application behavior change, dependency, persistence mechanism, or paid plan,
+or if current Hobby terms do not permit the planned use, stop and bring that
+finding back for approval instead of expanding the gate.
+
+Slice 4B passes only when the operator and remote physician can open the
+protected synthetic preview without technical setup; complete a meaningful
+multi-turn live-model journey; refresh without losing the current compatible
+state in the same tab; inspect correct product identity, evidence, correction,
+and conflict behavior; and verify that the reviewed case, onscreen projection, PDF
+preview, and downloaded FDA form agree. Failures must return an opaque
+diagnostic reference and enough payload-free telemetry to diagnose the phase.
+No Anthropic credential reaches the browser, and the preview plainly forbids
+real patient data and disclaims production readiness.
+
+Manual 4B acceptance uses the fixed synthetic journey:
+
+1. Open the remote preview as a non-technical reviewer and confirm the
+   synthetic-only boundary before entering anything.
+2. Submit the opening account and confirm exactly one live request occurs.
+   Inspect every proposed fact, product identity, role, and source excerpt;
+   stop on invention, omission, unsupported content, or wrong attachment.
+3. Judge whether Wilson's single grouped indication question is natural,
+   useful, and unambiguous about both products. Confirm the answer attaches to
+   the correct product cards.
+4. Submit the correction and contradiction and confirm exactly one further live
+   request occurs, with no hidden retry.
+5. Confirm 500 mg remains active until 250 mg is explicitly accepted, then
+   remains only in superseded history.
+6. Leave the date conflict unresolved and confirm both alternatives remain
+   visible, neither reaches the projection, and direct PDF access returns the
+   required no-store `409`.
+7. Refresh the same tab after extraction and again after correction/conflict;
+   confirm the same compatible state and revision return.
+8. Resolve the date to 13-Aug-2026 and compare the reviewed case, onscreen
+   projection, PDF preview, and downloaded FDA form field by field.
+9. Confirm an induced safe failure shows an opaque reference and that the
+   matching logs identify the phase, timing, token use, and model/schema
+   versions without case content or credentials.
+10. Record separate judgments for conversational coherence, factual fidelity,
+    evidence usefulness, interaction burden, latency, correction/conflict
+    handling, and form accuracy; then reset the preview and close the tab.
+
+Any invention, silent loss, wrong-product attachment, hidden conflict,
+unexpected retry, same-tab refresh loss, inaccessible diagnostic reference,
+or disagreement among case, projection, preview, and PDF fails Slice 4B.
 
 Slice 2 established the assembled path but also exposed a false-affordance
-risk: visible Change and Remove controls were not functional. Close that gap in
-a bounded remediation before Slice 4 deployment or physician use. Do not add it
-to Slice 3, whose real-model scope and caps remain unchanged.
+risk: visible Change and Remove controls were not functional. Slice 4A does not
+exercise or repair them; close the gap inside 4B before operator or physician
+use. Slice 3 remains complete and its historical evidence is unchanged.
 Approved planning amendments and independently valuable defects follow the
-ordinary issue-and-branch rule without renumbering these five slices.
+ordinary issue-and-branch rule without otherwise renumbering the slices.
 
 No slice waits for broad coverage, eval infrastructure, general form support,
 durable data, or polish unrelated to the approved journey.
@@ -547,7 +699,8 @@ durable data, or polish unrelated to the approved journey.
 Retain only the synthetic fixture/oracle, source revision, focused results,
 useful trace/screenshots, short model table and cost, checked PDF, operator
 verdict, and concise physician notes. Never retain credentials, real clinical
-data, raw infrastructure logs, browser storage, or deployed ephemeral cases.
+data, raw infrastructure logs, exported browser storage, or deployed case
+state. Reviewers clear the disposable local browser state after the session.
 The retained browser trace is the sanitized checkpoint record defined above,
 not a Playwright archive or another capture of browser/network session state.
 Remove preview access after review unless continued access is approved.
@@ -556,19 +709,21 @@ A passing implementation remains an experiment until separately accepted as a
 production seed. Preserve a failed branch or named commit as falsification
 evidence rather than merging it. Copy nothing into legacy Wilson or Nightjar.
 
-Later slices require an Anthropic API organization/key, Render workspace and
-spend permission, high-entropy preview/cookie secrets, and physician-session
-logistics. Missing access is a concrete blocker; it does not authorize silent
-provider or host substitution.
+Slice 4A requires Vercel team/project access and the short-lived credential
+handoff above. Slice 4B additionally requires an Anthropic API organization/key,
+the selected preview/cookie secrets, and physician-session logistics. Missing
+access is a concrete blocker; it does not authorize silent provider, plan, host,
+or persistence substitution.
 
 ## Authorization boundary
 
 The product, interaction, architecture, fixed journey, question budget,
 supported/deferred scope, stack, verification, deployment, retention, stopping,
-and delivery topics are closed for Experiment 1. Legacy reuse is decided only
-when a slice proposes a specific asset, and legacy Wilson's operational
-disposition is separate work; neither blocks Slice 0.
+and delivery topics are closed for Experiment 1 as amended above. Legacy reuse
+is decided only when a slice proposes a specific asset, and legacy Wilson's
+operational disposition is separate work.
 
 Nothing in this document authorizes application implementation, external
 deployment, spending, real clinical data, production release, or expanded
-scope. Slice 0 begins only after Steve's explicit implementation go-ahead.
+scope. Slice 4A and Slice 4B each begin only after Steve's explicit
+implementation go-ahead.

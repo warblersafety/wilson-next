@@ -10,7 +10,7 @@ application shape, privacy boundary, and architectural falsification
 
 ## Decision
 
-Use a small, server-owned semantic case representing what the clinician knows:
+Use a small semantic case representing what the clinician knows:
 the patient, event, products, uncertainty, conflicts, evidence, and accepted
 changes. Form FDA 3500 is projected from that case; its widget identifiers do
 not organize upstream knowledge.
@@ -18,7 +18,9 @@ not organize upstream knowledge.
 Model output remains proposed until clinician review. Every consequential case
 change passes through one server-side command boundary. Understanding, review,
 clarification, and Form 3500 output are synchronous views of the same case
-revision.
+revision. For the synthetic Experiment 1 preview only, the browser may retain
+the latest server-returned case and interaction state between stateless
+requests; it does not gain a second mutation path.
 
 Implement this in one modular TypeScript application with model, PDF, and
 temporary storage behind narrow adapters. Do not introduce a generic knowledge
@@ -162,16 +164,32 @@ is accepted; the live guidance page is not a byte-consumed adapter input.
 ## Application and data boundary
 
 ```text
-browser UI -> application commands and queries -> case domain
-                                         |-> model adapter
-                                         |-> FDA PDF adapter
-                                         |-> temporary case repository
+browser UI + retained case/interaction state
+                    -> application commands and queries -> case domain
+                                                    |-> model adapter
+                                                    |-> FDA PDF adapter
 ```
 
-Use one server process and one temporary in-memory case per random browser
-session. Server restart may lose the case. Domain code has no model-provider,
-PDF-library, framework, or deployment imports. The browser may hold temporary
-interaction state but never authoritative case values.
+Use stateless application routes on Vercel. The browser retains the latest
+server-returned case, revision, and minimum interaction state in origin- and
+tab-scoped `sessionStorage` and supplies them with the next command or query.
+The server validates the received shape, expected revision, command, and
+resulting case invariants before returning a complete next state. Browser code
+stores or discards that result; it does not edit semantic case values directly.
+
+This is deliberately not a secure persistence design. A reviewer can alter or
+delete their own browser storage; another tab, browser, or device cannot
+reliably recover the case; and closing the tab or clearing site data loses it.
+Concurrent-tab use is unsupported. Vercel stores no case contents, encrypted
+envelope, revision anchor, or session affinity record. These limits are
+acceptable only because the preview is synthetic-only, access-restricted,
+non-production, and disposable. Hosted persistence, cross-device recovery,
+tamper resistance, and any real-clinical-data boundary require a later
+architecture decision.
+
+Domain code has no model-provider, PDF-library, framework, or deployment
+imports. The browser-held state is a deployment adapter concern and does not
+change `applyCaseCommand` as the sole semantic write boundary.
 
 Experiment 1 accepts synthetic data only. It has no analytics, session replay,
 payload logging, audio capture, or retained deployed case state. Operational
@@ -182,7 +200,8 @@ revisions, but not narratives, model payloads, PDFs, or case facts.
 
 - Generic claim/evidence graphs, ontologies, event replay, messaging, separate
   read stores, multiple services, or synchronization.
-- Durable sessions, accounts, collaboration, and saved-case storage.
+- Durable or hosted sessions, cross-device recovery, accounts, collaboration,
+  and saved-case storage.
 - General import or deterministic-derivation frameworks.
 - Full FHIR or ICH E2B compatibility.
 - Comprehensive question planning, full Form 3500 coverage, and devices.
@@ -196,7 +215,8 @@ Stop expansion and reopen the owning premise if:
 - correction or conflict behavior differs by input surface;
 - repeated products require positional identity or special projection state;
 - conflicting alternatives can both resolve or reach the PDF;
-- browser or projection code maintains authoritative case values;
+- browser code creates or mutates semantic case values outside a complete
+  server-returned `applyCaseCommand` result;
 - any consequential write can bypass `applyCaseCommand`; or
 - implementation requires duplicated authority, a weakened invariant, hidden
   fallback, or user-visible behavior absent from the approved product and

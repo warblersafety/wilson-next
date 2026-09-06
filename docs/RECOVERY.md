@@ -107,8 +107,9 @@ The active corpus carries these evidence-backed constraints:
 - Delivery is by complete user-visible journeys with assembled evidence.
 - Questions are semantic and consequential, not blank-field traversal.
 - UI/UX constrains architecture rather than decorating it later.
-- Real-model contact occurs in a small capped sample when model behavior
-  matters; deterministic tests cannot substitute for it.
+- Slice 3 real-model contact occurred in a small capped sample when model
+  behavior mattered; deterministic tests could not substitute for it. Later
+  operator-initiated use follows Experiment 1's uncapped Wilson runtime policy.
 - Severe friction or recurrence challenges the owning premise instead of
   producing path-specific patches.
 - Consequential decisions are written once into their owning active document.
@@ -181,9 +182,21 @@ decision.
 - `nightjar-research` has local history but no remote mirror.
 - Raw transcripts and the untracked `runs/steve` bundle may contain credentials,
   private data, or clinical-style narratives; preservation requires privacy
-  review, not blind Git import.
+  review, not blind Git import. A count-only inspection found credential-shaped
+  text in the retained legacy Vercel builder transcript; no value was inspected
+  during Wilson Next planning, so the transcript is not evidence that the old
+  token remained secret.
 - Original research-authoring sessions were not all located.
-- The August 23 Vercel token revocation was not verified.
+- Legacy Vercel administration used a short-lived token placed independently in
+  a gitignored local `.env.vercel` file and explicitly sourced for REST API
+  commands; it was not ambient builder injection or a persistent Vercel login.
+  The file used weaker-than-preferred `0644` permissions, and the August 23 token
+  revocation was not verified. Wilson Next must not reuse it; its replacement
+  handoff is defined in Experiment 1.
+- Legacy Wilson's existing Vercel project proves that the `warblersafety` team
+  has hosted this code family on Vercel. It does not prove that a new public
+  organization repository can use automatic Git deployments on the current
+  Hobby plan; Slice 4A tests that narrow question before changing product code.
 - The local legacy `origin/staging` ref is stale; GitHub shows PR #174's merge.
 - Legacy Wilson remains public, unarchived, and uses `dev` as default. Its
   deployment, open urgent issues, evidence retention, terminal notice, name
