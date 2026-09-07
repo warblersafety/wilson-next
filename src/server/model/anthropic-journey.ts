@@ -22,8 +22,8 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-experiment-1-extraction-v2";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v3";
+export const MODEL_PROMPT_REVISION = "wilson-experiment-1-extraction-v3";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v4";
 // The Messages API requires max_tokens. Use Sonnet 5's full provider output
 // capacity here so Wilson imposes no development/verification token budget.
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
@@ -31,6 +31,8 @@ export const MODEL_MAX_RETRIES = 0;
 
 const INPUT_USD_PER_MILLION_TOKENS = 2;
 const OUTPUT_USD_PER_MILLION_TOKENS = 10;
+const CANONICAL_PRODUCT_ROLES = ["suspect", "concomitant"] as const;
+const PRODUCT_ROLE_SCHEMA_GUIDANCE = 'When target.field is "role", value.value must be exactly "suspect" or "concomitant"; do not inflect or otherwise vary these canonical literals.';
 
 const modelTargetSchema = z.discriminatedUnion("entity", [
   z.object({
@@ -68,25 +70,41 @@ const modelTargetSchema = z.discriminatedUnion("entity", [
   }).strict(),
 ]);
 
+const modelProposalSchema = z.object({
+  proposalId: z.string(),
+  groupId: z.string(),
+  intent: z.enum(["fact", "correction", "alternative"]),
+  target: modelTargetSchema,
+  value: z.object({
+    kind: z.literal("known"),
+    value: z.union([
+      z.string().describe(PRODUCT_ROLE_SCHEMA_GUIDANCE),
+      z.number(),
+      z.boolean(),
+      z.array(z.string()),
+    ]),
+  }).strict(),
+  source: z.object({
+    start: z.number().int(),
+    end: z.number().int(),
+  }).strict(),
+}).strict().superRefine((proposal, context) => {
+  if (proposal.target.field !== "role") return;
+  if (typeof proposal.value.value === "string"
+    && CANONICAL_PRODUCT_ROLES.some((role) => role === proposal.value.value)) return;
+  context.addIssue({
+    code: "custom",
+    path: ["value", "value"],
+    message: "Role value must be the canonical literal suspect or concomitant",
+  });
+});
+
 const modelOutputSchema = z.object({
   products: z.array(z.object({
     id: z.enum(["product-apixaban", "product-naproxen", "product-lisinopril"]),
     groupId: z.enum(["product-apixaban", "product-naproxen", "product-lisinopril"]),
   }).strict()),
-  proposals: z.array(z.object({
-    proposalId: z.string(),
-    groupId: z.string(),
-    intent: z.enum(["fact", "correction", "alternative"]),
-    target: modelTargetSchema,
-    value: z.object({
-      kind: z.literal("known"),
-      value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]),
-    }).strict(),
-    source: z.object({
-      start: z.number().int(),
-      end: z.number().int(),
-    }).strict(),
-  }).strict()).min(1),
+  proposals: z.array(modelProposalSchema).min(1),
 }).strict();
 
 export interface AnthropicModelRequest {
@@ -131,7 +149,7 @@ const SYSTEM_PROMPT = `You extract grounded semantic proposals from one fictiona
 
 Rules:
 - Propose only facts explicitly supported by the supplied input. Do not diagnose, infer causality, classify, fill gaps, or establish truth.
-- Keep each medicine attached to its exact stable product ID. "I suspect" establishes a reported role; it is not your causality judgment.
+- Keep each medicine attached to its exact stable product ID. For product roles, emit only the canonical literal "suspect" or "concomitant". Map statements such as "I suspect ..." to "suspect"; do not inflect or otherwise vary either literal. A reported suspect role is not your causality judgment.
 - Use normalized ISO dates (YYYY-MM-DD), "oral" for "by mouth", and the literal frequency wording "twice daily" or "daily".
 - Preserve a measurement's value and unit together as a string, for example "7.8 g/dL" rather than 7.8.
 - Every proposal must cite the smallest exact supporting substring using zero-based start-inclusive/end-exclusive character offsets into the clinician input. Offsets must select non-empty text exactly.

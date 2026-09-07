@@ -47,6 +47,18 @@ describe("Anthropic fixed-journey adapter", () => {
     expect(captured).not.toHaveProperty("tools");
     expect(captured).not.toHaveProperty("thinking");
     expect(captured?.output_config.format).not.toHaveProperty("parse");
+    expect(captured?.system).toContain('emit only the canonical literal "suspect" or "concomitant"');
+    expect(captured?.system).toContain('Map statements such as "I suspect ..." to "suspect"');
+    const roleGuidanceSchema = findSchemaObject(
+      captured?.output_config.format.schema,
+      (candidate) => typeof candidate.description === "string"
+        && candidate.description.includes('target.field is "role"'),
+    );
+    expect(roleGuidanceSchema).toMatchObject({
+      type: "string",
+      description: expect.stringContaining('value.value must be exactly "suspect" or "concomitant"'),
+    });
+    expect(roleGuidanceSchema).not.toHaveProperty("enum");
     expect(MODEL_MAX_RETRIES).toBe(0);
     expect(result.envelope).toEqual(parseFixedOpeningResponse(openingAccount));
     expect(result.diagnosticResponse).toEqual(responseFor("opening"));
@@ -218,6 +230,33 @@ describe("Anthropic fixed-journey adapter", () => {
     });
   });
 
+  it.each(["suspected", "primary", "causal"])(
+    "rejects noncanonical product role %s at the local structured-schema boundary",
+    async (role) => {
+      const response = responseFor("opening");
+      const output = responseOutput(response);
+      const proposalIndex = output.proposals.findIndex(({ proposalId }) => proposalId === "apixaban-role");
+      const proposal = output.proposals[proposalIndex];
+      (proposal.value as { kind: "known"; value: unknown }).value = role;
+      setResponseOutput(response, output);
+
+      const failure = await modelFailure(
+        createAnthropicJourneyModel(async () => response).propose("opening", openingAccount),
+      );
+
+      expect(failure.diagnostic).toMatchObject({
+        phase: "structured-schema",
+        requestId: "message-opening",
+        issues: [{
+          path: `proposals.${proposalIndex}.value.value`,
+          code: "custom",
+          message: "Role value must be the canonical literal suspect or concomitant",
+        }],
+      });
+      expect(failure.returnedResponse).toBe(response);
+    },
+  );
+
   it("records the response before parsing and stops if protected capture fails", async () => {
     const recorder = vi.fn(async () => ".wilson-model-samples/sample-1-opening-response.json");
     const result = await createAnthropicJourneyModel(
@@ -333,4 +372,19 @@ async function modelFailure(promise: Promise<unknown>): Promise<ModelCallFailure
     return error as ModelCallFailure;
   }
   throw new Error("Expected a ModelCallFailure");
+}
+
+function findSchemaObject(
+  value: unknown,
+  predicate: (candidate: Record<string, unknown>) => boolean,
+): Record<string, unknown> | undefined {
+  if (typeof value !== "object" || value === null) return undefined;
+  if (!Array.isArray(value) && predicate(value as Record<string, unknown>)) {
+    return value as Record<string, unknown>;
+  }
+  for (const child of Array.isArray(value) ? value : Object.values(value)) {
+    const match = findSchemaObject(child, predicate);
+    if (match) return match;
+  }
+  return undefined;
 }
