@@ -130,7 +130,6 @@ export default function Journey() {
   async function openPdf(mode: "preview" | "download") {
     if (!browserState) return;
     const previewWindow = mode === "preview" ? window.open("about:blank", "_blank") : null;
-    if (previewWindow) previewWindow.opener = null;
     setBusy(true);
     setError(undefined);
     try {
@@ -138,7 +137,14 @@ export default function Journey() {
       const url = URL.createObjectURL(blob);
       if (mode === "preview") {
         if (!previewWindow) throw new Error("The browser blocked the PDF preview window");
-        previewWindow.location.replace(url);
+        previewWindow.document.title = "Wilson Form FDA 3500 preview";
+        previewWindow.document.body.style.margin = "0";
+        const embed = previewWindow.document.createElement("embed");
+        embed.src = url;
+        embed.type = "application/pdf";
+        embed.style.width = "100vw";
+        embed.style.height = "100vh";
+        previewWindow.document.body.replaceChildren(embed);
         window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
       } else {
         const link = document.createElement("a");

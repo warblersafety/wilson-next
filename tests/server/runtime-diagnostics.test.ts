@@ -393,6 +393,48 @@ describe("runtime diagnostics", () => {
       consoleError.mockRestore();
     }
   });
+
+  it("redacts nested non-fixture action text as well as browser-held state", async () => {
+    const outsideFixture = "synthetic but not approved for diagnostic retention";
+    const browserEvent = {
+      browserSequence: 1,
+      phase: "request-start" as const,
+      outcome: "start" as const,
+      request: {
+        method: "POST" as const,
+        path: "/api/case" as const,
+        body: {
+          operation: "act",
+          state: { complete: "browser state" },
+          expectedRevision: 0,
+          action: { action: "submit-opening", text: outsideFixture, reportType: "adverse-event" },
+        },
+      },
+    };
+    const written: string[] = [];
+    const consoleLog = vi.spyOn(console, "log").mockImplementation((value) => written.push(String(value)));
+    try {
+      const response = await postBrowserDiagnostic(new NextRequest("https://wilson.test/api/diagnostics/browser", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          host: "wilson.test",
+          origin: "https://wilson.test",
+          "x-forwarded-proto": "https",
+        },
+        body: JSON.stringify({ event: browserEvent, trace: [browserEvent] }),
+      }));
+
+      expect(response.status).toBe(204);
+      const serialized = written.join("\n");
+      expect(serialized).not.toContain(outsideFixture);
+      expect(serialized).not.toContain("browser state");
+      expect(serialized).toContain("[NOT LOGGED: outside fixed synthetic fixture]");
+      expect(serialized).toContain("[BROWSER STATE NOT LOGGED]");
+    } finally {
+      consoleLog.mockRestore();
+    }
+  });
 });
 
 async function initialBrowserState() {

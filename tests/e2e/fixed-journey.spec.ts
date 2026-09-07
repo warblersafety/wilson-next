@@ -1,9 +1,12 @@
 import { createHash } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
+import { openingAccount } from "../../src/experiment/fixed-inputs";
 
 const retainEvidence = process.env.WILSON_RETAIN_EVIDENCE === "1";
 const evidenceDirectory = process.env.WILSON_EVIDENCE_DIRECTORY ?? "evidence/slice-2";
+const evidenceKind = process.env.WILSON_EVIDENCE_KIND ?? "sanitized deterministic checkpoint trace";
+const induceSafeFailure = process.env.WILSON_INDUCE_SAFE_FAILURE === "1";
 
 test("completes the seven-state fixed journey and downloads the checked form", async ({ page, browser }) => {
   const journeyTrace: Array<{ state: string; assertion: string }> = [];
@@ -19,6 +22,17 @@ test("completes the seven-state fixed journey and downloads the checked form", a
     journeyTrace.push({ state: "describe", assertion: "Synthetic-use boundary and fixed account are visible." });
     const caseResponse = await page.request.get("/api/case");
     expect(caseResponse.headers()["cache-control"]).toContain("no-store");
+
+    if (induceSafeFailure) {
+      await page.getByLabel("Clinical account").fill(`${await page.getByLabel("Clinical account").inputValue()} extra`);
+      await page.getByRole("button", { name: "Review Wilson’s understanding" }).click();
+      await expect(page.locator('[role="alert"]').filter({ hasText: "Diagnostic reference:" })).toContainText(
+        /Diagnostic reference: [0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i,
+      );
+      await expect(page.getByRole("heading", { name: "Describe what happened" })).toBeVisible();
+      await page.getByLabel("Clinical account").fill(openingAccount);
+      journeyTrace.push({ state: "safe-failure", assertion: "Non-fixture input was rejected before a model call and displayed an opaque diagnostic reference." });
+    }
 
     await page.getByRole("button", { name: "Review Wilson’s understanding" }).click();
     await expect(page.getByRole("heading", { name: "Check Wilson’s understanding" })).toBeVisible();
@@ -73,6 +87,10 @@ test("completes the seven-state fixed journey and downloads the checked form", a
     });
     expect(unresolvedPdf.status()).toBe(409);
     expect(unresolvedPdf.headers()["cache-control"]).toContain("no-store");
+    expect(await unresolvedPdf.json()).toMatchObject({
+      code: "pdf-not-ready",
+      diagnosticReference: expect.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i),
+    });
     await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("Omitted — conflicting sources");
     journeyTrace.push({ state: "output-unresolved", assertion: "The conflicted date is omitted and PDF download is disabled." });
     await retainScreenshot(page, "unresolved-output.png");
@@ -85,6 +103,13 @@ test("completes the seven-state fixed journey and downloads the checked form", a
     await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("Started: 13-Aug-2026");
     journeyTrace.push({ state: "output-resolved", assertion: "The selected date is reflected in review and preview." });
     await retainScreenshot(page, "final-output.png");
+
+    const popupPromise = page.waitForEvent("popup");
+    await page.getByRole("button", { name: "Open PDF preview" }).click();
+    const pdfPreview = await popupPromise;
+    await expect(pdfPreview.locator('embed[type="application/pdf"]')).toHaveAttribute("src", /^blob:/);
+    await retainScreenshot(pdfPreview, "pdf-preview.png");
+    await pdfPreview.close();
 
     const downloadPromise = page.waitForEvent("download");
     await page.getByRole("button", { name: "Download official PDF" }).click();
@@ -114,7 +139,7 @@ test("completes the seven-state fixed journey and downloads the checked form", a
         pdfSha256: createHash("sha256").update(bytes).digest("hex"),
       }, null, 2)}\n`);
       await writeFile(`${evidenceDirectory}/journey-trace.json`, `${JSON.stringify({
-        kind: "sanitized deterministic checkpoint trace",
+        kind: evidenceKind,
         browserStorageCaptured: false,
         sameTabStorageExercised: true,
         checkpoints: journeyTrace,
