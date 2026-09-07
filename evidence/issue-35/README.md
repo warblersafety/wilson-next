@@ -490,3 +490,60 @@ filesystem sandbox; the identical command passed with local network binding.
 No application model call, new retained browser/PDF artifact, deployment,
 credential change, or live operator run occurred during this implementation
 gate. A later live run remains separately permissioned.
+
+## Runtime-boundary live attempt
+
+Steve separately authorized exactly one protected live operator run after the
+reviewed runtime-boundary implementation. It targeted protected Git deployment
+`dpl_7GLUdpMhzZP9mgXgSAXgpfBHuQSp` at exact commit
+`bdbb06c90302e7b43dc2e634018c01f143a6bd42`, with `target: null`, `READY`,
+`STAGED`, and the expected feature branch metadata. The operator confirmed the
+fictional-only boundary, induced the required pre-provider safe failure, and
+submitted the fixed opening exactly once. The evidence assessment failed, so
+the correction was not submitted and neither the model request nor the journey
+was retried.
+
+The narrower runtime boundary behaved as designed: it accepted one
+mechanically valid opening response and made all proposals available for
+operator assessment. All 29 expected values were present and correct, all three
+product declarations used their stable IDs, and the roles were the canonical
+`suspect`, `suspect`, and `concomitant`. The operator nevertheless stopped
+because four evidence excerpts were not self-contained: the apixaban and
+naproxen role proposals each cited only `suspect`, and their stopped proposals
+each cited only `stopped`. Those predicate-only spans do not let a reviewer
+verify which product the source attaches to without trusting the model's target
+assignment.
+
+This is not a reason to expand runtime validation. The common root cause is the
+prompt's instruction to select the "smallest exact supporting substring"
+without also requiring enough subject and claim context for a human reviewer.
+The operator UI compounds that weakness by omitting product name, role, and
+stopped facts from its per-card evidence aggregation even though role is
+summarized visually. The general remediation candidate is to request the
+smallest *self-contained* evidence span and expose those material product facts
+and their evidence at Check understanding. Four fixture-specific rejection
+rules would recreate the retired semantic validator and are explicitly not
+recommended. Review and disposition are required before implementation.
+
+A values-sanitized in-place Runtime Log query reconstructed run
+`9593d944-9ec6-4bdd-ba86-d6b1407f7665`, safe-failure reference
+`e9ebcd6c-66ac-4947-96d0-023f028d2cf6`, 34 unique correlated events across
+three operations, zero truncated rows, no provider response for the safe
+failure, and exactly one opening provider response. The call used
+`claude-sonnet-5`, prompt revision `wilson-experiment-1-extraction-v3`, and
+schema revision `wilson-grounded-proposals-v5`; it took 110,840 ms, used 3,436
+input and 15,808 output tokens, and had estimated cost $0.164952. No credential
+or outside-fixture exposure was observed. The initial live-stream parser did
+not account for Vercel CLI's grouped log-message structure; the historical
+query corrected that inspection-only parser issue without an application
+request or model call. No raw Runtime Logs or provider response were exported
+or retained.
+
+The temporary automation bypass was revoked immediately after the stop.
+Project metadata reports zero remaining bypasses, and unauthenticated requests
+to both the exact deployment and branch alias return HTTP 302. The restored
+owner-only mode-0600 Vercel token handoff and hosted Anthropic preview key
+remain untouched. The retained `live-runtime-boundary/` directory contains
+only the compact synthetic failure verdict; no browser storage, network
+archive, screenshot, or PDF was retained. Slice 4B remains incomplete, and any
+new Claude review or live run requires separate authorization.
