@@ -287,6 +287,49 @@ untouched to expire naturally; the Anthropic preview key is also unchanged.
 
 This second attempt fails Slice 4B before extraction review, reload, correction,
 conflict, projection, or PDF acceptance. The smallest retained example is
-`live-post-remediation/operator-verdict.json`. Further model prompt/schema work
-requires the applicable review and a new live run requires separate explicit
-authorization; neither has occurred.
+`live-post-remediation/operator-verdict.json`. A new live run still requires
+separate explicit authorization and has not occurred.
+
+## Targeted role-contract review and remediation
+
+Steve authorized one targeted pre-implementation Claude review of the proposed
+role prompt/schema remediation. The review targeted exact commit
+`879382fa7535a59b76794cd179843507dc50f1c1`. Claude Code 2.1.241 ran
+`claude-sonnet-5` at `high` effort in a fresh read-only session after preflight
+confirmed `claude.ai`, Steve's active Max subscription, and unset Anthropic
+API/gateway variables. The first sandboxed process reached no verdict because
+DNS could not reach Claude; the identical invocation then completed with
+network access as environment recovery, not a second completed review. It made
+no application model call and no repository change.
+
+Claude found two blockers in the proposed design, both resolved by
+`b98653cf867910ca41ffe08752c005867b580cad`:
+
+1. The installed Anthropic SDK's `zodOutputFormat` transformation demotes Zod
+   `enum` and `const` constraints to description text. The provider-visible
+   schema can therefore guide role output but cannot honestly be claimed to
+   enforce the canonical literals. The remediation now supplies explicit
+   conditional schema guidance and prompt instructions, then performs the hard
+   cross-field validation locally at the structured-schema boundary.
+2. Zod cannot directly discriminate on nested `target.field`. Instead of a
+   broad variant hierarchy, one proposal-level `superRefine` rejects every
+   role value outside `suspect | concomitant` while leaving non-role value
+   types unchanged. The pre-existing domain validation remains an independent
+   defense-in-depth rejection.
+
+The prompt revision is `wilson-experiment-1-extraction-v3`; the schema revision
+is `wilson-grounded-proposals-v4`. Regression coverage proves that both
+canonical roles pass, that `suspected`, `primary`, and `causal` fail at the new
+local gate and at the independent domain gate, and that the actual transformed
+provider schema contains guidance rather than a falsely asserted structural
+enum. The fixed-fixture semantic oracle is unchanged.
+
+After remediation, typecheck, all 86 unit/server tests with the pypdf evidence
+reader, the production build, and both deterministic Playwright journeys pass.
+The complete invocation prompt, Claude's actual unedited result, limitations,
+and dispositions are recorded under `Claude review` on draft PR #36. Under
+Delivery's proportional-closure rule, this originating targeted review covers
+the bounded implementation it prescribed; no recursive Claude review was run.
+The review's broader non-blocking observation—that all SDK-demoted enum/const
+constraints rely on local boundary validation—remains separate from this role
+fix and is recorded as follow-up work.

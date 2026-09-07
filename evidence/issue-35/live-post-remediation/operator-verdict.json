@@ -93,7 +93,11 @@
     "checkedPdfCaptured": false
   },
   "recommendedRemediation": {
-    "status": "not implemented pending review",
-    "behavior": "Constrain role values to suspect or concomitant in the provider-visible schema and explicitly state the literal mapping in the model prompt; retain the existing domain rejection as defense in depth."
+    "status": "implemented after targeted pre-implementation review",
+    "commit": "b98653cf867910ca41ffe08752c005867b580cad",
+    "promptRevision": "wilson-experiment-1-extraction-v3",
+    "schemaRevision": "wilson-grounded-proposals-v4",
+    "behavior": "Guide role output toward suspect or concomitant in the transformed provider schema and model prompt, enforce those canonical values at the local structured-schema boundary, and retain the existing domain rejection as defense in depth.",
+    "providerLimitation": "The installed Anthropic SDK represents Zod enum and const constraints as provider-visible description hints rather than structural JSON Schema enforcement."
   }
 }
