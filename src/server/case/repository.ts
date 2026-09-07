@@ -17,6 +17,7 @@ interface StoredCase {
 
 export interface InMemoryCaseRepositoryOptions {
   idleTtlMs?: number;
+  initialCase?: SemanticCase;
   maxCases?: number;
   now?: () => number;
 }
@@ -31,6 +32,13 @@ export class InMemoryCaseRepository implements CaseRepository {
     this.#idleTtlMs = options.idleTtlMs ?? 8 * 60 * 60 * 1_000;
     this.#maxCases = options.maxCases ?? 32;
     this.#now = options.now ?? Date.now;
+    if (options.initialCase) {
+      validateRestoredCase(options.initialCase);
+      this.#entries.set(options.initialCase.id, {
+        caseState: freezeCase(cloneCase(options.initialCase)),
+        touchedAt: this.#now(),
+      });
+    }
   }
 
   async create(caseState: SemanticCase): Promise<void> {
@@ -72,10 +80,34 @@ export class InMemoryCaseRepository implements CaseRepository {
     this.#entries.set(caseState.id, { caseState: freezeCase(cloneCase(caseState)), touchedAt: this.#now() });
   }
 
+  async loadByOnlyCase(): Promise<SemanticCase | undefined> {
+    this.#prune();
+    if (this.#entries.size !== 1) return undefined;
+    const [caseId] = this.#entries.keys();
+    return this.load(caseId);
+  }
+
   #prune(): void {
     const expiresBefore = this.#now() - this.#idleTtlMs;
     for (const [id, stored] of this.#entries) {
       if (stored.touchedAt <= expiresBefore) this.#entries.delete(id);
+    }
+  }
+}
+
+export function validateRestoredCase(caseState: SemanticCase): void {
+  assertCaseInvariants(caseState);
+  for (const source of caseState.sources) {
+    if (source.end <= source.start || source.end - source.start !== source.excerpt.length) {
+      throw new Error("A restored source must preserve exact excerpt offsets");
+    }
+  }
+  if (caseState.revision !== caseState.changes.length) {
+    throw new RepositoryRevisionError("A restored case revision must match its change history");
+  }
+  for (const [index, change] of caseState.changes.entries()) {
+    if (change.priorRevision !== index || change.resultingRevision !== index + 1) {
+      throw new RepositoryRevisionError("A restored case change history must be contiguous");
     }
   }
 }

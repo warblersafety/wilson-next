@@ -46,6 +46,20 @@
   padding: 8px 13px;
 }
 
+.headerActions { align-items: center; display: flex; gap: 12px; }
+.headerActions button, .panelHeading button {
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-size: .8rem;
+  font-weight: 700;
+  padding: 7px 10px;
+}
+.headerActions button:disabled, .panelHeading button:disabled { cursor: not-allowed; opacity: .6; }
+
 .boundary {
   background: #fff2c9;
   border-bottom: 1px solid #e3cf8d;
@@ -161,7 +175,7 @@ button:disabled {
 }
 
 .panelHeading h2 { font-family: Georgia, serif; font-size: 1.8rem; margin: 5px 0 22px; }
-.panelHeading > span, .panelHeading > a { color: #416d5e; font-size: .85rem; font-weight: 700; }
+.panelHeading > span, .panelHeading > a, .panelHeading > button { color: #416d5e; font-size: .85rem; font-weight: 700; }
 
 .cards { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .emptyCase { background: #fff; border: 1px dashed #aebbb4; border-radius: 9px; color: #64716b; line-height: 1.5; padding: 24px; }

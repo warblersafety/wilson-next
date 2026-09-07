@@ -1,0 +1,76 @@
+{
+  "kind": "bounded live operator failure verdict",
+  "date": "2026-09-06",
+  "deployment": {
+    "id": "dpl_DVsnVE4bkYZPXGHjGRFzcHxPi7na",
+    "commit": "afbb376aaa30c6e8b226ad7bdd266632127ad7d5",
+    "target": null,
+    "readyState": "READY",
+    "protectionRestored": true,
+    "remainingAutomationBypasses": 0,
+    "unauthenticatedHttpStatus": 302
+  },
+  "modelBoundary": {
+    "model": "claude-sonnet-5",
+    "configuredProviderRetries": 0,
+    "openingSubmissions": 1,
+    "correctionSubmissions": 1,
+    "journeyRetries": 0,
+    "metricsCaptured": false
+  },
+  "result": "failed",
+  "failedAcceptanceRule": "Every material result points to the exact account, answer, correction, or resolution supporting it.",
+  "expected": "The 13-Aug-2026 alternative cites the exact medication administration record span.",
+  "observed": {
+    "proposedAlternative": "13-Aug-2026",
+    "visibleSourceExcerpts": [
+      "start as 12-Aug-2026",
+      "12-Aug-2026"
+    ],
+    "requiredSourceExcerptPresent": false,
+    "assertionWindowMs": 310000
+  },
+  "judgments": {
+    "conversationalCoherence": "pass through the correction review step",
+    "factualFidelity": "fail: the 13-Aug proposal cited 12-Aug text",
+    "evidenceUsefulness": "fail: the source evidence contradicted the proposed value",
+    "interactionBurden": "not fully assessed because the run stopped at the failed correction gate",
+    "latency": "not fully assessed; the bounded journey reported 7.0 minutes and provider metrics were not captured",
+    "correctionConflictHandling": "fail at proposal grounding; no acceptance or resolution was attempted",
+    "formAccuracy": "not assessed in the live run"
+  },
+  "runtimeLogAudit": {
+    "rows": 48,
+    "truncatedRows": 0,
+    "parseFailures": 0,
+    "uniqueDiagnosticEvents": 53,
+    "operationIds": 8,
+    "stages": [
+      "describe",
+      "understanding",
+      "clarify",
+      "update"
+    ],
+    "safePreModelFailureObserved": true,
+    "credentialExposureObserved": false,
+    "outsideFixtureExposureObserved": false,
+    "modelMetricsObserved": false,
+    "limitation": "The five-minute stream closed before the late correction checkpoint; no raw log export was retained."
+  },
+  "retention": {
+    "browserStorageCaptured": false,
+    "networkArchiveCaptured": false,
+    "providerResponseCaptured": false,
+    "rawRuntimeLogsCaptured": false,
+    "credentialsCaptured": false,
+    "bypassSecretCaptured": false,
+    "checkedPdfCaptured": false,
+    "openingScreenshotSha256": "922d1e9e7cea035deb71610938f9d24ef151dae259d0d202e5da2888d876dd43"
+  },
+  "remediation": {
+    "status": "implemented and deterministically verified",
+    "schemaRevision": "wilson-grounded-proposals-v3",
+    "behavior": "Reject fixed-catalog omissions, semantic mismatches, and source spans that do not support the claimed value within the correct fixture clause before case commands, while accepting tighter prompt-compliant spans.",
+    "liveRerunPerformed": false
+  }
+}

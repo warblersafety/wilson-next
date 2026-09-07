@@ -47,8 +47,25 @@ describe("Anthropic fixed-journey adapter", () => {
     expect(captured).not.toHaveProperty("tools");
     expect(captured).not.toHaveProperty("thinking");
     expect(captured?.output_config.format).not.toHaveProperty("parse");
+    expect(captured?.system).toContain('emit only the canonical literal "suspect" or "concomitant"');
+    expect(captured?.system).toContain('Map statements such as "I suspect ..." to "suspect"');
+    expect(captured?.system).toContain("shortest exact, self-contained supporting substring");
+    expect(captured?.system).toContain("identify both the subject and the claim");
+    expect(captured?.system).toContain("connect the product name with the claimed property");
+    expect(captured?.system).toContain("one shared clause may support multiple product proposals");
+    const roleGuidanceSchema = findSchemaObject(
+      captured?.output_config.format.schema,
+      (candidate) => typeof candidate.description === "string"
+        && candidate.description.includes('target.field is "role"'),
+    );
+    expect(roleGuidanceSchema).toMatchObject({
+      type: "string",
+      description: expect.stringContaining('value.value must be exactly "suspect" or "concomitant"'),
+    });
+    expect(roleGuidanceSchema).not.toHaveProperty("enum");
     expect(MODEL_MAX_RETRIES).toBe(0);
     expect(result.envelope).toEqual(parseFixedOpeningResponse(openingAccount));
+    expect(result.diagnosticResponse).toEqual(responseFor("opening"));
     expect(result.metrics).toEqual({
       model: ANTHROPIC_MODEL_ID,
       promptRevision: MODEL_PROMPT_REVISION,
@@ -85,6 +102,62 @@ describe("Anthropic fixed-journey adapter", () => {
       requestId: "message-correction",
       issues: [{ code: "custom", message: "Invalid source span source-naproxen-dose-correction" }],
     });
+    expect(failure.returnedResponse).toBe(response);
+  });
+
+  it("leaves the observed wrong-clause correction source available for operator review", async () => {
+    const response = responseFor("correction");
+    const output = responseOutput(response);
+    const alternative = output.proposals.find(({ proposalId }) => proposalId === "apixaban-date-alternative")!;
+    alternative.source.start = correctionAccount.lastIndexOf("12-Aug-2026");
+    alternative.source.end = alternative.source.start + "12-Aug-2026".length;
+    setResponseOutput(response, output);
+
+    const result = await createAnthropicJourneyModel(async () => response)
+      .propose("correction", correctionAccount);
+    const source = result.envelope.sources.find(
+      ({ id }) => id === "source-apixaban-date-alternative",
+    );
+
+    expect(source?.excerpt).toBe("12-Aug-2026");
+    expect(result.envelope.proposals).toContainEqual(expect.objectContaining({
+      proposalId: "apixaban-date-alternative",
+      value: { kind: "known", value: "2026-08-13" },
+      sourceIds: ["source-apixaban-date-alternative"],
+    }));
+  });
+
+  it("accepts any nonempty in-bounds source span, including the observed trailing comma", async () => {
+    const response = responseFor("opening");
+    const output = responseOutput(response);
+    setSourceToExactExcerpt(
+      output,
+      "event-treatment",
+      openingAccount,
+      "two units of packed red cells,",
+    );
+    setResponseOutput(response, output);
+
+    const result = await createAnthropicJourneyModel(async () => response)
+      .propose("opening", openingAccount);
+    expect(result.metrics?.schemaRevision).toBe(MODEL_SCHEMA_REVISION);
+    expect(result.envelope.sources.find(
+      ({ id }) => id === "source-event-treatment",
+    )?.excerpt).toBe("two units of packed red cells,");
+  });
+
+  it("leaves an incomplete semantic catalog available for operator assessment", async () => {
+    const response = responseFor("opening");
+    const output = responseOutput(response);
+    output.proposals = output.proposals.filter(({ proposalId }) => proposalId !== "event-symptoms");
+    setResponseOutput(response, output);
+
+    const result = await createAnthropicJourneyModel(async () => response)
+      .propose("opening", openingAccount);
+
+    expect(result.envelope.proposals).not.toContainEqual(expect.objectContaining({
+      proposalId: "event-symptoms",
+    }));
   });
 
   it("does not retry or expose provider detail after a failed request", async () => {
@@ -131,6 +204,7 @@ describe("Anthropic fixed-journey adapter", () => {
       requestId: "message-opening",
       stopReason: "refusal",
     });
+    expect(failure.returnedResponse).toBe(refusal);
   });
 
   it("distinguishes invalid JSON from a structured-schema failure", async () => {
@@ -157,6 +231,62 @@ describe("Anthropic fixed-journey adapter", () => {
     });
   });
 
+  it.each(["suspected", "primary", "causal"])(
+    "rejects noncanonical product role %s at the local structured-schema boundary",
+    async (role) => {
+      const response = responseFor("opening");
+      const output = responseOutput(response);
+      const proposalIndex = output.proposals.findIndex(({ proposalId }) => proposalId === "apixaban-role");
+      const proposal = output.proposals[proposalIndex];
+      (proposal.value as { kind: "known"; value: unknown }).value = role;
+      setResponseOutput(response, output);
+
+      const failure = await modelFailure(
+        createAnthropicJourneyModel(async () => response).propose("opening", openingAccount),
+      );
+
+      expect(failure.diagnostic).toMatchObject({
+        phase: "structured-schema",
+        requestId: "message-opening",
+        issues: [{
+          path: `proposals.${proposalIndex}.value.value`,
+          code: "custom",
+          message: "Role value must be the canonical literal suspect or concomitant",
+        }],
+      });
+      expect(failure.returnedResponse).toBe(response);
+    },
+  );
+
+  it.each([
+    ["naproxen-dose-correction", "naproxen-dose-change", "naproxen-dose-correction"],
+    ["apixaban-date-alternative", "apixaban-start-conflict", "apixaban-date-conflict"],
+  ])(
+    "rejects an unrecognized correction action group for %s",
+    async (proposalId, groupId, expectedGroupId) => {
+      const response = responseFor("correction");
+      const output = responseOutput(response);
+      const proposalIndex = output.proposals.findIndex((proposal) => proposal.proposalId === proposalId);
+      output.proposals[proposalIndex].groupId = groupId;
+      setResponseOutput(response, output);
+
+      const failure = await modelFailure(
+        createAnthropicJourneyModel(async () => response).propose("correction", correctionAccount),
+      );
+
+      expect(failure.diagnostic).toMatchObject({
+        phase: "structured-schema",
+        requestId: "message-correction",
+        issues: [{
+          path: `proposals.${proposalIndex}.groupId`,
+          code: "invalid_correction_group",
+          message: `Correction action requires group ${expectedGroupId}`,
+        }],
+      });
+      expect(failure.returnedResponse).toBe(response);
+    },
+  );
+
   it("records the response before parsing and stops if protected capture fails", async () => {
     const recorder = vi.fn(async () => ".wilson-model-samples/sample-1-opening-response.json");
     const result = await createAnthropicJourneyModel(
@@ -173,6 +303,7 @@ describe("Anthropic fixed-journey adapter", () => {
       async () => { throw new Error("disk detail"); },
     ).propose("opening", openingAccount));
     expect(captureFailure.diagnostic).toEqual({ phase: "response-capture", errorName: "Error" });
+    expect(captureFailure.returnedResponse).toMatchObject({ id: "message-opening" });
   });
 
   it("rejects inputs outside the approved fixed experiment without making a request", async () => {
@@ -182,9 +313,15 @@ describe("Anthropic fixed-journey adapter", () => {
     expect(requester).not.toHaveBeenCalled();
   });
 
-  it("feeds real-adapter proposals through the ordinary service and command boundary", async () => {
+  it("keeps a structurally valid semantic mismatch proposed through the ordinary command boundary", async () => {
     const repository = new InMemoryCaseRepository();
-    const requester: AnthropicRequester = async () => responseFor("opening");
+    const response = responseFor("opening");
+    const output = responseOutput(response);
+    const age = output.proposals.find(({ proposalId }) => proposalId === "patient-age")!;
+    age.value = { kind: "known", value: 58 };
+    setSourceToExactExcerpt(output, "patient-age", openingAccount, "woman");
+    setResponseOutput(response, output);
+    const requester: AnthropicRequester = async () => response;
     const snapshot = await performJourneyAction(
       repository,
       "case-real-adapter-test",
@@ -198,6 +335,15 @@ describe("Anthropic fixed-journey adapter", () => {
       "product-naproxen",
       "product-lisinopril",
     ]);
+    expect(snapshot.understanding.patient.ageYears).toMatchObject({
+      state: "proposed",
+      resolved: undefined,
+      proposals: [{
+        id: "patient-age",
+        value: { kind: "known", value: 58 },
+        evidence: ["woman"],
+      }],
+    });
   });
 });
 
@@ -249,6 +395,20 @@ function setResponseOutput(
   response.content = [{ type: "text", text: JSON.stringify(output) }];
 }
 
+function setSourceToExactExcerpt(
+  output: ReturnType<typeof toModelOutput>,
+  proposalId: string,
+  input: string,
+  excerpt: string,
+): void {
+  const proposal = output.proposals.find((candidate) => candidate.proposalId === proposalId)!;
+  const containerStart = proposalId.startsWith("apixaban-")
+    ? input.indexOf("apixaban 5 mg by mouth twice daily")
+    : 0;
+  proposal.source.start = input.indexOf(excerpt, containerStart);
+  proposal.source.end = proposal.source.start + excerpt.length;
+}
+
 async function modelFailure(promise: Promise<unknown>): Promise<ModelCallFailure> {
   try {
     await promise;
@@ -257,4 +417,19 @@ async function modelFailure(promise: Promise<unknown>): Promise<ModelCallFailure
     return error as ModelCallFailure;
   }
   throw new Error("Expected a ModelCallFailure");
+}
+
+function findSchemaObject(
+  value: unknown,
+  predicate: (candidate: Record<string, unknown>) => boolean,
+): Record<string, unknown> | undefined {
+  if (typeof value !== "object" || value === null) return undefined;
+  if (!Array.isArray(value) && predicate(value as Record<string, unknown>)) {
+    return value as Record<string, unknown>;
+  }
+  for (const child of Array.isArray(value) ? value : Object.values(value)) {
+    const match = findSchemaObject(child, predicate);
+    if (match) return match;
+  }
+  return undefined;
 }

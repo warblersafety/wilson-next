@@ -1,9 +1,12 @@
 import { createHash } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
+import { openingAccount } from "../../src/experiment/fixed-inputs";
 
 const retainEvidence = process.env.WILSON_RETAIN_EVIDENCE === "1";
-const evidenceDirectory = "evidence/slice-2";
+const evidenceDirectory = process.env.WILSON_EVIDENCE_DIRECTORY ?? "evidence/slice-2";
+const evidenceKind = process.env.WILSON_EVIDENCE_KIND ?? "sanitized deterministic checkpoint trace";
+const induceSafeFailure = process.env.WILSON_INDUCE_SAFE_FAILURE === "1";
 
 test("completes the seven-state fixed journey and downloads the checked form", async ({ page, browser }) => {
   const journeyTrace: Array<{ state: string; assertion: string }> = [];
@@ -20,6 +23,17 @@ test("completes the seven-state fixed journey and downloads the checked form", a
     const caseResponse = await page.request.get("/api/case");
     expect(caseResponse.headers()["cache-control"]).toContain("no-store");
 
+    if (induceSafeFailure) {
+      await page.getByLabel("Clinical account").fill(`${await page.getByLabel("Clinical account").inputValue()} extra`);
+      await page.getByRole("button", { name: "Review Wilson’s understanding" }).click();
+      await expect(page.locator('[role="alert"]').filter({ hasText: "Diagnostic reference:" })).toContainText(
+        /Diagnostic reference: [0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i,
+      );
+      await expect(page.getByRole("heading", { name: "Describe what happened" })).toBeVisible();
+      await page.getByLabel("Clinical account").fill(openingAccount);
+      journeyTrace.push({ state: "safe-failure", assertion: "Non-fixture input was rejected before a model call and displayed an opaque diagnostic reference." });
+    }
+
     await page.getByRole("button", { name: "Review Wilson’s understanding" }).click();
     await expect(page.getByRole("heading", { name: "Check Wilson’s understanding" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "apixaban" })).toBeVisible();
@@ -27,8 +41,31 @@ test("completes the seven-state fixed journey and downloads the checked form", a
     await expect(page.getByRole("heading", { name: "lisinopril" })).toBeVisible();
     await expect(page.getByText("Suspect product", { exact: true })).toHaveCount(2);
     await expect(page.getByText("Other product", { exact: true })).toHaveCount(1);
-    journeyTrace.push({ state: "understanding", assertion: "Two suspect products and one other product are visible for review." });
+    const apixabanCard = page.getByRole("article").filter({ has: page.getByRole("heading", { name: "apixaban" }) });
+    const naproxenCard = page.getByRole("article").filter({ has: page.getByRole("heading", { name: "naproxen" }) });
+    const lisinoprilCard = page.getByRole("article").filter({ has: page.getByRole("heading", { name: "lisinopril" }) });
+    const apixabanStopped = apixabanCard.locator("dl > div").filter({ has: page.getByText("Stopped", { exact: true }) });
+    const naproxenStopped = naproxenCard.locator("dl > div").filter({ has: page.getByText("Stopped", { exact: true }) });
+    await expect(apixabanStopped).toContainText("Yes");
+    await expect(naproxenStopped).toContainText("Yes");
+    await apixabanCard.locator("summary").click();
+    await naproxenCard.locator("summary").click();
+    await lisinoprilCard.locator("summary").click();
+    await expect(apixabanCard).toContainText("apixaban 5 mg by mouth twice daily");
+    await expect(apixabanCard).toContainText("I suspect apixaban and naproxen");
+    await expect(apixabanCard).toContainText("Apixaban and naproxen were stopped");
+    await expect(naproxenCard).toContainText("naproxen 500 mg by mouth twice daily");
+    await expect(naproxenCard).toContainText("I suspect apixaban and naproxen");
+    await expect(naproxenCard).toContainText("Apixaban and naproxen were stopped");
+    await expect(lisinoprilCard).toContainText("lisinopril 10 mg by mouth daily");
+    await expect(lisinoprilCard).toContainText("lisinopril 10 mg by mouth daily as a concomitant medicine");
+    journeyTrace.push({ state: "understanding", assertion: "Two suspect products, one other product, stopped status, and their source evidence are visible for review." });
     await retainScreenshot(page, "understanding.png");
+
+    await page.reload();
+    await expect(page.getByRole("heading", { name: "Check Wilson’s understanding" })).toBeVisible();
+    await expect(page.getByRole("status")).toContainText("Restored this tab’s disposable synthetic preview state");
+    journeyTrace.push({ state: "understanding-reload", assertion: "The same tab restored the complete extraction state." });
 
     await page.getByRole("button", { name: "Continue with this understanding" }).click();
     await expect(page.getByRole("heading", { name: "What was apixaban being used for, and what was naproxen being used for?" })).toBeVisible();
@@ -46,6 +83,12 @@ test("completes the seven-state fixed journey and downloads the checked form", a
     await expect(page.getByText("medication administration record lists apixaban starting 13-Aug-2026", { exact: false }).first()).toBeVisible();
     journeyTrace.push({ state: "correct", assertion: "The dose correction and both dated sources are visible separately." });
 
+    await page.reload();
+    await expect(page.getByRole("heading", { name: "Review the correction and date conflict" })).toBeVisible();
+    await expect(page.getByText("500 mg", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("250 mg", { exact: true }).first()).toBeVisible();
+    journeyTrace.push({ state: "correct-reload", assertion: "The same tab restored the correction and conflict proposals." });
+
     await page.getByRole("button", { name: "Accept 250 mg correction" }).click();
     await expect(page.getByRole("heading", { name: "Naproxen is now 250 mg" })).toBeVisible();
     await expect(page.getByText("Earlier: 500 mg", { exact: true })).toBeVisible();
@@ -54,10 +97,18 @@ test("completes the seven-state fixed journey and downloads the checked form", a
     await expect(page.getByRole("heading", { name: "Inspect what the form can include" })).toBeVisible();
     await expect(page.getByText("Apixaban start date is omitted until one source is selected.")).toBeVisible();
     await expect(page.getByRole("button", { name: "Download official PDF" })).toBeDisabled();
-    await expect(page.getByRole("link", { name: "Open PDF preview" })).toHaveCount(0);
-    const unresolvedPdf = await page.request.get("/api/case/pdf?mode=preview");
+    await expect(page.getByRole("button", { name: "Open PDF preview" })).toHaveCount(0);
+    const unresolvedState = await page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-journey-state-v1")!));
+    const unresolvedPdf = await page.request.post("/api/case/pdf", {
+      headers: { origin: new URL(page.url()).origin },
+      data: { mode: "preview", state: unresolvedState },
+    });
     expect(unresolvedPdf.status()).toBe(409);
     expect(unresolvedPdf.headers()["cache-control"]).toContain("no-store");
+    expect(await unresolvedPdf.json()).toMatchObject({
+      code: "pdf-not-ready",
+      diagnosticReference: expect.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i),
+    });
     await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("Omitted — conflicting sources");
     journeyTrace.push({ state: "output-unresolved", assertion: "The conflicted date is omitted and PDF download is disabled." });
     await retainScreenshot(page, "unresolved-output.png");
@@ -66,13 +117,20 @@ test("completes the seven-state fixed journey and downloads the checked form", a
     await expect(page.getByRole("heading", { name: "The reviewed form is ready" })).toBeVisible();
     await expect(page.getByText("Apixaban start date 13-Aug-2026")).toBeVisible();
     await expect(page.getByText("Nothing in the fixed journey.")).toBeVisible();
-    await expect(page.getByRole("link", { name: "Open PDF preview" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Open PDF preview" })).toBeVisible();
     await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("Started: 13-Aug-2026");
     journeyTrace.push({ state: "output-resolved", assertion: "The selected date is reflected in review and preview." });
     await retainScreenshot(page, "final-output.png");
 
+    const popupPromise = page.waitForEvent("popup");
+    await page.getByRole("button", { name: "Open PDF preview" }).click();
+    const pdfPreview = await popupPromise;
+    await expect(pdfPreview.locator('embed[type="application/pdf"]')).toHaveAttribute("src", /^blob:/);
+    await retainScreenshot(pdfPreview, "pdf-preview.png");
+    await pdfPreview.close();
+
     const downloadPromise = page.waitForEvent("download");
-    await page.getByRole("link", { name: "Download official PDF" }).click();
+    await page.getByRole("button", { name: "Download official PDF" }).click();
     const download = await downloadPromise;
     const path = await download.path();
     expect(path).toBeTruthy();
@@ -82,6 +140,11 @@ test("completes the seven-state fixed journey and downloads the checked form", a
       return Buffer.concat(chunks);
     });
     expect(bytes.byteLength).toBeGreaterThan(100_000);
+
+    page.once("dialog", (dialog) => dialog.accept());
+    await page.getByRole("button", { name: "Reset synthetic preview" }).click();
+    await expect(page.getByRole("heading", { name: "Describe what happened" })).toBeVisible();
+    await expect(page.getByRole("status")).toContainText("disposable synthetic preview was reset");
     if (retainEvidence) {
       await writeFile(`${evidenceDirectory}/checked-form.pdf`, bytes);
       await writeFile(`${evidenceDirectory}/journey-result.json`, `${JSON.stringify({
@@ -94,11 +157,40 @@ test("completes the seven-state fixed journey and downloads the checked form", a
         pdfSha256: createHash("sha256").update(bytes).digest("hex"),
       }, null, 2)}\n`);
       await writeFile(`${evidenceDirectory}/journey-trace.json`, `${JSON.stringify({
-        kind: "sanitized deterministic checkpoint trace",
-        browserStorageRetained: false,
+        kind: evidenceKind,
+        browserStorageCaptured: false,
+        sameTabStorageExercised: true,
         checkpoints: journeyTrace,
       }, null, 2)}\n`);
     }
+});
+
+test("truthfully changes and removes supported understanding groups", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "Describe what happened" })).toBeVisible();
+  await page.getByRole("button", { name: "Review Wilson’s understanding" }).click();
+  await expect(page.getByRole("heading", { name: "Check Wilson’s understanding" })).toBeVisible();
+
+  await page.getByRole("button", { name: "Change age to 58" }).click();
+  const patientCard = page.getByRole("article").filter({ has: page.getByRole("heading", { name: "Patient" }) });
+  await expect(patientCard).toContainText("58");
+  await expect(patientCard.getByRole("button", { name: "Change age to 58" })).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Remove lisinopril" }).click();
+  await expect(page.getByRole("heading", { name: "lisinopril" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Remove lisinopril" })).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Continue with this understanding" }).click();
+  await page.getByRole("button", { name: "Add this answer" }).click();
+  await page.getByRole("button", { name: "Review this update" }).click();
+  await page.getByRole("button", { name: "Accept 250 mg correction" }).click();
+  await page.getByRole("button", { name: "Use 13-Aug-2026" }).click();
+  await expect(page.getByRole("heading", { name: "The reviewed form is ready" })).toBeVisible();
+  await expect(page.getByText("Patient TEST-57, age 58, female")).toBeVisible();
+  await expect(page.getByText("Lisinopril as a concomitant product")).toHaveCount(0);
+  const preview = page.locator('[aria-label="Form FDA 3500 preview"]');
+  await expect(preview).toContainText("58 years");
+  await expect(preview).not.toContainText("lisinopril");
 });
 
 async function retainScreenshot(page: import("@playwright/test").Page, name: string) {

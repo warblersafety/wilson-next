@@ -69,4 +69,39 @@ describe("model proposal boundary", () => {
     } as typeof malformed.proposals[number];
     expect(() => parseModelProposalEnvelope(malformed)).toThrow("requires an ISO calendar date");
   });
+
+  it.each(["suspect", "concomitant"])("accepts the canonical product role %s", (role) => {
+    expect(parseModelProposalEnvelope(roleEnvelope(role)).proposals[0].value).toEqual({
+      kind: "known",
+      value: role,
+    });
+  });
+
+  it.each(["suspected", "primary", "causal"])(
+    "rejects the noncanonical product role %s",
+    (role) => {
+      expect(() => parseModelProposalEnvelope(roleEnvelope(role)))
+        .toThrow("role requires suspect or concomitant");
+    },
+  );
 });
+
+function roleEnvelope(role: string) {
+  return envelope({
+    input: {
+      id: "input-1",
+      type: "narrative",
+      text: "apixaban",
+      recordedAt: "2026-09-05T20:00:00.000Z",
+    },
+    products: [{ id: "product-apixaban", groupId: "product-apixaban" }],
+    proposals: [{
+      proposalId: "apixaban-role",
+      groupId: "product-apixaban",
+      intent: "fact",
+      target: { entity: "product", entityId: "product-apixaban", field: "role" },
+      value: { kind: "known", value: role },
+      source: { id: "source-apixaban-role", start: 0, end: 8 },
+    }],
+  });
+}

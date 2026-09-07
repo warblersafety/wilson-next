@@ -1,0 +1,93 @@
+{
+  "kind": "bounded post-role-remediation live operator failure verdict",
+  "date": "2026-09-06",
+  "deployment": {
+    "id": "dpl_3BBHeyHZH4styoUWrxtw9xkbKqJw",
+    "commit": "0650dfe9fe7679af65e83f73a0ce1d809dfaa7da",
+    "source": "git",
+    "target": null,
+    "readyState": "READY",
+    "readySubstate": "STAGED",
+    "protectionRestored": true,
+    "remainingAutomationBypasses": 0,
+    "unauthenticatedDeploymentHttpStatus": 302,
+    "unauthenticatedBranchAliasHttpStatus": 302
+  },
+  "modelBoundary": {
+    "model": "claude-sonnet-5",
+    "promptRevision": "wilson-experiment-1-extraction-v3",
+    "schemaRevision": "wilson-grounded-proposals-v4",
+    "configuredProviderRetries": 0,
+    "openingSubmissions": 1,
+    "correctionSubmissions": 0,
+    "journeyRetries": 0,
+    "inputTokens": 3436,
+    "outputTokens": 14700,
+    "latencyMs": 111583,
+    "estimatedCostUsd": 0.153872
+  },
+  "result": "failed",
+  "runId": "8ab4b3fe-19b5-40b4-919e-0f27dc063ff8",
+  "inducedSafeFailureReference": "e7758b9d-bc2d-4680-9b54-5177066d732c",
+  "diagnosticReference": "b391cbb3-6434-406a-bfeb-37342424c37e",
+  "failedAcceptanceRule": "A semantically supporting source excerpt inside the correct fixture clause must not be rejected solely for adjacent punctuation.",
+  "expected": "The event-treatment proposal is accepted because its excerpt contains the complete required treatment phrase and no words from another clause.",
+  "observed": {
+    "providerOutcome": "success",
+    "rejectionPhase": "domain-boundary",
+    "httpStatus": 422,
+    "retainedStage": "describe",
+    "retainedRevision": 0,
+    "roles": {
+      "apixaban": "suspect",
+      "naproxen": "suspect",
+      "lisinopril": "concomitant"
+    },
+    "proposalId": "event-treatment",
+    "value": [
+      "two units of packed red cells"
+    ],
+    "sourceExcerpt": "two units of packed red cells,",
+    "sourceStart": 414,
+    "sourceEnd": 444,
+    "supportingContainer": "she received two units of packed red cells",
+    "supportingContainerStart": 401,
+    "supportingContainerEnd": 443,
+    "issue": "Proposal event-treatment source span does not ground the fixed semantic expectation"
+  },
+  "judgments": {
+    "conversationalCoherence": "not assessed beyond the safe opening failure",
+    "factualFidelity": "the returned opening values and product roles matched the fixed oracle, but were not presented for review because the grounding guard rejected adjacent punctuation",
+    "evidenceUsefulness": "pass for diagnosis: the opaque reference isolated the exact one-character boundary mismatch",
+    "interactionBurden": "fail: the operator could not leave Describe",
+    "latency": "111.583 seconds provider latency followed by no usable extraction",
+    "correctionConflictHandling": "not assessed",
+    "formAccuracy": "not assessed"
+  },
+  "runtimeLogAudit": {
+    "historicalRequestRows": 15,
+    "uniqueCorrelatedEvents": 30,
+    "operationIds": 3,
+    "historicalTruncatedLogs": 0,
+    "causalOrderVerified": true,
+    "safePreProviderFailureObserved": true,
+    "safeFailureProviderResponses": 0,
+    "openingProviderResponses": 1,
+    "credentialExposureObserved": false,
+    "outsideFixtureExposureObserved": false
+  },
+  "retention": {
+    "browserStorageCaptured": false,
+    "networkArchiveCaptured": false,
+    "providerResponseCaptured": false,
+    "rawRuntimeLogsCaptured": false,
+    "credentialsCaptured": false,
+    "bypassSecretCaptured": false,
+    "screenshotCaptured": false,
+    "checkedPdfCaptured": false
+  },
+  "recommendedRemediation": {
+    "status": "not implemented pending required targeted review",
+    "behavior": "Validate semantic source containment against an excerpt core that trims only adjacent whitespace and punctuation, while continuing to reject spans containing words outside the correct supporting clause."
+  }
+}

@@ -1,6 +1,16 @@
+import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { caseSession, attachCaseCookie, getCaseRepository } from "../../../src/server/case/session";
+import { correctionAccount, indicationAnswer, openingAccount } from "../../../src/experiment/fixed-inputs";
+import {
+  assertExpectedBrowserRevision,
+  assertStoredStage,
+  BrowserStateError,
+  journeyResponse,
+  parseBrowserJourneyState,
+  repositoryForBrowserState,
+} from "../../../src/server/case/browser-state";
+import { InMemoryCaseRepository } from "../../../src/server/case/repository";
 import {
   caughtErrorDetails,
   createRuntimeDiagnosticLogger,
@@ -8,89 +18,191 @@ import {
   operationIdHeader,
   runIdHeader,
   type DiagnosticContext,
+  type RuntimeDiagnosticLogger,
 } from "../../../src/server/diagnostics/runtime-log";
-import { correctionAccount, indicationAnswer, openingAccount } from "../../../src/experiment/fixed-inputs";
 import { getJourneySnapshot, performJourneyAction } from "../../../src/server/journey/service";
+import { createAnthropicJourneyModel } from "../../../src/server/model/anthropic-journey";
+import { fixedJourneyModel } from "../../../src/server/model/fixed-journey";
+import { ModelCallFailure, type JourneyModel } from "../../../src/server/model/journey-model";
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+export const maxDuration = 300;
 
 const actionSchema = z.discriminatedUnion("action", [
-  z.object({ action: z.literal("submit-opening"), text: z.string(), reportType: z.literal("adverse-event") }),
-  z.object({ action: z.literal("accept-understanding") }),
-  z.object({ action: z.literal("answer-indications"), text: z.string() }),
-  z.object({ action: z.literal("submit-correction"), text: z.string() }),
-  z.object({ action: z.literal("accept-dose-correction") }),
-  z.object({ action: z.literal("leave-date-unresolved") }),
-  z.object({ action: z.literal("resolve-date"), chosenValueId: z.enum(["apixaban-start", "apixaban-date-alternative"]) }),
+  z.object({ action: z.literal("submit-opening"), text: z.string(), reportType: z.literal("adverse-event") }).strict(),
+  z.object({ action: z.literal("change-patient-age"), ageYears: z.literal(58) }).strict(),
+  z.object({ action: z.literal("remove-lisinopril") }).strict(),
+  z.object({ action: z.literal("accept-understanding") }).strict(),
+  z.object({ action: z.literal("answer-indications"), text: z.string() }).strict(),
+  z.object({ action: z.literal("submit-correction"), text: z.string() }).strict(),
+  z.object({ action: z.literal("accept-dose-correction") }).strict(),
+  z.object({ action: z.literal("leave-date-unresolved") }).strict(),
+  z.object({ action: z.literal("resolve-date"), chosenValueId: z.enum(["apixaban-start", "apixaban-date-alternative"]) }).strict(),
+]);
+
+const requestSchema = z.discriminatedUnion("operation", [
+  z.object({ operation: z.literal("resume"), state: z.unknown() }).strict(),
+  z.object({
+    operation: z.literal("act"),
+    state: z.unknown(),
+    expectedRevision: z.number().int().nonnegative(),
+    action: actionSchema,
+  }).strict(),
 ]);
 
 export async function GET(request: NextRequest) {
   const context = diagnosticContext(request.headers);
   const diagnostics = createRuntimeDiagnosticLogger(context);
   diagnostics.event("route", "case-get", "start", requestMetadata(request));
-  const session = caseSession(request);
   try {
-    const snapshot = await getJourneySnapshot(getCaseRepository(), session.caseId);
-    diagnostics.event("response", "case-get", "success", responseMetadata(200, snapshot));
+    const repository = new InMemoryCaseRepository({ maxCases: 1 });
+    const caseId = `case-${randomUUID()}`;
+    const snapshot = await getJourneySnapshot(repository, caseId);
+    const body = await journeyResponse(repository, snapshot);
+    diagnostics.event("response", "case-get", "success", responseMetadata(200, body));
     diagnostics.checkpoint("case-get-trace", "success");
-    return responseWithSession(snapshot, session.sessionId, isSecure(request), context);
+    return jsonResponse(body, 200, context);
   } catch (error) {
-    const body = { error: "The temporary case could not be loaded" };
-    diagnostics.event("response", "case-get", "failure", {
-      ...responseMetadata(500, body),
-      error: caughtErrorDetails(error),
-    });
-    diagnostics.checkpoint("case-get-trace", "failure");
-    return errorResponse(body, 500, context);
+    return failedResponse(error, context, diagnostics, "case-get");
   }
 }
 
 export async function POST(request: NextRequest) {
+  return postCase(request);
+}
+
+export async function postCase(request: NextRequest, model: JourneyModel = configuredJourneyModel()) {
   const context = diagnosticContext(request.headers);
   const diagnostics = createRuntimeDiagnosticLogger(context);
   diagnostics.event("route", "case-post", "start", requestMetadata(request));
   if (!hasSameOrigin(request)) {
-    const body = { error: "The request origin was not accepted" };
-    diagnostics.event("schema-domain", "same-origin", "rejected", { reason: body.error });
-    diagnostics.event("response", "case-post", "rejected", responseMetadata(403, body));
-    diagnostics.checkpoint("case-post-trace", "rejected");
-    return errorResponse(body, 403, context);
+    const error = new RequestBoundaryError("The request origin was not accepted", "origin-rejected", 403);
+    diagnostics.event("schema-domain", "same-origin", "rejected", { error: caughtErrorDetails(error) });
+    return failedResponse(error, context, diagnostics, "case-post");
   }
-  const session = caseSession(request);
+
+  let requestBody: z.infer<typeof requestSchema>;
   try {
-    const action = actionSchema.parse(await request.json());
-    diagnostics.event("schema-domain", "request-action", "success", { action: diagnosticAction(action) });
-    const snapshot = await performJourneyAction(
-      getCaseRepository(),
-      session.caseId,
-      action,
-      undefined,
-      diagnostics,
-    );
-    diagnostics.event("response", "case-post", "success", responseMetadata(200, snapshot));
-    diagnostics.checkpoint("case-post-trace", "success");
-    return responseWithSession(snapshot, session.sessionId, isSecure(request), context);
+    requestBody = requestSchema.parse(await request.json());
+    diagnostics.event("schema-domain", "request-envelope", "success", {
+      operation: requestBody.operation,
+      ...(requestBody.operation === "act" ? {
+        expectedRevision: requestBody.expectedRevision,
+        action: diagnosticAction(requestBody.action),
+      } : {}),
+    });
   } catch (error) {
-    const body = { error: safeClientError(error) };
-    diagnostics.event("schema-domain", "request-or-action", "rejected", {
-      error: caughtErrorDetails(error),
+    diagnostics.event("schema-domain", "request-envelope", "rejected", { error: caughtErrorDetails(error) });
+    return failedResponse(
+      new RequestBoundaryError("The synthetic preview request was malformed", "request-malformed", 400, error),
+      context,
+      diagnostics,
+      "case-post",
+    );
+  }
+
+  let repository: InMemoryCaseRepository;
+  let snapshot;
+  try {
+    const state = parseBrowserJourneyState(requestBody.state);
+    repository = repositoryForBrowserState(state);
+    snapshot = await getJourneySnapshot(repository, state.case.id);
+    assertStoredStage(state, snapshot);
+    if (requestBody.operation === "act") {
+      assertExpectedBrowserRevision(state, requestBody.expectedRevision);
+    }
+    diagnostics.event("schema-domain", "browser-state", "success", {
+      version: state.version,
+      stage: state.stage,
+      revision: state.case.revision,
     });
-    diagnostics.event("response", "case-post", "failure", {
-      ...responseMetadata(400, body),
-      error: caughtErrorDetails(error),
-    });
-    diagnostics.checkpoint("case-post-trace", "failure");
-    return errorResponse(body, 400, context);
+  } catch (error) {
+    diagnostics.event("schema-domain", "browser-state", "rejected", { error: caughtErrorDetails(error) });
+    return failedResponse(error, context, diagnostics, "case-post");
+  }
+
+  try {
+    if (requestBody.operation === "act") {
+      snapshot = await performJourneyAction(
+        repository,
+        (await repository.loadByOnlyCase())!.id,
+        requestBody.action,
+        model,
+        diagnostics,
+      );
+    }
+    const body = await journeyResponse(repository, snapshot);
+    diagnostics.event("response", "case-post", "success", responseMetadata(200, body));
+    diagnostics.checkpoint("case-post-trace", "success");
+    return jsonResponse(body, 200, context);
+  } catch (error) {
+    // The model service and command boundary already classify their own phase.
+    // This outer catch records transport through the route without relabeling it
+    // as schema/domain rejection.
+    diagnostics.event("route", "case-action", "failure", { error: caughtErrorDetails(error) });
+    return failedResponse(error, context, diagnostics, "case-post");
   }
 }
 
-function responseWithSession(body: unknown, sessionId: string, secure: boolean, context: DiagnosticContext) {
-  const response = NextResponse.json(body, { headers: diagnosticResponseHeaders(context) });
-  attachCaseCookie(response, sessionId, secure);
-  return response;
+function configuredJourneyModel(): JourneyModel {
+  if (process.env.VERCEL_ENV !== "preview") return fixedJourneyModel;
+  return {
+    propose(turn, text) {
+      return createAnthropicJourneyModel().propose(turn, text);
+    },
+  };
 }
 
-function errorResponse(body: unknown, status: number, context: DiagnosticContext) {
+function failedResponse(
+  error: unknown,
+  context: DiagnosticContext,
+  diagnostics: RuntimeDiagnosticLogger,
+  phase: "case-get" | "case-post",
+) {
+  const { body, status } = clientFailure(error, context.operationId);
+  diagnostics.event("response", phase, "failure", {
+    ...responseMetadata(status, body),
+    error: caughtErrorDetails(error),
+  });
+  diagnostics.checkpoint(`${phase}-trace`, "failure");
+  return jsonResponse(body, status, context);
+}
+
+function clientFailure(error: unknown, diagnosticReference: string) {
+  if (error instanceof RequestBoundaryError) {
+    return { status: error.status, body: { error: error.message, code: error.code, diagnosticReference } };
+  }
+  if (error instanceof BrowserStateError) {
+    return { status: error.code === "stale-browser-state" ? 409 : 400, body: {
+      error: error.message,
+      code: error.code,
+      diagnosticReference,
+    } };
+  }
+  if (error instanceof ModelCallFailure) {
+    const status = error.diagnostic.phase === "provider-request" ? 502 : 422;
+    return { status, body: { error: error.message, code: `model-${error.diagnostic.phase}`, diagnosticReference } };
+  }
+  return {
+    status: 400,
+    body: { error: safeClientError(error), code: "case-action-failed", diagnosticReference },
+  };
+}
+
+class RequestBoundaryError extends Error {
+  constructor(
+    message: string,
+    readonly code: string,
+    readonly status: number,
+    cause?: unknown,
+  ) {
+    super(message, cause === undefined ? undefined : { cause });
+    this.name = "RequestBoundaryError";
+  }
+}
+
+function jsonResponse(body: unknown, status: number, context: DiagnosticContext) {
   return NextResponse.json(body, { status, headers: diagnosticResponseHeaders(context) });
 }
 
@@ -112,12 +224,7 @@ function requestMetadata(request: NextRequest) {
 }
 
 function responseMetadata(status: number, body: unknown) {
-  return {
-    status,
-    contentType: "application/json",
-    cacheControl: "no-store",
-    body,
-  };
+  return { status, contentType: "application/json", cacheControl: "no-store", body };
 }
 
 function diagnosticAction(action: z.infer<typeof actionSchema>): unknown {
@@ -139,10 +246,6 @@ function safeClientError(error: unknown): string {
   return allowed.some((prefix) => error.message.startsWith(prefix))
     ? error.message
     : "The case could not be updated";
-}
-
-function isSecure(request: NextRequest): boolean {
-  return request.nextUrl.protocol === "https:" || request.headers.get("x-forwarded-proto") === "https";
 }
 
 function hasSameOrigin(request: NextRequest): boolean {

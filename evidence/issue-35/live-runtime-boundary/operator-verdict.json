@@ -1,0 +1,129 @@
+{
+  "kind": "bounded runtime-boundary live operator verdict",
+  "date": "2026-09-07",
+  "deployment": {
+    "id": "dpl_7GLUdpMhzZP9mgXgSAXgpfBHuQSp",
+    "commit": "bdbb06c90302e7b43dc2e634018c01f143a6bd42",
+    "source": "git",
+    "target": null,
+    "readyState": "READY",
+    "readySubstate": "STAGED",
+    "branch": "codex/35-operator-live-preview",
+    "exactHost": "wilson-next-ldujei4sw-warblersafety.vercel.app",
+    "branchHost": "wilson-next-git-codex-35-operator-live-preview-warblersafety.vercel.app",
+    "remainingAutomationBypasses": 0,
+    "unauthenticatedDeploymentHttpStatus": 302,
+    "unauthenticatedBranchAliasHttpStatus": 302,
+    "protectionRestored": true
+  },
+  "modelBoundary": {
+    "model": "claude-sonnet-5",
+    "promptRevision": "wilson-experiment-1-extraction-v3",
+    "schemaRevision": "wilson-grounded-proposals-v5",
+    "configuredProviderRetries": 0,
+    "openingSubmissions": 1,
+    "correctionSubmissions": 0,
+    "journeyRetries": 0,
+    "calls": [
+      {
+        "turn": "opening",
+        "inputTokens": 3436,
+        "outputTokens": 15808,
+        "latencyMs": 110840,
+        "estimatedCostUsd": 0.164952
+      }
+    ],
+    "totalInputTokens": 3436,
+    "totalOutputTokens": 15808,
+    "totalLatencyMs": 110840,
+    "estimatedCostUsd": 0.164952
+  },
+  "result": "failed",
+  "checkpoints": [
+    {
+      "state": "describe",
+      "assertion": "Protected exact-commit preview displayed the fictional-only boundary."
+    },
+    {
+      "state": "safe-failure",
+      "assertion": "Outside-fixture input was rejected at revision zero with an opaque reference."
+    }
+  ],
+  "runId": "9593d944-9ec6-4bdd-ba86-d6b1407f7665",
+  "failedAcceptanceRule": "Every material result points to self-contained source evidence that lets the operator identify both the subject and the claim.",
+  "openingInspection": {
+    "proposalCount": 29,
+    "expectedValuesCorrect": 29,
+    "productDeclarations": [
+      "product-apixaban",
+      "product-naproxen",
+      "product-lisinopril"
+    ],
+    "weakEvidenceSpans": [
+      {
+        "target": "product:product-apixaban:role",
+        "value": "suspect",
+        "excerpt": "suspect",
+        "missingContext": "apixaban"
+      },
+      {
+        "target": "product:product-naproxen:role",
+        "value": "suspect",
+        "excerpt": "suspect",
+        "missingContext": "naproxen"
+      },
+      {
+        "target": "product:product-apixaban:stopped",
+        "value": true,
+        "excerpt": "stopped",
+        "missingContext": "apixaban"
+      },
+      {
+        "target": "product:product-naproxen:stopped",
+        "value": true,
+        "excerpt": "stopped",
+        "missingContext": "naproxen"
+      }
+    ]
+  },
+  "judgments": {
+    "conversationalCoherence": "not assessed beyond the opening because the evidence gate stopped the run",
+    "factualFidelity": "the 29 expected opening values, product identities, and canonical roles were correct",
+    "evidenceUsefulness": "fail: four product facts cited predicate-only words that did not identify the product subject",
+    "interactionBurden": "fail: the operator could not responsibly continue from Check understanding",
+    "latency": "110.840 seconds, within the documented 300-second function boundary but followed by unusable evidence for four facts",
+    "correctionConflictHandling": "not assessed because the correction was not submitted",
+    "formAccuracy": "not assessed because the run stopped before projection or PDF"
+  },
+  "retention": {
+    "browserStorageCaptured": false,
+    "networkArchiveCaptured": false,
+    "providerResponseCaptured": false,
+    "rawRuntimeLogsCaptured": false,
+    "credentialsCaptured": false,
+    "bypassSecretCaptured": false,
+    "screenshotCaptured": false,
+    "checkedPdfCaptured": false
+  },
+  "inducedSafeFailureReference": "e9ebcd6c-66ac-4947-96d0-023f028d2cf6",
+  "runtimeLogAudit": {
+    "historicalRequestRows": 8,
+    "uniqueCorrelatedEvents": 34,
+    "operationIds": 3,
+    "truncatedRows": 0,
+    "causalOrderVerified": true,
+    "safePreProviderFailureObserved": true,
+    "safeFailureProviderResponses": 0,
+    "openingProviderResponses": 1,
+    "correctionProviderResponses": 0,
+    "credentialExposureObserved": false,
+    "outsideFixtureExposureObserved": false
+  },
+  "durationMs": 131067,
+  "failure": {
+    "phase": "operator-semantic-assessment",
+    "message": "Four structurally valid product facts had predicate-only evidence spans without enough subject context.",
+    "rootCause": "The prompt asks for the smallest exact substring but does not say the excerpt must remain self-contained for human review, so the model minimized shared product claims to suspect and stopped.",
+    "recommendedRemediation": "After required pre-implementation review, guide the model toward the smallest self-contained subject-plus-claim span and expose product name, role, and stopped evidence in the operator review UI. Do not add four fixture-specific runtime rejection rules."
+  }
+}

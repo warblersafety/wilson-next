@@ -17,8 +17,8 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-experiment-1-extraction-v2";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v2";
+export const MODEL_PROMPT_REVISION = "wilson-experiment-1-extraction-v4";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v5";
 // The Messages API requires max_tokens. Use Sonnet 5's full provider output
 // capacity here so Wilson imposes no development/verification token budget.
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
@@ -26,6 +26,10 @@ export const MODEL_MAX_RETRIES = 0;
 
 const INPUT_USD_PER_MILLION_TOKENS = 2;
 const OUTPUT_USD_PER_MILLION_TOKENS = 10;
+const CANONICAL_PRODUCT_ROLES = ["suspect", "concomitant"] as const;
+const PRODUCT_ROLE_SCHEMA_GUIDANCE = 'When target.field is "role", value.value must be exactly "suspect" or "concomitant"; do not inflect or otherwise vary these canonical literals.';
+const DOSE_CORRECTION_GROUP_ID = "naproxen-dose-correction";
+const DATE_CONFLICT_GROUP_ID = "apixaban-date-conflict";
 
 const modelTargetSchema = z.discriminatedUnion("entity", [
   z.object({
@@ -63,26 +67,44 @@ const modelTargetSchema = z.discriminatedUnion("entity", [
   }).strict(),
 ]);
 
+const modelProposalSchema = z.object({
+  proposalId: z.string(),
+  groupId: z.string(),
+  intent: z.enum(["fact", "correction", "alternative"]),
+  target: modelTargetSchema,
+  value: z.object({
+    kind: z.literal("known"),
+    value: z.union([
+      z.string().describe(PRODUCT_ROLE_SCHEMA_GUIDANCE),
+      z.number(),
+      z.boolean(),
+      z.array(z.string()),
+    ]),
+  }).strict(),
+  source: z.object({
+    start: z.number().int(),
+    end: z.number().int(),
+  }).strict(),
+}).strict().superRefine((proposal, context) => {
+  if (proposal.target.field !== "role") return;
+  if (typeof proposal.value.value === "string"
+    && CANONICAL_PRODUCT_ROLES.some((role) => role === proposal.value.value)) return;
+  context.addIssue({
+    code: "custom",
+    path: ["value", "value"],
+    message: "Role value must be the canonical literal suspect or concomitant",
+  });
+});
+
 const modelOutputSchema = z.object({
   products: z.array(z.object({
     id: z.enum(["product-apixaban", "product-naproxen", "product-lisinopril"]),
     groupId: z.enum(["product-apixaban", "product-naproxen", "product-lisinopril"]),
   }).strict()),
-  proposals: z.array(z.object({
-    proposalId: z.string(),
-    groupId: z.string(),
-    intent: z.enum(["fact", "correction", "alternative"]),
-    target: modelTargetSchema,
-    value: z.object({
-      kind: z.literal("known"),
-      value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]),
-    }).strict(),
-    source: z.object({
-      start: z.number().int(),
-      end: z.number().int(),
-    }).strict(),
-  }).strict()).min(1),
+  proposals: z.array(modelProposalSchema).min(1),
 }).strict();
+
+type StructuredModelOutput = z.infer<typeof modelOutputSchema>;
 
 export interface AnthropicModelRequest {
   model: typeof ANTHROPIC_MODEL_ID;
@@ -126,10 +148,10 @@ const SYSTEM_PROMPT = `You extract grounded semantic proposals from one fictiona
 
 Rules:
 - Propose only facts explicitly supported by the supplied input. Do not diagnose, infer causality, classify, fill gaps, or establish truth.
-- Keep each medicine attached to its exact stable product ID. "I suspect" establishes a reported role; it is not your causality judgment.
+- Keep each medicine attached to its exact stable product ID. For product roles, emit only the canonical literal "suspect" or "concomitant". Map statements such as "I suspect ..." to "suspect"; do not inflect or otherwise vary either literal. A reported suspect role is not your causality judgment.
 - Use normalized ISO dates (YYYY-MM-DD), "oral" for "by mouth", and the literal frequency wording "twice daily" or "daily".
 - Preserve a measurement's value and unit together as a string, for example "7.8 g/dL" rather than 7.8.
-- Every proposal must cite the smallest exact supporting substring using zero-based start-inclusive/end-exclusive character offsets into the clinician input. Offsets must select non-empty text exactly.
+- Every proposal must cite the shortest exact, self-contained supporting substring that lets a human reviewer identify both the subject and the claim without relying on proposal target metadata. For a product fact, include enough local wording to connect the product name with the claimed property; one shared clause may support multiple product proposals. Use zero-based start-inclusive/end-exclusive character offsets into the clinician input. Offsets must select non-empty text exactly.
 - Supply only the source offsets. Wilson assigns stable source identity; the model does not.
 - Use only the proposal IDs, groups, targets, and intents listed for the requested turn. Emit every listed proposal that the input explicitly supports and no others.
 - Products are declarations for newly proposed product entities, not accepted case knowledge.`;
@@ -233,6 +255,7 @@ export function createAnthropicJourneyModel(
             "Wilson could not retain the fictional model response for diagnosis. Accepted case knowledge is unchanged.",
             { phase: "response-capture", errorName: errorName(error) },
             metrics,
+            response,
           );
         }
       }
@@ -246,6 +269,7 @@ export function createAnthropicJourneyModel(
             responseArtifact,
           },
           metrics,
+          response,
         );
       }
 
@@ -271,6 +295,7 @@ export function createAnthropicJourneyModel(
             }],
           },
           metrics,
+          response,
         );
       }
       const structured = modelOutputSchema.safeParse(decoded);
@@ -284,30 +309,47 @@ export function createAnthropicJourneyModel(
             issues: zodIssues(structured.error),
           },
           metrics,
+          response,
+        );
+      }
+      const correctionGroupIssues = validateCorrectionGroupIds(turn, structured.data);
+      if (correctionGroupIssues.length > 0) {
+        throw new ModelCallFailure(
+          "Wilson could not interpret the fictional account. Accepted case knowledge is unchanged.",
+          {
+            phase: "structured-schema",
+            requestId: response.id,
+            responseArtifact,
+            issues: correctionGroupIssues,
+          },
+          metrics,
+          response,
         );
       }
 
       try {
-        return {
-          envelope: parseModelProposalEnvelope({
-            input: {
-              id: turn === "opening" ? "input-opening" : "input-correction",
-              type: turn === "opening" ? "narrative" : "correction",
-              text,
-              recordedAt: fixedRecordedAt,
+        const envelope = parseModelProposalEnvelope({
+          input: {
+            id: turn === "opening" ? "input-opening" : "input-correction",
+            type: turn === "opening" ? "narrative" : "correction",
+            text,
+            recordedAt: fixedRecordedAt,
+          },
+          ...structured.data,
+          proposals: structured.data.proposals.map((proposal) => ({
+            ...proposal,
+            source: {
+              id: `source-${proposal.proposalId}`,
+              start: proposal.source.start,
+              end: proposal.source.end,
             },
-            ...structured.data,
-            proposals: structured.data.proposals.map((proposal) => ({
-              ...proposal,
-              source: {
-                id: `source-${proposal.proposalId}`,
-                start: proposal.source.start,
-                end: proposal.source.end,
-              },
-            })),
-          }),
+          })),
+        });
+        return {
+          envelope,
           metrics,
           responseArtifact,
+          diagnosticResponse: response,
         };
       } catch (error) {
         throw new ModelCallFailure(
@@ -320,6 +362,7 @@ export function createAnthropicJourneyModel(
             issues: error instanceof z.ZodError ? zodIssues(error) : undefined,
           },
           metrics,
+          response,
         );
       }
     },
@@ -376,6 +419,37 @@ function requireFixedInput(turn: ModelTurn, text: string): void {
   if (text !== expected) {
     throw new Error("This experiment accepts only the displayed fictional account");
   }
+}
+
+function validateCorrectionGroupIds(
+  turn: ModelTurn,
+  output: StructuredModelOutput,
+): ModelDiagnosticIssue[] {
+  if (turn !== "correction") return [];
+  const issues: ModelDiagnosticIssue[] = [];
+  output.proposals.forEach((proposal, index) => {
+    const isDoseCorrection = proposal.intent === "correction"
+      && proposal.target.entity === "product"
+      && proposal.target.entityId === "product-naproxen"
+      && proposal.target.field === "dose";
+    const isDateAlternative = proposal.intent === "alternative"
+      && proposal.target.entity === "product"
+      && proposal.target.entityId === "product-apixaban"
+      && proposal.target.field === "startDate";
+    const expectedGroupId = isDoseCorrection
+      ? DOSE_CORRECTION_GROUP_ID
+      : isDateAlternative
+        ? DATE_CONFLICT_GROUP_ID
+        : undefined;
+    if (expectedGroupId && proposal.groupId !== expectedGroupId) {
+      issues.push({
+        path: `proposals.${index}.groupId`,
+        code: "invalid_correction_group",
+        message: `Correction action requires group ${expectedGroupId}`,
+      });
+    }
+  });
+  return issues;
 }
 
 function estimateCost(inputTokens: number, outputTokens: number): number {

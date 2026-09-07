@@ -16,7 +16,7 @@ const browserEventSchema = z.object({
   outcome: z.enum(["start", "success", "failure"]),
   request: z.object({
     method: z.enum(["GET", "POST"]),
-    path: z.literal("/api/case"),
+    path: z.enum(["/api/case", "/api/case/pdf"]),
     body: z.unknown().optional(),
   }).strict().optional(),
   response: z.object({
@@ -77,17 +77,33 @@ function safeBrowserEvent(event: z.infer<typeof browserEventSchema>): unknown {
 function safeRequest(request: z.infer<typeof browserEventSchema>["request"]): unknown {
   if (!request || request.body === undefined) return request;
   const body = request.body;
-  if (!body || typeof body !== "object" || !("action" in body)) {
+  if (!body || typeof body !== "object") {
     return { ...request, body: "[NOT LOGGED: outside fixed synthetic fixture]" };
   }
-  const candidate = body as { action?: unknown; text?: unknown };
+  const candidate = { ...(body as Record<string, unknown>) };
+  if ("state" in candidate) {
+    candidate.state = "[BROWSER STATE NOT LOGGED]";
+  }
+  if (!("action" in candidate)) {
+    return "state" in body
+      ? { ...request, body: candidate }
+      : { ...request, body: "[NOT LOGGED: outside fixed synthetic fixture]" };
+  }
+  if (candidate.action && typeof candidate.action === "object") {
+    candidate.action = safeTextBearingObject(candidate.action as Record<string, unknown>);
+  } else {
+    Object.assign(candidate, safeTextBearingObject(candidate));
+  }
+  return { ...request, body: candidate };
+}
+
+function safeTextBearingObject(candidate: Record<string, unknown>): Record<string, unknown> {
   const fixedText = candidate.text === openingAccount
     || candidate.text === indicationAnswer
     || candidate.text === correctionAccount;
-  if (typeof candidate.text === "string" && !fixedText) {
-    return { ...request, body: { ...candidate, text: "[NOT LOGGED: outside fixed synthetic fixture]" } };
-  }
-  return request;
+  return typeof candidate.text === "string" && !fixedText
+    ? { ...candidate, text: "[NOT LOGGED: outside fixed synthetic fixture]" }
+    : candidate;
 }
 
 function diagnosticHeaders(context: { runId: string; operationId: string }): Record<string, string> {

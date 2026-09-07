@@ -1,0 +1,134 @@
+{
+  "kind": "bounded self-contained-evidence live operator failure verdict",
+  "date": "2026-09-07",
+  "deployment": {
+    "id": "dpl_EbZeQ5qANo5nYAsRKL89uu1Z8dHX",
+    "commit": "ffbba5dfc7a7a7ff20b354af8c6580078b02ab24",
+    "source": "git",
+    "target": null,
+    "readyState": "READY",
+    "readySubstate": "STAGED",
+    "branch": "codex/35-operator-live-preview",
+    "exactHost": "wilson-next-qr28rzybc-warblersafety.vercel.app",
+    "branchHost": "wilson-next-git-codex-35-operator-live-preview-warblersafety.vercel.app",
+    "remainingAutomationBypasses": 0,
+    "unauthenticatedDeploymentHttpStatus": 302,
+    "unauthenticatedBranchAliasHttpStatus": 302,
+    "protectionRestored": true
+  },
+  "modelBoundary": {
+    "model": "claude-sonnet-5",
+    "promptRevision": "wilson-experiment-1-extraction-v4",
+    "schemaRevision": "wilson-grounded-proposals-v5",
+    "configuredProviderRetries": 0,
+    "openingSubmissions": 1,
+    "correctionSubmissions": 0,
+    "journeyRetries": 0,
+    "calls": [
+      {
+        "turn": "opening",
+        "inputTokens": 3513,
+        "outputTokens": 11651,
+        "latencyMs": 82651,
+        "estimatedCostUsd": 0.123536
+      }
+    ],
+    "totalInputTokens": 3513,
+    "totalOutputTokens": 11651,
+    "totalLatencyMs": 82651,
+    "estimatedCostUsd": 0.123536
+  },
+  "result": "failed",
+  "runId": "a5e4a456-6873-4c54-9a18-59841c79ced7",
+  "inducedSafeFailureReference": "cd625b20-f070-4fc6-923f-fcda6cd37800",
+  "openingOperationId": "ec8970b2-c72d-4672-a318-303a8b2dba5e",
+  "failedAcceptanceRules": [
+    "The operator must inspect the returned opening in the protected browser before continuing.",
+    "Every material result must point to an exact, clean, self-contained source excerpt that identifies its subject and claim."
+  ],
+  "openingInspection": {
+    "proposalCount": 29,
+    "expectedValuesCorrect": 29,
+    "valueMismatches": [],
+    "selfContainedPromptImprovementObserved": true,
+    "sourceBoundaryIssueCount": 22,
+    "systematicOffsetPattern": "Affected starts and ends were both one character before the correct zero-based, end-exclusive boundaries, producing a leading space and dropping the final character.",
+    "sample": [
+      {
+        "proposal": "event-symptoms",
+        "expectedOffsets": [293, 313],
+        "observedOffsets": [292, 312],
+        "observedExcerpt": " melena and dizzines"
+      },
+      {
+        "proposal": "event-onset",
+        "expectedOffsets": [264, 278],
+        "observedOffsets": [263, 277],
+        "observedExcerpt": " On 18-Aug-202"
+      },
+      {
+        "proposal": "event-hospitalized",
+        "expectedOffsets": [318, 334],
+        "observedOffsets": [317, 333],
+        "observedExcerpt": " was hospitalize"
+      },
+      {
+        "proposal": "event-hemoglobin",
+        "expectedOffsets": [340, 363],
+        "observedOffsets": [339, 362],
+        "observedExcerpt": " hemoglobin was 7.8 g/d"
+      },
+      {
+        "proposal": "apixaban-role",
+        "expectedOffsets": [498, 529],
+        "observedOffsets": [497, 528],
+        "observedExcerpt": " I suspect apixaban and naproxe"
+      }
+    ]
+  },
+  "operatorHarnessFailure": {
+    "phase": "opening-response wait",
+    "message": "The temporary operator runner selected Next.js's empty route-announcer role=alert element while waiting for the earlier safe-failure alert to disappear, timed out after 20 seconds, and closed the browser while the one opening request remained in flight.",
+    "effect": "The successful server response could not be stored in the disposable tab, so continuing would have required a prohibited second opening submission.",
+    "applicationDefect": false
+  },
+  "judgments": {
+    "conversationalCoherence": "not assessed beyond Describe because the browser harness closed before displaying the successful response",
+    "factualFidelity": "all 29 expected opening values and stable product identities were correct in the completed response",
+    "evidenceUsefulness": "failed: the prompt fixed predicate-only evidence, but 22 excerpts had systematically shifted offsets and visibly truncated claims or words",
+    "interactionBurden": "failed: the operator could not continue after the temporary harness closed the browser",
+    "latency": "82.651 seconds, within the documented 300-second function boundary",
+    "correctionConflictHandling": "not assessed; no correction call was submitted",
+    "formAccuracy": "not assessed; the journey stopped before projection or PDF"
+  },
+  "runtimeLogAudit": {
+    "historicalRequestRows": 8,
+    "uniqueCorrelatedEvents": 34,
+    "operationIds": 3,
+    "truncatedRows": 0,
+    "causalOrderVerified": true,
+    "safePreProviderFailureObserved": true,
+    "safeFailureProviderResponses": 0,
+    "openingProviderResponses": 1,
+    "correctionProviderResponses": 0,
+    "openingCommandApplied": true,
+    "openingResponseCompleted": true,
+    "credentialExposureObserved": false,
+    "outsideFixtureExposureObserved": false
+  },
+  "retention": {
+    "browserStorageCaptured": false,
+    "networkArchiveCaptured": false,
+    "providerResponseCaptured": false,
+    "rawRuntimeLogsCaptured": false,
+    "credentialsCaptured": false,
+    "bypassSecretCaptured": false,
+    "screenshotCaptured": false,
+    "checkedPdfCaptured": false
+  },
+  "recommendedNextDecision": {
+    "status": "not implemented and no further live run authorized",
+    "recommendation": "Reconsider the model/API responsibility for character localization. A general option is for the model to return an exact self-contained quote while Wilson deterministically resolves that quote to source offsets, rejecting absent or ambiguous matches. Do not add 22 fixture-specific corrections or silently shift all offsets.",
+    "reviewRequired": true
+  }
+}

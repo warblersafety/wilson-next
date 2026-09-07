@@ -1,0 +1,103 @@
+{
+  "kind": "bounded post-remediation live operator failure verdict",
+  "date": "2026-09-06",
+  "deployment": {
+    "id": "dpl_4cGNW9dbAoT9BuF8gQRiv4XTcN21",
+    "commit": "777aa29ebf5cbe21be83b2835da2d850c6a3987d",
+    "target": null,
+    "readyState": "READY",
+    "protectionRestored": true,
+    "remainingAutomationBypasses": 0,
+    "unauthenticatedHttpStatus": 302
+  },
+  "modelBoundary": {
+    "model": "claude-sonnet-5",
+    "promptRevision": "wilson-experiment-1-extraction-v2",
+    "schemaRevision": "wilson-grounded-proposals-v3",
+    "configuredProviderRetries": 0,
+    "openingSubmissions": 1,
+    "correctionSubmissions": 0,
+    "journeyRetries": 0,
+    "inputTokens": 3160,
+    "outputTokens": 11808,
+    "latencyMs": 86788,
+    "estimatedCostUsd": 0.1244
+  },
+  "result": "failed",
+  "diagnosticReference": "a51b46b1-8648-4953-a49f-3b46f74381d2",
+  "failedAcceptanceRule": "The fixed opening must produce domain-valid product roles before the operator can review the extraction.",
+  "expected": "apixaban-role and naproxen-role use the domain literal suspect; lisinopril-role uses concomitant.",
+  "observed": {
+    "providerOutcome": "success",
+    "rejectionPhase": "domain-boundary",
+    "httpStatus": 422,
+    "retainedStage": "describe",
+    "retainedRevision": 0,
+    "roleProposals": [
+      {
+        "proposalId": "apixaban-role",
+        "value": "suspected",
+        "sourceStart": 500,
+        "sourceEnd": 516
+      },
+      {
+        "proposalId": "naproxen-role",
+        "value": "suspected",
+        "sourceStart": 517,
+        "sourceEnd": 529
+      },
+      {
+        "proposalId": "lisinopril-role",
+        "value": "concomitant",
+        "sourceStart": 242,
+        "sourceEnd": 262
+      }
+    ],
+    "issues": [
+      "role requires suspect or concomitant",
+      "role requires suspect or concomitant"
+    ]
+  },
+  "judgments": {
+    "conversationalCoherence": "not assessed beyond the safe opening failure",
+    "factualFidelity": "not presented for operator review because the domain contract rejected the unsupported literals",
+    "evidenceUsefulness": "pass for diagnosis: one opaque reference reconstructed the returned-content and rejection phases",
+    "interactionBurden": "fail: the operator could not leave Describe",
+    "latency": "fail for the rejected opening: 86.788 seconds provider latency followed by no usable extraction",
+    "correctionConflictHandling": "not assessed",
+    "formAccuracy": "not assessed"
+  },
+  "runtimeLogAudit": {
+    "streamRows": 23,
+    "streamTruncatedRows": 0,
+    "streamParseFailures": 0,
+    "streamUniqueDiagnosticEvents": 25,
+    "streamOperationIds": 4,
+    "streamReconnects": 1,
+    "historicalMatchingRequestRows": 3,
+    "historicalCorrelatedEvents": 13,
+    "historicalTruncatedLogs": 0,
+    "causalOrderVerified": true,
+    "safePreModelFailureObserved": true,
+    "credentialExposureObserved": false,
+    "outsideFixtureExposureObserved": false
+  },
+  "retention": {
+    "browserStorageCaptured": false,
+    "networkArchiveCaptured": false,
+    "providerResponseCaptured": false,
+    "rawRuntimeLogsCaptured": false,
+    "credentialsCaptured": false,
+    "bypassSecretCaptured": false,
+    "screenshotCaptured": false,
+    "checkedPdfCaptured": false
+  },
+  "recommendedRemediation": {
+    "status": "implemented after targeted pre-implementation review",
+    "commit": "b98653cf867910ca41ffe08752c005867b580cad",
+    "promptRevision": "wilson-experiment-1-extraction-v3",
+    "schemaRevision": "wilson-grounded-proposals-v4",
+    "behavior": "Guide role output toward suspect or concomitant in the transformed provider schema and model prompt, enforce those canonical values at the local structured-schema boundary, and retain the existing domain rejection as defense in depth.",
+    "providerLimitation": "The installed Anthropic SDK represents Zod enum and const constraints as provider-visible description hints rather than structural JSON Schema enforcement."
+  }
+}
