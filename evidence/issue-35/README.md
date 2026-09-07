@@ -332,4 +332,4 @@ Delivery's proportional-closure rule, this originating targeted review covers
 the bounded implementation it prescribed; no recursive Claude review was run.
 The review's broader non-blocking observation—that all SDK-demoted enum/const
 constraints rely on local boundary validation—remains separate from this role
-fix and is recorded as follow-up work.
+fix and is recorded as follow-up Issue #38.
