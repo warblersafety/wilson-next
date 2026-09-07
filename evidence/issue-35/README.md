@@ -2,7 +2,7 @@
 
 **Status:** Required pre-implementation review, approved planning remediation,
 implementation, and deterministic verification complete; protected live-preview
-verification pending
+redeployment and operator verification in progress
 
 **Issues:** [#35](https://github.com/warblersafety/wilson-next/issues/35) and
 [#34](https://github.com/warblersafety/wilson-next/issues/34)
@@ -118,3 +118,21 @@ credentials, or PDF bytes in diagnostics. Independent readback found an
 unencrypted eight-page form whose accepted fields match the final projection;
 the rejected 12-Aug-2026 alternative is absent and the chosen 13-Aug-2026 value
 is present.
+
+## Protected deployment gate
+
+Implementation commit `41952f1ed268ec5e1bd1f3a2226f402c4805ec49`
+deployed through the Git integration as
+`dpl_2XdAF5Et9456GqvLNVK8NnPjeMhg`. Vercel reported the exact feature branch,
+pull request, and commit; `READY`; `STAGED`; `target: null`; and only the branch
+preview alias. GitHub `verify` and both Vercel checks passed. An unauthenticated
+request returned HTTP 302 to Vercel Authentication.
+
+The first values-excluding environment read found no hosted runtime variables,
+so work stopped before an application route or live-model call. Steve then
+installed `ANTHROPIC_API_KEY` directly through Vercel and authorized the required
+redeployment and final review. A second values-excluding read confirmed exactly
+one `sensitive` variable named `ANTHROPIC_API_KEY`, targeted only to `preview`.
+Its value was never retrieved or copied. This evidence update is the meaningful
+branch checkpoint that triggers a fresh Git preview containing that runtime
+configuration; it does not use Vercel's production or direct-deploy path.
