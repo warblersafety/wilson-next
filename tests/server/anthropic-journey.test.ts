@@ -89,6 +89,50 @@ describe("Anthropic fixed-journey adapter", () => {
     expect(failure.returnedResponse).toBe(response);
   });
 
+  it("rejects the observed correction response when the 13-Aug alternative cites the 12-Aug source", async () => {
+    const response = responseFor("correction");
+    const output = responseOutput(response);
+    const alternative = output.proposals.find(({ proposalId }) => proposalId === "apixaban-date-alternative")!;
+    alternative.source.start = correctionAccount.lastIndexOf("12-Aug-2026");
+    alternative.source.end = alternative.source.start + "12-Aug-2026".length;
+    setResponseOutput(response, output);
+
+    const failure = await modelFailure(
+      createAnthropicJourneyModel(async () => response).propose("correction", correctionAccount),
+    );
+
+    expect(failure.diagnostic).toMatchObject({
+      phase: "domain-boundary",
+      requestId: "message-correction",
+      issues: [{
+        path: "sources.source-apixaban-date-alternative",
+        code: "fixed_semantic_mismatch",
+        message: "Proposal apixaban-date-alternative source span does not match the fixed grounded expectation",
+      }],
+    });
+    expect(failure.returnedResponse).toBe(response);
+  });
+
+  it("rejects an incomplete fixed catalog before proposals reach case commands", async () => {
+    const response = responseFor("opening");
+    const output = responseOutput(response);
+    output.proposals = output.proposals.filter(({ proposalId }) => proposalId !== "event-symptoms");
+    setResponseOutput(response, output);
+
+    const failure = await modelFailure(
+      createAnthropicJourneyModel(async () => response).propose("opening", openingAccount),
+    );
+
+    expect(failure.diagnostic).toMatchObject({
+      phase: "domain-boundary",
+      issues: [{
+        path: "proposals.event-symptoms",
+        code: "fixed_semantic_mismatch",
+        message: "Required proposal event-symptoms is missing",
+      }],
+    });
+  });
+
   it("does not retry or expose provider detail after a failed request", async () => {
     const failed = vi.fn<AnthropicRequester>(async () => {
       throw new Error("provider detail containing request material");

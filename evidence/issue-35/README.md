@@ -1,8 +1,9 @@
 # Issue 35 operator-preview evidence
 
 **Status:** Required pre-implementation review, approved planning remediation,
-implementation, and deterministic verification complete; protected live-preview
-redeployment and operator verification in progress
+implementation, and deterministic verification complete; the first protected
+live operator gate failed on source fidelity, bounded remediation is complete,
+and final independent review is pending
 
 **Issues:** [#35](https://github.com/warblersafety/wilson-next/issues/35) and
 [#34](https://github.com/warblersafety/wilson-next/issues/34)
@@ -136,3 +137,66 @@ one `sensitive` variable named `ANTHROPIC_API_KEY`, targeted only to `preview`.
 Its value was never retrieved or copied. This evidence update is the meaningful
 branch checkpoint that triggers a fresh Git preview containing that runtime
 configuration; it does not use Vercel's production or direct-deploy path.
+
+Commit `afbb376aaa30c6e8b226ad7bdd266632127ad7d5` hardened nested diagnostic
+redaction and the ephemeral PDF popup found by the pre-live local gate. Its Git
+integration deployment was `dpl_DVsnVE4bkYZPXGHjGRFzcHxPi7na`, with branch
+alias `wilson-next-git-codex-35-operator-live-preview-warblersafety.vercel.app`.
+Vercel reported the exact commit, `READY`, `STAGED`, and `target: null`; GitHub
+`verify` and both Vercel checks passed before the live run.
+
+## First protected live operator gate
+
+The one authorized run on 2026-09-06 used the protected branch alias and a
+temporary automation bypass held only in process memory. It first exercised a
+non-fixture rejection, then submitted the fixed opening account once and the
+fixed correction account once. The application has provider retries set to
+zero. No failed live request or journey was retried.
+
+The opening result reached Check understanding, retained the three correct
+product identities and roles, and restored after same-tab reload. The grouped
+indication question and fixed answer path then reached the correction step. At
+that point the live response proposed the naproxen change from 500 mg to 250 mg
+and displayed a 12-Aug/13-Aug conflict, but its source blockquotes were
+`start as 12-Aug-2026` and `12-Aug-2026`. The required exact medication-
+administration-record span supporting 13-Aug-2026 was absent for the full
+310-second assertion window. That is an internally inconsistent grounded
+proposal and fails Experiment 1's source-fidelity rule. The browser stopped at
+that assertion; unresolved/resolved projection and PDF checks were not run and
+must not be inferred from deterministic evidence.
+
+The five-minute in-place Runtime Log audit saw 48 non-truncated rows, 53 unique
+diagnostic events, eight operation IDs, the describe/understanding/clarify/update
+stages, and the induced pre-model safe rejection. It found neither credential
+material nor the rejected outside-fixture suffix. The stream closed before it
+captured model response metrics or the late correction checkpoint, so token,
+cost, per-call latency, and returned-content diagnostic reconstruction are not
+claimed. No raw Runtime Logs, browser storage, network archive, provider
+response, credential, or bypass secret was retained.
+
+The temporary bypass was revoked immediately after the failed assertion. A
+values-excluding project read found zero remaining automation bypasses, and an
+unauthenticated request again returned HTTP 302. The retained `live/` directory
+contains only the synthetic opening screenshot and a compact failure verdict;
+the screenshot SHA-256 is
+`922d1e9e7cea035deb71610938f9d24ef151dae259d0d202e5da2888d876dd43`.
+
+## Bounded source-fidelity remediation
+
+The failure exposed an ordinary but consequential boundary defect: valid
+offsets and normalized types were checked, but the fixed adapter did not prove
+that each returned value cited the catalog's expected supporting span. The
+adapter now rejects any missing or unexpected fixed-catalog proposal, product
+declaration mismatch, semantic target/value mismatch, or exact source-span
+mismatch before case commands. The returned provider response is still logged
+before the precise domain rejection, accepted case state remains unchanged,
+and the client receives only the existing safe message and opaque operation
+reference. The semantic boundary revision is
+`wilson-grounded-proposals-v3`.
+
+Regression coverage reproduces the observed 13-Aug value/12-Aug source mismatch
+and a catalog omission. After remediation, typecheck, all 77 unit/server tests,
+the production build, and both deterministic Playwright journeys pass. This
+does not convert the failed live evidence into a pass: Slice 4B remains failed
+unless Steve separately authorizes a new protected live run after reviewing
+the failure, remediation, and final Claude verdict.

@@ -2,12 +2,17 @@ import Anthropic, { APIError } from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
 import { parseModelProposalEnvelope } from "../../domain/case/model-boundary";
+import type { ParsedModelProposalEnvelope } from "../../domain/case/model-boundary";
 import {
   correctionAccount,
   fixedRecordedAt,
   openingAccount,
 } from "../../experiment/fixed-inputs";
 import { ModelCallFailure } from "./journey-model";
+import {
+  parseFixedCorrectionResponse,
+  parseFixedOpeningResponse,
+} from "./fixed-journey";
 import type {
   JourneyModel,
   ModelCallMetrics,
@@ -18,7 +23,7 @@ import type {
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
 export const MODEL_PROMPT_REVISION = "wilson-experiment-1-extraction-v2";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v2";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v3";
 // The Messages API requires max_tokens. Use Sonnet 5's full provider output
 // capacity here so Wilson imposes no development/verification token budget.
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
@@ -292,24 +297,26 @@ export function createAnthropicJourneyModel(
       }
 
       try {
-        return {
-          envelope: parseModelProposalEnvelope({
-            input: {
-              id: turn === "opening" ? "input-opening" : "input-correction",
-              type: turn === "opening" ? "narrative" : "correction",
-              text,
-              recordedAt: fixedRecordedAt,
+        const envelope = parseModelProposalEnvelope({
+          input: {
+            id: turn === "opening" ? "input-opening" : "input-correction",
+            type: turn === "opening" ? "narrative" : "correction",
+            text,
+            recordedAt: fixedRecordedAt,
+          },
+          ...structured.data,
+          proposals: structured.data.proposals.map((proposal) => ({
+            ...proposal,
+            source: {
+              id: `source-${proposal.proposalId}`,
+              start: proposal.source.start,
+              end: proposal.source.end,
             },
-            ...structured.data,
-            proposals: structured.data.proposals.map((proposal) => ({
-              ...proposal,
-              source: {
-                id: `source-${proposal.proposalId}`,
-                start: proposal.source.start,
-                end: proposal.source.end,
-              },
-            })),
-          }),
+          })),
+        });
+        requireFixedSemantics(turn, envelope);
+        return {
+          envelope,
           metrics,
           responseArtifact,
           diagnosticResponse: response,
@@ -322,7 +329,11 @@ export function createAnthropicJourneyModel(
             requestId: response.id,
             responseArtifact,
             errorName: errorName(error),
-            issues: error instanceof z.ZodError ? zodIssues(error) : undefined,
+            issues: error instanceof z.ZodError
+              ? zodIssues(error)
+              : error instanceof FixedSemanticOutputError
+                ? error.issues
+                : undefined,
           },
           metrics,
           response,
@@ -382,6 +393,77 @@ function requireFixedInput(turn: ModelTurn, text: string): void {
   if (text !== expected) {
     throw new Error("This experiment accepts only the displayed fictional account");
   }
+}
+
+class FixedSemanticOutputError extends Error {
+  constructor(readonly issues: ModelDiagnosticIssue[]) {
+    super("The response did not match the fixed experiment's grounded semantic contract");
+    this.name = "FixedSemanticOutputError";
+  }
+}
+
+function requireFixedSemantics(turn: ModelTurn, actual: ParsedModelProposalEnvelope): void {
+  const expected = turn === "opening"
+    ? parseFixedOpeningResponse(openingAccount)
+    : parseFixedCorrectionResponse(correctionAccount);
+  const issues: ModelDiagnosticIssue[] = [];
+
+  if (!sameJson(actual.products, expected.products)) {
+    issues.push({
+      path: "products",
+      code: "fixed_semantic_mismatch",
+      message: "Products do not match the fixed experiment catalog",
+    });
+  }
+
+  const actualProposals = new Map(actual.proposals.map((proposal) => [proposal.proposalId, proposal]));
+  const expectedProposals = new Map(expected.proposals.map((proposal) => [proposal.proposalId, proposal]));
+  const actualSources = new Map(actual.sources.map((source) => [source.id, source]));
+  const expectedSources = new Map(expected.sources.map((source) => [source.id, source]));
+
+  for (const [proposalId, expectedProposal] of expectedProposals) {
+    const proposal = actualProposals.get(proposalId);
+    if (!proposal) {
+      issues.push({
+        path: `proposals.${proposalId}`,
+        code: "fixed_semantic_mismatch",
+        message: `Required proposal ${proposalId} is missing`,
+      });
+      continue;
+    }
+    if (!sameJson(proposal, expectedProposal)) {
+      issues.push({
+        path: `proposals.${proposalId}`,
+        code: "fixed_semantic_mismatch",
+        message: `Proposal ${proposalId} does not match the fixed semantic expectation`,
+      });
+    }
+
+    const expectedSourceId = expectedProposal.sourceIds[0];
+    if (!sameJson(actualSources.get(expectedSourceId), expectedSources.get(expectedSourceId))) {
+      issues.push({
+        path: `sources.${expectedSourceId}`,
+        code: "fixed_semantic_mismatch",
+        message: `Proposal ${proposalId} source span does not match the fixed grounded expectation`,
+      });
+    }
+  }
+
+  for (const proposalId of actualProposals.keys()) {
+    if (!expectedProposals.has(proposalId)) {
+      issues.push({
+        path: `proposals.${proposalId}`,
+        code: "fixed_semantic_mismatch",
+        message: `Unexpected proposal ${proposalId} is outside the fixed experiment catalog`,
+      });
+    }
+  }
+
+  if (issues.length > 0) throw new FixedSemanticOutputError(issues);
+}
+
+function sameJson(left: unknown, right: unknown): boolean {
+  return JSON.stringify(left) === JSON.stringify(right);
 }
 
 function estimateCost(inputTokens: number, outputTokens: number): number {
