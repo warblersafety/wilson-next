@@ -17,7 +17,7 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-experiment-1-extraction-v3";
+export const MODEL_PROMPT_REVISION = "wilson-experiment-1-extraction-v4";
 export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v5";
 // The Messages API requires max_tokens. Use Sonnet 5's full provider output
 // capacity here so Wilson imposes no development/verification token budget.
@@ -151,7 +151,7 @@ Rules:
 - Keep each medicine attached to its exact stable product ID. For product roles, emit only the canonical literal "suspect" or "concomitant". Map statements such as "I suspect ..." to "suspect"; do not inflect or otherwise vary either literal. A reported suspect role is not your causality judgment.
 - Use normalized ISO dates (YYYY-MM-DD), "oral" for "by mouth", and the literal frequency wording "twice daily" or "daily".
 - Preserve a measurement's value and unit together as a string, for example "7.8 g/dL" rather than 7.8.
-- Every proposal must cite the smallest exact supporting substring using zero-based start-inclusive/end-exclusive character offsets into the clinician input. Offsets must select non-empty text exactly.
+- Every proposal must cite the shortest exact, self-contained supporting substring that lets a human reviewer identify both the subject and the claim without relying on proposal target metadata. For a product fact, include enough local wording to connect the product name with the claimed property; one shared clause may support multiple product proposals. Use zero-based start-inclusive/end-exclusive character offsets into the clinician input. Offsets must select non-empty text exactly.
 - Supply only the source offsets. Wilson assigns stable source identity; the model does not.
 - Use only the proposal IDs, groups, targets, and intents listed for the requested turn. Emit every listed proposal that the input explicitly supports and no others.
 - Products are declarations for newly proposed product entities, not accepted case knowledge.`;

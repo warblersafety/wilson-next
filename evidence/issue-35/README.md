@@ -1,10 +1,10 @@
 # Issue 35 operator-preview evidence
 
 **Status:** Required reviews, approved planning remediation, implementation,
-and deterministic verification complete; three protected live-model operator
-attempts failed, and the approved runtime-boundary redesign has now passed its
-targeted review and deterministic implementation gate; no post-redesign live
-run has been authorized
+and deterministic verification complete; the post-redesign protected live
+attempt reached operator review with correct values but failed the evidence
+oracle; the reviewed prompt/operator-evidence remediation now passes its
+deterministic gate, and no post-remediation live run has been authorized
 
 **Issues:** [#35](https://github.com/warblersafety/wilson-next/issues/35) and
 [#34](https://github.com/warblersafety/wilson-next/issues/34)
@@ -547,3 +547,60 @@ remain untouched. The retained `live-runtime-boundary/` directory contains
 only the compact synthetic failure verdict; no browser storage, network
 archive, screenshot, or PDF was retained. Slice 4B remains incomplete, and any
 new Claude review or live run requires separate authorization.
+
+## Targeted operator-evidence review and remediation
+
+Steve authorized one targeted Claude Sonnet/high read-only review of the
+proposed response to the runtime-boundary live failure before implementation.
+The review targeted exact commit
+`4a18f2f7afdf8fe8768ebb61d60dab22ebf5859d`. Subscription preflight confirmed
+Claude Code 2.1.241, `claude.ai`, Steve's active Max subscription, and unset
+Anthropic API/gateway variables. The sandboxed invocation reached no verdict
+because DNS returned `ENOTFOUND`; the identical invocation completed with
+network access as recovery of the same authorized review.
+
+Claude reported no blocking finding against the proposed general remediation:
+replace the ambiguous "smallest" evidence instruction with a self-contained
+subject-and-claim standard, expose the already-present material product
+evidence in the operator card, and cover that behavior deterministically without
+expanding runtime validation. It required one precondition: amend this
+experiment's owning oracle and verification language so the standard is
+governed rather than living only in a prompt. It also noted that name evidence
+was hidden, that the current card pools evidence rather than mapping each quote
+to a field, and that deterministic tests cannot establish live-model
+compliance. The
+[complete metadata and invocation prompt](https://github.com/warblersafety/wilson-next/pull/36#issuecomment-5574489263),
+[actual unedited result](https://github.com/warblersafety/wilson-next/pull/36#issuecomment-5574489258),
+and [pre-implementation dispositions](https://github.com/warblersafety/wilson-next/pull/36#issuecomment-5574489293)
+are recorded under `Claude review` on draft PR #36.
+
+Experiment 1 now defines acceptable evidence as the shortest exact,
+self-contained excerpt that lets the operator identify both subject and claim
+without trusting proposal metadata. Prompt revision
+`wilson-experiment-1-extraction-v4` expresses the same rule and explicitly
+allows one shared clause to support multiple product proposals. The runtime
+boundary remains `wilson-grounded-proposals-v5`; no semantic comparison or new
+rejection rule was added.
+
+At Check understanding, the existing product cards now include the boolean
+stopped fact and aggregate the already-existing name and role sources into the
+card's evidence disclosure. Name and role remain represented by the card title
+and eyebrow rather than duplicate rows. Evidence remains pooled per card; this
+bounded change does not claim per-field traceability. The deterministic fixture
+also uses a product-bearing lisinopril role excerpt so it exercises the governed
+standard.
+
+Deterministic verification on 2026-09-07 passed:
+
+- `npm run typecheck`
+- `PYPDF_PYTHON=.venv-pdf-evidence/bin/python npm test` — 15 files, 88 tests
+- `npm run build`
+- `npm run test:e2e` — both the seven-stage journey and supported Change/Remove
+  path
+
+The first browser invocation used the previous production build and therefore
+could not see the new stopped row; after the required `npm run build`, the
+identical Playwright suite passed. No application model call, credential
+change, retained browser/PDF artifact, or live operator run occurred. A live
+model can still disregard the clearer instruction, so one new protected live
+operator run remains necessary and separately permissioned.

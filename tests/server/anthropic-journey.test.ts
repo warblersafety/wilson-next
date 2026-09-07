@@ -49,6 +49,10 @@ describe("Anthropic fixed-journey adapter", () => {
     expect(captured?.output_config.format).not.toHaveProperty("parse");
     expect(captured?.system).toContain('emit only the canonical literal "suspect" or "concomitant"');
     expect(captured?.system).toContain('Map statements such as "I suspect ..." to "suspect"');
+    expect(captured?.system).toContain("shortest exact, self-contained supporting substring");
+    expect(captured?.system).toContain("identify both the subject and the claim");
+    expect(captured?.system).toContain("connect the product name with the claimed property");
+    expect(captured?.system).toContain("one shared clause may support multiple product proposals");
     const roleGuidanceSchema = findSchemaObject(
       captured?.output_config.format.schema,
       (candidate) => typeof candidate.description === "string"

@@ -41,7 +41,25 @@ test("completes the seven-state fixed journey and downloads the checked form", a
     await expect(page.getByRole("heading", { name: "lisinopril" })).toBeVisible();
     await expect(page.getByText("Suspect product", { exact: true })).toHaveCount(2);
     await expect(page.getByText("Other product", { exact: true })).toHaveCount(1);
-    journeyTrace.push({ state: "understanding", assertion: "Two suspect products and one other product are visible for review." });
+    const apixabanCard = page.getByRole("article").filter({ has: page.getByRole("heading", { name: "apixaban" }) });
+    const naproxenCard = page.getByRole("article").filter({ has: page.getByRole("heading", { name: "naproxen" }) });
+    const lisinoprilCard = page.getByRole("article").filter({ has: page.getByRole("heading", { name: "lisinopril" }) });
+    const apixabanStopped = apixabanCard.locator("dl > div").filter({ has: page.getByText("Stopped", { exact: true }) });
+    const naproxenStopped = naproxenCard.locator("dl > div").filter({ has: page.getByText("Stopped", { exact: true }) });
+    await expect(apixabanStopped).toContainText("Yes");
+    await expect(naproxenStopped).toContainText("Yes");
+    await apixabanCard.locator("summary").click();
+    await naproxenCard.locator("summary").click();
+    await lisinoprilCard.locator("summary").click();
+    await expect(apixabanCard).toContainText("apixaban 5 mg by mouth twice daily");
+    await expect(apixabanCard).toContainText("I suspect apixaban and naproxen");
+    await expect(apixabanCard).toContainText("Apixaban and naproxen were stopped");
+    await expect(naproxenCard).toContainText("naproxen 500 mg by mouth twice daily");
+    await expect(naproxenCard).toContainText("I suspect apixaban and naproxen");
+    await expect(naproxenCard).toContainText("Apixaban and naproxen were stopped");
+    await expect(lisinoprilCard).toContainText("lisinopril 10 mg by mouth daily");
+    await expect(lisinoprilCard).toContainText("lisinopril 10 mg by mouth daily as a concomitant medicine");
+    journeyTrace.push({ state: "understanding", assertion: "Two suspect products, one other product, stopped status, and their source evidence are visible for review." });
     await retainScreenshot(page, "understanding.png");
 
     await page.reload();

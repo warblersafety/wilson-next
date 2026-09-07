@@ -476,7 +476,8 @@ function CaseCards({
             title={name}
             eyebrow={role === "suspect" ? "Suspect product" : "Other product"}
             facts={product.facts}
-            fields={["dose", "frequency", "route", "startDate", "stopDate", "indication"]}
+            fields={["dose", "frequency", "route", "startDate", "stopped", "stopDate", "indication"]}
+            evidenceFields={["name", "role"]}
             busy={busy}
             onRemove={snapshot.stage === "understanding" && product.id === "product-lisinopril"
               ? () => act({ action: "remove-lisinopril" })
@@ -493,6 +494,7 @@ function CaseCard({
   eyebrow,
   facts,
   fields,
+  evidenceFields = [],
   busy,
   onChangeAge,
   onRemove,
@@ -501,11 +503,12 @@ function CaseCard({
   eyebrow?: string;
   facts: Record<string, FactView>;
   fields: string[];
+  evidenceFields?: string[];
   busy: boolean;
   onChangeAge?: () => Promise<void>;
   onRemove?: () => Promise<void>;
 }) {
-  const evidence = [...new Set(fields.flatMap((field) => facts[field]?.evidence ?? []))];
+  const evidence = [...new Set([...fields, ...evidenceFields].flatMap((field) => facts[field]?.evidence ?? []))];
   return (
     <article className={styles.caseCard}>
       <div className={styles.cardTitle}>
@@ -557,7 +560,7 @@ function fieldLabel(field: string): string {
     identifier: "Identifier", ageYears: "Age", sex: "Sex", symptoms: "Symptoms", onsetDate: "Onset",
     reportType: "Report type", hospitalized: "Hospitalized", hemoglobin: "Hemoglobin", treatments: "Treatment", outcome: "Outcome",
     dischargeDate: "Discharged", dose: "Dose", frequency: "Frequency", route: "Route", startDate: "Started",
-    stopDate: "Stopped date", indication: "Used for",
+    stopped: "Stopped", stopDate: "Stopped date", indication: "Used for",
   };
   return labels[field] ?? field;
 }

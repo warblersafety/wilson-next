@@ -54,7 +54,9 @@ function productProposals(
       productId,
       target("role"),
       known(role),
-      role === "suspect" ? "I suspect apixaban and naproxen" : "as a concomitant medicine",
+      role === "suspect"
+        ? "I suspect apixaban and naproxen"
+        : `${regimenExcerpt} as a concomitant medicine`,
     ),
     proposal(openingAccount, `${name}-dose`, productId, target("dose"), known(dose), regimenExcerpt),
     proposal(

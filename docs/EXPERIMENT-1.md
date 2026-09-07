@@ -153,7 +153,7 @@ any oracle mismatch still fails the run.
 | Apixaban | suspect; 5 mg; twice daily; oral; postoperative VTE-prophylaxis indication; resolved start 13-Aug-2026 after explicit resolution |
 | Naproxen | suspect; corrected 250 mg; twice daily; oral; start 10-Aug-2026; postoperative-pain indication |
 | Lisinopril | concomitant; 10 mg; daily; oral; never promoted to suspect |
-| Evidence | every material result points to the exact account, answer, correction, or resolution supporting it |
+| Evidence | every material result points to the shortest exact, self-contained excerpt from the account, answer, correction, or resolution that lets an operator identify both the subject and the claim without trusting proposal metadata |
 | History | naproxen 500 mg inactive; both apixaban dates traceable; neither date active before resolution |
 
 The narrative says both suspect products were stopped but supplies no stop
@@ -302,6 +302,12 @@ operator review rather than being mistaken for accepted case knowledge. Run one
 narrow automated source-boundary assertion preventing route/UI imports of
 lower-level mutation helpers. These checks run under the ordinary test command;
 do not build an architecture test platform or coverage regime.
+
+Prompt and browser coverage must also prove that the self-contained evidence
+standard is expressed and that the material product evidence is inspectable at
+Check understanding. Deterministic coverage cannot prove that a live model will
+follow that instruction; the separately authorized live operator gate remains
+the experiment's test of actual model behavior.
 
 ### Deterministic browser journey
 
