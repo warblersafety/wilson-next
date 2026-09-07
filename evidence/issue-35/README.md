@@ -1,9 +1,9 @@
 # Issue 35 operator-preview evidence
 
 **Status:** Required pre-implementation review, approved planning remediation,
-implementation, and deterministic verification complete; the first protected
-live operator gate failed on source fidelity, bounded remediation is complete,
-and final independent review is pending
+implementation, and deterministic verification complete; two protected live
+operator attempts have failed at explicit semantic boundaries, the first defect
+is remediated, and the second requires review before further implementation
 
 **Issues:** [#35](https://github.com/warblersafety/wilson-next/issues/35) and
 [#34](https://github.com/warblersafety/wilson-next/issues/34)
@@ -242,3 +242,51 @@ bounded second-finding remediation: it changes only the rejected span's
 grounding predicate, introduces no new product/workflow premise, and passes the
 full deterministic gate. No recursive Claude run was performed. The first
 finding remains a stopping boundary rather than a code-review disposition.
+
+## Post-remediation live attempt
+
+Steve separately authorized exactly one new protected live run after the first
+failure and its reviewed remediation. The run targeted protected Git deployment
+`dpl_4cGNW9dbAoT9BuF8gQRiv4XTcN21` at exact commit
+`777aa29ebf5cbe21be83b2835da2d850c6a3987d`. It induced the approved pre-model
+safe failure and then submitted the fixed opening account once. The opening
+failed, so the correction account was never submitted and no request was
+retried.
+
+The visible error safely retained the Describe state at revision zero and
+returned opaque diagnostic reference
+`a51b46b1-8648-4953-a49f-3b46f74381d2`. A values-excluding historical Runtime
+Log query by that reference found a successful provider response followed by a
+precise domain-boundary rejection, then the state, route, response, and browser
+failure events in causal order. The call used `claude-sonnet-5`, prompt revision
+`wilson-experiment-1-extraction-v2`, and schema revision
+`wilson-grounded-proposals-v3`; it took 86,788 ms, used 3,160 input and 11,808
+output tokens, and had estimated cost $0.1244.
+
+The returned opening proposals used the unsupported role literal `suspected`
+for both `apixaban-role` and `naproxen-role`; `lisinopril-role` correctly used
+`concomitant`. The cited synthetic spans were in the correct suspect sentence.
+The provider output schema allowed arbitrary string role values, and the prompt
+described the role semantics without explicitly requiring the domain's literal
+`suspect`. The ordinary domain boundary therefore rejected both values with
+`role requires suspect or concomitant`, preserving accepted state. This is a
+new prompt/schema-contract finding; it is not a transport failure and does not
+invalidate the earlier source-support remediation.
+
+The in-place live stream saw 23 non-truncated rows, 25 unique events, four
+operation IDs, one clean reconnect, the induced safe failure, and no credential
+or outside-fixture exposure. The reference-filtered retained-log query found
+three matching request rows and 13 correlated events with no truncation or
+exposure. No raw Runtime Logs or provider response were exported or retained.
+
+The temporary automation bypass was revoked immediately after the run. A
+values-excluding read confirmed zero remaining bypasses and unauthenticated
+preview access returned HTTP 302. Per Steve's explicit correction, the restored
+short-lived Vercel token and its owner-only mode-0600 handoff file remain
+untouched to expire naturally; the Anthropic preview key is also unchanged.
+
+This second attempt fails Slice 4B before extraction review, reload, correction,
+conflict, projection, or PDF acceptance. The smallest retained example is
+`live-post-remediation/operator-verdict.json`. Further model prompt/schema work
+requires the applicable review and a new live run requires separate explicit
+authorization; neither has occurred.
