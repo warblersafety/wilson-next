@@ -178,6 +178,51 @@ Allowed proposals (proposalId | groupId | intent | target):
 naproxen-dose-correction | naproxen-dose-correction | correction | product-naproxen.dose
 apixaban-date-alternative | apixaban-date-conflict | alternative | product-apixaban.startDate`;
 
+interface FixedSourceRule {
+  within: string;
+  includes: string[];
+}
+
+const FIXED_SOURCE_RULES: Record<string, FixedSourceRule> = {
+  "patient-id": { within: "Patient TEST-57", includes: ["TEST-57"] },
+  "patient-age": { within: "a 57-year-old woman", includes: ["57-year-old"] },
+  "patient-sex": { within: "a 57-year-old woman", includes: ["woman"] },
+  "event-symptoms": { within: "melena and dizziness", includes: ["melena", "dizziness"] },
+  "event-onset": { within: "On 18-Aug-2026 she developed", includes: ["18-Aug-2026"] },
+  "event-hospitalized": { within: "and was hospitalized", includes: ["hospitalized"] },
+  "event-hemoglobin": { within: "Her hemoglobin was 7.8 g/dL", includes: ["7.8 g/dL"] },
+  "event-treatment": { within: "she received two units of packed red cells", includes: ["two units of packed red cells"] },
+  "event-outcome": { within: "she recovered", includes: ["recovered"] },
+  "event-discharge": { within: "was discharged on 21-Aug-2026", includes: ["21-Aug-2026"] },
+  "apixaban-name": { within: "apixaban 5 mg by mouth twice daily", includes: ["apixaban"] },
+  "apixaban-role": { within: "I suspect apixaban and naproxen", includes: ["suspect", "apixaban"] },
+  "apixaban-dose": { within: "apixaban 5 mg by mouth twice daily", includes: ["5 mg"] },
+  "apixaban-frequency": { within: "apixaban 5 mg by mouth twice daily", includes: ["twice daily"] },
+  "apixaban-route": { within: "apixaban 5 mg by mouth twice daily", includes: ["by mouth"] },
+  "apixaban-start": { within: "I recorded the start as 12-Aug-2026", includes: ["12-Aug-2026"] },
+  "naproxen-name": { within: "naproxen 500 mg by mouth twice daily", includes: ["naproxen"] },
+  "naproxen-role": { within: "I suspect apixaban and naproxen", includes: ["suspect", "naproxen"] },
+  "naproxen-dose": { within: "naproxen 500 mg by mouth twice daily", includes: ["500 mg"] },
+  "naproxen-frequency": { within: "naproxen 500 mg by mouth twice daily", includes: ["twice daily"] },
+  "naproxen-route": { within: "naproxen 500 mg by mouth twice daily", includes: ["by mouth"] },
+  "naproxen-start": { within: "naproxen 500 mg by mouth twice daily starting 10-Aug-2026", includes: ["10-Aug-2026"] },
+  "lisinopril-name": { within: "lisinopril 10 mg by mouth daily", includes: ["lisinopril"] },
+  "lisinopril-role": { within: "lisinopril 10 mg by mouth daily as a concomitant medicine", includes: ["concomitant"] },
+  "lisinopril-dose": { within: "lisinopril 10 mg by mouth daily", includes: ["10 mg"] },
+  "lisinopril-frequency": { within: "lisinopril 10 mg by mouth daily", includes: ["daily"] },
+  "lisinopril-route": { within: "lisinopril 10 mg by mouth daily", includes: ["by mouth"] },
+  "apixaban-stopped": { within: "Apixaban and naproxen were stopped", includes: ["apixaban", "stopped"] },
+  "naproxen-stopped": { within: "Apixaban and naproxen were stopped", includes: ["naproxen", "stopped"] },
+  "naproxen-dose-correction": {
+    within: "the naproxen dose was 250 mg twice daily, not 500 mg twice daily",
+    includes: ["naproxen", "250 mg", "500 mg"],
+  },
+  "apixaban-date-alternative": {
+    within: "the medication administration record lists apixaban starting 13-Aug-2026",
+    includes: ["medication administration record", "apixaban", "13-Aug-2026"],
+  },
+};
+
 type ProviderOutputFormat = Pick<
   ReturnType<typeof zodOutputFormat<typeof modelOutputSchema>>,
   "type" | "schema"
@@ -419,7 +464,7 @@ function requireFixedSemantics(turn: ModelTurn, actual: ParsedModelProposalEnvel
   const actualProposals = new Map(actual.proposals.map((proposal) => [proposal.proposalId, proposal]));
   const expectedProposals = new Map(expected.proposals.map((proposal) => [proposal.proposalId, proposal]));
   const actualSources = new Map(actual.sources.map((source) => [source.id, source]));
-  const expectedSources = new Map(expected.sources.map((source) => [source.id, source]));
+  const inputText = turn === "opening" ? openingAccount : correctionAccount;
 
   for (const [proposalId, expectedProposal] of expectedProposals) {
     const proposal = actualProposals.get(proposalId);
@@ -440,11 +485,15 @@ function requireFixedSemantics(turn: ModelTurn, actual: ParsedModelProposalEnvel
     }
 
     const expectedSourceId = expectedProposal.sourceIds[0];
-    if (!sameJson(actualSources.get(expectedSourceId), expectedSources.get(expectedSourceId))) {
+    if (!sourceSupportsProposal(
+      actualSources.get(expectedSourceId),
+      FIXED_SOURCE_RULES[proposalId],
+      inputText,
+    )) {
       issues.push({
         path: `sources.${expectedSourceId}`,
         code: "fixed_semantic_mismatch",
-        message: `Proposal ${proposalId} source span does not match the fixed grounded expectation`,
+        message: `Proposal ${proposalId} source span does not ground the fixed semantic expectation`,
       });
     }
   }
@@ -460,6 +509,20 @@ function requireFixedSemantics(turn: ModelTurn, actual: ParsedModelProposalEnvel
   }
 
   if (issues.length > 0) throw new FixedSemanticOutputError(issues);
+}
+
+function sourceSupportsProposal(
+  source: ParsedModelProposalEnvelope["sources"][number] | undefined,
+  rule: FixedSourceRule | undefined,
+  inputText: string,
+): boolean {
+  if (!source || !rule) return false;
+  const containerStart = inputText.indexOf(rule.within);
+  if (containerStart < 0) return false;
+  const containerEnd = containerStart + rule.within.length;
+  if (source.start < containerStart || source.end > containerEnd) return false;
+  const excerpt = source.excerpt.toLowerCase();
+  return rule.includes.every((required) => excerpt.includes(required.toLowerCase()));
 }
 
 function sameJson(left: unknown, right: unknown): boolean {

@@ -107,10 +107,24 @@ describe("Anthropic fixed-journey adapter", () => {
       issues: [{
         path: "sources.source-apixaban-date-alternative",
         code: "fixed_semantic_mismatch",
-        message: "Proposal apixaban-date-alternative source span does not match the fixed grounded expectation",
+        message: "Proposal apixaban-date-alternative source span does not ground the fixed semantic expectation",
       }],
     });
     expect(failure.returnedResponse).toBe(response);
+  });
+
+  it("accepts tighter prompt-compliant spans inside the correct supporting clauses", async () => {
+    const response = responseFor("opening");
+    const output = responseOutput(response);
+    setSourceToExactExcerpt(output, "patient-id", openingAccount, "TEST-57");
+    setSourceToExactExcerpt(output, "apixaban-name", openingAccount, "apixaban");
+    setSourceToExactExcerpt(output, "apixaban-dose", openingAccount, "5 mg");
+    setSourceToExactExcerpt(output, "apixaban-frequency", openingAccount, "twice daily");
+    setSourceToExactExcerpt(output, "apixaban-route", openingAccount, "by mouth");
+    setResponseOutput(response, output);
+
+    await expect(createAnthropicJourneyModel(async () => response).propose("opening", openingAccount))
+      .resolves.toMatchObject({ metrics: { schemaRevision: MODEL_SCHEMA_REVISION } });
   });
 
   it("rejects an incomplete fixed catalog before proposals reach case commands", async () => {
@@ -295,6 +309,20 @@ function setResponseOutput(
   output: ReturnType<typeof toModelOutput>,
 ): void {
   response.content = [{ type: "text", text: JSON.stringify(output) }];
+}
+
+function setSourceToExactExcerpt(
+  output: ReturnType<typeof toModelOutput>,
+  proposalId: string,
+  input: string,
+  excerpt: string,
+): void {
+  const proposal = output.proposals.find((candidate) => candidate.proposalId === proposalId)!;
+  const containerStart = proposalId.startsWith("apixaban-")
+    ? input.indexOf("apixaban 5 mg by mouth twice daily")
+    : 0;
+  proposal.source.start = input.indexOf(excerpt, containerStart);
+  proposal.source.end = proposal.source.start + excerpt.length;
 }
 
 async function modelFailure(promise: Promise<unknown>): Promise<ModelCallFailure> {

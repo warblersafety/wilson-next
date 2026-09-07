@@ -70,7 +70,7 @@
   "remediation": {
     "status": "implemented and deterministically verified",
     "schemaRevision": "wilson-grounded-proposals-v3",
-    "behavior": "Reject fixed-catalog omissions, semantic mismatches, and exact source-span mismatches before case commands.",
+    "behavior": "Reject fixed-catalog omissions, semantic mismatches, and source spans that do not support the claimed value within the correct fixture clause before case commands, while accepting tighter prompt-compliant spans.",
     "liveRerunPerformed": false
   }
 }

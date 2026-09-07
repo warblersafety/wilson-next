@@ -187,16 +187,18 @@ The failure exposed an ordinary but consequential boundary defect: valid
 offsets and normalized types were checked, but the fixed adapter did not prove
 that each returned value cited the catalog's expected supporting span. The
 adapter now rejects any missing or unexpected fixed-catalog proposal, product
-declaration mismatch, semantic target/value mismatch, or exact source-span
-mismatch before case commands. The returned provider response is still logged
-before the precise domain rejection, accepted case state remains unchanged,
-and the client receives only the existing safe message and opaque operation
-reference. The semantic boundary revision is
+declaration mismatch, semantic target/value mismatch, or source span that does
+not support the claimed value within the correct fixture clause before case
+commands. Tighter prompt-compliant spans remain valid. The returned provider
+response is still logged before the precise domain rejection, accepted case
+state remains unchanged, and the client receives only the existing safe message
+and opaque operation reference. The semantic boundary revision is
 `wilson-grounded-proposals-v3`.
 
-Regression coverage reproduces the observed 13-Aug value/12-Aug source mismatch
-and a catalog omission. After remediation, typecheck, all 77 unit/server tests,
-the production build, and both deterministic Playwright journeys pass. This
-does not convert the failed live evidence into a pass: Slice 4B remains failed
-unless Steve separately authorizes a new protected live run after reviewing
-the failure, remediation, and final Claude verdict.
+Regression coverage reproduces the observed 13-Aug value/12-Aug source
+mismatch, a catalog omission, and tighter prompt-compliant opening spans. After
+remediation, typecheck, all 78 unit/server tests, the production build, and both
+deterministic Playwright journeys pass. This does not convert the failed live
+evidence into a pass: Slice 4B remains failed unless Steve separately authorizes
+a new protected live run after reviewing the failure, remediation, and final
+Claude verdict.
