@@ -101,7 +101,7 @@ describe("Anthropic fixed-journey adapter", () => {
     expect(failure.returnedResponse).toBe(response);
   });
 
-  it("rejects the observed correction response when the 13-Aug alternative cites the 12-Aug source", async () => {
+  it("leaves the observed wrong-clause correction source available for operator review", async () => {
     const response = responseFor("correction");
     const output = responseOutput(response);
     const alternative = output.proposals.find(({ proposalId }) => proposalId === "apixaban-date-alternative")!;
@@ -109,54 +109,51 @@ describe("Anthropic fixed-journey adapter", () => {
     alternative.source.end = alternative.source.start + "12-Aug-2026".length;
     setResponseOutput(response, output);
 
-    const failure = await modelFailure(
-      createAnthropicJourneyModel(async () => response).propose("correction", correctionAccount),
+    const result = await createAnthropicJourneyModel(async () => response)
+      .propose("correction", correctionAccount);
+    const source = result.envelope.sources.find(
+      ({ id }) => id === "source-apixaban-date-alternative",
     );
 
-    expect(failure.diagnostic).toMatchObject({
-      phase: "domain-boundary",
-      requestId: "message-correction",
-      issues: [{
-        path: "sources.source-apixaban-date-alternative",
-        code: "fixed_semantic_mismatch",
-        message: "Proposal apixaban-date-alternative source span does not ground the fixed semantic expectation",
-      }],
-    });
-    expect(failure.returnedResponse).toBe(response);
+    expect(source?.excerpt).toBe("12-Aug-2026");
+    expect(result.envelope.proposals).toContainEqual(expect.objectContaining({
+      proposalId: "apixaban-date-alternative",
+      value: { kind: "known", value: "2026-08-13" },
+      sourceIds: ["source-apixaban-date-alternative"],
+    }));
   });
 
-  it("accepts tighter prompt-compliant spans inside the correct supporting clauses", async () => {
+  it("accepts any nonempty in-bounds source span, including the observed trailing comma", async () => {
     const response = responseFor("opening");
     const output = responseOutput(response);
-    setSourceToExactExcerpt(output, "patient-id", openingAccount, "TEST-57");
-    setSourceToExactExcerpt(output, "apixaban-name", openingAccount, "apixaban");
-    setSourceToExactExcerpt(output, "apixaban-dose", openingAccount, "5 mg");
-    setSourceToExactExcerpt(output, "apixaban-frequency", openingAccount, "twice daily");
-    setSourceToExactExcerpt(output, "apixaban-route", openingAccount, "by mouth");
+    setSourceToExactExcerpt(
+      output,
+      "event-treatment",
+      openingAccount,
+      "two units of packed red cells,",
+    );
     setResponseOutput(response, output);
 
-    await expect(createAnthropicJourneyModel(async () => response).propose("opening", openingAccount))
-      .resolves.toMatchObject({ metrics: { schemaRevision: MODEL_SCHEMA_REVISION } });
+    const result = await createAnthropicJourneyModel(async () => response)
+      .propose("opening", openingAccount);
+    expect(result.metrics?.schemaRevision).toBe(MODEL_SCHEMA_REVISION);
+    expect(result.envelope.sources.find(
+      ({ id }) => id === "source-event-treatment",
+    )?.excerpt).toBe("two units of packed red cells,");
   });
 
-  it("rejects an incomplete fixed catalog before proposals reach case commands", async () => {
+  it("leaves an incomplete semantic catalog available for operator assessment", async () => {
     const response = responseFor("opening");
     const output = responseOutput(response);
     output.proposals = output.proposals.filter(({ proposalId }) => proposalId !== "event-symptoms");
     setResponseOutput(response, output);
 
-    const failure = await modelFailure(
-      createAnthropicJourneyModel(async () => response).propose("opening", openingAccount),
-    );
+    const result = await createAnthropicJourneyModel(async () => response)
+      .propose("opening", openingAccount);
 
-    expect(failure.diagnostic).toMatchObject({
-      phase: "domain-boundary",
-      issues: [{
-        path: "proposals.event-symptoms",
-        code: "fixed_semantic_mismatch",
-        message: "Required proposal event-symptoms is missing",
-      }],
-    });
+    expect(result.envelope.proposals).not.toContainEqual(expect.objectContaining({
+      proposalId: "event-symptoms",
+    }));
   });
 
   it("does not retry or expose provider detail after a failed request", async () => {
@@ -257,6 +254,35 @@ describe("Anthropic fixed-journey adapter", () => {
     },
   );
 
+  it.each([
+    ["naproxen-dose-correction", "naproxen-dose-change", "naproxen-dose-correction"],
+    ["apixaban-date-alternative", "apixaban-start-conflict", "apixaban-date-conflict"],
+  ])(
+    "rejects an unrecognized correction action group for %s",
+    async (proposalId, groupId, expectedGroupId) => {
+      const response = responseFor("correction");
+      const output = responseOutput(response);
+      const proposalIndex = output.proposals.findIndex((proposal) => proposal.proposalId === proposalId);
+      output.proposals[proposalIndex].groupId = groupId;
+      setResponseOutput(response, output);
+
+      const failure = await modelFailure(
+        createAnthropicJourneyModel(async () => response).propose("correction", correctionAccount),
+      );
+
+      expect(failure.diagnostic).toMatchObject({
+        phase: "structured-schema",
+        requestId: "message-correction",
+        issues: [{
+          path: `proposals.${proposalIndex}.groupId`,
+          code: "invalid_correction_group",
+          message: `Correction action requires group ${expectedGroupId}`,
+        }],
+      });
+      expect(failure.returnedResponse).toBe(response);
+    },
+  );
+
   it("records the response before parsing and stops if protected capture fails", async () => {
     const recorder = vi.fn(async () => ".wilson-model-samples/sample-1-opening-response.json");
     const result = await createAnthropicJourneyModel(
@@ -283,9 +309,15 @@ describe("Anthropic fixed-journey adapter", () => {
     expect(requester).not.toHaveBeenCalled();
   });
 
-  it("feeds real-adapter proposals through the ordinary service and command boundary", async () => {
+  it("keeps a structurally valid semantic mismatch proposed through the ordinary command boundary", async () => {
     const repository = new InMemoryCaseRepository();
-    const requester: AnthropicRequester = async () => responseFor("opening");
+    const response = responseFor("opening");
+    const output = responseOutput(response);
+    const age = output.proposals.find(({ proposalId }) => proposalId === "patient-age")!;
+    age.value = { kind: "known", value: 58 };
+    setSourceToExactExcerpt(output, "patient-age", openingAccount, "woman");
+    setResponseOutput(response, output);
+    const requester: AnthropicRequester = async () => response;
     const snapshot = await performJourneyAction(
       repository,
       "case-real-adapter-test",
@@ -299,6 +331,15 @@ describe("Anthropic fixed-journey adapter", () => {
       "product-naproxen",
       "product-lisinopril",
     ]);
+    expect(snapshot.understanding.patient.ageYears).toMatchObject({
+      state: "proposed",
+      resolved: undefined,
+      proposals: [{
+        id: "patient-age",
+        value: { kind: "known", value: 58 },
+        evidence: ["woman"],
+      }],
+    });
   });
 });
 

@@ -2,9 +2,9 @@
 
 **Status:** Required reviews, approved planning remediation, implementation,
 and deterministic verification complete; three protected live-model operator
-attempts have failed at explicit semantic boundaries, and Steve has approved a
-planning-only redesign that narrows runtime validation before further
-implementation
+attempts failed, and the approved runtime-boundary redesign has now passed its
+targeted review and deterministic implementation gate; no post-redesign live
+run has been authorized
 
 **Issues:** [#35](https://github.com/warblersafety/wilson-next/issues/35) and
 [#34](https://github.com/warblersafety/wilson-next/issues/34)
@@ -423,3 +423,70 @@ automatic retry, or a new live-model call. This planning checkpoint requires
 the separately authorized targeted Claude Sonnet/high read-only review before
 application code changes; the review does not authorize another live operator
 run.
+
+## Targeted runtime-boundary review and dispositions
+
+Steve authorized exactly one targeted pre-implementation review of planning
+commit `06cdb4249c3c55a453a52fc6e6193212af0b9442`. Claude Code 2.1.241 ran
+`claude-sonnet-5` at `high` effort in a fresh read-only repository/Git session
+after preflight confirmed `claude.ai`, Steve's active Max subscription, and
+unset Anthropic API/gateway variables. The sandboxed invocation reached no
+verdict because DNS returned `ENOTFOUND`; the identical invocation completed
+with network access as recovery of the same authorized review.
+
+Claude reported no blocking findings and three follow-ups. It found that the
+fixed-answer implementation was isolated to the Anthropic adapter and that the
+existing generic model boundary, authoritative command validation, proposed-
+knowledge state, and resolved-value-only projection preserve the approved
+authority after its removal. It also identified the correction journey's
+dependence on two authored group IDs, recommended explicit updates to the tests
+that asserted the retired mechanism, and noted pre-existing triplication of
+some per-field value checks.
+
+The correction group IDs remain a finite machine-action contract for the two
+known correction targets and intents; they are not a semantic-value or source-
+support judgment. Focused coverage rejects an unrecognized action group at the
+structured boundary. The retired wrong-clause and incomplete-catalog
+rejections are rewritten to prove those responses remain available for
+operator assessment, and the exact trailing-comma source span is accepted as
+the recurrence case. Broader validation consolidation is not required for this
+removal and remains outside the bounded change.
+
+The unedited review's introduction incorrectly described all three prior live
+failures as semantically correct. The first 13-Aug-value/12-Aug-source response
+was a genuine evidence error, the second was a noncanonical machine literal,
+and only the third was a correct proposal rejected for punctuation. This does
+not change the review conclusion: the first response remains proposed for
+operator inspection and fails the run without becoming accepted knowledge.
+Claude's plan mode also wrote its report under `~/.claude/plans/` despite the
+prompt's no-file-edit instruction; it changed no repository or Git state. The
+[complete metadata and invocation prompt](https://github.com/warblersafety/wilson-next/pull/36#issuecomment-5573854335),
+[actual unedited result](https://github.com/warblersafety/wilson-next/pull/36#issuecomment-5573872923),
+and [pre-implementation dispositions](https://github.com/warblersafety/wilson-next/pull/36#issuecomment-5573882878)
+are recorded under `Claude review` on draft PR #36.
+
+## Narrowed runtime-boundary implementation
+
+The live Anthropic path no longer contains `requireFixedSemantics`, the 31
+fixture-specific source rules, exact proposal equality, catalog completeness,
+or unexpected-proposal rejection. Prompt revision
+`wilson-experiment-1-extraction-v3` remains unchanged; boundary revision
+`wilson-grounded-proposals-v5` records the narrower contract. Provider stop,
+JSON/schema, canonical role, domain type/entity, duplicate identity, and exact
+nonempty source-bounds checks remain; the correction-action group wiring is now
+an explicit finite contract. Issue #34's returned-content-first diagnostic
+ordering and precise failure phases are unchanged.
+
+Deterministic verification on 2026-09-07 passed:
+
+- `npm run typecheck`
+- `PYPDF_PYTHON=.venv-pdf-evidence/bin/python npm test` — 15 files, 88 tests
+- `npm run build`
+- `npm run test:e2e` — both the seven-stage journey and supported Change/Remove
+  path
+
+The first browser-test invocation could not bind `127.0.0.1:3100` inside the
+filesystem sandbox; the identical command passed with local network binding.
+No application model call, new retained browser/PDF artifact, deployment,
+credential change, or live operator run occurred during this implementation
+gate. A later live run remains separately permissioned.

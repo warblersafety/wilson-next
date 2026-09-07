@@ -2,17 +2,12 @@ import Anthropic, { APIError } from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
 import { parseModelProposalEnvelope } from "../../domain/case/model-boundary";
-import type { ParsedModelProposalEnvelope } from "../../domain/case/model-boundary";
 import {
   correctionAccount,
   fixedRecordedAt,
   openingAccount,
 } from "../../experiment/fixed-inputs";
 import { ModelCallFailure } from "./journey-model";
-import {
-  parseFixedCorrectionResponse,
-  parseFixedOpeningResponse,
-} from "./fixed-journey";
 import type {
   JourneyModel,
   ModelCallMetrics,
@@ -23,7 +18,7 @@ import type {
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
 export const MODEL_PROMPT_REVISION = "wilson-experiment-1-extraction-v3";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v4";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v5";
 // The Messages API requires max_tokens. Use Sonnet 5's full provider output
 // capacity here so Wilson imposes no development/verification token budget.
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
@@ -33,6 +28,8 @@ const INPUT_USD_PER_MILLION_TOKENS = 2;
 const OUTPUT_USD_PER_MILLION_TOKENS = 10;
 const CANONICAL_PRODUCT_ROLES = ["suspect", "concomitant"] as const;
 const PRODUCT_ROLE_SCHEMA_GUIDANCE = 'When target.field is "role", value.value must be exactly "suspect" or "concomitant"; do not inflect or otherwise vary these canonical literals.';
+const DOSE_CORRECTION_GROUP_ID = "naproxen-dose-correction";
+const DATE_CONFLICT_GROUP_ID = "apixaban-date-conflict";
 
 const modelTargetSchema = z.discriminatedUnion("entity", [
   z.object({
@@ -106,6 +103,8 @@ const modelOutputSchema = z.object({
   }).strict()),
   proposals: z.array(modelProposalSchema).min(1),
 }).strict();
+
+type StructuredModelOutput = z.infer<typeof modelOutputSchema>;
 
 export interface AnthropicModelRequest {
   model: typeof ANTHROPIC_MODEL_ID;
@@ -195,51 +194,6 @@ const CORRECTION_CATALOG = `Declare no new products.
 Allowed proposals (proposalId | groupId | intent | target):
 naproxen-dose-correction | naproxen-dose-correction | correction | product-naproxen.dose
 apixaban-date-alternative | apixaban-date-conflict | alternative | product-apixaban.startDate`;
-
-interface FixedSourceRule {
-  within: string;
-  includes: string[];
-}
-
-const FIXED_SOURCE_RULES: Record<string, FixedSourceRule> = {
-  "patient-id": { within: "Patient TEST-57", includes: ["TEST-57"] },
-  "patient-age": { within: "a 57-year-old woman", includes: ["57-year-old"] },
-  "patient-sex": { within: "a 57-year-old woman", includes: ["woman"] },
-  "event-symptoms": { within: "melena and dizziness", includes: ["melena", "dizziness"] },
-  "event-onset": { within: "On 18-Aug-2026 she developed", includes: ["18-Aug-2026"] },
-  "event-hospitalized": { within: "and was hospitalized", includes: ["hospitalized"] },
-  "event-hemoglobin": { within: "Her hemoglobin was 7.8 g/dL", includes: ["7.8 g/dL"] },
-  "event-treatment": { within: "she received two units of packed red cells", includes: ["two units of packed red cells"] },
-  "event-outcome": { within: "she recovered", includes: ["recovered"] },
-  "event-discharge": { within: "was discharged on 21-Aug-2026", includes: ["21-Aug-2026"] },
-  "apixaban-name": { within: "apixaban 5 mg by mouth twice daily", includes: ["apixaban"] },
-  "apixaban-role": { within: "I suspect apixaban and naproxen", includes: ["suspect", "apixaban"] },
-  "apixaban-dose": { within: "apixaban 5 mg by mouth twice daily", includes: ["5 mg"] },
-  "apixaban-frequency": { within: "apixaban 5 mg by mouth twice daily", includes: ["twice daily"] },
-  "apixaban-route": { within: "apixaban 5 mg by mouth twice daily", includes: ["by mouth"] },
-  "apixaban-start": { within: "I recorded the start as 12-Aug-2026", includes: ["12-Aug-2026"] },
-  "naproxen-name": { within: "naproxen 500 mg by mouth twice daily", includes: ["naproxen"] },
-  "naproxen-role": { within: "I suspect apixaban and naproxen", includes: ["suspect", "naproxen"] },
-  "naproxen-dose": { within: "naproxen 500 mg by mouth twice daily", includes: ["500 mg"] },
-  "naproxen-frequency": { within: "naproxen 500 mg by mouth twice daily", includes: ["twice daily"] },
-  "naproxen-route": { within: "naproxen 500 mg by mouth twice daily", includes: ["by mouth"] },
-  "naproxen-start": { within: "naproxen 500 mg by mouth twice daily starting 10-Aug-2026", includes: ["10-Aug-2026"] },
-  "lisinopril-name": { within: "lisinopril 10 mg by mouth daily", includes: ["lisinopril"] },
-  "lisinopril-role": { within: "lisinopril 10 mg by mouth daily as a concomitant medicine", includes: ["concomitant"] },
-  "lisinopril-dose": { within: "lisinopril 10 mg by mouth daily", includes: ["10 mg"] },
-  "lisinopril-frequency": { within: "lisinopril 10 mg by mouth daily", includes: ["daily"] },
-  "lisinopril-route": { within: "lisinopril 10 mg by mouth daily", includes: ["by mouth"] },
-  "apixaban-stopped": { within: "Apixaban and naproxen were stopped", includes: ["apixaban", "stopped"] },
-  "naproxen-stopped": { within: "Apixaban and naproxen were stopped", includes: ["naproxen", "stopped"] },
-  "naproxen-dose-correction": {
-    within: "the naproxen dose was 250 mg twice daily, not 500 mg twice daily",
-    includes: ["naproxen", "250 mg", "500 mg"],
-  },
-  "apixaban-date-alternative": {
-    within: "the medication administration record lists apixaban starting 13-Aug-2026",
-    includes: ["medication administration record", "apixaban", "13-Aug-2026"],
-  },
-};
 
 type ProviderOutputFormat = Pick<
   ReturnType<typeof zodOutputFormat<typeof modelOutputSchema>>,
@@ -358,6 +312,20 @@ export function createAnthropicJourneyModel(
           response,
         );
       }
+      const correctionGroupIssues = validateCorrectionGroupIds(turn, structured.data);
+      if (correctionGroupIssues.length > 0) {
+        throw new ModelCallFailure(
+          "Wilson could not interpret the fictional account. Accepted case knowledge is unchanged.",
+          {
+            phase: "structured-schema",
+            requestId: response.id,
+            responseArtifact,
+            issues: correctionGroupIssues,
+          },
+          metrics,
+          response,
+        );
+      }
 
       try {
         const envelope = parseModelProposalEnvelope({
@@ -377,7 +345,6 @@ export function createAnthropicJourneyModel(
             },
           })),
         });
-        requireFixedSemantics(turn, envelope);
         return {
           envelope,
           metrics,
@@ -392,11 +359,7 @@ export function createAnthropicJourneyModel(
             requestId: response.id,
             responseArtifact,
             errorName: errorName(error),
-            issues: error instanceof z.ZodError
-              ? zodIssues(error)
-              : error instanceof FixedSemanticOutputError
-                ? error.issues
-                : undefined,
+            issues: error instanceof z.ZodError ? zodIssues(error) : undefined,
           },
           metrics,
           response,
@@ -458,93 +421,35 @@ function requireFixedInput(turn: ModelTurn, text: string): void {
   }
 }
 
-class FixedSemanticOutputError extends Error {
-  constructor(readonly issues: ModelDiagnosticIssue[]) {
-    super("The response did not match the fixed experiment's grounded semantic contract");
-    this.name = "FixedSemanticOutputError";
-  }
-}
-
-function requireFixedSemantics(turn: ModelTurn, actual: ParsedModelProposalEnvelope): void {
-  const expected = turn === "opening"
-    ? parseFixedOpeningResponse(openingAccount)
-    : parseFixedCorrectionResponse(correctionAccount);
+function validateCorrectionGroupIds(
+  turn: ModelTurn,
+  output: StructuredModelOutput,
+): ModelDiagnosticIssue[] {
+  if (turn !== "correction") return [];
   const issues: ModelDiagnosticIssue[] = [];
-
-  if (!sameJson(actual.products, expected.products)) {
-    issues.push({
-      path: "products",
-      code: "fixed_semantic_mismatch",
-      message: "Products do not match the fixed experiment catalog",
-    });
-  }
-
-  const actualProposals = new Map(actual.proposals.map((proposal) => [proposal.proposalId, proposal]));
-  const expectedProposals = new Map(expected.proposals.map((proposal) => [proposal.proposalId, proposal]));
-  const actualSources = new Map(actual.sources.map((source) => [source.id, source]));
-  const inputText = turn === "opening" ? openingAccount : correctionAccount;
-
-  for (const [proposalId, expectedProposal] of expectedProposals) {
-    const proposal = actualProposals.get(proposalId);
-    if (!proposal) {
+  output.proposals.forEach((proposal, index) => {
+    const isDoseCorrection = proposal.intent === "correction"
+      && proposal.target.entity === "product"
+      && proposal.target.entityId === "product-naproxen"
+      && proposal.target.field === "dose";
+    const isDateAlternative = proposal.intent === "alternative"
+      && proposal.target.entity === "product"
+      && proposal.target.entityId === "product-apixaban"
+      && proposal.target.field === "startDate";
+    const expectedGroupId = isDoseCorrection
+      ? DOSE_CORRECTION_GROUP_ID
+      : isDateAlternative
+        ? DATE_CONFLICT_GROUP_ID
+        : undefined;
+    if (expectedGroupId && proposal.groupId !== expectedGroupId) {
       issues.push({
-        path: `proposals.${proposalId}`,
-        code: "fixed_semantic_mismatch",
-        message: `Required proposal ${proposalId} is missing`,
-      });
-      continue;
-    }
-    if (!sameJson(proposal, expectedProposal)) {
-      issues.push({
-        path: `proposals.${proposalId}`,
-        code: "fixed_semantic_mismatch",
-        message: `Proposal ${proposalId} does not match the fixed semantic expectation`,
+        path: `proposals.${index}.groupId`,
+        code: "invalid_correction_group",
+        message: `Correction action requires group ${expectedGroupId}`,
       });
     }
-
-    const expectedSourceId = expectedProposal.sourceIds[0];
-    if (!sourceSupportsProposal(
-      actualSources.get(expectedSourceId),
-      FIXED_SOURCE_RULES[proposalId],
-      inputText,
-    )) {
-      issues.push({
-        path: `sources.${expectedSourceId}`,
-        code: "fixed_semantic_mismatch",
-        message: `Proposal ${proposalId} source span does not ground the fixed semantic expectation`,
-      });
-    }
-  }
-
-  for (const proposalId of actualProposals.keys()) {
-    if (!expectedProposals.has(proposalId)) {
-      issues.push({
-        path: `proposals.${proposalId}`,
-        code: "fixed_semantic_mismatch",
-        message: `Unexpected proposal ${proposalId} is outside the fixed experiment catalog`,
-      });
-    }
-  }
-
-  if (issues.length > 0) throw new FixedSemanticOutputError(issues);
-}
-
-function sourceSupportsProposal(
-  source: ParsedModelProposalEnvelope["sources"][number] | undefined,
-  rule: FixedSourceRule | undefined,
-  inputText: string,
-): boolean {
-  if (!source || !rule) return false;
-  const containerStart = inputText.indexOf(rule.within);
-  if (containerStart < 0) return false;
-  const containerEnd = containerStart + rule.within.length;
-  if (source.start < containerStart || source.end > containerEnd) return false;
-  const excerpt = source.excerpt.toLowerCase();
-  return rule.includes.every((required) => excerpt.includes(required.toLowerCase()));
-}
-
-function sameJson(left: unknown, right: unknown): boolean {
-  return JSON.stringify(left) === JSON.stringify(right);
+  });
+  return issues;
 }
 
 function estimateCost(inputTokens: number, outputTokens: number): number {
