@@ -138,6 +138,14 @@ statement remains traceable but inactive.
 
 ### Semantic oracle
 
+This oracle defines how the fixed experiment is assessed; it is not a runtime
+allowlist for model output. The live request boundary rejects only mechanically
+decidable provider, structure, domain-representability, identity-integrity, and
+source-bounds violations. It does not reject an otherwise representable
+proposal because its set, value, or source clause differs from this table.
+Operators inspect those proposals and their excerpts before any acceptance, and
+any oracle mismatch still fails the run.
+
 | Entity | Required result |
 |---|---|
 | Patient | `TEST-57`; 57 years; female |
@@ -288,10 +296,12 @@ Use focused, table-driven tests where useful to prove:
 - stale/duplicate command idempotency; and
 - agreement among reviewed case, semantic projection, and supported PDF.
 
-Also reject malformed model output before review and run one narrow automated
-source-boundary assertion preventing route/UI imports of lower-level mutation
-helpers. This runs under the ordinary test command; do not build an architecture
-test platform or coverage regime.
+Also reject mechanically malformed model output before review and prove that a
+structurally valid semantic or source-support mismatch remains proposed for
+operator review rather than being mistaken for accepted case knowledge. Run one
+narrow automated source-boundary assertion preventing route/UI imports of
+lower-level mutation helpers. These checks run under the ordinary test command;
+do not build an architecture test platform or coverage regime.
 
 ### Deterministic browser journey
 
@@ -323,8 +333,9 @@ measuring the effect on extraction and correction quality.
 Disable automatic retries and record model ID, parameters, prompt/schema
 revisions, token use, latency, and cost. A human scores each retained evidence
 run against the semantic oracle and verifies that each excerpt supports the
-proposed value and relationship. CI, builds, deterministic browser tests, and
-independent review make no paid model call.
+proposed value and relationship. That assessment is not reimplemented as a
+fixed-answer runtime rejection path. CI, builds, deterministic browser tests,
+and independent review make no paid model call.
 
 Any comparative model/effort experiment is separately authorized with scope
 and a budget selected by Steve. It is never triggered as an automatic response
@@ -789,7 +800,9 @@ Manual 4B acceptance uses the fixed synthetic journey:
    confirm the synthetic-only boundary before entering anything.
 2. Submit the opening account and confirm exactly one live request occurs.
    Inspect every proposed fact, product identity, role, and source excerpt;
-   stop on invention, omission, unsupported content, or wrong attachment.
+   stop and fail the run on invention, omission, unsupported content, or wrong
+   attachment. Those semantic failures remain visible proposals for this
+   operator judgment; they are not fixed-answer request-validation failures.
 3. Judge whether Wilson's single grouped indication question is natural,
    useful, and unambiguous about both products. Confirm the answer attaches to
    the correct product cards.

@@ -130,9 +130,26 @@ alternative. It may not:
 - choose PDF widget identifiers; or
 - create the Form 3500 projection.
 
-Schema, span, type, and entity checks reject malformed proposals before review.
-Those checks do not prove that an excerpt supports a claim; clinician review
-and the human-scored model sample remain necessary.
+The runtime model boundary rejects only mechanically decidable contract
+violations before review:
+
+- the provider did not complete normally;
+- returned content is not valid structured output;
+- a field, entity, identifier, or value cannot be represented by the selected
+  Experiment 1 domain types;
+- proposal or source identities are duplicated or internally inconsistent; or
+- a source span is empty or falls outside the exact clinician input.
+
+These checks are finite application-input validation, not a hallucination
+guard. A valid source span proves only that the displayed excerpt came from the
+clinician input; deterministic code does not establish that the excerpt
+semantically supports the proposal. The runtime boundary must not compare live
+proposals with the fixed experiment's expected proposal set, values, or source
+clauses. A structurally valid but incorrect, omitted, unexpected, or
+unsupported proposal remains visibly proposed for operator review and cannot
+become resolved without the ordinary clinician-review command. The fixed
+semantic oracle remains an Experiment 1 assessment reference, while operator
+review and the human-scored model sample determine whether a run passes.
 
 Experiment 1 uses one deterministic semantic rule to identify missing
 suspect-product indications and authored copy to ask for them. A generic

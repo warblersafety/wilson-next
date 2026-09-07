@@ -2,8 +2,9 @@
 
 **Status:** Required reviews, approved planning remediation, implementation,
 and deterministic verification complete; three protected live-model operator
-attempts have failed at explicit semantic boundaries, the first two defects are
-remediated, and the third requires review before further implementation
+attempts have failed at explicit semantic boundaries, and Steve has approved a
+planning-only redesign that narrows runtime validation before further
+implementation
 
 **Issues:** [#35](https://github.com/warblersafety/wilson-next/issues/35) and
 [#34](https://github.com/warblersafety/wilson-next/issues/34)
@@ -390,10 +391,35 @@ Steve's instruction, the restored owner-only mode-0600 Vercel token handoff and
 hosted Anthropic preview key remain untouched.
 
 This third attempt fails Slice 4B before extraction review, reload, correction,
-conflict, projection, or PDF acceptance. A general fix should compare the
-meaningful excerpt core after trimming only adjacent whitespace/punctuation,
-while still rejecting any span that reaches into words outside the correct
-supporting clause. Under Steve's required sequencing and Delivery's additional-
-review boundary, that remediation is not implemented until a new targeted
-Claude review is explicitly authorized. Any later live run also requires
-separate authorization.
+conflict, projection, or PDF acceptance. The initial proposed fix was to compare
+a meaningful excerpt core after trimming adjacent whitespace or punctuation.
+Subsequent review of the premise found that this would continue expanding a
+fixed-answer runtime validator one observed variation at a time. The approved
+planning change below supersedes that proposed punctuation workaround. Any
+later live run still requires separate authorization.
+
+## Approved runtime-boundary redesign plan
+
+On 2026-09-07, Steve approved separating finite runtime contract validation
+from Experiment 1's fixed semantic assessment before any further application
+implementation. The runtime boundary will retain provider-completion,
+structured-output, domain-representability, identity-integrity, and exact
+source-bounds checks. It will not compare a live response with the fixture's
+expected proposal catalog, expected values, or expected supporting clauses, and
+it will not attempt to establish semantic support deterministically.
+
+Model output remains proposed case knowledge. A structurally valid but
+incorrect, omitted, unexpected, or unsupported proposal may reach the operator
+review surface, but it cannot become resolved without the existing explicit
+review command. Operators still assess every proposal and excerpt against the
+fixed semantic oracle, and any mismatch fails the live run. Case-command,
+browser-state, revision, conflict, projection, and PDF invariants are unchanged.
+
+Implementation should remove the fixed semantic rejection from the live
+Anthropic path, consolidate the generic provider-output boundary where doing so
+reduces duplicated authority, and retain a small finite contract test set. It
+must not add an eval system, persistence, another diagnostic store, real data,
+automatic retry, or a new live-model call. This planning checkpoint requires
+the separately authorized targeted Claude Sonnet/high read-only review before
+application code changes; the review does not authorize another live operator
+run.
