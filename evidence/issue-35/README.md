@@ -1,9 +1,9 @@
 # Issue 35 operator-preview evidence
 
-**Status:** Required pre-implementation review, approved planning remediation,
-implementation, and deterministic verification complete; two protected live
-operator attempts have failed at explicit semantic boundaries, the first defect
-is remediated, and the second requires review before further implementation
+**Status:** Required reviews, approved planning remediation, implementation,
+and deterministic verification complete; three protected live-model operator
+attempts have failed at explicit semantic boundaries, the first two defects are
+remediated, and the third requires review before further implementation
 
 **Issues:** [#35](https://github.com/warblersafety/wilson-next/issues/35) and
 [#34](https://github.com/warblersafety/wilson-next/issues/34)
@@ -333,3 +333,67 @@ the bounded implementation it prescribed; no recursive Claude review was run.
 The review's broader non-blocking observation—that all SDK-demoted enum/const
 constraints rely on local boundary validation—remains separate from this role
 fix and is recorded as follow-up Issue #38.
+
+## Post-role-remediation live attempt
+
+Steve separately authorized exactly one further protected live operator run on
+the reviewed role remediation. It targeted protected Git deployment
+`dpl_3BBHeyHZH4styoUWrxtw9xkbKqJw` at exact commit
+`0650dfe9fe7679af65e83f73a0ce1d809dfaa7da`. The operator harness first
+confirmed the synthetic boundary and induced the required pre-provider safe
+failure, which retained Describe and returned opaque reference
+`e7758b9d-bc2d-4680-9b54-5177066d732c`. It then submitted the fixed opening
+exactly once. The opening failed, so the correction account was never submitted
+and no model request or journey was retried.
+
+The visible error again retained Describe at revision zero and returned opaque
+diagnostic reference `b391cbb3-6434-406a-bfeb-37342424c37e`. A sanitized,
+in-place historical Runtime Log query reconstructed one successful provider
+response followed by a domain-boundary rejection, then state, route, response,
+and browser failure. The call used `claude-sonnet-5`, prompt revision
+`wilson-experiment-1-extraction-v3`, and schema revision
+`wilson-grounded-proposals-v4`; it took 111,583 ms, used 3,436 input and 14,700
+output tokens, and had estimated cost $0.153872.
+
+The role remediation worked: apixaban and naproxen both used the canonical
+`suspect` literal, lisinopril used `concomitant`, and every proposal target and
+value matched the fixed semantic oracle. The returned treatment proposal cited
+the correct synthetic excerpt `two units of packed red cells,` at offsets
+414–444. The grounding rule's container is
+`she received two units of packed red cells` at offsets 401–443. Because the
+algorithm treats the literal container end as a hard character boundary, it
+rejected the semantically supporting excerpt solely for including the adjacent
+comma. This is a general punctuation-boundary defect in the earlier grounding
+remediation, not a role regression or faulty clinical extraction.
+
+The smallest retained example is
+`live-post-role-remediation/operator-verdict.json`. The historical query found
+15 request rows, 30 unique correlated events across three operation IDs, no
+truncation, the safe pre-provider rejection with no provider response, exactly
+one opening provider response, and no credential or outside-fixture exposure.
+No raw Runtime Logs, provider response, browser storage, network archive,
+screenshots, PDF, credential, or bypass value were retained.
+
+Before that provider-bearing run, the temporary operator harness had three
+pre-model recoveries: Vercel rejected one bypass format without creating it; a
+successfully created bypass was revoked after the Runtime Log connection waited
+for a first event before the browser started; and an overbroad alert selector
+matched Vercel toolbar semantics and closed the browser after only a browser
+request-start event. Values-excluding checks found no application case POST or
+provider response from those recoveries, and zero bypasses remained before the
+authorized model submission.
+
+The provider-bearing run's temporary bypass was revoked immediately after the
+failed opening. Project metadata reports zero bypasses, and unauthenticated
+requests to both the exact deployment and branch alias return HTTP 302. Per
+Steve's instruction, the restored owner-only mode-0600 Vercel token handoff and
+hosted Anthropic preview key remain untouched.
+
+This third attempt fails Slice 4B before extraction review, reload, correction,
+conflict, projection, or PDF acceptance. A general fix should compare the
+meaningful excerpt core after trimming only adjacent whitespace/punctuation,
+while still rejecting any span that reaches into words outside the correct
+supporting clause. Under Steve's required sequencing and Delivery's additional-
+review boundary, that remediation is not implemented until a new targeted
+Claude review is explicitly authorized. Any later live run also requires
+separate authorization.
