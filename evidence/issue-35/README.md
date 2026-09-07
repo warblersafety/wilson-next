@@ -202,3 +202,43 @@ deterministic Playwright journeys pass. This does not convert the failed live
 evidence into a pass: Slice 4B remains failed unless Steve separately authorizes
 a new protected live run after reviewing the failure, remediation, and final
 Claude verdict.
+
+## Final Claude implementation review
+
+Steve separately authorized one complete post-implementation review because the
+required planning review necessarily predated the application and operator
+evidence. The review targeted exact commit
+`3d9e501a732453cf5b44f5a6454d5f8472621179` and the complete `main...HEAD`
+change. Claude Code 2.1.241 ran `claude-sonnet-5` at `high` effort in a fresh
+read-only session after subscription preflight confirmed `claude.ai`, Steve's
+active Max subscription, and unset Anthropic API/gateway variables. The first
+sandboxed process reached no verdict because DNS could not reach Claude; the
+same prompt then completed outside that network restriction as recovery, not a
+second completed review.
+
+Claude reported two blocking findings:
+
+1. The retained evidence proves that the live-model gate failed and did not
+   reach conflict resolution or live PDF agreement. This remains open. The PR
+   must not merge as Issue #35 complete without a separately authorized,
+   successful post-remediation live operator run.
+2. The first `v3` guard required exact fixture source spans, even though the
+   prompt asks the model for the smallest supporting span. That could reject a
+   tighter, correctly grounded live response. Commit
+   `1b14544824e16f5a4fcae6fecee7350761182108` resolves the finding by checking
+   semantic support and location within the correct fixture clause while
+   accepting tighter prompt-compliant spans. Focused coverage proves both the
+   valid variants and the observed invalid 13-Aug value/12-Aug source case.
+
+Claude also noted two non-blocking follow-ups: consider a future defense beyond
+`VERCEL_ENV === "preview"` against deployment misclassification, and avoid
+constructing a fresh Anthropic client per request if this narrow route is ever
+generalized. Neither changes current Slice 4B behavior. The complete invocation
+prompt, actual unedited result, limitations, and dispositions are recorded on
+draft PR #36 under an explicit `Claude review` heading.
+
+Under Delivery's proportional-closure rule, the originating review covers the
+bounded second-finding remediation: it changes only the rejected span's
+grounding predicate, introduces no new product/workflow premise, and passes the
+full deterministic gate. No recursive Claude run was performed. The first
+finding remains a stopping boundary rather than a code-review disposition.
