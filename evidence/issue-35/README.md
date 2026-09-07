@@ -1,10 +1,11 @@
 # Issue 35 operator-preview evidence
 
 **Status:** Required reviews, approved planning remediation, implementation,
-and deterministic verification complete; the post-redesign protected live
-attempt reached operator review with correct values but failed the evidence
-oracle; the reviewed prompt/operator-evidence remediation now passes its
-deterministic gate, and no post-remediation live run has been authorized
+and deterministic verification complete; the reviewed prompt/operator-evidence
+remediation passed its deterministic gate, but its one authorized protected
+live run failed before operator review and independently exposed a systematic
+source-offset defect; no further review, implementation, or live run is
+authorized
 
 **Issues:** [#35](https://github.com/warblersafety/wilson-next/issues/35) and
 [#34](https://github.com/warblersafety/wilson-next/issues/34)
@@ -604,3 +605,72 @@ identical Playwright suite passed. No application model call, credential
 change, retained browser/PDF artifact, or live operator run occurred. A live
 model can still disregard the clearer instruction, so one new protected live
 operator run remains necessary and separately permissioned.
+
+## Self-contained-evidence live attempt
+
+Steve authorized exactly one protected live operator run against Git deployment
+`dpl_EbZeQ5qANo5nYAsRKL89uu1Z8dHX` at exact commit
+`ffbba5dfc7a7a7ff20b354af8c6580078b02ab24`. Values-excluding preflight found
+exactly one sensitive preview-only environment variable,
+`ANTHROPIC_API_KEY`. The run confirmed the fictional-only boundary, induced the
+required pre-provider safe failure, and submitted the fixed opening exactly
+once. No correction or retry was submitted.
+
+Two temporary-runner recoveries occurred before any provider call. The first
+did not export the existing token-file variable to its child process. The
+second supplied a bypass secret that did not satisfy Vercel's current exact
+32-alphanumeric-character API contract. Both stopped before creating a bypass,
+browser, or application request; the project remained at zero bypasses. A third
+pre-provider runner attempt created and revoked its temporary bypass, induced
+the safe failure, but its stale-alert synchronization closed before issuing the
+live opening. An in-place phase audit proved that it had no provider response.
+
+The actual authorized opening request then used run
+`a5e4a456-6873-4c54-9a18-59841c79ced7`, safe-failure reference
+`cd625b20-f070-4fc6-923f-fcda6cd37800`, and opening operation
+`ec8970b2-c72d-4672-a318-303a8b2dba5e`. The temporary runner selected Next.js's
+empty route-announcer `role=alert` while trying to wait for the earlier
+application error to disappear. It timed out after 20 seconds and closed the
+browser while the one opening request remained in flight. The server later
+completed successfully and attached the proposals, but the response could no
+longer be stored in the disposable tab. Continuing would have required a
+prohibited second opening call, so the run stopped.
+
+The completed response still yielded useful bounded evidence. It used
+`claude-sonnet-5`, prompt revision `wilson-experiment-1-extraction-v4`, and
+boundary revision `wilson-grounded-proposals-v5`; took 82,651 ms; used 3,513
+input and 11,651 output tokens; and cost an estimated $0.123536. All 29 expected
+values and product identities were correct. The new instruction also eliminated
+the earlier predicate-only product citations.
+
+However, 22 source spans were systematically shifted one character before the
+correct zero-based, end-exclusive range. The symptoms span, for example, was
+`292–312` and displayed ` melena and dizzines`; the correct span is `293–313`.
+The same `-1/-1` pattern affected the sampled onset, hospitalization,
+hemoglobin, and apixaban-role spans. Product excerpts consequently included
+` I suspect apixaban and naproxe`, ` Apixaban and naproxen were stoppe`, and
+` lisinopril 10 mg by mouth daily as a concomitant medicin`. That is a general
+character-localization failure, not a reason to add 22 fixture-specific
+runtime rules. It independently fails the evidence oracle even apart from the
+operator-runner failure.
+
+The in-place Runtime Log audit found eight request rows, 34 unique correlated
+events across three operations, zero truncation, no provider response for the
+safe failure, exactly one opening provider response, no correction response,
+and no credential or outside-fixture exposure. No raw Runtime Logs, provider
+response, browser storage, network archive, screenshot, PDF, credential, or
+bypass secret was retained. The compact verdict is
+`live-self-contained-evidence/operator-verdict.json`.
+
+The temporary bypass was revoked. Project metadata reports zero bypasses;
+unauthenticated requests to both the exact deployment and branch alias return
+HTTP 302; and the owner-only mode-0600 Vercel token file and hosted Anthropic
+key remain untouched.
+
+The consequential next decision is whether to redesign the model boundary so
+the model returns an exact self-contained quote and Wilson deterministically
+locates that quote in the source, rejecting absent or ambiguous matches. That
+addresses character localization as a finite machine responsibility without
+silently shifting offsets or rebuilding a semantic answer-key validator. It
+requires review and approval before implementation. No additional Claude
+review or live run is authorized by this result.
