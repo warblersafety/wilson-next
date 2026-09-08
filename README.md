@@ -15,9 +15,11 @@ bounded, operator-only Experiment 2 plan.
 
 Experiment 2 remains a draft planning artifact. It authorizes no application
 change, model call, deployment, physician involvement, real clinical data, or
-production release. Its proposed implementation must both answer the bounded
-experiment questions and replace the fixed journey with production-seed code
-for the supported adult medication adverse-event scope.
+production release. At Issue #42's 2026-09-08 stop-and-reconcile checkpoint,
+Steve explicitly required any further experiment both to answer its bounded
+questions and to replace the fixed journey with production-seed code for the
+supported adult medication adverse-event scope. `docs/EXPERIMENT-2.md` owns that
+quality bar and its non-production boundary.
 
 ## Active corpus
 

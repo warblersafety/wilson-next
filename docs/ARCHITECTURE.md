@@ -1,8 +1,9 @@
 # Wilson semantic architecture
 
 **Status:** Experiment 1 hypothesis completed with qualified technical success;
-Experiment 2 production-seed amendments are draft under Issue #42 and are not
-authority until approved
+Experiment 2's production-seed quality bar was explicitly selected at Issue
+#42's 2026-09-08 stop-and-reconcile checkpoint, while the amendments remain
+draft and are not implementation authority until the plan is approved
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification

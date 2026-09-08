@@ -1,37 +1,63 @@
 # Wilson Experiment 2
 
-**Status:** Draft under Issue #42; planning and review only, not implementation
-authority
+**Status:** Draft under Issue #42; the production-seed quality bar was explicitly
+approved during planning, but the complete plan remains review-only and is not
+implementation authority
 
-**Owns:** The bounded production-seed outcome, separate generalization and
-usefulness questions, supported and deferred scope, exact synthetic journeys,
-evidence, staged live-model policy, success and stopping criteria, and lean
-implementation sequence
+**Owns:** The single bounded investment decision, its separate evidence
+dimensions, the production-seed quality bar, supported and deferred scope,
+exact synthetic journeys, evidence, staged live-model policy, success and
+stopping criteria, and lean implementation sequence
 
 **Depends on:** [`PRODUCT.md`](PRODUCT.md),
 [`ARCHITECTURE.md`](ARCHITECTURE.md), and
 [`DELIVERY.md`](DELIVERY.md)
 
-## Decision questions
+## Decision and evidence dimensions
 
-Experiment 2 answers four questions separately:
+Experiment 2 answers one falsifiable investment question:
 
-1. **Technical generalization:** can one production-quality implementation run
-   the selected medication journeys without fixture, medicine, expected-value,
-   or authored-sequence behavior in runtime product code?
+> Does evidence from the bounded synthetic journeys justify further Wilson
+> investment after accounting separately for technical generalization,
+> model/evidence performance, operator usefulness, and the remaining clinician
+> validation boundary?
+
+Record four evidence dimensions separately:
+
+1. **Technical generalization and production-seed quality:** can one
+   production-quality implementation run the selected medication journeys
+   without fixture, medicine, expected-value, or authored-sequence behavior in
+   runtime product code, while leaving maintainable seams for the supported
+   scope?
 2. **Model and evidence performance:** can the bounded model contract discover
    and attach supported facts and exact evidence without an answer catalog?
 3. **Operator usefulness:** does the assembled workflow reduce Steve's effort
    or omission/distortion risk compared with completing the supported Form FDA
    3500 content directly?
-4. **Future validation:** what remains unproven until a separately approved,
-   sufficiently complete product is evaluated by representative clinicians?
+4. **Clinician validation boundary:** what remains unproven until a separately
+   approved, sufficiently complete product is evaluated by representative
+   clinicians?
 
-The investment decision considers all four findings without treating them as
+The investment decision considers all four dimensions without treating them as
 interchangeable. Experiment 2 is not a production release by accumulation, but
-every accepted runtime change must be production-seed quality for the declared
-adult medication adverse-event scope rather than disposable experiment
-scaffolding.
+every accepted runtime change must meet the approved production-seed quality bar
+for the declared adult medication adverse-event scope rather than become
+disposable experiment scaffolding.
+
+### Authority reconciliation
+
+Issue #42 requires a stop and return for direction if the minimum experiment
+would require production or real-data architecture. During planning on
+2026-09-08, Steve explicitly decided that any further experiment must both
+answer its decision question and evolve the codebase toward production-quality
+code, then authorized the corresponding plan revision and this reconciliation.
+
+That decision sets a code-quality and reuse bar inside the bounded experimental
+scope. It does not authorize implementation, production infrastructure or
+release, durable data, real clinical data, or broader product scope. Here,
+`production-seed` means maintainable shared domain and workflow seams retained
+after the experiment; the temporary preview, synthetic diagnostic, and
+browser-held-state adapters remain temporary by design.
 
 ## Experiment 1 input
 
@@ -50,8 +76,8 @@ Experiment 2 treats those results as evidence, not assumptions to defend.
 
 ## Outcome
 
-Produce one of three explicit investment decisions and record the four findings
-above independently:
+Produce one of three explicit investment decisions and record the four evidence
+dimensions above independently:
 
 1. **Continue:** the bounded journeys show a consistent observed operator
    advantage, the required model samples expose no material instability, the
@@ -365,10 +391,10 @@ Continue beyond Experiment 2 only if:
    scope and the result justifies a specific next product-completeness
    investment.
 
-Record technical generalization, model/evidence performance, production-seed
-quality, operator usefulness, and eventual clinician validation separately. Do
-not collapse them into one score or allow one dimension to substitute for
-another.
+Record technical generalization and production-seed quality, model/evidence
+performance, operator usefulness, and the eventual clinician-validation
+boundary separately. Do not collapse them into one score or allow one dimension
+to substitute for another.
 
 ## Stop and reconcile
 
