@@ -40,9 +40,11 @@ FDA 3500 directly.
 - A capability is complete only when its assembled conversation, knowledge,
   review, and output have been exercised and agree.
 
-Development and early physician sessions use synthetic information until
-privacy, provider, logging, contractual, and operational boundaries for real
-clinical data are explicitly approved.
+Development uses synthetic information until privacy, provider, logging,
+contractual, and operational boundaries for real clinical data are explicitly
+approved. No experiment document alone authorizes physician involvement. A
+future physician session requires a separate finding that Wilson is complete
+and ready enough to justify the participant's time.
 
 ## Interaction contract
 
@@ -136,13 +138,13 @@ and disagreement between reviewed knowledge and the form are unacceptable.
 | Continuity | An unfinished case may be lost on reload or restart; one running session may start over |
 | Advice | No diagnosis, causality judgment, coding, classification, or treatment recommendation |
 | Development data | Synthetic only until real-data boundaries are approved |
-| Product proof | A real physician uses a production-shaped synthetic journey and compares the direction with the direct form |
+| Product proof | After separate product-completeness and readiness approval, representative healthcare professionals compare Wilson with the direct form |
 
 At least one drug or biologic case and one device or product-quality case are
-required before claiming meaningful product breadth. Exhaustive path coverage
-is not required before the first formative physician session, but unsupported
-paths remain disclosed and a partial release is not described as a general Form
-3500 replacement.
+required before claiming meaningful product breadth. Unsupported paths remain
+disclosed and a partial release is not described as a general Form 3500
+replacement. The V1 direction does not itself define or authorize a physician
+readiness threshold.
 
 ## V1 non-goals
 
@@ -172,10 +174,11 @@ Corrections must behave consistently regardless of input path. Severe loss,
 invention, reversal, wrong attribution, contradictory form values, or silent
 failure stops expansion regardless of aggregate performance.
 
-Synthetic and operator evidence make physician contact safe and interpretable;
-they cannot prove usability or preference. One physician can expose a bad
-premise and guide the next slice, but cannot establish general usability,
-safety, or clinical validity.
+Synthetic and operator evidence cannot prove clinician usability or preference.
+Representative clinician evidence will eventually be necessary for the product
+claim, but only after a separately approved product-completeness and readiness
+decision; it cannot establish general usability, safety, or clinical validity
+by itself.
 
 ## Form authority
 

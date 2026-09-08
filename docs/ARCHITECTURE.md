@@ -1,7 +1,7 @@
 # Wilson Experiment 1 architecture
 
-**Status:** Approved by Steve for Experiment 1; not broader production
-architecture authority
+**Status:** Experiment 1 hypothesis completed with qualified technical success;
+not automatic authority for Experiment 2 or production
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification
@@ -283,6 +283,9 @@ Stop expansion and reopen the owning premise if:
   fallback, or user-visible behavior absent from the approved product and
   experiment.
 
-Approval of this document authorizes only the Experiment 1 architectural
-hypothesis. It does not authorize implementation, real clinical data,
+Experiment 1 evidence supports retaining the semantic case, single write
+boundary, and case-to-projection separation as hypotheses worth testing again.
+It does not automatically authorize their Experiment 2 generalization or
+production use. Any follow-on experiment must name the retained and changed
+architecture explicitly and still does not authorize real clinical data,
 production deployment, full Form 3500 coverage, or deferred mechanisms.

@@ -213,7 +213,21 @@ Merge never implies external deployment, purchase, or production authorization.
 - **Active documents:** one owner for every lasting decision.
 - **CI and retained experiment artifacts:** reproducible evidence.
 
-At merge or falsification, leave one concise outcome note. Reassess this process
-after Experiment 1 and remove steps that produce no signal. Post-merge review is
-reserved for escaped defects, incidents, or contradicted premises and still
-requires Steve's permission when Claude is used.
+## Experiment 1 process disposition
+
+Experiment 1 retained useful signal from isolated issues/branches, protected
+main, focused deterministic checks, fresh-context review of consequential
+premises, exact deployed evidence, and Steve's explicit merge decisions. Keep
+those controls for Experiment 2.
+
+Recursive review, repeated live runs without a new decision question, runner
+ceremony that obscures the product result, and attempts to convert the fixed
+oracle into runtime validation did not improve confidence proportionally. Do
+not carry them forward. One originating independent review may cover its
+bounded remediation under the proportional-closure rule above; evidence-only
+updates do not trigger another review or live run.
+
+This section records the required post-Experiment 1 reassessment. At merge or
+falsification, leave one concise outcome note. Post-merge review is reserved for
+escaped defects, incidents, or contradicted premises and still requires Steve's
+permission when Claude is used.
