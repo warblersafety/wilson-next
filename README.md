@@ -15,7 +15,9 @@ bounded, operator-only Experiment 2 plan.
 
 Experiment 2 remains a draft planning artifact. It authorizes no application
 change, model call, deployment, physician involvement, real clinical data, or
-production work.
+production release. Its proposed implementation must both answer the bounded
+experiment questions and replace the fixed journey with production-seed code
+for the supported adult medication adverse-event scope.
 
 ## Active corpus
 
@@ -26,7 +28,8 @@ other documents link to it or apply it only where their narrower scope requires.
    interaction contract, and unacceptable outcomes.
 2. [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) owns the semantic case,
    authoritative write boundary, model role, projections, and falsification
-   conditions approved for Experiment 1.
+   conditions proven in Experiment 1 plus the draft production-seed amendments
+   proposed for Experiment 2.
 3. [`docs/EXPERIMENT-1.md`](docs/EXPERIMENT-1.md) owns the fixed journey,
    supported and deferred scope, selected stack, implementation slices,
    verification, deployment, and disposal contract.

@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "experiment": "experiment-2",
+  "purpose": "Compact stage-level effort and value evidence for retrospective 80/20 analysis.",
+  "stages": [
+    {
+      "id": "planning-revision",
+      "status": "completed",
+      "recordedAt": "2026-09-08T22:31:06Z",
+      "startedAt": null,
+      "finishedAt": null,
+      "elapsedSeconds": 834,
+      "codexTaskTokens": {
+        "source": "codex-goal-result",
+        "start": 0,
+        "end": 85909,
+        "delta": 85909
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMilliseconds": 0,
+        "costUsd": 0
+      },
+      "review": null,
+      "result": "Reframed Experiment 2 as a lean production-seed experiment with separate technical, model/evidence, operator, and future clinician questions; bounded journeys and success criteria; two implementation slices; and explicit deferrals.",
+      "durableValue": {
+        "kind": "decision-evidence",
+        "artifacts": [
+          "README.md",
+          "docs/ARCHITECTURE.md",
+          "docs/DELIVERY.md",
+          "docs/EXPERIMENT-2.md"
+        ]
+      },
+      "limitations": [
+        "Exact start and finish timestamps were not retained and are therefore null.",
+        "Measurement began with the authorized documentation-editing stage and excludes the earlier discussion.",
+        "Codex task tokens are the goal tracker's task-effort measure, not an estimate of billable API usage."
+      ]
+    },
+    {
+      "id": "planning-checkpoint",
+      "status": "completed",
+      "recordedAt": "2026-09-08T22:32:56Z",
+      "startedAt": "2026-09-08T22:30:25Z",
+      "finishedAt": "2026-09-08T22:32:26Z",
+      "elapsedSeconds": 121,
+      "codexTaskTokens": {
+        "source": "codex-goal-snapshot",
+        "start": 0,
+        "end": 10829,
+        "delta": 10829
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMilliseconds": 0,
+        "costUsd": 0
+      },
+      "review": null,
+      "result": "Added and validated the durable effort ledger, linked it from the delivery process, and created the documentation-only local planning checkpoint.",
+      "durableValue": {
+        "kind": "process-evidence",
+        "artifacts": [
+          "docs/DELIVERY.md",
+          "evidence/experiment-2/effort-ledger.json"
+        ]
+      },
+      "limitations": [
+        "The goal snapshot ends after the first local commit and excludes the small bookkeeping cost of persisting this entry and amending that commit.",
+        "Codex task tokens are the goal tracker's task-effort measure, not an estimate of billable API usage."
+      ]
+    }
+  ]
+}

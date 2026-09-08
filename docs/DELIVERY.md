@@ -1,6 +1,7 @@
 # Wilson delivery and independent review
 
-**Status:** Approved by Steve; consolidated and amended 2026-09-05
+**Status:** Approved by Steve through 2026-09-05; Experiment 1 process
+disposition and Experiment 2 effort-record amendments are draft under Issue #42
 
 **Owns:** Work items, branches, pull requests, verification, independent review,
 approval, merge controls, stop-and-reconcile, and durable trace
@@ -212,6 +213,22 @@ Merge never implies external deployment, purchase, or production authorization.
   narration.
 - **Active documents:** one owner for every lasting decision.
 - **CI and retained experiment artifacts:** reproducible evidence.
+
+### Effort and value record
+
+Experiment 2 keeps one compact stage ledger at
+`evidence/experiment-2/effort-ledger.json`. Commit an entry at each meaningful
+stage boundary and link it from the existing PR. Record start and finish time;
+cumulative Codex task tokens at start and finish plus the delta; external model
+input/output tokens, latency, cost, and call count when exposed; review model
+and effort; concrete result; and durable value as product code, decision
+evidence, or process-only work. Mark unavailable measurements rather than
+estimating them.
+
+This is a retrospective 80/20 aid, not per-turn narration, product analytics,
+time tracking infrastructure, or a reason to continue low-value work. The final
+outcome identifies stages whose effort did not proportionally improve the code
+or decision so later work can remove them.
 
 ## Experiment 1 process disposition
 

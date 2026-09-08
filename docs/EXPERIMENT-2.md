@@ -3,23 +3,35 @@
 **Status:** Draft under Issue #42; planning and review only, not implementation
 authority
 
-**Owns:** The operator-only generalization/usefulness decision, supported and
-deferred scope, candidate journeys, evidence, staged live-model policy, success
-and stopping criteria, and proposed implementation sequence
+**Owns:** The bounded production-seed outcome, separate generalization and
+usefulness questions, supported and deferred scope, exact synthetic journeys,
+evidence, staged live-model policy, success and stopping criteria, and lean
+implementation sequence
 
 **Depends on:** [`PRODUCT.md`](PRODUCT.md),
 [`ARCHITECTURE.md`](ARCHITECTURE.md), and
 [`DELIVERY.md`](DELIVERY.md)
 
-## Decision question
+## Decision questions
 
-Can Wilson generalize beyond one scripted case across a deliberately small set
-of synthetic medication adverse-event journeys while remaining factually
-faithful, reviewable, and less burdensome than completing the supported Form FDA
-3500 content directly?
+Experiment 2 answers four questions separately:
 
-The experiment exists to decide whether Wilson deserves further product
-investment. It is not a path to production by accumulation.
+1. **Technical generalization:** can one production-quality implementation run
+   the selected medication journeys without fixture, medicine, expected-value,
+   or authored-sequence behavior in runtime product code?
+2. **Model and evidence performance:** can the bounded model contract discover
+   and attach supported facts and exact evidence without an answer catalog?
+3. **Operator usefulness:** does the assembled workflow reduce Steve's effort
+   or omission/distortion risk compared with completing the supported Form FDA
+   3500 content directly?
+4. **Future validation:** what remains unproven until a separately approved,
+   sufficiently complete product is evaluated by representative clinicians?
+
+The investment decision considers all four findings without treating them as
+interchangeable. Experiment 2 is not a production release by accumulation, but
+every accepted runtime change must be production-seed quality for the declared
+adult medication adverse-event scope rather than disposable experiment
+scaffolding.
 
 ## Experiment 1 input
 
@@ -38,18 +50,21 @@ Experiment 2 treats those results as evidence, not assumptions to defend.
 
 ## Outcome
 
-Produce one of three explicit decisions:
+Produce one of three explicit investment decisions and record the four findings
+above independently:
 
-1. **Continue:** the bounded journeys show a repeatable operator advantage and
-   no architectural falsification; propose the next product-completeness step.
+1. **Continue:** the bounded journeys show a consistent observed operator
+   advantage, the required model samples expose no material instability, the
+   retained code is a credible production seed, and no architectural premise is
+   falsified; propose the next product-completeness step.
 2. **Revise:** the product signal remains plausible, but one named premise needs
    another bounded experiment before broader implementation.
-3. **Stop:** Wilson requires case-specific branching, produces unacceptable
-   semantic failures, or does not reduce effort enough to justify continued
-   investment.
+3. **Stop:** Wilson requires case-specific runtime behavior, produces
+   unacceptable semantic failures, leaves no credible production seed, or does
+   not reduce effort enough to justify continued investment.
 
-No outcome authorizes physician involvement, real clinical data, production,
-or the broader V1 roadmap.
+No outcome authorizes physician involvement, real clinical data, production
+deployment or release, or the broader V1 roadmap.
 
 ## Operators and information boundary
 
@@ -66,35 +81,91 @@ session replay, or additional diagnostic store is added.
 
 - Adult medication adverse-event reports.
 - One or two suspect medicines and at most one concomitant medicine.
-- The currently typed patient, event, treatment, outcome, and product facts.
+- The existing typed patient, event, treatment, outcome, and product facts
+  exercised by the selected journeys; no broader clinical ontology.
 - Form FDA 3500 Sections A, B, D, and F already supported by the semantic
   projection and versioned PDF adapter.
 - Natural opening input, case-oriented review, a small number of consequential
   follow-ups, correction or uncertainty where the selected journey requires it,
   explicit acceptance, output inspection, PDF preview, and download.
 - Desktop Chromium and the existing protected Git-preview workflow.
-- The completed Experiment 1 journey as a deterministic regression, not a new
-  usefulness sample.
+- The completed Experiment 1 fixture as a regression for semantic identity,
+  correction, conflict, projection, and final PDF agreement, not its authored
+  stage order, fixed pre-resolution download gate, or a new usefulness sample.
 
-## Candidate synthetic journeys
+## Exact synthetic journeys
 
-Finalize exactly three new journeys during the first planning slice. Each must
-be medically plausible enough to exercise the product but remains fictional and
-is reviewed only as an experiment fixture.
+These are the only three new evaluation journeys. They are deliberately concise,
+fictional, and reviewed only by the experiment operators. Their texts, expected
+results, and identifiers remain outside runtime product behavior.
 
-1. **Information-rich single suspect medicine.** Most supported report facts
-   are already present. This tests whether Wilson preserves detail and avoids
-   wasteful questions.
-2. **Sparse or uncertain report.** Important information is missing, qualified,
-   declined, or unresolved. This tests whether Wilson asks only questions that
-   earn their turn and produces truthful partial output rather than inventing
-   completeness.
-3. **Repeated or easily confused product mentions with a later correction.**
-   This tests stable entity attribution, correction history, and whether review
-   remains understandable without fixture-specific product logic.
+### Rich single-product journey
+
+Opening account:
+
+> Patient TEST-68 is a 68-year-old man. He began cephalexin 500 mg by mouth
+> twice daily on 01-Aug-2026 for cellulitis. On 04-Aug-2026 he developed diffuse
+> hives and facial swelling and was hospitalized. Cephalexin was stopped, he was
+> treated with epinephrine and diphenhydramine, and he recovered and was
+> discharged on 05-Aug-2026. I suspect cephalexin.
+
+Wilson preserves one suspect product and all stated patient, event, treatment,
+outcome, and product facts; asks no follow-up; and produces an aligned reviewed
+case and PDF. This is one of the two direct-form comparisons.
+
+### Sparse and explicitly unknown journey
+
+Opening account:
+
+> Patient TEST-31 is a 31-year-old woman. She developed nausea and vomiting
+> while taking metformin. I suspect metformin. She does not know the dose, when
+> metformin began, or when the symptoms started. She was not hospitalized.
+
+Wilson preserves the dose, product start, and event onset as explicitly unknown,
+not empty or absent. It asks exactly one indication question. The operator marks
+the indication unknown through an attributed semantic control; Wilson does not
+ask again. Outcome, treatment, and stop information remain empty. Review and
+output explain the omissions, and the partial PDF remains available after all
+proposals have been reviewed. This is the second direct-form comparison.
+
+### Repeated alias, correction, and unresolved conflict journey
+
+Opening account:
+
+> Patient TEST-44 is a 44-year-old man. He began acetaminophen (Tylenol) 1,000 mg
+> by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth
+> twice daily on 03-Jul-2026 for back pain. On 05-Jul-2026 he developed nausea
+> and right upper abdominal pain and was hospitalized. Tylenol and ibuprofen
+> were stopped, he received intravenous fluids, and he recovered and was
+> discharged on 07-Jul-2026. I suspect acetaminophen and ibuprofen.
+
+Later update:
+
+> Correction: the ibuprofen dose was 200 mg twice daily, not 400 mg twice daily.
+> My medication list says acetaminophen began 02-Jul-2026 rather than
+> 01-Jul-2026. I cannot resolve which date is correct.
+
+Wilson represents acetaminophen and Tylenol as one stable product, preserves
+ibuprofen as the other product, asks no follow-up because both indications are
+known, and proposes the later update against the correct stable entities. The
+operator explicitly accepts 200 mg, leaving 400 mg only in history, and leaves
+the two acetaminophen dates unresolved. Neither date reaches the projection;
+the conflict remains visible and does not block the truthful partial PDF.
 
 Scenario texts, expected semantic results, and direct-form comparison material
-are evaluation inputs outside Wilson. They do not become runtime allowlists.
+are evaluation inputs outside Wilson. They do not become runtime allowlists,
+prompt catalogs, stage definitions, or product configuration. Operators paste
+the text into the ordinary input. A temporary synthetic diagnostic adapter may
+recognize environment-configured fixture digests solely to decide whether
+synthetic content may be logged; those digests never affect product behavior or
+semantic validation.
+
+Across all three oracles, every explicitly stated material fact representable
+by the supported types is proposed once with the correct entity and exact
+self-contained evidence; no unstated fact is proposed. Routine normalization
+uses ISO dates and `oral` for “by mouth” without changing meaning. The detailed
+expected values stay in test/evidence fixtures rather than the model request or
+runtime validation.
 
 ## Deferred scope
 
@@ -112,47 +183,75 @@ are evaluation inputs outside Wilson. They do not become runtime allowlists.
   evaluation platform.
 - Physician feedback or any external-participant study.
 
-## Minimum product generalization
+## Production-seed implementation
 
-The implementation may generalize only the seams that prevent the three
-approved journeys from using the same product behavior:
+Every accepted implementation slice must leave behind maintainable product
+code for the supported scope. Runtime product code must not import or recognize
+fixture text, scenario identifiers, medicine names, expected values, oracle
+data, or predetermined journey numbers. Each slice removes more fixed behavior
+than it adds; it may not preserve the current journey behind a scenario switch.
+
+Generalize only the seams required for the selected journeys to use the same
+product behavior:
 
 - product, proposal, group, source, and command identities cannot be restricted
   to the Experiment 1 medicine names;
+- the application owns stable opaque case entity IDs; the model proposes mention
+  grouping and refers to application-supplied IDs on later inputs, but product
+  names never become identity;
 - the model prompt and structured schema must describe the selected domain
   shape without supplying a case-specific answer catalog;
 - review, clarification, correction, removal, conflict, and output controls
   must derive labels and targets from semantic case state rather than named
   products or expected values;
+- journey stage and action availability must derive from pending proposals,
+  unanswered consequential needs, requested updates, correction/conflict
+  attention, and output readiness rather than a prescribed turn sequence;
+- the indication follow-up uses one question with one labelled semantic answer
+  control per target product plus explicit unknown and declined choices; those
+  values enter through `applyCaseCommand` without a model call;
 - deterministic follow-up selection may cover only the few consequential needs
   exercised by the approved journeys and must not become a general planner;
 - the existing semantic case, `applyCaseCommand`, projection boundary, and PDF
   adapter remain authoritative unless evidence falsifies them; and
-- synthetic diagnostics may recognize only the approved fixture inputs while
-  continuing to redact all other content.
+- browser-held storage, protected preview access, and synthetic diagnostics stay
+  isolated behind their existing temporary adapters and do not become
+  production architecture.
 
 Do not build a scenario framework merely to avoid three small fixture
 definitions. Conversely, do not implement three parallel hard-coded journeys.
-A small data definition may own fixture text and external oracle data; product
-behavior must operate on the semantic case.
+Fixture definitions and external oracle data live only in tests and retained
+evaluation evidence; product behavior operates only on the semantic case.
+
+### Partial-output rule
+
+For these journeys, output remains unavailable while opening proposals or a
+proposed correction await review. An empty, explicitly unknown, declined, or
+conflicted optional fact is omitted with its semantic reason and does not block
+preview or download once the review decisions are complete. Conflicting
+alternatives never project. At least one accepted suspect product with an
+accepted name and role, the accepted adverse-event report type, and at least one
+accepted fact contributing to the Section B event description are required for
+output. This Experiment 2 rule replaces the Experiment 1 fixture's authored
+pre-resolution `409` gate; it does not claim a complete Form 3500 validation
+policy.
 
 ## Source evidence and Issue #39
 
 Source evidence is part of the usefulness question because the operator must be
-able to detect loss, invention, and wrong attribution. Experiment 2 must choose
-and verify the smallest general remedy for Issue #39 before protected live
-usefulness runs.
+able to detect loss, invention, and wrong attribution. Experiment 2 implements
+and verifies the smallest general remedy for Issue #39 before any protected
+live generalization or usefulness run.
 
-The model should identify supporting text, not perform fragile character
-arithmetic as a semantic task. Deterministic code may locate an exact returned
-excerpt in the originating input and reject only empty, absent, or ambiguous
-matches. The final design must preserve honest verbatim evidence without
-turning semantic support into a deterministic hallucination guard.
-
-This paragraph states the required responsibility boundary, not approval for a
-specific matching algorithm. The implementation slice must select a small
-method and stop if reliable anchoring requires fuzzy search, broad normalization,
-or another evidence store.
+The model returns the exact verbatim supporting text, not character offsets.
+Deterministic code accepts a quotation only when it has one exact non-empty
+occurrence in the originating input and then records that occurrence's offsets.
+An absent or ambiguous quotation rejects the proposal batch before attachment,
+shows a recoverable evidence-localization failure, and leaves accepted case
+knowledge unchanged. Exact occurrence proves only where the clinician's words
+appear; the operator still judges whether they semantically support the
+proposal. Stop and reconcile if this small method requires fuzzy search, broad
+normalization, fixture-specific correction, or another evidence store.
 
 ## Runtime validation and evaluation
 
@@ -177,71 +276,106 @@ success.
 
 ## Evidence sequence
 
-### Stage 1: deterministic assembly
+### Stage 1: production model/evidence boundary
 
 Before any paid model call:
 
-- preserve the complete Experiment 1 journey as a regression;
-- run each new journey end to end with predetermined model responses;
-- exercise every selected clarification, change/remove, correction, conflict,
-  partial-output, projection, preview, and download path;
-- verify case, screen, projection, and PDF agreement; and
-- prove that no application behavior imports scenario oracle values.
+- implement Issue #39's exact-quotation anchoring, application-owned stable
+  product identity, a case-agnostic model schema, and generic reviewed-case
+  context for later inputs;
+- remove the fixed proposal catalogs and fixed-input rejection from production
+  behavior;
+- prove exact, absent, and ambiguous quotation handling and generic entity
+  attachment with focused deterministic tests; and
+- prove production modules cannot import fixture or oracle definitions.
 
-Use focused tests and one desktop browser path. Do not create a coverage regime,
+After implementation evidence and one separately authorized standard review are
+complete, request a distinct authorization for the early live gate.
+
+### Stage 2: early live model/evidence gate
+
+Use the production model and case boundaries on the rich opening and the
+repeated-product opening plus its later update: two cases and three calls total.
+Use the smallest existing operator runner; build no evaluation framework or
+temporary application path. The model receives no scenario oracle or catalog.
+Disable automatic retries and stop on the first material semantic failure or
+architectural falsification. Record the ordinary model metadata and one
+sanitized verdict per authorized run. Passing establishes only that the core
+boundary is viable enough to justify assembled-product implementation.
+
+### Stage 3: deterministic assembled product
+
+Replace the fixed journey service and UI with state-driven product behavior,
+then run the three new journeys and the retained Experiment 1 semantic
+regression end to end with predetermined model responses. Exercise the selected
+clarification, unknown/declined controls, change/remove, correction, conflict,
+partial-output, projection, preview, and download behavior. Verify case, screen,
+projection, and PDF agreement and prove no runtime product behavior imports an
+oracle. Use focused tests and one desktop browser path; add no coverage regime,
 browser matrix, visual-regression system, or broad failure suite.
 
-### Stage 2: first live pass
+### Stage 4: protected live operator evidence
 
-After separate authorization of an exact case/call budget, run each of the three
-new journeys once through the protected preview. Disable automatic retries and
-stop the batch on a material semantic failure or architectural falsification.
-Record model, prompt/schema revision, parameters, token use, latency, estimated
-cost, operator corrections, and the sanitized final verdict.
+After assembled implementation evidence, one separately authorized standard
+review, and an exact separately authorized call budget, run each new journey
+once through the protected preview. Stop the batch on a material semantic
+failure or architectural falsification. Only if all first passes remain viable,
+request separate authorization for one additional independent sample of each
+journey. The second samples are required for a Continue decision but unnecessary
+for an earlier Revise or Stop decision.
 
-### Stage 3: variability pass
+For every authorized run, record model, prompt/schema revision, parameters,
+token use, latency, estimated cost, operator corrections, and a sanitized final
+verdict. Zero observed failures in this sample establishes no general failure
+rate or clinical reliability.
 
-Only if all first-pass journeys remain viable, request separate authorization
-to run one additional independent sample of each journey. This staged design
-avoids spending additional calls to reconfirm an already failed premise.
-
-### Stage 4: direct-form comparison
+### Stage 5: direct-form comparison
 
 Steve completes the supported content for the information-rich and sparse cases
-both through Wilson and directly in Form 3500. Record elapsed time, avoidable
-questions or corrections, review burden, output completeness, and a plain-
-English preference. This is formative operator evidence, not a usability study
-or statistical claim.
+both through Wilson and directly in Form 3500, starting only from the scenario
+text. Use direct form first for the rich case and Wilson first for the sparse
+case so one order does not govern both observations. Record total elapsed time,
+active operator time, model-wait time, avoidable questions or corrections,
+review burden, output completeness, and a plain-English preference with the
+concrete reason. This is formative evidence from one informed operator, not a
+usability study, statistical claim, or clinician proxy.
 
 ## Success
 
 Continue beyond Experiment 2 only if:
 
-1. No retained live run invents a material fact, silently loses one, assigns it
+1. No authorized live run invents a material fact, silently loses one, assigns it
    to the wrong entity or role, hides incompatible evidence, or disagrees with
    the final PDF.
-2. Every journey reaches a truthful reviewed output without case-specific
+2. Every journey reaches a truthful reviewed output through production-seed
+   code containing no fixture-, medicine-, oracle-, or sequence-specific
    product behavior.
 3. Sparse and uncertain information remains visibly partial; Wilson does not
    interrogate optional blanks or invent completion.
 4. Evidence lets the operator identify the subject and claim without trusting
    proposal metadata.
-5. The repeat samples introduce no material instability.
+5. The required second samples introduce no material instability; this is
+   recorded as bounded observation rather than a reliability claim.
 6. In both direct-form comparisons, Wilson provides a clear reduction in total
    effort or a comparably valuable reduction in omission/distortion risk
    without adding greater review burden.
 7. Latency is acceptable to Steve for the demonstrated value; exact observed
    latency is recorded rather than optimized speculatively.
-8. The result justifies a specific next product-completeness investment.
+8. The retained implementation is a credible production seed for the supported
+   scope and the result justifies a specific next product-completeness
+   investment.
 
-Do not collapse these dimensions into one score.
+Record technical generalization, model/evidence performance, production-seed
+quality, operator usefulness, and eventual clinician validation separately. Do
+not collapse them into one score or allow one dimension to substitute for
+another.
 
 ## Stop and reconcile
 
 Stop the affected slice and return for a premise decision if:
 
-- supporting the second or third case requires product-name, scenario, or
-  expected-value branches in application behavior;
+- supporting any case requires product-name, scenario, expected-value, fixture,
+  or predetermined-sequence branches in runtime product behavior;
 - the semantic case or one write boundary cannot represent a selected journey
   without duplicated authority;
 - exact evidence requires fragile model-calculated offsets, fuzzy matching, or
@@ -250,29 +384,45 @@ Stop the affected slice and return for a premise decision if:
   or case/PDF disagreement occurs;
 - the same general failure recurs after one bounded remediation;
 - useful output requires a general question planner, ontology, full Form 3500
-  expansion, production architecture, or real data; or
+  expansion, deferred production infrastructure, or real data; or
 - direct-form comparison shows no meaningful operator advantage.
 
 Ordinary local defects may be fixed once with focused recurrence evidence.
 Do not accumulate scenario-specific patches to save the experiment.
 
+## Value discipline
+
+Every planned activity must directly protect a Product invariant, enable one of
+the selected journeys through shared production code, resolve an observed
+failure, or answer the investment decision. Otherwise defer it. Do not add a
+generic workflow engine, general question planner, broad domain model, eval
+platform, browser matrix, visual-regression service, load work, analytics,
+persistence, speculative performance optimization, unrelated refactoring, or
+preview-infrastructure polish. Repeated review or live runs require a new
+decision question and Steve's explicit authorization.
+
 ## Proposed delivery slices
 
-1. **Slice 0 — fixtures and responsibility boundaries:** finalize the three
-   synthetic journeys and external oracles; choose the Issue #39 evidence
-   responsibility; map fixed-case coupling; make no application or model call.
-2. **Slice 1 — minimum generalization:** remove only the named-product/catalog
-   seams required by the approved journeys; preserve the semantic case and one
-   write boundary; verify mechanically with focused tests.
-3. **Slice 2 — assembled multi-case browser/PDF journeys:** implement the
-   selected questions and difficult states, then complete deterministic
-   browser-to-PDF evidence for all cases.
-4. **Slice 3 — staged protected live operator pilot:** run the separately
-   authorized first samples, optional variability samples, and direct-form
-   comparisons; produce the continue, revise, or stop decision.
+1. **Current planning change:** this documentation-only Issue #42/PR defines
+   the exact journeys, production-seed contract, evidence order, and stopping
+   rules. It makes no application or model call.
+2. **Core boundary slice:** resolve Issue #39 while generalizing source
+   evidence, model input/output, stable identity, and later-input context. Run
+   deterministic evidence, one authorized standard review, and only then the
+   separately authorized early live gate.
+3. **Assembled product slice:** replace fixed orchestration and UI with
+   state-driven behavior, then complete deterministic browser-to-PDF evidence
+   for all cases and one authorized standard review.
+4. **Operator evidence and outcome:** run the separately authorized protected
+   samples and direct-form comparisons, then record the separate findings and
+   Continue, Revise, or Stop decision. This phase adds no product behavior.
 
-Each slice uses its own issue, branch, draft PR, proportional evidence, and
-explicit merge approval. A failed premise stops later slices.
+The two implementation slices each use one coherent issue, branch, draft PR,
+proportional evidence, and explicit merge approval. The evidence/outcome work
+retains a durable issue/PR record but requires no automatic independent review
+when it changes no behavior or governing premise. A failed premise stops later
+work. Do not split work further unless an independently valuable defect or
+decision cannot be resolved coherently inside its slice.
 
 ## Review and authorization
 

@@ -1,7 +1,8 @@
-# Wilson Experiment 1 architecture
+# Wilson semantic architecture
 
 **Status:** Experiment 1 hypothesis completed with qualified technical success;
-not automatic authority for Experiment 2 or production
+Experiment 2 production-seed amendments are draft under Issue #42 and are not
+authority until approved
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification
@@ -18,14 +19,17 @@ not organize upstream knowledge.
 Model output remains proposed until clinician review. Every consequential case
 change passes through one server-side command boundary. Understanding, review,
 clarification, and Form 3500 output are synchronous views of the same case
-revision. For the synthetic Experiment 1 preview only, the browser may retain
-the latest server-returned case and interaction state between stateless
-requests; it does not gain a second mutation path.
+revision. For the synthetic Experiment 1 and proposed Experiment 2 previews
+only, the browser may retain the latest server-returned case and interaction
+state between stateless requests; it does not gain a second mutation path.
 
 Implement this in one modular TypeScript application with model, PDF, and
-temporary storage behind narrow adapters. Do not introduce a generic knowledge
-graph, event store, distributed CQRS, microservices, durable database, or
-framework-independent internal platform for Experiment 1.
+temporary storage behind narrow adapters. Accepted Experiment 2 runtime changes
+are production-seed code for its bounded scope, while browser-held storage,
+synthetic diagnostics, and preview protection remain explicitly temporary
+adapters. Do not introduce a generic knowledge graph, event store, distributed
+CQRS, microservices, durable database, or framework-independent internal
+platform.
 
 The architecture must prove three things:
 
@@ -66,10 +70,21 @@ A resolved value is `known(value, optional precision or qualifier)`, `unknown`,
 exclusive. No value means `empty`; it does not mean unknown. Whether Wilson has
 asked about an empty fact belongs to interaction history, not clinical truth.
 
-Experiment 1 uses explicit typed fields only for its selected patient, event,
-and product facts. Product roles are facts, and proposed entities remain
+The experiments use explicit typed fields only for their selected patient,
+event, and product facts. Product roles are facts, and proposed entities remain
 proposed until group review. `Fact<T>` supplies consistent behavior without
 claiming a complete Form 3500 ontology.
+
+### Stable entity identity
+
+The application owns stable opaque case entity IDs. On opening input, the model
+may group mentions under response-local product references; the model boundary
+validates those groups and assigns case IDs before proposals reach
+`applyCaseCommand`. A later model input receives the relevant reviewed product
+IDs and names and may reference only those IDs for the selected Experiment 2
+updates. Stable identity is never derived from medicine name, list position,
+fixture data, or a PDF row. The model proposes mention linkage; it does not own
+case identity.
 
 ### Source and change records
 
@@ -120,9 +135,9 @@ framework is required.
 
 ## Model responsibility
 
-The model may propose typed patient, event, and product facts, entity links,
-qualifiers, exact source spans, and the presence of a correction or unresolved
-alternative. It may not:
+The model may propose typed patient, event, and product facts, mention grouping
+or links to application-supplied entities, qualifiers, exact verbatim supporting
+text, and the presence of a correction or unresolved alternative. It may not:
 
 - confirm, overwrite, or resolve case knowledge;
 - choose among conflicting evidence;
@@ -130,30 +145,44 @@ alternative. It may not:
 - choose PDF widget identifiers; or
 - create the Form 3500 projection.
 
+A model may propose `unknown`, `explicitly absent`, `inapplicable`, or `declined`
+only when the current clinician input states that meaning explicitly and the
+proposal cites it. Those proposals remain unaccepted until ordinary review.
+Absence of a proposal remains empty and never acquires one of those meanings.
+
 The runtime model boundary rejects only mechanically decidable contract
 violations before review:
 
 - the provider did not complete normally;
 - returned content is not valid structured output;
 - a field, entity, identifier, or value cannot be represented by the selected
-  Experiment 1 domain types;
+  experiment domain types;
 - proposal or source identities are duplicated or internally inconsistent; or
-- a source span is empty or falls outside the exact clinician input.
+- supporting text is empty, absent from the exact clinician input, or has more
+  than one exact occurrence and therefore cannot be anchored unambiguously.
 
 These checks are finite application-input validation, not a hallucination
-guard. A valid source span proves only that the displayed excerpt came from the
-clinician input; deterministic code does not establish that the excerpt
-semantically supports the proposal. The runtime boundary must not compare live
-proposals with the fixed experiment's expected proposal set, values, or source
-clauses. A structurally valid but incorrect, omitted, unexpected, or
-unsupported proposal remains visibly proposed for operator review and cannot
-become resolved without the ordinary clinician-review command. The fixed
-semantic oracle remains an Experiment 1 assessment reference, while operator
-review and the human-scored model sample determine whether a run passes.
+guard. The model returns a self-contained exact quotation rather than character
+offsets. Deterministic code locates its single exact occurrence, assigns source
+identity, and records the resulting offsets. A successful match proves only
+where the clinician's words appear; deterministic code does not establish that
+the excerpt semantically supports the proposal. An absent or ambiguous match
+rejects the proposal batch before attachment, presents a recoverable failure,
+and leaves accepted knowledge unchanged. Do not add fuzzy matching, broad
+normalization, or fixture-specific source repair without a new approved premise.
 
-Experiment 1 uses one deterministic semantic rule to identify missing
-suspect-product indications and authored copy to ask for them. A generic
-follow-up planner and model-generated question wording are deferred.
+The runtime boundary must not compare live proposals with an experiment's
+expected proposal set, values, or source clauses. A structurally valid but
+incorrect, omitted, unexpected, or unsupported proposal whose evidence anchors
+successfully remains visibly proposed for operator review and cannot become
+resolved without the ordinary clinician-review command. External semantic
+oracles and human scoring determine whether an experiment run passes.
+
+Experiment 2 retains one deterministic semantic rule to identify missing
+suspect-product indications. It renders authored copy and one labelled answer
+control per target product, including explicit unknown and declined choices.
+Those direct semantic answers use `applyCaseCommand` without a model call. A
+generic follow-up planner and model-generated question wording remain deferred.
 
 ## Views and Form 3500 projection
 
@@ -170,6 +199,20 @@ Case revision
 The semantic projection knows Form 3500 concepts but not PDF widget names,
 coordinates, checkbox encodings, or library details. Only the final versioned
 adapter knows those. A projection or rendering error leaves the case unchanged.
+
+Experiment 2 replaces the authored Experiment 1 sequence with state-derived
+work. Pending opening proposals require review; an unanswered consequential need
+requires clarification; a proposed correction or conflict requires attention;
+otherwise the reviewed projection is inspectable. The UI may offer actions only
+for the semantic targets represented in the current revision. It may not infer
+the stage from fixture input, product names, expected values, or a fixed turn
+number.
+
+For the selected Experiment 2 medication journeys, unresolved optional facts
+remain omitted and visible but do not block output after pending proposals and
+corrections have received their required review. Conflicting alternatives never
+project. The semantic projection supplies omission reasons; the PDF adapter does
+not decide completion. A broader report-completion policy remains deferred.
 
 The approved authority is Form FDA 3500 (09/2025), OMB expiry 09-30-2027. The
 [official PDF](https://www.fda.gov/media/76299/download?attachment=) must be
