@@ -9,6 +9,7 @@ import {
 } from "../../experiment/fixed-inputs";
 import { ModelCallFailure } from "./journey-model";
 import type {
+  CorrectionModelContext,
   JourneyModel,
   ModelCallMetrics,
   ModelDiagnosticIssue,
@@ -17,7 +18,7 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-experiment-1-extraction-v4";
+export const MODEL_PROMPT_REVISION = "wilson-experiment-1-extraction-v5";
 export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v5";
 // The Messages API requires max_tokens. Use Sonnet 5's full provider output
 // capacity here so Wilson imposes no development/verification token budget.
@@ -153,6 +154,7 @@ Rules:
 - Preserve a measurement's value and unit together as a string, for example "7.8 g/dL" rather than 7.8.
 - Every proposal must cite the shortest exact, self-contained supporting substring that lets a human reviewer identify both the subject and the claim without relying on proposal target metadata. For a product fact, include enough local wording to connect the product name with the claimed property; one shared clause may support multiple product proposals. Use zero-based start-inclusive/end-exclusive character offsets into the clinician input. Offsets must select non-empty text exactly.
 - Supply only the source offsets. Wilson assigns stable source identity; the model does not.
+- On a correction turn, use the supplied reviewed-case context only to distinguish the already accepted value from a newly reported correction or alternative. Never cite that context as clinician evidence; every source span still refers only to the current clinician input.
 - Use only the proposal IDs, groups, targets, and intents listed for the requested turn. Emit every listed proposal that the input explicitly supports and no others.
 - Products are declarations for newly proposed product entities, not accepted case knowledge.`;
 
@@ -200,16 +202,21 @@ type ProviderOutputFormat = Pick<
   "type" | "schema"
 >;
 
-export function createAnthropicRequest(turn: ModelTurn, text: string): AnthropicModelRequest {
+export function createAnthropicRequest(
+  turn: ModelTurn,
+  text: string,
+  correctionContext?: CorrectionModelContext,
+): AnthropicModelRequest {
   requireFixedInput(turn, text);
   const catalog = turn === "opening" ? OPENING_CATALOG : CORRECTION_CATALOG;
+  const context = correctionContextBlock(turn, correctionContext);
   return {
     model: ANTHROPIC_MODEL_ID,
     max_tokens: PROVIDER_MAX_OUTPUT_TOKENS,
     system: SYSTEM_PROMPT,
     messages: [{
       role: "user",
-      content: `${catalog}\n\nClinician input:\n<input>\n${text}\n</input>`,
+      content: `${catalog}${context}\n\nClinician input:\n<input>\n${text}\n</input>`,
     }],
     output_config: { format: providerOutputFormat() },
   };
@@ -221,8 +228,8 @@ export function createAnthropicJourneyModel(
   recordResponse?: AnthropicResponseRecorder,
 ): JourneyModel {
   return {
-    async propose(turn, text) {
-      const request = createAnthropicRequest(turn, text);
+    async propose(turn, text, correctionContext) {
+      const request = createAnthropicRequest(turn, text, correctionContext);
       const startedAt = now();
       let response: AnthropicModelResponse;
       try {
@@ -419,6 +426,19 @@ function requireFixedInput(turn: ModelTurn, text: string): void {
   if (text !== expected) {
     throw new Error("This experiment accepts only the displayed fictional account");
   }
+}
+
+function correctionContextBlock(
+  turn: ModelTurn,
+  context: CorrectionModelContext | undefined,
+): string {
+  if (turn === "opening") return "";
+  if (!context) throw new Error("Reviewed correction context is required");
+  return `\n\nReviewed case context (not clinician input; do not cite):
+- accepted naproxen dose: ${context.reviewedNaproxenDose}
+- accepted apixaban start date: ${context.reviewedApixabanStartDate}
+
+For the date-alternative proposal, return the newly reported date that differs from the accepted date.`;
 }
 
 function validateCorrectionGroupIds(

@@ -2,6 +2,11 @@ import type { ParsedModelProposalEnvelope } from "../../domain/case/model-bounda
 
 export type ModelTurn = "opening" | "correction";
 
+export interface CorrectionModelContext {
+  reviewedNaproxenDose: string;
+  reviewedApixabanStartDate: string;
+}
+
 export interface ModelCallMetrics {
   model: string;
   promptRevision: string;
@@ -69,5 +74,9 @@ export class ModelCallFailure extends Error {
 }
 
 export interface JourneyModel {
-  propose(turn: ModelTurn, text: string): Promise<ModelProposalResult>;
+  propose(
+    turn: ModelTurn,
+    text: string,
+    correctionContext?: CorrectionModelContext,
+  ): Promise<ModelProposalResult>;
 }

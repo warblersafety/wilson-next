@@ -11,7 +11,6 @@ import {
   fixedRecordedAt,
   indicationAnswer,
   openingAccount,
-  resolutionStatement as fixedResolutionStatement,
 } from "../../experiment/fixed-inputs";
 import { applyCaseCommandToRepository } from "../case/apply-command";
 import type { CaseRepository } from "../case/repository";
@@ -21,7 +20,11 @@ import {
   type RuntimeDiagnosticLogger,
 } from "../diagnostics/runtime-log";
 import { fixedJourneyModel } from "../model/fixed-journey";
-import { ModelCallFailure, type JourneyModel } from "../model/journey-model";
+import {
+  ModelCallFailure,
+  type CorrectionModelContext,
+  type JourneyModel,
+} from "../model/journey-model";
 
 export type JourneyStage =
   | "describe"
@@ -111,6 +114,17 @@ export async function performJourneyAction(
       before,
       after: { stage: stageFor(current), revision: current.revision },
     });
+  };
+
+  const acceptDateConflict = async () => {
+    requireDistinctDateAlternative(current);
+    await applyCommand({
+      type: "review-proposal-groups",
+      commandId: "command-record-date-conflict",
+      expectedRevision: current.revision,
+      decisions: [{ groupId: "apixaban-date-conflict", action: "accept" }],
+    });
+    requireApixabanDateConflict(current);
   };
 
   try {
@@ -221,7 +235,14 @@ export async function performJourneyAction(
     }
     case "submit-correction":
       requireStage(expectedStage, "update");
-      const correction = await proposeWithDiagnostics(model, "correction", action.text, diagnostics);
+      const correctionContext = reviewedCorrectionContext(current);
+      const correction = await proposeWithDiagnostics(
+        model,
+        "correction",
+        action.text,
+        diagnostics,
+        correctionContext,
+      );
       await applyCommand({
         type: "attach-grounded-proposals",
         commandId: "command-attach-correction",
@@ -243,30 +264,18 @@ export async function performJourneyAction(
       if (hasPendingDoseCorrection(current)) {
         throw new Error("Accept or reject the dose correction before continuing");
       }
-      await applyCommand({
-        type: "review-proposal-groups",
-        commandId: "command-record-date-conflict",
-        expectedRevision: current.revision,
-        decisions: [{ groupId: "apixaban-date-conflict", action: "accept" }],
-      });
+      await acceptDateConflict();
       break;
     case "resolve-date":
       if (expectedStage === "correct") {
         if (hasPendingDoseCorrection(current)) {
           throw new Error("Accept or reject the dose correction before resolving the date");
         }
-        await applyCommand({
-          type: "review-proposal-groups",
-          commandId: "command-record-date-conflict",
-          expectedRevision: current.revision,
-          decisions: [{ groupId: "apixaban-date-conflict", action: "accept" }],
-        });
+        await acceptDateConflict();
       } else {
         requireStage(expectedStage, "output-unresolved");
       }
-      const resolutionStatement = action.chosenValueId === "apixaban-date-alternative"
-        ? fixedResolutionStatement
-        : "Use 12-Aug-2026 as the apixaban start date.";
+      const resolutionStatement = dateResolutionStatement(current, action.chosenValueId);
       await applyCommand({
         type: "resolve-conflict",
         commandId: "command-resolve-apixaban-date",
@@ -299,10 +308,15 @@ async function proposeWithDiagnostics(
   turn: "opening" | "correction",
   text: string,
   diagnostics: RuntimeDiagnosticLogger,
+  correctionContext?: CorrectionModelContext,
 ) {
-  diagnostics.event("model", "request", "start", { turn, input: diagnosticInput(text) });
+  diagnostics.event("model", "request", "start", {
+    turn,
+    input: diagnosticInput(text),
+    ...(correctionContext ? { reviewedContext: correctionContext } : {}),
+  });
   try {
-    const result = await model.propose(turn, text);
+    const result = await model.propose(turn, text, correctionContext);
     diagnostics.event("model", "response", "success", {
       turn,
       ...(result.diagnosticResponse === undefined ? {} : { response: result.diagnosticResponse }),
@@ -388,6 +402,56 @@ export function stageFor(caseState: SemanticCase): JourneyStage {
 
 function hasPendingDoseCorrection(caseState: SemanticCase): boolean {
   return caseState.products.some(({ facts }) => facts.dose.proposedValues.some(({ intent }) => intent === "correction"));
+}
+
+function reviewedCorrectionContext(caseState: SemanticCase): CorrectionModelContext {
+  const naproxen = caseState.products.find(({ id }) => id === "product-naproxen");
+  const apixaban = caseState.products.find(({ id }) => id === "product-apixaban");
+  const dose = naproxen?.facts.dose.resolvedValue?.value;
+  const startDate = apixaban?.facts.startDate.resolvedValue?.value;
+  if (dose?.kind !== "known" || typeof dose.value !== "string"
+    || startDate?.kind !== "known" || typeof startDate.value !== "string") {
+    throw new Error("Reviewed correction context is unavailable");
+  }
+  return {
+    reviewedNaproxenDose: dose.value,
+    reviewedApixabanStartDate: startDate.value,
+  };
+}
+
+function requireDistinctDateAlternative(caseState: SemanticCase): void {
+  const apixaban = caseState.products.find(({ id }) => id === "product-apixaban");
+  const fact = apixaban?.facts.startDate;
+  const reviewed = fact?.resolvedValue?.value;
+  const proposed = fact?.proposedValues.find(
+    ({ groupId, intent }) => groupId === "apixaban-date-conflict" && intent === "alternative",
+  )?.value;
+  if (reviewed?.kind !== "known" || typeof reviewed.value !== "string"
+    || proposed?.kind !== "known" || typeof proposed.value !== "string"
+    || reviewed.value === proposed.value) {
+    throw new Error(
+      "Wilson did not identify a different apixaban start date in the update. Accepted case knowledge is unchanged.",
+    );
+  }
+}
+
+function requireApixabanDateConflict(caseState: SemanticCase): void {
+  const apixaban = caseState.products.find(({ id }) => id === "product-apixaban");
+  if (apixaban?.facts.startDate.state !== "conflicted") {
+    throw new Error("The apixaban start-date proposal did not create a conflict");
+  }
+}
+
+function dateResolutionStatement(
+  caseState: SemanticCase,
+  chosenValueId: "apixaban-start" | "apixaban-date-alternative",
+): string {
+  const apixaban = caseState.products.find(({ id }) => id === "product-apixaban");
+  const chosen = apixaban?.facts.startDate.conflictingValues.find(({ id }) => id === chosenValueId)?.value;
+  if (chosen?.kind !== "known" || typeof chosen.value !== "string") {
+    throw new Error("The selected apixaban start date is unavailable");
+  }
+  return `Use ${chosen.value} as the apixaban start date.`;
 }
 
 function requireStage(actual: JourneyStage, expected: JourneyStage): void {

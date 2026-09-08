@@ -1,6 +1,6 @@
 # Issue 40 correction/conflict integrity evidence
 
-**Status:** Root cause confirmed and independent pre-implementation review complete; implementation pending
+**Status:** Root cause confirmed, independently reviewed, implemented, and deterministically verified
 
 **Issue:** [#40](https://github.com/warblersafety/wilson-next/issues/40)
 
@@ -89,6 +89,51 @@ The review's command-ID observation is non-blocking. Both paths intentionally
 accept the same semantic proposal group and are mutually exclusive after a
 successful action, so Issue #40 does not add identifier churn without evidence
 of a defect.
+
+## Implemented outcome
+
+- The correction model receives only the reviewed naproxen dose and reviewed
+  apixaban start date needed to interpret the fixed correction input. The
+  prompt revision is now `wilson-experiment-1-extraction-v5`; the unchanged
+  output contract remains `wilson-grounded-proposals-v5`.
+- Before either direct resolution or “keep both unresolved,” the service checks
+  that the pending alternative is a known date distinct from the reviewed
+  date. A duplicate remains pending, accepted knowledge and revision remain
+  unchanged, and the request returns a safe explanation.
+- The same helper governs both actions, closing the additional path identified
+  by the independent review. A valid accepted group must also produce the
+  expected conflicted state before Wilson can resolve it.
+- The correction panel, evidence, action labels, resolution statement, and
+  final dose/date summary now derive from current case state instead of
+  fixture-expected values. If a duplicate appears, the page explains that no
+  conflict was found and offers no misleading conflict actions.
+
+The implementer audit found and removed the remaining hard-coded dose summary,
+date-selection statement, and action label. These were the same approved
+screen/state-integrity remediation, not a new behavior or product premise.
+
+## Deterministic verification
+
+Run on 2026-09-07 from the Issue #40 branch after the complete implementation:
+
+- `npm run typecheck` — passed.
+- `PYPDF_PYTHON=.venv-pdf-evidence/bin/python npm test` — 15 files and 92 tests
+  passed.
+- `npm run build` — passed with all application and API routes compiled.
+- `npm run test:e2e` — both Playwright journeys passed, including the complete
+  seven-state correction/conflict/PDF path.
+- `git diff --check` — passed.
+
+Focused recurrence coverage proves that the correction request receives the
+reviewed values and that a same-value model result cannot advance either direct
+resolution or leave-unresolved. The unchanged distinct-value journey still
+supports leaving the conflict unresolved, selecting either source, and
+producing the resolved projection and PDF.
+
+No live Wilson model call, manual Vercel deployment, production deployment, or
+additional Claude run was used for this verification. One separately
+authorized protected live operator run remains required to confirm the model
+uses the new context and complete the previously blocked experiment journey.
 
 ## Boundaries
 

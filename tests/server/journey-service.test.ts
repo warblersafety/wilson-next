@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { correctionAccount, indicationAnswer, openingAccount } from "../../src/experiment/fixed-inputs";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
-import { getJourneySnapshot, performJourneyAction } from "../../src/server/journey/service";
+import {
+  getJourneySnapshot,
+  performJourneyAction,
+  type JourneyAction,
+} from "../../src/server/journey/service";
+import { fixedJourneyModel } from "../../src/server/model/fixed-journey";
+import type { CorrectionModelContext, JourneyModel } from "../../src/server/model/journey-model";
 
 describe("fixed local journey service", () => {
   it("assembles the approved states through the authoritative repository command path", async () => {
@@ -86,6 +92,83 @@ describe("fixed local journey service", () => {
     expect(snapshot.projection.sections.D.suspectProducts[0].startDate).toBe("2026-08-12");
   });
 
+  it("passes the relevant reviewed values into the correction model request", async () => {
+    const repository = new InMemoryCaseRepository();
+    const caseId = "case-correction-context";
+    let receivedContext: CorrectionModelContext | undefined;
+    const model: JourneyModel = {
+      async propose(turn, text, correctionContext) {
+        if (turn === "correction") receivedContext = correctionContext;
+        return fixedJourneyModel.propose(turn, text, correctionContext);
+      },
+    };
+
+    await advanceToCorrectionInput(repository, caseId, model);
+    await performJourneyAction(
+      repository,
+      caseId,
+      { action: "submit-correction", text: correctionAccount },
+      model,
+    );
+
+    expect(receivedContext).toEqual({
+      reviewedNaproxenDose: "500 mg",
+      reviewedApixabanStartDate: "2026-08-12",
+    });
+  });
+
+  it.each([
+    ["direct resolution", { action: "resolve-date", chosenValueId: "apixaban-date-alternative" }],
+    ["leaving unresolved", { action: "leave-date-unresolved" }],
+  ] satisfies Array<[string, JourneyAction]>) (
+    "keeps a duplicate date proposal visible and blocks %s",
+    async (_label, action) => {
+      const repository = new InMemoryCaseRepository();
+      const caseId = `case-duplicate-date-${action.action}`;
+      await advanceToCorrectionInput(repository, caseId, duplicateDateJourneyModel);
+      let snapshot = await performJourneyAction(
+        repository,
+        caseId,
+        { action: "submit-correction", text: correctionAccount },
+        duplicateDateJourneyModel,
+      );
+      snapshot = await performJourneyAction(
+        repository,
+        caseId,
+        { action: "accept-dose-correction" },
+        duplicateDateJourneyModel,
+      );
+
+      expect(snapshot).toMatchObject({ stage: "correct", revision: 7, downloadReady: false });
+      expect(apixabanStartDate(snapshot)).toMatchObject({
+        state: "resolved",
+        resolved: { kind: "known", value: "2026-08-12" },
+        proposals: [{
+          id: "apixaban-date-alternative",
+          intent: "alternative",
+          value: { kind: "known", value: "2026-08-12" },
+        }],
+        conflicts: [],
+      });
+
+      await expect(performJourneyAction(
+        repository,
+        caseId,
+        action,
+        duplicateDateJourneyModel,
+      )).rejects.toThrow("Wilson did not identify a different apixaban start date");
+
+      snapshot = await getJourneySnapshot(repository, caseId);
+      expect(snapshot).toMatchObject({ stage: "correct", revision: 7, downloadReady: false });
+      expect(apixabanStartDate(snapshot)).toMatchObject({
+        state: "resolved",
+        resolved: { kind: "known", value: "2026-08-12" },
+        proposals: [{ value: { kind: "known", value: "2026-08-12" } }],
+        conflicts: [],
+      });
+    },
+  );
+
   it("makes the supported understanding Change and Remove actions authoritative", async () => {
     const repository = new InMemoryCaseRepository();
     const caseId = "case-truthful-controls";
@@ -117,3 +200,43 @@ describe("fixed local journey service", () => {
     expect(snapshot).toMatchObject({ stage: "clarify", revision: 6 });
   });
 });
+
+const duplicateDateJourneyModel: JourneyModel = {
+  async propose(turn, text, correctionContext) {
+    const result = await fixedJourneyModel.propose(turn, text, correctionContext);
+    if (turn !== "correction") return result;
+    return {
+      ...result,
+      envelope: {
+        ...result.envelope,
+        proposals: result.envelope.proposals.map((proposal) => proposal.proposalId === "apixaban-date-alternative"
+          ? { ...proposal, value: { kind: "known", value: "2026-08-12" } }
+          : proposal),
+      },
+    };
+  },
+};
+
+async function advanceToCorrectionInput(
+  repository: InMemoryCaseRepository,
+  caseId: string,
+  model: JourneyModel,
+) {
+  await performJourneyAction(
+    repository,
+    caseId,
+    { action: "submit-opening", text: openingAccount, reportType: "adverse-event" },
+    model,
+  );
+  await performJourneyAction(repository, caseId, { action: "accept-understanding" }, model);
+  await performJourneyAction(
+    repository,
+    caseId,
+    { action: "answer-indications", text: indicationAnswer },
+    model,
+  );
+}
+
+function apixabanStartDate(snapshot: Awaited<ReturnType<typeof getJourneySnapshot>>) {
+  return snapshot.understanding.products.find(({ id }) => id === "product-apixaban")!.facts.startDate;
+}

@@ -148,8 +148,8 @@ export async function postCase(request: NextRequest, model: JourneyModel = confi
 function configuredJourneyModel(): JourneyModel {
   if (process.env.VERCEL_ENV !== "preview") return fixedJourneyModel;
   return {
-    propose(turn, text) {
-      return createAnthropicJourneyModel().propose(turn, text);
+    propose(turn, text, correctionContext) {
+      return createAnthropicJourneyModel().propose(turn, text, correctionContext);
     },
   };
 }
@@ -242,6 +242,7 @@ function safeClientError(error: unknown): string {
     "Use the displayed fictional indication answer",
     "This experiment accepts only the displayed fictional",
     "Accept or reject the dose correction",
+    "Wilson did not identify a different apixaban start date",
   ];
   return allowed.some((prefix) => error.message.startsWith(prefix))
     ? error.message
