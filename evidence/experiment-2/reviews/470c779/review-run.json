@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "targetCommit": "470c7792397c67cf42d3556a73294b92f8a23be8",
+  "baseCommit": "aed8f58e1f3fc2c08b238999fc493192ab2e65b5",
+  "cli": "Claude Code 2.1.241",
+  "subscriptionPreflight": {
+    "passed": true,
+    "authMethod": "claude.ai",
+    "subscriptionType": "max",
+    "providerVariablesUnset": [
+      "ANTHROPIC_API_KEY",
+      "ANTHROPIC_AUTH_TOKEN",
+      "ANTHROPIC_BASE_URL"
+    ]
+  },
+  "review": {
+    "status": "completed",
+    "configuredModel": "sonnet",
+    "canonicalModel": "claude-sonnet-5",
+    "effort": "high",
+    "durationMilliseconds": 307541,
+    "apiDurationMilliseconds": 307894,
+    "modelTurns": 19,
+    "costUsd": 0.9490596,
+    "usage": {
+      "inputTokens": 38,
+      "cacheCreationInputTokens": 100832,
+      "cacheReadInputTokens": 1420088,
+      "outputTokens": 25673,
+      "thinkingTokens": 20191
+    },
+    "modelUsage": {
+      "claude-sonnet-5": {
+        "inputTokens": 38,
+        "cacheCreationInputTokens": 100832,
+        "cacheReadInputTokens": 1420088,
+        "outputTokens": 25673,
+        "costUsd": 0.9441516
+      },
+      "claude-haiku-4-5": {
+        "inputTokens": 4833,
+        "cacheCreationInputTokens": 0,
+        "cacheReadInputTokens": 0,
+        "outputTokens": 15,
+        "costUsd": 0.004908
+      }
+    },
+    "permissionDenials": 0,
+    "subagentsSpawned": 0,
+    "webRequests": 0,
+    "findings": {
+      "blocking": 0,
+      "followUp": 2
+    }
+  },
+  "inputs": {
+    "prompt": "claude-review-prompt.txt",
+    "result": "claude-review-result.md",
+    "materialDiff": {
+      "command": "git diff --no-ext-diff --unified=80 main...HEAD -- README.md docs/PRODUCT.md docs/ARCHITECTURE.md docs/EXPERIMENT-1.md docs/EXPERIMENT-2.md docs/DELIVERY.md evidence/experiment-2/effort-ledger.json",
+      "bytes": 129538,
+      "sha256": "38053695fc100f700bdd3640e537c24edf77d63bd69ba4f25ae9cd1f78ea4023"
+    },
+    "fullDiff": {
+      "command": "git diff --no-ext-diff --unified=80 main...HEAD",
+      "bytes": 157041,
+      "sha256": "15ac9bec4168af54e4419371d9ee1e52e684e10f3d9d9e500bce693b8ee8dce8"
+    }
+  },
+  "limitations": [
+    "CLI-reported cost is an equivalent usage value and may not be an additional subscription charge.",
+    "The reviewer read the complete hashed diff artifacts but did not independently recompute their hashes.",
+    "The reviewer could not independently inspect the coordinator's subscription preflight or configured effort; both are recorded from the invocation boundary."
+  ]
+}
