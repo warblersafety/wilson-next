@@ -24,6 +24,11 @@ import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { performJourneyAction } from "../../src/server/journey/service";
 
 describe("Anthropic fixed-journey adapter", () => {
+  const correctionContext = {
+    reviewedNaproxenDose: "500 mg",
+    reviewedApixabanStartDate: "2026-08-12",
+  };
+
   it("uses the pinned structured-output request without sampling overrides, tools, or retries", async () => {
     let captured: AnthropicModelRequest | undefined;
     const requester = vi.fn<AnthropicRequester>(async (request) => {
@@ -88,6 +93,19 @@ describe("Anthropic fixed-journey adapter", () => {
     expect(finalMessage).toHaveBeenCalledOnce();
   });
 
+  it("supplies only the relevant reviewed facts as non-source correction context", () => {
+    const request = createAnthropicRequest("correction", correctionAccount, correctionContext);
+    const content = request.messages[0].content;
+
+    expect(content).toContain("Reviewed case context (not clinician input; do not cite)");
+    expect(content).toContain("accepted naproxen dose: 500 mg");
+    expect(content).toContain("accepted apixaban start date: 2026-08-12");
+    expect(content).toContain("return the newly reported date that differs from the accepted date");
+    expect(content).toContain(`<input>\n${correctionAccount}\n</input>`);
+    expect(MODEL_PROMPT_REVISION).toBe("wilson-experiment-1-extraction-v5");
+    expect(MODEL_SCHEMA_REVISION).toBe("wilson-grounded-proposals-v5");
+  });
+
   it("rejects malformed grounded output with a safe error before it reaches case commands", async () => {
     const response = responseFor("correction");
     const output = responseOutput(response);
@@ -95,7 +113,7 @@ describe("Anthropic fixed-journey adapter", () => {
     setResponseOutput(response, output);
     const model = createAnthropicJourneyModel(async () => response);
 
-    const failure = await modelFailure(model.propose("correction", correctionAccount));
+    const failure = await modelFailure(model.propose("correction", correctionAccount, correctionContext));
     expect(failure.message).toContain("Accepted case knowledge is unchanged");
     expect(failure.diagnostic).toMatchObject({
       phase: "domain-boundary",
@@ -114,7 +132,7 @@ describe("Anthropic fixed-journey adapter", () => {
     setResponseOutput(response, output);
 
     const result = await createAnthropicJourneyModel(async () => response)
-      .propose("correction", correctionAccount);
+      .propose("correction", correctionAccount, correctionContext);
     const source = result.envelope.sources.find(
       ({ id }) => id === "source-apixaban-date-alternative",
     );
@@ -271,7 +289,7 @@ describe("Anthropic fixed-journey adapter", () => {
       setResponseOutput(response, output);
 
       const failure = await modelFailure(
-        createAnthropicJourneyModel(async () => response).propose("correction", correctionAccount),
+        createAnthropicJourneyModel(async () => response).propose("correction", correctionAccount, correctionContext),
       );
 
       expect(failure.diagnostic).toMatchObject({

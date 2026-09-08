@@ -270,7 +270,15 @@ function CorrectionTask({ snapshot, busy, act }: { snapshot: JourneySnapshot; bu
   const correction = snapshot.review.attention.find(({ kind }) => kind === "correction");
   const dateProposal = snapshot.review.attention.find(({ target }) => target.endsWith(":startDate"));
   const naproxen = snapshot.understanding.products.find(({ id }) => id === "product-naproxen");
+  const apixaban = snapshot.understanding.products.find(({ id }) => id === "product-apixaban");
   const dose = naproxen?.facts.dose;
+  const proposedDose = correction?.values[0]?.value;
+  const startDate = apixaban?.facts.startDate;
+  const reviewedDate = startDate?.resolved;
+  const proposedDate = dateProposal?.values[0]?.value;
+  const hasDistinctDates = reviewedDate?.kind === "known"
+    && proposedDate?.kind === "known"
+    && reviewedDate.value !== proposedDate.value;
   return (
     <>
       <p className={styles.eyebrow}>Step 5 of 7 · decision required</p>
@@ -281,29 +289,35 @@ function CorrectionTask({ snapshot, busy, act }: { snapshot: JourneySnapshot; bu
           <h2>Naproxen dose</h2>
           <p><s>{formatFact(dose?.resolved)}</s> → <strong>{formatFact(correction.values[0].value)}</strong></p>
           <Evidence excerpt={correction.values[0].evidence[0]} expanded />
-          <button disabled={busy} onClick={() => void act({ action: "accept-dose-correction" })}>Accept 250 mg correction</button>
+          <button disabled={busy} onClick={() => void act({ action: "accept-dose-correction" })}>Accept {formatFact(proposedDose)} correction</button>
         </article>
       ) : (
         <article className={styles.acceptedCard}>
           <span className={styles.attentionLabel}>Correction accepted</span>
-          <h2>Naproxen is now 250 mg</h2>
-          <p>The earlier 500 mg value remains available in history but is no longer active.</p>
+          <h2>Naproxen is now {formatFact(dose?.resolved)}</h2>
+          <p>The earlier {formatFact(dose?.history[0]?.value)} value remains available in history but is no longer active.</p>
         </article>
       )}
       {dateProposal && (
         <article className={styles.attentionCard}>
           <span className={styles.attentionLabel}>Incompatible evidence</span>
           <h2>Apixaban start date</h2>
-          <p>The existing note says <strong>12-Aug-2026</strong>. The medication administration record says <strong>13-Aug-2026</strong>.</p>
+          {hasDistinctDates ? (
+            <p>The reviewed case says <strong>{formatFact(reviewedDate)}</strong>. The update proposes <strong>{formatFact(proposedDate)}</strong>.</p>
+          ) : (
+            <p><strong>Wilson did not identify a different date.</strong> The proposed date matches the reviewed date, so there is no conflict to resolve. Accepted case knowledge is unchanged.</p>
+          )}
           <div className={styles.evidencePair}>
-            <Evidence excerpt="start as 12-Aug-2026" expanded />
+            <Evidence excerpt={startDate?.evidence[0]} expanded />
             <Evidence excerpt={dateProposal.values[0].evidence[0]} expanded />
           </div>
-          <div className={styles.decisionActions}>
-            <button disabled={busy || Boolean(correction)} onClick={() => void act({ action: "resolve-date", chosenValueId: "apixaban-start" })}>Use 12-Aug-2026</button>
-            <button disabled={busy || Boolean(correction)} onClick={() => void act({ action: "resolve-date", chosenValueId: "apixaban-date-alternative" })}>Use 13-Aug-2026</button>
-            <button disabled={busy || Boolean(correction)} onClick={() => void act({ action: "leave-date-unresolved" })}>Keep both dates unresolved for now</button>
-          </div>
+          {hasDistinctDates && (
+            <div className={styles.decisionActions}>
+              <button disabled={busy || Boolean(correction)} onClick={() => void act({ action: "resolve-date", chosenValueId: "apixaban-start" })}>Use {formatFact(reviewedDate)}</button>
+              <button disabled={busy || Boolean(correction)} onClick={() => void act({ action: "resolve-date", chosenValueId: "apixaban-date-alternative" })}>Use {formatFact(proposedDate)}</button>
+              <button disabled={busy || Boolean(correction)} onClick={() => void act({ action: "leave-date-unresolved" })}>Keep both dates unresolved for now</button>
+            </div>
+          )}
         </article>
       )}
     </>
@@ -324,7 +338,10 @@ function OutputComposition({
   const unresolved = snapshot.stage === "output-unresolved";
   const apixaban = snapshot.understanding.products.find(({ id }) => id === "product-apixaban");
   const conflict = apixaban?.facts.startDate.conflicts;
-  const { A, F } = snapshot.projection.sections;
+  const { A, D, F } = snapshot.projection.sections;
+  const projectedApixaban = D.suspectProducts.find(({ productId }) => productId === "product-apixaban");
+  const projectedNaproxen = D.suspectProducts.find(({ productId }) => productId === "product-naproxen");
+  const naproxen = snapshot.understanding.products.find(({ id }) => id === "product-naproxen");
   return (
     <div className={styles.outputWorkspace}>
       <section className={styles.outputSummary} aria-labelledby="output-title">
@@ -342,8 +359,15 @@ function OutputComposition({
           {F.concomitantProducts.map((product) => (
             <li key={product.productId}>{product.name} as a concomitant product</li>
           ))}
-          <li>Naproxen 250 mg; earlier 500 mg retained only in history</li>
-          {!unresolved && <li>Apixaban start date 13-Aug-2026</li>}
+          {projectedNaproxen?.dose && (
+            <li>
+              Naproxen {projectedNaproxen.dose}
+              {naproxen?.facts.dose.history[0] && `; earlier ${formatFact(naproxen.facts.dose.history[0].value)} retained only in history`}
+            </li>
+          )}
+          {!unresolved && projectedApixaban?.startDate && (
+            <li>Apixaban start date {displayDate(projectedApixaban.startDate)}</li>
+          )}
         </Summary>
 
         <Summary title="Needs resolution" tone={unresolved ? "attention" : "quiet"}>

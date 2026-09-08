@@ -1,0 +1,88 @@
+{
+  "kind": "Issue #40 protected live operator verdict",
+  "recordedAt": "2026-09-08",
+  "outcome": "pass-with-recorded-follow-up",
+  "implementation": {
+    "commit": "2df339ab21ccafaf093e6b50af2500efeda0a7b4",
+    "branch": "codex/40-correction-conflict-integrity",
+    "promptRevision": "wilson-experiment-1-extraction-v5",
+    "schemaRevision": "wilson-grounded-proposals-v5",
+    "model": "claude-sonnet-5",
+    "automaticRetries": 0
+  },
+  "deployment": {
+    "id": "dpl_A7kZvVpq15nvNAwYxC4Gw2EXeAQj",
+    "exactUrl": "https://wilson-next-m58euisi4-warblersafety.vercel.app",
+    "source": "git",
+    "target": null,
+    "protected": true,
+    "production": false
+  },
+  "boundedRun": {
+    "runId": "40e5acde-8acb-46dc-b606-f887d9e55a60",
+    "input": "fixed synthetic journey only",
+    "successfulProviderResponses": [
+      "opening",
+      "correction"
+    ],
+    "opening": {
+      "expectedFactValues": 29,
+      "correctFactValues": 29,
+      "exactOracleEvidenceExcerpts": 9,
+      "expectedOracleEvidenceExcerpts": 29
+    },
+    "correction": {
+      "expectedFactValues": 2,
+      "correctFactValues": 2,
+      "distinctDateAlternative": true,
+      "exactOracleEvidenceExcerpts": 0,
+      "expectedOracleEvidenceExcerpts": 2
+    },
+    "caseBehavior": {
+      "naproxenActiveDose": "250 mg",
+      "naproxenSupersededDoseRetained": "500 mg",
+      "unresolvedDatesPreserved": 2,
+      "unresolvedDateProjected": false,
+      "unresolvedDirectPdfStatus": 409,
+      "resolvedApixabanStartDate": "2026-08-13",
+      "sameTabRefreshesRestored": true,
+      "finalRevision": 9
+    },
+    "pdf": {
+      "independentReader": "pypdf 6.16.2",
+      "pageCount": 8,
+      "supportedFieldsAgreeWithReviewedCase": true,
+      "previewDownloadBytesAgree": true,
+      "bytesRetained": false
+    },
+    "diagnostics": {
+      "inducedFailureStoppedBeforeProvider": true,
+      "inducedFailureAdvancedAcceptedState": false,
+      "credentialShapedDataObserved": false,
+      "rawLogsRetained": false
+    }
+  },
+  "humanOperatorResult": {
+    "operator": "Steve",
+    "date": "2026-09-08",
+    "protectedPreviewJourneyCompleted": true,
+    "physicianParticipated": false
+  },
+  "knownFollowUp": {
+    "issue": 39,
+    "summary": "Source excerpt localization remains inaccurate even when material fact values are correct."
+  },
+  "cleanup": {
+    "activeProtectionBypasses": 0,
+    "unauthenticatedStatus": 302,
+    "vercelTokenFileChanged": false
+  },
+  "retention": {
+    "realClinicalDataUsed": false,
+    "providerResponseRetained": false,
+    "browserStateRetained": false,
+    "networkArchiveRetained": false,
+    "pdfBytesRetained": false,
+    "credentialsRetained": false
+  }
+}
