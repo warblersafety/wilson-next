@@ -1,6 +1,7 @@
 # Issue 40 correction/conflict integrity evidence
 
-**Status:** Root cause confirmed, independently reviewed, implemented, and deterministically verified
+**Status:** Root cause confirmed, independently reviewed, implemented, and
+verified through deterministic, protected live-model, and operator evidence
 
 **Issue:** [#40](https://github.com/warblersafety/wilson-next/issues/40)
 
@@ -131,13 +132,59 @@ supports leaving the conflict unresolved, selecting either source, and
 producing the resolved projection and PDF.
 
 No live Wilson model call, manual Vercel deployment, production deployment, or
-additional Claude run was used for this verification. One separately
-authorized protected live operator run remains required to confirm the model
-uses the new context and complete the previously blocked experiment journey.
+additional Claude run was used for this deterministic verification.
+
+## Protected live-model and operator verification
+
+Steve authorized exactly one protected live operator run against implementation
+deployment `dpl_A7kZvVpq15nvNAwYxC4Gw2EXeAQj`, exact URL
+`https://wilson-next-m58euisi4-warblersafety.vercel.app`, and commit
+`2df339ab21ccafaf093e6b50af2500efeda0a7b4`. The run used only the fixed
+synthetic journey, made one successful opening provider call and one successful
+correction provider call, and made no automatic retry.
+
+The opening contained all 29 expected material fact values. The correction
+proposed naproxen 250 mg and a genuinely distinct 13-Aug-2026 apixaban start
+date. The journey preserved 500 mg in superseded history, supported leaving
+both dates unresolved without projecting either date, restored revisions after
+same-tab refresh, resolved the date to 13-Aug-2026, and kept the case, screen,
+projection, PDF preview, and downloaded PDF aligned.
+
+The final PDF readback covered all expected supported fields across the
+eight-page form. Preview and download bytes were identical. The temporary
+operator harness initially treated the FDA template's known residual encryption
+marker as a PDF failure. Rechecking with the repository's established
+independent pypdf reader confirmed that both outputs were readable, unencrypted,
+and correct. This was a harness defect, not an application or PDF-generation
+failure.
+
+Runtime diagnostics correlated the completed journey under run
+`40e5acde-8acb-46dc-b606-f887d9e55a60`. The intentionally induced
+pre-provider safe failure did not advance accepted state or call the provider.
+The transient logs contained two successful provider responses, one for each
+authorized turn, and no credential-shaped data. No raw logs, provider response,
+browser state, network archive, PDF bytes, credential, or protection secret was
+retained.
+
+The run repeated the already filed Issue #39 source-localization weakness:
+9 of 29 opening excerpts and 0 of 2 correction excerpts matched the experiment
+oracle exactly even though the material fact values were correct. Issue #40 did
+not change or waive that separate follow-up.
+
+After the bounded run, project inspection reported zero protection bypasses and
+an unauthenticated request returned HTTP 302 to Vercel Authentication. The
+operator's Vercel token file was not changed or removed.
+
+On 2026-09-08 Steve independently exercised the same protected preview and
+reported that the journey completed. This is the final human operator result;
+no physician, real clinical data, or production claim is implied.
+
+The sanitized bounded verdict is retained in
+`evidence/issue-40/live/operator-verdict.json`.
 
 ## Boundaries
 
 Issue #40 does not implement source-localization Issue #39, later evals,
 physician participation, real clinical data, persistence, another diagnostic
 store, automatic retry, provider comparison, a paid plan, or production
-deployment. A protected live operator run requires separate authorization.
+deployment.
