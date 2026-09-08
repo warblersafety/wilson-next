@@ -75,6 +75,94 @@
         "The goal snapshot ends after the first local commit and excludes the small bookkeeping cost of persisting this entry and amending that commit.",
         "Codex task tokens are the goal tracker's task-effort measure, not an estimate of billable API usage."
       ]
+    },
+    {
+      "id": "review-attempt-aborted-incomplete-context",
+      "status": "stopped",
+      "recordedAt": "2026-09-08T23:23:02Z",
+      "startedAt": null,
+      "finishedAt": null,
+      "elapsedSeconds": 568,
+      "codexTaskTokens": {
+        "source": "codex-goal-result",
+        "start": 0,
+        "end": 46168,
+        "delta": 46168
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 1,
+        "inputTokens": 10,
+        "cacheCreationInputTokens": 51180,
+        "cacheReadInputTokens": 158962,
+        "outputTokens": 3417,
+        "latencyMilliseconds": 50079,
+        "costUsd": 0.2720664
+      },
+      "review": {
+        "model": "claude-sonnet-5",
+        "effort": "high",
+        "status": "aborted-without-verdict"
+      },
+      "result": "A sandboxed preflight failed before a model call, then the escalated review was stopped because the exact Issue #42 body was missing. No verdict was produced.",
+      "durableValue": {
+        "kind": "process-only",
+        "artifacts": [
+          "evidence/experiment-2/reviews/f17c5a0/review-runs.json"
+        ]
+      },
+      "limitations": [
+        "Exact stage start and finish timestamps were not retained and are therefore null.",
+        "The CLI-reported cost is an equivalent usage value and may not be an additional subscription charge.",
+        "The failed DNS attempt consumed zero model tokens and is recorded separately in the review run record."
+      ]
+    },
+    {
+      "id": "credential-decoupling-and-complete-review",
+      "status": "completed-with-findings",
+      "recordedAt": "2026-09-08T23:23:02Z",
+      "startedAt": null,
+      "finishedAt": null,
+      "elapsedSeconds": null,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 1,
+        "inputTokens": 16,
+        "cacheCreationInputTokens": 78844,
+        "cacheReadInputTokens": 383680,
+        "outputTokens": 28734,
+        "latencyMilliseconds": 304392,
+        "costUsd": 0.683824
+      },
+      "review": {
+        "cli": "Claude Code 2.1.241",
+        "model": "claude-sonnet-5",
+        "effort": "high",
+        "status": "completed",
+        "blockingFindings": 1,
+        "followUpFindings": 1
+      },
+      "result": "Decoupled the local GitHub credential broker from Nightjar naming, retrieved Issue #42, Issue #39, and draft PR #43 through a neutral read-only envelope, and completed the authorized review of f17c5a0.",
+      "durableValue": {
+        "kind": "decision-evidence",
+        "artifacts": [
+          "evidence/experiment-2/reviews/f17c5a0/claude-review-prompt.txt",
+          "evidence/experiment-2/reviews/f17c5a0/claude-review-result.md",
+          "evidence/experiment-2/reviews/f17c5a0/review-runs.json"
+        ]
+      },
+      "limitations": [
+        "The resumed Codex work could not obtain a new task-token counter because the goal tracker retained its earlier blocked status; missing values are not estimated.",
+        "Exact overall stage start, finish, and elapsed time were not retained; the exact review-process duration is recorded as latencyMilliseconds.",
+        "The reviewer received the exact GitHub issues, PR context, governing corpus, and local target, but not the earlier operator conversation that explicitly required production-quality code.",
+        "The reviewer reported that shell/Git tools were unavailable, so it inspected current files but could not independently execute the complete Git diff."
+      ]
     }
   ]
 }

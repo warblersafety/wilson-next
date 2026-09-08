@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "targetCommit": "f17c5a05d146012a1fd04983171d0a547ab5773c",
+  "baseCommit": "aed8f58e1f3fc2c08b238999fc493192ab2e65b5",
+  "cli": "Claude Code 2.1.241",
+  "subscriptionPreflight": {
+    "passed": true,
+    "authMethod": "claude.ai",
+    "subscriptionType": "max",
+    "providerVariablesUnset": [
+      "ANTHROPIC_API_KEY",
+      "ANTHROPIC_AUTH_TOKEN",
+      "ANTHROPIC_BASE_URL"
+    ]
+  },
+  "runs": [
+    {
+      "id": "sandbox-network-failure",
+      "status": "failed-before-model-call",
+      "durationMilliseconds": 183051,
+      "apiDurationMilliseconds": 0,
+      "modelTurns": 0,
+      "costUsd": 0,
+      "usage": {
+        "inputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "cacheReadInputTokens": 0,
+        "outputTokens": 0,
+        "thinkingTokens": 0
+      },
+      "result": "Claude API DNS failure (ENOTFOUND); no model call occurred."
+    },
+    {
+      "id": "incomplete-context-aborted",
+      "status": "aborted-without-verdict",
+      "durationMilliseconds": 50079,
+      "apiDurationMilliseconds": 40614,
+      "modelTurns": 13,
+      "costUsd": 0.2720664,
+      "usage": {
+        "inputTokens": 10,
+        "cacheCreationInputTokens": 51180,
+        "cacheReadInputTokens": 158962,
+        "outputTokens": 3417,
+        "thinkingTokens": 2458
+      },
+      "modelUsage": {
+        "claude-sonnet-5": {
+          "inputTokens": 10,
+          "cacheCreationInputTokens": 51180,
+          "cacheReadInputTokens": 158962,
+          "outputTokens": 3417,
+          "costUsd": 0.2707024
+        },
+        "claude-haiku-4-5": {
+          "inputTokens": 1274,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "outputTokens": 18,
+          "costUsd": 0.001364
+        }
+      },
+      "result": "Stopped by the operator because the exact Issue #42 body had not been provided; no verdict was produced."
+    },
+    {
+      "id": "complete-context-review",
+      "status": "completed",
+      "durationMilliseconds": 304392,
+      "apiDurationMilliseconds": 305489,
+      "modelTurns": 15,
+      "configuredModel": "sonnet",
+      "canonicalModel": "claude-sonnet-5",
+      "effort": "high",
+      "costUsd": 0.683824,
+      "usage": {
+        "inputTokens": 16,
+        "cacheCreationInputTokens": 78844,
+        "cacheReadInputTokens": 383680,
+        "outputTokens": 28734,
+        "thinkingTokens": 20692
+      },
+      "modelUsage": {
+        "claude-sonnet-5": {
+          "inputTokens": 16,
+          "cacheCreationInputTokens": 78844,
+          "cacheReadInputTokens": 383680,
+          "outputTokens": 28734,
+          "costUsd": 0.679484
+        },
+        "claude-haiku-4-5": {
+          "inputTokens": 4200,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "outputTokens": 28,
+          "costUsd": 0.00434
+        }
+      },
+      "permissionDenials": 0,
+      "subagentsSpawned": 0,
+      "webRequests": 0,
+      "prompt": "claude-review-prompt.txt",
+      "result": "claude-review-result.md",
+      "findings": {
+        "blocking": 1,
+        "followUp": 1
+      }
+    }
+  ]
+}
