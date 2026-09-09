@@ -713,6 +713,44 @@
         "Codex task-token measurements were unavailable and are not estimated.",
         "The two follow-ups receive no separate issue while the one-time recovery mechanism has no planned reuse."
       ]
+    },
+    {
+      "id": "delivery-standing-execution-authority",
+      "status": "completed",
+      "recordedAt": "2026-09-09T19:28:43Z",
+      "startedAt": null,
+      "finishedAt": "2026-09-09T19:28:43Z",
+      "elapsedSeconds": null,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMilliseconds": 0,
+        "costUsd": 0
+      },
+      "review": null,
+      "result": "Steve approved a leaner delivery loop: Codex may carry routine scoped implementation, verification, standard Sonnet review, bounded synthetic-model work, and GitHub publication through a review-ready PR without repeated permission. Steve retains PR approval and merge plus the consequential exceptions listed in Delivery. This governance change intentionally received no Claude review.",
+      "durableValue": {
+        "kind": "process-decision",
+        "artifacts": [
+          "docs/DELIVERY.md",
+          "docs/EXPERIMENT-2.md",
+          ".github/pull_request_template.md",
+          "https://github.com/warblersafety/wilson-next/issues/49"
+        ]
+      },
+      "limitations": [
+        "Exact stage start, elapsed time, and Codex task-token measurements were unavailable and are not estimated.",
+        "The change modifies delivery authority and documentation only; it does not alter application behavior, call a model, deploy, or merge.",
+        "Steve explicitly directed that this small governance change receive no Claude review."
+      ]
     }
   ]
 }

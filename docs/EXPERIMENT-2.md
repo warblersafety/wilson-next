@@ -1,8 +1,8 @@
 # Wilson Experiment 2
 
-**Status:** Approved by Steve through Issue #42 and PR #43; this plan authorizes
-creation of its named implementation issues, while each implementation slice
-and live-model stage requires its stated separate authorization
+**Status:** Approved by Steve through Issue #42 and PR #43; its remaining
+bounded implementation, standard review, protected-preview, and synthetic-model
+work proceeds under Delivery's standing execution authority
 
 **Owns:** The single bounded investment decision, its separate evidence
 dimensions, the production-seed quality bar, supported and deferred scope,
@@ -53,11 +53,14 @@ answer its decision question and evolve the codebase toward production-quality
 code, then authorized the corresponding plan revision and this reconciliation.
 
 That decision sets a code-quality and reuse bar inside the bounded experimental
-scope. It does not authorize implementation, production infrastructure or
-release, durable data, real clinical data, or broader product scope. Here,
-`production-seed` means maintainable shared domain and workflow seams retained
-after the experiment; the temporary preview, synthetic diagnostic, and
-browser-held-state adapters remain temporary by design.
+scope. Together with Delivery's standing execution authority, this plan now
+authorizes its remaining in-scope implementation and synthetic evaluation
+without per-stage permission. It does not authorize production infrastructure
+or release, durable data, real clinical data, external participation, or
+broader product scope. Here, `production-seed` means maintainable shared domain
+and workflow seams retained after the experiment; the temporary preview,
+synthetic diagnostic, and browser-held-state adapters remain temporary by
+design.
 
 ## Experiment 1 input
 
@@ -315,8 +318,9 @@ Before any paid model call:
   attachment with focused deterministic tests; and
 - prove production modules cannot import fixture or oracle definitions.
 
-After implementation evidence and one separately authorized standard review are
-complete, request a distinct authorization for the early live gate.
+After implementation evidence and the required standard review are complete,
+run the early live gate within Delivery's standing synthetic-model authority
+and the narrower cap defined for the gate.
 
 ### Stage 2: early live model/evidence gate
 
@@ -326,7 +330,7 @@ Use the smallest existing operator runner; build no evaluation framework or
 temporary application path. The model receives no scenario oracle or catalog.
 Disable automatic retries and stop on the first material semantic failure or
 architectural falsification. Record the ordinary model metadata and one
-sanitized verdict per authorized run. Passing establishes only that the core
+sanitized verdict per run. Passing establishes only that the core
 boundary is viable enough to justify assembled-product implementation.
 
 #### Stage 2 disposition — 2026-09-09
@@ -353,8 +357,10 @@ clinical, or production readiness. No further Stage 2 prompt iteration or live
 model call is planned. Reconsider the limitation only if the assembled workflow
 causes practical evidence confusion or wrong attribution, or when a later
 readiness decision makes independently understandable evidence necessary. This
-disposition does not itself authorize the separately controlled Stage 3
-implementation, external participation, real data, deployment, or release.
+disposition did not itself authorize Stage 3 implementation at that checkpoint.
+Remaining in-scope implementation now proceeds under Delivery's standing
+authority; external participation, real data, production deployment, and
+release remain outside it.
 
 The separately authorized narrow final review of `54c0211...65c7dca` reported
 no blockers and two non-blocking follow-ups confined to the completed one-time
@@ -375,15 +381,15 @@ browser matrix, visual-regression system, or broad failure suite.
 
 ### Stage 4: protected live operator evidence
 
-After assembled implementation evidence, one separately authorized standard
-review, and an exact separately authorized call budget, run each new journey
-once through the protected preview. Stop the batch on a material semantic
-failure or architectural falsification. Only if all first passes remain viable,
-request separate authorization for one additional independent sample of each
-journey. The second samples are required for a Continue decision but unnecessary
-for an earlier Revise or Stop decision.
+After assembled implementation evidence and the required standard review, run
+each new journey once through the protected preview within Delivery's standing
+synthetic-model limits. Stop the affected path on a material semantic failure or
+architectural falsification. If all first passes remain viable and the remaining
+issue budget fits, run one additional independent sample of each journey. The
+second samples are required for a Continue decision but unnecessary for an
+earlier Revise or Stop decision.
 
-For every authorized run, record model, prompt/schema revision, parameters,
+For every run, record model, prompt/schema revision, parameters,
 token use, latency, estimated cost, operator corrections, and a sanitized final
 verdict. Zero observed failures in this sample establishes no general failure
 rate or clinical reliability.
@@ -403,7 +409,7 @@ usability study, statistical claim, or clinician proxy.
 
 Continue beyond Experiment 2 only if:
 
-1. No authorized live run invents a material fact, silently loses one, assigns it
+1. No in-scope live run invents a material fact, silently loses one, assigns it
    to the wrong entity or role, hides incompatible evidence, or disagrees with
    the final PDF.
 2. Every journey reaches a truthful reviewed output through production-seed
@@ -458,23 +464,24 @@ generic workflow engine, general question planner, broad domain model, eval
 platform, browser matrix, visual-regression service, load work, analytics,
 persistence, speculative performance optimization, unrelated refactoring, or
 preview-infrastructure polish. Repeated review or live runs require a new
-decision question and Steve's explicit authorization.
+decision question; Codex may execute it under Delivery's standing authority
+when it remains within existing premises and spending limits.
 
 ## Proposed delivery slices
 
 1. **Completed planning change:** documentation-only Issue #42/PR #43 defines
    the exact journeys, production-seed contract, evidence order, and stopping
    rules. It makes no application or model call.
-2. **Core boundary slice:** resolve Issue #39 while generalizing source
+2. **Completed core boundary slice:** resolve Issue #39 while generalizing source
    evidence, model input/output, stable identity, and later-input context. Run
-   deterministic evidence, one authorized standard review, and only then the
-   separately authorized early live gate.
+   deterministic evidence, the required standard review, and only then the
+   bounded early live gate.
 3. **Assembled product slice:** replace fixed orchestration and UI with
    state-driven behavior, then complete deterministic browser-to-PDF evidence
-   for all cases and one authorized standard review.
-4. **Operator evidence and outcome:** run the separately authorized protected
-   samples and direct-form comparisons, then record the separate findings and
-   Continue, Revise, or Stop decision. This phase adds no product behavior.
+   for all cases and the required standard review.
+4. **Operator evidence and outcome:** run the bounded protected samples and
+   direct-form comparisons, then record the separate findings and Continue,
+   Revise, or Stop decision. This phase adds no product behavior.
 
 The two implementation slices each use one coherent issue, branch, draft PR,
 proportional evidence, and explicit merge approval. The evidence/outcome work
@@ -485,14 +492,16 @@ decision cannot be resolved coherently inside its slice.
 
 ## Review and authorization
 
-Issue #42 and its documentation-only PR define the plan. Because the plan
-changes product and experiment authority, one standard fresh-context Claude
-Sonnet/high review of the complete planning diff is required after Steve
-separately authorizes it. Resolve blocking findings before asking Steve to
-approve this document.
+Issue #42 and PR #43 define the plan; Issue #49 applies Delivery's standing
+execution authority to its remaining work. Codex may create and complete the
+named implementation issues, run required standard Sonnet reviews, exercise
+protected synthetic preview, and make bounded synthetic application-model
+calls without repeated permission. Ordinary defects and their remediation stay
+inside the slice; Steve reviews the complete outcome and remaining risk at
+merge.
 
-Approval of this plan authorizes only creation of the named Experiment 2
-implementation issues. Each implementation slice still requires Steve's
-explicit go-ahead. Live model batches, physician involvement, real clinical
-data, production deployment, paid-plan purchase, and expanded scope require
-their own explicit authorization.
+Steve's explicit approval remains required for each PR merge, a material change
+to the experiment premise or scope, spend above the standing limit, expanded
+review, physician or other external participation, real clinical data, and
+production deployment or release. Historical Stage 2 authorization records
+remain accurate.

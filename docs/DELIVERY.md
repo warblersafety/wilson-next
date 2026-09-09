@@ -1,7 +1,7 @@
 # Wilson delivery and independent review
 
-**Status:** Approved by Steve through 2026-09-08, including the Experiment 1
-process disposition and Experiment 2 effort record merged in PR #43
+**Status:** Approved by Steve through 2026-09-09, including standing authority
+for routine bounded agent work and the retained human merge boundary
 
 **Owns:** Work items, branches, pull requests, verification, independent review,
 approval, merge controls, stop-and-reconcile, and durable trace
@@ -11,7 +11,7 @@ approval, merge controls, stop-and-reconcile, and durable trace
 Preserve useful implementation history and independent challenge without
 recreating the process weight that obscured legacy Wilson's assembled product.
 Every meaningful change is isolated, checked, independently reviewed when
-needed, and approved by Steve before merge. Durable product or technical
+needed, and approved by Steve at merge. Durable product or technical
 decisions live in their single owning active document.
 
 ## Unit of work
@@ -21,6 +21,11 @@ consequential decision. It names the outcome, included/excluded scope, governing
 documents, minimum acceptance evidence, and stopping conditions. Small fixes
 found within the slice stay there; later regressions or independently valuable
 work get separate issues.
+
+For work already covered by an approved product direction, experiment, or user
+request, Codex may create the issue and begin the branch without another
+permission step. The issue is the durable scope record, not a second approval
+gate.
 
 Experiment 1 may have one lightweight tracker, but needs no project board,
 milestone hierarchy, or issue taxonomy.
@@ -35,7 +40,8 @@ codex/<issue-number>-<short-description>
 
 Use one short-lived branch per coherent issue. Do not create long-running
 development or experiment branches. Open a draft pull request after the first
-meaningful commit. The PR records:
+meaningful commit. Codex may create, update, publish, and mark the PR ready as
+part of normal delivery. The PR records:
 
 - plain-English outcome and linked issue;
 - included and excluded scope;
@@ -49,6 +55,49 @@ Update it at meaningful boundaries, not with routine terminal narration.
 Successful branches are deleted after squash merge. If an experiment falsifies
 its premise, close without merging and retain a named branch or commit until its
 disposition is decided.
+
+## Standing execution authority
+
+Once Steve has approved an outcome, experiment plan, or concrete request, Codex
+may complete the ordinary work needed to deliver it without asking permission
+again at each step. Within the governing documents and the issue/PR scope, this
+includes:
+
+- creating and updating issues, branches, commits, pull requests, comments, and
+  review-ready state;
+- implementing the change, fixing ordinary defects, and running local, CI,
+  browser, PDF, protected-preview, and other proportionate checks;
+- running each standard Claude Sonnet review required below, continuing the
+  same session to complete an incomplete inspection, and running one targeted
+  Sonnet recheck when material remediation needs it;
+- running bounded application-model experiments with synthetic data, judging
+  them against external assessments, and collecting later independent evidence
+  after a non-invalidating failure; and
+- recording results, costs, limitations, and dispositions in the smallest
+  durable location that later work will actually consult.
+
+The default autonomous application-model allowance is **USD 5 per batch and USD
+20 total per issue**. Estimate or reserve enough capacity before each call,
+never split work to evade a limit, and record exposed calls, tokens, latency,
+and actual or estimated spend afterward. A narrower experiment cap still wins.
+
+Steve's explicit approval remains required only for:
+
+- approving and merging a pull request;
+- changing a material product, architecture, privacy, security, clinical-data,
+  or experiment premise beyond existing authority;
+- using real clinical data or involving a physician or other external
+  participant;
+- production deployment or release, a new paid-plan purchase, or spend above
+  the standing limit;
+- destructive or difficult-to-reverse action outside ordinary branch work; or
+- expanded review with Opus, multiple independent reviewers, or another
+  exceptional review program.
+
+A later direct instruction from Steve may narrow or expand authority for that
+specific task. Routine execution should otherwise continue to a verified,
+review-ready PR; do not turn the controls in this document into repeated
+requests to follow the document.
 
 ## Verification and review flow
 
@@ -69,7 +118,7 @@ change. Steve's required GitHub approval is merge authorization: the delivered
 scope, evidence, review disposition, and risk are acceptable. It does not
 require Steve to perform a line-by-line technical audit.
 
-New material commits after approval require review of the latest change and a
+New material commits after Steve's approval require review of the latest change and a
 renewed approval before merge.
 
 ### Proportional closure without recursive model runs
@@ -94,8 +143,9 @@ fresh independent review. Steve may request another review at any time.
 ## Claude review
 
 When Codex implements or coordinates a substantive change requiring a new
-review, Claude is the default fresh-context reviewer. Substitution requires
-Steve's agreement. Claude cannot edit, post to GitHub, approve, or merge.
+review, Claude is the default fresh-context reviewer and the run is covered by
+the standing authority above. Substitution requires Steve's agreement. Claude
+cannot edit, post to GitHub, approve, or merge.
 
 ### Standard review
 
@@ -108,7 +158,7 @@ active subscription, while `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, and
 `ANTHROPIC_BASE_URL` are unset. Stop on failure; never fall back to a paid API,
 gateway, or alternate provider. Record only that the preflight passed.
 
-Do not impose budget, token, turn, or wall-clock ceilings. An authorized run
+Do not impose budget, token, turn, or wall-clock ceilings. A required run
 continues until verdict or genuine tool, authentication, or service failure. Do
 not pass `--max-budget-usd`, wrap the run in a timeout, retry automatically, or
 silently multiply reviewers.
@@ -136,12 +186,13 @@ speculative enhancements are not findings.
 
 ### Additional and expanded review
 
-No additional Claude run occurs without Steve's explicit permission. A request
-states why existing review/disposition is insufficient, target commit, targeted
-or complete scope, model, and effort. Use a targeted check for a narrow local
-fix. Repeat a complete review only when the response materially changes
-behavior, contracts, architecture, privacy, scope, evidence, or another owning
-premise.
+Codex may continue the same review session when required inspection was
+incomplete and may run one targeted Sonnet recheck when bounded remediation
+materially changes reviewed code. State why the existing result is insufficient
+and pin the exact delta. Do not run a second independent reviewer or repeat a
+complete review merely for reassurance. Repeat the complete standard review
+only when remediation materially changes behavior, contracts, architecture,
+privacy, scope, evidence, or another owning premise.
 
 Expanded review is exceptional and also requires explicit permission. Use it
 for multiple distinct consequential risks such as security/privacy, durable
@@ -151,8 +202,9 @@ may use Claude Opus at `high` or `xhigh`; Opus `xhigh` is the maximum. Do not us
 Opus `max`, Fable, or a model/effort outside these bounds. Multiple reviewers,
 agents, or fresh passes require separate permission and risk-specific roles.
 
-Before the first physician session, integrated review—if separately
-authorized—asks whether the doctor can complete the task with low friction,
+Before the first physician session, integrated review—if explicitly
+authorized as part of that exceptional external-participant step—asks whether
+the doctor can complete the task with low friction,
 knowledge and uncertainty are correct, privacy/failure evidence matches the
 boundary, and the PDF is accurate and traceable. It uses working-product traces,
 transcripts, screenshots, and PDFs but never replaces physician feedback.
@@ -164,11 +216,16 @@ silently rewriting its judgment. Record:
 
 - review mode, exact commit, model, effort, and CLI;
 - subscription preflight;
-- prompt version/source and complete invocation prompt;
-- inputs and checks;
+- prompt version/source and material inputs and checks;
 - complete findings, limitations, and severity;
 - dispositions and resolving commits; and
-- any separately authorized additional review.
+- any additional or expanded review.
+
+The PR comment is normally sufficient. Retain the complete prompt or a separate
+repository review bundle only when an experiment requires it, a review incident
+needs reconstruction, or the PR cannot hold the material record. Do not commit
+verbose internal event streams or duplicate the same narrative across the
+issue, PR, active documents, and evidence tree.
 
 The PR is the canonical code-review record. Put premise challenges on the issue
 as well and update the owning active document when authority changes.
@@ -180,9 +237,15 @@ semantic truth, authority, scope, privacy, evidence, or a consequential
 technical commitment. Preserve the smallest failing example and record expected
 versus observed behavior, owner, options, and recommendation in the issue/PR.
 
+A failure does not by itself require Steve's intervention. Continue useful
+independent checks or experiment calls within scope and budget when the failure
+does not invalidate their interpretation, increase consequential risk, or cross
+one of the explicit-approval boundaries above. Record the limitation and use the
+remaining evidence to make the eventual decision better.
+
 Fix an ordinary defect locally with focused recurrence evidence. If an owning
-premise is wrong or ambiguous, update its active document and obtain approval
-before resuming. Tests may follow an approved decision change; they may not be
+premise is wrong or ambiguous, stop the affected work and return to Steve for a
+decision. Tests may follow an approved decision change; they may not be
 weakened to bless a workaround. Reversible naming, organization, refactoring,
 library adaptation, and visual polish within approved behavior remain
 implementation discretion.
@@ -217,18 +280,22 @@ Merge never implies external deployment, purchase, or production authorization.
 ### Effort and value record
 
 Experiment 2 keeps one compact stage ledger at
-`evidence/experiment-2/effort-ledger.json`. Commit an entry at each meaningful
-stage boundary and link it from the existing PR. Record start and finish time;
-cumulative Codex task tokens at start and finish plus the delta; external model
-input/output tokens, latency, cost, and call count when exposed; review model
-and effort; concrete result; and durable value as product code, decision
-evidence, or process-only work. Mark unavailable measurements rather than
-estimating them.
+`evidence/experiment-2/effort-ledger.json`. Commit one entry at each meaningful
+stage or decision boundary and link it from the existing PR. Record start and
+finish time; cumulative Codex task tokens at start and finish plus the delta;
+external model input/output tokens, latency, cost, and call count when exposed;
+review model and effort; concrete result; and durable value as product code,
+decision evidence, or process-only work. Mark unavailable measurements rather
+than estimating them.
 
 This is a retrospective 80/20 aid, not per-turn narration, product analytics,
 time tracking infrastructure, or a reason to continue low-value work. The final
 outcome identifies stages whose effort did not proportionally improve the code
 or decision so later work can remove them.
+
+Fold routine review, publication, retries, and process corrections into the
+stage entry they served. Do not create separate ledger entries or commits for
+bookkeeping that does not change the product or decision.
 
 ## Experiment 1 process disposition
 
@@ -246,5 +313,5 @@ updates do not trigger another review or live run.
 
 This section records the required post-Experiment 1 reassessment. At merge or
 falsification, leave one concise outcome note. Post-merge review is reserved for
-escaped defects, incidents, or contradicted premises and still requires Steve's
-permission when Claude is used.
+escaped defects, incidents, or contradicted premises; a standard Sonnet review
+needed for that bounded work remains covered by standing authority.

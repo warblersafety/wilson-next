@@ -26,14 +26,15 @@ of hiding a deviation here.
 - [ ] Applicable independent-review requirement satisfied and blocking findings
       resolved (fresh-context review or proportional closure under
       `docs/DELIVERY.md`).
-- Review mode, reviewer, model/effort, CLI, and subscription preflight:
-- Reviewed commit, prompt version/source, and verbatim prompt:
+- Required review: not needed / result link
+- Reviewed commit, reviewer, model/effort, and CLI:
 - Review comment:
-- Material limitations, finding dispositions, and resolving commits:
-- Additional review: not requested / authorization and result links
+- Blocking findings and dispositions:
 - Stop-and-reconcile triggered: no / link
 - Known limitations or follow-ups:
 
 ## Decision requested
 
-State exactly what Steve is being asked to approve or reject.
+State the outcome and remaining risk Steve is being asked to approve or reject
+at merge. Routine implementation, checks, reviews, model calls within the
+standing cap, and GitHub bookkeeping are not separate permission requests.
