@@ -1,3 +1,21 @@
+# Claude review
+
+**Review mode:** Standard fresh-context review, directive `wilson-review-v1`,
+read-only, no implementation.
+
+**Exact commit reviewed:** `b2f336ed29fd93598169ed1261fdc1c1db0782f8`.
+
+**Base:** `main` at `e0d4a8d757684c92e3d217e4747bee4c88e97ef5`.
+
+**Model/effort:** Claude Sonnet 5 (`claude-sonnet-5`), high, Claude Code
+2.1.241. Subscription preflight passed through `claude.ai`; provider override
+variables were unset.
+
+**Disposition:** The one blocker and two follow-ups below were resolved in
+`242441e2e988612abc688f6e02080951398c5039`; see `dispositions.md`.
+
+## Verbatim result
+
 ## BLOCKING
 
 **1. This change removes the only code-level barrier that kept the deployed protected preview from making live, uncapped, unauthorized calls to the real Anthropic API with arbitrary (including potentially non-synthetic) text.**
