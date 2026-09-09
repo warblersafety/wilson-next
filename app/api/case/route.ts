@@ -22,7 +22,7 @@ import {
 } from "../../../src/server/diagnostics/runtime-log";
 import { getJourneySnapshot, performJourneyAction } from "../../../src/server/journey/service";
 import { createAnthropicJourneyModel } from "../../../src/server/model/anthropic-journey";
-import { fixedJourneyModel } from "../../../src/server/model/fixed-journey";
+import { fixedJourneyModel } from "../../../src/experiment/fixed-journey";
 import { ModelCallFailure, type JourneyModel } from "../../../src/server/model/journey-model";
 
 export const dynamic = "force-dynamic";

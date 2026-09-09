@@ -43,6 +43,26 @@ describe("case mutation source boundary", () => {
 
     expect(violations).toEqual([]);
   });
+
+  it("keeps experiment fixtures and semantic oracles out of the production model/evidence boundary", async () => {
+    const boundaryFiles = [
+      ...(await sourceFiles(join(root, "src/domain"))),
+      ...(await sourceFiles(join(root, "src/server/model"))),
+    ];
+    const forbidden = [
+      /(?:from|import\s*\()["'][^"']*experiment\//,
+      /(?:from|import\s*\()["'][^"']*(?:fixed-journey|sample-oracle)["']/,
+      /\b(?:apixaban|naproxen|lisinopril)\b/i,
+    ];
+    const violations: string[] = [];
+
+    for (const path of boundaryFiles) {
+      const source = await readFile(path, "utf8");
+      if (forbidden.some((pattern) => pattern.test(source))) violations.push(relative(root, path));
+    }
+
+    expect(violations).toEqual([]);
+  });
 });
 
 async function sourceFiles(directory: string): Promise<string[]> {

@@ -19,12 +19,13 @@ import {
   silentDiagnosticLogger,
   type RuntimeDiagnosticLogger,
 } from "../diagnostics/runtime-log";
-import { fixedJourneyModel } from "../model/fixed-journey";
+import { fixedJourneyModel } from "../../experiment/fixed-journey";
 import {
   ModelCallFailure,
-  type CorrectionModelContext,
   type JourneyModel,
+  type ReviewedCaseModelContext,
 } from "../model/journey-model";
+import { createReviewedCaseModelContext } from "../model/reviewed-case-context";
 
 export type JourneyStage =
   | "describe"
@@ -235,7 +236,7 @@ export async function performJourneyAction(
     }
     case "submit-correction":
       requireStage(expectedStage, "update");
-      const correctionContext = reviewedCorrectionContext(current);
+      const correctionContext = createReviewedCaseModelContext(current);
       const correction = await proposeWithDiagnostics(
         model,
         "correction",
@@ -308,7 +309,7 @@ async function proposeWithDiagnostics(
   turn: "opening" | "correction",
   text: string,
   diagnostics: RuntimeDiagnosticLogger,
-  correctionContext?: CorrectionModelContext,
+  correctionContext?: ReviewedCaseModelContext,
 ) {
   diagnostics.event("model", "request", "start", {
     turn,
@@ -402,21 +403,6 @@ export function stageFor(caseState: SemanticCase): JourneyStage {
 
 function hasPendingDoseCorrection(caseState: SemanticCase): boolean {
   return caseState.products.some(({ facts }) => facts.dose.proposedValues.some(({ intent }) => intent === "correction"));
-}
-
-function reviewedCorrectionContext(caseState: SemanticCase): CorrectionModelContext {
-  const naproxen = caseState.products.find(({ id }) => id === "product-naproxen");
-  const apixaban = caseState.products.find(({ id }) => id === "product-apixaban");
-  const dose = naproxen?.facts.dose.resolvedValue?.value;
-  const startDate = apixaban?.facts.startDate.resolvedValue?.value;
-  if (dose?.kind !== "known" || typeof dose.value !== "string"
-    || startDate?.kind !== "known" || typeof startDate.value !== "string") {
-    throw new Error("Reviewed correction context is unavailable");
-  }
-  return {
-    reviewedNaproxenDose: dose.value,
-    reviewedApixabanStartDate: startDate.value,
-  };
 }
 
 function requireDistinctDateAlternative(caseState: SemanticCase): void {

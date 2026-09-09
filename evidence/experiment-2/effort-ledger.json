@@ -294,6 +294,50 @@
         "The stage snapshot precedes the small bookkeeping and publication cost of persisting this entry and opening its clerical pull request.",
         "Codex task tokens are the goal tracker's task-effort measure, not an estimate of billable API usage."
       ]
+    },
+    {
+      "id": "core-boundary-implementation",
+      "status": "completed-pending-review",
+      "recordedAt": "2026-09-09T01:31:55Z",
+      "startedAt": "2026-09-09T01:02:15Z",
+      "finishedAt": "2026-09-09T01:31:39Z",
+      "elapsedSeconds": 1764,
+      "codexTaskTokens": {
+        "source": "codex-goal-snapshot",
+        "start": 0,
+        "end": 168035,
+        "delta": 168035
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMilliseconds": 0,
+        "costUsd": 0
+      },
+      "review": null,
+      "result": "Replaced the case-specific production model contract with exact quotation localization, application-owned opaque product identity, generic later-input context, and a case-agnostic structured schema; isolated fixed fixtures/oracles under the experiment adapter boundary.",
+      "verification": {
+        "focusedTests": "39 passed",
+        "fullTests": "87 passed",
+        "typecheck": "passed",
+        "build": "passed",
+        "browserTests": "2 passed"
+      },
+      "durableValue": {
+        "kind": "product-code",
+        "artifacts": [
+          "src/domain/case/model-boundary.ts",
+          "src/server/model/anthropic-journey.ts",
+          "src/server/model/reviewed-case-context.ts"
+        ]
+      },
+      "limitations": [
+        "The assembled journey service and UI remain intentionally case-specific until the separately authorized assembled-product slice.",
+        "The stage snapshot precedes the small bookkeeping and publication cost of persisting this entry and opening its draft pull request.",
+        "Codex task tokens are the goal tracker's task-effort measure, not an estimate of billable API usage."
+      ]
     }
   ]
 }
