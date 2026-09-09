@@ -1,9 +1,7 @@
 # Wilson Experiment 1
 
-**Status:** Approved by Steve; Slices 0–4A, Git-backed preview delivery, and
-Issue #32's synthetic-only deployed observability are complete; Slice 4B is
-defined and authorized as an operator-only checkpoint under Issue #35 after
-required pre-implementation review and approved planning remediation
+**Status:** Completed 2026-09-08 as a qualified technical success after the
+operator-only Slice 4B checkpoint and Issue #40 remediation
 
 **Owns:** The fixed journey, supported and deferred scope, interaction
 composition, selected stack, implementation sequence, verification, deployment,
@@ -31,11 +29,39 @@ whether source excerpts make proposals reviewable, whether incompatible
 evidence stays visible without leaking into the form, and whether review and
 PDF agree at one case revision.
 
-The experiment is not a general Form 3500 release or a usability study. Slice
-4B stops after Steve and Codex complete the live deployed journey as operators.
-Separately authorized later slices develop additional pre-physician evals;
-only after those gates pass does one physician use the synthetic journey and
-supply the highest-value early product feedback.
+The experiment is not a general Form 3500 release or a usability study. It ends
+after Steve and Codex complete and assess the live deployed journey as
+operators. Requiring physician feedback to complete this intentionally
+incomplete, fixed-case product was a planning mistake and is removed by Issue
+#42. Any future physician involvement belongs after a separately approved
+product-completeness and readiness decision.
+
+## Final disposition
+
+Experiment 1 is complete. Its central technical hypothesis survived: one
+semantic case and write boundary preserved product identity, accepted truth,
+correction history, unresolved conflict, and agreement among the reviewed case,
+screen, projection, preview, and downloaded PDF in a protected real-model
+browser journey.
+
+The result is a qualified technical success, not a claim of general usefulness.
+The implementation remains substantially coupled to one product catalog and
+authored sequence. Exact evidence localization remains inaccurate under Issue
+#39, model latency is noticeable, and one successful synthetic journey cannot
+establish generalization, reliability, or an advantage over completing Form
+3500 directly.
+
+The final live sample did not satisfy the original exact-source oracle
+criterion: 9 of 29 opening excerpts and 0 of 2 correction excerpts matched the
+oracle exactly, although all material fact values were correct. Experiment 1 is
+therefore not recorded as an unqualified pass. Issue #40's sanitized verdict
+and Steve's independently completed protected journey support the qualified
+disposition without waiving Issue #39.
+
+The approved product decision is to pursue one more bounded, operator-only
+experiment focused on generalization and usefulness. Experiment 1 does not
+authorize that implementation, a production seed, physician involvement, or
+real clinical data.
 
 ## Scope
 
@@ -55,8 +81,7 @@ supply the highest-value early product feedback.
 - browser review, form preview, and official PDF download;
 - one deterministic browser run, operator-initiated real-model use under an
   operator-chosen runtime budget, and one deployed operator run in Slice 4B;
-- separately authorized later eval work and one later formative physician
-  session; and
+- one final operator assessment and product decision; and
 - synthetic information only.
 
 ### Deferred
@@ -225,23 +250,23 @@ evidence.
 The pre-resolution download restriction is specific to this fixed experiment,
 which deliberately exercises resolution before download. It does not establish
 a product-wide rule that every unresolved optional fact blocks partial output.
-Before physician testing, browser evidence must check both the visible control
-and a direct state-bearing request to every official-PDF operation: before
-resolution, download and preview requests return a no-store `409` response. A
-disabled button alone does not prove the gate. PDF case state is carried only in
-the non-GET request body, never in a URL, cookie-backed repository, server
-revision anchor, or affinity mechanism. After a successful response, the
-browser opens the returned PDF bytes for preview or downloads them with the
-official filename.
+Before final operator acceptance, browser evidence must check both the visible
+control and a direct state-bearing request to every official-PDF operation:
+before resolution, download and preview requests return a no-store `409`
+response. A disabled button alone does not prove the gate. PDF case state is
+carried only in the non-GET request body, never in a URL, cookie-backed
+repository, server revision anchor, or affinity mechanism. After a successful
+response, the browser opens the returned PDF bytes for preview or downloads
+them with the official filename.
 
 Backward editing remains allowed. Any visible Change or Remove control is a
 real affordance. In Check understanding, Change records a clinician correction
 and Remove rejects the proposed semantic group through `applyCaseCommand`;
 controls are absent wherever this fixed experiment does not support the action.
-Before physician testing, separate synthetic browser runs exercise at least one
-Change and one Remove path without altering the authoritative golden journey.
-Retain screenshots only for understanding, unresolved conflict, and final
-output unless another state diagnoses a failure.
+Before final operator acceptance, separate synthetic browser runs exercise at
+least one Change and one Remove path without altering the authoritative golden
+journey. Retain screenshots only for understanding, unresolved conflict, and
+final output unless another state diagnoses a failure.
 
 ## Success and stopping
 
@@ -262,9 +287,8 @@ The experiment passes only if:
    requires explicit action.
 10. The model sample passes its gates.
 11. Operator review finds no severe reason to withhold the synthetic preview.
-12. Separately authorized additional pre-physician evals pass.
-13. One physician completes the journey and their observations inform the next
-    product decision.
+12. The result and known limitations support an explicit stop, revise, or
+    continue decision without treating technical completion as product proof.
 
 Immediately stop and classify the owning premise for silent loss, invention,
 reversal, wrong-entity attribution, bypassed authority, hidden conflict, or
@@ -279,9 +303,9 @@ versus observed behavior and options in the issue/PR, update the owning active
 document, and obtain approval before resuming. Ordinary defects and reversible
 implementation choices remain local.
 
-The experiment ends after physician-feedback review whether it passes or
-fails. It never expands automatically. A technical pass cannot overrule
-feedback that the direction is confusing or not useful.
+The experiment ends after operator-result review whether it passes, fails, or
+is qualified. It never expands automatically. Technical completion cannot
+overrule evidence that the direction is confusing or not useful.
 
 ## Verification
 
@@ -353,7 +377,7 @@ supporting text for every material proposal, and every projection-required fact
 in every run. Any failure stops expansion and reopens prompt, schema, model, or
 responsibility. Passing makes no general reliability claim.
 
-### PDF, operator, and physician evidence
+### PDF and operator evidence
 
 Compare supported semantic projection values and checkboxes programmatically
 with the PDF and inspect its rendered pages visually. Then the operator
@@ -362,22 +386,15 @@ filler. This is an operator-initiated runtime use under the policy above.
 
 Slice 4B ends when Steve and Codex complete and assess the deployed synthetic
 journey as operators. It makes no claim that the preview is ready to hand to a
-physician. Separately authorized later slices develop the additional
-pre-physician evals and define their gates. Only after those gates pass does one
-physician use the experimental, synthetic-only preview and discuss confusion,
-effort, fidelity, reviewability, the value of the one follow-up, missing
-emphasis, and preference versus the direct form. Keep concise observations,
-not a pseudo-scientific score.
-
-Before that session, proposed work must protect case integrity, enable the
-complete browser-to-PDF journey, or make the feedback safer or interpretable.
-Otherwise defer it.
+physician. The completed result and limitations inform the separately governed
+next experiment. Physician feedback is neither Experiment 1 evidence nor an
+Experiment 1 completion condition.
 
 Do not add coverage targets, a simulated-clinician harness, broad adapter
 matrices, property or mutation testing, an LLM judge, large eval corpus,
 scheduled model runs, visual regression, multiple browsers/viewports, load
 testing, production monitoring, or browser tests for deferred failure branches
-without evidence that the first physician decision needs them.
+without evidence that the Experiment 1 operator decision needs them.
 
 ## Selected stack
 
@@ -489,13 +506,14 @@ revocable Shareable Link as a possible later no-cost, non-technical reviewer
 path. Hobby permits only one Shareable Link in total for the account; a
 read-only account check during Slice 4A found no existing alias-level
 protection bypass, so that slot appeared available. Slice 4B uses the existing
-authenticated operator path and neither creates nor tests a physician-facing
-link. A later physician-readiness slice must re-evaluate the practical access
-path; only that separately authorized work may use a deployment-scoped bearer
-link or consider one minimal shared-secret screen and signed, secure,
-non-persistent cookie. Before an Anthropic secret is installed or any reviewer
-link is shared, every model, case, and PDF route must be behind the selected
-protection; the Anthropic key never reaches the browser. An unprotected 4A gate
+authenticated operator path and neither creates nor tests an external-
+participant link. Any future participant access requires its own approved
+readiness and protection decision; only that separately authorized work may
+use a deployment-scoped bearer link or consider one minimal shared-secret
+screen and signed, secure, non-persistent cookie. Before an Anthropic secret is
+installed or any reviewer link is shared, every model, case, and PDF route must
+be behind the selected protection; the Anthropic key never reaches the browser.
+An unprotected 4A gate
 deployment may contain only the existing deterministic synthetic experience,
 remain unshared, and be removed when the gate ends. Its checks stop at build
 completion, initial page/static delivery, and access-path discovery; they do
@@ -714,13 +732,11 @@ Core implementation follows the completed Slices 0–3 and the split Slice 4:
    boundary above, close the Change/Remove false affordances, preserve the
    selected preview protection and approved synthetic-only diagnostics, and
    have Steve and Codex run operator conversation/PDF acceptance. Stop there;
-   no physician participates and no new pre-physician eval is developed in
-   this slice.
+   no external participant or follow-on experiment work occurs in this slice.
 
-Later separately authorized slices develop the additional pre-physician evals,
-set their acceptance gates, and only then prepare and run the formative
-physician session. Their scope and numbering remain undecided; Slice 4B does
-not create placeholder infrastructure for them.
+Slice 4B completes Experiment 1. Any follow-on experiment requires its own
+approved decision question, scope, architecture, evidence, and authorization;
+Slice 4B creates no placeholder infrastructure for it.
 
 Slice 4A passes only when the Wilson Next build, initial page, and static assets
 have a Vercel URL; the Hobby Git-import result is conclusive; the CLI/API
@@ -849,7 +865,7 @@ durable data, or polish unrelated to the approved journey.
 
 Retain only the synthetic fixture/oracle, source revision, focused results,
 useful sanitized trace/screenshots, short model table and cost, checked PDF,
-operator verdict, and concise physician notes. Vercel Runtime Logs containing
+and operator verdict. Vercel Runtime Logs containing
 complete synthetic diagnostics remain only under Hobby's one-hour retention
 and are inspected in place; do not export or retain them as raw infrastructure
 logs. Never retain credentials, real clinical data, exported browser storage,
@@ -864,10 +880,9 @@ evidence rather than merging it. Copy nothing into legacy Wilson or Nightjar.
 
 Slice 4A requires Vercel team/project access and the short-lived credential
 handoff above. Slice 4B additionally requires an Anthropic API organization/key
-and the selected protected operator-access secrets. Physician access and
-session logistics belong only to a later separately authorized slice. Missing
-access is a concrete blocker; it does not authorize silent provider, plan,
-host, or persistence substitution.
+and the selected protected operator-access secrets. Missing access is a
+concrete blocker; it does not authorize silent provider, plan, host, or
+persistence substitution.
 
 ## Authorization boundary
 
@@ -877,9 +892,6 @@ and delivery topics are closed for Experiment 1 as amended above. Legacy reuse
 is decided only when a slice proposes a specific asset, and legacy Wilson's
 operational disposition is separate work.
 
-Nothing in this document authorizes application implementation, external
-deployment, spending, real clinical data, production release, or expanded
-scope. Slice 4A and Slice 4B each begin only after Steve's explicit
-implementation go-ahead. Steve gave that go-ahead for Slice 4B and approved its
-pre-implementation review dispositions on 2026-09-06; all other boundaries
-remain unchanged.
+Nothing in this document authorizes follow-on application implementation,
+external deployment, spending, real clinical data, production release, or
+expanded scope. Experiment 1's implementation authorization is exhausted.

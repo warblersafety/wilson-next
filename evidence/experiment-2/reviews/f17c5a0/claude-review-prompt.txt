@@ -1,0 +1,326 @@
+Review this exact Wilson change and find material reasons it should not
+merge. Inspect the complete diff, issue, governing artifacts, relevant
+surrounding code, and acceptance evidence. Check correctness, missing
+behavior, regression risk, and whether the implementation hides a faulty
+requirement or architectural premise. Do not edit anything. Report only
+BLOCKING findings and independently valuable FOLLOW-UP findings, with
+evidence and precise locations. State what you inspected and ran, material
+limitations, and explicitly say when no findings remain.
+
+Target metadata
+
+- Repository: warblersafety/wilson-next.
+- Exact local target commit: f17c5a05d146012a1fd04983171d0a547ab5773c.
+- Base: local main at aed8f58e1f3fc2c08b238999fc493192ab2e65b5.
+- Review the complete main...HEAD diff, including the earlier planning commit
+  and the subsequent local production-seed planning revision.
+- Draft PR 43 currently has remote head 0e847430dae54464e16ed8e4f1ad403b7b0d3c1e.
+  Its body and check state therefore describe the earlier commit. Treat them as
+  delivery context, not acceptance evidence for unpushed commit f17c5a0.
+- This is one fresh-context standard review using wilson-review-v1 from
+  docs/DELIVERY.md at the target commit. Do not use or seek earlier review
+  conclusions.
+- Read-only repository access only. Do not edit files, change Git state, use
+  network access, invoke agents, post to GitHub, or perform implementation.
+
+Governing corpus
+
+Read README.md, docs/PRODUCT.md, docs/ARCHITECTURE.md,
+docs/EXPERIMENT-1.md, docs/EXPERIMENT-2.md, and docs/DELIVERY.md completely and
+treat their stated ownership and authority as controlling. Inspect relevant
+surrounding application code and retained evidence where needed to test whether
+the plan's premises and claimed boundaries match the existing system.
+
+Exact Issue 42
+
+Title: Close Experiment 1 and define operator-only Experiment 2
+State: OPEN
+URL: https://github.com/warblersafety/wilson-next/issues/42
+Comments: none
+
+## Outcome
+
+Close Experiment 1 as a qualified technical success and define a bounded,
+operator-only Experiment 2 that tests whether Wilson generalizes and saves
+enough effort to justify further product investment.
+
+Experiment 1 must not require physician feedback for completion. That
+requirement was a planning mistake: the implemented product is intentionally
+fixed to one synthetic journey and was never intended for physician use in
+that incomplete form.
+
+## Evidence and decision
+
+Experiment 1 established that the central semantic-case hypothesis survived:
+
+- clinician knowledge can remain upstream of PDF widget identity;
+- products retain stable identity and role;
+- one write boundary can preserve proposal authority and case invariants;
+- corrections retain superseded history;
+- conflicts remain unresolved until explicit selection; and
+- reviewed case, screen, semantic projection, PDF preview, and download can
+  agree in a protected real-model browser journey.
+
+Experiment 1 did not establish general usefulness. The current application is
+substantially coupled to one catalog, authored question sequence, correction,
+and conflict. Source localization remains inaccurate under Issue #39, model
+latency is noticeable, and one successful case does not demonstrate
+generalization, reliability, or an advantage over completing Form 3500
+directly.
+
+The approved conclusion is therefore: Wilson warrants one more bounded
+experiment, but not a production build, physician session, or broad V1
+implementation.
+
+## Included
+
+- Update the active corpus and README to mark Experiment 1 complete with its
+  evidence-backed qualified-success conclusion.
+- Remove physician participation and later pre-physician evals from Experiment
+  1's completion criteria and authorization.
+- Preserve eventual physician feedback as a later product milestone only after
+  Wilson is sufficiently complete and separately approved for that purpose.
+- Add an Experiment 2 governing document defining:
+  - the single decision question;
+  - a small set of materially different synthetic medication journeys;
+  - the minimum application generalization needed to exercise them;
+  - operator comparison with direct Form 3500 completion;
+  - external scenario assessment rather than runtime answer-key validation;
+  - focused deterministic, real-model, browser, projection, and PDF evidence;
+  - model-run authorization and budget boundaries;
+  - success, failure, and stop conditions; and
+  - small implementation slices that do not assume the result.
+- Treat Issue #39, fixture coupling, and latency as explicit planning inputs.
+- Reassess Experiment 1 delivery steps and retain only those that produced
+  useful signal.
+
+## Excluded
+
+- Application implementation or refactoring.
+- New model calls, scenarios executed against a model, or deployed smoke runs.
+- Physician or other external participant involvement.
+- Real clinical data.
+- Production deployment or release.
+- Persistence, accounts, collaboration, analytics, or another diagnostic
+  store.
+- A large evaluation platform, LLM judge, broad Form 3500 matrix, or general
+  dialogue framework.
+- Paid-plan purchase, provider comparison, automatic retry, or legacy Wilson
+  cutover.
+
+## Minimum Experiment 2 planning boundary
+
+Experiment 2 should generalize only enough to test the current adverse-event
+medication path across a few discriminating synthetic journeys. It should not
+claim arbitrary Form 3500 coverage.
+
+Candidate journey dimensions are:
+
+1. information-rich single suspect product, testing omission avoidance and
+   unnecessary-question burden;
+2. sparse or uncertain knowledge, testing useful follow-up selection and
+   truthful partial output; and
+3. repeated or similar product mentions with correction, testing entity
+   attribution and revision behavior.
+
+The completed Experiment 1 journey remains a regression case rather than one of
+the new usefulness samples. Final case count, repetition, runtime budget, and
+direct-form comparison procedure are decisions for the governing plan, not
+implicit authorization in this issue.
+
+## Acceptance
+
+- The active documents consistently state that Experiment 1 is complete without
+  physician participation.
+- Experiment 1's durable outcome distinguishes technical success from unproven
+  product usefulness.
+- Experiment 2 has one falsifiable decision question and a deliberately small
+  operator-only scope.
+- Runtime validation remains limited to mechanically provable failures;
+  scenario answer keys and usefulness judgments remain outside Wilson.
+- The plan names what must be generalized and what remains deferred.
+- Success and stopping rules prevent case-specific patch accumulation and a
+  general-framework detour.
+- No Experiment 2 application work begins before independent review of the
+  approved plan and Steve's explicit implementation authorization.
+
+## Review and delivery
+
+Use one documentation-only branch and draft PR from synchronized main.
+Because this changes product and experiment authority, perform one standard
+fresh-context Claude Sonnet/high review after the complete planning diff exists,
+but only after Steve separately authorizes that review. Resolve blocking
+findings before asking Steve to approve the plan.
+
+Stop and return for direction if closing Experiment 1 would silently waive a
+known severe failure, if the proposed Experiment 2 requires production or
+real-data architecture, or if its minimum implementation cannot remain a
+bounded experiment.
+
+Exact Issue 39
+
+Title: Move source localization out of the model boundary
+State: OPEN
+URL: https://github.com/warblersafety/wilson-next/issues/39
+Comments: none
+
+## Outcome
+
+Move exact source localization out of the model's responsibilities. The model
+may propose a normalized fact and the clinician words that support it; Wilson
+deterministically associates an exact excerpt with the original input. A
+localization failure must remain visible and recoverable rather than displaying
+a shifted or truncated quotation.
+
+This is a prerequisite for clinician-facing use, not a prerequisite for
+retaining the experimental live-model capability delivered by PR #36.
+
+## Why
+
+Issue #35's final live opening extracted all 29 expected values with correct
+product identities, but 22 returned source ranges were systematically shifted
+by one character. For example, the intended excerpt `melena and dizziness` was
+displayed as ` melena and dizzines`. The immediate code sliced the coordinates
+it was given correctly; the bad responsibility split was asking the model to
+calculate exact character positions while also interpreting and normalizing
+clinical shorthand.
+
+## Minimum scope
+
+- Keep normalized proposed facts separate from verbatim clinician evidence.
+- Stop asking the model to calculate character offsets.
+- Let deterministic code locate and preserve an exact supporting passage in the
+  original input.
+- Handle absent or ambiguous matches explicitly without inventing a location or
+  silently changing the clinician's words.
+- Preserve the rule that a proposal remains unaccepted until human review.
+- Add focused synthetic coverage for exact, absent, and ambiguous matches.
+
+## Explicitly excluded
+
+- Fixture-specific offset corrections or an expanding catalog of semantic
+  validator rules.
+- Fuzzy matching infrastructure unless concrete evidence later shows exact
+  matching is insufficient.
+- A new persistence layer, diagnostic store, eval framework, provider
+  comparison, or retry loop.
+- Real clinical data, physician participation, production deployment, or a paid
+  plan.
+
+## Acceptance
+
+- Model output no longer contains source character offsets.
+- Wilson never presents a shifted, truncated, or reconstructed string as an
+  exact clinician quotation.
+- Normalized facts may still smooth spelling, abbreviations, dates, units, and
+  shorthand when meaning is clear; uncertainty, negation, correction, and
+  clinically material distinctions remain preserved.
+- A missing or ambiguous source association is shown honestly and cannot
+  silently become accepted case knowledge.
+- Existing case-authority, correction, conflict, projection, and PDF behavior
+  remains intact.
+
+## Evidence
+
+- PR #36
+- evidence/issue-35/live-self-contained-evidence/operator-verdict.json
+- evidence/issue-35/README.md, section Self-contained-evidence live attempt
+
+Exact draft PR 43 delivery context
+
+Title: Close Experiment 1 and plan operator-only Experiment 2
+State: OPEN, DRAFT
+URL: https://github.com/warblersafety/wilson-next/pull/43
+Remote base: main at aed8f58e1f3fc2c08b238999fc493192ab2e65b5
+Remote head: 0e847430dae54464e16ed8e4f1ad403b7b0d3c1e
+Reviews: none
+Review decision: REVIEW_REQUIRED
+Checks at the remote head: verify SUCCESS; Vercel SUCCESS; Vercel Preview
+Comments SUCCESS.
+Human comments: none. One automated Vercel deployment-status comment exists.
+
+## Outcome
+
+Close Experiment 1 as a qualified technical success and draft the bounded,
+operator-only Experiment 2 plan needed to decide whether Wilson generalizes and
+saves enough effort to justify further investment.
+
+Closes #42
+
+## Scope
+
+- Included:
+  - record Experiment 1's final outcome and the unmet exact-source gate;
+  - remove the mistaken physician completion requirement;
+  - keep eventual clinician validation behind a later product-completeness and
+    readiness decision;
+  - define Experiment 2's decision question, three candidate synthetic
+    medication journeys, minimum generalization, external evaluation,
+    direct-form comparison, staged live-run policy, success/stop rules, and
+    proposed slices;
+  - record the Experiment 1 delivery-process lessons.
+- Excluded:
+  - application changes or refactoring;
+  - model calls or scenario execution;
+  - physician or external participant involvement;
+  - real clinical data, production, persistence, accounts, another diagnostic
+    store, broad Form 3500 coverage, large eval infrastructure, paid plans, or
+    legacy cutover.
+
+## Important decisions
+
+- Experiment 1 is complete but not an unqualified pass. Its architecture
+  survived; its final live sample still missed the exact-source oracle under
+  Issue #39.
+- Experiment 2 asks one question: can a minimally generalized Wilson handle a
+  few different synthetic medication cases faithfully and with less burden than
+  direct Form 3500 completion?
+- The completed TEST-57 journey remains a regression, not a new usefulness
+  sample.
+- Runtime validation remains mechanical. Scenario answers and usefulness
+  judgments stay outside Wilson.
+- Live work is staged: one separately authorized first pass per case, optional
+  separately authorized variability pass only if viable, then operator
+  direct-form comparison.
+- No physician is part of Experiment 1 or Experiment 2.
+
+Planning commit: 0e84743.
+
+## Evidence
+
+- git diff --check — passed.
+- Stale Experiment 1 physician-gate phrases — absent from the active experiment
+  plan.
+- Application source and dependencies — unchanged.
+- CI — pending on the draft PR.
+
+## Review and risk
+
+- Implementer reviewed the planning diff against Issue #42 and the active
+  corpus.
+- One standard fresh-context Claude Sonnet/high review of the complete planning
+  diff remains required.
+- Blocking findings remain to be resolved if any.
+- Steve has not yet approved the final Experiment 1 disposition and Experiment
+  2 plan.
+
+Material questions named by the existing PR are whether the three journeys
+discriminate generalization without becoming a scenario framework, whether the
+Issue #39 responsibility boundary is small and general, and whether the
+success/stop rules can make a real Continue, Revise, or Stop decision.
+
+## Decision requested
+
+The existing PR requested exactly one standard fresh-context Claude Sonnet/high
+read-only review of the then-current planning diff. The local target has since
+advanced to f17c5a0 and Steve has explicitly authorized this replacement review
+after an earlier incomplete-input run was aborted without a verdict.
+
+Required output
+
+Return the complete review under an explicit Claude review heading. Report the
+review mode, exact commit, model and effort as observed, what you inspected and
+ran, all BLOCKING and independently valuable FOLLOW-UP findings with precise
+locations and evidence, and material limitations. Explicitly state when no
+findings remain. Do not include style preferences, ceremony, or speculative
+enhancements as findings.

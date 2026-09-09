@@ -1,6 +1,7 @@
 # Wilson delivery and independent review
 
-**Status:** Approved by Steve; consolidated and amended 2026-09-05
+**Status:** Approved by Steve through 2026-09-05; Experiment 1 process
+disposition and Experiment 2 effort-record amendments are draft under Issue #42
 
 **Owns:** Work items, branches, pull requests, verification, independent review,
 approval, merge controls, stop-and-reconcile, and durable trace
@@ -213,7 +214,37 @@ Merge never implies external deployment, purchase, or production authorization.
 - **Active documents:** one owner for every lasting decision.
 - **CI and retained experiment artifacts:** reproducible evidence.
 
-At merge or falsification, leave one concise outcome note. Reassess this process
-after Experiment 1 and remove steps that produce no signal. Post-merge review is
-reserved for escaped defects, incidents, or contradicted premises and still
-requires Steve's permission when Claude is used.
+### Effort and value record
+
+Experiment 2 keeps one compact stage ledger at
+`evidence/experiment-2/effort-ledger.json`. Commit an entry at each meaningful
+stage boundary and link it from the existing PR. Record start and finish time;
+cumulative Codex task tokens at start and finish plus the delta; external model
+input/output tokens, latency, cost, and call count when exposed; review model
+and effort; concrete result; and durable value as product code, decision
+evidence, or process-only work. Mark unavailable measurements rather than
+estimating them.
+
+This is a retrospective 80/20 aid, not per-turn narration, product analytics,
+time tracking infrastructure, or a reason to continue low-value work. The final
+outcome identifies stages whose effort did not proportionally improve the code
+or decision so later work can remove them.
+
+## Experiment 1 process disposition
+
+Experiment 1 retained useful signal from isolated issues/branches, protected
+main, focused deterministic checks, fresh-context review of consequential
+premises, exact deployed evidence, and Steve's explicit merge decisions. Keep
+those controls for Experiment 2.
+
+Recursive review, repeated live runs without a new decision question, runner
+ceremony that obscures the product result, and attempts to convert the fixed
+oracle into runtime validation did not improve confidence proportionally. Do
+not carry them forward. One originating independent review may cover its
+bounded remediation under the proportional-closure rule above; evidence-only
+updates do not trigger another review or live run.
+
+This section records the required post-Experiment 1 reassessment. At merge or
+falsification, leave one concise outcome note. Post-merge review is reserved for
+escaped defects, incidents, or contradicted premises and still requires Steve's
+permission when Claude is used.

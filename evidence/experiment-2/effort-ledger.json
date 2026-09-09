@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "experiment": "experiment-2",
+  "purpose": "Compact stage-level effort and value evidence for retrospective 80/20 analysis.",
+  "stages": [
+    {
+      "id": "planning-revision",
+      "status": "completed",
+      "recordedAt": "2026-09-08T22:31:06Z",
+      "startedAt": null,
+      "finishedAt": null,
+      "elapsedSeconds": 834,
+      "codexTaskTokens": {
+        "source": "codex-goal-result",
+        "start": 0,
+        "end": 85909,
+        "delta": 85909
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMilliseconds": 0,
+        "costUsd": 0
+      },
+      "review": null,
+      "result": "Reframed Experiment 2 as a lean production-seed experiment with separate technical, model/evidence, operator, and future clinician questions; bounded journeys and success criteria; two implementation slices; and explicit deferrals.",
+      "durableValue": {
+        "kind": "decision-evidence",
+        "artifacts": [
+          "README.md",
+          "docs/ARCHITECTURE.md",
+          "docs/DELIVERY.md",
+          "docs/EXPERIMENT-2.md"
+        ]
+      },
+      "limitations": [
+        "Exact start and finish timestamps were not retained and are therefore null.",
+        "Measurement began with the authorized documentation-editing stage and excludes the earlier discussion.",
+        "Codex task tokens are the goal tracker's task-effort measure, not an estimate of billable API usage."
+      ]
+    },
+    {
+      "id": "planning-checkpoint",
+      "status": "completed",
+      "recordedAt": "2026-09-08T22:32:56Z",
+      "startedAt": "2026-09-08T22:30:25Z",
+      "finishedAt": "2026-09-08T22:32:26Z",
+      "elapsedSeconds": 121,
+      "codexTaskTokens": {
+        "source": "codex-goal-snapshot",
+        "start": 0,
+        "end": 10829,
+        "delta": 10829
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMilliseconds": 0,
+        "costUsd": 0
+      },
+      "review": null,
+      "result": "Added and validated the durable effort ledger, linked it from the delivery process, and created the documentation-only local planning checkpoint.",
+      "durableValue": {
+        "kind": "process-evidence",
+        "artifacts": [
+          "docs/DELIVERY.md",
+          "evidence/experiment-2/effort-ledger.json"
+        ]
+      },
+      "limitations": [
+        "The goal snapshot ends after the first local commit and excludes the small bookkeeping cost of persisting this entry and amending that commit.",
+        "Codex task tokens are the goal tracker's task-effort measure, not an estimate of billable API usage."
+      ]
+    },
+    {
+      "id": "review-attempt-aborted-incomplete-context",
+      "status": "stopped",
+      "recordedAt": "2026-09-08T23:23:02Z",
+      "startedAt": null,
+      "finishedAt": null,
+      "elapsedSeconds": 568,
+      "codexTaskTokens": {
+        "source": "codex-goal-result",
+        "start": 0,
+        "end": 46168,
+        "delta": 46168
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 1,
+        "inputTokens": 10,
+        "cacheCreationInputTokens": 51180,
+        "cacheReadInputTokens": 158962,
+        "outputTokens": 3417,
+        "latencyMilliseconds": 50079,
+        "costUsd": 0.2720664
+      },
+      "review": {
+        "model": "claude-sonnet-5",
+        "effort": "high",
+        "status": "aborted-without-verdict"
+      },
+      "result": "A sandboxed preflight failed before a model call, then the escalated review was stopped because the exact Issue #42 body was missing. No verdict was produced.",
+      "durableValue": {
+        "kind": "process-only",
+        "artifacts": [
+          "evidence/experiment-2/reviews/f17c5a0/review-runs.json"
+        ]
+      },
+      "limitations": [
+        "Exact stage start and finish timestamps were not retained and are therefore null.",
+        "The CLI-reported cost is an equivalent usage value and may not be an additional subscription charge.",
+        "The failed DNS attempt consumed zero model tokens and is recorded separately in the review run record."
+      ]
+    },
+    {
+      "id": "credential-decoupling-and-complete-review",
+      "status": "completed-with-findings",
+      "recordedAt": "2026-09-08T23:23:02Z",
+      "startedAt": null,
+      "finishedAt": null,
+      "elapsedSeconds": null,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 1,
+        "inputTokens": 16,
+        "cacheCreationInputTokens": 78844,
+        "cacheReadInputTokens": 383680,
+        "outputTokens": 28734,
+        "latencyMilliseconds": 304392,
+        "costUsd": 0.683824
+      },
+      "review": {
+        "cli": "Claude Code 2.1.241",
+        "model": "claude-sonnet-5",
+        "effort": "high",
+        "status": "completed",
+        "blockingFindings": 1,
+        "followUpFindings": 1
+      },
+      "result": "Decoupled the local GitHub credential broker from Nightjar naming, retrieved Issue #42, Issue #39, and draft PR #43 through a neutral read-only envelope, and completed the authorized review of f17c5a0.",
+      "durableValue": {
+        "kind": "decision-evidence",
+        "artifacts": [
+          "evidence/experiment-2/reviews/f17c5a0/claude-review-prompt.txt",
+          "evidence/experiment-2/reviews/f17c5a0/claude-review-result.md",
+          "evidence/experiment-2/reviews/f17c5a0/review-runs.json"
+        ]
+      },
+      "limitations": [
+        "The resumed Codex work could not obtain a new task-token counter because the goal tracker retained its earlier blocked status; missing values are not estimated.",
+        "Exact overall stage start, finish, and elapsed time were not retained; the exact review-process duration is recorded as latencyMilliseconds.",
+        "The reviewer received the exact GitHub issues, PR context, governing corpus, and local target, but not the earlier operator conversation that explicitly required production-quality code.",
+        "The reviewer reported that shell/Git tools were unavailable, so it inspected current files but could not independently execute the complete Git diff."
+      ]
+    },
+    {
+      "id": "review-reconciliation-and-final-review",
+      "status": "completed-with-follow-ups",
+      "recordedAt": "2026-09-08T23:53:28Z",
+      "startedAt": null,
+      "finishedAt": null,
+      "elapsedSeconds": null,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 1,
+        "inputTokens": 38,
+        "cacheCreationInputTokens": 100832,
+        "cacheReadInputTokens": 1420088,
+        "outputTokens": 25673,
+        "latencyMilliseconds": 307541,
+        "costUsd": 0.9490596
+      },
+      "review": {
+        "cli": "Claude Code 2.1.241",
+        "model": "claude-sonnet-5",
+        "effort": "high",
+        "status": "completed",
+        "blockingFindings": 0,
+        "followUpFindings": 2
+      },
+      "result": "Reconciled the production-seed authority and one-decision/four-dimensions findings in 470c779, then completed a fresh review using exact GitHub context, operator authority, and complete hashed main...HEAD diff artifacts. No blocking findings remained.",
+      "durableValue": {
+        "kind": "decision-evidence",
+        "artifacts": [
+          "README.md",
+          "docs/ARCHITECTURE.md",
+          "docs/EXPERIMENT-2.md",
+          "evidence/experiment-2/reviews/470c779/claude-review-prompt.txt",
+          "evidence/experiment-2/reviews/470c779/claude-review-result.md",
+          "evidence/experiment-2/reviews/470c779/review-run.json",
+          "evidence/experiment-2/reviews/470c779/dispositions.md"
+        ]
+      },
+      "limitations": [
+        "The goal tracker remained in its earlier blocked state while resumed work ran, so resumed Codex task-token and elapsed measurements were unavailable and are not estimated.",
+        "The CLI-reported cost is an equivalent usage value and may not be an additional subscription charge.",
+        "The final reviewer relied on coordinator-generated hashed diff artifacts and did not independently recompute their hashes."
+      ]
+    },
+    {
+      "id": "planning-publication",
+      "status": "completed",
+      "recordedAt": "2026-09-09T00:08:52Z",
+      "startedAt": "2026-09-09T00:06:26Z",
+      "finishedAt": "2026-09-09T00:08:32Z",
+      "elapsedSeconds": 125,
+      "codexTaskTokens": {
+        "source": "codex-goal-snapshot",
+        "start": 0,
+        "end": 18041,
+        "delta": 18041
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMilliseconds": 0,
+        "costUsd": 0
+      },
+      "github": {
+        "branchPushes": 1,
+        "prComments": 2,
+        "publishedHead": "a5f705661d3737682b7bfb3bf70e126b6ce0a5c3",
+        "verify": "passed",
+        "protectedPreview": "ready"
+      },
+      "review": null,
+      "result": "Published the reviewed planning and evidence commits, posted the exact final-review prompt and result to draft PR #43, and verified CI and the protected preview at the published head.",
+      "durableValue": {
+        "kind": "process-evidence",
+        "artifacts": [
+          "https://github.com/warblersafety/wilson-next/pull/43#issuecomment-5593684556",
+          "https://github.com/warblersafety/wilson-next/pull/43#issuecomment-5593685169",
+          "evidence/experiment-2/effort-ledger.json"
+        ]
+      },
+      "limitations": [
+        "The stage snapshot precedes the small bookkeeping cost of persisting this entry and the final Issue #42 and PR #43 summary updates.",
+        "Codex task tokens are the goal tracker's task-effort measure, not an estimate of billable API usage."
+      ]
+    }
+  ]
+}
