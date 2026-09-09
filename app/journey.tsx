@@ -264,7 +264,7 @@ function UpdateReview({ snapshot, busy, act }: {
     {groups.map(({ groupId, items }) => <article className={styles.attentionCard} key={groupId}>
       <span className={styles.attentionLabel}>{items.some(({ kind }) => kind === "correction") ? "Proposed correction" : "Proposed information"}</span>
       {items.map((item) => <div key={item.target}>
-        <h2>{targetLabel(item.target)}</h2>
+        <h2>{targetLabel(snapshot, item.target)}</h2>
         <p><strong>{formatFact(item.values[0]?.value)}</strong></p>
         <Evidence excerpt={item.values[0]?.evidence} expanded />
       </div>)}
@@ -299,10 +299,10 @@ function OutputComposition({ snapshot, update, setUpdate, busy, act, openPdf }: 
 
       <Summary title="Needs attention" tone={conflicts.length > 0 ? "attention" : "quiet"}>
         {conflicts.length === 0 ? <li>No unresolved conflicts.</li> : conflicts.map((conflict) => (
-          <li key={conflict.target}>{targetLabel(conflict.target)} has incompatible sources and is omitted unless you resolve it.</li>
+          <li key={conflict.target}>{targetLabel(snapshot, conflict.target)} has incompatible sources and is omitted unless you resolve it.</li>
         ))}
       </Summary>
-      {conflicts.map((conflict) => <ConflictCard key={conflict.target} item={conflict} busy={busy} act={act} />)}
+      {conflicts.map((conflict) => <ConflictCard key={conflict.target} snapshot={snapshot} item={conflict} busy={busy} act={act} />)}
 
       <Summary title="Omitted or unsupported" tone="quiet">
         {snapshot.projection.omissions.map((item, index) => <li key={`${item.target}-${index}`}>{humanOmission(snapshot, item.target, item.concept)}: {omissionLabel(item.reason)}</li>)}
@@ -335,11 +335,11 @@ function OutputComposition({ snapshot, update, setUpdate, busy, act, openPdf }: 
   </div>;
 }
 
-function ConflictCard({ item, busy, act }: {
-  item: ReviewAttentionItem; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+function ConflictCard({ snapshot, item, busy, act }: {
+  snapshot: JourneySnapshot; item: ReviewAttentionItem; busy: boolean; act: (action: JourneyAction) => Promise<void>;
 }) {
   return <fieldset className={styles.conflictChoice}>
-    <legend>{targetLabel(item.target)}</legend>
+    <legend>{targetLabel(snapshot, item.target)}</legend>
     {item.values.map((value) => <div className={styles.conflictOption} key={value.id}>
       <strong>{formatFact(value.value)}</strong>
       <Evidence excerpt={value.evidence} expanded />
@@ -504,9 +504,11 @@ function fieldLabel(field: string): string {
   return labels[field] ?? field;
 }
 
-function targetLabel(target: string): string {
-  const field = target.split(":").at(-1) ?? target;
-  return fieldLabel(field);
+function targetLabel(snapshot: JourneySnapshot, target: string): string {
+  const [entity, entityId, field] = target.split(":");
+  if (entity !== "product") return field ? fieldLabel(field) : target;
+  const product = snapshot.understanding.products.find(({ id }) => id === entityId);
+  return `${formatFact(activeValue(product?.facts.name))} — ${fieldLabel(field ?? "")}`;
 }
 
 function omissionLabel(reason: string): string {
@@ -518,10 +520,8 @@ function omissionText(reason: string | undefined): string {
 }
 
 function humanOmission(snapshot: JourneySnapshot, target: string, fallback: string): string {
-  const [entity, entityId, field] = target.split(":");
-  if (entity !== "product") return field ? fieldLabel(field) : fallback;
-  const product = snapshot.understanding.products.find(({ id }) => id === entityId);
-  return `${formatFact(activeValue(product?.facts.name))} — ${fieldLabel(field ?? "")}`;
+  const [entity] = target.split(":");
+  return entity === "product" || target.includes(":") ? targetLabel(snapshot, target) : fallback;
 }
 
 function Evidence({ excerpt, expanded = false }: { excerpt?: string | string[]; expanded?: boolean }) {

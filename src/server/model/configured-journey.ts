@@ -8,6 +8,7 @@ import { createAnthropicJourneyModel } from "./anthropic-journey";
 import type { JourneyModel } from "./journey-model";
 
 const responseSchema = z.object({
+  identityScope: z.string().regex(/^[a-z0-9-]+$/),
   turn: z.enum(["opening", "correction"]),
   output: modelProposalOutputSchema,
 }).strict();
@@ -33,9 +34,9 @@ async function createConfiguredModel(): Promise<JourneyModel> {
       if (fixture.turn !== turn) throw new Error(`Expected predetermined ${fixture.turn} response, received ${turn}`);
       const call = next++;
       const createIdentity: ModelBoundaryIdentityFactory = (kind, reference) => {
-        if (kind === "product") return `product-${call}-${reference}`;
-        if (kind === "group") return `group-${call}-${reference}`;
-        return `${kind}-${call}-${reference}`;
+        if (kind === "product") return `product-${fixture.identityScope}-${reference}`;
+        if (kind === "group") return `group-${fixture.identityScope}-${reference}`;
+        return `${kind}-${fixture.identityScope}-${reference}`;
       };
       return {
         envelope: parseModelProposalEnvelope({

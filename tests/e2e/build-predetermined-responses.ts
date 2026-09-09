@@ -103,8 +103,8 @@ function repeatedResponse(): ModelProposalOutput {
 
 function repeatedCorrectionResponse(): ModelProposalOutput {
   return { products: [], proposals: [
-    proposal("dose-correction", "u1", product("product-2-p2", "dose"), known("200 mg"), "Correction: the ibuprofen dose was 200 mg twice daily, not 400 mg twice daily.", "correction"),
-    proposal("date-alternative", "u2", product("product-2-p1", "startDate"), known("2026-07-02"), "My medication list says acetaminophen began 02-Jul-2026 rather than 01-Jul-2026. I cannot resolve which date is correct.", "alternative"),
+    proposal("dose-correction", "u1", product("product-repeated-p2", "dose"), known("200 mg"), "Correction: the ibuprofen dose was 200 mg twice daily, not 400 mg twice daily.", "correction"),
+    proposal("date-alternative", "u2", product("product-repeated-p1", "startDate"), known("2026-07-02"), "My medication list says acetaminophen began 02-Jul-2026 rather than 01-Jul-2026. I cannot resolve which date is correct.", "alternative"),
   ] };
 }
 
@@ -145,21 +145,21 @@ function regressionResponses(): [ModelProposalOutput, ModelProposalOutput] {
     proposals,
   };
   const rawCorrection: ModelProposalOutput = { products: [], proposals: [
-    proposal("dose-correction", "u1", product("product-5-p2", "dose"), known("250 mg"), "Correction: the naproxen dose was 250 mg twice daily, not 500 mg twice daily.", "correction"),
-    proposal("date-alternative", "u2", product("product-5-p1", "startDate"), known("2026-08-13"), "the medication administration record lists apixaban starting 13-Aug-2026, but my note says 12-Aug-2026. I can't resolve that yet", "alternative"),
+    proposal("dose-correction", "u1", product("product-experiment-1-p2", "dose"), known("250 mg"), "Correction: the naproxen dose was 250 mg twice daily, not 500 mg twice daily.", "correction"),
+    proposal("date-alternative", "u2", product("product-experiment-1-p1", "startDate"), known("2026-08-13"), "the medication administration record lists apixaban starting 13-Aug-2026, but my note says 12-Aug-2026. I can't resolve that yet", "alternative"),
   ] };
   return [rawOpening, rawCorrection];
 }
 
 const [regressionOpeningResponse, regressionCorrectionResponse] = regressionResponses();
 const responses = [
-  { turn: "opening", output: richResponse() },
-  { turn: "opening", output: sparseResponse() },
-  { turn: "opening", output: repeatedResponse() },
-  { turn: "correction", output: repeatedCorrectionResponse() },
-  { turn: "opening", output: regressionOpeningResponse },
-  { turn: "opening", output: regressionOpeningResponse },
-  { turn: "correction", output: regressionCorrectionResponse },
+  { identityScope: "rich", turn: "opening", output: richResponse() },
+  { identityScope: "sparse", turn: "opening", output: sparseResponse() },
+  { identityScope: "repeated", turn: "opening", output: repeatedResponse() },
+  { identityScope: "repeated-update", turn: "correction", output: repeatedCorrectionResponse() },
+  { identityScope: "change-remove", turn: "opening", output: regressionOpeningResponse },
+  { identityScope: "experiment-1", turn: "opening", output: regressionOpeningResponse },
+  { identityScope: "experiment-1-update", turn: "correction", output: regressionCorrectionResponse },
 ];
 
 if (process.argv[1]?.endsWith("build-predetermined-responses.ts")) {

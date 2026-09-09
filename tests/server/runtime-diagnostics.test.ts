@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { NextRequest } from "next/server";
-import { describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { GET as getCase, postCase } from "../../app/api/case/route";
 import { POST as postBrowserDiagnostic } from "../../app/api/diagnostics/browser/route";
 import { consumeJourneyJsonResponse } from "../../app/browser-diagnostics";
@@ -20,7 +20,16 @@ const context = {
   operationId: "22222222-2222-4222-8222-222222222222",
 };
 
-process.env.WILSON_SYNTHETIC_INPUT_SHA256 = createHash("sha256").update(openingAccount).digest("hex");
+const priorSyntheticInputHashes = process.env.WILSON_SYNTHETIC_INPUT_SHA256;
+
+beforeAll(() => {
+  process.env.WILSON_SYNTHETIC_INPUT_SHA256 = createHash("sha256").update(openingAccount).digest("hex");
+});
+
+afterAll(() => {
+  if (priorSyntheticInputHashes === undefined) delete process.env.WILSON_SYNTHETIC_INPUT_SHA256;
+  else process.env.WILSON_SYNTHETIC_INPUT_SHA256 = priorSyntheticInputHashes;
+});
 
 describe("runtime diagnostics", () => {
   it("carries browser correlation IDs through the route and ordered response event", async () => {

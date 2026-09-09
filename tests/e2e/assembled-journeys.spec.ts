@@ -70,7 +70,8 @@ test("runs the three Experiment 2 journeys and retained Experiment 1 regression 
   const dateUpdate = page.getByRole("article").filter({ hasText: "2-Jul-2026" });
   await dateUpdate.getByRole("button", { name: "Accept this update" }).click();
   await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
-  await expect(page.getByText("Started has incompatible sources", { exact: false })).toBeVisible();
+  await expect(page.getByText("acetaminophen (Tylenol) — Started has incompatible sources", { exact: false })).toBeVisible();
+  await expect(page.getByRole("group", { name: "acetaminophen (Tylenol) — Started" })).toBeVisible();
   await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("Omitted — unresolved conflict");
   await expect(page.getByRole("button", { name: "Download official PDF" })).toBeEnabled();
   checkpoints.push({ journey: "repeated", state: "unresolved-partial-output", assertion: "Alias identity stayed singular, dose correction superseded history, and both dates remain visible while neither projects." });
