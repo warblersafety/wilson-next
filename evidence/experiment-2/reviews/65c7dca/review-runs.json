@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "targetCommit": "65c7dca2e4c447a6c15aa86b91876b11e255ca16",
+  "narrowBaseCommit": "54c02117ccdbab69d9d4143b44d0a4640e62930e",
+  "pullRequestBaseCommit": "d4eb6a9cf58ebfbd66ee8066983cce43b426cc4a",
+  "cli": "Claude Code 2.1.241",
+  "subscriptionPreflight": {
+    "passed": true,
+    "authMethod": "claude.ai",
+    "subscriptionType": "max",
+    "providerVariablesUnset": [
+      "ANTHROPIC_API_KEY",
+      "ANTHROPIC_AUTH_TOKEN",
+      "ANTHROPIC_BASE_URL"
+    ]
+  },
+  "reviewSession": {
+    "sessionId": "776dde76-4e96-4b96-9015-c081078e5829",
+    "status": "completed-after-same-session-continuation",
+    "configuredModel": "sonnet",
+    "canonicalModel": "claude-sonnet-5",
+    "effort": "high",
+    "permissionMode": "plan",
+    "mode": "targeted wilson-review-v1 review of 54c0211...65c7dca",
+    "subagentsSpawned": 0,
+    "webRequests": 0,
+    "permissionDenials": 0,
+    "findings": {
+      "blocking": 0,
+      "followUp": 2
+    }
+  },
+  "launches": [
+    {
+      "status": "failed-before-model-call",
+      "modelCallOccurred": false,
+      "costUsd": 0,
+      "result": "The CLI rejected an invalid empty MCP configuration before session initialization. The redundant flags were removed; safe mode already disabled project customizations."
+    },
+    {
+      "status": "completed-provisional",
+      "modelCallOccurred": true,
+      "prompt": "claude-review-prompt.txt",
+      "promptSha256": "e2f2d900ee5a07c08c6371988c1aa3b18c84f800127ae8cbd48e1d8e6921c62c",
+      "durationMilliseconds": 326203,
+      "apiDurationMilliseconds": 319443,
+      "modelTurns": 33,
+      "costUsd": 1.0366294,
+      "usage": {
+        "inputTokens": 48,
+        "cacheCreationInputTokens": 97772,
+        "cacheReadInputTokens": 1802802,
+        "outputTokens": 28109,
+        "thinkingTokens": 20577
+      },
+      "deviations": [
+        "The reviewer ran 18 focused tests despite the prompt's instruction not to run tests. They passed and git status remained clean.",
+        "The reviewer initially read docs/PRODUCT.md and docs/ARCHITECTURE.md selectively rather than completely, so its result remained provisional."
+      ]
+    },
+    {
+      "status": "completed-canonical-continuation",
+      "modelCallOccurred": true,
+      "prompt": "claude-review-continuation.txt",
+      "promptSha256": "ec07af057c916c0dbc0c60b193604256589edfb1a9b59dc0b3c64e0fb7229037",
+      "durationMilliseconds": 67752,
+      "apiDurationMilliseconds": 67704,
+      "modelTurns": 3,
+      "costUsd": 0.1595986,
+      "usage": {
+        "inputTokens": 4,
+        "cacheCreationInputTokens": 13212,
+        "cacheReadInputTokens": 219363,
+        "outputTokens": 6287,
+        "thinkingTokens": 2747
+      },
+      "result": "The same session read both omitted governing documents completely, reassessed the delta, retained the two non-blocking follow-ups, and found no blocker or additional finding."
+    }
+  ],
+  "aggregateMeasuredUsage": {
+    "reviewCalls": 2,
+    "inputTokens": 52,
+    "cacheCreationInputTokens": 110984,
+    "cacheReadInputTokens": 2022165,
+    "outputTokens": 34396,
+    "thinkingTokens": 23324,
+    "durationMilliseconds": 393955,
+    "apiDurationMilliseconds": 387147,
+    "costUsd": 1.196228,
+    "modelUsage": {
+      "claude-sonnet-5": {
+        "inputTokens": 52,
+        "cacheCreationInputTokens": 110984,
+        "cacheReadInputTokens": 2022165,
+        "outputTokens": 34396,
+        "costUsd": 1.192433
+      },
+      "claude-haiku-4-5": {
+        "inputTokens": 3715,
+        "outputTokens": 16,
+        "costUsd": 0.003795
+      }
+    }
+  },
+  "inputs": {
+    "promptSourceCommit": "e0d4a8d757684c92e3d217e4747bee4c88e97ef5",
+    "prompt": "claude-review-prompt.txt",
+    "continuationPrompt": "claude-review-continuation.txt",
+    "result": "claude-review-result.md",
+    "resultSha256": "9e13f770f9687029620d3015deba4149cd9f3d58a5439c206f4113a0e1248e5c",
+    "narrowDiff": {
+      "command": "git diff --no-ext-diff --unified=80 54c02117ccdbab69d9d4143b44d0a4640e62930e..65c7dca2e4c447a6c15aa86b91876b11e255ca16",
+      "files": 12,
+      "additions": 501,
+      "deletions": 34,
+      "bytes": 82297,
+      "sha256": "aa99df01bf98b2ed08db5719ff761b2192d1d4a83701e0fbe2dedb4c6276b4fd"
+    }
+  },
+  "incrementalReporting": {
+    "requested": true,
+    "modelCheckpointEmitted": true,
+    "coordinatorUpdatesProvided": true,
+    "canonicalResultRecorded": true
+  },
+  "limitations": [
+    "CLI-reported cost is an equivalent usage value and may not be an additional subscription charge.",
+    "Raw application-model responses were owner-only ignored artifacts, so the reviewer checked their committed summaries and arithmetic rather than the raw responses.",
+    "The first result was not accepted as canonical until the same review session completed the two required governing-document reads.",
+    "The complete event streams were captured during coordination but are not committed because they contain verbose internal tool payloads; the prompts, canonical result, measurements, deviations, and dispositions are retained here."
+  ]
+}

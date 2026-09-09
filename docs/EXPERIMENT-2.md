@@ -356,6 +356,12 @@ readiness decision makes independently understandable evidence necessary. This
 disposition does not itself authorize the separately controlled Stage 3
 implementation, external participation, real data, deployment, or release.
 
+The separately authorized narrow final review of `54c0211...65c7dca` reported
+no blockers and two non-blocking follow-ups confined to the completed one-time
+runner recovery. Their durable dispositions defer work unless that recovery
+mechanism is reused; see
+[`../evidence/experiment-2/reviews/65c7dca/dispositions.md`](../evidence/experiment-2/reviews/65c7dca/dispositions.md).
+
 ### Stage 3: deterministic assembled product
 
 Replace the fixed journey service and UI with state-driven product behavior,

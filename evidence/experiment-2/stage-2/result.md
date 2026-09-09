@@ -133,3 +133,20 @@ or when later external-participant, clinical, or production readiness makes
 independently understandable evidence necessary. No separate issue is created
 while no remediation is planned; create one if later evidence makes the work
 independently valuable.
+
+## Final narrow review
+
+Claude Sonnet 5 at high effort reviewed the exact post-review delta
+`54c0211...65c7dca` under `wilson-review-v1`. After a same-session continuation
+completed two initially omitted governing-document reads, the canonical result
+reported no blocking findings and two non-blocking follow-ups limited to the
+one-time interruption recovery: reduced proposal/evidence detail on resume and
+missing focused tests for resume-fail and malformed retained state.
+
+Both follow-ups are retained with dispositions in
+[`../reviews/65c7dca/dispositions.md`](../reviews/65c7dca/dispositions.md). No
+further Stage 2 use of the recovery path is planned, so neither finding justifies
+additional implementation or a separate issue now. Reconsider them before
+reusing that recovery mechanism. The complete invocation prompts, canonical
+result, measurements, and review-process deviations are retained beside the
+dispositions.
