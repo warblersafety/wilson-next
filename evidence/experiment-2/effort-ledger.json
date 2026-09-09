@@ -859,6 +859,62 @@
         "Steve explicitly waived independent review for this minor plan correction only; the subsequent model-contract remediation still requires standard review.",
         "Codex task-token measurements were unavailable and are not estimated."
       ]
+    },
+    {
+      "id": "experiment-2-final-revise-remediation-deferred",
+      "status": "completed",
+      "recordedAt": "2026-09-09T22:52:51Z",
+      "startedAt": "2026-09-09T22:51:04Z",
+      "finishedAt": "2026-09-09T22:52:51Z",
+      "elapsedSeconds": 107,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 3,
+        "measuredReviewCalls": 2,
+        "inputTokens": 46,
+        "cacheCreationInputTokens": 178237,
+        "cacheReadInputTokens": 1544537,
+        "outputTokens": 36458,
+        "latencyMilliseconds": 455275,
+        "costUsd": 1.3884174
+      },
+      "review": {
+        "model": "claude-sonnet-5",
+        "configuredModel": "sonnet",
+        "effort": "high",
+        "cli": "Claude Code 2.1.241",
+        "standardTargetCommit": "252290257112bf28946d458d31629d60a5f7e9b2",
+        "recheckTargetCommit": "02ea3d5",
+        "initialBlockingFindings": 1,
+        "initialFollowUpFindings": 3,
+        "blockingFindings": 0,
+        "followUpFindings": 0,
+        "status": "completed-with-bounded-remediation"
+      },
+      "result": "Steve chose to defer live-model remediation rather than tune against one failed sample. Experiment 2 closes Revise, with remediation deferred, with a qualified technical production seed, insufficient live-model reliability evidence, qualified assembled operator viability, and the clinician-validation boundary unchanged. Issue #55 retains the failure and objective revisit triggers while later product planning proceeds independently.",
+      "durableValue": {
+        "kind": "decision-evidence",
+        "artifacts": [
+          "README.md",
+          "docs/EXPERIMENT-2.md",
+          "evidence/experiment-2/stage-4/README.md",
+          "https://github.com/warblersafety/wilson-next/issues/55"
+        ]
+      },
+      "limitations": [
+        "This disposition adds no model or application evidence and does not resolve the recorded reliability failure.",
+        "Later product work may not assume reliable live extraction merely because Experiment 2 is complete.",
+        "The first standard review completed but its CLI output capture omitted the findings; a transparent replacement recovered one blocking and three follow-up findings, all resolved and confirmed by one same-session targeted recheck.",
+        "Usage for the replacement review was not retained and is not estimated; the recorded review totals cover the first completed run and targeted recheck only.",
+        "CLI-reported review cost is an equivalent usage value and may not be an additional subscription charge.",
+        "Codex task-token measurements were unavailable and are not estimated."
+      ]
     }
   ]
 }

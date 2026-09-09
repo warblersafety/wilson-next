@@ -1,10 +1,9 @@
 # Wilson Experiment 2
 
-**Status:** Approved by Steve through Issue #42 and PR #43; Stage 3 completed in
-PR #52, and Issue #53 records Steve's refocus of the remaining `Revise` path on
-conditional reliability rather than a direct-form preference comparison. Its
-remaining bounded implementation, standard review, protected-preview, and
-synthetic-model work proceeds under Delivery's standing execution authority.
+**Status:** Complete with a `Revise` disposition and remediation deferred. Stage 3 completed in
+PR #52, Issue #53 refocused the outcome on conditional reliability, and Issue
+#55 preserves the live-model limitation and explicit revisit triggers. No
+immediate remediation or further Experiment 2 model sampling is planned.
 
 **Owns:** The single bounded investment decision, its separate evidence
 dimensions, the production-seed quality bar, supported and deferred scope,
@@ -100,13 +99,46 @@ dimensions above independently:
    and no architectural premise is falsified; propose the next
    product-completeness step.
 2. **Revise:** the product signal remains plausible, but one named premise needs
-   another bounded experiment before broader implementation.
+   another bounded experiment before broader implementation. That experiment
+   may be deferred until a named revisit trigger is reached.
 3. **Stop:** Wilson requires case-specific runtime behavior, repeats a general
    semantic failure after one bounded remediation, imposes operating friction
    that defeats the conditional value, or leaves no credible production seed.
 
 No outcome authorizes physician involvement, real clinical data, production
 deployment or release, or the broader V1 roadmap.
+
+### Final disposition — 2026-09-09
+
+Experiment 2 ends `Revise`, with remediation deferred:
+
+1. **Technical generalization and production-seed quality — qualified pass.**
+   The state-driven browser application and one authoritative semantic case ran
+   all selected deterministic journeys plus the Experiment 1 regression through
+   aligned reviewed output and PDF without runtime fixture or oracle behavior.
+2. **Model and evidence reliability — revise.** Two protected journeys were
+   semantically viable. The rich journey safely rejected a target/value shape
+   error, and its returned response also confused event treatments with
+   concomitant report products. This bounded sample is insufficient to claim
+   reliability.
+3. **Assembled operator viability — qualified pass.** Steve completed the
+   viable sparse and repeated journeys, including an additional correction and
+   explicit conflict resolution. The rich failure was recoverable but prevented
+   completion; live opening latency ranged from about 11 to 36 seconds. The
+   viable live PDF routes returned successfully, but their bytes were not
+   retained for independent agreement readback; Stage 3 supplies the retained
+   deterministic PDF-agreement evidence.
+4. **Clinician validation boundary — unchanged.** Steve reports strong
+   preliminary physician preference for Wilson if it works. That directional
+   evidence removes the need for an operator direct-form proxy but does not
+   validate this build or authorize new participation.
+
+Steve chose not to tune the prompt or redesign the provider schema against this
+single failed sample. Issue #55 retains the exact limitation, impact, and
+revisit triggers. Later product planning may proceed independently, but it may
+not assume live extraction reliability or expand live model use on the strength
+of this result. The sanitized Stage 4 observation record is retained in
+[`evidence/experiment-2/stage-4/README.md`](../evidence/experiment-2/stage-4/README.md).
 
 ## Operators and information boundary
 
@@ -423,34 +455,34 @@ The sparse and repeated journeys produced semantically viable reviewed output.
 The rich journey was safely rejected because `symptoms` arrived as a scalar
 instead of a list; the same response also treated acute event treatments as
 concomitant products. Accepted case knowledge remained unchanged. The overall
-first-pass result is `Revise`, and no second samples run before remediation.
+first-pass result is `Revise`; no second samples ran.
 
-The next substantive unit is one bounded, general model-contract remediation.
-It audits the provider-visible schema against local target/value requirements,
-strengthens target-appropriate value guidance or structure, and distinguishes
-event treatment from report products without medicine- or scenario-specific
-rules. After focused deterministic evidence and the ordinary standard review,
-rerun the affected rich path once. Recurrence of the same general failure stops
-the experiment; a viable confirmation permits the remaining bounded reliability
-samples.
+Steve deferred remediation rather than tune the prompt or redesign the provider
+schema against one failed sample. Issue #55 preserves both failure classes and
+reopens work only if another independently valuable journey exposes the same
+class, a selected product investment requires live extraction, or Wilson
+approaches external evaluation, clinical-data approval, or production
+readiness. Any later remediation remains limited to one general attempt;
+recurrence stops the affected direction.
 
 ### Stage 5: outcome decision
 
-After the bounded reliability evidence, record the four evidence dimensions and
-choose `Continue`, `Revise`, or `Stop`. Do not repeat a Steve-versus-form
-comparison. The reported preliminary physician preference supplies directional
-evidence for the conditional product proposition; the completed synthetic
-journeys determine whether this implementation can satisfy its reliability
-condition. This remains operator evidence, not validation of clinician use or
-production readiness.
+The final disposition above records the four dimensions and chooses `Revise`,
+with remediation deferred. No Steve-versus-form comparison, immediate
+remediation, or second live sample is required. The reported preliminary physician preference
+supplies directional evidence for the conditional product proposition; the
+completed synthetic journeys show that this implementation has not yet
+established its reliability condition. This remains operator evidence, not
+validation of clinician use or production readiness.
 
 ## Success
 
 Continue beyond Experiment 2 only if:
 
-1. After the permitted bounded remediation, no confirmation or required second
-   sample invents a material fact, silently loses one, assigns it to the wrong
-   entity or role, hides incompatible evidence, or disagrees with the final PDF.
+1. If the deferred reliability direction is reopened, no confirmation or
+   required second sample invents a material fact, silently loses one, assigns
+   it to the wrong entity or role, hides incompatible evidence, or disagrees
+   with the final PDF.
 2. Every journey reaches a truthful reviewed output through production-seed
    code containing no fixture-, medicine-, oracle-, or sequence-specific
    product behavior.
@@ -518,10 +550,10 @@ when it remains within existing premises and spending limits.
 3. **Assembled product slice:** replace fixed orchestration and UI with
    state-driven behavior, then complete deterministic browser-to-PDF evidence
    for all cases and the required standard review.
-4. **Conditional reliability and outcome:** record the first protected samples,
-   apply at most one bounded general remediation after the `Revise` result, run
-   the permitted confirmation and reliability samples, then record the separate
-   findings and Continue, Revise, or Stop decision.
+4. **Completed conditional-reliability outcome:** record the first protected
+   samples and the separate findings, then close `Revise`, with remediation
+   deferred, without immediate remediation or further sampling. Issue #55 preserves any later
+   bounded revisit independently of Experiment 2 completion.
 
 Each implementation slice uses one coherent issue, branch, draft PR,
 proportional evidence, and explicit merge approval. Pure evidence/outcome work
@@ -544,6 +576,11 @@ Issue #53 records Steve's conditional-reliability refocus. Steve explicitly
 waived independent review for that minor documentation correction only. The
 waiver does not apply to the subsequent model-contract remediation, which
 requires the ordinary standard review.
+
+Issue #55 records Steve's later decision to defer that remediation and complete
+Experiment 2 as `Revise`. Any future work triggered from #55 is a new
+unit under Delivery and does not inherit Experiment 2 sampling authority merely
+because the limitation is recorded here.
 
 Steve's explicit approval remains required for each PR merge, a material change
 to the experiment premise or scope, spend above the standing limit, expanded
