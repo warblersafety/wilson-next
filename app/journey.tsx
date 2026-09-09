@@ -519,9 +519,10 @@ function omissionText(reason: string | undefined): string {
   return reason === "conflicted" ? "Omitted — unresolved conflict" : reason ? omissionLabel(reason) : "Not provided";
 }
 
-function humanOmission(snapshot: JourneySnapshot, target: string, fallback: string): string {
-  const [entity] = target.split(":");
-  return entity === "product" || target.includes(":") ? targetLabel(snapshot, target) : fallback;
+export function humanOmission(snapshot: JourneySnapshot, target: string, fallback: string): string {
+  const [entity, , field] = target.split(":");
+  if (entity !== "product") return field ? fieldLabel(field) : fallback;
+  return targetLabel(snapshot, target);
 }
 
 function Evidence({ excerpt, expanded = false }: { excerpt?: string | string[]; expanded?: boolean }) {
