@@ -213,6 +213,49 @@
         "The CLI-reported cost is an equivalent usage value and may not be an additional subscription charge.",
         "The final reviewer relied on coordinator-generated hashed diff artifacts and did not independently recompute their hashes."
       ]
+    },
+    {
+      "id": "planning-publication",
+      "status": "completed",
+      "recordedAt": "2026-09-09T00:08:52Z",
+      "startedAt": "2026-09-09T00:06:26Z",
+      "finishedAt": "2026-09-09T00:08:32Z",
+      "elapsedSeconds": 125,
+      "codexTaskTokens": {
+        "source": "codex-goal-snapshot",
+        "start": 0,
+        "end": 18041,
+        "delta": 18041
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMilliseconds": 0,
+        "costUsd": 0
+      },
+      "github": {
+        "branchPushes": 1,
+        "prComments": 2,
+        "publishedHead": "a5f705661d3737682b7bfb3bf70e126b6ce0a5c3",
+        "verify": "passed",
+        "protectedPreview": "ready"
+      },
+      "review": null,
+      "result": "Published the reviewed planning and evidence commits, posted the exact final-review prompt and result to draft PR #43, and verified CI and the protected preview at the published head.",
+      "durableValue": {
+        "kind": "process-evidence",
+        "artifacts": [
+          "https://github.com/warblersafety/wilson-next/pull/43#issuecomment-5593684556",
+          "https://github.com/warblersafety/wilson-next/pull/43#issuecomment-5593685169",
+          "evidence/experiment-2/effort-ledger.json"
+        ]
+      },
+      "limitations": [
+        "The stage snapshot precedes the small bookkeeping cost of persisting this entry and the final Issue #42 and PR #43 summary updates.",
+        "Codex task tokens are the goal tracker's task-effort measure, not an estimate of billable API usage."
+      ]
     }
   ]
 }
