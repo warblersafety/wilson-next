@@ -256,6 +256,44 @@
         "The stage snapshot precedes the small bookkeeping cost of persisting this entry and the final Issue #42 and PR #43 summary updates.",
         "Codex task tokens are the goal tracker's task-effort measure, not an estimate of billable API usage."
       ]
+    },
+    {
+      "id": "plan-approval-reconciliation",
+      "status": "completed",
+      "recordedAt": "2026-09-09T00:46:04Z",
+      "startedAt": "2026-09-09T00:42:21Z",
+      "finishedAt": "2026-09-09T00:45:32Z",
+      "elapsedSeconds": 191,
+      "codexTaskTokens": {
+        "source": "codex-goal-snapshot",
+        "start": 0,
+        "end": 29657,
+        "delta": 29657
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMilliseconds": 0,
+        "costUsd": 0
+      },
+      "review": null,
+      "result": "Reconciled the active corpus with the approved and merged Experiment 2 plan and created the bounded core model/evidence implementation issue without beginning implementation.",
+      "durableValue": {
+        "kind": "process-evidence",
+        "artifacts": [
+          "README.md",
+          "docs/ARCHITECTURE.md",
+          "docs/DELIVERY.md",
+          "docs/EXPERIMENT-2.md",
+          "https://github.com/warblersafety/wilson-next/issues/44"
+        ]
+      },
+      "limitations": [
+        "The stage snapshot precedes the small bookkeeping and publication cost of persisting this entry and opening its clerical pull request.",
+        "Codex task tokens are the goal tracker's task-effort measure, not an estimate of billable API usage."
+      ]
     }
   ]
 }
