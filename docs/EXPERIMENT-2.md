@@ -329,6 +329,39 @@ architectural falsification. Record the ordinary model metadata and one
 sanitized verdict per authorized run. Passing establishes only that the core
 boundary is viable enough to justify assembled-product implementation.
 
+#### Stage 2 disposition — 2026-09-09
+
+Stage 2 is complete as a qualified result. Across the initial three-call batch
+and one stopped confirmation call, the generalized model and case boundaries
+produced the selected patient, event, product-identity, correction, and
+unresolved-alternative behavior without an answer catalog in runtime. The
+initial rich opening omitted the modifier `diffuse`; the one authorized general
+prompt/schema remediation preserved it on confirmation.
+
+Exact quotations nevertheless remained dependent on nearby context in some
+places. In particular, patient and event excerpts using pronouns such as `he`
+did not independently name the patient, and the initial repeated-product date
+excerpt omitted the adjacent sentence that established unresolved uncertainty.
+The complete observations, metrics, costs, and stopped confirmation are
+retained in
+[`../evidence/experiment-2/stage-2/result.md`](../evidence/experiment-2/stage-2/result.md).
+
+Steve accepts this as a known, non-blocking limitation for proceeding toward
+the remaining synthetic operator experiment. It is not an unqualified model or
+evidence pass and does not waive the issue for future external-participant,
+clinical, or production readiness. No further Stage 2 prompt iteration or live
+model call is planned. Reconsider the limitation only if the assembled workflow
+causes practical evidence confusion or wrong attribution, or when a later
+readiness decision makes independently understandable evidence necessary. This
+disposition does not itself authorize the separately controlled Stage 3
+implementation, external participation, real data, deployment, or release.
+
+The separately authorized narrow final review of `54c0211...65c7dca` reported
+no blockers and two non-blocking follow-ups confined to the completed one-time
+runner recovery. Their durable dispositions defer work unless that recovery
+mechanism is reused; see
+[`../evidence/experiment-2/reviews/65c7dca/dispositions.md`](../evidence/experiment-2/reviews/65c7dca/dispositions.md).
+
 ### Stage 3: deterministic assembled product
 
 Replace the fixed journey service and UI with state-driven product behavior,

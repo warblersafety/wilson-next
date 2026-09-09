@@ -395,6 +395,324 @@
         "The stage snapshot precedes the small bookkeeping and publication cost of persisting this entry and updating the draft PR.",
         "Codex task tokens are the goal tracker's task-effort measure, not an estimate of billable API usage."
       ]
+    },
+    {
+      "id": "stage-2-runner-preparation-implementation",
+      "status": "completed",
+      "recordedAt": "2026-09-09T05:10:48Z",
+      "startedAt": "2026-09-09T04:34:33Z",
+      "finishedAt": "2026-09-09T05:10:48Z",
+      "elapsedSeconds": 2175,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMilliseconds": 0,
+        "costUsd": 0
+      },
+      "review": null,
+      "result": "Prepared the controlled Experiment 2 Stage 2 operator runner for the approved rich opening and repeated-product opening/update. The local gate enforces three ordered attempts, a USD 5 cap with USD 1.50 per-call reservation, zero retry, a manual verdict before continuation, authoritative case attachment and acceptance, and external-only semantic scoring while preserving the Experiment 1 fixture and deterministic browser.",
+      "verification": {
+        "focusedTests": "11 passed",
+        "fullTests": "100 passed",
+        "typecheck": "passed",
+        "build": "passed",
+        "browserTests": "2 passed",
+        "unauthorizedPreflight": "rejected before state creation or model access"
+      },
+      "durableValue": {
+        "kind": "decision-enabling-tooling",
+        "artifacts": [
+          "tools/model/run-stage-2-gate.ts",
+          "tools/model/stage-2-inputs.ts",
+          "evidence/experiment-2/stage-2/assessment.md"
+        ]
+      },
+      "limitations": [
+        "No live application-model call, external review call, deployment, or assembled-product change occurred.",
+        "The runner preparation still requires its separately authorized standard review before a live-call budget may be requested.",
+        "Codex task-token measurements were unavailable and are not estimated.",
+        "The stage snapshot precedes the small bookkeeping, commit, publication, and draft-PR cost of persisting this entry."
+      ]
+    },
+    {
+      "id": "stage-2-runner-independent-review",
+      "status": "completed",
+      "recordedAt": "2026-09-09T07:17:06Z",
+      "startedAt": null,
+      "finishedAt": "2026-09-09T07:17:06Z",
+      "elapsedSeconds": null,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 2,
+        "serviceCheckCalls": 1,
+        "failedBeforeModelCalls": 1,
+        "inputTokens": null,
+        "cacheCreationInputTokens": null,
+        "cacheReadInputTokens": null,
+        "outputTokens": null,
+        "latencyMilliseconds": null,
+        "costUsd": null,
+        "unmeasuredReviewCalls": 1,
+        "measuredInputTokens": 46,
+        "measuredCacheCreationInputTokens": 121122,
+        "measuredCacheReadInputTokens": 1615303,
+        "measuredOutputTokens": 45562,
+        "measuredLatencyMilliseconds": 492729,
+        "measuredCostUsd": 1.2674466
+      },
+      "review": {
+        "model": "claude-sonnet-5",
+        "configuredModel": "sonnet",
+        "effort": "high",
+        "cli": "Claude Code 2.1.241",
+        "targetCommit": "c89e622c11a89759adcb2225f77f5aad28470861",
+        "blockingFindings": 0,
+        "followUpFindings": 2,
+        "resolvingCommit": "765728c91227c73da90f9417d575a328eb45f55b"
+      },
+      "result": "Completed the authorized standard review after one unrecoverable-output attempt and a separately authorized Sonnet liveliness check. The durable replacement review found no blocker and two follow-ups. Commit 765728c added direct case-replay safe-failure coverage and limited authoritative acceptance to Issue #47's repeated-opening step; both findings are resolved proportionately without another review call.",
+      "verification": {
+        "focusedTests": "12 passed",
+        "fullTests": "101 passed",
+        "typecheck": "passed",
+        "build": "passed",
+        "browserTests": "2 passed",
+        "diffCheck": "passed"
+      },
+      "durableValue": {
+        "kind": "decision-evidence",
+        "artifacts": [
+          "evidence/experiment-2/reviews/c89e622/claude-review-prompt.txt",
+          "evidence/experiment-2/reviews/c89e622/claude-review-result.md",
+          "evidence/experiment-2/reviews/c89e622/review-runs.json",
+          "evidence/experiment-2/reviews/c89e622/dispositions.md"
+        ]
+      },
+      "limitations": [
+        "The first review call's final output and usage were lost by coordinator orchestration; totals that include it are unavailable and are not estimated.",
+        "Measured totals include the successful replacement review and the separately requested liveliness check; they exclude the unrecoverable review call.",
+        "A model-name typo was rejected before a model call with zero tokens and zero cost.",
+        "The reviewer did not run tests, typecheck, build, browser checks, or git diff --check.",
+        "No application-model call, deployment, or merge occurred.",
+        "Codex task-token measurements and the exact overall stage start time were unavailable and are not estimated."
+      ]
+    },
+    {
+      "id": "stage-2-early-live-model-evidence-gate",
+      "status": "completed-with-limitations",
+      "recordedAt": "2026-09-09T17:16:52Z",
+      "startedAt": "2026-09-09T16:32:30Z",
+      "finishedAt": "2026-09-09T17:15:57Z",
+      "elapsedSeconds": 2607,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 3,
+        "reviewCalls": 0,
+        "inputTokens": 9068,
+        "outputTokens": 8451,
+        "latencyMilliseconds": 70925,
+        "costUsd": 0.102646
+      },
+      "review": null,
+      "result": "Completed the separately authorized early live gate with exactly three application-model calls, zero retries, and USD 0.102646 estimated spend. The repeated-product opening and update retained correct identity and update targeting. The rich opening omitted the modifier 'diffuse', and all three calls included at least one evidence excerpt that was exact but not independently sufficient for the complete claim; Steve directed the bounded batch to continue so the remaining evidence could be collected.",
+      "verification": {
+        "focusedTests": "8 passed",
+        "fullTests": "99 passed; 3 unchanged PDF tests unavailable because pypdf was absent from the coordinator shell",
+        "typecheck": "passed",
+        "build": "passed",
+        "callSequence": "exactly 3 completed; 0 retries",
+        "spendCap": "USD 0.102646 of USD 5",
+        "manualReview": "completed before each continuation"
+      },
+      "durableValue": {
+        "kind": "decision-evidence-and-bounded-defect-remediation",
+        "artifacts": [
+          "tools/model/launch-stage-2-gate.mjs",
+          "tools/model/run-stage-2-gate.ts",
+          "tests/server/stage-2-gate-runner.test.ts",
+          "evidence/experiment-2/stage-2/assessment.md",
+          "evidence/experiment-2/stage-2/result.md"
+        ]
+      },
+      "limitations": [
+        "Call 1 is not a clean pass against the external assessment because it omitted 'diffuse' and used several insufficiently self-contained evidence excerpts.",
+        "Call 2 used correct semantic values and product attribution but again used several insufficiently self-contained evidence excerpts.",
+        "Call 3 targeted both product updates correctly, but the date excerpt omitted the separate sentence establishing that the two dates could not be resolved.",
+        "The original operator process could not receive terminal input inside a Vitest worker; it was stopped after call 1, then resumed without replay after a bounded direct-terminal repair and deterministic regression test.",
+        "Raw provider responses and local verdict artifacts remain owner-readable ignored files and are not durable repository evidence.",
+        "No additional Claude review, deployment, assembled-product change, browser live run, or merge occurred.",
+        "Codex task-token measurements were unavailable and are not estimated."
+      ]
+    },
+    {
+      "id": "stage-2-evidence-fidelity-remediation-confirmation",
+      "status": "stopped-after-failed-confirmation",
+      "recordedAt": "2026-09-09T17:39:09Z",
+      "startedAt": null,
+      "finishedAt": "2026-09-09T17:38:44Z",
+      "elapsedSeconds": null,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 1,
+        "reviewCalls": 0,
+        "inputTokens": 3079,
+        "outputTokens": 3357,
+        "latencyMilliseconds": 28514,
+        "costUsd": 0.039728
+      },
+      "review": null,
+      "result": "Applied one general prompt/schema remediation that made evidence completeness outrank brevity and required preservation of explicitly stated descriptive detail. The single authorized confirmation call preserved 'diffuse hives' and improved quotation scope, but patient/event evidence still relied on unidentified pronouns and failed the independent-subject requirement. The runner stopped before calls 2 and 3 with no retry or further prompt iteration.",
+      "verification": {
+        "focusedTests": "20 passed",
+        "typecheck": "passed",
+        "build": "passed",
+        "callSequence": "1 completed, then stopped before 2 unused calls; 0 retries",
+        "spendCap": "USD 0.039728 of USD 5",
+        "manualReview": "failed after call 1; stop enforced"
+      },
+      "durableValue": {
+        "kind": "decision-evidence-and-product-contract",
+        "artifacts": [
+          "src/server/model/anthropic-journey.ts",
+          "src/domain/case/model-boundary.ts",
+          "tests/server/anthropic-journey.test.ts",
+          "evidence/experiment-2/stage-2/result.md"
+        ]
+      },
+      "limitations": [
+        "The prompt/schema change improved but did not fully correct evidence independence in the first confirmation case.",
+        "The repeated-product opening and update were intentionally not called after the failed first verdict.",
+        "Exact overall stage start and elapsed time and Codex task-token measurements were not retained and are not estimated.",
+        "Raw provider response and local verdict artifacts remain owner-readable ignored files and are not durable repository evidence.",
+        "No additional Claude review, deployment, assembled-product change, browser live run, or merge occurred."
+      ]
+    },
+    {
+      "id": "stage-2-owner-disposition",
+      "status": "completed",
+      "recordedAt": "2026-09-09T18:09:27Z",
+      "startedAt": null,
+      "finishedAt": null,
+      "elapsedSeconds": null,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMilliseconds": 0,
+        "costUsd": 0
+      },
+      "review": null,
+      "result": "Steve classified Stage 2 as a qualified result and accepted the remaining pronoun/context evidence weakness as a known, non-blocking limitation for proceeding toward the remaining synthetic operator experiment. No further Stage 2 prompt iteration or live model call is planned; the limitation remains explicit for practical assembled-workflow evidence and later readiness decisions.",
+      "durableValue": {
+        "kind": "decision-evidence",
+        "artifacts": [
+          "docs/EXPERIMENT-2.md",
+          "evidence/experiment-2/stage-2/result.md",
+          "evidence/experiment-2/effort-ledger.json"
+        ]
+      },
+      "limitations": [
+        "Exact decision-stage start, finish, elapsed time, and Codex task-token measurements were not retained and are not estimated.",
+        "The disposition does not claim a clean evidence pass or authorize Stage 3 implementation, external participation, real data, deployment, or release.",
+        "No new issue is created while no remediation is planned; later practical evidence may make a focused issue independently valuable."
+      ]
+    },
+    {
+      "id": "stage-2-narrow-final-review",
+      "status": "completed",
+      "recordedAt": "2026-09-09T18:53:31Z",
+      "startedAt": "2026-09-09T18:42:47Z",
+      "finishedAt": "2026-09-09T18:50:05Z",
+      "elapsedSeconds": 438,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 2,
+        "failedBeforeModelCalls": 1,
+        "inputTokens": 52,
+        "cacheCreationInputTokens": 110984,
+        "cacheReadInputTokens": 2022165,
+        "outputTokens": 34396,
+        "latencyMilliseconds": 393955,
+        "costUsd": 1.196228
+      },
+      "review": {
+        "model": "claude-sonnet-5",
+        "configuredModel": "sonnet",
+        "effort": "high",
+        "cli": "Claude Code 2.1.241",
+        "targetCommit": "65c7dca2e4c447a6c15aa86b91876b11e255ca16",
+        "narrowBaseCommit": "54c02117ccdbab69d9d4143b44d0a4640e62930e",
+        "blockingFindings": 0,
+        "followUpFindings": 2,
+        "status": "completed-after-same-session-continuation"
+      },
+      "result": "Completed the separately authorized narrow final review of the Stage 2 post-review delta. The canonical review found no blockers and two non-blocking follow-ups limited to the completed one-time interruption recovery. Steve authorized durable publication and preparation of PR #48 for his review, approval, and manual merge.",
+      "verification": {
+        "subscriptionPreflight": "claude.ai Max passed with provider API/gateway variables unset",
+        "exactDelta": "54c0211...65c7dca; 12 files, +501/-34",
+        "diffCheck": "passed before and after review",
+        "focusedTests": "18 passed when the reviewer ran them contrary to the read-only-evidence instruction; worktree remained clean",
+        "fullTests": "99 passed; 3 unchanged PDF readback tests unavailable because pypdf was absent from the coordinator shell",
+        "typecheck": "passed",
+        "build": "passed",
+        "governingDocuments": "README.md, PRODUCT.md, ARCHITECTURE.md, EXPERIMENT-2.md, and DELIVERY.md read completely before canonical verdict"
+      },
+      "durableValue": {
+        "kind": "review-and-decision-evidence",
+        "artifacts": [
+          "evidence/experiment-2/reviews/65c7dca/claude-review-prompt.txt",
+          "evidence/experiment-2/reviews/65c7dca/claude-review-continuation.txt",
+          "evidence/experiment-2/reviews/65c7dca/claude-review-result.md",
+          "evidence/experiment-2/reviews/65c7dca/review-runs.json",
+          "evidence/experiment-2/reviews/65c7dca/dispositions.md",
+          "evidence/experiment-2/stage-2/result.md"
+        ]
+      },
+      "limitations": [
+        "The review required a same-session continuation because its first result had not read two required governing documents completely; the amended result is canonical.",
+        "The reviewer unnecessarily ran 18 focused tests during the first pass. They passed and produced no repository changes.",
+        "CLI-reported review cost is an equivalent usage value and may not be an additional subscription charge.",
+        "Raw application-model responses remain owner-readable ignored artifacts, so the reviewer checked committed summaries and internal arithmetic rather than raw responses.",
+        "Codex task-token measurements were unavailable and are not estimated.",
+        "The two follow-ups receive no separate issue while the one-time recovery mechanism has no planned reuse."
+      ]
     }
   ]
 }

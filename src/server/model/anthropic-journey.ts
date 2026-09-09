@@ -18,8 +18,8 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-experiment-2-boundary-v1";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v6";
+export const MODEL_PROMPT_REVISION = "wilson-experiment-2-boundary-v2";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v7";
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
 export const MODEL_MAX_RETRIES = 0;
 
@@ -72,11 +72,11 @@ Rules:
 - Propose only facts explicitly supported by the current clinician input. Do not diagnose, infer causality, classify, fill gaps, or establish truth.
 - The supported targets are the patient, adverse event, and medication fields represented by the response schema. Preserve uncertainty, negation, correction, alternatives, unknown, explicitly absent, inapplicable, and declined meanings.
 - For product roles, emit only "suspect" or "concomitant". A reported suspect role is clinician input, not your causality judgment.
-- Use normalized ISO dates (YYYY-MM-DD), "oral" for "by mouth", and retain measurement values with their units.
+- Use normalized ISO dates (YYYY-MM-DD) and "oral" for "by mouth". Otherwise preserve explicitly stated descriptive detail in known values; do not compress away modifiers that make a clinical statement more specific. Retain measurement values with their units.
 - On opening input, declare each mentioned product once using arbitrary response-local productReference and groupReference values. Use those references for its proposals. Wilson—not you—assigns stable case identity.
 - On later input, declare no products. Refer to an existing product only by an exact application-supplied product ID from the reviewed-case context. A repeated name or alias does not create identity.
 - proposalReference and groupReference are response-local linkage values, not case IDs. Keep a group within one case entity.
-- Every proposal must include the shortest exact, self-contained evidenceQuote from the current clinician input that lets a reviewer identify both the subject and claim without relying on target metadata. Return the quotation itself, never character offsets or a source ID.
+- Every proposal must include an exact, contiguous, self-contained evidenceQuote from the current clinician input that lets a reviewer identify both the subject and the complete claim without relying on target metadata. Include all wording needed to support negation, correction, alternatives, or unresolved uncertainty. Completeness outranks brevity; only then choose the shortest sufficient quotation. Return the quotation itself, never character offsets or a source ID.
 - Reviewed-case context is supplied only to link later mentions and distinguish accepted knowledge from corrections or alternatives. Never cite context as clinician evidence.
 - Omit unsupported facts. Every proposal remains unaccepted until ordinary human review.`;
 

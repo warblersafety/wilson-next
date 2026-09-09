@@ -59,8 +59,12 @@ describe("Anthropic production model boundary", () => {
     expect(requestText).toContain("response-local productReference");
     expect(requestText).toContain("Wilson—not you—assigns stable case identity");
     expect(requestText).toContain("evidenceQuote");
+    expect(requestText).toContain("Completeness outranks brevity");
+    expect(requestText).toContain("preserve explicitly stated descriptive detail");
     expect(requestText).not.toMatch(/apixaban|naproxen|lisinopril/i);
     expect(schema).toContain("evidenceQuote");
+    expect(schema).toContain("Completeness outranks brevity");
+    expect(schema).toContain("Preserve explicitly stated descriptive detail");
     expect(schema).toContain("productReference");
     expect(schema).not.toContain('"start"');
     expect(schema).not.toContain('"end"');

@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "targetCommit": "c89e622c11a89759adcb2225f77f5aad28470861",
+  "baseCommit": "d4eb6a9cf58ebfbd66ee8066983cce43b426cc4a",
+  "cli": "Claude Code 2.1.241",
+  "subscriptionPreflight": {
+    "passed": true,
+    "authMethod": "claude.ai",
+    "subscriptionType": "max",
+    "providerVariablesUnset": [
+      "ANTHROPIC_API_KEY",
+      "ANTHROPIC_AUTH_TOKEN",
+      "ANTHROPIC_BASE_URL"
+    ]
+  },
+  "reviewAttempts": [
+    {
+      "status": "output-unrecoverable-after-process-exit",
+      "configuredModel": "sonnet",
+      "canonicalModel": "claude-sonnet-5",
+      "effort": "high",
+      "modelCallOccurred": true,
+      "promptSha256": "13024e6a8a7db61a1616256fd78078480cdc9d4cc1d9f80649453bf283adcc71",
+      "usage": null,
+      "costUsd": null,
+      "result": "The reviewer read the full diff, but the coordinator failed to persist stdout and the completed process was cleaned up before its final result or usage could be recovered. No verdict was retained.",
+      "limitations": [
+        "Exact timing and usage are unavailable and are not estimated.",
+        "The missing result was an orchestration failure, not an observed Claude service failure."
+      ]
+    },
+    {
+      "status": "failed-before-model-call",
+      "configuredModel": "son",
+      "effort": "high",
+      "modelCallOccurred": false,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "costUsd": 0,
+      "result": "A coordinator typo supplied the nonexistent model name `son`; the CLI rejected it before a model call."
+    },
+    {
+      "status": "completed",
+      "configuredModel": "sonnet",
+      "canonicalModel": "claude-sonnet-5",
+      "effort": "high",
+      "promptSha256": "adce2f7f01c51681c832820f3f969cd374f07f70a7dc1cc15489d4cf28fca790",
+      "durationMilliseconds": 489214,
+      "apiDurationMilliseconds": 489620,
+      "modelTurns": 36,
+      "costUsd": 1.2583838,
+      "usage": {
+        "inputTokens": 44,
+        "cacheCreationInputTokens": 119300,
+        "cacheReadInputTokens": 1612014,
+        "outputTokens": 45549,
+        "thinkingTokens": 39031
+      },
+      "modelUsage": {
+        "claude-sonnet-5": {
+          "inputTokens": 44,
+          "cacheCreationInputTokens": 119300,
+          "cacheReadInputTokens": 1612014,
+          "outputTokens": 45549,
+          "costUsd": 1.2551808
+        },
+        "claude-haiku-4-5": {
+          "inputTokens": 3103,
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "outputTokens": 20,
+          "costUsd": 0.003203
+        }
+      },
+      "permissionDenials": 3,
+      "subagentsSpawned": 0,
+      "webRequests": 0,
+      "incrementalReporting": {
+        "enabled": true,
+        "durableStreamCaptured": true,
+        "provisionalCheckpointEmitted": true
+      },
+      "findings": {
+        "blocking": 0,
+        "followUp": 2
+      }
+    }
+  ],
+  "serviceCheck": {
+    "requestedBySteve": true,
+    "status": "passed",
+    "configuredModel": "sonnet",
+    "canonicalModel": "claude-sonnet-5",
+    "effort": "low",
+    "durationMilliseconds": 3515,
+    "apiDurationMilliseconds": 3257,
+    "modelTurns": 1,
+    "costUsd": 0.0090628,
+    "usage": {
+      "inputTokens": 2,
+      "cacheCreationInputTokens": 1822,
+      "cacheReadInputTokens": 3289,
+      "outputTokens": 13
+    },
+    "result": "CLAUDE_LIVE"
+  },
+  "inputs": {
+    "prompt": "claude-review-prompt.txt",
+    "result": "claude-review-result.md",
+    "fullDiff": {
+      "command": "git diff --no-ext-diff --unified=80 main...HEAD",
+      "changedFiles": 12,
+      "additions": 819,
+      "deletions": 1
+    }
+  },
+  "limitations": [
+    "CLI-reported cost is an equivalent usage value and may not be an additional subscription charge.",
+    "The first authorized review call produced no recoverable result or usage; it is counted but excluded from measured token, latency, and cost totals.",
+    "The replacement prompt's statement that no prior external review occurred meant no prior review evidence or verdict existed; the unrecoverable call had occurred but its conclusions were not available to the fresh replacement reviewer.",
+    "The reviewer did not run tests, typecheck, build, or browser checks and could not run git diff --check under the read-only command allowlist.",
+    "Three denied Bash commands demonstrate that attempts to write a temporary diff or add shell operations outside the read-only allowlist did not execute."
+  ]
+}

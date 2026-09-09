@@ -1,0 +1,209 @@
+Review this exact Wilson change and find material reasons it should not merge.
+Inspect the complete post-review diff, the exact issue and current PR delivery
+context below, the governing artifacts, relevant surrounding code, and the
+acceptance evidence. Check correctness, missing behavior, regression risk,
+and whether the implementation or recorded disposition hides a faulty
+requirement or architectural premise. Do not edit anything. Report only
+BLOCKING findings and independently valuable FOLLOW-UP findings, with evidence
+and precise locations. State what you inspected and ran, material limitations,
+and explicitly say when no findings remain.
+
+Review mode and immutable target
+
+- Mode: one separately authorized, fresh-context, narrow final review of the
+  post-review delta only, using wilson-review-v1 from docs/DELIVERY.md.
+- Repository: warblersafety/wilson-next.
+- Exact target commit: 65c7dca2e4c447a6c15aa86b91876b11e255ca16.
+- Narrow-review base commit: 54c02117ccdbab69d9d4143b44d0a4640e62930e.
+- PR base/main commit: d4eb6a9cf58ebfbd66ee8066983cce43b426cc4a.
+- Draft PR: https://github.com/warblersafety/wilson-next/pull/48.
+- Issue: https://github.com/warblersafety/wilson-next/issues/47.
+- The coordinator confirmed a clean synchronized worktree, exact hashes,
+  a 12-file +501/-34 narrow diff, and git diff --check before this run.
+- Review the entire `54c0211...65c7dca` diff from start to finish. Inspect
+  relevant unchanged context and earlier PR code as needed, but findings must
+  concern the post-review delta or a material interaction it introduced.
+- Earlier retained review artifacts are historical evidence, not conclusions
+  to adopt. Reach your own verdict on this delta.
+- Repository access is read-only. Do not edit files, change Git state, use
+  network access, invoke agents, post to GitHub, or perform implementation.
+- Use only reads and read-only Git commands. Do not run tests because they can
+  write generated files; inspect retained local and CI evidence instead.
+
+Incremental reporting and final-output contract
+
+- Use SendUserMessage for a short user-facing checkpoint after confirming the
+  exact target and completing the first full pass over the narrow diff.
+- If you establish a material candidate finding before the end, send one
+  concise checkpoint labeling it provisional. Do not stream private reasoning.
+- Continue through the complete required inspection after every checkpoint.
+- The final response is canonical. Restate every surviving finding there and
+  explicitly withdraw any provisional finding that does not survive.
+
+Required inspection
+
+1. Confirm HEAD and both bases with read-only Git commands. Inspect the full
+   `git diff --no-ext-diff --unified=80 54c02117ccdbab69d9d4143b44d0a4640e62930e..65c7dca2e4c447a6c15aa86b91876b11e255ca16`.
+2. Read README.md, docs/PRODUCT.md, docs/ARCHITECTURE.md,
+   docs/EXPERIMENT-2.md, and docs/DELIVERY.md completely.
+3. Inspect every changed file and relevant surrounding production/test code,
+   especially the production model adapter, evidence/model boundary,
+   authoritative case-command boundary, Stage 2 runner/state/launcher, retained
+   Experiment 1 regression, live results, and durable effort ledger.
+4. Assess both implementation and documentary claims against Issue #47 and
+   the evidence below. Expected semantic answers must remain outside runtime
+   validation. The assessment artifact is a human oracle only.
+5. Pay special attention to: direct-terminal recovery after the Vitest worker
+   could not receive input; exact call-count/no-retry/budget accounting; the
+   general evidence-completeness prompt/schema change; preservation of explicit
+   descriptive detail; the failed one-call confirmation and stop; the owner's
+   qualified Stage 2 disposition; and whether the remaining pronoun/context
+   weakness is honestly bounded rather than concealed.
+6. Return the actual review result without implementation or GitHub changes.
+
+Exact Issue #47
+
+Title: Prepare Experiment 2 Stage 2 early live gate
+State: OPEN
+
+## Outcome
+
+Prepare and, only after separate authorization, run Experiment 2 Stage 2's
+controlled early live model/evidence gate using the approved rich opening and
+repeated-product opening/update: two fictional cases and at most three
+model-call attempts.
+
+This issue exists because the production model/evidence boundary is
+generalized, while the existing operator runner still imports the Experiment 1
+fixture/oracle and drives its fixed journey service.
+
+## Included preparation
+
+- Adapt the smallest existing local operator runner; add no browser or
+  temporary application path.
+- Use the production Anthropic adapter, model boundary, authoritative
+  case-command boundary, and reviewed-case context directly.
+- Define exactly three ordered call slots: rich opening, repeated-product
+  opening, repeated-product update.
+- Permit only one call before entering durable awaiting-human-review; require
+  Steve's explicit passing verdict before another call.
+- Keep approved inputs in gate-only evaluation tooling and expected semantic
+  answers in a separate human-readable artifact executable validation cannot
+  import.
+- Limit automated validation to completion, structured shape, supported domain
+  types, identities, exact quotation anchoring, metrics, and authoritative case
+  attachment. A mechanically valid semantic error remains for human judgment.
+- Preserve the Experiment 1 fixture/oracle as a regression and use new owner-
+  only ignored Stage 2 state, lock, and raw-response paths.
+- Record model/prompt/schema revisions, parameters, token use, latency,
+  estimated cost, call count, and one sanitized human verdict per attempt.
+- Add focused deterministic tests for ordering, review interlocks, cap
+  enforcement, zero retries, repeated-case context, safe failure, and the
+  oracle import boundary.
+- Update the durable Experiment 2 effort ledger at meaningful boundaries.
+
+## Live-call controls
+
+- No more than three provider attempts; no replacement calls.
+- Exactly three calls only if each prior result passes manual inspection; an
+  early stop leaves fewer calls.
+- USD 5.00 total estimated-provider-cost cap, with USD 1.50 reserved before
+  each call and no next call unless the reservation fits.
+- Zero SDK and operator retries.
+- Reconfirm pinned model, output ceiling, and configured prices before calls.
+
+## Manual sequence
+
+1. Run rich opening once, inspect every proposal, entity/role, omission, and
+   exact quotation, then stop for Steve's verdict.
+2. If passed, run repeated-product opening once; verify acetaminophen/Tylenol
+   is one application-owned product and ibuprofen another. Only after Steve
+   passes it, accept groups through applyCaseCommand for reviewed context.
+3. If passed, run update once; verify no new product, and that the ibuprofen
+   correction and acetaminophen date alternative target supplied stable IDs
+   with sufficient exact evidence. Stop for final verdict.
+
+## Excluded
+
+- Browser, route, assembled workflow, UI, PDF, projection, or production-domain
+  behavior changes; sparse journey; Stages 3-5; real/clinical data; physician
+  involvement; persistence; LLM judges; provider comparison; deployment; or an
+  evaluation framework.
+- Runtime answer keys, automatic semantic scoring, and retries.
+
+## Stop and reconcile
+
+Stop before or during the gate for mechanical boundary failure, material
+invention or omission, unsupported evidence, wrong entity/role, alias split,
+hidden conflict, incorrect correction target, failed human verdict,
+insufficient reserved budget, unexpected retry, or architectural falsification.
+A stopped gate receives no replacement call. Any remediation or further live
+attempt requires a new explicit decision and authorization.
+
+Passing establishes only that the core model/evidence boundary is viable
+enough to consider Stage 3. It cannot establish reliability, assembled browser
+behavior, PDF agreement, operator or clinician usefulness, production
+readiness, or real-data suitability.
+
+Current PR #48 delivery context
+
+- PR title: Prepare Experiment 2 Stage 2 early live gate.
+- PR is draft, mergeable, and points exactly at 65c7dca. GitHub verify and the
+  automatic Vercel statuses passed at that head. No manual Vercel test occurred
+  because the browser workflow was not changed.
+- The earlier complete preparation at 54c0211 had 17 files and 101 passing
+  tests; typecheck, build, two browser tests, and diff check passed. Its
+  separately authorized Sonnet 5/high review found no blockers and two
+  follow-ups, both resolved by 54c0211. Do not re-review that old scope except
+  where the new delta interacts with it.
+- The post-review delta has 12 files and +501/-34.
+- Focused post-remediation verification: 20 model-boundary, runner, and artifact
+  tests passed; typecheck and production build passed.
+- A coordinator-shell full run passed 99 tests. Its only three failures were
+  unchanged PDF readback tests unavailable because that shell lacked pypdf.
+  GitHub verify later passed at exact head 65c7dca.
+
+Live evidence and owner disposition to verify
+
+- Initial authorized batch: exactly three application-model calls, zero
+  retries, total estimated provider cost $0.102646.
+  - Rich opening: identities/values correct except `diffuse` omitted; some
+    exact excerpts depended on surrounding context. Cost $0.031892.
+  - Repeated-product opening: acetaminophen/Tylenol and ibuprofen stayed
+    distinct with correct facts; some excerpts depended on context. $0.043690.
+  - Repeated-product update: correct product IDs, correction, and unresolved
+    date alternative; date excerpt omitted adjacent uncertainty. $0.027064.
+- Original process stopped after call 1 because its Vitest worker could not
+  receive the terminal verdict. The first response/cost were preserved and not
+  repeated. Commit 23fd254 moved input to the terminal process and allowed only
+  that exact pending review to resume before the two unused call slots.
+- Commit f126c8e made one case-agnostic prompt/schema change making evidence
+  completeness outrank brevity and preserving explicitly stated descriptive
+  detail.
+- One separately authorized confirmation batch made one model call, zero
+  retries, cost $0.039728. It preserved `diffuse hives` and improved evidence
+  scope, but some evidence still used unidentified pronouns such as `he`.
+  Steve recorded a failed semantic verdict; the runner stopped before slots 2
+  and 3. There was no further prompt iteration.
+- Across the two separately authorized batches: four application-model calls,
+  zero retries, total estimated cost $0.142374.
+- Steve accepts the remaining pronoun/context weakness as a known non-blocking
+  limitation for proceeding toward the remaining synthetic operator
+  experiment. Stage 2 is recorded as qualified, not an unqualified pass. No
+  further Stage 2 prompt change, live call, or separate issue is planned.
+- Reconsider only if assembled-workflow use causes practical confusion or
+  wrong attribution, or before external-participant/clinical/production claims
+  require independently understandable evidence.
+- This result explicitly does not establish a failure rate, clinical
+  reliability, assembled-browser behavior, operator usefulness, PDF agreement,
+  production readiness, or suitability for real clinical data.
+
+Output requirements
+
+- Identify review mode, exact target and base, observed model and effort, and
+  Claude Code version if visible.
+- List what you inspected and what read-only commands you ran.
+- Report BLOCKING findings first, then independently valuable FOLLOW-UP
+  findings, with precise evidence/locations.
+- State material limitations.
+- Explicitly say when no findings remain.

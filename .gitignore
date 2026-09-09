@@ -11,3 +11,7 @@ test-results/
 .wilson-model-sample-state.json.tmp
 .wilson-model-sample-state.lock
 .wilson-model-samples/
+.wilson-experiment-2-stage-2-state.json
+.wilson-experiment-2-stage-2-state.json.tmp
+.wilson-experiment-2-stage-2-state.lock
+.wilson-experiment-2-stage-2/
