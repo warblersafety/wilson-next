@@ -68,6 +68,20 @@ describe("case mutation source boundary", () => {
     const route = await readFile(join(root, "app/api/case/route.ts"), "utf8");
     expect(route).not.toMatch(/server\/model\/anthropic-journey/);
   });
+
+  it("keeps the Stage 2 semantic oracle out of executable gate validation", async () => {
+    const executableGateFiles = [
+      "tools/model/run-stage-2-gate.ts",
+    ];
+    const forbidden = /(?:sample-oracle|fixed-inputs|fixed-journey|journey\/service|evidence\/experiment-2\/stage-2)/;
+    const violations: string[] = [];
+
+    for (const name of executableGateFiles) {
+      if (forbidden.test(await readFile(join(root, name), "utf8"))) violations.push(name);
+    }
+
+    expect(violations).toEqual([]);
+  });
 });
 
 async function sourceFiles(directory: string): Promise<string[]> {

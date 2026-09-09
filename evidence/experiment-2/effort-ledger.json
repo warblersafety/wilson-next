@@ -395,6 +395,52 @@
         "The stage snapshot precedes the small bookkeeping and publication cost of persisting this entry and updating the draft PR.",
         "Codex task tokens are the goal tracker's task-effort measure, not an estimate of billable API usage."
       ]
+    },
+    {
+      "id": "stage-2-runner-preparation-implementation",
+      "status": "completed",
+      "recordedAt": "2026-09-09T05:10:48Z",
+      "startedAt": "2026-09-09T04:34:33Z",
+      "finishedAt": "2026-09-09T05:10:48Z",
+      "elapsedSeconds": 2175,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMilliseconds": 0,
+        "costUsd": 0
+      },
+      "review": null,
+      "result": "Prepared the controlled Experiment 2 Stage 2 operator runner for the approved rich opening and repeated-product opening/update. The local gate enforces three ordered attempts, a USD 5 cap with USD 1.50 per-call reservation, zero retry, a manual verdict before continuation, authoritative case attachment and acceptance, and external-only semantic scoring while preserving the Experiment 1 fixture and deterministic browser.",
+      "verification": {
+        "focusedTests": "11 passed",
+        "fullTests": "100 passed",
+        "typecheck": "passed",
+        "build": "passed",
+        "browserTests": "2 passed",
+        "unauthorizedPreflight": "rejected before state creation or model access"
+      },
+      "durableValue": {
+        "kind": "decision-enabling-tooling",
+        "artifacts": [
+          "tools/model/run-stage-2-gate.ts",
+          "tools/model/stage-2-inputs.ts",
+          "evidence/experiment-2/stage-2/assessment.md"
+        ]
+      },
+      "limitations": [
+        "No live application-model call, external review call, deployment, or assembled-product change occurred.",
+        "The runner preparation still requires its separately authorized standard review before a live-call budget may be requested.",
+        "Codex task-token measurements were unavailable and are not estimated.",
+        "The stage snapshot precedes the small bookkeeping, commit, publication, and draft-PR cost of persisting this entry."
+      ]
     }
   ]
 }
