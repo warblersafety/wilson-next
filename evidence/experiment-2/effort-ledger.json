@@ -441,6 +441,75 @@
         "Codex task-token measurements were unavailable and are not estimated.",
         "The stage snapshot precedes the small bookkeeping, commit, publication, and draft-PR cost of persisting this entry."
       ]
+    },
+    {
+      "id": "stage-2-runner-independent-review",
+      "status": "completed",
+      "recordedAt": "2026-09-09T07:17:06Z",
+      "startedAt": null,
+      "finishedAt": "2026-09-09T07:17:06Z",
+      "elapsedSeconds": null,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 2,
+        "serviceCheckCalls": 1,
+        "failedBeforeModelCalls": 1,
+        "inputTokens": null,
+        "cacheCreationInputTokens": null,
+        "cacheReadInputTokens": null,
+        "outputTokens": null,
+        "latencyMilliseconds": null,
+        "costUsd": null,
+        "unmeasuredReviewCalls": 1,
+        "measuredInputTokens": 46,
+        "measuredCacheCreationInputTokens": 121122,
+        "measuredCacheReadInputTokens": 1615303,
+        "measuredOutputTokens": 45562,
+        "measuredLatencyMilliseconds": 492729,
+        "measuredCostUsd": 1.2674466
+      },
+      "review": {
+        "model": "claude-sonnet-5",
+        "configuredModel": "sonnet",
+        "effort": "high",
+        "cli": "Claude Code 2.1.241",
+        "targetCommit": "c89e622c11a89759adcb2225f77f5aad28470861",
+        "blockingFindings": 0,
+        "followUpFindings": 2,
+        "resolvingCommit": "765728c91227c73da90f9417d575a328eb45f55b"
+      },
+      "result": "Completed the authorized standard review after one unrecoverable-output attempt and a separately authorized Sonnet liveliness check. The durable replacement review found no blocker and two follow-ups. Commit 765728c added direct case-replay safe-failure coverage and limited authoritative acceptance to Issue #47's repeated-opening step; both findings are resolved proportionately without another review call.",
+      "verification": {
+        "focusedTests": "12 passed",
+        "fullTests": "101 passed",
+        "typecheck": "passed",
+        "build": "passed",
+        "browserTests": "2 passed",
+        "diffCheck": "passed"
+      },
+      "durableValue": {
+        "kind": "decision-evidence",
+        "artifacts": [
+          "evidence/experiment-2/reviews/c89e622/claude-review-prompt.txt",
+          "evidence/experiment-2/reviews/c89e622/claude-review-result.md",
+          "evidence/experiment-2/reviews/c89e622/review-runs.json",
+          "evidence/experiment-2/reviews/c89e622/dispositions.md"
+        ]
+      },
+      "limitations": [
+        "The first review call's final output and usage were lost by coordinator orchestration; totals that include it are unavailable and are not estimated.",
+        "Measured totals include the successful replacement review and the separately requested liveliness check; they exclude the unrecoverable review call.",
+        "A model-name typo was rejected before a model call with zero tokens and zero cost.",
+        "The reviewer did not run tests, typecheck, build, browser checks, or git diff --check.",
+        "No application-model call, deployment, or merge occurred.",
+        "Codex task-token measurements and the exact overall stage start time were unavailable and are not estimated."
+      ]
     }
   ]
 }
