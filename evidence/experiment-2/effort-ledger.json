@@ -818,6 +818,47 @@
         "CLI-reported review cost is an equivalent usage value and may not be an additional subscription charge.",
         "Codex task-token measurements were unavailable and are not estimated."
       ]
+    },
+    {
+      "id": "stage-4-revise-and-conditional-reliability-refocus",
+      "status": "completed-with-revision",
+      "recordedAt": "2026-09-09T22:24:30Z",
+      "startedAt": "2026-09-09T21:24:39Z",
+      "finishedAt": "2026-09-09T22:24:30Z",
+      "elapsedSeconds": 3591,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 5,
+        "reviewCalls": 0,
+        "inputTokens": 16458,
+        "outputTokens": 11160,
+        "latencyMilliseconds": 83649,
+        "costUsd": 0.144516
+      },
+      "review": null,
+      "result": "Protected first passes produced viable sparse and repeated journeys and one safely rejected rich journey, yielding Revise. Steve reported that preliminary physician feedback already established strong preference for Wilson if it works, so the lower-value Steve-versus-form comparison was removed. The remaining decision is whether one bounded general model-contract remediation can make the conditional proposition reliable.",
+      "durableValue": {
+        "kind": "decision-evidence",
+        "artifacts": [
+          "README.md",
+          "docs/EXPERIMENT-2.md",
+          "https://github.com/warblersafety/wilson-next/issues/53",
+          "https://github.com/warblersafety/wilson-next/pull/52#issuecomment-5609446904"
+        ]
+      },
+      "limitations": [
+        "The preliminary physician feedback is reported by Steve as directional conditional evidence; it is not independently captured or quantified here and does not validate the current build.",
+        "The rich response failed both target-appropriate value shape and treatment-versus-product semantics; accepted case knowledge remained unchanged and no retry ran.",
+        "The live PDF routes returned 200 for the viable journeys, but their downloaded bytes were not retained for independent readback.",
+        "No second live samples ran after the Revise result.",
+        "Steve explicitly waived independent review for this minor plan correction only; the subsequent model-contract remediation still requires standard review.",
+        "Codex task-token measurements were unavailable and are not estimated."
+      ]
     }
   ]
 }

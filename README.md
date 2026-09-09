@@ -5,13 +5,14 @@ system that turns a natural account into reviewed, traceable case knowledge and
 a supported Form FDA 3500 projection.
 
 **Current status:** Experiment 1 completed on 2026-09-08 as a qualified
-technical success. Slices 0–4B proved the fixed synthetic browser-to-PDF
-journey, protected Git-preview delivery, synthetic-only diagnostics, and the
-central semantic-case/write-boundary hypothesis. Issue #40's escaped
-correction/conflict defect was repaired and verified in PR #41. General
-usefulness remains unproven because the application is still substantially
-coupled to one case. Issue #42 and PR #43 established the approved,
-operator-only Experiment 2 plan.
+technical success. Experiment 2 Stage 3 then replaced the fixed journey with a
+state-driven production seed and verified three medication journeys plus the
+Experiment 1 regression through browser and PDF in PR #52. The first protected
+live passes produced two viable journeys and one safely rejected rich journey,
+so Stage 4 is `Revise`. Steve reports that preliminary physician feedback
+already established strong preference for Wilson's approach if it works; Issue
+#53 refocuses the remaining experiment on that condition—reliable semantic and
+evidence behavior—rather than repeating a direct-form preference proxy.
 
 Experiment 2 and Delivery's standing execution authority allow Codex to carry
 its remaining bounded implementation, review, protected-preview, and synthetic
@@ -40,8 +41,8 @@ other documents link to it or apply it only where their narrower scope requires.
    supported and deferred scope, selected stack, implementation slices,
    verification, deployment, and disposal contract.
 4. [`docs/EXPERIMENT-2.md`](docs/EXPERIMENT-2.md) owns the approved
-   operator-only generalization and usefulness plan and the authorization
-   boundaries for each slice.
+   operator-only generalization and conditional-reliability plan and the
+   authorization boundaries for each slice.
 5. [`docs/DELIVERY.md`](docs/DELIVERY.md) owns issues, branches, pull requests,
    independent review, approval, merge controls, and durable traceability.
 6. [`docs/RECOVERY.md`](docs/RECOVERY.md) preserves the evidence and lessons
