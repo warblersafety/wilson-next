@@ -6,8 +6,8 @@ import {
   performJourneyAction,
   type JourneyAction,
 } from "../../src/server/journey/service";
-import { fixedJourneyModel } from "../../src/server/model/fixed-journey";
-import type { CorrectionModelContext, JourneyModel } from "../../src/server/model/journey-model";
+import { fixedJourneyModel } from "../../src/experiment/fixed-journey";
+import type { JourneyModel, ReviewedCaseModelContext } from "../../src/server/model/journey-model";
 
 describe("fixed local journey service", () => {
   it("assembles the approved states through the authoritative repository command path", async () => {
@@ -24,6 +24,9 @@ describe("fixed local journey service", () => {
       ["product-naproxen", "proposed"],
       ["product-lisinopril", "proposed"],
     ]);
+    const apixaban = snapshot.understanding.products.find(({ id }) => id === "product-apixaban")!;
+    expect(apixaban.facts.name.evidence).toEqual(["apixaban 5 mg by mouth twice daily"]);
+    expect(apixaban.facts.dose.evidence).toEqual(["apixaban 5 mg by mouth twice daily"]);
 
     snapshot = await performJourneyAction(repository, caseId, { action: "accept-understanding" });
     expect(snapshot).toMatchObject({ stage: "clarify", revision: 4 });
@@ -95,7 +98,7 @@ describe("fixed local journey service", () => {
   it("passes the relevant reviewed values into the correction model request", async () => {
     const repository = new InMemoryCaseRepository();
     const caseId = "case-correction-context";
-    let receivedContext: CorrectionModelContext | undefined;
+    let receivedContext: ReviewedCaseModelContext | undefined;
     const model: JourneyModel = {
       async propose(turn, text, correctionContext) {
         if (turn === "correction") receivedContext = correctionContext;
@@ -111,10 +114,24 @@ describe("fixed local journey service", () => {
       model,
     );
 
-    expect(receivedContext).toEqual({
-      reviewedNaproxenDose: "500 mg",
-      reviewedApixabanStartDate: "2026-08-12",
-    });
+    expect(receivedContext?.products).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        id: "product-apixaban",
+        name: "apixaban",
+        facts: expect.arrayContaining([
+          { field: "dose", value: { kind: "known", value: "5 mg" } },
+          { field: "startDate", value: { kind: "known", value: "2026-08-12" } },
+        ]),
+      }),
+      expect.objectContaining({
+        id: "product-naproxen",
+        name: "naproxen",
+        facts: expect.arrayContaining([
+          { field: "dose", value: { kind: "known", value: "500 mg" } },
+          { field: "startDate", value: { kind: "known", value: "2026-08-10" } },
+        ]),
+      }),
+    ]));
   });
 
   it.each([

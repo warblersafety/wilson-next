@@ -1,0 +1,226 @@
+Review this exact Wilson change and find material reasons it should not
+merge. Inspect the complete diff, issue, governing artifacts, relevant
+surrounding code, and acceptance evidence. Check correctness, missing
+behavior, regression risk, and whether the implementation hides a faulty
+requirement or architectural premise. Do not edit anything. Report only
+BLOCKING findings and independently valuable FOLLOW-UP findings, with
+evidence and precise locations. State what you inspected and ran, material
+limitations, and explicitly say when no findings remain.
+
+Target and authority
+
+- Repository: warblersafety/wilson-next.
+- Exact target commit: b2f336ed29fd93598169ed1261fdc1c1db0782f8.
+- Exact base commit: e0d4a8d757684c92e3d217e4747bee4c88e97ef5 (main).
+- Draft PR: #46, `Generalize the core model and evidence boundary`.
+- The operator explicitly authorized Issue #44 implementation and separately
+  authorized this one standard fresh-context review.
+- This is `wilson-review-v1` from docs/DELIVERY.md at the target commit.
+- Use read-only tools only. Do not edit files, alter Git state, access the
+  network, invoke agents, post to GitHub, or perform implementation.
+- Do not seek or adopt earlier reviewer conclusions. There is no earlier review
+  of this implementation commit.
+
+Complete diff
+
+- Read `/private/tmp/wilson-issue44-review-b2f336e-full.diff` completely, in
+  chunks if necessary. It is the exact binary-capable `main...target` diff.
+- Size: 154602 bytes.
+- SHA-256: `711b0ace498c591bf2bc2d86c8c5b5b96bfcd73c19bd2c2d667451c989dae7f2`.
+- The coordinator independently confirmed before this run that the local target,
+  remote branch head, and PR head all equal the target commit; the worktree was
+  clean before adding only this review record; and `git diff --check
+  main...target` passed.
+
+Governing corpus
+
+Read these files completely and apply their stated authority:
+
+- README.md
+- docs/PRODUCT.md
+- docs/ARCHITECTURE.md
+- docs/EXPERIMENT-1.md
+- docs/EXPERIMENT-2.md
+- docs/DELIVERY.md
+
+Inspect all changed files, relevant surrounding application code, and retained
+evidence needed to test the change. In particular, assess the exact boundary
+delivered by Issue #44 without silently expanding it into the separately scoped
+assembled-product slice or live-model gate.
+
+Exact Issue #44
+
+Title: Build the Experiment 2 core model and evidence boundary
+State: OPEN
+URL: https://github.com/warblersafety/wilson-next/issues/44
+Comments: none
+
+## Outcome
+
+Replace Experiment 1's case-specific model/evidence boundary with a
+production-seed boundary that can support Experiment 2's selected synthetic
+medication journeys without fixture, medicine, expected-value, or
+authored-sequence behavior in runtime product code. Resolve #39 as part of that
+shared boundary.
+
+## Scope
+
+- Included:
+  - Move exact source localization out of model responsibility: the model
+    proposes normalized facts and supporting clinician words; deterministic
+    application code associates exact, absent, or ambiguous evidence with the
+    original input.
+  - Give products stable application-owned identities that do not depend on
+    model-generated IDs, array positions, or product names, including repeated
+    aliases and later updates.
+  - Define a case-agnostic model request/response schema and conversion path for
+    the supported adult medication adverse-event facts, explicit unknowns,
+    corrections, and conflicts.
+  - Supply generic reviewed-case context for later inputs while preserving
+    proposal-before-acceptance and the single case write boundary.
+  - Remove fixed proposal catalogs and fixed-input rejection from production
+    behavior needed by this boundary.
+  - Keep the existing provider adapter, smallest operator runner, temporary
+    browser-held state, and synthetic-only diagnostic protections.
+- Excluded:
+  - Assembled state-driven UI and orchestration work assigned to the next
+    Experiment 2 slice.
+  - Any live model call until deterministic evidence and the separately
+    authorized standard review are complete, followed by a separate call-budget
+    authorization.
+  - New persistence, analytics, evaluation framework, retry loop, fuzzy
+    matching, provider comparison, production deployment, real clinical data,
+    physician involvement, expanded Form 3500 scope, or unrelated refactoring.
+
+## Governing artifacts
+
+- `docs/PRODUCT.md`
+- `docs/ARCHITECTURE.md`
+- `docs/EXPERIMENT-2.md`, especially **Production-seed implementation**,
+  **Source evidence and Issue #39**, and **Stage 1: production model/evidence
+  boundary**
+- `docs/DELIVERY.md`
+- Issue #39
+- Planning PR #43
+
+## Acceptance evidence
+
+- [ ] Model output contains no source offsets; exact, absent, and ambiguous
+  quotation association have focused deterministic tests.
+- [ ] Missing or ambiguous evidence remains explicit and cannot silently become
+  accepted case knowledge.
+- [ ] Repeated aliases and later inputs attach to stable application-owned
+  product identities without medicine- or scenario-specific branches.
+- [ ] The model boundary and reviewed-case context are case-agnostic and contain
+  no answer catalog or scenario oracle.
+- [ ] Production modules cannot import fixture or oracle definitions.
+- [ ] Existing case authority, correction, conflict, projection, PDF, and
+  protected synthetic diagnostic behavior remains intact under focused
+  regression evidence.
+- [ ] The complete implementation receives one separately authorized standard
+  fresh-context review with blocking findings resolved before merge approval.
+
+## Stop conditions
+
+Stop and return for a premise decision if exact evidence requires fuzzy matching
+or model-calculated offsets; stable identity requires product-name or scenario
+branches; the semantic case or one write boundary cannot represent the selected
+journeys; the slice requires new persistence, a general question planner,
+broader product scope, real data, or production architecture; or the same
+general semantic failure recurs after one bounded remediation.
+
+Implementation requires Steve's explicit go-ahead after this issue is reviewed.
+Creating this issue does not authorize code changes or model calls.
+
+Exact Issue #39
+
+Title: Move source localization out of the model boundary
+State: OPEN
+URL: https://github.com/warblersafety/wilson-next/issues/39
+Comments: none
+
+## Outcome
+
+Move exact source localization out of the model's responsibilities. The model
+may propose a normalized fact and the clinician words that support it; Wilson
+deterministically associates an exact excerpt with the original input. A
+localization failure must remain visible and recoverable rather than displaying
+a shifted or truncated quotation.
+
+This is a prerequisite for clinician-facing use, not a prerequisite for
+retaining the experimental live-model capability delivered by PR #36.
+
+## Why
+
+Issue #35's final live opening extracted all 29 expected values with correct
+product identities, but 22 returned source ranges were systematically shifted
+by one character. For example, the intended excerpt `melena and dizziness` was
+displayed as ` melena and dizzines`. The immediate code sliced the coordinates
+it was given correctly; the bad responsibility split was asking the model to
+calculate exact character positions while also interpreting and normalizing
+clinical shorthand.
+
+## Minimum scope
+
+- Keep normalized proposed facts separate from verbatim clinician evidence.
+- Stop asking the model to calculate character offsets.
+- Let deterministic code locate and preserve an exact supporting passage in the
+  original input.
+- Handle absent or ambiguous matches explicitly without inventing a location or
+  silently changing the clinician's words.
+- Preserve the rule that a proposal remains unaccepted until human review.
+- Add focused synthetic coverage for exact, absent, and ambiguous matches.
+
+## Explicitly excluded
+
+- Fixture-specific offset corrections or an expanding catalog of semantic
+  validator rules.
+- Fuzzy matching infrastructure unless concrete evidence later shows exact
+  matching is insufficient.
+- A new persistence layer, diagnostic store, eval framework, provider
+  comparison, or retry loop.
+- Real clinical data, physician participation, production deployment, or a paid
+  plan.
+
+## Acceptance
+
+- Model output no longer contains source character offsets.
+- Wilson never presents a shifted, truncated, or reconstructed string as an
+  exact clinician quotation.
+- Normalized facts may still smooth spelling, abbreviations, dates, units, and
+  shorthand when meaning is clear; uncertainty, negation, correction, and
+  clinically material distinctions remain preserved.
+- A missing or ambiguous source association is shown honestly and cannot
+  silently become accepted case knowledge.
+- Existing case-authority, correction, conflict, projection, and PDF behavior
+  remains intact.
+
+## Evidence
+
+- PR #36
+- `evidence/issue-35/live-self-contained-evidence/operator-verdict.json`
+- `evidence/issue-35/README.md`, section **Self-contained-evidence live attempt**
+
+Acceptance evidence supplied
+
+- Focused tests: 39 passed.
+- Full suite: 87 passed with the repository's configured PDF Python.
+- Typecheck: passed.
+- Production build: passed.
+- Desktop browser regression: 2 passed. The first sandboxed attempt failed only
+  because Playwright could not bind localhost (`listen EPERM`); the authorized
+  rerun outside that filesystem sandbox passed and made no model call.
+- GitHub `verify`: success at the exact target commit.
+- Vercel and Vercel Preview Comments checks: success at the exact target commit.
+- No application-model call was made.
+
+Output
+
+Return one Markdown review containing:
+
+1. `## BLOCKING` with numbered findings, or `None.`
+2. `## FOLLOW-UP` with numbered independently valuable findings, or `None.`
+3. `## Inspected and ran` describing the exact inputs inspected and commands or
+   tests actually run. Do not imply supplied evidence was independently run.
+4. `## Limitations` naming material limitations, or `None.`
+5. An explicit final sentence saying whether any findings remain.

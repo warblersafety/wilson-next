@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { openingAccount } from "../../src/experiment/fixed-inputs";
-import { parseFixedOpeningResponse } from "../../src/server/model/fixed-journey";
+import { parseFixedOpeningResponse } from "../../src/experiment/fixed-journey";
 import type { ModelProposalResult } from "../../src/server/model/journey-model";
 import { runTurn } from "../../tools/model/run-slice-3-sample";
 import type { RecordedSample, SampleState } from "../../tools/model/sample-state";

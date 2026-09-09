@@ -1,5 +1,5 @@
 import { createAnthropicJourneyModel } from "../../src/server/model/anthropic-journey";
-import { assessModelProposals, type SampleAssessment } from "../../src/server/model/sample-oracle";
+import { assessModelProposals, type SampleAssessment } from "../../src/experiment/sample-oracle";
 import {
   ModelCallFailure,
   type ModelProposalResult,

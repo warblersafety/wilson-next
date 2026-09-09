@@ -1,111 +1,35 @@
+import { randomUUID } from "node:crypto";
 import Anthropic, { APIError } from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
-import { parseModelProposalEnvelope } from "../../domain/case/model-boundary";
 import {
-  correctionAccount,
-  fixedRecordedAt,
-  openingAccount,
-} from "../../experiment/fixed-inputs";
+  modelProposalOutputSchema,
+  parseModelProposalEnvelope,
+  type ModelBoundaryIdentityFactory,
+} from "../../domain/case/model-boundary";
 import { ModelCallFailure } from "./journey-model";
 import type {
-  CorrectionModelContext,
   JourneyModel,
   ModelCallMetrics,
   ModelDiagnosticIssue,
   ModelFailureDiagnostic,
   ModelTurn,
+  ReviewedCaseModelContext,
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-experiment-1-extraction-v5";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v5";
-// The Messages API requires max_tokens. Use Sonnet 5's full provider output
-// capacity here so Wilson imposes no development/verification token budget.
+export const MODEL_PROMPT_REVISION = "wilson-experiment-2-boundary-v1";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v6";
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
 export const MODEL_MAX_RETRIES = 0;
 
 const INPUT_USD_PER_MILLION_TOKENS = 2;
 const OUTPUT_USD_PER_MILLION_TOKENS = 10;
-const CANONICAL_PRODUCT_ROLES = ["suspect", "concomitant"] as const;
-const PRODUCT_ROLE_SCHEMA_GUIDANCE = 'When target.field is "role", value.value must be exactly "suspect" or "concomitant"; do not inflect or otherwise vary these canonical literals.';
-const DOSE_CORRECTION_GROUP_ID = "naproxen-dose-correction";
-const DATE_CONFLICT_GROUP_ID = "apixaban-date-conflict";
 
-const modelTargetSchema = z.discriminatedUnion("entity", [
-  z.object({
-    entity: z.literal("patient"),
-    entityId: z.literal("patient"),
-    field: z.enum(["identifier", "ageYears", "sex"]),
-  }).strict(),
-  z.object({
-    entity: z.literal("event"),
-    entityId: z.literal("event"),
-    field: z.enum([
-      "symptoms",
-      "onsetDate",
-      "hospitalized",
-      "hemoglobin",
-      "treatments",
-      "outcome",
-      "dischargeDate",
-    ]),
-  }).strict(),
-  z.object({
-    entity: z.literal("product"),
-    entityId: z.enum(["product-apixaban", "product-naproxen", "product-lisinopril"]),
-    field: z.enum([
-      "name",
-      "role",
-      "dose",
-      "frequency",
-      "route",
-      "startDate",
-      "stopDate",
-      "indication",
-      "stopped",
-    ]),
-  }).strict(),
-]);
-
-const modelProposalSchema = z.object({
-  proposalId: z.string(),
-  groupId: z.string(),
-  intent: z.enum(["fact", "correction", "alternative"]),
-  target: modelTargetSchema,
-  value: z.object({
-    kind: z.literal("known"),
-    value: z.union([
-      z.string().describe(PRODUCT_ROLE_SCHEMA_GUIDANCE),
-      z.number(),
-      z.boolean(),
-      z.array(z.string()),
-    ]),
-  }).strict(),
-  source: z.object({
-    start: z.number().int(),
-    end: z.number().int(),
-  }).strict(),
-}).strict().superRefine((proposal, context) => {
-  if (proposal.target.field !== "role") return;
-  if (typeof proposal.value.value === "string"
-    && CANONICAL_PRODUCT_ROLES.some((role) => role === proposal.value.value)) return;
-  context.addIssue({
-    code: "custom",
-    path: ["value", "value"],
-    message: "Role value must be the canonical literal suspect or concomitant",
-  });
-});
-
-const modelOutputSchema = z.object({
-  products: z.array(z.object({
-    id: z.enum(["product-apixaban", "product-naproxen", "product-lisinopril"]),
-    groupId: z.enum(["product-apixaban", "product-naproxen", "product-lisinopril"]),
-  }).strict()),
-  proposals: z.array(modelProposalSchema).min(1),
-}).strict();
-
-type StructuredModelOutput = z.infer<typeof modelOutputSchema>;
+type ProviderOutputFormat = Pick<
+  ReturnType<typeof zodOutputFormat<typeof modelProposalOutputSchema>>,
+  "type" | "schema"
+>;
 
 export interface AnthropicModelRequest {
   model: typeof ANTHROPIC_MODEL_ID;
@@ -128,10 +52,7 @@ export interface AnthropicModelResponse {
   };
 }
 
-export type AnthropicRequester = (
-  request: AnthropicModelRequest,
-) => Promise<AnthropicModelResponse>;
-
+export type AnthropicRequester = (request: AnthropicModelRequest) => Promise<AnthropicModelResponse>;
 export type AnthropicResponseRecorder = (
   turn: ModelTurn,
   response: AnthropicModelResponse,
@@ -145,78 +66,37 @@ export interface AnthropicStreamingClient {
   };
 }
 
-const SYSTEM_PROMPT = `You extract grounded semantic proposals from one fictional clinician input for Wilson Experiment 1.
+const SYSTEM_PROMPT = `You extract grounded semantic proposals from one synthetic clinician input for Wilson's bounded adult medication adverse-event scope.
 
 Rules:
-- Propose only facts explicitly supported by the supplied input. Do not diagnose, infer causality, classify, fill gaps, or establish truth.
-- Keep each medicine attached to its exact stable product ID. For product roles, emit only the canonical literal "suspect" or "concomitant". Map statements such as "I suspect ..." to "suspect"; do not inflect or otherwise vary either literal. A reported suspect role is not your causality judgment.
-- Use normalized ISO dates (YYYY-MM-DD), "oral" for "by mouth", and the literal frequency wording "twice daily" or "daily".
-- Preserve a measurement's value and unit together as a string, for example "7.8 g/dL" rather than 7.8.
-- Every proposal must cite the shortest exact, self-contained supporting substring that lets a human reviewer identify both the subject and the claim without relying on proposal target metadata. For a product fact, include enough local wording to connect the product name with the claimed property; one shared clause may support multiple product proposals. Use zero-based start-inclusive/end-exclusive character offsets into the clinician input. Offsets must select non-empty text exactly.
-- Supply only the source offsets. Wilson assigns stable source identity; the model does not.
-- On a correction turn, use the supplied reviewed-case context only to distinguish the already accepted value from a newly reported correction or alternative. Never cite that context as clinician evidence; every source span still refers only to the current clinician input.
-- Use only the proposal IDs, groups, targets, and intents listed for the requested turn. Emit every listed proposal that the input explicitly supports and no others.
-- Products are declarations for newly proposed product entities, not accepted case knowledge.`;
-
-const OPENING_CATALOG = `Declare these products in this order, with matching groupId: product-apixaban, product-naproxen, product-lisinopril.
-
-Allowed proposals (proposalId | groupId | intent | target):
-patient-id | patient | fact | patient.identifier
-patient-age | patient | fact | patient.ageYears
-patient-sex | patient | fact | patient.sex
-event-symptoms | event | fact | event.symptoms
-event-onset | event | fact | event.onsetDate
-event-hospitalized | event | fact | event.hospitalized
-event-hemoglobin | event | fact | event.hemoglobin
-event-treatment | event | fact | event.treatments
-event-outcome | event | fact | event.outcome
-event-discharge | event | fact | event.dischargeDate
-apixaban-name | product-apixaban | fact | product-apixaban.name
-apixaban-role | product-apixaban | fact | product-apixaban.role
-apixaban-dose | product-apixaban | fact | product-apixaban.dose
-apixaban-frequency | product-apixaban | fact | product-apixaban.frequency
-apixaban-route | product-apixaban | fact | product-apixaban.route
-apixaban-start | product-apixaban | fact | product-apixaban.startDate
-naproxen-name | product-naproxen | fact | product-naproxen.name
-naproxen-role | product-naproxen | fact | product-naproxen.role
-naproxen-dose | product-naproxen | fact | product-naproxen.dose
-naproxen-frequency | product-naproxen | fact | product-naproxen.frequency
-naproxen-route | product-naproxen | fact | product-naproxen.route
-naproxen-start | product-naproxen | fact | product-naproxen.startDate
-lisinopril-name | product-lisinopril | fact | product-lisinopril.name
-lisinopril-role | product-lisinopril | fact | product-lisinopril.role
-lisinopril-dose | product-lisinopril | fact | product-lisinopril.dose
-lisinopril-frequency | product-lisinopril | fact | product-lisinopril.frequency
-lisinopril-route | product-lisinopril | fact | product-lisinopril.route
-apixaban-stopped | product-apixaban | fact | product-apixaban.stopped
-naproxen-stopped | product-naproxen | fact | product-naproxen.stopped`;
-
-const CORRECTION_CATALOG = `Declare no new products.
-
-Allowed proposals (proposalId | groupId | intent | target):
-naproxen-dose-correction | naproxen-dose-correction | correction | product-naproxen.dose
-apixaban-date-alternative | apixaban-date-conflict | alternative | product-apixaban.startDate`;
-
-type ProviderOutputFormat = Pick<
-  ReturnType<typeof zodOutputFormat<typeof modelOutputSchema>>,
-  "type" | "schema"
->;
+- Propose only facts explicitly supported by the current clinician input. Do not diagnose, infer causality, classify, fill gaps, or establish truth.
+- The supported targets are the patient, adverse event, and medication fields represented by the response schema. Preserve uncertainty, negation, correction, alternatives, unknown, explicitly absent, inapplicable, and declined meanings.
+- For product roles, emit only "suspect" or "concomitant". A reported suspect role is clinician input, not your causality judgment.
+- Use normalized ISO dates (YYYY-MM-DD), "oral" for "by mouth", and retain measurement values with their units.
+- On opening input, declare each mentioned product once using arbitrary response-local productReference and groupReference values. Use those references for its proposals. Wilson—not you—assigns stable case identity.
+- On later input, declare no products. Refer to an existing product only by an exact application-supplied product ID from the reviewed-case context. A repeated name or alias does not create identity.
+- proposalReference and groupReference are response-local linkage values, not case IDs. Keep a group within one case entity.
+- Every proposal must include the shortest exact, self-contained evidenceQuote from the current clinician input that lets a reviewer identify both the subject and claim without relying on target metadata. Return the quotation itself, never character offsets or a source ID.
+- Reviewed-case context is supplied only to link later mentions and distinguish accepted knowledge from corrections or alternatives. Never cite context as clinician evidence.
+- Omit unsupported facts. Every proposal remains unaccepted until ordinary human review.`;
 
 export function createAnthropicRequest(
   turn: ModelTurn,
   text: string,
-  correctionContext?: CorrectionModelContext,
+  reviewedCase?: ReviewedCaseModelContext,
 ): AnthropicModelRequest {
-  requireFixedInput(turn, text);
-  const catalog = turn === "opening" ? OPENING_CATALOG : CORRECTION_CATALOG;
-  const context = correctionContextBlock(turn, correctionContext);
+  if (!text.trim()) throw new Error("Clinician input is required");
+  const context = reviewedContextBlock(turn, reviewedCase);
+  const turnInstruction = turn === "opening"
+    ? "This is opening input. Declare newly mentioned products with response-local references."
+    : "This is later input. Declare no products and use only supplied stable product IDs.";
   return {
     model: ANTHROPIC_MODEL_ID,
     max_tokens: PROVIDER_MAX_OUTPUT_TOKENS,
     system: SYSTEM_PROMPT,
     messages: [{
       role: "user",
-      content: `${catalog}${context}\n\nClinician input:\n<input>\n${text}\n</input>`,
+      content: `${turnInstruction}${context}\n\nClinician input:\n<input>\n${text}\n</input>`,
     }],
     output_config: { format: providerOutputFormat() },
   };
@@ -226,10 +106,12 @@ export function createAnthropicJourneyModel(
   requester: AnthropicRequester = defaultRequester(),
   now: () => number = Date.now,
   recordResponse?: AnthropicResponseRecorder,
+  createIdentity: ModelBoundaryIdentityFactory = defaultIdentityFactory,
+  recordedAt: () => string = () => new Date().toISOString(),
 ): JourneyModel {
   return {
-    async propose(turn, text, correctionContext) {
-      const request = createAnthropicRequest(turn, text, correctionContext);
+    async propose(turn, text, reviewedCase) {
+      const request = createAnthropicRequest(turn, text, reviewedCase);
       const startedAt = now();
       let response: AnthropicModelResponse;
       try {
@@ -253,6 +135,7 @@ export function createAnthropicJourneyModel(
         latencyMs,
         estimatedCostUsd: estimateCost(inputTokens, response.usage.output_tokens),
       };
+
       let responseArtifact: string | undefined;
       if (recordResponse) {
         try {
@@ -280,10 +163,7 @@ export function createAnthropicJourneyModel(
         );
       }
 
-      const responseText = response.content
-        .filter(isTextBlock)
-        .map(({ text }) => text)
-        .join("");
+      const responseText = response.content.filter(isTextBlock).map(({ text }) => text).join("");
       let decoded: unknown;
       try {
         decoded = JSON.parse(responseText);
@@ -305,7 +185,7 @@ export function createAnthropicJourneyModel(
           response,
         );
       }
-      const structured = modelOutputSchema.safeParse(decoded);
+      const structured = modelProposalOutputSchema.safeParse(decoded);
       if (!structured.success) {
         throw new ModelCallFailure(
           "Wilson could not interpret the fictional account. Accepted case knowledge is unchanged.",
@@ -319,45 +199,20 @@ export function createAnthropicJourneyModel(
           response,
         );
       }
-      const correctionGroupIssues = validateCorrectionGroupIds(turn, structured.data);
-      if (correctionGroupIssues.length > 0) {
-        throw new ModelCallFailure(
-          "Wilson could not interpret the fictional account. Accepted case knowledge is unchanged.",
-          {
-            phase: "structured-schema",
-            requestId: response.id,
-            responseArtifact,
-            issues: correctionGroupIssues,
-          },
-          metrics,
-          response,
-        );
-      }
 
       try {
         const envelope = parseModelProposalEnvelope({
+          turn,
           input: {
-            id: turn === "opening" ? "input-opening" : "input-correction",
+            id: createIdentity("input", turn),
             type: turn === "opening" ? "narrative" : "correction",
             text,
-            recordedAt: fixedRecordedAt,
+            recordedAt: recordedAt(),
           },
-          ...structured.data,
-          proposals: structured.data.proposals.map((proposal) => ({
-            ...proposal,
-            source: {
-              id: `source-${proposal.proposalId}`,
-              start: proposal.source.start,
-              end: proposal.source.end,
-            },
-          })),
-        });
-        return {
-          envelope,
-          metrics,
-          responseArtifact,
-          diagnosticResponse: response,
-        };
+          existingProductIds: reviewedCase?.products.map(({ id }) => id),
+          output: structured.data,
+        }, createIdentity);
+        return { envelope, metrics, responseArtifact, diagnosticResponse: response };
       } catch (error) {
         throw new ModelCallFailure(
           "Wilson could not interpret the fictional account. Accepted case knowledge is unchanged.",
@@ -386,8 +241,21 @@ export function createStreamingRequester(client: AnthropicStreamingClient): Anth
 }
 
 function providerOutputFormat(): ProviderOutputFormat {
-  const format = zodOutputFormat(modelOutputSchema);
+  const format = zodOutputFormat(modelProposalOutputSchema);
   return { type: format.type, schema: format.schema };
+}
+
+function reviewedContextBlock(
+  turn: ModelTurn,
+  context: ReviewedCaseModelContext | undefined,
+): string {
+  if (turn === "opening") return "";
+  if (!context) throw new Error("Reviewed case context is required for later input");
+  return `\n\nReviewed case context (not clinician evidence; never quote it):\n${JSON.stringify(context)}`;
+}
+
+function defaultIdentityFactory(kind: Parameters<ModelBoundaryIdentityFactory>[0]): string {
+  return `${kind}-${randomUUID()}`;
 }
 
 function isTextBlock(block: unknown): block is { type: "text"; text: string } {
@@ -421,60 +289,7 @@ function errorName(error: unknown): string {
   return error instanceof Error ? error.constructor.name : typeof error;
 }
 
-function requireFixedInput(turn: ModelTurn, text: string): void {
-  const expected = turn === "opening" ? openingAccount : correctionAccount;
-  if (text !== expected) {
-    throw new Error("This experiment accepts only the displayed fictional account");
-  }
-}
-
-function correctionContextBlock(
-  turn: ModelTurn,
-  context: CorrectionModelContext | undefined,
-): string {
-  if (turn === "opening") return "";
-  if (!context) throw new Error("Reviewed correction context is required");
-  return `\n\nReviewed case context (not clinician input; do not cite):
-- accepted naproxen dose: ${context.reviewedNaproxenDose}
-- accepted apixaban start date: ${context.reviewedApixabanStartDate}
-
-For the date-alternative proposal, return the newly reported date that differs from the accepted date.`;
-}
-
-function validateCorrectionGroupIds(
-  turn: ModelTurn,
-  output: StructuredModelOutput,
-): ModelDiagnosticIssue[] {
-  if (turn !== "correction") return [];
-  const issues: ModelDiagnosticIssue[] = [];
-  output.proposals.forEach((proposal, index) => {
-    const isDoseCorrection = proposal.intent === "correction"
-      && proposal.target.entity === "product"
-      && proposal.target.entityId === "product-naproxen"
-      && proposal.target.field === "dose";
-    const isDateAlternative = proposal.intent === "alternative"
-      && proposal.target.entity === "product"
-      && proposal.target.entityId === "product-apixaban"
-      && proposal.target.field === "startDate";
-    const expectedGroupId = isDoseCorrection
-      ? DOSE_CORRECTION_GROUP_ID
-      : isDateAlternative
-        ? DATE_CONFLICT_GROUP_ID
-        : undefined;
-    if (expectedGroupId && proposal.groupId !== expectedGroupId) {
-      issues.push({
-        path: `proposals.${index}.groupId`,
-        code: "invalid_correction_group",
-        message: `Correction action requires group ${expectedGroupId}`,
-      });
-    }
-  });
-  return issues;
-}
-
 function estimateCost(inputTokens: number, outputTokens: number): number {
-  return (
-    (inputTokens * INPUT_USD_PER_MILLION_TOKENS)
-    + (outputTokens * OUTPUT_USD_PER_MILLION_TOKENS)
-  ) / 1_000_000;
+  return ((inputTokens * INPUT_USD_PER_MILLION_TOKENS)
+    + (outputTokens * OUTPUT_USD_PER_MILLION_TOKENS)) / 1_000_000;
 }

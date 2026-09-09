@@ -1,11 +1,11 @@
-import type { ParsedModelProposalEnvelope } from "../../domain/case/model-boundary";
-import type { GroundedProposal } from "../../domain/case/types";
-import { correctionAccount, openingAccount } from "../../experiment/fixed-inputs";
+import type { ParsedModelProposalEnvelope } from "../domain/case/model-boundary";
+import type { GroundedProposal } from "../domain/case/types";
+import { correctionAccount, openingAccount } from "./fixed-inputs";
 import {
   parseFixedCorrectionResponse,
   parseFixedOpeningResponse,
 } from "./fixed-journey";
-import type { ModelTurn } from "./journey-model";
+import type { ModelTurn } from "../server/model/journey-model";
 
 export interface ProposalReviewRow {
   proposalId: string;
@@ -100,4 +100,3 @@ function targetName(proposal: GroundedProposal): string {
 function valueText(proposal: GroundedProposal): string {
   return JSON.stringify(proposal.value);
 }
-

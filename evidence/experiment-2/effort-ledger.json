@@ -294,6 +294,107 @@
         "The stage snapshot precedes the small bookkeeping and publication cost of persisting this entry and opening its clerical pull request.",
         "Codex task tokens are the goal tracker's task-effort measure, not an estimate of billable API usage."
       ]
+    },
+    {
+      "id": "core-boundary-implementation",
+      "status": "completed",
+      "recordedAt": "2026-09-09T01:31:55Z",
+      "startedAt": "2026-09-09T01:02:15Z",
+      "finishedAt": "2026-09-09T01:31:39Z",
+      "elapsedSeconds": 1764,
+      "codexTaskTokens": {
+        "source": "codex-goal-snapshot",
+        "start": 0,
+        "end": 168035,
+        "delta": 168035
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMilliseconds": 0,
+        "costUsd": 0
+      },
+      "review": null,
+      "result": "Replaced the case-specific production model contract with exact quotation localization, application-owned opaque product identity, generic later-input context, and a case-agnostic structured schema; isolated fixed fixtures/oracles under the experiment adapter boundary.",
+      "verification": {
+        "focusedTests": "39 passed",
+        "fullTests": "87 passed",
+        "typecheck": "passed",
+        "build": "passed",
+        "browserTests": "2 passed"
+      },
+      "durableValue": {
+        "kind": "product-code",
+        "artifacts": [
+          "src/domain/case/model-boundary.ts",
+          "src/server/model/anthropic-journey.ts",
+          "src/server/model/reviewed-case-context.ts"
+        ]
+      },
+      "limitations": [
+        "The assembled journey service and UI remain intentionally case-specific until the separately authorized assembled-product slice.",
+        "The stage snapshot precedes the small bookkeeping and publication cost of persisting this entry and opening its draft pull request.",
+        "Codex task tokens are the goal tracker's task-effort measure, not an estimate of billable API usage."
+      ]
+    },
+    {
+      "id": "core-boundary-review-and-remediation",
+      "status": "completed",
+      "recordedAt": "2026-09-09T01:59:05Z",
+      "startedAt": "2026-09-09T01:39:45Z",
+      "finishedAt": "2026-09-09T01:59:05Z",
+      "elapsedSeconds": 1160,
+      "codexTaskTokens": {
+        "source": "codex-goal-snapshot",
+        "start": 0,
+        "end": 97492,
+        "delta": 97492
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 1,
+        "inputTokens": 30,
+        "cacheCreationInputTokens": 157541,
+        "cacheReadInputTokens": 1640722,
+        "outputTokens": 43576,
+        "latencyMilliseconds": 506146,
+        "costUsd": 1.3974474
+      },
+      "review": {
+        "model": "claude-sonnet-5",
+        "configuredModel": "sonnet",
+        "effort": "high",
+        "cli": "Claude Code 2.1.241",
+        "targetCommit": "b2f336ed29fd93598169ed1261fdc1c1db0782f8",
+        "blockingFindings": 1,
+        "followUpFindings": 2
+      },
+      "result": "Completed the authorized read-only review, removed unauthorized browser-route live-model selection, documented the allocation invariant, and added one shared-evidence regression assertion. All findings were resolved proportionately in 242441e.",
+      "verification": {
+        "focusedTests": "43 passed",
+        "typecheck": "passed",
+        "diffCheck": "passed"
+      },
+      "durableValue": {
+        "kind": "product-code-and-review-evidence",
+        "artifacts": [
+          "app/api/case/route.ts",
+          "tests/architecture/source-boundary.test.ts",
+          "tests/server/journey-service.test.ts",
+          "evidence/experiment-2/reviews/b2f336e/claude-review-prompt.txt",
+          "evidence/experiment-2/reviews/b2f336e/claude-review-result.md",
+          "evidence/experiment-2/reviews/b2f336e/review-run.json",
+          "evidence/experiment-2/reviews/b2f336e/dispositions.md"
+        ]
+      },
+      "limitations": [
+        "The reviewer did not independently run the supplied automated evidence or inspect Vercel configuration.",
+        "The originating review covers the bounded remediation under the proportional-closure rule; no recursive review was run.",
+        "The stage snapshot precedes the small bookkeeping and publication cost of persisting this entry and updating the draft PR.",
+        "Codex task tokens are the goal tracker's task-effort measure, not an estimate of billable API usage."
+      ]
     }
   ]
 }

@@ -6,7 +6,7 @@ import type {
   Source,
 } from "../../src/domain/case/types";
 import { correctionAccount, openingAccount } from "../../src/experiment/fixed-inputs";
-import { parseFixedCorrectionResponse, parseFixedOpeningResponse } from "../../src/server/model/fixed-journey";
+import { parseFixedCorrectionResponse, parseFixedOpeningResponse } from "../../src/experiment/fixed-journey";
 
 export { correctionAccount, openingAccount };
 

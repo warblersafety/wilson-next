@@ -1,11 +1,14 @@
-import { parseModelProposalEnvelope } from "../../domain/case/model-boundary";
-import type { CaseValue, FactTarget } from "../../domain/case/types";
+import {
+  parseModelProposalEnvelope,
+  type ModelBoundaryIdentityFactory,
+} from "../domain/case/model-boundary";
+import type { CaseValue, FactTarget } from "../domain/case/types";
 import {
   correctionAccount,
   fixedRecordedAt,
   openingAccount,
-} from "../../experiment/fixed-inputs";
-import type { JourneyModel } from "./journey-model";
+} from "./fixed-inputs";
+import type { JourneyModel } from "../server/model/journey-model";
 
 function known<T>(value: T): CaseValue<T> {
   return { kind: "known", value };
@@ -20,15 +23,17 @@ function proposal(
   excerpt: string,
   intent: "fact" | "correction" | "alternative" = "fact",
 ) {
-  const start = text.indexOf(excerpt);
-  if (start === -1) throw new Error(`Fixed response excerpt is missing: ${excerpt}`);
+  if (!text.includes(excerpt)) throw new Error(`Fixed response excerpt is missing: ${excerpt}`);
+  const modelTarget = target.entity === "product"
+    ? { entity: "product" as const, productReference: target.entityId, field: target.field }
+    : { entity: target.entity, field: target.field };
   return {
-    proposalId,
-    groupId,
+    proposalReference: proposalId,
+    groupReference: groupId,
     intent,
-    target,
+    target: modelTarget,
     value,
-    source: { id: `source-${proposalId}`, start, end: start + excerpt.length },
+    evidenceQuote: excerpt,
   };
 }
 
@@ -80,13 +85,15 @@ export function parseFixedOpeningResponse(text: string) {
     throw new Error("This experiment accepts only the displayed fictional opening account");
   }
   return parseModelProposalEnvelope({
+    turn: "opening",
     input: { id: "input-opening", type: "narrative", text, recordedAt: fixedRecordedAt },
-    products: [
-      { id: "product-apixaban", groupId: "product-apixaban" },
-      { id: "product-naproxen", groupId: "product-naproxen" },
-      { id: "product-lisinopril", groupId: "product-lisinopril" },
-    ],
-    proposals: [
+    output: {
+      products: [
+        { productReference: "product-apixaban", groupReference: "product-apixaban" },
+        { productReference: "product-naproxen", groupReference: "product-naproxen" },
+        { productReference: "product-lisinopril", groupReference: "product-lisinopril" },
+      ],
+      proposals: [
       proposal(text, "patient-id", "patient", { entity: "patient", entityId: "patient", field: "identifier" }, known("TEST-57"), "Patient TEST-57"),
       proposal(text, "patient-age", "patient", { entity: "patient", entityId: "patient", field: "ageYears" }, known(57), "57-year-old"),
       proposal(text, "patient-sex", "patient", { entity: "patient", entityId: "patient", field: "sex" }, known("female"), "woman"),
@@ -102,8 +109,9 @@ export function parseFixedOpeningResponse(text: string) {
       ...productProposals("product-lisinopril", "lisinopril", "10 mg", undefined, "lisinopril 10 mg by mouth daily", undefined, "concomitant"),
       proposal(text, "apixaban-stopped", "product-apixaban", { entity: "product", entityId: "product-apixaban", field: "stopped" }, known(true), "Apixaban and naproxen were stopped"),
       proposal(text, "naproxen-stopped", "product-naproxen", { entity: "product", entityId: "product-naproxen", field: "stopped" }, known(true), "Apixaban and naproxen were stopped"),
-    ],
-  });
+      ],
+    },
+  }, fixedIdentity);
 }
 
 export function parseFixedCorrectionResponse(text: string) {
@@ -111,14 +119,24 @@ export function parseFixedCorrectionResponse(text: string) {
     throw new Error("This experiment accepts only the displayed fictional correction account");
   }
   return parseModelProposalEnvelope({
+    turn: "correction",
     input: { id: "input-correction", type: "correction", text, recordedAt: fixedRecordedAt },
-    products: [],
-    proposals: [
-      proposal(text, "naproxen-dose-correction", "naproxen-dose-correction", { entity: "product", entityId: "product-naproxen", field: "dose" }, known("250 mg"), "naproxen dose was 250 mg twice daily, not 500 mg twice daily", "correction"),
-      proposal(text, "apixaban-date-alternative", "apixaban-date-conflict", { entity: "product", entityId: "product-apixaban", field: "startDate" }, known("2026-08-13"), "medication administration record lists apixaban starting 13-Aug-2026", "alternative"),
-    ],
-  });
+    existingProductIds: ["product-apixaban", "product-naproxen", "product-lisinopril"],
+    output: {
+      products: [],
+      proposals: [
+        proposal(text, "naproxen-dose-correction", "naproxen-dose-correction", { entity: "product", entityId: "product-naproxen", field: "dose" }, known("250 mg"), "naproxen dose was 250 mg twice daily, not 500 mg twice daily", "correction"),
+        proposal(text, "apixaban-date-alternative", "apixaban-date-conflict", { entity: "product", entityId: "product-apixaban", field: "startDate" }, known("2026-08-13"), "medication administration record lists apixaban starting 13-Aug-2026", "alternative"),
+      ],
+    },
+  }, fixedIdentity);
 }
+
+const fixedIdentity: ModelBoundaryIdentityFactory = (kind, reference) => {
+  if (kind === "product" || kind === "group" || kind === "proposal") return reference;
+  if (kind === "source") return `source-${reference}`;
+  return `input-${reference}`;
+};
 
 export const fixedJourneyModel: JourneyModel = {
   async propose(turn, text) {

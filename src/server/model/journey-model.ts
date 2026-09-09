@@ -1,10 +1,21 @@
 import type { ParsedModelProposalEnvelope } from "../../domain/case/model-boundary";
+import type { CaseValue } from "../../domain/case/types";
 
 export type ModelTurn = "opening" | "correction";
 
-export interface CorrectionModelContext {
-  reviewedNaproxenDose: string;
-  reviewedApixabanStartDate: string;
+export interface ReviewedFactContext {
+  field: string;
+  value: CaseValue<unknown>;
+}
+
+export interface ReviewedCaseModelContext {
+  patient: ReviewedFactContext[];
+  event: ReviewedFactContext[];
+  products: Array<{
+    id: string;
+    name: string | null;
+    facts: ReviewedFactContext[];
+  }>;
 }
 
 export interface ModelCallMetrics {
@@ -77,6 +88,6 @@ export interface JourneyModel {
   propose(
     turn: ModelTurn,
     text: string,
-    correctionContext?: CorrectionModelContext,
+    reviewedCase?: ReviewedCaseModelContext,
   ): Promise<ModelProposalResult>;
 }

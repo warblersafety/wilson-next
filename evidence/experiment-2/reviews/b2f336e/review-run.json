@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "targetCommit": "b2f336ed29fd93598169ed1261fdc1c1db0782f8",
+  "baseCommit": "e0d4a8d757684c92e3d217e4747bee4c88e97ef5",
+  "cli": "Claude Code 2.1.241",
+  "subscriptionPreflight": {
+    "passed": true,
+    "authMethod": "claude.ai",
+    "subscriptionType": "max",
+    "providerVariablesUnset": [
+      "ANTHROPIC_API_KEY",
+      "ANTHROPIC_AUTH_TOKEN",
+      "ANTHROPIC_BASE_URL"
+    ]
+  },
+  "review": {
+    "status": "completed",
+    "configuredModel": "sonnet",
+    "canonicalModel": "claude-sonnet-5",
+    "effort": "high",
+    "durationMilliseconds": 506146,
+    "apiDurationMilliseconds": 506890,
+    "modelTurns": 24,
+    "costUsd": 1.3974474,
+    "usage": {
+      "inputTokens": 30,
+      "cacheCreationInputTokens": 157541,
+      "cacheReadInputTokens": 1640722,
+      "outputTokens": 43576,
+      "thinkingTokens": 37688
+    },
+    "modelUsage": {
+      "claude-sonnet-5": {
+        "inputTokens": 30,
+        "cacheCreationInputTokens": 157541,
+        "cacheReadInputTokens": 1640722,
+        "outputTokens": 43576,
+        "costUsd": 1.3941284
+      },
+      "claude-haiku-4-5": {
+        "inputTokens": 3254,
+        "cacheCreationInputTokens": 0,
+        "cacheReadInputTokens": 0,
+        "outputTokens": 13,
+        "costUsd": 0.003319
+      }
+    },
+    "permissionDenials": 0,
+    "subagentsSpawned": 0,
+    "webRequests": 0,
+    "findings": {
+      "blocking": 1,
+      "followUp": 2
+    }
+  },
+  "inputs": {
+    "prompt": "claude-review-prompt.txt",
+    "result": "claude-review-result.md",
+    "fullDiff": {
+      "command": "git diff --no-ext-diff --binary --unified=80 main...b2f336ed29fd93598169ed1261fdc1c1db0782f8",
+      "bytes": 154602,
+      "sha256": "711b0ace498c591bf2bc2d86c8c5b5b96bfcd73c19bd2c2d667451c989dae7f2"
+    }
+  },
+  "limitations": [
+    "CLI-reported cost is an equivalent usage value and may not be an additional subscription charge.",
+    "The reviewer used supplied coordinator verification evidence and did not independently run tests, typecheck, build, or browser checks.",
+    "The reviewer could not verify Vercel secret provisioning or deployment-protection configuration externally."
+  ]
+}

@@ -21,8 +21,7 @@ import {
   type RuntimeDiagnosticLogger,
 } from "../../../src/server/diagnostics/runtime-log";
 import { getJourneySnapshot, performJourneyAction } from "../../../src/server/journey/service";
-import { createAnthropicJourneyModel } from "../../../src/server/model/anthropic-journey";
-import { fixedJourneyModel } from "../../../src/server/model/fixed-journey";
+import { fixedJourneyModel } from "../../../src/experiment/fixed-journey";
 import { ModelCallFailure, type JourneyModel } from "../../../src/server/model/journey-model";
 
 export const dynamic = "force-dynamic";
@@ -72,7 +71,7 @@ export async function POST(request: NextRequest) {
   return postCase(request);
 }
 
-export async function postCase(request: NextRequest, model: JourneyModel = configuredJourneyModel()) {
+export async function postCase(request: NextRequest, model: JourneyModel = fixedJourneyModel) {
   const context = diagnosticContext(request.headers);
   const diagnostics = createRuntimeDiagnosticLogger(context);
   diagnostics.event("route", "case-post", "start", requestMetadata(request));
@@ -143,15 +142,6 @@ export async function postCase(request: NextRequest, model: JourneyModel = confi
     diagnostics.event("route", "case-action", "failure", { error: caughtErrorDetails(error) });
     return failedResponse(error, context, diagnostics, "case-post");
   }
-}
-
-function configuredJourneyModel(): JourneyModel {
-  if (process.env.VERCEL_ENV !== "preview") return fixedJourneyModel;
-  return {
-    propose(turn, text, correctionContext) {
-      return createAnthropicJourneyModel().propose(turn, text, correctionContext);
-    },
-  };
 }
 
 function failedResponse(
