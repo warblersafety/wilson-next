@@ -13,14 +13,17 @@ usefulness remains unproven because the application is still substantially
 coupled to one case. Issue #42 and PR #43 established the approved,
 operator-only Experiment 2 plan.
 
-Experiment 2's approval authorizes creation of its named implementation issues;
-each implementation slice still requires Steve's explicit go-ahead. Model
-calls and the other separately controlled activities remain unauthorized. At
-Issue #42's 2026-09-08 stop-and-reconcile checkpoint, Steve explicitly required
-any further experiment both to answer its bounded questions and to replace the
-fixed journey with production-seed code for the supported adult medication
-adverse-event scope. `docs/EXPERIMENT-2.md` owns that quality bar and its
-non-production boundary.
+Experiment 2 and Delivery's standing execution authority allow Codex to carry
+its remaining bounded implementation, review, protected-preview, and synthetic
+model work through review-ready pull requests without repeated permission
+steps. Steve retains approval and merge, premise changes, real data, external
+participation, production release, destructive actions, expanded review, and
+spend above the standing cap. At Issue #42's 2026-09-08 stop-and-reconcile
+checkpoint, Steve explicitly required any further experiment both to answer its
+bounded questions and to replace the fixed journey with production-seed code
+for the supported adult medication adverse-event scope. `docs/EXPERIMENT-2.md`
+owns that quality bar and its non-production boundary; `docs/DELIVERY.md` owns
+the execution authority.
 
 ## Active corpus
 
@@ -70,7 +73,7 @@ conflict in the owning document before continuing.
 - `docs/` contains the active corpus.
 - `.github/` contains the work-item and pull-request templates.
 - Application source, tests, package metadata, and CI arrive only in their
-  approved implementation slices.
+  governed implementation slices.
 
 Wilson Next remains one application, not a monorepo. Documentation and code
 stay together so implementation evidence can correct its owning decision.

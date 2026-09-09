@@ -2,7 +2,8 @@
 
 **Status:** Experiment 1 hypothesis completed with qualified technical success;
 Experiment 2's production-seed amendments were approved through Issue #42 and
-PR #43 and govern each separately authorized implementation slice
+PR #43 and govern its remaining implementation under Delivery's standing
+execution authority
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification

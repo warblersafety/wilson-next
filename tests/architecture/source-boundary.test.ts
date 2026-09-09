@@ -64,7 +64,7 @@ describe("case mutation source boundary", () => {
     expect(violations).toEqual([]);
   });
 
-  it("keeps live model calls out of the browser route until separately authorized", async () => {
+  it("keeps live model calls out of the browser route until the assembled-product slice", async () => {
     const route = await readFile(join(root, "app/api/case/route.ts"), "utf8");
     expect(route).not.toMatch(/server\/model\/anthropic-journey/);
   });
