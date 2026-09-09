@@ -751,6 +751,73 @@
         "The change modifies delivery authority and documentation only; it does not alter application behavior, call a model, deploy, or merge.",
         "Steve explicitly directed that this small governance change receive no Claude review."
       ]
+    },
+    {
+      "id": "stage-3-assembled-product",
+      "status": "completed",
+      "recordedAt": "2026-09-09T21:03:46Z",
+      "startedAt": "2026-09-09T19:58:10Z",
+      "finishedAt": "2026-09-09T21:03:46Z",
+      "elapsedSeconds": 3936,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "predeterminedApplicationResponses": 7,
+        "reviewCalls": 2,
+        "failedBeforeModelCalls": 1,
+        "inputTokens": 122,
+        "cacheCreationInputTokens": 236691,
+        "cacheReadInputTokens": 6392327,
+        "outputTokens": 58156,
+        "latencyMilliseconds": 755212,
+        "costUsd": 2.8110374
+      },
+      "review": {
+        "model": "claude-sonnet-5",
+        "configuredModel": "sonnet",
+        "effort": "high",
+        "cli": "Claude Code 2.1.241",
+        "standardTargetCommit": "5d83a70852e2de7d74c37bcf26d9eec4a68cba14",
+        "recheckTargetCommit": "1bca7354962ec8ca65acf787b00d73ec933e8d07",
+        "finalMaterialCommit": "0be59f4b17b249e4b5b33479729eaade6a04af7c",
+        "blockingFindings": 0,
+        "followUpFindings": 3,
+        "status": "completed-with-bounded-remediation"
+      },
+      "result": "Stage 3 assembled the three Experiment 2 journeys and retained Experiment 1 regression through one state-driven browser application and shared production model boundary. Seven predetermined responses produced deterministic browser and PDF evidence with zero live application-model calls. The standard review passed with three follow-ups; all three were fixed. Its targeted recheck confirmed those dispositions and found one omission-label regression, which was fixed with a focused test under proportional closure. PR #52 is prepared for Steve's review and manual merge.",
+      "verification": {
+        "subscriptionPreflight": "claude.ai Max passed with provider API/gateway variables unset",
+        "typecheck": "passed",
+        "fullTests": "103 passed across 18 files",
+        "build": "passed",
+        "desktopE2e": "one Chromium 153.0.8010.12 path passed at 1440x900",
+        "pdfAgreement": "independent pypdf 6.16.2 readback passed for four retained PDFs",
+        "diffCheck": "passed"
+      },
+      "durableValue": {
+        "kind": "assembled-product-evidence",
+        "artifacts": [
+          "evidence/experiment-2/stage-3/README.md",
+          "evidence/experiment-2/stage-3/journey-trace.json",
+          "evidence/experiment-2/stage-3/pdf-agreement.json",
+          "https://github.com/warblersafety/wilson-next/issues/51",
+          "https://github.com/warblersafety/wilson-next/pull/52"
+        ]
+      },
+      "limitations": [
+        "Predetermined application responses validate assembled mechanics and PDF agreement but do not add live-model quality evidence.",
+        "The accepted Stage 2 evidence-context weakness remains qualified; the assembled repeated-conflict evidence was practically attributable and did not make it blocking.",
+        "The standard prompt misstated the long base hash; the reviewer detected it, resolved the actual c62bb50 base, and inspected the intended complete diff.",
+        "One initial Claude CLI invocation failed validation before any model call because the empty MCP configuration shape was invalid.",
+        "The targeted recheck found one regression in the remediation; it was fixed with a focused test without another recursive model run, under Delivery's proportional-closure rule.",
+        "CLI-reported review cost is an equivalent usage value and may not be an additional subscription charge.",
+        "Codex task-token measurements were unavailable and are not estimated."
+      ]
     }
   ]
 }

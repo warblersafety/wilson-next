@@ -69,9 +69,9 @@ export async function POST(request: NextRequest) {
       stage: state.stage,
       revision: state.case.revision,
     });
-    if (!snapshot.downloadReady || snapshot.stage !== "output-resolved") {
+    if (!snapshot.downloadReady || snapshot.stage !== "output") {
       return pdfError(
-        "Resolve the start-date conflict before opening the official PDF",
+        snapshot.outputIssues[0] ?? "Review the case before opening the official PDF",
         "pdf-not-ready",
         409,
         context,

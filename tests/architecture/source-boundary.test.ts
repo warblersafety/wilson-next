@@ -64,9 +64,31 @@ describe("case mutation source boundary", () => {
     expect(violations).toEqual([]);
   });
 
-  it("keeps live model calls out of the browser route until the assembled-product slice", async () => {
+  it("routes the assembled browser product through the configured production model seam", async () => {
     const route = await readFile(join(root, "app/api/case/route.ts"), "utf8");
-    expect(route).not.toMatch(/server\/model\/anthropic-journey/);
+    expect(route).toMatch(/server\/model\/configured-journey/);
+    expect(route).not.toMatch(/experiment\//);
+  });
+
+  it("keeps fixtures, medicine names, and semantic oracles out of runtime product behavior", async () => {
+    const productFiles = [
+      ...(await sourceFiles(join(root, "app"))),
+      join(root, "src/server/journey/service.ts"),
+      join(root, "src/server/model/configured-journey.ts"),
+    ];
+    const forbidden = [
+      /(?:from|import\s*\()["'][^"']*experiment\//,
+      /(?:fixed-inputs|fixed-journey|sample-oracle)/,
+      /\b(?:apixaban|naproxen|lisinopril|cephalexin|metformin|acetaminophen|ibuprofen|tylenol)\b/i,
+    ];
+    const violations: string[] = [];
+    for (const path of productFiles) {
+      const source = await readFile(path, "utf8");
+      if (forbidden.some((pattern) => pattern.test(source))) {
+        violations.push(relative(root, path));
+      }
+    }
+    expect(violations).toEqual([]);
   });
 
   it("keeps the Stage 2 semantic oracle out of executable gate validation", async () => {

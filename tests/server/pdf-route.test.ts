@@ -5,17 +5,19 @@ import { GET as getPdf, POST as postPdf } from "../../app/api/case/pdf/route";
 import { journeyResponse } from "../../src/server/case/browser-state";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import type { RuntimeDiagnosticEvent } from "../../src/server/diagnostics/runtime-log";
-import { correctionAccount, indicationAnswer, openingAccount } from "../../src/experiment/fixed-inputs";
-import { performJourneyAction } from "../../src/server/journey/service";
+import { getJourneySnapshot } from "../../src/server/journey/service";
+import { acceptCorrectionAndConflict, acceptOpeningCase, attachCorrectionAndContradiction, answerIndications, completeResolvedCase } from "../domain/fixture";
 
 describe("state-bearing PDF route", () => {
-  it("refuses GET and unresolved state without a cacheable form", async () => {
+  it("refuses GET and an unreviewed state without a cacheable form", async () => {
     const direct = await getPdf(new NextRequest("http://wilson.test/api/case/pdf"));
     expect(direct.status).toBe(405);
     expect(direct.headers.get("allow")).toBe("POST");
     expect(direct.headers.get("cache-control")).toContain("no-store");
 
-    const { state } = await journeyAt(false);
+    const repository = new InMemoryCaseRepository({ maxCases: 1 });
+    const initial = await getJourneySnapshot(repository, `case-${randomUUID()}`);
+    const { state } = await journeyResponse(repository, initial);
     const response = await postPdf(pdfRequest({ mode: "preview", state }));
     expect(response.status).toBe(409);
     expect(response.headers.get("cache-control")).toContain("no-store");
@@ -25,10 +27,18 @@ describe("state-bearing PDF route", () => {
     });
   });
 
+  it("fills a truthful partial PDF while a conflict remains unresolved", async () => {
+    const conflicted = acceptCorrectionAndConflict(attachCorrectionAndContradiction(answerIndications(acceptOpeningCase())));
+    const { state } = await responseForCase(conflicted);
+    const response = await postPdf(pdfRequest({ mode: "preview", state }));
+    expect(response.status).toBe(200);
+    expect((await response.arrayBuffer()).byteLength).toBeGreaterThan(100_000);
+  });
+
   it("fills preview and download bytes only from validated resolved browser state", async () => {
     const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {});
     try {
-      const { state } = await journeyAt(true);
+      const { state } = await responseForCase(completeResolvedCase());
       const preview = await postPdf(pdfRequest({ mode: "preview", state }));
       expect(preview.status).toBe(200);
       expect(preview.headers.get("content-type")).toBe("application/pdf");
@@ -67,26 +77,11 @@ describe("state-bearing PDF route", () => {
   });
 });
 
-async function journeyAt(resolved: boolean) {
-  const repository = new InMemoryCaseRepository({ maxCases: 1 });
-  const caseId = `case-${randomUUID()}`;
-  await performJourneyAction(repository, caseId, {
-    action: "submit-opening",
-    text: openingAccount,
-    reportType: "adverse-event",
-  });
-  await performJourneyAction(repository, caseId, { action: "accept-understanding" });
-  await performJourneyAction(repository, caseId, { action: "answer-indications", text: indicationAnswer });
-  await performJourneyAction(repository, caseId, { action: "submit-correction", text: correctionAccount });
-  await performJourneyAction(repository, caseId, { action: "accept-dose-correction" });
-  let snapshot = await performJourneyAction(repository, caseId, { action: "leave-date-unresolved" });
-  if (resolved) {
-    snapshot = await performJourneyAction(repository, caseId, {
-      action: "resolve-date",
-      chosenValueId: "apixaban-date-alternative",
-    });
-  }
-  return journeyResponse(repository, snapshot);
+async function responseForCase(caseState: ReturnType<typeof completeResolvedCase>) {
+  const restored = structuredClone(caseState);
+  restored.id = `case-${randomUUID()}`;
+  const repository = new InMemoryCaseRepository({ initialCase: restored, maxCases: 1 });
+  return journeyResponse(repository, await getJourneySnapshot(repository, restored.id));
 }
 
 function pdfRequest(body: unknown) {

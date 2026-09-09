@@ -66,7 +66,13 @@ async function runLockedSample(): Promise<void> {
   );
   if (!openingCompleted) throw new Error("The opening call stopped Slice 3; no retry was attempted.");
   await performJourneyAction(repository, caseId, { action: "accept-understanding" });
-  await performJourneyAction(repository, caseId, { action: "answer-indications", text: indicationAnswer });
+  await performJourneyAction(repository, caseId, {
+    action: "answer-indications",
+    answers: [
+      { productId: "product-apixaban", value: { kind: "known", value: "postoperative VTE prophylaxis after knee replacement" } },
+      { productId: "product-naproxen", value: { kind: "known", value: "postoperative pain" } },
+    ],
+  });
 
   const correctionCompleted = await runTurn(
     model.propose("correction", correctionAccount),
@@ -77,7 +83,7 @@ async function runLockedSample(): Promise<void> {
       await performJourneyAction(
         repository,
         caseId,
-        { action: "submit-correction", text: correctionAccount },
+        { action: "submit-update", text: correctionAccount },
         replay("correction", result),
       );
     },

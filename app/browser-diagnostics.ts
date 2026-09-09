@@ -1,11 +1,10 @@
 "use client";
 
 import { operationIdHeader, runIdHeader } from "../src/diagnostics/correlation";
-import { correctionAccount, indicationAnswer, openingAccount } from "../src/experiment/fixed-inputs";
 import type { BrowserJourneyState } from "../src/server/case/browser-state";
 
 const runIdStorageKey = "wilson-diagnostic-run-id";
-export const journeyStateStorageKey = "wilson-journey-state-v1";
+export const journeyStateStorageKey = "wilson-journey-state-v2";
 const correlationIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 let browserSequence = 0;
@@ -227,12 +226,8 @@ function diagnosticRequestBody(body: unknown): unknown {
   if ("state" in sanitized) sanitized.state = "[BROWSER STATE NOT LOGGED]";
   if (sanitized.action && typeof sanitized.action === "object") {
     const action = { ...(sanitized.action as Record<string, unknown>) };
-    const fixedText = action.text === openingAccount
-      || action.text === indicationAnswer
-      || action.text === correctionAccount;
-    if (typeof action.text === "string" && !fixedText) {
-      action.text = "[NOT LOGGED: outside fixed synthetic fixture]";
-    }
+    if (typeof action.text === "string") action.text = "[CLINICIAN TEXT NOT LOGGED IN BROWSER TRACE]";
+    if (typeof action.statement === "string") action.statement = "[CLINICIAN TEXT NOT LOGGED IN BROWSER TRACE]";
     sanitized.action = action;
   }
   return sanitized;

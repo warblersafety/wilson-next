@@ -3,7 +3,7 @@ import type { SemanticCase } from "../../domain/case/types";
 import type { JourneySnapshot, JourneyStage } from "../journey/service";
 import { InMemoryCaseRepository, validateRestoredCase } from "./repository";
 
-export const browserStateVersion = "wilson-browser-state-v1";
+export const browserStateVersion = "wilson-browser-state-v2";
 
 export interface BrowserJourneyState {
   version: typeof browserStateVersion;
@@ -146,10 +146,8 @@ const stateSchema = z.object({
     "describe",
     "understanding",
     "clarify",
-    "update",
-    "correct",
-    "output-unresolved",
-    "output-resolved",
+    "review-update",
+    "output",
   ]),
   case: z.unknown(),
 }).strict();

@@ -1,17 +1,12 @@
+import { createHash, randomUUID } from "node:crypto";
 import { createSemanticCase } from "../../domain/case/create";
 import { projectForm3500 } from "../../domain/case/projection";
-import type { SemanticCase, Source } from "../../domain/case/types";
+import type { CaseValue, Fact, FactTarget, SemanticCase, Source } from "../../domain/case/types";
 import {
   createClarificationView,
   createReviewView,
   createUnderstandingView,
 } from "../../domain/case/views";
-import {
-  correctionAccount,
-  fixedRecordedAt,
-  indicationAnswer,
-  openingAccount,
-} from "../../experiment/fixed-inputs";
 import { applyCaseCommandToRepository } from "../case/apply-command";
 import type { CaseRepository } from "../case/repository";
 import {
@@ -19,7 +14,7 @@ import {
   silentDiagnosticLogger,
   type RuntimeDiagnosticLogger,
 } from "../diagnostics/runtime-log";
-import { fixedJourneyModel } from "../../experiment/fixed-journey";
+import { createAnthropicJourneyModel } from "../model/anthropic-journey";
 import {
   ModelCallFailure,
   type JourneyModel,
@@ -27,25 +22,26 @@ import {
 } from "../model/journey-model";
 import { createReviewedCaseModelContext } from "../model/reviewed-case-context";
 
-export type JourneyStage =
-  | "describe"
-  | "understanding"
-  | "clarify"
-  | "update"
-  | "correct"
-  | "output-unresolved"
-  | "output-resolved";
+export type JourneyStage = "describe" | "understanding" | "clarify" | "review-update" | "output";
 
 export type JourneyAction =
   | { action: "submit-opening"; text: string; reportType: "adverse-event" }
-  | { action: "change-patient-age"; ageYears: 58 }
-  | { action: "remove-lisinopril" }
+  | {
+      action: "change-proposal";
+      groupId: string;
+      proposalId: string;
+      value: CaseValue<unknown>;
+      statement: string;
+    }
+  | { action: "reject-group"; groupId: string }
   | { action: "accept-understanding" }
-  | { action: "answer-indications"; text: string }
-  | { action: "submit-correction"; text: string }
-  | { action: "accept-dose-correction" }
-  | { action: "leave-date-unresolved" }
-  | { action: "resolve-date"; chosenValueId: "apixaban-start" | "apixaban-date-alternative" };
+  | {
+      action: "answer-indications";
+      answers: Array<{ productId: string; value: CaseValue<string> }>;
+    }
+  | { action: "submit-update"; text: string }
+  | { action: "review-update-group"; groupId: string; decision: "accept" | "reject" }
+  | { action: "resolve-conflict"; target: string; chosenValueId: string };
 
 export interface JourneySnapshot {
   stage: JourneyStage;
@@ -55,6 +51,7 @@ export interface JourneySnapshot {
   clarification: ReturnType<typeof createClarificationView>;
   projection: ReturnType<typeof projectForm3500>;
   downloadReady: boolean;
+  outputIssues: string[];
 }
 
 export async function ensureJourneyCase(repository: CaseRepository, caseId: string): Promise<SemanticCase> {
@@ -67,15 +64,17 @@ export async function ensureJourneyCase(repository: CaseRepository, caseId: stri
 
 export async function getJourneySnapshot(repository: CaseRepository, caseId: string): Promise<JourneySnapshot> {
   const caseState = await ensureJourneyCase(repository, caseId);
-  const stage = stageFor(caseState);
+  const projection = projectForm3500(caseState);
+  const outputIssues = outputReadinessIssues(caseState, projection);
   return {
-    stage,
+    stage: stageFor(caseState),
     revision: caseState.revision,
     understanding: createUnderstandingView(caseState),
     review: createReviewView(caseState),
     clarification: createClarificationView(caseState),
-    projection: projectForm3500(caseState),
-    downloadReady: stage === "output-resolved",
+    projection,
+    downloadReady: outputIssues.length === 0,
+    outputIssues,
   };
 }
 
@@ -83,7 +82,7 @@ export async function performJourneyAction(
   repository: CaseRepository,
   caseId: string,
   action: JourneyAction,
-  model: JourneyModel = fixedJourneyModel,
+  model: JourneyModel = createAnthropicJourneyModel(),
   diagnostics: RuntimeDiagnosticLogger = silentDiagnosticLogger,
 ): Promise<JourneySnapshot> {
   let current = await ensureJourneyCase(repository, caseId);
@@ -117,175 +116,153 @@ export async function performJourneyAction(
     });
   };
 
-  const acceptDateConflict = async () => {
-    requireDistinctDateAlternative(current);
+  const ensureOpenIndicationNeed = async () => {
+    const clarification = createClarificationView(current);
+    if (clarification?.status !== "new") return;
     await applyCommand({
-      type: "review-proposal-groups",
-      commandId: "command-record-date-conflict",
+      type: "record-asked-need",
+      commandId: commandId("ask-indications"),
       expectedRevision: current.revision,
-      decisions: [{ groupId: "apixaban-date-conflict", action: "accept" }],
+      key: clarification.key,
+      productIds: clarification.productIds,
     });
-    requireApixabanDateConflict(current);
   };
 
   try {
     switch (action.action) {
-    case "submit-opening":
-      requireStage(expectedStage, "describe");
-      const opening = await proposeWithDiagnostics(model, "opening", action.text, diagnostics);
-      await applyCommand({
-        type: "attach-grounded-proposals",
-        commandId: "command-attach-opening",
-        expectedRevision: current.revision,
-        ...opening.envelope,
-      });
-      await applyCommand({
-        type: "record-clinician-facts",
-        commandId: "command-record-report-type",
-        expectedRevision: current.revision,
-        source: fullSource("source-report-type", "input-report-type", "selection", "Adverse event"),
-        facts: [{
-          id: "report-type-adverse-event",
-          target: { entity: "event", entityId: "event", field: "reportType" },
-          intent: "fact",
-          value: { kind: "known", value: action.reportType },
-        }],
-      });
-      break;
-    case "accept-understanding":
-      requireStage(expectedStage, "understanding");
-      const pendingGroups = [
-        ...(current.patient.state === "proposed" ? ["patient"] : []),
-        ...(current.event.state === "proposed" ? ["event"] : []),
-        ...current.products.filter(({ state }) => state === "proposed").map(({ proposalGroupId }) => proposalGroupId),
-      ];
-      await applyCommand({
-        type: "review-proposal-groups",
-        commandId: "command-review-opening",
-        expectedRevision: current.revision,
-        decisions: pendingGroups.map((groupId) => ({ groupId, action: "accept" as const })),
-      });
-      await applyCommand({
-        type: "record-asked-need",
-        commandId: "command-ask-indications",
-        expectedRevision: current.revision,
-        key: "suspect-product-indications",
-        productIds: ["product-apixaban", "product-naproxen"],
-      });
-      break;
-    case "change-patient-age": {
-      requireStage(expectedStage, "understanding");
-      const sourceText = "Synthetic correction: patient age is 58 years.";
-      await applyCommand({
-        type: "review-proposal-groups",
-        commandId: "command-change-patient-age",
-        expectedRevision: current.revision,
-        decisions: [{
-          groupId: "patient",
-          action: "accept",
-          corrections: [{
-            proposalId: "patient-age",
-            replacementId: "patient-age-corrected",
-            value: { kind: "known", value: action.ageYears },
-            source: fullSource(
-              "source-patient-age-correction",
-              "input-patient-age-correction",
-              "correction",
-              sourceText,
-            ),
+      case "submit-opening": {
+        requireStage(expectedStage, "describe");
+        const opening = await proposeWithDiagnostics(model, "opening", action.text, diagnostics);
+        await applyCommand({
+          type: "attach-grounded-proposals",
+          commandId: commandId("attach-opening"),
+          expectedRevision: current.revision,
+          ...opening.envelope,
+        });
+        const reportTypeText = "Adverse event";
+        await applyCommand({
+          type: "record-clinician-facts",
+          commandId: commandId("record-report-type"),
+          expectedRevision: current.revision,
+          source: fullSource("selection", reportTypeText),
+          facts: [{
+            id: valueId("report-type"),
+            target: { entity: "event", entityId: "event", field: "reportType" },
+            intent: "fact",
+            value: { kind: "known", value: action.reportType },
           }],
-        }],
-      });
-      break;
-    }
-    case "remove-lisinopril":
-      requireStage(expectedStage, "understanding");
-      await applyCommand({
-        type: "review-proposal-groups",
-        commandId: "command-remove-lisinopril",
-        expectedRevision: current.revision,
-        decisions: [{ groupId: "product-lisinopril", action: "reject" }],
-      });
-      break;
-    case "answer-indications": {
-      requireStage(expectedStage, "clarify");
-      if (action.text !== indicationAnswer) throw new Error("Use the displayed fictional indication answer");
-      const source = fullSource("source-indication-answer", "input-indication-answer", "answer", action.text);
-      await applyCommand({
-        type: "record-clinician-facts",
-        commandId: "command-answer-indications",
-        expectedRevision: current.revision,
-        source,
-        answersNeed: "suspect-product-indications",
-        facts: [
-          {
-            id: "answer-apixaban-indication",
-            target: { entity: "product", entityId: "product-apixaban", field: "indication" },
-            intent: "fact",
-            value: { kind: "known", value: "postoperative VTE prophylaxis after knee replacement" },
-          },
-          {
-            id: "answer-naproxen-indication",
-            target: { entity: "product", entityId: "product-naproxen", field: "indication" },
-            intent: "fact",
-            value: { kind: "known", value: "postoperative pain" },
-          },
-        ],
-      });
-      break;
-    }
-    case "submit-correction":
-      requireStage(expectedStage, "update");
-      const correctionContext = createReviewedCaseModelContext(current);
-      const correction = await proposeWithDiagnostics(
-        model,
-        "correction",
-        action.text,
-        diagnostics,
-        correctionContext,
-      );
-      await applyCommand({
-        type: "attach-grounded-proposals",
-        commandId: "command-attach-correction",
-        expectedRevision: current.revision,
-        ...correction.envelope,
-      });
-      break;
-    case "accept-dose-correction":
-      requireStage(expectedStage, "correct");
-      await applyCommand({
-        type: "review-proposal-groups",
-        commandId: "command-review-dose-correction",
-        expectedRevision: current.revision,
-        decisions: [{ groupId: "naproxen-dose-correction", action: "accept" }],
-      });
-      break;
-    case "leave-date-unresolved":
-      requireStage(expectedStage, "correct");
-      if (hasPendingDoseCorrection(current)) {
-        throw new Error("Accept or reject the dose correction before continuing");
+        });
+        break;
       }
-      await acceptDateConflict();
-      break;
-    case "resolve-date":
-      if (expectedStage === "correct") {
-        if (hasPendingDoseCorrection(current)) {
-          throw new Error("Accept or reject the dose correction before resolving the date");
+      case "change-proposal": {
+        requireStage(expectedStage, "understanding");
+        if (!findProposal(current, action.groupId, action.proposalId)) {
+          throw new Error("The proposed value is no longer available");
         }
-        await acceptDateConflict();
-      } else {
-        requireStage(expectedStage, "output-unresolved");
+        if (!action.statement.trim()) throw new Error("A correction statement is required");
+        await applyCommand({
+          type: "review-proposal-groups",
+          commandId: commandId("change-proposal"),
+          expectedRevision: current.revision,
+          decisions: [{
+            groupId: action.groupId,
+            action: "accept",
+            corrections: [{
+              proposalId: action.proposalId,
+              replacementId: valueId("corrected"),
+              value: action.value,
+              source: fullSource("correction", action.statement),
+            }],
+          }],
+        });
+        break;
       }
-      const resolutionStatement = dateResolutionStatement(current, action.chosenValueId);
-      await applyCommand({
-        type: "resolve-conflict",
-        commandId: "command-resolve-apixaban-date",
-        expectedRevision: current.revision,
-        target: { entity: "product", entityId: "product-apixaban", field: "startDate" },
-        chosenValueId: action.chosenValueId,
-        source: fullSource("source-date-resolution", "input-date-resolution", "resolution", resolutionStatement),
-      });
-      break;
+      case "reject-group":
+        requireStage(expectedStage, "understanding");
+        await applyCommand({
+          type: "review-proposal-groups",
+          commandId: commandId("reject-group"),
+          expectedRevision: current.revision,
+          decisions: [{ groupId: action.groupId, action: "reject" }],
+        });
+        break;
+      case "accept-understanding": {
+        requireStage(expectedStage, "understanding");
+        const groups = pendingOpeningGroups(current);
+        if (groups.length > 0) {
+          await applyCommand({
+            type: "review-proposal-groups",
+            commandId: commandId("review-opening"),
+            expectedRevision: current.revision,
+            decisions: groups.map((groupId) => ({ groupId, action: "accept" as const })),
+          });
+        }
+        await ensureOpenIndicationNeed();
+        break;
+      }
+      case "answer-indications": {
+        requireStage(expectedStage, "clarify");
+        await ensureOpenIndicationNeed();
+        const need = current.askedNeeds.find(({ key, status }) => key === "suspect-product-indications" && status === "open");
+        if (!need) throw new Error("The indication question is no longer open");
+        const answerText = action.answers.map(({ productId, value }) => {
+          const product = current.products.find(({ id }) => id === productId);
+          const name = knownValue(product?.facts.name) ?? productId;
+          return `${name} indication: ${displayValue(value)}.`;
+        }).join(" ");
+        const source = fullSource("answer", answerText);
+        await applyCommand({
+          type: "record-clinician-facts",
+          commandId: commandId("answer-indications"),
+          expectedRevision: current.revision,
+          source,
+          answersNeed: "suspect-product-indications",
+          facts: action.answers.map(({ productId, value }) => ({
+            id: valueId("indication-answer"),
+            target: { entity: "product" as const, entityId: productId, field: "indication" as const },
+            intent: "fact" as const,
+            value,
+          })),
+        });
+        break;
+      }
+      case "submit-update": {
+        requireStage(expectedStage, "output");
+        const context = createReviewedCaseModelContext(current);
+        const update = await proposeWithDiagnostics(model, "correction", action.text, diagnostics, context);
+        await applyCommand({
+          type: "attach-grounded-proposals",
+          commandId: commandId("attach-update"),
+          expectedRevision: current.revision,
+          ...update.envelope,
+        });
+        break;
+      }
+      case "review-update-group":
+        requireStage(expectedStage, "review-update");
+        await applyCommand({
+          type: "review-proposal-groups",
+          commandId: commandId("review-update"),
+          expectedRevision: current.revision,
+          decisions: [{ groupId: action.groupId, action: action.decision }],
+        });
+        break;
+      case "resolve-conflict": {
+        requireStage(expectedStage, "output");
+        const target = targetFromKey(current, action.target);
+        const fact = factFor(current, target);
+        const chosen = fact.conflictingValues.find(({ id }) => id === action.chosenValueId);
+        if (!chosen) throw new Error("The selected conflict alternative is unavailable");
+        await applyCommand({
+          type: "resolve-conflict",
+          commandId: commandId("resolve-conflict"),
+          expectedRevision: current.revision,
+          target,
+          chosenValueId: action.chosenValueId,
+          source: fullSource("resolution", `Use ${displayValue(chosen.value)} as ${targetStatement(current, target)}.`),
+        });
+        break;
+      }
     }
   } catch (error) {
     diagnostics.event("state-transition", "action-dispatch", "failure", {
@@ -321,11 +298,7 @@ async function proposeWithDiagnostics(
     diagnostics.event("model", "response", "success", {
       turn,
       ...(result.diagnosticResponse === undefined ? {} : { response: result.diagnosticResponse }),
-      output: {
-        envelope: result.envelope,
-        metrics: result.metrics,
-        responseArtifact: result.responseArtifact,
-      },
+      output: { envelope: result.envelope, metrics: result.metrics, responseArtifact: result.responseArtifact },
     });
     diagnostics.event("schema-domain", "proposal-envelope", "success", {
       turn,
@@ -337,53 +310,19 @@ async function proposeWithDiagnostics(
   } catch (error) {
     if (error instanceof ModelCallFailure) {
       if (error.returnedResponse === undefined) {
-        diagnostics.event("model", "response", "failure", {
-          turn,
-          phase: error.diagnostic.phase,
-          error: caughtErrorDetails(error),
-        });
+        diagnostics.event("model", "response", "failure", { turn, phase: error.diagnostic.phase, error: caughtErrorDetails(error) });
       } else {
-        diagnostics.event("model", "response", "success", {
-          turn,
-          response: error.returnedResponse,
-          metrics: error.metrics,
-        });
-        const diagnosticSource = error.diagnostic.phase === "provider-stop"
-          || error.diagnostic.phase === "response-capture"
+        diagnostics.event("model", "response", "success", { turn, response: error.returnedResponse, metrics: error.metrics });
+        const source = error.diagnostic.phase === "provider-stop" || error.diagnostic.phase === "response-capture"
           ? "model"
           : "schema-domain";
-        diagnostics.event(diagnosticSource, error.diagnostic.phase, "rejected", {
-          turn,
-          error: caughtErrorDetails(error),
-        });
+        diagnostics.event(source, error.diagnostic.phase, "rejected", { turn, error: caughtErrorDetails(error) });
       }
     } else {
-      diagnostics.event("schema-domain", "model-request-input", "rejected", {
-        turn,
-        error: caughtErrorDetails(error),
-      });
+      diagnostics.event("schema-domain", "model-request-input", "rejected", { turn, error: caughtErrorDetails(error) });
     }
     throw error;
   }
-}
-
-function diagnosticAction(action: JourneyAction): unknown {
-  if (!("text" in action)) return action;
-  const fixedText = action.text === openingAccount
-    || action.text === indicationAnswer
-    || action.text === correctionAccount;
-  return fixedText ? action : { ...action, text: "[NOT LOGGED: outside fixed synthetic fixture]" };
-}
-
-function diagnosticInput(text: string): string {
-  return text === openingAccount || text === indicationAnswer || text === correctionAccount
-    ? text
-    : "[NOT LOGGED: outside fixed synthetic fixture]";
-}
-
-function diagnosticCaseState(caseState: SemanticCase): Omit<SemanticCase, "id"> {
-  const { id: _caseId, ...diagnosticState } = caseState;
-  return diagnosticState;
 }
 
 export function stageFor(caseState: SemanticCase): JourneyStage {
@@ -391,79 +330,135 @@ export function stageFor(caseState: SemanticCase): JourneyStage {
   if (caseState.patient.state === "proposed"
     || caseState.event.state === "proposed"
     || caseState.products.some(({ state }) => state === "proposed")) return "understanding";
-  const indicationNeed = caseState.askedNeeds.find(({ key }) => key === "suspect-product-indications");
-  if (!indicationNeed || indicationNeed.status === "open") return "clarify";
-  if (!caseState.sources.some(({ inputId }) => inputId === "input-correction")) return "update";
-  if (caseState.products.some(({ facts }) => facts.dose.proposedValues.length > 0 || facts.startDate.proposedValues.length > 0)) {
-    return "correct";
-  }
-  const apixaban = caseState.products.find(({ id }) => id === "product-apixaban");
-  return apixaban?.facts.startDate.state === "conflicted" ? "output-unresolved" : "output-resolved";
+  if (hasPendingProposals(caseState)) return "review-update";
+  if (createClarificationView(caseState)) return "clarify";
+  return "output";
 }
 
-function hasPendingDoseCorrection(caseState: SemanticCase): boolean {
-  return caseState.products.some(({ facts }) => facts.dose.proposedValues.some(({ intent }) => intent === "correction"));
-}
-
-function requireDistinctDateAlternative(caseState: SemanticCase): void {
-  const apixaban = caseState.products.find(({ id }) => id === "product-apixaban");
-  const fact = apixaban?.facts.startDate;
-  const reviewed = fact?.resolvedValue?.value;
-  const proposed = fact?.proposedValues.find(
-    ({ groupId, intent }) => groupId === "apixaban-date-conflict" && intent === "alternative",
-  )?.value;
-  if (reviewed?.kind !== "known" || typeof reviewed.value !== "string"
-    || proposed?.kind !== "known" || typeof proposed.value !== "string"
-    || reviewed.value === proposed.value) {
-    throw new Error(
-      "Wilson did not identify a different apixaban start date in the update. Accepted case knowledge is unchanged.",
-    );
-  }
-}
-
-function requireApixabanDateConflict(caseState: SemanticCase): void {
-  const apixaban = caseState.products.find(({ id }) => id === "product-apixaban");
-  if (apixaban?.facts.startDate.state !== "conflicted") {
-    throw new Error("The apixaban start-date proposal did not create a conflict");
-  }
-}
-
-function dateResolutionStatement(
+function outputReadinessIssues(
   caseState: SemanticCase,
-  chosenValueId: "apixaban-start" | "apixaban-date-alternative",
-): string {
-  const apixaban = caseState.products.find(({ id }) => id === "product-apixaban");
-  const chosen = apixaban?.facts.startDate.conflictingValues.find(({ id }) => id === chosenValueId)?.value;
-  if (chosen?.kind !== "known" || typeof chosen.value !== "string") {
-    throw new Error("The selected apixaban start date is unavailable");
+  projection: ReturnType<typeof projectForm3500>,
+): string[] {
+  const issues: string[] = [];
+  if (hasPendingProposals(caseState)) issues.push("Review every pending proposal before opening the form.");
+  if (createClarificationView(caseState)) issues.push("Answer or decline the open consequential question before opening the form.");
+  const hasSuspect = caseState.products.some((product) => product.state === "resolved"
+    && knownValue(product.facts.role) === "suspect"
+    && Boolean(knownValue(product.facts.name)));
+  if (!hasSuspect) issues.push("Accept at least one named suspect product.");
+  if (knownValue(caseState.event.facts.reportType) !== "adverse-event") issues.push("Accept the adverse-event report type.");
+  if (!projection.sections.B.eventDescription) issues.push("Accept at least one event fact that contributes to the event description.");
+  return issues;
+}
+
+function pendingOpeningGroups(caseState: SemanticCase): string[] {
+  return [
+    ...(caseState.patient.state === "proposed" ? ["patient"] : []),
+    ...(caseState.event.state === "proposed" ? ["event"] : []),
+    ...caseState.products.filter(({ state }) => state === "proposed").map(({ proposalGroupId }) => proposalGroupId),
+  ];
+}
+
+function hasPendingProposals(caseState: SemanticCase): boolean {
+  return allFacts(caseState).some(({ fact }) => fact.proposedValues.length > 0);
+}
+
+function findProposal(caseState: SemanticCase, groupId: string, proposalId: string) {
+  return allFacts(caseState).find(({ fact }) => fact.proposedValues.some((value) => value.groupId === groupId && value.id === proposalId));
+}
+
+function targetFromKey(caseState: SemanticCase, key: string): FactTarget {
+  const found = allFacts(caseState).find(({ target }) => targetKey(target) === key);
+  if (!found) throw new Error("The selected case fact is unavailable");
+  return found.target;
+}
+
+function allFacts(caseState: SemanticCase): Array<{ target: FactTarget; fact: Fact<unknown> }> {
+  const result: Array<{ target: FactTarget; fact: Fact<unknown> }> = [];
+  for (const field of Object.keys(caseState.patient.facts) as Array<keyof typeof caseState.patient.facts>) {
+    result.push({ target: { entity: "patient", entityId: "patient", field }, fact: caseState.patient.facts[field] });
   }
-  return `Use ${chosen.value} as the apixaban start date.`;
+  for (const field of Object.keys(caseState.event.facts) as Array<keyof typeof caseState.event.facts>) {
+    result.push({ target: { entity: "event", entityId: "event", field }, fact: caseState.event.facts[field] });
+  }
+  for (const product of caseState.products) {
+    for (const field of Object.keys(product.facts) as Array<keyof typeof product.facts>) {
+      result.push({ target: { entity: "product", entityId: product.id, field }, fact: product.facts[field] });
+    }
+  }
+  return result;
+}
+
+function factFor(caseState: SemanticCase, target: FactTarget): Fact<unknown> {
+  const found = allFacts(caseState).find(({ target: candidate }) => targetKey(candidate) === targetKey(target));
+  if (!found) throw new Error("The selected case fact is unavailable");
+  return found.fact;
+}
+
+function targetKey(target: FactTarget): string {
+  return `${target.entity}:${target.entityId}:${target.field}`;
+}
+
+function targetStatement(caseState: SemanticCase, target: FactTarget): string {
+  if (target.entity === "patient") return `the patient ${target.field}`;
+  if (target.entity === "event") return `the event ${target.field}`;
+  const product = caseState.products.find(({ id }) => id === target.entityId);
+  const name = knownValue(product?.facts.name) ?? "the selected product";
+  return `the ${target.field} for ${name}`;
+}
+
+function knownValue<T>(fact: Fact<T> | undefined): T | undefined {
+  const value = fact?.resolvedValue?.value;
+  return value?.kind === "known" ? value.value : undefined;
+}
+
+function displayValue(value: CaseValue<unknown>): string {
+  if (value.kind !== "known") return value.kind.replaceAll("-", " ");
+  if (Array.isArray(value.value)) return value.value.join(" and ");
+  return String(value.value);
+}
+
+function commandId(label: string): string {
+  return `command-${label}-${randomUUID()}`;
+}
+
+function valueId(label: string): string {
+  return `value-${label}-${randomUUID()}`;
+}
+
+function fullSource(inputType: Source["inputType"], excerpt: string): Source {
+  if (!excerpt.trim()) throw new Error("Clinician input is required");
+  return {
+    id: `source-${randomUUID()}`,
+    inputId: `input-${randomUUID()}`,
+    inputType,
+    excerpt,
+    start: 0,
+    end: excerpt.length,
+    actor: "clinician",
+    recordedAt: new Date().toISOString(),
+  };
 }
 
 function requireStage(actual: JourneyStage, expected: JourneyStage): void {
   if (actual !== expected) throw new Error(`This action is not available during ${actual}`);
 }
 
-function fullSource(
-  id: string,
-  inputId: string,
-  inputType: Source["inputType"],
-  excerpt: string,
-): Source {
-  return {
-    id,
-    inputId,
-    inputType,
-    excerpt,
-    start: 0,
-    end: excerpt.length,
-    actor: "clinician",
-    recordedAt: fixedRecordedAt,
-  };
+function diagnosticAction(action: JourneyAction): unknown {
+  const sanitized = { ...action } as Record<string, unknown>;
+  for (const key of ["text", "statement"]) {
+    if (typeof sanitized[key] === "string") sanitized[key] = diagnosticInput(sanitized[key]);
+  }
+  return sanitized;
 }
 
-export const fixedJourneyInputs = {
-  openingAccount,
-  indicationAnswer,
-  correctionAccount,
-};
+function diagnosticInput(text: string): string {
+  const configured = new Set((process.env.WILSON_SYNTHETIC_INPUT_SHA256 ?? "").split(",").filter(Boolean));
+  const digest = createHash("sha256").update(text).digest("hex");
+  return configured.has(digest) ? text : "[NOT LOGGED: outside configured synthetic fixtures]";
+}
+
+function diagnosticCaseState(caseState: SemanticCase): Omit<SemanticCase, "id"> {
+  const { id: _caseId, ...diagnosticState } = caseState;
+  return diagnosticState;
+}

@@ -1,0 +1,1797 @@
+[
+  {
+    "identityScope": "rich",
+    "turn": "opening",
+    "output": {
+      "products": [
+        {
+          "productReference": "p1",
+          "groupReference": "g1"
+        }
+      ],
+      "proposals": [
+        {
+          "proposalReference": "patient-id",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "identifier"
+          },
+          "value": {
+            "kind": "known",
+            "value": "TEST-68"
+          },
+          "evidenceQuote": "Patient TEST-68 is a 68-year-old man."
+        },
+        {
+          "proposalReference": "patient-age",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "ageYears"
+          },
+          "value": {
+            "kind": "known",
+            "value": 68
+          },
+          "evidenceQuote": "Patient TEST-68 is a 68-year-old man."
+        },
+        {
+          "proposalReference": "patient-sex",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "sex"
+          },
+          "value": {
+            "kind": "known",
+            "value": "male"
+          },
+          "evidenceQuote": "Patient TEST-68 is a 68-year-old man."
+        },
+        {
+          "proposalReference": "event-symptoms",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "symptoms"
+          },
+          "value": {
+            "kind": "known",
+            "value": [
+              "diffuse hives",
+              "facial swelling"
+            ]
+          },
+          "evidenceQuote": "On 04-Aug-2026 he developed diffuse hives and facial swelling and was hospitalized."
+        },
+        {
+          "proposalReference": "event-onset",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "onsetDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-04"
+          },
+          "evidenceQuote": "On 04-Aug-2026 he developed diffuse hives and facial swelling and was hospitalized."
+        },
+        {
+          "proposalReference": "event-hospitalized",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "hospitalized"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "On 04-Aug-2026 he developed diffuse hives and facial swelling and was hospitalized."
+        },
+        {
+          "proposalReference": "event-treatments",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "treatments"
+          },
+          "value": {
+            "kind": "known",
+            "value": [
+              "epinephrine",
+              "diphenhydramine"
+            ]
+          },
+          "evidenceQuote": "Cephalexin was stopped, he was treated with epinephrine and diphenhydramine, and he recovered and was discharged on 05-Aug-2026."
+        },
+        {
+          "proposalReference": "event-outcome",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "outcome"
+          },
+          "value": {
+            "kind": "known",
+            "value": "recovered"
+          },
+          "evidenceQuote": "Cephalexin was stopped, he was treated with epinephrine and diphenhydramine, and he recovered and was discharged on 05-Aug-2026."
+        },
+        {
+          "proposalReference": "event-discharge",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "dischargeDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-05"
+          },
+          "evidenceQuote": "Cephalexin was stopped, he was treated with epinephrine and diphenhydramine, and he recovered and was discharged on 05-Aug-2026."
+        },
+        {
+          "proposalReference": "product-name",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "cephalexin"
+          },
+          "evidenceQuote": "He began cephalexin 500 mg by mouth twice daily on 01-Aug-2026 for cellulitis."
+        },
+        {
+          "proposalReference": "product-role",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "I suspect cephalexin"
+        },
+        {
+          "proposalReference": "product-dose",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "dose"
+          },
+          "value": {
+            "kind": "known",
+            "value": "500 mg"
+          },
+          "evidenceQuote": "He began cephalexin 500 mg by mouth twice daily on 01-Aug-2026 for cellulitis."
+        },
+        {
+          "proposalReference": "product-frequency",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "frequency"
+          },
+          "value": {
+            "kind": "known",
+            "value": "twice daily"
+          },
+          "evidenceQuote": "He began cephalexin 500 mg by mouth twice daily on 01-Aug-2026 for cellulitis."
+        },
+        {
+          "proposalReference": "product-route",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "route"
+          },
+          "value": {
+            "kind": "known",
+            "value": "oral"
+          },
+          "evidenceQuote": "He began cephalexin 500 mg by mouth twice daily on 01-Aug-2026 for cellulitis."
+        },
+        {
+          "proposalReference": "product-start",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "startDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-01"
+          },
+          "evidenceQuote": "He began cephalexin 500 mg by mouth twice daily on 01-Aug-2026 for cellulitis."
+        },
+        {
+          "proposalReference": "product-indication",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "indication"
+          },
+          "value": {
+            "kind": "known",
+            "value": "cellulitis"
+          },
+          "evidenceQuote": "He began cephalexin 500 mg by mouth twice daily on 01-Aug-2026 for cellulitis."
+        },
+        {
+          "proposalReference": "product-stopped",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "stopped"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "Cephalexin was stopped, he was treated with epinephrine and diphenhydramine, and he recovered and was discharged on 05-Aug-2026."
+        }
+      ]
+    }
+  },
+  {
+    "identityScope": "sparse",
+    "turn": "opening",
+    "output": {
+      "products": [
+        {
+          "productReference": "p1",
+          "groupReference": "g1"
+        }
+      ],
+      "proposals": [
+        {
+          "proposalReference": "patient-id",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "identifier"
+          },
+          "value": {
+            "kind": "known",
+            "value": "TEST-31"
+          },
+          "evidenceQuote": "Patient TEST-31 is a 31-year-old woman."
+        },
+        {
+          "proposalReference": "patient-age",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "ageYears"
+          },
+          "value": {
+            "kind": "known",
+            "value": 31
+          },
+          "evidenceQuote": "Patient TEST-31 is a 31-year-old woman."
+        },
+        {
+          "proposalReference": "patient-sex",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "sex"
+          },
+          "value": {
+            "kind": "known",
+            "value": "female"
+          },
+          "evidenceQuote": "Patient TEST-31 is a 31-year-old woman."
+        },
+        {
+          "proposalReference": "event-symptoms",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "symptoms"
+          },
+          "value": {
+            "kind": "known",
+            "value": [
+              "nausea",
+              "vomiting"
+            ]
+          },
+          "evidenceQuote": "She developed nausea and vomiting while taking metformin."
+        },
+        {
+          "proposalReference": "event-onset",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "onsetDate"
+          },
+          "value": {
+            "kind": "unknown"
+          },
+          "evidenceQuote": "She does not know the dose, when metformin began, or when the symptoms started."
+        },
+        {
+          "proposalReference": "event-hospitalized",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "hospitalized"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "She was not hospitalized"
+        },
+        {
+          "proposalReference": "product-name",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "metformin"
+          },
+          "evidenceQuote": "She developed nausea and vomiting while taking metformin."
+        },
+        {
+          "proposalReference": "product-role",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "I suspect metformin"
+        },
+        {
+          "proposalReference": "product-dose",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "dose"
+          },
+          "value": {
+            "kind": "unknown"
+          },
+          "evidenceQuote": "She does not know the dose, when metformin began, or when the symptoms started."
+        },
+        {
+          "proposalReference": "product-start",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "startDate"
+          },
+          "value": {
+            "kind": "unknown"
+          },
+          "evidenceQuote": "She does not know the dose, when metformin began, or when the symptoms started."
+        }
+      ]
+    }
+  },
+  {
+    "identityScope": "repeated",
+    "turn": "opening",
+    "output": {
+      "products": [
+        {
+          "productReference": "p1",
+          "groupReference": "g1"
+        },
+        {
+          "productReference": "p2",
+          "groupReference": "g2"
+        }
+      ],
+      "proposals": [
+        {
+          "proposalReference": "patient-id",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "identifier"
+          },
+          "value": {
+            "kind": "known",
+            "value": "TEST-44"
+          },
+          "evidenceQuote": "Patient TEST-44 is a 44-year-old man."
+        },
+        {
+          "proposalReference": "patient-age",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "ageYears"
+          },
+          "value": {
+            "kind": "known",
+            "value": 44
+          },
+          "evidenceQuote": "Patient TEST-44 is a 44-year-old man."
+        },
+        {
+          "proposalReference": "patient-sex",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "sex"
+          },
+          "value": {
+            "kind": "known",
+            "value": "male"
+          },
+          "evidenceQuote": "Patient TEST-44 is a 44-year-old man."
+        },
+        {
+          "proposalReference": "event-symptoms",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "symptoms"
+          },
+          "value": {
+            "kind": "known",
+            "value": [
+              "nausea",
+              "right upper abdominal pain"
+            ]
+          },
+          "evidenceQuote": "On 05-Jul-2026 he developed nausea and right upper abdominal pain and was hospitalized."
+        },
+        {
+          "proposalReference": "event-onset",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "onsetDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-07-05"
+          },
+          "evidenceQuote": "On 05-Jul-2026 he developed nausea and right upper abdominal pain and was hospitalized."
+        },
+        {
+          "proposalReference": "event-hospitalized",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "hospitalized"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "On 05-Jul-2026 he developed nausea and right upper abdominal pain and was hospitalized."
+        },
+        {
+          "proposalReference": "event-treatments",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "treatments"
+          },
+          "value": {
+            "kind": "known",
+            "value": [
+              "intravenous fluids"
+            ]
+          },
+          "evidenceQuote": "Tylenol and ibuprofen were stopped, he received intravenous fluids, and he recovered and was discharged on 07-Jul-2026."
+        },
+        {
+          "proposalReference": "event-outcome",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "outcome"
+          },
+          "value": {
+            "kind": "known",
+            "value": "recovered"
+          },
+          "evidenceQuote": "Tylenol and ibuprofen were stopped, he received intravenous fluids, and he recovered and was discharged on 07-Jul-2026."
+        },
+        {
+          "proposalReference": "event-discharge",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "dischargeDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-07-07"
+          },
+          "evidenceQuote": "Tylenol and ibuprofen were stopped, he received intravenous fluids, and he recovered and was discharged on 07-Jul-2026."
+        },
+        {
+          "proposalReference": "p1-name",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "acetaminophen (Tylenol)"
+          },
+          "evidenceQuote": "He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain."
+        },
+        {
+          "proposalReference": "p1-role",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "I suspect acetaminophen and ibuprofen"
+        },
+        {
+          "proposalReference": "p1-dose",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "dose"
+          },
+          "value": {
+            "kind": "known",
+            "value": "1,000 mg"
+          },
+          "evidenceQuote": "He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain."
+        },
+        {
+          "proposalReference": "p1-frequency",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "frequency"
+          },
+          "value": {
+            "kind": "known",
+            "value": "twice daily"
+          },
+          "evidenceQuote": "He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain."
+        },
+        {
+          "proposalReference": "p1-route",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "route"
+          },
+          "value": {
+            "kind": "known",
+            "value": "oral"
+          },
+          "evidenceQuote": "He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain."
+        },
+        {
+          "proposalReference": "p1-start",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "startDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-07-01"
+          },
+          "evidenceQuote": "He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain."
+        },
+        {
+          "proposalReference": "p1-indication",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "indication"
+          },
+          "value": {
+            "kind": "known",
+            "value": "back pain"
+          },
+          "evidenceQuote": "He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain."
+        },
+        {
+          "proposalReference": "p1-stopped",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "stopped"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "Tylenol and ibuprofen were stopped, he received intravenous fluids, and he recovered and was discharged on 07-Jul-2026."
+        },
+        {
+          "proposalReference": "p2-name",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "ibuprofen"
+          },
+          "evidenceQuote": "He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain."
+        },
+        {
+          "proposalReference": "p2-role",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "I suspect acetaminophen and ibuprofen"
+        },
+        {
+          "proposalReference": "p2-dose",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "dose"
+          },
+          "value": {
+            "kind": "known",
+            "value": "400 mg"
+          },
+          "evidenceQuote": "He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain."
+        },
+        {
+          "proposalReference": "p2-frequency",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "frequency"
+          },
+          "value": {
+            "kind": "known",
+            "value": "twice daily"
+          },
+          "evidenceQuote": "He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain."
+        },
+        {
+          "proposalReference": "p2-route",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "route"
+          },
+          "value": {
+            "kind": "known",
+            "value": "oral"
+          },
+          "evidenceQuote": "He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain."
+        },
+        {
+          "proposalReference": "p2-start",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "startDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-07-03"
+          },
+          "evidenceQuote": "He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain."
+        },
+        {
+          "proposalReference": "p2-indication",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "indication"
+          },
+          "value": {
+            "kind": "known",
+            "value": "back pain"
+          },
+          "evidenceQuote": "He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain."
+        },
+        {
+          "proposalReference": "p2-stopped",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "stopped"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "Tylenol and ibuprofen were stopped, he received intravenous fluids, and he recovered and was discharged on 07-Jul-2026."
+        }
+      ]
+    }
+  },
+  {
+    "identityScope": "repeated-update",
+    "turn": "correction",
+    "output": {
+      "products": [],
+      "proposals": [
+        {
+          "proposalReference": "dose-correction",
+          "groupReference": "u1",
+          "intent": "correction",
+          "target": {
+            "entity": "product",
+            "productReference": "product-repeated-p2",
+            "field": "dose"
+          },
+          "value": {
+            "kind": "known",
+            "value": "200 mg"
+          },
+          "evidenceQuote": "Correction: the ibuprofen dose was 200 mg twice daily, not 400 mg twice daily."
+        },
+        {
+          "proposalReference": "date-alternative",
+          "groupReference": "u2",
+          "intent": "alternative",
+          "target": {
+            "entity": "product",
+            "productReference": "product-repeated-p1",
+            "field": "startDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-07-02"
+          },
+          "evidenceQuote": "My medication list says acetaminophen began 02-Jul-2026 rather than 01-Jul-2026. I cannot resolve which date is correct."
+        }
+      ]
+    }
+  },
+  {
+    "identityScope": "change-remove",
+    "turn": "opening",
+    "output": {
+      "products": [
+        {
+          "productReference": "p1",
+          "groupReference": "g1"
+        },
+        {
+          "productReference": "p2",
+          "groupReference": "g2"
+        },
+        {
+          "productReference": "p3",
+          "groupReference": "g3"
+        }
+      ],
+      "proposals": [
+        {
+          "proposalReference": "patient-id",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "identifier"
+          },
+          "value": {
+            "kind": "known",
+            "value": "TEST-57"
+          },
+          "evidenceQuote": "Patient TEST-57 is a 57-year-old woman."
+        },
+        {
+          "proposalReference": "patient-age",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "ageYears"
+          },
+          "value": {
+            "kind": "known",
+            "value": 57
+          },
+          "evidenceQuote": "Patient TEST-57 is a 57-year-old woman."
+        },
+        {
+          "proposalReference": "patient-sex",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "sex"
+          },
+          "value": {
+            "kind": "known",
+            "value": "female"
+          },
+          "evidenceQuote": "Patient TEST-57 is a 57-year-old woman."
+        },
+        {
+          "proposalReference": "event-symptoms",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "symptoms"
+          },
+          "value": {
+            "kind": "known",
+            "value": [
+              "melena",
+              "dizziness"
+            ]
+          },
+          "evidenceQuote": "On 18-Aug-2026 she developed melena and dizziness and was hospitalized."
+        },
+        {
+          "proposalReference": "event-onset",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "onsetDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-18"
+          },
+          "evidenceQuote": "On 18-Aug-2026 she developed melena and dizziness and was hospitalized."
+        },
+        {
+          "proposalReference": "event-hospitalized",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "hospitalized"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "On 18-Aug-2026 she developed melena and dizziness and was hospitalized."
+        },
+        {
+          "proposalReference": "event-hemoglobin",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "hemoglobin"
+          },
+          "value": {
+            "kind": "known",
+            "value": "7.8 g/dL"
+          },
+          "evidenceQuote": "Her hemoglobin was 7.8 g/dL"
+        },
+        {
+          "proposalReference": "event-treatment",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "treatments"
+          },
+          "value": {
+            "kind": "known",
+            "value": [
+              "two units of packed red cells"
+            ]
+          },
+          "evidenceQuote": "Apixaban and naproxen were stopped, she received two units of packed red cells, and she recovered and was discharged on 21-Aug-2026."
+        },
+        {
+          "proposalReference": "event-outcome",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "outcome"
+          },
+          "value": {
+            "kind": "known",
+            "value": "recovered"
+          },
+          "evidenceQuote": "Apixaban and naproxen were stopped, she received two units of packed red cells, and she recovered and was discharged on 21-Aug-2026."
+        },
+        {
+          "proposalReference": "event-discharge",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "dischargeDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-21"
+          },
+          "evidenceQuote": "Apixaban and naproxen were stopped, she received two units of packed red cells, and she recovered and was discharged on 21-Aug-2026."
+        },
+        {
+          "proposalReference": "p1-name",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "apixaban"
+          },
+          "evidenceQuote": "apixaban 5 mg by mouth twice daily"
+        },
+        {
+          "proposalReference": "p1-role",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "I suspect apixaban and naproxen"
+        },
+        {
+          "proposalReference": "p1-dose",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "dose"
+          },
+          "value": {
+            "kind": "known",
+            "value": "5 mg"
+          },
+          "evidenceQuote": "apixaban 5 mg by mouth twice daily"
+        },
+        {
+          "proposalReference": "p1-frequency",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "frequency"
+          },
+          "value": {
+            "kind": "known",
+            "value": "twice daily"
+          },
+          "evidenceQuote": "apixaban 5 mg by mouth twice daily"
+        },
+        {
+          "proposalReference": "p1-route",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "route"
+          },
+          "value": {
+            "kind": "known",
+            "value": "oral"
+          },
+          "evidenceQuote": "apixaban 5 mg by mouth twice daily"
+        },
+        {
+          "proposalReference": "p1-start",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "startDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-12"
+          },
+          "evidenceQuote": "I recorded the start as 12-Aug-2026"
+        },
+        {
+          "proposalReference": "p1-stopped",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "stopped"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "Apixaban and naproxen were stopped, she received two units of packed red cells, and she recovered and was discharged on 21-Aug-2026."
+        },
+        {
+          "proposalReference": "p2-name",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "naproxen"
+          },
+          "evidenceQuote": "naproxen 500 mg by mouth twice daily starting 10-Aug-2026"
+        },
+        {
+          "proposalReference": "p2-role",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "I suspect apixaban and naproxen"
+        },
+        {
+          "proposalReference": "p2-dose",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "dose"
+          },
+          "value": {
+            "kind": "known",
+            "value": "500 mg"
+          },
+          "evidenceQuote": "naproxen 500 mg by mouth twice daily starting 10-Aug-2026"
+        },
+        {
+          "proposalReference": "p2-frequency",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "frequency"
+          },
+          "value": {
+            "kind": "known",
+            "value": "twice daily"
+          },
+          "evidenceQuote": "naproxen 500 mg by mouth twice daily starting 10-Aug-2026"
+        },
+        {
+          "proposalReference": "p2-route",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "route"
+          },
+          "value": {
+            "kind": "known",
+            "value": "oral"
+          },
+          "evidenceQuote": "naproxen 500 mg by mouth twice daily starting 10-Aug-2026"
+        },
+        {
+          "proposalReference": "p2-start",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "startDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-10"
+          },
+          "evidenceQuote": "starting 10-Aug-2026"
+        },
+        {
+          "proposalReference": "p2-stopped",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "stopped"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "Apixaban and naproxen were stopped, she received two units of packed red cells, and she recovered and was discharged on 21-Aug-2026."
+        },
+        {
+          "proposalReference": "p3-name",
+          "groupReference": "g3",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p3",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "lisinopril"
+          },
+          "evidenceQuote": "lisinopril 10 mg by mouth daily as a concomitant medicine"
+        },
+        {
+          "proposalReference": "p3-role",
+          "groupReference": "g3",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p3",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "concomitant"
+          },
+          "evidenceQuote": "lisinopril 10 mg by mouth daily as a concomitant medicine"
+        },
+        {
+          "proposalReference": "p3-dose",
+          "groupReference": "g3",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p3",
+            "field": "dose"
+          },
+          "value": {
+            "kind": "known",
+            "value": "10 mg"
+          },
+          "evidenceQuote": "lisinopril 10 mg by mouth daily as a concomitant medicine"
+        },
+        {
+          "proposalReference": "p3-frequency",
+          "groupReference": "g3",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p3",
+            "field": "frequency"
+          },
+          "value": {
+            "kind": "known",
+            "value": "daily"
+          },
+          "evidenceQuote": "lisinopril 10 mg by mouth daily as a concomitant medicine"
+        },
+        {
+          "proposalReference": "p3-route",
+          "groupReference": "g3",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p3",
+            "field": "route"
+          },
+          "value": {
+            "kind": "known",
+            "value": "oral"
+          },
+          "evidenceQuote": "lisinopril 10 mg by mouth daily as a concomitant medicine"
+        }
+      ]
+    }
+  },
+  {
+    "identityScope": "experiment-1",
+    "turn": "opening",
+    "output": {
+      "products": [
+        {
+          "productReference": "p1",
+          "groupReference": "g1"
+        },
+        {
+          "productReference": "p2",
+          "groupReference": "g2"
+        },
+        {
+          "productReference": "p3",
+          "groupReference": "g3"
+        }
+      ],
+      "proposals": [
+        {
+          "proposalReference": "patient-id",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "identifier"
+          },
+          "value": {
+            "kind": "known",
+            "value": "TEST-57"
+          },
+          "evidenceQuote": "Patient TEST-57 is a 57-year-old woman."
+        },
+        {
+          "proposalReference": "patient-age",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "ageYears"
+          },
+          "value": {
+            "kind": "known",
+            "value": 57
+          },
+          "evidenceQuote": "Patient TEST-57 is a 57-year-old woman."
+        },
+        {
+          "proposalReference": "patient-sex",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "sex"
+          },
+          "value": {
+            "kind": "known",
+            "value": "female"
+          },
+          "evidenceQuote": "Patient TEST-57 is a 57-year-old woman."
+        },
+        {
+          "proposalReference": "event-symptoms",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "symptoms"
+          },
+          "value": {
+            "kind": "known",
+            "value": [
+              "melena",
+              "dizziness"
+            ]
+          },
+          "evidenceQuote": "On 18-Aug-2026 she developed melena and dizziness and was hospitalized."
+        },
+        {
+          "proposalReference": "event-onset",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "onsetDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-18"
+          },
+          "evidenceQuote": "On 18-Aug-2026 she developed melena and dizziness and was hospitalized."
+        },
+        {
+          "proposalReference": "event-hospitalized",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "hospitalized"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "On 18-Aug-2026 she developed melena and dizziness and was hospitalized."
+        },
+        {
+          "proposalReference": "event-hemoglobin",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "hemoglobin"
+          },
+          "value": {
+            "kind": "known",
+            "value": "7.8 g/dL"
+          },
+          "evidenceQuote": "Her hemoglobin was 7.8 g/dL"
+        },
+        {
+          "proposalReference": "event-treatment",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "treatments"
+          },
+          "value": {
+            "kind": "known",
+            "value": [
+              "two units of packed red cells"
+            ]
+          },
+          "evidenceQuote": "Apixaban and naproxen were stopped, she received two units of packed red cells, and she recovered and was discharged on 21-Aug-2026."
+        },
+        {
+          "proposalReference": "event-outcome",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "outcome"
+          },
+          "value": {
+            "kind": "known",
+            "value": "recovered"
+          },
+          "evidenceQuote": "Apixaban and naproxen were stopped, she received two units of packed red cells, and she recovered and was discharged on 21-Aug-2026."
+        },
+        {
+          "proposalReference": "event-discharge",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "dischargeDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-21"
+          },
+          "evidenceQuote": "Apixaban and naproxen were stopped, she received two units of packed red cells, and she recovered and was discharged on 21-Aug-2026."
+        },
+        {
+          "proposalReference": "p1-name",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "apixaban"
+          },
+          "evidenceQuote": "apixaban 5 mg by mouth twice daily"
+        },
+        {
+          "proposalReference": "p1-role",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "I suspect apixaban and naproxen"
+        },
+        {
+          "proposalReference": "p1-dose",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "dose"
+          },
+          "value": {
+            "kind": "known",
+            "value": "5 mg"
+          },
+          "evidenceQuote": "apixaban 5 mg by mouth twice daily"
+        },
+        {
+          "proposalReference": "p1-frequency",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "frequency"
+          },
+          "value": {
+            "kind": "known",
+            "value": "twice daily"
+          },
+          "evidenceQuote": "apixaban 5 mg by mouth twice daily"
+        },
+        {
+          "proposalReference": "p1-route",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "route"
+          },
+          "value": {
+            "kind": "known",
+            "value": "oral"
+          },
+          "evidenceQuote": "apixaban 5 mg by mouth twice daily"
+        },
+        {
+          "proposalReference": "p1-start",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "startDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-12"
+          },
+          "evidenceQuote": "I recorded the start as 12-Aug-2026"
+        },
+        {
+          "proposalReference": "p1-stopped",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "stopped"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "Apixaban and naproxen were stopped, she received two units of packed red cells, and she recovered and was discharged on 21-Aug-2026."
+        },
+        {
+          "proposalReference": "p2-name",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "naproxen"
+          },
+          "evidenceQuote": "naproxen 500 mg by mouth twice daily starting 10-Aug-2026"
+        },
+        {
+          "proposalReference": "p2-role",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "I suspect apixaban and naproxen"
+        },
+        {
+          "proposalReference": "p2-dose",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "dose"
+          },
+          "value": {
+            "kind": "known",
+            "value": "500 mg"
+          },
+          "evidenceQuote": "naproxen 500 mg by mouth twice daily starting 10-Aug-2026"
+        },
+        {
+          "proposalReference": "p2-frequency",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "frequency"
+          },
+          "value": {
+            "kind": "known",
+            "value": "twice daily"
+          },
+          "evidenceQuote": "naproxen 500 mg by mouth twice daily starting 10-Aug-2026"
+        },
+        {
+          "proposalReference": "p2-route",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "route"
+          },
+          "value": {
+            "kind": "known",
+            "value": "oral"
+          },
+          "evidenceQuote": "naproxen 500 mg by mouth twice daily starting 10-Aug-2026"
+        },
+        {
+          "proposalReference": "p2-start",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "startDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-10"
+          },
+          "evidenceQuote": "starting 10-Aug-2026"
+        },
+        {
+          "proposalReference": "p2-stopped",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "stopped"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "Apixaban and naproxen were stopped, she received two units of packed red cells, and she recovered and was discharged on 21-Aug-2026."
+        },
+        {
+          "proposalReference": "p3-name",
+          "groupReference": "g3",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p3",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "lisinopril"
+          },
+          "evidenceQuote": "lisinopril 10 mg by mouth daily as a concomitant medicine"
+        },
+        {
+          "proposalReference": "p3-role",
+          "groupReference": "g3",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p3",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "concomitant"
+          },
+          "evidenceQuote": "lisinopril 10 mg by mouth daily as a concomitant medicine"
+        },
+        {
+          "proposalReference": "p3-dose",
+          "groupReference": "g3",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p3",
+            "field": "dose"
+          },
+          "value": {
+            "kind": "known",
+            "value": "10 mg"
+          },
+          "evidenceQuote": "lisinopril 10 mg by mouth daily as a concomitant medicine"
+        },
+        {
+          "proposalReference": "p3-frequency",
+          "groupReference": "g3",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p3",
+            "field": "frequency"
+          },
+          "value": {
+            "kind": "known",
+            "value": "daily"
+          },
+          "evidenceQuote": "lisinopril 10 mg by mouth daily as a concomitant medicine"
+        },
+        {
+          "proposalReference": "p3-route",
+          "groupReference": "g3",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p3",
+            "field": "route"
+          },
+          "value": {
+            "kind": "known",
+            "value": "oral"
+          },
+          "evidenceQuote": "lisinopril 10 mg by mouth daily as a concomitant medicine"
+        }
+      ]
+    }
+  },
+  {
+    "identityScope": "experiment-1-update",
+    "turn": "correction",
+    "output": {
+      "products": [],
+      "proposals": [
+        {
+          "proposalReference": "dose-correction",
+          "groupReference": "u1",
+          "intent": "correction",
+          "target": {
+            "entity": "product",
+            "productReference": "product-experiment-1-p2",
+            "field": "dose"
+          },
+          "value": {
+            "kind": "known",
+            "value": "250 mg"
+          },
+          "evidenceQuote": "Correction: the naproxen dose was 250 mg twice daily, not 500 mg twice daily."
+        },
+        {
+          "proposalReference": "date-alternative",
+          "groupReference": "u2",
+          "intent": "alternative",
+          "target": {
+            "entity": "product",
+            "productReference": "product-experiment-1-p1",
+            "field": "startDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-13"
+          },
+          "evidenceQuote": "the medication administration record lists apixaban starting 13-Aug-2026, but my note says 12-Aug-2026. I can't resolve that yet"
+        }
+      ]
+    }
+  }
+]

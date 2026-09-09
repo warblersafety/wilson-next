@@ -1,7 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { correctionAccount, indicationAnswer, openingAccount } from "../../../src/experiment/fixed-inputs";
 import {
   assertExpectedBrowserRevision,
   assertStoredStage,
@@ -21,23 +20,36 @@ import {
   type RuntimeDiagnosticLogger,
 } from "../../../src/server/diagnostics/runtime-log";
 import { getJourneySnapshot, performJourneyAction } from "../../../src/server/journey/service";
-import { fixedJourneyModel } from "../../../src/experiment/fixed-journey";
 import { ModelCallFailure, type JourneyModel } from "../../../src/server/model/journey-model";
+import { journeyModelForEnvironment } from "../../../src/server/model/configured-journey";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 export const maxDuration = 300;
 
+const caseValueSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("known"), value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]), qualifier: z.string().optional() }).strict(),
+  z.object({ kind: z.literal("unknown") }).strict(),
+  z.object({ kind: z.literal("explicitly-absent") }).strict(),
+  z.object({ kind: z.literal("inapplicable") }).strict(),
+  z.object({ kind: z.literal("declined") }).strict(),
+]);
+
+const indicationValueSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("known"), value: z.string().min(1) }).strict(),
+  z.object({ kind: z.literal("unknown") }).strict(),
+  z.object({ kind: z.literal("declined") }).strict(),
+]);
+
 const actionSchema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("submit-opening"), text: z.string(), reportType: z.literal("adverse-event") }).strict(),
-  z.object({ action: z.literal("change-patient-age"), ageYears: z.literal(58) }).strict(),
-  z.object({ action: z.literal("remove-lisinopril") }).strict(),
+  z.object({ action: z.literal("change-proposal"), groupId: z.string().min(1), proposalId: z.string().min(1), value: caseValueSchema, statement: z.string().min(1) }).strict(),
+  z.object({ action: z.literal("reject-group"), groupId: z.string().min(1) }).strict(),
   z.object({ action: z.literal("accept-understanding") }).strict(),
-  z.object({ action: z.literal("answer-indications"), text: z.string() }).strict(),
-  z.object({ action: z.literal("submit-correction"), text: z.string() }).strict(),
-  z.object({ action: z.literal("accept-dose-correction") }).strict(),
-  z.object({ action: z.literal("leave-date-unresolved") }).strict(),
-  z.object({ action: z.literal("resolve-date"), chosenValueId: z.enum(["apixaban-start", "apixaban-date-alternative"]) }).strict(),
+  z.object({ action: z.literal("answer-indications"), answers: z.array(z.object({ productId: z.string().min(1), value: indicationValueSchema }).strict()).min(1) }).strict(),
+  z.object({ action: z.literal("submit-update"), text: z.string().min(1) }).strict(),
+  z.object({ action: z.literal("review-update-group"), groupId: z.string().min(1), decision: z.enum(["accept", "reject"]) }).strict(),
+  z.object({ action: z.literal("resolve-conflict"), target: z.string().min(1), chosenValueId: z.string().min(1) }).strict(),
 ]);
 
 const requestSchema = z.discriminatedUnion("operation", [
@@ -71,7 +83,7 @@ export async function POST(request: NextRequest) {
   return postCase(request);
 }
 
-export async function postCase(request: NextRequest, model: JourneyModel = fixedJourneyModel) {
+export async function postCase(request: NextRequest, model?: JourneyModel) {
   const context = diagnosticContext(request.headers);
   const diagnostics = createRuntimeDiagnosticLogger(context);
   diagnostics.event("route", "case-post", "start", requestMetadata(request));
@@ -127,7 +139,7 @@ export async function postCase(request: NextRequest, model: JourneyModel = fixed
         repository,
         (await repository.loadByOnlyCase())!.id,
         requestBody.action,
-        model,
+        model ?? await journeyModelForEnvironment(),
         diagnostics,
       );
     }
@@ -218,21 +230,20 @@ function responseMetadata(status: number, body: unknown) {
 }
 
 function diagnosticAction(action: z.infer<typeof actionSchema>): unknown {
-  if (!("text" in action)) return action;
-  const fixedText = action.text === openingAccount
-    || action.text === indicationAnswer
-    || action.text === correctionAccount;
-  return fixedText ? action : { ...action, text: "[NOT LOGGED: outside fixed synthetic fixture]" };
+  const sanitized = { ...action } as Record<string, unknown>;
+  for (const key of ["text", "statement"]) {
+    if (typeof sanitized[key] === "string") sanitized[key] = "[CLINICIAN TEXT LOGGED ONLY BY CONFIGURED SERVER POLICY]";
+  }
+  return sanitized;
 }
 
 function safeClientError(error: unknown): string {
   if (!(error instanceof Error)) return "The case could not be updated";
   const allowed = [
     "This action is not available during",
-    "Use the displayed fictional indication answer",
-    "This experiment accepts only the displayed fictional",
-    "Accept or reject the dose correction",
-    "Wilson did not identify a different apixaban start date",
+    "The proposed value is no longer available",
+    "The indication question is no longer open",
+    "The selected conflict alternative is unavailable",
   ];
   return allowed.some((prefix) => error.message.startsWith(prefix))
     ? error.message
