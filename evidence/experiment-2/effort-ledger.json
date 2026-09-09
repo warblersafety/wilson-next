@@ -861,7 +861,7 @@
       ]
     },
     {
-      "id": "experiment-2-final-revise-deferred",
+      "id": "experiment-2-final-revise-remediation-deferred",
       "status": "completed",
       "recordedAt": "2026-09-09T22:52:51Z",
       "startedAt": "2026-09-09T22:51:04Z",
@@ -882,12 +882,13 @@
         "costUsd": 0
       },
       "review": null,
-      "result": "Steve chose to defer live-model remediation rather than tune against one failed sample. Experiment 2 closes Revise/deferred with a qualified technical production seed, insufficient live-model reliability evidence, qualified assembled operator viability, and the clinician-validation boundary unchanged. Issue #55 retains the failure and objective revisit triggers while later product planning proceeds independently.",
+      "result": "Steve chose to defer live-model remediation rather than tune against one failed sample. Experiment 2 closes Revise, with remediation deferred, with a qualified technical production seed, insufficient live-model reliability evidence, qualified assembled operator viability, and the clinician-validation boundary unchanged. Issue #55 retains the failure and objective revisit triggers while later product planning proceeds independently.",
       "durableValue": {
         "kind": "decision-evidence",
         "artifacts": [
           "README.md",
           "docs/EXPERIMENT-2.md",
+          "evidence/experiment-2/stage-4/README.md",
           "https://github.com/warblersafety/wilson-next/issues/55"
         ]
       },

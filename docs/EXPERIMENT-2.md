@@ -1,6 +1,6 @@
 # Wilson Experiment 2
 
-**Status:** Complete with a `Revise/deferred` disposition. Stage 3 completed in
+**Status:** Complete with a `Revise` disposition and remediation deferred. Stage 3 completed in
 PR #52, Issue #53 refocused the outcome on conditional reliability, and Issue
 #55 preserves the live-model limitation and explicit revisit triggers. No
 immediate remediation or further Experiment 2 model sampling is planned.
@@ -99,7 +99,8 @@ dimensions above independently:
    and no architectural premise is falsified; propose the next
    product-completeness step.
 2. **Revise:** the product signal remains plausible, but one named premise needs
-   another bounded experiment before broader implementation.
+   another bounded experiment before broader implementation. That experiment
+   may be deferred until a named revisit trigger is reached.
 3. **Stop:** Wilson requires case-specific runtime behavior, repeats a general
    semantic failure after one bounded remediation, imposes operating friction
    that defeats the conditional value, or leaves no credible production seed.
@@ -109,7 +110,7 @@ deployment or release, or the broader V1 roadmap.
 
 ### Final disposition — 2026-09-09
 
-Experiment 2 ends `Revise/deferred`:
+Experiment 2 ends `Revise`, with remediation deferred:
 
 1. **Technical generalization and production-seed quality — qualified pass.**
    The state-driven browser application and one authoritative semantic case ran
@@ -123,7 +124,10 @@ Experiment 2 ends `Revise/deferred`:
 3. **Assembled operator viability — qualified pass.** Steve completed the
    viable sparse and repeated journeys, including an additional correction and
    explicit conflict resolution. The rich failure was recoverable but prevented
-   completion; live opening latency ranged from about 11 to 36 seconds.
+   completion; live opening latency ranged from about 11 to 36 seconds. The
+   viable live PDF routes returned successfully, but their bytes were not
+   retained for independent agreement readback; Stage 3 supplies the retained
+   deterministic PDF-agreement evidence.
 4. **Clinician validation boundary — unchanged.** Steve reports strong
    preliminary physician preference for Wilson if it works. That directional
    evidence removes the need for an operator direct-form proxy but does not
@@ -133,7 +137,8 @@ Steve chose not to tune the prompt or redesign the provider schema against this
 single failed sample. Issue #55 retains the exact limitation, impact, and
 revisit triggers. Later product planning may proceed independently, but it may
 not assume live extraction reliability or expand live model use on the strength
-of this result.
+of this result. The sanitized Stage 4 observation record is retained in
+[`evidence/experiment-2/stage-4/README.md`](../evidence/experiment-2/stage-4/README.md).
 
 ## Operators and information boundary
 
@@ -456,14 +461,15 @@ Steve deferred remediation rather than tune the prompt or redesign the provider
 schema against one failed sample. Issue #55 preserves both failure classes and
 reopens work only if another independently valuable journey exposes the same
 class, a selected product investment requires live extraction, or Wilson
-approaches external evaluation or production readiness. Any later remediation
-remains limited to one general attempt; recurrence stops the affected direction.
+approaches external evaluation, clinical-data approval, or production
+readiness. Any later remediation remains limited to one general attempt;
+recurrence stops the affected direction.
 
 ### Stage 5: outcome decision
 
-The final disposition above records the four dimensions and chooses
-`Revise/deferred`. No Steve-versus-form comparison, immediate remediation, or
-second live sample is required. The reported preliminary physician preference
+The final disposition above records the four dimensions and chooses `Revise`,
+with remediation deferred. No Steve-versus-form comparison, immediate
+remediation, or second live sample is required. The reported preliminary physician preference
 supplies directional evidence for the conditional product proposition; the
 completed synthetic journeys show that this implementation has not yet
 established its reliability condition. This remains operator evidence, not
@@ -545,8 +551,8 @@ when it remains within existing premises and spending limits.
    state-driven behavior, then complete deterministic browser-to-PDF evidence
    for all cases and the required standard review.
 4. **Completed conditional-reliability outcome:** record the first protected
-   samples and the separate findings, then close `Revise/deferred` without
-   immediate remediation or further sampling. Issue #55 preserves any later
+   samples and the separate findings, then close `Revise`, with remediation
+   deferred, without immediate remediation or further sampling. Issue #55 preserves any later
    bounded revisit independently of Experiment 2 completion.
 
 Each implementation slice uses one coherent issue, branch, draft PR,
@@ -572,7 +578,7 @@ waiver does not apply to the subsequent model-contract remediation, which
 requires the ordinary standard review.
 
 Issue #55 records Steve's later decision to defer that remediation and complete
-Experiment 2 as `Revise/deferred`. Any future work triggered from #55 is a new
+Experiment 2 as `Revise`. Any future work triggered from #55 is a new
 unit under Delivery and does not inherit Experiment 2 sampling authority merely
 because the limitation is recorded here.
 

@@ -13,8 +13,8 @@ so Stage 4 is `Revise`. Steve reports that preliminary physician feedback
 already established strong preference for Wilson's approach if it works; Issue
 #53 refocused the experiment on that condition—reliable semantic and evidence
 behavior—rather than repeating a direct-form preference proxy. Experiment 2 now
-ends `Revise/deferred`; Issue #55 preserves the live-model limitation and its
-revisit triggers without making it the next product task.
+ends `Revise`, with remediation deferred; Issue #55 preserves the live-model
+limitation and its revisit triggers without making it the next product task.
 
 Experiment 2 and Delivery's standing execution authority allow Codex to carry
 its remaining bounded implementation, review, protected-preview, and synthetic
