@@ -57,7 +57,10 @@ cross-product attachment was observed.
 The model used the reviewed application-owned product IDs. It proposed the
 ibuprofen dose as a correction to `200 mg` and the acetaminophen start date
 `2026-07-02` as an alternative, preserving rather than hiding the unresolved
-conflict with `2026-07-01`. Both exact excerpts were semantically sufficient.
+conflict with `2026-07-01`. The date excerpt omitted the separate sentence
+`I cannot resolve which date is correct`, however, so the evidence did not
+independently explain why the new date remained an alternative rather than a
+correction.
 
 ## Runner interruption and recovery
 
@@ -78,9 +81,9 @@ remain ignored, owner-readable local artifacts and are not committed.
 This sample shows that the generalized production model/case boundary can
 represent both selected fictional cases, keep repeated products distinct, and
 target the later correction and unresolved alternative correctly. It also
-shows that the current prompting does not consistently produce evidence
-excerpts that are self-contained enough for operator review, and that one
-clinically meaningful modifier was omitted.
+shows that the current prompting did not consistently produce evidence excerpts
+that were self-contained enough for operator review on any of the three calls,
+and that one clinically meaningful modifier was omitted.
 
 This is not a clean pass against every prewritten Stage 2 criterion. It does
 not establish a failure rate, clinical reliability, assembled browser-product

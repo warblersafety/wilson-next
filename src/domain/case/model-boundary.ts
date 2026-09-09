@@ -18,7 +18,8 @@ const modelTargetSchema = z.discriminatedUnion("entity", [
 const caseValueSchema = z.discriminatedUnion("kind", [
   z.object({
     kind: z.literal("known"),
-    value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]),
+    value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string())])
+      .describe("Preserve explicitly stated descriptive detail; normalize only conventions defined by the model instructions."),
     qualifier: z.string().min(1).optional(),
   }).strict(),
   z.object({ kind: z.literal("unknown") }).strict(),
@@ -38,7 +39,9 @@ export const modelProposalOutputSchema = z.object({
     intent: z.enum(["fact", "correction", "alternative"]),
     target: modelTargetSchema,
     value: caseValueSchema,
-    evidenceQuote: z.string().min(1),
+    evidenceQuote: z.string().min(1).describe(
+      "An exact contiguous quotation that independently identifies the subject and complete claim. Completeness outranks brevity, including wording needed for negation, correction, alternatives, or unresolved uncertainty.",
+    ),
   }).strict()).min(1),
 }).strict().superRefine((output, context) => {
   reportDuplicates(output.products.map(({ productReference }) => productReference), "productReference", ["products"], context);

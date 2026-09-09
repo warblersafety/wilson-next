@@ -533,7 +533,7 @@
         "costUsd": 0.102646
       },
       "review": null,
-      "result": "Completed the separately authorized early live gate with exactly three application-model calls, zero retries, and USD 0.102646 estimated spend. The repeated-product opening and update retained correct identity and update targeting. The rich opening omitted the modifier 'diffuse', and the first two calls included evidence excerpts that were exact but not consistently self-contained; Steve directed the bounded batch to continue so the remaining evidence could be collected.",
+      "result": "Completed the separately authorized early live gate with exactly three application-model calls, zero retries, and USD 0.102646 estimated spend. The repeated-product opening and update retained correct identity and update targeting. The rich opening omitted the modifier 'diffuse', and all three calls included at least one evidence excerpt that was exact but not independently sufficient for the complete claim; Steve directed the bounded batch to continue so the remaining evidence could be collected.",
       "verification": {
         "focusedTests": "8 passed",
         "fullTests": "99 passed; 3 unchanged PDF tests unavailable because pypdf was absent from the coordinator shell",
@@ -556,6 +556,7 @@
       "limitations": [
         "Call 1 is not a clean pass against the external assessment because it omitted 'diffuse' and used several insufficiently self-contained evidence excerpts.",
         "Call 2 used correct semantic values and product attribution but again used several insufficiently self-contained evidence excerpts.",
+        "Call 3 targeted both product updates correctly, but the date excerpt omitted the separate sentence establishing that the two dates could not be resolved.",
         "The original operator process could not receive terminal input inside a Vitest worker; it was stopped after call 1, then resumed without replay after a bounded direct-terminal repair and deterministic regression test.",
         "Raw provider responses and local verdict artifacts remain owner-readable ignored files and are not durable repository evidence.",
         "No additional Claude review, deployment, assembled-product change, browser live run, or merge occurred.",

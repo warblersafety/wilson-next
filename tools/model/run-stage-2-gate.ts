@@ -31,7 +31,7 @@ export const STAGE_2_STATE_PATH = resolve(".wilson-experiment-2-stage-2-state.js
 export const STAGE_2_ARTIFACT_DIRECTORY = resolve(".wilson-experiment-2-stage-2");
 const STAGE_2_LOCK_PATH = resolve(".wilson-experiment-2-stage-2-state.lock");
 const EXPECTED_REPOSITORY = "/Users/sofa-claude/code/warblersafety/wilson-next";
-const AUTHORIZATION_PHRASE = "issue-47-three-calls-usd-5";
+const AUTHORIZATION_PHRASE = "issue-47-remediation-three-calls-usd-5";
 
 export interface Stage2Attempt {
   number: number;
