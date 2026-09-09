@@ -1,0 +1,38 @@
+{
+  "browser": "Chromium 153.0.8010.12",
+  "viewportOptions": {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  "predeterminedApplicationModelCalls": 7,
+  "liveApplicationModelCalls": 0,
+  "checkpoints": [
+    {
+      "journey": "rich",
+      "state": "output",
+      "assertion": "No follow-up was asked; case and screen include all supported rich facts."
+    },
+    {
+      "journey": "sparse",
+      "state": "partial-output",
+      "assertion": "One attributed question recorded unknown once; optional empty and unknown values remain visible omissions."
+    },
+    {
+      "journey": "repeated",
+      "state": "unresolved-partial-output",
+      "assertion": "Alias identity stayed singular, dose correction superseded history, and both dates remain visible while neither projects."
+    },
+    {
+      "journey": "shared-controls",
+      "state": "understanding",
+      "assertion": "Generic Change and Remove controls updated the server-returned case rather than browser state."
+    },
+    {
+      "journey": "experiment-1-regression",
+      "state": "resolved-output",
+      "assertion": "Original identity, correction, conflict resolution, projection, and PDF path remain aligned."
+    }
+  ]
+}

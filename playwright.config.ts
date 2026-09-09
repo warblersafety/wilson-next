@@ -1,4 +1,7 @@
+import { readFileSync } from "node:fs";
 import { defineConfig } from "@playwright/test";
+
+const predeterminedResponses = readFileSync("tests/e2e/predetermined-model-responses.json", "utf8");
 
 export default defineConfig({
   testDir: "tests/e2e",
@@ -17,5 +20,9 @@ export default defineConfig({
     url: "http://127.0.0.1:3100",
     reuseExistingServer: false,
     timeout: 30_000,
+    env: {
+      ...process.env,
+      WILSON_PREDETERMINED_MODEL_RESPONSES: predeterminedResponses,
+    },
   },
 });

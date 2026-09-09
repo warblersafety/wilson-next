@@ -2,8 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import type { CaseValue } from "../src/domain/case/types";
-import type { FactView } from "../src/domain/case/views";
-import { correctionAccount, indicationAnswer, openingAccount } from "../src/experiment/fixed-inputs";
+import type { FactView, ReviewAttentionItem } from "../src/domain/case/views";
 import type { BrowserJourneyState, JourneyResponse } from "../src/server/case/browser-state";
 import type { JourneyAction, JourneySnapshot } from "../src/server/journey/service";
 import {
@@ -20,25 +19,20 @@ const stageLabels: Record<JourneySnapshot["stage"], string> = {
   describe: "Describe",
   understanding: "Check understanding",
   clarify: "Clarify",
-  update: "Add an update",
-  correct: "Correct and resolve",
-  "output-unresolved": "Needs resolution",
-  "output-resolved": "Ready to download",
+  "review-update": "Review update",
+  output: "Inspect output",
 };
 
 export default function Journey() {
   const [snapshot, setSnapshot] = useState<JourneySnapshot>();
   const [browserState, setBrowserState] = useState<BrowserJourneyState>();
-  const [opening, setOpening] = useState(openingAccount);
-  const [answer, setAnswer] = useState(indicationAnswer);
-  const [correction, setCorrection] = useState(correctionAccount);
+  const [opening, setOpening] = useState("");
+  const [update, setUpdate] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string>();
   const [boundaryNotice, setBoundaryNotice] = useState<string>();
 
-  useEffect(() => {
-    void loadJourney();
-  }, []);
+  useEffect(() => { void loadJourney(); }, []);
 
   function acceptResponse(response: JourneyResponse) {
     storeJourneyState(response.state);
@@ -47,10 +41,7 @@ export default function Journey() {
   }
 
   async function freshJourney(notice?: string) {
-    const response = await requestJourneyJson<JourneyResponse>(
-      {},
-      "The temporary case could not be loaded",
-    );
+    const response = await requestJourneyJson<JourneyResponse>({}, "The temporary case could not be loaded");
     acceptResponse(response);
     if (notice) setBoundaryNotice(notice);
   }
@@ -58,10 +49,7 @@ export default function Journey() {
   async function loadJourney() {
     try {
       const stored = readStoredJourneyState();
-      if (stored === undefined) {
-        await freshJourney();
-        return;
-      }
+      if (stored === undefined) return await freshJourney();
       try {
         const response = await requestJourneyJson<JourneyResponse>({
           method: "POST",
@@ -91,14 +79,10 @@ export default function Journey() {
     try {
       const response = await requestJourneyJson<JourneyResponse>({
         method: "POST",
-        body: {
-          operation: "act",
-          state: browserState,
-          expectedRevision: snapshot.revision,
-          action,
-        },
+        body: { operation: "act", state: browserState, expectedRevision: snapshot.revision, action },
       }, "Wilson could not update the case");
       acceptResponse(response);
+      if (action.action === "submit-update") setUpdate("");
     } catch (caught) {
       setError(displayError(caught, "Wilson could not update the case"));
     } finally {
@@ -108,20 +92,19 @@ export default function Journey() {
 
   async function resetJourney() {
     if (snapshot && snapshot.revision > 0
-      && !window.confirm("Reset this synthetic preview? The current tab’s case will be lost.")) return;
+      && !window.confirm("Start a new synthetic case? The current tab’s case will be lost.")) return;
     setBusy(true);
     setError(undefined);
     setBoundaryNotice(undefined);
     clearJourneySession();
     setSnapshot(undefined);
     setBrowserState(undefined);
-    setOpening(openingAccount);
-    setAnswer(indicationAnswer);
-    setCorrection(correctionAccount);
+    setOpening("");
+    setUpdate("");
     try {
-      await freshJourney("The disposable synthetic preview was reset.");
+      await freshJourney("Started a blank disposable synthetic case.");
     } catch (caught) {
-      setError(displayError(caught, "The synthetic preview could not be reset"));
+      setError(displayError(caught, "The synthetic case could not be started"));
     } finally {
       setBusy(false);
     }
@@ -163,102 +146,39 @@ export default function Journey() {
     }
   }
 
-  if (!snapshot) {
-    return <main className={styles.loading}><p>{error ?? "Preparing the fictional case…"}</p></main>;
-  }
-
-  const outputStage = snapshot.stage === "output-unresolved" || snapshot.stage === "output-resolved";
+  if (!snapshot) return <main className={styles.loading}><p>{error ?? "Preparing a blank synthetic case…"}</p></main>;
 
   return (
     <main className={styles.appShell}>
       <header className={styles.header}>
-        <div>
-          <span className={styles.wordmark}>Wilson</span>
-          <span className={styles.experiment}>Synthetic experiment</span>
-        </div>
+        <div><span className={styles.wordmark}>Wilson</span><span className={styles.experiment}>Synthetic experiment</span></div>
         <div className={styles.headerActions}>
           <span className={styles.status}>{stageLabels[snapshot.stage]}</span>
-          <button disabled={busy} onClick={() => void resetJourney()}>Reset synthetic preview</button>
+          <button disabled={busy} onClick={() => void resetJourney()}>New case</button>
         </div>
       </header>
-
       <aside className={styles.boundary} aria-label="Experiment boundary">
-        <strong>Fictional information only.</strong> This disposable operator preview supports one fixed adverse-event journey. Do not use it for a real report or as a production system. Closing this tab or resetting clears its saved case.
+        <strong>Fictional information only.</strong> This disposable operator preview supports a bounded set of adult medication adverse-event facts. Do not use it for a real report or as a production system. Closing this tab or starting a new case clears its saved case.
       </aside>
-
       {error && <div className={styles.error} role="alert">{error}</div>}
       {boundaryNotice && <div className={styles.notice} role="status">{boundaryNotice}</div>}
       {busy && <div className={styles.progress} role="status">Updating the reviewed case…</div>}
-
-      {outputStage ? (
-        <OutputComposition snapshot={snapshot} busy={busy} act={act} openPdf={openPdf} />
+      {snapshot.stage === "output" ? (
+        <OutputComposition snapshot={snapshot} update={update} setUpdate={setUpdate} busy={busy} act={act} openPdf={openPdf} />
       ) : (
         <div className={styles.workspace}>
           <section className={styles.activeTask} aria-labelledby="task-title">
-            {snapshot.stage === "describe" && (
-              <>
-                <p className={styles.eyebrow}>Step 1 of 7</p>
-                <h1 id="task-title">Describe what happened</h1>
-                <p>Use the populated fictional account. Wilson will propose case knowledge for your review; it will not accept those proposals as truth.</p>
-                <label htmlFor="opening-account">Clinical account</label>
-                <textarea id="opening-account" rows={13} value={opening} onChange={(event) => setOpening(event.target.value)} />
-                <fieldset className={styles.reportType}>
-                  <legend>Report type</legend>
-                  <label><input type="radio" checked readOnly /> Adverse event</label>
-                </fieldset>
-                <p className={styles.hint}>You can also use your device’s built-in dictation. Wilson does not record audio.</p>
-                <button disabled={busy} onClick={() => void act({ action: "submit-opening", text: opening, reportType: "adverse-event" })}>
-                  {busy ? "Extracting case details…" : "Review Wilson’s understanding"}
-                </button>
-              </>
-            )}
-            {snapshot.stage === "understanding" && (
-              <>
-                <p className={styles.eyebrow}>Step 2 of 7</p>
-                <h1 id="task-title">Check Wilson’s understanding</h1>
-                <p>Review five case groups and their source evidence. Nothing shown here becomes accepted until you continue.</p>
-                <Evidence excerpt={openingAccount} />
-                <button disabled={busy} onClick={() => void act({ action: "accept-understanding" })}>Continue with this understanding</button>
-              </>
-            )}
-            {snapshot.stage === "clarify" && (
-              <>
-                <p className={styles.eyebrow}>Step 3 of 7 · one useful question</p>
-                <h1 id="task-title">{snapshot.clarification?.question}</h1>
-                <p>Both products are named in one question so the answer stays clearly attributed.</p>
-                <label htmlFor="indication-answer">Your answer</label>
-                <textarea id="indication-answer" rows={5} value={answer} onChange={(event) => setAnswer(event.target.value)} />
-                <button disabled={busy} onClick={() => void act({ action: "answer-indications", text: answer })}>Add this answer</button>
-              </>
-            )}
-            {snapshot.stage === "update" && (
-              <>
-                <p className={styles.eyebrow}>Step 4 of 7</p>
-                <h1 id="task-title">Add the later correction and contradiction</h1>
-                <p>The current naproxen dose stays accepted until you separately approve the correction. Incompatible dates will remain unresolved.</p>
-                <label htmlFor="correction-account">Clinical update</label>
-                <textarea id="correction-account" rows={7} value={correction} onChange={(event) => setCorrection(event.target.value)} />
-                <button disabled={busy} onClick={() => void act({ action: "submit-correction", text: correction })}>Review this update</button>
-              </>
-            )}
-            {snapshot.stage === "correct" && (
-              <CorrectionTask snapshot={snapshot} busy={busy} act={act} />
-            )}
+            {snapshot.stage === "describe" && <Describe opening={opening} setOpening={setOpening} busy={busy} act={act} />}
+            {snapshot.stage === "understanding" && <UnderstandingTask snapshot={snapshot} busy={busy} act={act} />}
+            {snapshot.stage === "clarify" && <IndicationTask snapshot={snapshot} busy={busy} act={act} />}
+            {snapshot.stage === "review-update" && <UpdateReview snapshot={snapshot} busy={busy} act={act} />}
           </section>
-
           <section className={styles.casePanel} aria-labelledby="case-title">
             <div className={styles.panelHeading}>
-              <div>
-                <p className={styles.eyebrow}>{snapshot.stage === "understanding" ? "Proposed case" : "Reviewed case"}</p>
-                <h2 id="case-title">Case so far</h2>
-              </div>
-              <span>{snapshot.stage === "understanding" ? "5 groups to review" : snapshot.review.attention.length > 0 ? `${snapshot.review.attention.length} decisions` : "Reviewed"}</span>
+              <div><p className={styles.eyebrow}>{snapshot.stage === "understanding" ? "Proposed case" : "Reviewed case"}</p><h2 id="case-title">Case so far</h2></div>
+              <span>{snapshot.review.attention.length > 0 ? `${snapshot.review.attention.length} items need review` : "Reviewed"}</span>
             </div>
-            <CaseCards
-              snapshot={snapshot}
-              busy={busy}
-              act={act}
-            />
+            <CaseCards snapshot={snapshot} busy={busy} act={act} />
           </section>
         </div>
       )}
@@ -266,188 +186,202 @@ export default function Journey() {
   );
 }
 
-function CorrectionTask({ snapshot, busy, act }: { snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void> }) {
-  const correction = snapshot.review.attention.find(({ kind }) => kind === "correction");
-  const dateProposal = snapshot.review.attention.find(({ target }) => target.endsWith(":startDate"));
-  const naproxen = snapshot.understanding.products.find(({ id }) => id === "product-naproxen");
-  const apixaban = snapshot.understanding.products.find(({ id }) => id === "product-apixaban");
-  const dose = naproxen?.facts.dose;
-  const proposedDose = correction?.values[0]?.value;
-  const startDate = apixaban?.facts.startDate;
-  const reviewedDate = startDate?.resolved;
-  const proposedDate = dateProposal?.values[0]?.value;
-  const hasDistinctDates = reviewedDate?.kind === "known"
-    && proposedDate?.kind === "known"
-    && reviewedDate.value !== proposedDate.value;
-  return (
-    <>
-      <p className={styles.eyebrow}>Step 5 of 7 · decision required</p>
-      <h1 id="task-title">Review the correction and date conflict</h1>
-      {correction ? (
-        <article className={styles.attentionCard}>
-          <span className={styles.attentionLabel}>Proposed correction</span>
-          <h2>Naproxen dose</h2>
-          <p><s>{formatFact(dose?.resolved)}</s> → <strong>{formatFact(correction.values[0].value)}</strong></p>
-          <Evidence excerpt={correction.values[0].evidence[0]} expanded />
-          <button disabled={busy} onClick={() => void act({ action: "accept-dose-correction" })}>Accept {formatFact(proposedDose)} correction</button>
-        </article>
-      ) : (
-        <article className={styles.acceptedCard}>
-          <span className={styles.attentionLabel}>Correction accepted</span>
-          <h2>Naproxen is now {formatFact(dose?.resolved)}</h2>
-          <p>The earlier {formatFact(dose?.history[0]?.value)} value remains available in history but is no longer active.</p>
-        </article>
-      )}
-      {dateProposal && (
-        <article className={styles.attentionCard}>
-          <span className={styles.attentionLabel}>Incompatible evidence</span>
-          <h2>Apixaban start date</h2>
-          {hasDistinctDates ? (
-            <p>The reviewed case says <strong>{formatFact(reviewedDate)}</strong>. The update proposes <strong>{formatFact(proposedDate)}</strong>.</p>
-          ) : (
-            <p><strong>Wilson did not identify a different date.</strong> The proposed date matches the reviewed date, so there is no conflict to resolve. Accepted case knowledge is unchanged.</p>
-          )}
-          <div className={styles.evidencePair}>
-            <Evidence excerpt={startDate?.evidence[0]} expanded />
-            <Evidence excerpt={dateProposal.values[0].evidence[0]} expanded />
-          </div>
-          {hasDistinctDates && (
-            <div className={styles.decisionActions}>
-              <button disabled={busy || Boolean(correction)} onClick={() => void act({ action: "resolve-date", chosenValueId: "apixaban-start" })}>Use {formatFact(reviewedDate)}</button>
-              <button disabled={busy || Boolean(correction)} onClick={() => void act({ action: "resolve-date", chosenValueId: "apixaban-date-alternative" })}>Use {formatFact(proposedDate)}</button>
-              <button disabled={busy || Boolean(correction)} onClick={() => void act({ action: "leave-date-unresolved" })}>Keep both dates unresolved for now</button>
-            </div>
-          )}
-        </article>
-      )}
-    </>
-  );
+function Describe({ opening, setOpening, busy, act }: {
+  opening: string; setOpening: (value: string) => void; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+}) {
+  return <>
+    <p className={styles.eyebrow}>Describe</p>
+    <h1 id="task-title">Describe what happened</h1>
+    <p>Paste or type a fictional clinical account. Wilson will propose case knowledge for review; it will not accept those proposals as truth.</p>
+    <label htmlFor="opening-account">Clinical account</label>
+    <textarea id="opening-account" rows={13} value={opening} onChange={(event) => setOpening(event.target.value)} />
+    <fieldset className={styles.reportType}><legend>Report type</legend><label><input type="radio" checked readOnly /> Adverse event</label></fieldset>
+    <p className={styles.hint}>You can also use device-native dictation. Wilson does not record audio.</p>
+    <button disabled={busy || !opening.trim()} onClick={() => void act({ action: "submit-opening", text: opening, reportType: "adverse-event" })}>
+      {busy ? "Extracting case details…" : "Review Wilson’s understanding"}
+    </button>
+  </>;
 }
 
-function OutputComposition({
-  snapshot,
-  busy,
-  act,
-  openPdf,
-}: {
+function UnderstandingTask({ snapshot, busy, act }: {
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+}) {
+  return <>
+    <p className={styles.eyebrow}>Check understanding</p>
+    <h1 id="task-title">Check Wilson’s understanding</h1>
+    <p>Review the proposed groups and their source evidence. Change a supported value or remove a product before accepting the remaining proposals.</p>
+    <button disabled={busy} onClick={() => void act({ action: "accept-understanding" })}>Accept the remaining understanding</button>
+  </>;
+}
+
+type IndicationChoice = "known" | "unknown" | "declined";
+
+function IndicationTask({ snapshot, busy, act }: {
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+}) {
+  const productIds = snapshot.clarification?.productIds ?? [];
+  const [choices, setChoices] = useState<Record<string, IndicationChoice>>({});
+  const [texts, setTexts] = useState<Record<string, string>>({});
+  const products = productIds.map((id) => snapshot.understanding.products.find((product) => product.id === id)).filter(Boolean);
+  const complete = products.every((product) => {
+    const choice = choices[product!.id];
+    return choice === "unknown" || choice === "declined" || (choice === "known" && Boolean(texts[product!.id]?.trim()));
+  });
+  return <>
+    <p className={styles.eyebrow}>Clarify · one useful question</p>
+    <h1 id="task-title">{snapshot.clarification?.question}</h1>
+    <p>Answer each labelled product separately, or record that the information is unknown or declined.</p>
+    {products.map((product) => {
+      const name = formatFact(activeValue(product!.facts.name));
+      return <fieldset className={styles.answerGroup} key={product!.id}>
+        <legend>{name}</legend>
+        <label><input type="radio" name={`choice-${product!.id}`} checked={choices[product!.id] === "known"} onChange={() => setChoices({ ...choices, [product!.id]: "known" })} /> Known</label>
+        <input aria-label={`${name} indication`} value={texts[product!.id] ?? ""} onChange={(event) => { setChoices({ ...choices, [product!.id]: "known" }); setTexts({ ...texts, [product!.id]: event.target.value }); }} />
+        <label><input type="radio" name={`choice-${product!.id}`} checked={choices[product!.id] === "unknown"} onChange={() => setChoices({ ...choices, [product!.id]: "unknown" })} /> Unknown</label>
+        <label><input type="radio" name={`choice-${product!.id}`} checked={choices[product!.id] === "declined"} onChange={() => setChoices({ ...choices, [product!.id]: "declined" })} /> Prefer not to answer</label>
+      </fieldset>;
+    })}
+    <button disabled={busy || !complete} onClick={() => void act({
+      action: "answer-indications",
+      answers: products.map((product) => ({
+        productId: product!.id,
+        value: choices[product!.id] === "known"
+          ? { kind: "known", value: texts[product!.id].trim() }
+          : { kind: choices[product!.id] as "unknown" | "declined" },
+      })),
+    })}>Add these answers</button>
+  </>;
+}
+
+function UpdateReview({ snapshot, busy, act }: {
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+}) {
+  const groups = groupAttention(snapshot.review.attention.filter(({ kind }) => kind !== "conflict"));
+  return <>
+    <p className={styles.eyebrow}>Review update</p>
+    <h1 id="task-title">Review the proposed update</h1>
+    <p>Accepted knowledge stays active until you accept a correction. An accepted incompatible alternative remains visibly unresolved and is omitted from the form.</p>
+    {groups.map(({ groupId, items }) => <article className={styles.attentionCard} key={groupId}>
+      <span className={styles.attentionLabel}>{items.some(({ kind }) => kind === "correction") ? "Proposed correction" : "Proposed information"}</span>
+      {items.map((item) => <div key={item.target}>
+        <h2>{targetLabel(item.target)}</h2>
+        <p><strong>{formatFact(item.values[0]?.value)}</strong></p>
+        <Evidence excerpt={item.values[0]?.evidence} expanded />
+      </div>)}
+      <div className={styles.decisionActions}>
+        <button disabled={busy} onClick={() => void act({ action: "review-update-group", groupId, decision: "accept" })}>Accept this update</button>
+        <button disabled={busy} onClick={() => void act({ action: "review-update-group", groupId, decision: "reject" })}>Reject this update</button>
+      </div>
+    </article>)}
+  </>;
+}
+
+function OutputComposition({ snapshot, update, setUpdate, busy, act, openPdf }: {
   snapshot: JourneySnapshot;
+  update: string;
+  setUpdate: (value: string) => void;
   busy: boolean;
   act: (action: JourneyAction) => Promise<void>;
   openPdf: (mode: "preview" | "download") => Promise<void>;
 }) {
-  const unresolved = snapshot.stage === "output-unresolved";
-  const apixaban = snapshot.understanding.products.find(({ id }) => id === "product-apixaban");
-  const conflict = apixaban?.facts.startDate.conflicts;
-  const { A, D, F } = snapshot.projection.sections;
-  const projectedApixaban = D.suspectProducts.find(({ productId }) => productId === "product-apixaban");
-  const projectedNaproxen = D.suspectProducts.find(({ productId }) => productId === "product-naproxen");
-  const naproxen = snapshot.understanding.products.find(({ id }) => id === "product-naproxen");
-  return (
-    <div className={styles.outputWorkspace}>
-      <section className={styles.outputSummary} aria-labelledby="output-title">
-        <p className={styles.eyebrow}>Step {unresolved ? "6" : "7"} of 7</p>
-        <h1 id="output-title">{unresolved ? "Inspect what the form can include" : "The reviewed form is ready"}</h1>
+  const { A, B, D, F } = snapshot.projection.sections;
+  const conflicts = snapshot.review.attention.filter(({ kind }) => kind === "conflict");
+  return <div className={styles.outputWorkspace}>
+    <section className={styles.outputSummary} aria-labelledby="output-title">
+      <p className={styles.eyebrow}>Reviewed case and supported output</p>
+      <h1 id="output-title">{snapshot.downloadReady ? "The supported form is ready" : "The form needs more reviewed information"}</h1>
+      <Summary title="Included" tone="included">
+        <li>Patient {A.patientIdentifier ?? "identifier not provided"}{A.ageYears === undefined ? "" : `, age ${A.ageYears}`}{A.sex ? `, ${A.sex}` : ""}</li>
+        {B.eventDescription && <li>{B.eventDescription}</li>}
+        {D.suspectProducts.map((product) => <li key={product.productId}>{product.name ?? "Unnamed product"} as a suspect product{product.dose ? `, ${product.dose}` : ""}</li>)}
+        {F.concomitantProducts.map((product) => <li key={product.productId}>{product.name ?? "Unnamed product"} as another medical product</li>)}
+      </Summary>
 
-        <Summary title="Included" tone="included">
-          <li>
-            Patient {A.patientIdentifier ?? "identifier not provided"}
-            {A.ageYears === undefined ? "" : `, age ${A.ageYears}`}
-            {A.sex === undefined ? "" : `, ${A.sex}`}
-          </li>
-          <li>Melena and dizziness with hospitalization and recovery</li>
-          <li>Apixaban and naproxen as separate suspect products</li>
-          {F.concomitantProducts.map((product) => (
-            <li key={product.productId}>{product.name} as a concomitant product</li>
-          ))}
-          {projectedNaproxen?.dose && (
-            <li>
-              Naproxen {projectedNaproxen.dose}
-              {naproxen?.facts.dose.history[0] && `; earlier ${formatFact(naproxen.facts.dose.history[0].value)} retained only in history`}
-            </li>
-          )}
-          {!unresolved && projectedApixaban?.startDate && (
-            <li>Apixaban start date {displayDate(projectedApixaban.startDate)}</li>
-          )}
-        </Summary>
+      <Summary title="Needs attention" tone={conflicts.length > 0 ? "attention" : "quiet"}>
+        {conflicts.length === 0 ? <li>No unresolved conflicts.</li> : conflicts.map((conflict) => (
+          <li key={conflict.target}>{targetLabel(conflict.target)} has incompatible sources and is omitted unless you resolve it.</li>
+        ))}
+      </Summary>
+      {conflicts.map((conflict) => <ConflictCard key={conflict.target} item={conflict} busy={busy} act={act} />)}
 
-        <Summary title="Needs resolution" tone={unresolved ? "attention" : "quiet"}>
-          {unresolved ? <li>Apixaban start date is omitted until one source is selected.</li> : <li>Nothing in the fixed journey.</li>}
-        </Summary>
+      <Summary title="Omitted or unsupported" tone="quiet">
+        {snapshot.projection.omissions.map((item, index) => <li key={`${item.target}-${index}`}>{humanOmission(snapshot, item.target, item.concept)}: {omissionLabel(item.reason)}</li>)}
+        {snapshot.projection.notIncluded.map((item) => <li key={item}>{item}</li>)}
+      </Summary>
+      {snapshot.outputIssues.length > 0 && <Summary title="Required before output" tone="attention">
+        {snapshot.outputIssues.map((issue) => <li key={issue}>{issue}</li>)}
+      </Summary>}
 
-        {unresolved && conflict && (
-          <fieldset className={styles.conflictChoice}>
-            <legend>Choose the apixaban start date</legend>
-            {conflict.map((item) => (
-              <div key={item.id} className={styles.conflictOption}>
-                <strong>{formatFact(item.value)}</strong>
-                <Evidence excerpt={item.evidence[0]} expanded />
-                {(item.id === "apixaban-start" || item.id === "apixaban-date-alternative") && (
-                  <button disabled={busy} onClick={() => void act({ action: "resolve-date", chosenValueId: item.id as "apixaban-start" | "apixaban-date-alternative" })}>Use {formatFact(item.value)}</button>
-                )}
-              </div>
-            ))}
-          </fieldset>
-        )}
+      <div className={styles.decisionActions}>
+        <button disabled={busy || !snapshot.downloadReady} onClick={() => void openPdf("preview")}>Open PDF preview</button>
+        <button className={styles.download} disabled={busy || !snapshot.downloadReady} onClick={() => void openPdf("download")}>Download official PDF</button>
+      </div>
 
-        <Summary title="Not included" tone="quiet">
-          {snapshot.projection.notIncluded.map((item) => <li key={item}>{item}</li>)}
-          <li>Stop dates remain blank because no dates were supplied.</li>
-          <li>Other relevant medical history remains blank; absence was not reported.</li>
-        </Summary>
-
-        {unresolved ? (
-          <button disabled title="Resolve the apixaban start-date conflict first">Download official PDF</button>
-        ) : (
-          <button className={styles.download} disabled={busy} onClick={() => void openPdf("download")}>Download official PDF</button>
-        )}
+      <section className={styles.updateBox} aria-labelledby="update-title">
+        <h2 id="update-title">Add a correction or later update</h2>
+        <p>Wilson will propose changes against the reviewed product identities. Existing facts remain active until you accept an update.</p>
+        <label htmlFor="later-update">Clinical update</label>
+        <textarea id="later-update" rows={5} value={update} onChange={(event) => setUpdate(event.target.value)} />
+        <button disabled={busy || !update.trim()} onClick={() => void act({ action: "submit-update", text: update })}>Review this update</button>
       </section>
-      <section className={styles.previewPanel} aria-labelledby="preview-title">
-        <div className={styles.panelHeading}>
-          <div><p className={styles.eyebrow}>Supported projection</p><h2 id="preview-title">Form FDA 3500 preview</h2></div>
-          {!unresolved && <button disabled={busy} onClick={() => void openPdf("preview")}>Open PDF preview</button>}
-        </div>
-        <FormPreview snapshot={snapshot} unresolved={unresolved} />
-      </section>
-    </div>
-  );
+
+      <h2 className={styles.reviewedHeading}>Reviewed knowledge</h2>
+      <CaseCards snapshot={snapshot} busy={busy} act={act} />
+    </section>
+    <section className={styles.previewPanel} aria-labelledby="preview-title">
+      <div className={styles.panelHeading}><div><p className={styles.eyebrow}>Same case revision</p><h2 id="preview-title">Form FDA 3500 preview</h2></div></div>
+      <FormPreview snapshot={snapshot} />
+    </section>
+  </div>;
 }
 
-function FormPreview({ snapshot, unresolved }: { snapshot: JourneySnapshot; unresolved: boolean }) {
+function ConflictCard({ item, busy, act }: {
+  item: ReviewAttentionItem; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+}) {
+  return <fieldset className={styles.conflictChoice}>
+    <legend>{targetLabel(item.target)}</legend>
+    {item.values.map((value) => <div className={styles.conflictOption} key={value.id}>
+      <strong>{formatFact(value.value)}</strong>
+      <Evidence excerpt={value.evidence} expanded />
+      <button disabled={busy} onClick={() => void act({ action: "resolve-conflict", target: item.target, chosenValueId: value.id })}>Use {formatFact(value.value)}</button>
+    </div>)}
+    <p className={styles.hint}>You may leave this unresolved. Neither alternative will be put in the form.</p>
+  </fieldset>;
+}
+
+function FormPreview({ snapshot }: { snapshot: JourneySnapshot }) {
   const { A, B, D, F } = snapshot.projection.sections;
-  return (
-    <div className={styles.formPreview} aria-label="Form FDA 3500 preview">
-      <header className={styles.formHeader}>
-        <div><strong>MedWatch</strong><span>The FDA Safety Information and Adverse Event Reporting Program</span></div>
-        <div><strong>Form FDA 3500</strong><span>Voluntary Reporting</span></div>
-      </header>
-      <PreviewSection letter="A" title="Patient information">
-        <PreviewField label="Patient identifier" value={A.patientIdentifier} />
-        <PreviewField label="Age" value={A.ageYears === undefined ? undefined : `${A.ageYears} years`} />
-        <PreviewField label="Sex" value={A.sex} />
-      </PreviewSection>
-      <PreviewSection letter="B" title="Adverse event">
-        <PreviewField label="Report type" value="Adverse event" />
-        <PreviewField label="Outcome" value={B.hospitalized ? "Hospitalization" : undefined} />
-        <PreviewField label="Date of event" value={displayDate(B.eventDate)} />
-        <PreviewField label="Relevant tests" value={B.relevantTests} />
-        <PreviewField wide label="Describe event" value={B.eventDescription} />
-      </PreviewSection>
-      <PreviewSection letter="D" title="Suspect products">
-        {D.suspectProducts.map((product, index) => (
-          <div className={styles.previewProduct} key={product.productId}>
-            <strong>#{index + 1} {product.name}</strong>
-            <span>{[product.dose, product.frequency, product.route].filter(Boolean).join(" · ")}</span>
-            <span>Started: {product.startDate ? displayDate(product.startDate) : unresolved && product.productId === "product-apixaban" ? "Omitted — conflicting sources" : "Not provided"}</span>
-            <span>Used for: {product.indication ?? "Not provided"}</span>
-          </div>
-        ))}
-      </PreviewSection>
-      <PreviewSection letter="F" title="Other medical products">
-        {F.concomitantProducts.map((product) => <PreviewField key={product.productId} label="Product" value={product.name} />)}
-      </PreviewSection>
-      <footer>FORM FDA 3500 (09/2025) · Supported fields preview</footer>
-    </div>
-  );
+  const omissionByTarget = new Map(snapshot.projection.omissions.map((item) => [item.target, item.reason]));
+  return <div className={styles.formPreview} aria-label="Form FDA 3500 preview">
+    <header className={styles.formHeader}>
+      <div><strong>MedWatch</strong><span>The FDA Safety Information and Adverse Event Reporting Program</span></div>
+      <div><strong>Form FDA 3500</strong><span>Voluntary Reporting</span></div>
+    </header>
+    <PreviewSection letter="A" title="Patient information">
+      <PreviewField label="Patient identifier" value={A.patientIdentifier} />
+      <PreviewField label="Age" value={A.ageYears === undefined ? undefined : `${A.ageYears} years`} />
+      <PreviewField label="Sex" value={A.sex} />
+    </PreviewSection>
+    <PreviewSection letter="B" title="Adverse event">
+      <PreviewField label="Report type" value={B.reportType === "adverse-event" ? "Adverse event" : undefined} />
+      <PreviewField label="Outcome" value={B.hospitalized === undefined ? undefined : B.hospitalized ? "Hospitalization" : "Not hospitalized"} />
+      <PreviewField label="Date of event" value={displayDate(B.eventDate)} />
+      <PreviewField label="Relevant tests" value={B.relevantTests} />
+      <PreviewField wide label="Describe event" value={B.eventDescription} />
+    </PreviewSection>
+    <PreviewSection letter="D" title="Suspect products">
+      {D.suspectProducts.map((product, index) => <div className={styles.previewProduct} key={product.productId}>
+        <strong>#{index + 1} {product.name}</strong>
+        <span>{[product.dose, product.frequency, product.route].filter(Boolean).join(" · ") || "Regimen not provided"}</span>
+        <span>Started: {product.startDate ? displayDate(product.startDate) : omissionText(omissionByTarget.get(`product:${product.productId}:startDate`))}</span>
+        <span>Used for: {product.indication ?? omissionText(omissionByTarget.get(`product:${product.productId}:indication`))}</span>
+      </div>)}
+    </PreviewSection>
+    <PreviewSection letter="F" title="Other medical products">
+      {F.concomitantProducts.length === 0 ? <PreviewField label="Product" /> : F.concomitantProducts.map((product) => <PreviewField key={product.productId} label="Product" value={product.name} />)}
+    </PreviewSection>
+    <footer>FORM FDA 3500 (09/2025) · Supported fields preview</footer>
+  </div>;
 }
 
 function PreviewSection({ letter, title, children }: { letter: string; title: string; children: ReactNode }) {
@@ -458,108 +392,86 @@ function PreviewField({ label, value, wide = false }: { label: string; value?: s
   return <div className={wide ? styles.previewWide : undefined}><span>{label}</span><strong>{value ?? "Not provided"}</strong></div>;
 }
 
-function displayDate(value: string | undefined): string | undefined {
-  return value ? formatFact({ kind: "known", value }) : undefined;
-}
-
 function Summary({ title, tone, children }: { title: string; tone: "included" | "attention" | "quiet"; children: ReactNode }) {
   return <section className={`${styles.summary} ${styles[tone]}`}><h2>{title}</h2><ul>{children}</ul></section>;
 }
 
-function CaseCards({
-  snapshot,
-  busy,
-  act,
-}: {
-  snapshot: JourneySnapshot;
-  busy: boolean;
-  act: (action: JourneyAction) => Promise<void>;
+function CaseCards({ snapshot, busy, act }: {
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
 }) {
-  const { understanding } = snapshot;
-  if (snapshot.revision === 0) {
-    return <p className={styles.emptyCase}>Your proposed case knowledge will appear here after Wilson reads the fictional account.</p>;
-  }
-  return (
-    <div className={styles.cards}>
-      <CaseCard
-        title="Patient"
-        facts={understanding.patient}
-        fields={["identifier", "ageYears", "sex"]}
-        busy={busy}
-        onChangeAge={snapshot.stage === "understanding" && understanding.patient.ageYears.state === "proposed"
-          ? () => act({ action: "change-patient-age", ageYears: 58 })
-          : undefined}
-      />
-      <CaseCard title="Event" facts={understanding.event} fields={["reportType", "symptoms", "onsetDate", "hospitalized", "hemoglobin", "treatments", "outcome", "dischargeDate"]} busy={busy} />
-      {understanding.products.map((product) => {
-        const role = formatFact(activeValue(product.facts.role));
-        const name = formatFact(activeValue(product.facts.name));
-        return (
-          <CaseCard
-            key={product.id}
-            title={name}
-            eyebrow={role === "suspect" ? "Suspect product" : "Other product"}
-            facts={product.facts}
-            fields={["dose", "frequency", "route", "startDate", "stopped", "stopDate", "indication"]}
-            evidenceFields={["name", "role"]}
-            busy={busy}
-            onRemove={snapshot.stage === "understanding" && product.id === "product-lisinopril"
-              ? () => act({ action: "remove-lisinopril" })
-              : undefined}
-          />
-        );
-      })}
-    </div>
-  );
+  const understanding = snapshot.understanding;
+  if (snapshot.revision === 0) return <p className={styles.emptyCase}>Proposed case knowledge will appear here after Wilson reads the account.</p>;
+  return <div className={styles.cards}>
+    <CaseCard title="Patient" groupId="patient" facts={understanding.patient} fields={["identifier", "ageYears", "sex"]} allowChanges={snapshot.stage === "understanding"} busy={busy} act={act} />
+    <CaseCard title="Event" groupId="event" facts={understanding.event} fields={["reportType", "symptoms", "onsetDate", "hospitalized", "hemoglobin", "treatments", "outcome", "dischargeDate"]} allowChanges={snapshot.stage === "understanding"} busy={busy} act={act} />
+    {understanding.products.map((product) => {
+      const name = formatFact(activeValue(product.facts.name));
+      const role = formatFact(activeValue(product.facts.role));
+      return <CaseCard key={product.id} title={name} eyebrow={role === "suspect" ? "Suspect product" : "Other product"} groupId={product.proposalGroupId} facts={product.facts} fields={["dose", "frequency", "route", "startDate", "stopped", "stopDate", "indication"]} evidenceFields={["name", "role"]} allowChanges={snapshot.stage === "understanding" && product.state === "proposed"} allowRemove={snapshot.stage === "understanding" && product.state === "proposed"} busy={busy} act={act} />;
+    })}
+  </div>;
 }
 
-function CaseCard({
-  title,
-  eyebrow,
-  facts,
-  fields,
-  evidenceFields = [],
-  busy,
-  onChangeAge,
-  onRemove,
-}: {
+function CaseCard({ title, eyebrow, groupId, facts, fields, evidenceFields = [], allowChanges, allowRemove = false, busy, act }: {
   title: string;
   eyebrow?: string;
+  groupId: string;
   facts: Record<string, FactView>;
   fields: string[];
   evidenceFields?: string[];
+  allowChanges: boolean;
+  allowRemove?: boolean;
   busy: boolean;
-  onChangeAge?: () => Promise<void>;
-  onRemove?: () => Promise<void>;
+  act: (action: JourneyAction) => Promise<void>;
 }) {
+  const [editing, setEditing] = useState<string>();
+  const [replacement, setReplacement] = useState("");
   const evidence = [...new Set([...fields, ...evidenceFields].flatMap((field) => facts[field]?.evidence ?? []))];
-  return (
-    <article className={styles.caseCard}>
-      <div className={styles.cardTitle}>
-        <div>{eyebrow && <span>{eyebrow}</span>}<h3>{title}</h3></div>
-        {(onChangeAge || onRemove) && <div className={styles.cardActions}>
-          {onChangeAge && <button disabled={busy} onClick={() => void onChangeAge()}>Change age to 58</button>}
-          {onRemove && <button disabled={busy} onClick={() => void onRemove()}>Remove lisinopril</button>}
+  return <article className={styles.caseCard}>
+    <div className={styles.cardTitle}>
+      <div>{eyebrow && <span>{eyebrow}</span>}<h3>{title}</h3></div>
+      {allowRemove && <div className={styles.cardActions}><button disabled={busy} onClick={() => void act({ action: "reject-group", groupId })}>Remove {title}</button></div>}
+    </div>
+    <dl>{fields.map((field) => {
+      const fact = facts[field];
+      if (!fact) return null;
+      const value = activeValue(fact);
+      if (!value && fact.history.length === 0 && fact.conflicts.length === 0) return null;
+      const proposal = fact.proposals.find(({ groupId: proposalGroup }) => proposalGroup === groupId);
+      const editable = allowChanges && proposal?.value.kind === "known" && !Array.isArray(proposal.value.value);
+      return <div key={field}>
+        <dt>{fieldLabel(field)}</dt>
+        <dd>{fact.state === "conflicted" ? "Unresolved conflict" : formatFact(value)}{fact.state === "proposed" && <span className={styles.proposed}>Proposed</span>}</dd>
+        {fact.history.map((history, index) => <dd key={index} className={styles.history}>Earlier: {formatFact(history.value)}</dd>)}
+        {editable && editing !== field && <button className={styles.inlineAction} disabled={busy} onClick={() => { setEditing(field); setReplacement(String(proposal.value.kind === "known" ? proposal.value.value : "")); }}>Change</button>}
+        {editable && editing === field && <div className={styles.inlineEdit}>
+          <input aria-label={`New ${fieldLabel(field)}`} value={replacement} onChange={(event) => setReplacement(event.target.value)} />
+          <button disabled={busy || !replacement.trim()} onClick={() => {
+            const replacementValue = replacementFor(proposal.value, replacement);
+            void act({ action: "change-proposal", groupId, proposalId: proposal.id, value: replacementValue, statement: `${fieldLabel(field)} corrected to ${replacement}.` });
+            setEditing(undefined);
+          }}>Apply change</button>
         </div>}
-      </div>
-      <dl>
-        {fields.map((field) => {
-          const fact = facts[field];
-          if (!fact) return null;
-          const value = activeValue(fact);
-          if (!value && fact.history.length === 0) return null;
-          return (
-            <div key={field}>
-              <dt>{fieldLabel(field)}</dt>
-              <dd>{formatFact(value)}{fact.state === "proposed" && <span className={styles.proposed}>Proposed</span>}</dd>
-              {fact.history.map((history, index) => <dd key={index} className={styles.history}>Earlier: {formatFact(history.value)}</dd>)}
-            </div>
-          );
-        })}
-      </dl>
-      {evidence.length > 0 && <Evidence excerpt={evidence} />}
-    </article>
-  );
+      </div>;
+    })}</dl>
+    {evidence.length > 0 && <Evidence excerpt={evidence} />}
+  </article>;
+}
+
+function groupAttention(items: ReviewAttentionItem[]) {
+  const groups = new Map<string, ReviewAttentionItem[]>();
+  for (const item of items) {
+    if (!item.groupId) continue;
+    groups.set(item.groupId, [...(groups.get(item.groupId) ?? []), item]);
+  }
+  return [...groups].map(([groupId, grouped]) => ({ groupId, items: grouped }));
+}
+
+function replacementFor(original: CaseValue<unknown>, replacement: string): CaseValue<unknown> {
+  if (original.kind !== "known") return { kind: "known", value: replacement };
+  if (typeof original.value === "number") return { kind: "known", value: Number(replacement) };
+  if (typeof original.value === "boolean") return { kind: "known", value: replacement.toLowerCase() === "yes" || replacement.toLowerCase() === "true" };
+  return { kind: "known", value: replacement };
 }
 
 function activeValue(fact: FactView | undefined): CaseValue<unknown> | undefined {
@@ -571,12 +483,15 @@ function formatFact(value: CaseValue<unknown> | undefined): string {
   if (value.kind !== "known") return value.kind.replaceAll("-", " ");
   if (Array.isArray(value.value)) return value.value.join(" and ");
   if (typeof value.value === "boolean") return value.value ? "Yes" : "No";
-  if (typeof value.value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value.value)) {
-    const [year, month, day] = value.value.split("-");
-    const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][Number(month) - 1];
-    return `${Number(day)}-${monthName}-${year}`;
-  }
+  if (typeof value.value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value.value)) return displayDate(value.value) ?? value.value;
   return String(value.value);
+}
+
+function displayDate(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  const [year, month, day] = value.split("-");
+  const name = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][Number(month) - 1];
+  return `${Number(day)}-${name}-${year}`;
 }
 
 function fieldLabel(field: string): string {
@@ -584,9 +499,29 @@ function fieldLabel(field: string): string {
     identifier: "Identifier", ageYears: "Age", sex: "Sex", symptoms: "Symptoms", onsetDate: "Onset",
     reportType: "Report type", hospitalized: "Hospitalized", hemoglobin: "Hemoglobin", treatments: "Treatment", outcome: "Outcome",
     dischargeDate: "Discharged", dose: "Dose", frequency: "Frequency", route: "Route", startDate: "Started",
-    stopped: "Stopped", stopDate: "Stopped date", indication: "Used for",
+    stopped: "Stopped", stopDate: "Stopped date", indication: "Used for", name: "Name", role: "Role",
   };
   return labels[field] ?? field;
+}
+
+function targetLabel(target: string): string {
+  const field = target.split(":").at(-1) ?? target;
+  return fieldLabel(field);
+}
+
+function omissionLabel(reason: string): string {
+  return reason === "empty" ? "not provided" : reason.replaceAll("-", " ");
+}
+
+function omissionText(reason: string | undefined): string {
+  return reason === "conflicted" ? "Omitted — unresolved conflict" : reason ? omissionLabel(reason) : "Not provided";
+}
+
+function humanOmission(snapshot: JourneySnapshot, target: string, fallback: string): string {
+  const [entity, entityId, field] = target.split(":");
+  if (entity !== "product") return field ? fieldLabel(field) : fallback;
+  const product = snapshot.understanding.products.find(({ id }) => id === entityId);
+  return `${formatFact(activeValue(product?.facts.name))} — ${fieldLabel(field ?? "")}`;
 }
 
 function Evidence({ excerpt, expanded = false }: { excerpt?: string | string[]; expanded?: boolean }) {
@@ -599,8 +534,6 @@ function Evidence({ excerpt, expanded = false }: { excerpt?: string | string[]; 
 
 function displayError(caught: unknown, fallback: string): string {
   if (!(caught instanceof Error)) return fallback;
-  if (caught instanceof JourneyRequestError && caught.diagnosticReference) {
-    return `${caught.message} Diagnostic reference: ${caught.diagnosticReference}`;
-  }
+  if (caught instanceof JourneyRequestError && caught.diagnosticReference) return `${caught.message} Diagnostic reference: ${caught.diagnosticReference}`;
   return caught.message;
 }

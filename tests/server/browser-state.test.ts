@@ -14,6 +14,7 @@ import {
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { getJourneySnapshot, performJourneyAction } from "../../src/server/journey/service";
 import { openingAccount } from "../../src/experiment/fixed-inputs";
+import { fixedJourneyModel } from "../../src/experiment/fixed-journey";
 
 describe("browser-held journey state boundary", () => {
   it("reconstructs the same compatible state through fresh request repositories", async () => {
@@ -23,7 +24,7 @@ describe("browser-held journey state boundary", () => {
       action: "submit-opening",
       text: openingAccount,
       reportType: "adverse-event",
-    });
+    }, fixedJourneyModel);
     const response = await journeyResponse(original, snapshot);
     const parsed = parseBrowserJourneyState(structuredClone(response.state));
 
@@ -71,7 +72,7 @@ describe("browser-held journey state boundary", () => {
       action: "submit-opening",
       text: openingAccount,
       reportType: "adverse-event",
-    });
+    }, fixedJourneyModel);
     const response = await journeyResponse(repository, snapshot);
     const malformed = structuredClone(response.state);
     malformed.case.changes[1].priorRevision = 99;

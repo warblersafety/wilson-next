@@ -1,9 +1,11 @@
+import { createHash } from "node:crypto";
 import { NextRequest } from "next/server";
 import { describe, expect, it, vi } from "vitest";
 import { GET as getCase, postCase } from "../../app/api/case/route";
 import { POST as postBrowserDiagnostic } from "../../app/api/diagnostics/browser/route";
 import { consumeJourneyJsonResponse } from "../../app/browser-diagnostics";
 import { openingAccount } from "../../src/experiment/fixed-inputs";
+import { fixedJourneyModel } from "../../src/experiment/fixed-journey";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import {
   createRuntimeDiagnosticLogger,
@@ -17,6 +19,8 @@ const context = {
   runId: "11111111-1111-4111-8111-111111111111",
   operationId: "22222222-2222-4222-8222-222222222222",
 };
+
+process.env.WILSON_SYNTHETIC_INPUT_SHA256 = createHash("sha256").update(openingAccount).digest("hex");
 
 describe("runtime diagnostics", () => {
   it("carries browser correlation IDs through the route and ordered response event", async () => {
@@ -39,13 +43,13 @@ describe("runtime diagnostics", () => {
           expectedRevision: 0,
           action: { action: "submit-opening", text: openingAccount, reportType: "adverse-event" },
         }),
-      }));
+      }), fixedJourneyModel);
 
       expect(response.status).toBe(200);
       expect(response.headers.get("x-wilson-run-id")).toBe(context.runId);
       expect(response.headers.get("x-wilson-operation-id")).toBe(context.operationId);
       expect(await response.json()).toMatchObject({
-        state: { version: "wilson-browser-state-v1", stage: "understanding", case: { revision: 2 } },
+        state: { version: "wilson-browser-state-v2", stage: "understanding", case: { revision: 2 } },
         snapshot: { stage: "understanding", revision: 2 },
       });
       const events = written.map((value) => JSON.parse(value) as RuntimeDiagnosticEvent);
@@ -97,7 +101,7 @@ describe("runtime diagnostics", () => {
       action: "submit-opening",
       text: openingAccount,
       reportType: "adverse-event",
-    }, undefined, diagnostics);
+    }, fixedJourneyModel, diagnostics);
 
     expect(snapshot).toMatchObject({ stage: "understanding", revision: 2 });
     expect(events.map(({ source, phase, outcome }) => [source, phase, outcome])).toEqual([
@@ -107,10 +111,10 @@ describe("runtime diagnostics", () => {
       ["schema-domain", "proposal-envelope", "success"],
       ["case-command", "attach-grounded-proposals", "start"],
       ["case-command", "attach-grounded-proposals", "success"],
-      ["state-transition", "command-attach-opening", "success"],
+      ["state-transition", expect.stringMatching(/^command-attach-opening-/), "success"],
       ["case-command", "record-clinician-facts", "start"],
       ["case-command", "record-clinician-facts", "success"],
-      ["state-transition", "command-record-report-type", "success"],
+      ["state-transition", expect.stringMatching(/^command-record-report-type-/), "success"],
       ["state-transition", "action-complete", "success"],
     ]);
     expect(events.map(({ sequence }) => sequence).every((sequence, index) => sequence === index + 1)).toBe(true);
@@ -154,7 +158,7 @@ describe("runtime diagnostics", () => {
       action: "submit-opening",
       text: "not the approved synthetic fixture",
       reportType: "adverse-event",
-    }, undefined, diagnostics)).rejects.toThrow("only the displayed fictional opening account");
+    }, fixedJourneyModel, diagnostics)).rejects.toThrow("only the displayed fictional opening account");
 
     expect(events.map(({ source, phase, outcome }) => [source, phase, outcome])).toEqual([
       ["state-transition", "action-dispatch", "start"],
@@ -384,7 +388,7 @@ describe("runtime diagnostics", () => {
       expect(event).toMatchObject({ source: "browser", phase: "response-parse-failed", outcome: "failure", ...context });
       expect(event.details).toMatchObject({
         trace: [
-          { browserSequence: 1, phase: "request-start", request: { body: { text: openingAccount } } },
+          { browserSequence: 1, phase: "request-start", request: { body: { text: "[CLINICIAN TEXT NOT LOGGED IN BROWSER TRACE]" } } },
           { browserSequence: 2, phase: "response-received", response: { status: 502 } },
           { browserSequence: 3, phase: "response-parse-failed", error: { name: "SyntaxError" } },
         ],
@@ -429,7 +433,7 @@ describe("runtime diagnostics", () => {
       const serialized = written.join("\n");
       expect(serialized).not.toContain(outsideFixture);
       expect(serialized).not.toContain("browser state");
-      expect(serialized).toContain("[NOT LOGGED: outside fixed synthetic fixture]");
+      expect(serialized).toContain("[CLINICIAN TEXT NOT LOGGED IN BROWSER TRACE]");
       expect(serialized).toContain("[BROWSER STATE NOT LOGGED]");
     } finally {
       consoleLog.mockRestore();

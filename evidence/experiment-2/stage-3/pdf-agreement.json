@@ -1,0 +1,196 @@
+{
+  "readbacks": {
+    "rich": {
+      "encrypted": false,
+      "fieldValues": [
+        "/1",
+        "/1",
+        "/1",
+        "/1",
+        "/Off",
+        "01-AUG-2026",
+        "04-AUG-2026",
+        "500 mg",
+        "68",
+        "BID",
+        "Oral",
+        "Symptoms: diffuse hives and facial swelling. Treatment: epinephrine; diphenhydramine. Outcome: recovered. Discharged 5-Aug-2026. Products stopped: cephalexin.",
+        "TEST-68",
+        "cellulitis",
+        "cephalexin"
+      ],
+      "namedFields": {
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "68",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].EventDate[0]": "04-AUG-2026",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].Hospital[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]": "TEST-68",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]": "/Off",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]": "/1",
+        "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Symptoms: diffuse hives and facial swelling. Treatment: epinephrine; diphenhydramine. Outcome: recovered. Discharged 5-Aug-2026. Products stopped: cephalexin.",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Diagnosis[0]": "cellulitis",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]": "500 mg",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Freq[0]": "BID",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "cephalexin",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Route[0]": "Oral",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1TherapyStartDate[0]": "01-AUG-2026"
+      },
+      "pageCount": 8,
+      "pypdfVersion": "6.16.2"
+    },
+    "sparse": {
+      "encrypted": false,
+      "fieldValues": [
+        "/1",
+        "/1",
+        "/1",
+        "/Off",
+        "/Off",
+        "31",
+        "Symptoms: nausea and vomiting.",
+        "TEST-31",
+        "metformin"
+      ],
+      "namedFields": {
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "31",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].Hospital[0]": "/Off",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]": "TEST-31",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]": "/Off",
+        "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Symptoms: nausea and vomiting.",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "metformin"
+      },
+      "pageCount": 8,
+      "pypdfVersion": "6.16.2"
+    },
+    "repeated": {
+      "encrypted": false,
+      "fieldValues": [
+        "/1",
+        "/1",
+        "/1",
+        "/1",
+        "/Off",
+        "03-JUL-2026",
+        "05-JUL-2026",
+        "1,000 mg",
+        "200 mg",
+        "44",
+        "BID",
+        "BID",
+        "Oral",
+        "Oral",
+        "Symptoms: nausea and right upper abdominal pain. Treatment: intravenous fluids. Outcome: recovered. Discharged 7-Jul-2026. Products stopped: acetaminophen (Tylenol) and ibuprofen.",
+        "TEST-44",
+        "acetaminophen (Tylenol)",
+        "back pain",
+        "back pain",
+        "ibuprofen"
+      ],
+      "namedFields": {
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "44",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].EventDate[0]": "05-JUL-2026",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].Hospital[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]": "TEST-44",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]": "/Off",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]": "/1",
+        "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Symptoms: nausea and right upper abdominal pain. Treatment: intravenous fluids. Outcome: recovered. Discharged 7-Jul-2026. Products stopped: acetaminophen (Tylenol) and ibuprofen.",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Diagnosis[0]": "back pain",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]": "1,000 mg",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Freq[0]": "BID",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "acetaminophen (Tylenol)",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Route[0]": "Oral",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2Diagnosis[0]": "back pain",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2Dose[0]": "200 mg",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2Freq[0]": "BID",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2Name[0]": "ibuprofen",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2Route[0]": "Oral",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2TherapyStartDate[0]": "03-JUL-2026"
+      },
+      "pageCount": 8,
+      "pypdfVersion": "6.16.2"
+    },
+    "experiment-1-regression": {
+      "encrypted": false,
+      "fieldValues": [
+        "/1",
+        "/1",
+        "/1",
+        "/1",
+        "/Off",
+        "10-AUG-2026",
+        "13-AUG-2026",
+        "18-AUG-2026",
+        "250 mg",
+        "5 mg",
+        "57",
+        "BID",
+        "BID",
+        "Hemoglobin: 7.8 g/dL",
+        "Oral",
+        "Oral",
+        "Symptoms: melena and dizziness. Treatment: two units of packed red cells. Outcome: recovered. Discharged 21-Aug-2026. Products stopped: apixaban and naproxen.",
+        "TEST-57",
+        "apixaban",
+        "lisinopril",
+        "naproxen",
+        "postoperative VTE prophylaxis after knee replacement",
+        "postoperative pain"
+      ],
+      "namedFields": {
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "57",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].EventDate[0]": "18-AUG-2026",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].Hospital[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]": "TEST-57",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]": "/Off",
+        "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Symptoms: melena and dizziness. Treatment: two units of packed red cells. Outcome: recovered. Discharged 21-Aug-2026. Products stopped: apixaban and naproxen.",
+        "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TestData1[0]": "Hemoglobin: 7.8 g/dL",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Diagnosis[0]": "postoperative VTE prophylaxis after knee replacement",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]": "5 mg",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Freq[0]": "BID",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "apixaban",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Route[0]": "Oral",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1TherapyStartDate[0]": "13-AUG-2026",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2Diagnosis[0]": "postoperative pain",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2Dose[0]": "250 mg",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2Freq[0]": "BID",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2Name[0]": "naproxen",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2Route[0]": "Oral",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2TherapyStartDate[0]": "10-AUG-2026",
+        "topmostSubform[0].Page6[0].SecF_Other[0].Table1[0].Row1[0].Prod1[0]": "lisinopril"
+      },
+      "pageCount": 8,
+      "pypdfVersion": "6.16.2"
+    }
+  },
+  "pdfs": [
+    {
+      "journey": "rich",
+      "bytes": 1053902,
+      "sha256": "57bedbb766570a012f487b173887360d0aefd48883f267a6f8b7ba383a5f617f"
+    },
+    {
+      "journey": "sparse",
+      "bytes": 1054407,
+      "sha256": "ac1ecb474b71eacf986bb2053acb99ff3a67390bae52496af1ad4ee1a86bf391"
+    },
+    {
+      "journey": "repeated",
+      "bytes": 1054144,
+      "sha256": "3c0ddc0bfda4bf3dc1b94a111f593f9fda00659c6fe20c52c15b04c3d1312f18"
+    },
+    {
+      "journey": "experiment-1-regression",
+      "bytes": 1054321,
+      "sha256": "951662c03b1179a952d2c8d8fdc44f915ec1ad135e72f6428c055fc56abb096a"
+    }
+  ]
+}

@@ -10,7 +10,7 @@ import type {
 export interface FactView {
   state: Fact<unknown>["state"];
   resolved?: CaseValue<unknown>;
-  proposals: Array<{ id: string; intent: GroundedValue<unknown>["intent"]; value: CaseValue<unknown>; evidence: string[] }>;
+  proposals: Array<{ id: string; groupId: string; intent: GroundedValue<unknown>["intent"]; value: CaseValue<unknown>; evidence: string[] }>;
   conflicts: Array<{ id: string; value: CaseValue<unknown>; evidence: string[] }>;
   history: Array<{ value: CaseValue<unknown>; evidence: string[] }>;
   evidence: string[];
@@ -18,6 +18,7 @@ export interface FactView {
 
 export interface ProductView {
   id: string;
+  proposalGroupId: string;
   state: ProductEntity["state"];
   facts: Record<string, FactView>;
 }
@@ -31,8 +32,9 @@ export interface UnderstandingView {
 
 export interface ReviewAttentionItem {
   target: string;
+  groupId?: string;
   kind: "proposal" | "correction" | "conflict";
-  values: Array<{ value: CaseValue<unknown>; evidence: string[] }>;
+  values: Array<{ id: string; value: CaseValue<unknown>; evidence: string[] }>;
 }
 
 export interface ClarificationView {
@@ -52,6 +54,7 @@ export function createUnderstandingView(caseState: SemanticCase): UnderstandingV
       .filter(({ state }) => state !== "rejected")
       .map((product) => ({
         id: product.id,
+        proposalGroupId: product.proposalGroupId,
         state: product.state,
         facts: mapFacts(product.facts, sourceExcerpts),
       })),
@@ -74,8 +77,9 @@ export function createReviewView(caseState: SemanticCase): { revision: number; a
       for (const proposal of fact.proposals) {
         attention.push({
           target: `${prefix}:${field}`,
+          groupId: proposal.groupId,
           kind: proposal.intent === "correction" ? "correction" : "proposal",
-          values: [{ value: proposal.value, evidence: proposal.evidence }],
+          values: [{ id: proposal.id, value: proposal.value, evidence: proposal.evidence }],
         });
       }
     }
@@ -118,6 +122,7 @@ function factView(fact: Fact<unknown>, sourceExcerpts: Map<string, string>): Fac
     resolved: fact.resolvedValue?.value,
     proposals: fact.proposedValues.map((proposal) => ({
       id: proposal.id,
+      groupId: proposal.groupId,
       intent: proposal.intent,
       value: proposal.value,
       evidence: evidence(proposal.sourceIds),
