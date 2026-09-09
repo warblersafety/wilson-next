@@ -24,6 +24,9 @@ describe("fixed local journey service", () => {
       ["product-naproxen", "proposed"],
       ["product-lisinopril", "proposed"],
     ]);
+    const apixaban = snapshot.understanding.products.find(({ id }) => id === "product-apixaban")!;
+    expect(apixaban.facts.name.evidence).toEqual(["apixaban 5 mg by mouth twice daily"]);
+    expect(apixaban.facts.dose.evidence).toEqual(["apixaban 5 mg by mouth twice daily"]);
 
     snapshot = await performJourneyAction(repository, caseId, { action: "accept-understanding" });
     expect(snapshot).toMatchObject({ stage: "clarify", revision: 4 });

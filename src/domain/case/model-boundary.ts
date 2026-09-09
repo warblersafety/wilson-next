@@ -93,7 +93,9 @@ export function parseModelProposalEnvelope(
   const allocate = (kind: ModelBoundaryIdentityKind, reference: string): string => {
     const id = createIdentity(kind, reference);
     const allocated = allocatedByKind.get(kind) ?? new Set<string>();
-    if (!id.trim() || allocated.has(id) || (kind === "product" && existingProductIds.has(id))) {
+    // Opening inputs cannot receive existing product IDs, and later inputs
+    // cannot declare products, so product allocation cannot collide across turns.
+    if (!id.trim() || allocated.has(id)) {
       boundaryIssue([], `Application identity factory returned an invalid or duplicate ${kind} ID`);
     }
     allocated.add(id);
