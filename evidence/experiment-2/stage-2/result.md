@@ -25,7 +25,7 @@ before allowing the next call.
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: |
 | 1 | Rich opening | Boundary accepted | Continue with recorded limitations | 2,741 | 2,641 | 22,083 ms | $0.031892 |
 | 2 | Repeated-product opening | Boundary accepted | Continue with recorded limitations | 2,790 | 3,811 | 25,974 ms | $0.043690 |
-| 3 | Repeated-product update | Boundary accepted | Pass | 3,537 | 1,999 | 22,868 ms | $0.027064 |
+| 3 | Repeated-product update | Boundary accepted | Passed during run; later evidence limitation recorded | 3,537 | 1,999 | 22,868 ms | $0.027064 |
 | **Total** | **Two fictional cases** | **Exactly three calls; zero retries** |  | **9,068** | **8,451** | **70,925 ms** | **$0.102646** |
 
 ### Call 1 — rich opening
@@ -89,3 +89,31 @@ This is not a clean pass against every prewritten Stage 2 criterion. It does
 not establish a failure rate, clinical reliability, assembled browser-product
 behavior, operator usefulness, PDF agreement, production readiness, or value
 with real clinical data. Those questions remain outside this three-call gate.
+
+## One bounded remediation confirmation
+
+Steve authorized one general prompt/schema remediation and one bounded
+confirmation batch. Commit `f126c8e` made completeness outrank brevity,
+required preservation of explicitly stated descriptive detail except for the
+two approved normalizations, added the same guidance to the structured schema,
+and changed no runtime semantic validation or expected-answer boundary.
+
+The confirmation used `claude-sonnet-5`, prompt revision
+`wilson-experiment-2-boundary-v2`, schema revision
+`wilson-grounded-proposals-v7`, zero retries, and the same USD 5 cap. The first
+rich-opening call used 3,079 input tokens and 3,357 output tokens, took 28,514
+ms, and cost an estimated $0.039728.
+
+The remediation fixed the lost modifier: the model proposed `diffuse hives`
+and `facial swelling`. It also produced substantially more complete product
+and event quotations. It did not fully satisfy the evidence rule, however.
+Patient and event quotations such as `he was treated with epinephrine and
+diphenhydramine` and `he recovered and was discharged on 05-Aug-2026` still
+depend on an unidentified pronoun and therefore cannot independently identify
+`TEST-68` without surrounding input or target metadata.
+
+The operator recorded a failed semantic verdict. The runner stopped before the
+repeated-product opening and update, so the confirmation made exactly one model
+call with no retry. No further prompt iteration is authorized or recommended
+inside this slice. Across the initial batch and confirmation, Stage 2 made four
+application-model calls and recorded $0.142374 total estimated spend.

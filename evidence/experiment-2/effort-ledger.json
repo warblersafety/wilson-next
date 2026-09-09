@@ -562,6 +562,54 @@
         "No additional Claude review, deployment, assembled-product change, browser live run, or merge occurred.",
         "Codex task-token measurements were unavailable and are not estimated."
       ]
+    },
+    {
+      "id": "stage-2-evidence-fidelity-remediation-confirmation",
+      "status": "stopped-after-failed-confirmation",
+      "recordedAt": "2026-09-09T17:39:09Z",
+      "startedAt": null,
+      "finishedAt": "2026-09-09T17:38:44Z",
+      "elapsedSeconds": null,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 1,
+        "reviewCalls": 0,
+        "inputTokens": 3079,
+        "outputTokens": 3357,
+        "latencyMilliseconds": 28514,
+        "costUsd": 0.039728
+      },
+      "review": null,
+      "result": "Applied one general prompt/schema remediation that made evidence completeness outrank brevity and required preservation of explicitly stated descriptive detail. The single authorized confirmation call preserved 'diffuse hives' and improved quotation scope, but patient/event evidence still relied on unidentified pronouns and failed the independent-subject requirement. The runner stopped before calls 2 and 3 with no retry or further prompt iteration.",
+      "verification": {
+        "focusedTests": "20 passed",
+        "typecheck": "passed",
+        "build": "passed",
+        "callSequence": "1 completed, then stopped before 2 unused calls; 0 retries",
+        "spendCap": "USD 0.039728 of USD 5",
+        "manualReview": "failed after call 1; stop enforced"
+      },
+      "durableValue": {
+        "kind": "decision-evidence-and-product-contract",
+        "artifacts": [
+          "src/server/model/anthropic-journey.ts",
+          "src/domain/case/model-boundary.ts",
+          "tests/server/anthropic-journey.test.ts",
+          "evidence/experiment-2/stage-2/result.md"
+        ]
+      },
+      "limitations": [
+        "The prompt/schema change improved but did not fully correct evidence independence in the first confirmation case.",
+        "The repeated-product opening and update were intentionally not called after the failed first verdict.",
+        "Exact overall stage start and elapsed time and Codex task-token measurements were not retained and are not estimated.",
+        "Raw provider response and local verdict artifacts remain owner-readable ignored files and are not durable repository evidence.",
+        "No additional Claude review, deployment, assembled-product change, browser live run, or merge occurred."
+      ]
     }
   ]
 }
