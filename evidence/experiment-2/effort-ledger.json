@@ -610,6 +610,43 @@
         "Raw provider response and local verdict artifacts remain owner-readable ignored files and are not durable repository evidence.",
         "No additional Claude review, deployment, assembled-product change, browser live run, or merge occurred."
       ]
+    },
+    {
+      "id": "stage-2-owner-disposition",
+      "status": "completed",
+      "recordedAt": "2026-09-09T18:09:27Z",
+      "startedAt": null,
+      "finishedAt": null,
+      "elapsedSeconds": null,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMilliseconds": 0,
+        "costUsd": 0
+      },
+      "review": null,
+      "result": "Steve classified Stage 2 as a qualified result and accepted the remaining pronoun/context evidence weakness as a known, non-blocking limitation for proceeding toward the remaining synthetic operator experiment. No further Stage 2 prompt iteration or live model call is planned; the limitation remains explicit for practical assembled-workflow evidence and later readiness decisions.",
+      "durableValue": {
+        "kind": "decision-evidence",
+        "artifacts": [
+          "docs/EXPERIMENT-2.md",
+          "evidence/experiment-2/stage-2/result.md",
+          "evidence/experiment-2/effort-ledger.json"
+        ]
+      },
+      "limitations": [
+        "Exact decision-stage start, finish, elapsed time, and Codex task-token measurements were not retained and are not estimated.",
+        "The disposition does not claim a clean evidence pass or authorize Stage 3 implementation, external participation, real data, deployment, or release.",
+        "No new issue is created while no remediation is planned; later practical evidence may make a focused issue independently valuable."
+      ]
     }
   ]
 }

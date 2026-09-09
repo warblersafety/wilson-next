@@ -117,3 +117,19 @@ repeated-product opening and update, so the confirmation made exactly one model
 call with no retry. No further prompt iteration is authorized or recommended
 inside this slice. Across the initial batch and confirmation, Stage 2 made four
 application-model calls and recorded $0.142374 total estimated spend.
+
+## Owner disposition
+
+On 2026-09-09, Steve accepted the remaining pronoun/context evidence weakness
+as a known, non-blocking limitation for proceeding toward the remaining
+synthetic operator experiment. Stage 2 is therefore complete as a qualified
+result, not an unqualified pass. The correct values, product identity, and later
+update behavior provide enough signal to move toward the separately controlled
+assembled-product work without another Stage 2 prompt change or model call.
+
+This decision preserves rather than closes the limitation. Reconsider it if the
+assembled workflow causes practical evidence confusion or wrong attribution,
+or when later external-participant, clinical, or production readiness makes
+independently understandable evidence necessary. No separate issue is created
+while no remediation is planned; create one if later evidence makes the work
+independently valuable.
