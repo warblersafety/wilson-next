@@ -1,8 +1,8 @@
 # Wilson Experiment 2
 
-**Status:** Draft under Issue #42; the production-seed quality bar was explicitly
-approved during planning, but the complete plan remains review-only and is not
-implementation authority
+**Status:** Approved by Steve through Issue #42 and PR #43; this plan authorizes
+creation of its named implementation issues, while each implementation slice
+and live-model stage requires its stated separate authorization
 
 **Owns:** The single bounded investment decision, its separate evidence
 dimensions, the production-seed quality bar, supported and deferred scope,
@@ -429,7 +429,7 @@ decision question and Steve's explicit authorization.
 
 ## Proposed delivery slices
 
-1. **Current planning change:** this documentation-only Issue #42/PR defines
+1. **Completed planning change:** documentation-only Issue #42/PR #43 defines
    the exact journeys, production-seed contract, evidence order, and stopping
    rules. It makes no application or model call.
 2. **Core boundary slice:** resolve Issue #39 while generalizing source
@@ -458,7 +458,7 @@ Sonnet/high review of the complete planning diff is required after Steve
 separately authorizes it. Resolve blocking findings before asking Steve to
 approve this document.
 
-Approval of this plan would authorize only creation of the named Experiment 2
+Approval of this plan authorizes only creation of the named Experiment 2
 implementation issues. Each implementation slice still requires Steve's
 explicit go-ahead. Live model batches, physician involvement, real clinical
 data, production deployment, paid-plan purchase, and expanded scope require

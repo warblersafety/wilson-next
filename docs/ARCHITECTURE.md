@@ -1,9 +1,8 @@
 # Wilson semantic architecture
 
 **Status:** Experiment 1 hypothesis completed with qualified technical success;
-Experiment 2's production-seed quality bar was explicitly selected at Issue
-#42's 2026-09-08 stop-and-reconcile checkpoint, while the amendments remain
-draft and are not implementation authority until the plan is approved
+Experiment 2's production-seed amendments were approved through Issue #42 and
+PR #43 and govern each separately authorized implementation slice
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification
@@ -20,7 +19,7 @@ not organize upstream knowledge.
 Model output remains proposed until clinician review. Every consequential case
 change passes through one server-side command boundary. Understanding, review,
 clarification, and Form 3500 output are synchronous views of the same case
-revision. For the synthetic Experiment 1 and proposed Experiment 2 previews
+revision. For the synthetic Experiment 1 and approved Experiment 2 previews
 only, the browser may retain the latest server-returned case and interaction
 state between stateless requests; it does not gain a second mutation path.
 

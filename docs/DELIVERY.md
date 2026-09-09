@@ -1,7 +1,7 @@
 # Wilson delivery and independent review
 
-**Status:** Approved by Steve through 2026-09-05; Experiment 1 process
-disposition and Experiment 2 effort-record amendments are draft under Issue #42
+**Status:** Approved by Steve through 2026-09-08, including the Experiment 1
+process disposition and Experiment 2 effort record merged in PR #43
 
 **Owns:** Work items, branches, pull requests, verification, independent review,
 approval, merge controls, stop-and-reconcile, and durable trace

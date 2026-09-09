@@ -10,16 +10,17 @@ journey, protected Git-preview delivery, synthetic-only diagnostics, and the
 central semantic-case/write-boundary hypothesis. Issue #40's escaped
 correction/conflict defect was repaired and verified in PR #41. General
 usefulness remains unproven because the application is still substantially
-coupled to one case; Issue #42 defines the documentation-only transition to a
-bounded, operator-only Experiment 2 plan.
+coupled to one case. Issue #42 and PR #43 established the approved,
+operator-only Experiment 2 plan.
 
-Experiment 2 remains a draft planning artifact. It authorizes no application
-change, model call, deployment, physician involvement, real clinical data, or
-production release. At Issue #42's 2026-09-08 stop-and-reconcile checkpoint,
-Steve explicitly required any further experiment both to answer its bounded
-questions and to replace the fixed journey with production-seed code for the
-supported adult medication adverse-event scope. `docs/EXPERIMENT-2.md` owns that
-quality bar and its non-production boundary.
+Experiment 2's approval authorizes creation of its named implementation issues;
+each implementation slice still requires Steve's explicit go-ahead. Model
+calls and the other separately controlled activities remain unauthorized. At
+Issue #42's 2026-09-08 stop-and-reconcile checkpoint, Steve explicitly required
+any further experiment both to answer its bounded questions and to replace the
+fixed journey with production-seed code for the supported adult medication
+adverse-event scope. `docs/EXPERIMENT-2.md` owns that quality bar and its
+non-production boundary.
 
 ## Active corpus
 
@@ -30,14 +31,14 @@ other documents link to it or apply it only where their narrower scope requires.
    interaction contract, and unacceptable outcomes.
 2. [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) owns the semantic case,
    authoritative write boundary, model role, projections, and falsification
-   conditions proven in Experiment 1 plus the draft production-seed amendments
-   proposed for Experiment 2.
+   conditions proven in Experiment 1 plus the approved production-seed
+   amendments for Experiment 2.
 3. [`docs/EXPERIMENT-1.md`](docs/EXPERIMENT-1.md) owns the fixed journey,
    supported and deferred scope, selected stack, implementation slices,
    verification, deployment, and disposal contract.
-4. [`docs/EXPERIMENT-2.md`](docs/EXPERIMENT-2.md) owns the draft
-   operator-only generalization and usefulness plan; it is not implementation
-   authority until reviewed and approved.
+4. [`docs/EXPERIMENT-2.md`](docs/EXPERIMENT-2.md) owns the approved
+   operator-only generalization and usefulness plan and the authorization
+   boundaries for each slice.
 5. [`docs/DELIVERY.md`](docs/DELIVERY.md) owns issues, branches, pull requests,
    independent review, approval, merge controls, and durable traceability.
 6. [`docs/RECOVERY.md`](docs/RECOVERY.md) preserves the evidence and lessons
