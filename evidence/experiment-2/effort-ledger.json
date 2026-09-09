@@ -859,6 +859,43 @@
         "Steve explicitly waived independent review for this minor plan correction only; the subsequent model-contract remediation still requires standard review.",
         "Codex task-token measurements were unavailable and are not estimated."
       ]
+    },
+    {
+      "id": "experiment-2-final-revise-deferred",
+      "status": "completed",
+      "recordedAt": "2026-09-09T22:52:51Z",
+      "startedAt": "2026-09-09T22:51:04Z",
+      "finishedAt": "2026-09-09T22:52:51Z",
+      "elapsedSeconds": 107,
+      "codexTaskTokens": {
+        "source": "unavailable",
+        "start": null,
+        "end": null,
+        "delta": null
+      },
+      "externalModels": {
+        "applicationCalls": 0,
+        "reviewCalls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "latencyMilliseconds": 0,
+        "costUsd": 0
+      },
+      "review": null,
+      "result": "Steve chose to defer live-model remediation rather than tune against one failed sample. Experiment 2 closes Revise/deferred with a qualified technical production seed, insufficient live-model reliability evidence, qualified assembled operator viability, and the clinician-validation boundary unchanged. Issue #55 retains the failure and objective revisit triggers while later product planning proceeds independently.",
+      "durableValue": {
+        "kind": "decision-evidence",
+        "artifacts": [
+          "README.md",
+          "docs/EXPERIMENT-2.md",
+          "https://github.com/warblersafety/wilson-next/issues/55"
+        ]
+      },
+      "limitations": [
+        "This disposition adds no model or application evidence and does not resolve the recorded reliability failure.",
+        "Later product work may not assume reliable live extraction merely because Experiment 2 is complete.",
+        "Codex task-token measurements were unavailable and are not estimated."
+      ]
     }
   ]
 }
