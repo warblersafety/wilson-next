@@ -73,7 +73,13 @@ export interface Stage2GateResult {
 export async function runStage2Gate(): Promise<void> {
   assertCredentialRuntime();
   await withGateLock(async () => {
-    await assertFreshGate();
+    let record = await loadGateRecordForRun();
+    if (record) {
+      record = await resumeInterruptedRichOpeningReview(record);
+      if (record.status === "stopped") {
+        throw new Error(`Stage 2 stopped: ${record.stopReason ?? "operator decision"}. No retry was attempted.`);
+      }
+    }
     let currentAttempt = 0;
     const model = createAnthropicJourneyModel(
       undefined,
@@ -85,9 +91,15 @@ export async function runStage2Gate(): Promise<void> {
         STAGE_2_ARTIFACT_DIRECTORY,
       ),
     );
-    const result = await executeStage2Gate(model, promptForVerdict, saveGateRecord, (number) => {
-      currentAttempt = number;
-    });
+    const result = await executeStage2Gate(
+      model,
+      promptForVerdict,
+      saveGateRecord,
+      (number) => { currentAttempt = number; },
+      () => `case-${randomUUID()}`,
+      writeStage2VerdictArtifact,
+      record ?? undefined,
+    );
     if (result.record.status !== "complete") {
       throw new Error(`Stage 2 stopped: ${result.record.stopReason ?? "operator decision"}. No retry was attempted.`);
     }
@@ -101,12 +113,15 @@ export async function executeStage2Gate(
   beforeCall: (number: number) => void = () => undefined,
   createCaseId: () => string = () => `case-${randomUUID()}`,
   writeVerdict: typeof writeStage2VerdictArtifact = writeStage2VerdictArtifact,
+  initialRecord?: Stage2GateRecord,
 ): Promise<Stage2GateResult> {
-  const record: Stage2GateRecord = { version: 1, status: "running", attempts: [], stopReason: null };
+  const record: Stage2GateRecord = initialRecord
+    ?? { version: 1, status: "running", attempts: [], stopReason: null };
+  assertRunnableRecord(record);
   let richCase: SemanticCase | null = null;
   let repeatedCase: SemanticCase | null = null;
 
-  for (const slot of STAGE_2_CALL_SLOTS) {
+  for (const slot of STAGE_2_CALL_SLOTS.slice(record.attempts.length)) {
     if (cumulativeCost(record) + STAGE_2_PER_CALL_RESERVE_USD > STAGE_2_COST_LIMIT_USD) {
       record.status = "stopped";
       record.stopReason = "The USD 5 cap has insufficient reserved capacity for another call.";
@@ -307,15 +322,90 @@ async function promptForVerdict(slot: Stage2CallSlot): Promise<HumanVerdict> {
   }
 }
 
-async function assertFreshGate(): Promise<void> {
+async function loadGateRecordForRun(): Promise<Stage2GateRecord | null> {
   try {
     await access(STAGE_2_STATE_PATH);
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") return;
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
     throw error;
   }
-  const retained = JSON.parse(await readFile(STAGE_2_STATE_PATH, "utf8")) as { status?: unknown };
+  const retained = JSON.parse(await readFile(STAGE_2_STATE_PATH, "utf8")) as Stage2GateRecord;
+  if (isInterruptedRichOpeningReview(retained)) return retained;
   throw new Error(`Stage 2 already has retained state (${String(retained.status ?? "unknown")}); do not retry or replace it.`);
+}
+
+export async function resumeInterruptedRichOpeningReview(
+  record: Stage2GateRecord,
+  review: (slot: Stage2CallSlot, attempt: Stage2Attempt) => Promise<HumanVerdict> = promptForVerdict,
+  persist: (record: Stage2GateRecord) => Promise<void> = saveGateRecord,
+  writeVerdict: typeof writeStage2VerdictArtifact = writeStage2VerdictArtifact,
+): Promise<Stage2GateRecord> {
+  if (!isInterruptedRichOpeningReview(record)) {
+    throw new Error("Only the retained rich-opening human review can be resumed without another model call.");
+  }
+  const attempt = record.attempts[0];
+  process.stdout.write("Resuming the saved rich-opening review. No model call will be repeated.\n");
+  process.stdout.write(`Metrics: ${JSON.stringify(attempt.metrics)}\n`);
+  process.stdout.write(`Raw response artifact: ${attempt.responseArtifact ?? "unavailable"}\n`);
+  const verdict = await review(attempt.slot, attempt);
+  if (!verdict.assessment.trim()) throw new Error("A human verdict requires a sanitized assessment.");
+  attempt.humanVerdict = verdict.verdict;
+  attempt.humanAssessment = verdict.assessment.trim();
+  await writeVerdict({
+    kind: "experiment-2-stage-2-human-verdict",
+    slot: attempt.slot,
+    verdict: verdict.verdict,
+    assessment: attempt.humanAssessment,
+    boundaryAccepted: true,
+    metrics: attempt.metrics,
+    cumulativeEstimatedCostUsd: cumulativeCost(record),
+    recordedAt: new Date().toISOString(),
+  }, STAGE_2_ARTIFACT_DIRECTORY);
+  if (verdict.verdict === "fail") {
+    attempt.status = "failed";
+    record.status = "stopped";
+    record.stopReason = `${attempt.slot} failed human semantic review.`;
+  } else {
+    attempt.status = "passed";
+    record.status = "running";
+  }
+  await persist(record);
+  return record;
+}
+
+function isInterruptedRichOpeningReview(record: Stage2GateRecord): boolean {
+  const [attempt] = record.attempts;
+  return record.version === 1
+    && record.status === "awaiting-human-review"
+    && record.stopReason === null
+    && record.attempts.length === 1
+    && attempt?.number === 1
+    && attempt.slot === "rich-opening"
+    && attempt.turn === "opening"
+    && attempt.status === "awaiting-human-review"
+    && attempt.metrics !== null
+    && attempt.boundaryAccepted
+    && attempt.humanVerdict === null
+    && attempt.humanAssessment === null;
+}
+
+function assertRunnableRecord(record: Stage2GateRecord): void {
+  if (record.version !== 1 || record.status !== "running" || record.stopReason !== null) {
+    throw new Error("Stage 2 retained state is not runnable.");
+  }
+  for (const [index, attempt] of record.attempts.entries()) {
+    if (attempt.number !== index + 1
+      || attempt.slot !== STAGE_2_CALL_SLOTS[index]
+      || attempt.status !== "passed"
+      || attempt.humanVerdict !== "pass"
+      || !attempt.boundaryAccepted
+      || !attempt.metrics) {
+      throw new Error("Stage 2 retained attempts are not a completed prefix of the approved call sequence.");
+    }
+  }
+  if (record.attempts.length > 1) {
+    throw new Error("Only the interrupted rich-opening review is approved for recovery.");
+  }
 }
 
 async function saveGateRecord(record: Stage2GateRecord): Promise<void> {

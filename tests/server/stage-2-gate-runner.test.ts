@@ -3,6 +3,7 @@ import { ModelCallFailure, type JourneyModel, type ModelProposalResult } from ".
 import {
   cumulativeCost,
   executeStage2Gate,
+  resumeInterruptedRichOpeningReview,
   STAGE_2_PER_CALL_RESERVE_USD,
   type HumanVerdict,
   type Stage2GateRecord,
@@ -94,6 +95,51 @@ describe("Experiment 2 Stage 2 runner", () => {
       resolvedValue: { value: { kind: "known", value: "2026-07-01" } },
       conflictingValues: [],
     });
+  });
+
+  it("records an interrupted first review and resumes with only the two unused calls", async () => {
+    const retained = richOpeningAwaitingReviewRecord();
+    const persisted: Stage2GateRecord[] = [];
+    const verdicts: string[] = [];
+    await resumeInterruptedRichOpeningReview(
+      retained,
+      async (slot) => {
+        verdicts.push(slot);
+        return { verdict: "pass", assessment: "Minor issues noted; continue bounded evidence collection." };
+      },
+      async (record) => { persisted.push(structuredClone(record)); },
+      async () => "verdict.json",
+    );
+
+    const calledSlots: Stage2CallSlot[] = [];
+    let index = 0;
+    const model: JourneyModel = {
+      async propose(_turn, _text, context) {
+        const slot = (["repeated-opening", "repeated-update"] as const)[index++];
+        calledSlots.push(slot);
+        return slot === "repeated-opening"
+          ? repeatedOpeningResult()
+          : repeatedUpdateResult((context as { products: Array<{ id: string }> }).products[0].id);
+      },
+    };
+    const result = await executeStage2Gate(
+      model,
+      async () => ({ verdict: "pass", assessment: "reviewed" }),
+      async () => undefined,
+      () => undefined,
+      sequentialCaseId(),
+      async () => "verdict.json",
+      retained,
+    );
+
+    expect(verdicts).toEqual(["rich-opening"]);
+    expect(persisted.at(-1)).toMatchObject({
+      status: "running",
+      attempts: [{ status: "passed", humanVerdict: "pass" }],
+    });
+    expect(calledSlots).toEqual(["repeated-opening", "repeated-update"]);
+    expect(result.record.status).toBe("complete");
+    expect(result.record.attempts).toHaveLength(3);
   });
 
   it("stops before a next call when its reservation would exceed USD 5", async () => {
@@ -295,4 +341,32 @@ function result(input: {
 function sequentialCaseId(): () => string {
   let number = 1;
   return () => `case-00000000-0000-4000-8000-${String(number++).padStart(12, "0")}`;
+}
+
+function richOpeningAwaitingReviewRecord(): Stage2GateRecord {
+  return {
+    version: 1,
+    status: "awaiting-human-review",
+    stopReason: null,
+    attempts: [{
+      number: 1,
+      slot: "rich-opening",
+      turn: "opening",
+      status: "awaiting-human-review",
+      metrics: {
+        model: "claude-sonnet-5",
+        promptRevision: "test",
+        schemaRevision: "test",
+        inputTokens: 10,
+        outputTokens: 10,
+        latencyMs: 10,
+        estimatedCostUsd: 0.02,
+      },
+      boundaryAccepted: true,
+      humanVerdict: null,
+      humanAssessment: null,
+      responseArtifact: "sample-1-opening-response.json",
+      lastFailure: null,
+    }],
+  };
 }
