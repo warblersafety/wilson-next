@@ -1,8 +1,10 @@
 # Wilson Experiment 2
 
-**Status:** Approved by Steve through Issue #42 and PR #43; its remaining
-bounded implementation, standard review, protected-preview, and synthetic-model
-work proceeds under Delivery's standing execution authority
+**Status:** Approved by Steve through Issue #42 and PR #43; Stage 3 completed in
+PR #52, and Issue #53 records Steve's refocus of the remaining `Revise` path on
+conditional reliability rather than a direct-form preference comparison. Its
+remaining bounded implementation, standard review, protected-preview, and
+synthetic-model work proceeds under Delivery's standing execution authority.
 
 **Owns:** The single bounded investment decision, its separate evidence
 dimensions, the production-seed quality bar, supported and deferred scope,
@@ -19,8 +21,17 @@ Experiment 2 answers one falsifiable investment question:
 
 > Does evidence from the bounded synthetic journeys justify further Wilson
 > investment after accounting separately for technical generalization,
-> model/evidence performance, operator usefulness, and the remaining clinician
-> validation boundary?
+> model/evidence reliability, assembled operator viability, and the remaining
+> clinician validation boundary?
+
+Steve reports that preliminary physician feedback obtained before this
+experiment already established a strong preference for Wilson's approach if it
+works. Experiment 2 accepts that as directional evidence about the conditional
+product proposition; it does not treat the feedback as a study of this build,
+proof of clinician usability, or production-readiness evidence. Repeating the
+comparison through Steve would be a weaker proxy for an already-answered
+question. The remaining investment question is whether Wilson can satisfy the
+condition reliably enough to warrant broader product work.
 
 Record four evidence dimensions separately:
 
@@ -31,9 +42,9 @@ Record four evidence dimensions separately:
    scope?
 2. **Model and evidence performance:** can the bounded model contract discover
    and attach supported facts and exact evidence without an answer catalog?
-3. **Operator usefulness:** does the assembled workflow reduce Steve's effort
-   or omission/distortion risk compared with completing the supported Form FDA
-   3500 content directly?
+3. **Assembled operator viability:** can Steve complete the selected journeys
+   with intelligible evidence, proportionate review burden, acceptable latency,
+   and recoverable failure when the model is wrong?
 4. **Clinician validation boundary:** what remains unproven until a separately
    approved, sufficiently complete product is evaluated by representative
    clinicians?
@@ -69,11 +80,12 @@ boundary, proposal-before-acceptance rule, correction history, explicit
 conflict resolution, and case-to-PDF projection can work together in a
 protected real-model browser journey.
 
-It did not establish general usefulness. The implementation remains coupled to
-one product catalog and authored sequence. Exact source localization remains
-inaccurate under Issue #39, model latency is noticeable, and the repeated
-remediation needed to complete one journey creates a real risk that the system
-generalizes poorly.
+It did not establish general reliability or whether the current build satisfies
+the condition in the reported preliminary physician preference. Its
+implementation remained coupled to one product catalog and authored sequence.
+Exact source localization was inaccurate under Issue #39, model latency was
+noticeable, and the repeated remediation needed to complete one journey created
+a real risk that the system would generalize poorly.
 
 Experiment 2 treats those results as evidence, not assumptions to defend.
 
@@ -82,15 +94,16 @@ Experiment 2 treats those results as evidence, not assumptions to defend.
 Produce one of three explicit investment decisions and record the four evidence
 dimensions above independently:
 
-1. **Continue:** the bounded journeys show a consistent observed operator
-   advantage, the required model samples expose no material instability, the
-   retained code is a credible production seed, and no architectural premise is
-   falsified; propose the next product-completeness step.
+1. **Continue:** after the permitted bounded remediation, the required model
+   samples expose no recurring material instability, the assembled workflow is
+   viable for the operator, the retained code is a credible production seed,
+   and no architectural premise is falsified; propose the next
+   product-completeness step.
 2. **Revise:** the product signal remains plausible, but one named premise needs
    another bounded experiment before broader implementation.
-3. **Stop:** Wilson requires case-specific runtime behavior, produces
-   unacceptable semantic failures, leaves no credible production seed, or does
-   not reduce effort enough to justify continued investment.
+3. **Stop:** Wilson requires case-specific runtime behavior, repeats a general
+   semantic failure after one bounded remediation, imposes operating friction
+   that defeats the conditional value, or leaves no credible production seed.
 
 No outcome authorizes physician involvement, real clinical data, production
 deployment or release, or the broader V1 roadmap.
@@ -99,7 +112,8 @@ deployment or release, or the broader V1 roadmap.
 
 Steve and Codex are the only experiment operators. All people, identifiers,
 events, products, and outcomes are fictional. No physician or other external
-participant is involved.
+participant is involved in Experiment 2; the preliminary feedback reported by
+Steve predates it and authorizes no new participation.
 
 The protected Vercel preview remains non-production and synthetic-limited to
 approved synthetic cases. Browser-held state and transient Runtime Logs retain
@@ -120,7 +134,7 @@ session replay, or additional diagnostic store is added.
 - Desktop Chromium and the existing protected Git-preview workflow.
 - The completed Experiment 1 fixture as a regression for semantic identity,
   correction, conflict, projection, and final PDF agreement, not its authored
-  stage order, fixed pre-resolution download gate, or a new usefulness sample.
+  stage order or fixed pre-resolution download gate.
 
 ## Exact synthetic journeys
 
@@ -140,7 +154,7 @@ Opening account:
 
 Wilson preserves one suspect product and all stated patient, event, treatment,
 outcome, and product facts; asks no follow-up; and produces an aligned reviewed
-case and PDF. This is one of the two direct-form comparisons.
+case and PDF.
 
 ### Sparse and explicitly unknown journey
 
@@ -155,7 +169,7 @@ not empty or absent. It asks exactly one indication question. The operator marks
 the indication unknown through an attributed semantic control; Wilson does not
 ask again. Outcome, treatment, and stop information remain empty. Review and
 output explain the omissions, and the partial PDF remains available after all
-proposals have been reviewed. This is the second direct-form comparison.
+proposals have been reviewed.
 
 ### Repeated alias, correction, and unresolved conflict journey
 
@@ -181,8 +195,8 @@ operator explicitly accepts 200 mg, leaving 400 mg only in history, and leaves
 the two acetaminophen dates unresolved. Neither date reaches the projection;
 the conflict remains visible and does not block the truthful partial PDF.
 
-Scenario texts, expected semantic results, and direct-form comparison material
-are evaluation inputs outside Wilson. They do not become runtime allowlists,
+Scenario texts and expected semantic results are evaluation inputs outside
+Wilson. They do not become runtime allowlists,
 prompt catalogs, stage definitions, or product configuration. Operators paste
 the text into the ordinary input. A temporary synthetic diagnostic adapter may
 recognize environment-configured fixture digests solely to decide whether
@@ -210,7 +224,7 @@ runtime validation.
   performance/load infrastructure, or production monitoring.
 - A general dialogue engine, ontology, knowledge graph, event store, or reusable
   evaluation platform.
-- Physician feedback or any external-participant study.
+- New physician feedback or any external-participant study.
 
 ## Production-seed implementation
 
@@ -267,10 +281,10 @@ policy.
 
 ## Source evidence and Issue #39
 
-Source evidence is part of the usefulness question because the operator must be
+Source evidence is part of the reliability question because the operator must be
 able to detect loss, invention, and wrong attribution. Experiment 2 implements
 and verifies the smallest general remedy for Issue #39 before any protected
-live generalization or usefulness run.
+live reliability run.
 
 The model returns the exact verbatim supporting text, not character offsets.
 Deterministic code accepts a quotation only when it has one exact non-empty
@@ -300,8 +314,8 @@ oracle expected another value.
 Each scenario has an external, human-readable assessment covering expected
 facts, entity/role attribution, evidence support, consequential omissions,
 questions, correction/history, unresolved truth, and projected PDF values.
-Operator judgment—not runtime validation—determines semantic and usefulness
-success.
+Operator judgment—not runtime validation—determines semantic and assembled
+operator-viability success.
 
 ## Evidence sequence
 
@@ -379,6 +393,15 @@ projection, and PDF agreement and prove no runtime product behavior imports an
 oracle. Use focused tests and one desktop browser path; add no coverage regime,
 browser matrix, visual-regression system, or broad failure suite.
 
+#### Stage 3 disposition — 2026-09-09
+
+Stage 3 completed in PR #52. One state-driven application ran all three new
+journeys and the retained Experiment 1 regression through review, correction,
+conflict, projection, preview, and PDF using predetermined responses. Focused
+tests, one desktop Chromium path, independent PDF readback, and the required
+standard review passed. This established assembled mechanics and
+production-seed quality, not live-model reliability.
+
 ### Stage 4: protected live operator evidence
 
 After assembled implementation evidence and the required standard review, run
@@ -394,24 +417,40 @@ token use, latency, estimated cost, operator corrections, and a sanitized final
 verdict. Zero observed failures in this sample establishes no general failure
 rate or clinical reliability.
 
-### Stage 5: direct-form comparison
+#### Stage 4 first-pass disposition — 2026-09-09
 
-Steve completes the supported content for the information-rich and sparse cases
-both through Wilson and directly in Form 3500, starting only from the scenario
-text. Use direct form first for the rich case and Wilson first for the sparse
-case so one order does not govern both observations. Record total elapsed time,
-active operator time, model-wait time, avoidable questions or corrections,
-review burden, output completeness, and a plain-English preference with the
-concrete reason. This is formative evidence from one informed operator, not a
-usability study, statistical claim, or clinician proxy.
+The sparse and repeated journeys produced semantically viable reviewed output.
+The rich journey was safely rejected because `symptoms` arrived as a scalar
+instead of a list; the same response also treated acute event treatments as
+concomitant products. Accepted case knowledge remained unchanged. The overall
+first-pass result is `Revise`, and no second samples run before remediation.
+
+The next substantive unit is one bounded, general model-contract remediation.
+It audits the provider-visible schema against local target/value requirements,
+strengthens target-appropriate value guidance or structure, and distinguishes
+event treatment from report products without medicine- or scenario-specific
+rules. After focused deterministic evidence and the ordinary standard review,
+rerun the affected rich path once. Recurrence of the same general failure stops
+the experiment; a viable confirmation permits the remaining bounded reliability
+samples.
+
+### Stage 5: outcome decision
+
+After the bounded reliability evidence, record the four evidence dimensions and
+choose `Continue`, `Revise`, or `Stop`. Do not repeat a Steve-versus-form
+comparison. The reported preliminary physician preference supplies directional
+evidence for the conditional product proposition; the completed synthetic
+journeys determine whether this implementation can satisfy its reliability
+condition. This remains operator evidence, not validation of clinician use or
+production readiness.
 
 ## Success
 
 Continue beyond Experiment 2 only if:
 
-1. No in-scope live run invents a material fact, silently loses one, assigns it
-   to the wrong entity or role, hides incompatible evidence, or disagrees with
-   the final PDF.
+1. After the permitted bounded remediation, no confirmation or required second
+   sample invents a material fact, silently loses one, assigns it to the wrong
+   entity or role, hides incompatible evidence, or disagrees with the final PDF.
 2. Every journey reaches a truthful reviewed output through production-seed
    code containing no fixture-, medicine-, oracle-, or sequence-specific
    product behavior.
@@ -421,9 +460,8 @@ Continue beyond Experiment 2 only if:
    proposal metadata.
 5. The required second samples introduce no material instability; this is
    recorded as bounded observation rather than a reliability claim.
-6. In both direct-form comparisons, Wilson provides a clear reduction in total
-   effort or a comparably valuable reduction in omission/distortion risk
-   without adding greater review burden.
+6. Steve can complete each selected journey without review burden or failure
+   handling that makes the conditional physician preference implausible.
 7. Latency is acceptable to Steve for the demonstrated value; exact observed
    latency is recorded rather than optimized speculatively.
 8. The retained implementation is a credible production seed for the supported
@@ -431,7 +469,7 @@ Continue beyond Experiment 2 only if:
    investment.
 
 Record technical generalization and production-seed quality, model/evidence
-performance, operator usefulness, and the eventual clinician-validation
+reliability, assembled operator viability, and the eventual clinician-validation
 boundary separately. Do not collapse them into one score or allow one dimension
 to substitute for another.
 
@@ -450,7 +488,8 @@ Stop the affected slice and return for a premise decision if:
 - the same general failure recurs after one bounded remediation;
 - useful output requires a general question planner, ontology, full Form 3500
   expansion, deferred production infrastructure, or real data; or
-- direct-form comparison shows no meaningful operator advantage.
+- assembled review burden, latency, or failure handling defeats the conditional
+  value reported in the preliminary physician feedback.
 
 Ordinary local defects may be fixed once with focused recurrence evidence.
 Do not accumulate scenario-specific patches to save the experiment.
@@ -479,12 +518,13 @@ when it remains within existing premises and spending limits.
 3. **Assembled product slice:** replace fixed orchestration and UI with
    state-driven behavior, then complete deterministic browser-to-PDF evidence
    for all cases and the required standard review.
-4. **Operator evidence and outcome:** run the bounded protected samples and
-   direct-form comparisons, then record the separate findings and Continue,
-   Revise, or Stop decision. This phase adds no product behavior.
+4. **Conditional reliability and outcome:** record the first protected samples,
+   apply at most one bounded general remediation after the `Revise` result, run
+   the permitted confirmation and reliability samples, then record the separate
+   findings and Continue, Revise, or Stop decision.
 
-The two implementation slices each use one coherent issue, branch, draft PR,
-proportional evidence, and explicit merge approval. The evidence/outcome work
+Each implementation slice uses one coherent issue, branch, draft PR,
+proportional evidence, and explicit merge approval. Pure evidence/outcome work
 retains a durable issue/PR record but requires no automatic independent review
 when it changes no behavior or governing premise. A failed premise stops later
 work. Do not split work further unless an independently valuable defect or
@@ -499,6 +539,11 @@ protected synthetic preview, and make bounded synthetic application-model
 calls without repeated permission. Ordinary defects and their remediation stay
 inside the slice; Steve reviews the complete outcome and remaining risk at
 merge.
+
+Issue #53 records Steve's conditional-reliability refocus. Steve explicitly
+waived independent review for that minor documentation correction only. The
+waiver does not apply to the subsequent model-contract remediation, which
+requires the ordinary standard review.
 
 Steve's explicit approval remains required for each PR merge, a material change
 to the experiment premise or scope, spend above the standing limit, expanded
