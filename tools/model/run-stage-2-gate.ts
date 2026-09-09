@@ -210,20 +210,21 @@ export async function executeStage2Gate(
       break;
     }
 
-    try {
-      const repository = new InMemoryCaseRepository({ initialCase: proposedCase, maxCases: 1 });
-      const accepted = await applyCaseCommandToRepository(repository, proposedCase.id, {
-        type: "review-proposal-groups",
-        commandId: `command-stage-2-${slot}-accept`,
-        expectedRevision: proposedCase.revision,
-        decisions: pendingGroups.map((groupId) => ({ groupId, action: "accept" as const })),
-      });
-      if (slot === "rich-opening") richCase = accepted;
-      else repeatedCase = accepted;
-    } catch (error) {
-      stopCaseReplay(attempt, record, error);
-      await persist(record);
-      break;
+    if (slot === "rich-opening") richCase = proposedCase;
+    if (slot === "repeated-opening") {
+      try {
+        const repository = new InMemoryCaseRepository({ initialCase: proposedCase, maxCases: 1 });
+        repeatedCase = await applyCaseCommandToRepository(repository, proposedCase.id, {
+          type: "review-proposal-groups",
+          commandId: `command-stage-2-${slot}-accept`,
+          expectedRevision: proposedCase.revision,
+          decisions: pendingGroups.map((groupId) => ({ groupId, action: "accept" as const })),
+        });
+      } catch (error) {
+        stopCaseReplay(attempt, record, error);
+        await persist(record);
+        break;
+      }
     }
     attempt.status = "passed";
     record.status = "running";

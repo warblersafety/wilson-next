@@ -86,9 +86,14 @@ describe("Experiment 2 Stage 2 runner", () => {
     expect(result.record.attempts).toHaveLength(3);
     expect(result.record.attempts.every(({ status, humanVerdict }) => status === "passed" && humanVerdict === "pass"))
       .toBe(true);
-    expect(result.richCase?.patient.facts.identifier.resolvedValue?.value)
+    expect(result.richCase?.patient.facts.identifier.proposedValues[0].value)
       .toEqual({ kind: "known", value: "TEST-68" });
-    expect(result.repeatedCase?.products[0].facts.startDate.state).toBe("conflicted");
+    expect(result.richCase?.patient.facts.identifier.resolvedValue).toBeUndefined();
+    expect(result.repeatedCase?.products[0].facts.startDate).toMatchObject({
+      state: "resolved",
+      resolvedValue: { value: { kind: "known", value: "2026-07-01" } },
+      conflictingValues: [],
+    });
   });
 
   it("stops before a next call when its reservation would exceed USD 5", async () => {
@@ -142,6 +147,46 @@ describe("Experiment 2 Stage 2 runner", () => {
     expect(result.record).toMatchObject({
       status: "stopped",
       attempts: [{ status: "stopped", lastFailure: { phase: "provider-request" } }],
+    });
+  });
+
+  it("stops before human review when the authoritative case boundary rejects the envelope", async () => {
+    let calls = 0;
+    let reviews = 0;
+    const model: JourneyModel = {
+      async propose() {
+        calls += 1;
+        const output = openingPatientResult("TEST-68");
+        output.envelope.sources[0].start = -1;
+        return output;
+      },
+    };
+
+    const result = await executeStage2Gate(
+      model,
+      async () => {
+        reviews += 1;
+        return { verdict: "pass", assessment: "must not run" };
+      },
+      async () => undefined,
+      () => undefined,
+      sequentialCaseId(),
+      async () => "verdict.json",
+    );
+
+    expect(calls).toBe(1);
+    expect(reviews).toBe(0);
+    expect(result.richCase).toBeNull();
+    expect(result.repeatedCase).toBeNull();
+    expect(result.record).toMatchObject({
+      status: "stopped",
+      stopReason: "rich-opening could not enter the authoritative case boundary.",
+      attempts: [{
+        status: "stopped",
+        boundaryAccepted: false,
+        humanVerdict: null,
+        lastFailure: { phase: "case-replay", errorName: "Error" },
+      }],
     });
   });
 });
