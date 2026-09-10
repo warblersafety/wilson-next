@@ -6,7 +6,8 @@ PR #43; Issue #57 adds the bounded adaptive-completion amendment after
 Experiment 2 concluded `Revise`; Issue #62 adds the bounded single-device and
 product-quality generalization; Issue #64 adds combined report types,
 semantic device-detail applicability, and stable-device correction/uncertainty
-without changing the deferred live-model risk
+without changing the deferred live-model risk; Issue #37 restores fail-closed
+live application-model selection for the protected Git-preview path
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification
@@ -304,6 +305,29 @@ architecture decision.
 Domain code has no model-provider, PDF-library, framework, or deployment
 imports. The browser-held state is a deployment adapter concern and does not
 change `applyCaseCommand` as the sole semantic write boundary.
+
+Live application-model selection is fail-closed at the deployment adapter.
+Explicit predetermined responses select the deterministic test adapter before
+any live-model decision and never construct the Anthropic adapter. Otherwise,
+the live adapter is available only when Vercel classifies the runtime as a
+preview and supplies matching GitHub provider, owner, repository name,
+immutable repository ID, non-`main` branch, and pull-request metadata for
+`warblersafety/wilson-next`. Local development, CI, production, non-Git,
+incomplete, and unknown contexts refuse before constructing Anthropic. This
+gate governs the assembled application route; a separately authorized operator
+model-evidence tool remains governed by its issue and Delivery's call controls.
+The Vercel project must keep **Automatically expose System Environment
+Variables** enabled for the preview; if those values are unavailable, the gate
+fails safely by refusing the live adapter.
+
+Vercel Authentication remains the access-control boundary for that preview;
+the application gate is defense in depth and does not attest to Vercel's
+independently mutable protection setting. Before any approved live preview
+call, the operator verifies that deployment protection still covers the exact
+deployment and that no public protection exception or bypass exists. A future
+requirement for application-verifiable request authorization would reopen the
+security architecture rather than treating Git or environment metadata as an
+authentication claim.
 
 Experiment 1 accepts synthetic data only. It has no analytics, session replay,
 audio capture, or retained deployed case state. For the fixed, protected,

@@ -64,9 +64,12 @@ describe("case mutation source boundary", () => {
     expect(violations).toEqual([]);
   });
 
-  it("routes the assembled browser product through the configured production model seam", async () => {
+  it("routes the assembled browser product through the environment-gated model seam", async () => {
     const route = await readFile(join(root, "app/api/case/route.ts"), "utf8");
+    const journeyService = await readFile(join(root, "src/server/journey/service.ts"), "utf8");
     expect(route).toMatch(/server\/model\/configured-journey/);
+    expect(route).not.toMatch(/server\/model\/anthropic-journey/);
+    expect(journeyService).not.toMatch(/server\/model\/anthropic-journey|model\/anthropic-journey/);
     expect(route).not.toMatch(/experiment\//);
   });
 

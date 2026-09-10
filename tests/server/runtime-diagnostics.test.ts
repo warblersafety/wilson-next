@@ -147,7 +147,7 @@ describe("runtime diagnostics", () => {
       repository,
       "case-controlled-failure",
       { action: "accept-understanding" },
-      undefined,
+      fixedJourneyModel,
       diagnostics,
     )).rejects.toThrow("not available during describe");
 
