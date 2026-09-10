@@ -4,8 +4,8 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { GET as getCase, postCase } from "../../app/api/case/route";
 import { POST as postBrowserDiagnostic } from "../../app/api/diagnostics/browser/route";
 import { consumeJourneyJsonResponse } from "../../app/browser-diagnostics";
-import { openingAccount } from "../../src/experiment/fixed-inputs";
-import { fixedJourneyModel } from "../../src/experiment/fixed-journey";
+import { openingAccount } from "../fixtures/fixed-inputs";
+import { fixedJourneyModel } from "../fixtures/fixed-journey";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import {
   createRuntimeDiagnosticLogger,

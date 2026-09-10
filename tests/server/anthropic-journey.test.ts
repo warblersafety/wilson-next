@@ -237,12 +237,12 @@ describe("Anthropic production model boundary", () => {
   });
 
   it("records returned responses before parsing and stops if capture fails", async () => {
-    const recorder = vi.fn(async () => ".wilson-model-samples/sample-opening-response.json");
+    const recorder = vi.fn(async () => "test-response-artifact.json");
     const result = await createAnthropicJourneyModel(
       async () => response(openingOutput(), "opening"), Date.now, recorder, identities, () => recordedAt,
     ).propose("opening", openingText);
     expect(recorder).toHaveBeenCalledOnce();
-    expect(result.responseArtifact).toContain("sample-opening-response.json");
+    expect(result.responseArtifact).toBe("test-response-artifact.json");
 
     const captureFailure = await modelFailure(createAnthropicJourneyModel(
       async () => response(openingOutput(), "opening"),

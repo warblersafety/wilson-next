@@ -1,14 +1,14 @@
 import {
   parseModelProposalEnvelope,
   type ModelBoundaryIdentityFactory,
-} from "../domain/case/model-boundary";
-import type { CaseValue, FactTarget } from "../domain/case/types";
+} from "../../src/domain/case/model-boundary";
+import type { CaseValue, FactTarget } from "../../src/domain/case/types";
 import {
   correctionAccount,
   fixedRecordedAt,
   openingAccount,
 } from "./fixed-inputs";
-import type { JourneyModel } from "../server/model/journey-model";
+import type { JourneyModel } from "../../src/server/model/journey-model";
 
 function known<T>(value: T): CaseValue<T> {
   return { kind: "known", value };
