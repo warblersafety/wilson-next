@@ -611,7 +611,9 @@ function reporterFacts(reporter: Extract<JourneyAction, { action: "answer-report
     fact("doNotDiscloseIdentity", { kind: "known", value: reporter.doNotDiscloseIdentity }),
   ];
   for (const field of ["address", "city", "state", "postalCode", "country"] as const) {
-    if (reporter[field]) facts.push(fact(field, { kind: "known", value: reporter[field] }));
+    facts.push(fact(field, reporter[field]?.trim()
+      ? { kind: "known", value: reporter[field].trim() }
+      : { kind: "explicitly-absent" }));
   }
   return facts;
 }

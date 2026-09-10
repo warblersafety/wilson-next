@@ -80,6 +80,7 @@ test("runs adaptive completion plus all Experiment 1 and 2 deterministic regress
   await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
   await expect(page.locator("li").filter({ hasText: "Relevant tests: unknown" })).toBeVisible();
   await expect(page.locator("li").filter({ hasText: "Relevant history: declined" })).toBeVisible();
+  await expect(page.locator("li").filter({ hasText: "Address: explicitly absent" })).toBeVisible();
   checkpoints.push({ journey: "adaptive-sparse", state: "partial-output", assertion: "Four grouped prompts captured unknown and refusal once, exposed omissions, and allowed truthful partial output." });
   await retainScreenshot(page, "adaptive-sparse-output.png");
   await downloadAndCheck(page, "adaptive-sparse", ["TEST-26", "propranolol", "Jordan", "Lee", "202-555-0147"], ["Serum tryptase: 18 ng/mL"]);

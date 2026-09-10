@@ -54,6 +54,11 @@ ranges, history, product data, reporter contact data, occupation, prior-report
 targets, and the identity-disclosure control. Sparse omitted values stayed
 absent rather than being invented.
 
+The focused adapter test also fills all eight supported test rows and asserts
+the pinned form's irregular row-7/row-8 high-range and date widget locations,
+so those mappings are protected in routine CI even though the acceptance
+journeys need only one relevant test.
+
 `adaptive-rich-pdf-page-{1,2,3,4,7}.png` are independent PDFKit renders of the
 retained rich PDF. Manual inspection confirmed that the official FDA/MedWatch
 identity and eight-page form layout remain intact and that Sections A, B, D,

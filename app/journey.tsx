@@ -288,7 +288,7 @@ function SeriousOutcomesTask({ snapshot, busy, act }: {
   }));
   return <>
     <h1 id="task-title">{question?.question}</h1>
-    <p>Select every additional outcome that applies. Accepted outcomes are shown and will not be asked again.</p>
+    <p>Select every additional outcome that applies. Leaving an available outcome unchecked records that it did not apply. Accepted outcomes are shown and will not be asked again.</p>
     <fieldset className={styles.answerGroup}>
       <legend>Serious outcomes</legend>
       {(Object.entries(seriousOutcomeLabels) as Array<[SeriousOutcomeKey, string]>).map(([field, label]) => <label key={field}>

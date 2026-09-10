@@ -14,6 +14,13 @@ const readerPath = fileURLToPath(new URL("../../tools/pdf/independent_readback.p
 
 describe("adaptive Form FDA 3500 projection fields", () => {
   it("round-trips the added patient, outcome, test, history, and reporter fields", async () => {
+    const relevantTests = Array.from({ length: 8 }, (_, index) => ({
+      testId: `test-${index + 1}`,
+      testResult: index === 0 ? "Serum tryptase: 18 ng/mL" : `Test ${index + 1}: result ${index + 1}`,
+      lowRange: index === 0 ? "0 ng/mL" : `low ${index + 1}`,
+      highRange: index === 0 ? "11.4 ng/mL" : `high ${index + 1}`,
+      date: `2026-09-0${index + 1}`,
+    }));
     const projection: Form3500Projection = {
       revision: 1,
       sections: {
@@ -22,7 +29,7 @@ describe("adaptive Form FDA 3500 projection fields", () => {
           reportType: "adverse-event", eventDate: "2026-09-03", eventDescription: "Symptoms: generalized rash and wheezing.",
           death: false, lifeThreatening: true, hospitalized: true, disability: false, requiredIntervention: false,
           congenitalAnomaly: false, otherSerious: false, relevantHistory: "Penicillin allergy",
-          relevantTests: [{ testId: "test-1", testResult: "Serum tryptase: 18 ng/mL", lowRange: "0 ng/mL", highRange: "11.4 ng/mL", date: "2026-09-03" }],
+          relevantTests,
         },
         D: { suspectProducts: [] },
         F: { concomitantProducts: [] },
@@ -50,6 +57,12 @@ describe("adaptive Form FDA 3500 projection fields", () => {
       "topmostSubform[0].Page1[0].SecA_Patient[0].LifeThreaten[0]": "/1",
       "topmostSubform[0].Page3[0].Sec6Data[0].OtherHistory[0]": "Penicillin allergy",
       "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TestData1[0]": "Serum tryptase: 18 ng/mL",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TestData2[0]": "Test 2: result 2",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row7[0].TestData7[0]": "Test 7: result 7",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row8[0].THighRange7[0]": "high 7",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row8[0].TDate7[0]": "07-SEP-2026",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row8[0].TestData8[0]": "Test 8: result 8",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row8[0].TDate8[0]": "08-SEP-2026",
       "topmostSubform[0].Page7[0].SecG_Reporter[0].LastName[0]": "Chen",
       "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]": "/1",
       "topmostSubform[0].Page7[0].SecG_Reporter[0].Packer[0]": "/1",

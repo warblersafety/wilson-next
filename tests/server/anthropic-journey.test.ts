@@ -25,15 +25,15 @@ const recordedAt = "2026-09-09T01:00:00.000Z";
 const reviewedCase: ReviewedCaseModelContext = {
   patient: [{ field: "identifier", value: { kind: "known", value: "SYN-1" } }],
   event: [{ field: "symptoms", value: { kind: "known", value: ["rash"] } }],
-      products: [{
+  products: [{
     id: "product-a-opaque",
     name: "Product A",
     facts: [
       { field: "name", value: { kind: "known", value: "Product A" } },
       { field: "dose", value: { kind: "known", value: "10 mg" } },
     ],
-      }],
-      relevantTests: [],
+  }],
+  relevantTests: [],
 };
 
 const opaqueIds: Record<string, string> = {
