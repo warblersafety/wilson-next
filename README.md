@@ -15,11 +15,14 @@ already established strong preference for Wilson's approach if it works; Issue
 behavior—rather than repeating a direct-form preference proxy. Experiment 2 now
 ends `Revise`, with remediation deferred; Issue #55 preserves the live-model
 limitation and its revisit triggers without making it the next product task.
-Issue #57 is the next bounded product slice: it adds deterministic, adaptive
-completion for the supported adult medication adverse-event path, stable
-relevant-test knowledge, reporter entry that bypasses the model, and matching
-Sections A, B, and G projection while retaining the earlier deterministic
-journeys. It does not call or remediate the deferred live model.
+Issue #57 delivered deterministic adaptive completion for the supported adult
+medication adverse-event path in PR #58, including stable relevant-test
+knowledge, reporter entry that bypasses the model, and matching Sections A, B,
+and G projection. Issue #59 now tracks layered deterministic journey coverage
+with root-cause gates. Issue #60 is its first cohort, stressing conditional
+death detail, multiple-test correction, and role-driven applicability while
+retaining all earlier deterministic journeys. Neither issue calls or
+remediates the deferred live model.
 
 Experiment 2 and Delivery's standing execution authority allow Codex to carry
 its remaining bounded implementation, review, protected-preview, and synthetic

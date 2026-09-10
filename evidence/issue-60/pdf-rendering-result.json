@@ -1,0 +1,39 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 1,
+      "rendered" : true,
+      "screenshot" : "evidence\/issue-60\/layer1-role-pdf-page-1.png"
+    },
+    {
+      "page" : 3,
+      "rendered" : true,
+      "screenshot" : "evidence\/issue-60\/layer1-role-pdf-page-3.png"
+    },
+    {
+      "page" : 4,
+      "rendered" : true,
+      "screenshot" : "evidence\/issue-60\/layer1-role-pdf-page-4.png"
+    },
+    {
+      "page" : 5,
+      "rendered" : true,
+      "screenshot" : "evidence\/issue-60\/layer1-role-pdf-page-5.png"
+    },
+    {
+      "page" : 6,
+      "rendered" : true,
+      "screenshot" : "evidence\/issue-60\/layer1-role-pdf-page-6.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "No password prompt, corruption, or displaced form content is visible",
+    "FDA, MedWatch, Form 3500, OMB expiry, and page identity are preserved",
+    "Sections A and B agree with the reviewed patient, event, and test",
+    "Both corrected suspect products appear in Section D",
+    "The former concomitant slot in Section F is empty"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "evidence\/issue-60\/layer1-role.pdf"
+}

@@ -37,6 +37,7 @@ const fields = {
   productOneName: "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]",
   productOneDose: "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]",
   productOneFrequency: "topmostSubform[0].Page4[0].Prod1[0].Prod1Freq[0]",
+  productOneOtherFrequency: "topmostSubform[0].Page4[0].Prod1[0].Prod1FreqOther[0]",
   productOneRoute: "topmostSubform[0].Page4[0].Prod1[0].Prod1Route[0]",
   productOneStartDate: "topmostSubform[0].Page4[0].Prod1[0].Prod1TherapyStartDate[0]",
   productOneStopDate: "topmostSubform[0].Page4[0].Prod1[0].Prod1TherapyStopDate[0]",
@@ -44,6 +45,7 @@ const fields = {
   productTwoName: "topmostSubform[0].Page5[0].Prod2[0].Prod2Name[0]",
   productTwoDose: "topmostSubform[0].Page5[0].Prod2[0].Prod2Dose[0]",
   productTwoFrequency: "topmostSubform[0].Page5[0].Prod2[0].Prod2Freq[0]",
+  productTwoOtherFrequency: "topmostSubform[0].Page5[0].Prod2[0].Prod2FreqOther[0]",
   productTwoRoute: "topmostSubform[0].Page5[0].Prod2[0].Prod2Route[0]",
   productTwoStartDate: "topmostSubform[0].Page5[0].Prod2[0].Prod2TherapyStartDate[0]",
   productTwoStopDate: "topmostSubform[0].Page5[0].Prod2[0].Prod2TherapyStopDate[0]",
@@ -228,6 +230,7 @@ export async function fillForm3500Projection(
       name: fields.productOneName,
       dose: fields.productOneDose,
       frequency: fields.productOneFrequency,
+      otherFrequency: fields.productOneOtherFrequency,
       route: fields.productOneRoute,
       startDate: fields.productOneStartDate,
       stopDate: fields.productOneStopDate,
@@ -237,6 +240,7 @@ export async function fillForm3500Projection(
       name: fields.productTwoName,
       dose: fields.productTwoDose,
       frequency: fields.productTwoFrequency,
+      otherFrequency: fields.productTwoOtherFrequency,
       route: fields.productTwoRoute,
       startDate: fields.productTwoStartDate,
       stopDate: fields.productTwoStopDate,
@@ -335,12 +339,16 @@ function setChecked(form: ReturnType<PDFDocument["getForm"]>, name: string, valu
 
 function writeSuspectProduct(
   form: ReturnType<PDFDocument["getForm"]>,
-  names: { name: string; dose: string; frequency: string; route: string; startDate: string; stopDate: string; indication: string },
+  names: { name: string; dose: string; frequency: string; otherFrequency: string; route: string; startDate: string; stopDate: string; indication: string },
   product: ProjectedProduct,
 ): void {
   setText(form, names.name, product.name);
   setText(form, names.dose, product.dose);
-  if (product.frequency) form.getDropdown(names.frequency).select(encodeFrequency(product.frequency));
+  if (product.frequency) {
+    const encoded = encodeFrequency(product.frequency);
+    form.getDropdown(names.frequency).select(encoded.option);
+    setText(form, names.otherFrequency, encoded.other);
+  }
   if (product.route) form.getDropdown(names.route).select(encodeRoute(product.route));
   setText(form, names.startDate, product.startDate ? formatDate(product.startDate) : undefined);
   setText(form, names.stopDate, product.stopDate ? formatDate(product.stopDate) : undefined);
@@ -353,20 +361,23 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
   const reporter = G.reporter;
   const readSuspect = (
     expected: ProjectedProduct,
-    names: { name: string; dose: string; frequency: string; route: string; startDate: string; stopDate: string; indication: string },
+    names: { name: string; dose: string; frequency: string; otherFrequency: string; route: string; startDate: string; stopDate: string; indication: string },
   ): ProjectedProduct => compact({
     productId: expected.productId,
     name: form.getTextField(names.name).getText(),
     dose: form.getTextField(names.dose).getText(),
-    frequency: decodeFrequency(form.getDropdown(names.frequency).getSelected()[0]),
+    frequency: decodeFrequency(
+      form.getDropdown(names.frequency).getSelected()[0],
+      form.getTextField(names.otherFrequency).getText(),
+    ),
     route: decodeRoute(form.getDropdown(names.route).getSelected()[0]),
     startDate: parseDate(form.getTextField(names.startDate).getText()),
     stopDate: parseDate(form.getTextField(names.stopDate).getText()),
     indication: form.getTextField(names.indication).getText(),
   });
   const suspectNames = [
-    { name: fields.productOneName, dose: fields.productOneDose, frequency: fields.productOneFrequency, route: fields.productOneRoute, startDate: fields.productOneStartDate, stopDate: fields.productOneStopDate, indication: fields.productOneIndication },
-    { name: fields.productTwoName, dose: fields.productTwoDose, frequency: fields.productTwoFrequency, route: fields.productTwoRoute, startDate: fields.productTwoStartDate, stopDate: fields.productTwoStopDate, indication: fields.productTwoIndication },
+    { name: fields.productOneName, dose: fields.productOneDose, frequency: fields.productOneFrequency, otherFrequency: fields.productOneOtherFrequency, route: fields.productOneRoute, startDate: fields.productOneStartDate, stopDate: fields.productOneStopDate, indication: fields.productOneIndication },
+    { name: fields.productTwoName, dose: fields.productTwoDose, frequency: fields.productTwoFrequency, otherFrequency: fields.productTwoOtherFrequency, route: fields.productTwoRoute, startDate: fields.productTwoStartDate, stopDate: fields.productTwoStopDate, indication: fields.productTwoIndication },
   ];
   const concomitantProducts = projection.sections.F.concomitantProducts.map((expected): ProjectedConcomitantProduct => compact({
     productId: expected.productId,
@@ -459,16 +470,28 @@ function parseDate(value: string | undefined): string | undefined {
   return `${match[3]}-${String(month).padStart(2, "0")}-${match[1]}`;
 }
 
-function encodeFrequency(value: string): string {
-  if (value === "twice daily") return "BID";
-  if (value === "daily") return "Daily";
-  throw new Error(`Unsupported Form 3500 frequency ${value}`);
+function encodeFrequency(value: string): { option: string; other?: string } {
+  const supported: Record<string, string> = {
+    daily: "Daily",
+    "twice daily": "BID",
+    "three times daily": "TID",
+    "four times daily": "QID",
+    "at bedtime": "HS",
+    "as needed": "PRN",
+  };
+  const encoded = supported[value];
+  return encoded ? { option: encoded } : { option: "Other", other: value };
 }
 
-function decodeFrequency(value: string | undefined): string | undefined {
+function decodeFrequency(value: string | undefined, other: string | undefined): string | undefined {
   if (!value || value === " ") return undefined;
   if (value === "BID") return "twice daily";
   if (value === "Daily") return "daily";
+  if (value === "TID") return "three times daily";
+  if (value === "QID") return "four times daily";
+  if (value === "HS") return "at bedtime";
+  if (value === "PRN") return "as needed";
+  if (value === "Other" && other) return other;
   throw new Error(`Unreadable Form 3500 frequency ${value}`);
 }
 
