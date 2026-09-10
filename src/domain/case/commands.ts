@@ -456,15 +456,16 @@ function assertValueMatchesTarget(target: FactTarget, value: CaseValue<unknown>)
   if (!("value" in raw)) throw new Error(`${targetKey(target)} requires a known value`);
   const actual = raw.value;
   const stringFields = new Set([
-    "identifier", "reportType", "onsetDate", "deathDate", "relevantHistory", "outcome", "dischargeDate",
+    "identifier", "reportType", "problemDescription", "onsetDate", "deathDate", "relevantHistory", "outcome", "dischargeDate", "productAvailability", "productReturnDate",
     "testResult", "lowRange", "highRange", "date",
-    "name", "dose", "frequency", "route", "startDate", "stopDate", "indication",
+    "name", "productType", "manufacturer", "lotNumber", "dose", "frequency", "route", "startDate", "stopDate", "indication",
+    "commonName", "procode", "modelNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessor", "servicedByThirdParty",
     "lastName", "firstName", "address", "city", "state", "postalCode", "country", "phone", "email", "occupation",
   ]);
   if (stringFields.has(target.field) && typeof actual !== "string") {
     throw new Error(`${targetKey(target)} requires a string value`);
   }
-  if (["onsetDate", "deathDate", "dischargeDate", "startDate", "stopDate", "date"].includes(target.field)
+  if (["onsetDate", "deathDate", "dischargeDate", "productReturnDate", "startDate", "stopDate", "date", "expirationDate", "implantDate", "explantDate"].includes(target.field)
     && (typeof actual !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(actual))) {
     throw new Error(`${targetKey(target)} requires an ISO calendar date`);
   }
@@ -484,7 +485,7 @@ function assertValueMatchesTarget(target: FactTarget, value: CaseValue<unknown>)
   if (["symptoms", "treatments"].includes(target.field) && (!Array.isArray(actual) || actual.some((item) => typeof item !== "string"))) {
     throw new Error(`${targetKey(target)} requires a string array`);
   }
-  if (["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "healthProfessional", "doNotDiscloseIdentity", "stopped"].includes(target.field) && typeof actual !== "boolean") {
+  if (["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "healthProfessional", "doNotDiscloseIdentity", "stopped", "reprocessedSingleUse"].includes(target.field) && typeof actual !== "boolean") {
     throw new Error(`${targetKey(target)} requires a boolean value`);
   }
   if (target.field === "reportedTo" && (!Array.isArray(actual)
@@ -494,7 +495,19 @@ function assertValueMatchesTarget(target: FactTarget, value: CaseValue<unknown>)
   if (target.field === "role" && !["suspect", "concomitant"].includes(actual as string)) {
     throw new Error(`${targetKey(target)} requires a supported role`);
   }
-  if (target.field === "reportType" && actual !== "adverse-event") {
+  if (target.field === "reportType" && !["adverse-event", "product-problem"].includes(actual as string)) {
     throw new Error(`${targetKey(target)} requires the supported report type`);
+  }
+  if (target.field === "productType" && !["drug-or-biologic", "device", "other"].includes(actual as string)) {
+    throw new Error(`${targetKey(target)} requires a supported product category`);
+  }
+  if (target.field === "deviceOperator" && !["health-professional", "patient-consumer", "other"].includes(actual as string)) {
+    throw new Error(`${targetKey(target)} requires a supported device operator`);
+  }
+  if (target.field === "servicedByThirdParty" && !["yes", "no", "unknown"].includes(actual as string)) {
+    throw new Error(`${targetKey(target)} requires yes, no, or unknown`);
+  }
+  if (target.field === "productAvailability" && !["available", "not-available", "returned-to-manufacturer"].includes(actual as string)) {
+    throw new Error(`${targetKey(target)} requires a supported availability state`);
   }
 }

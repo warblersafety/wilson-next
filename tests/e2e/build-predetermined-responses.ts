@@ -1,5 +1,6 @@
 import { writeFile } from "node:fs/promises";
 import type { ModelProposalOutput } from "../../src/domain/case/model-boundary.ts";
+import type { ProductFactKey } from "../../src/domain/case/types.ts";
 
 export const richOpening = "Patient TEST-68 is a 68-year-old man. He began cephalexin 500 mg by mouth twice daily on 01-Aug-2026 for cellulitis. On 04-Aug-2026 he developed diffuse hives and facial swelling and was hospitalized. Cephalexin was stopped, he was treated with epinephrine and diphenhydramine, and he recovered and was discharged on 05-Aug-2026. I suspect cephalexin.";
 export const adaptiveRichOpening = "Patient TEST-72 is a 72-year-old woman weighing 64 kg. She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. Her relevant history is a penicillin allergy. Amoxicillin was stopped, she received epinephrine, and she recovered. I suspect amoxicillin.";
@@ -9,6 +10,8 @@ export const layer1TestsOpening = "Patient TEST-51 is a 51-year-old woman. She b
 export const layer1TestsUpdate = "Correction: the ALT result was 123 U/L, not 132 U/L.";
 export const layer1RoleOpening = "Patient TEST-47 is a 47-year-old man. He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026. Warfarin is suspect; acetaminophen is concomitant. On 08-Aug-2026 he developed epistaxis and easy bruising. INR was 4.8 on 08-Aug-2026. No serious outcomes applied. No other relevant medical history applies. Warfarin was stopped and the symptoms resolved.";
 export const layer1RoleUpdate = "Correction: acetaminophen should be treated as a suspect product, not a concomitant product.";
+export const layer2DeviceOpening = "Patient TEST-74 is a 74-year-old woman. On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. The pump was stopped, she received intravenous fluids, and she recovered. No other serious outcomes applied. No relevant tests or medical history apply. The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. The device is available for evaluation.";
+export const layer2ProductQualityOpening = "An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal. The product was not administered to a patient, and no adverse event occurred. The bottle is available for evaluation. I am reporting Cardiovex as the suspect product.";
 export const sparseOpening = "Patient TEST-31 is a 31-year-old woman. She developed nausea and vomiting while taking metformin. I suspect metformin. She does not know the dose, when metformin began, or when the symptoms started. She was not hospitalized.";
 export const repeatedOpening = "Patient TEST-44 is a 44-year-old man. He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain. On 05-Jul-2026 he developed nausea and right upper abdominal pain and was hospitalized. Tylenol and ibuprofen were stopped, he received intravenous fluids, and he recovered and was discharged on 07-Jul-2026. I suspect acetaminophen and ibuprofen.";
 export const repeatedUpdate = "Correction: the ibuprofen dose was 200 mg twice daily, not 400 mg twice daily. My medication list says acetaminophen began 02-Jul-2026 rather than 01-Jul-2026. I cannot resolve which date is correct.";
@@ -30,7 +33,7 @@ function proposal(
 }
 
 const known = <T extends string | number | boolean | string[] | { value: number; unit: "kg" | "lb" }>(value: T) => ({ kind: "known" as const, value });
-const product = (productReference: string, field: "name" | "role" | "dose" | "frequency" | "route" | "startDate" | "stopDate" | "indication" | "stopped") => ({ entity: "product" as const, productReference, field });
+const product = (productReference: string, field: ProductFactKey) => ({ entity: "product" as const, productReference, field });
 const test = (testReference: string, field: "testResult" | "lowRange" | "highRange" | "date") => ({ entity: "test" as const, testReference, field });
 
 function adaptiveRichResponse(): ModelProposalOutput {
@@ -59,6 +62,7 @@ function adaptiveRichResponse(): ModelProposalOutput {
       proposal("test-high", "gt1", test("t1", "highRange"), known("11.4 ng/mL"), testEvidence),
       proposal("test-date", "gt1", test("t1", "date"), known("2026-09-03"), testEvidence),
       proposal("product-name", "g1", product("p1", "name"), known("amoxicillin"), regimen),
+      proposal("product-type", "g1", product("p1", "productType"), known("drug-or-biologic"), regimen),
       proposal("product-role", "g1", product("p1", "role"), known("suspect"), "I suspect amoxicillin"),
       proposal("product-dose", "g1", product("p1", "dose"), known("500 mg"), regimen),
       proposal("product-frequency", "g1", product("p1", "frequency"), known("twice daily"), regimen),
@@ -79,6 +83,7 @@ function adaptiveSparseResponse(): ModelProposalOutput {
     proposal("patient-sex", "patient", { entity: "patient", field: "sex" }, known("male"), patient),
     proposal("event-symptoms", "event", { entity: "event", field: "symptoms" }, known(["severe dizziness"]), event),
     proposal("product-name", "g1", product("p1", "name"), known("propranolol"), event),
+    proposal("product-type", "g1", product("p1", "productType"), known("drug-or-biologic"), event),
     proposal("product-role", "g1", product("p1", "role"), known("suspect"), "I suspect propranolol"),
   ] };
 }
@@ -103,6 +108,7 @@ function layer1DeathResponse(): ModelProposalOutput {
       proposal("test-result", "gt1", test("biopsy", "testResult"), known("Skin biopsy: full-thickness epidermal necrosis"), biopsy),
       proposal("test-date", "gt1", test("biopsy", "date"), known("2026-09-06"), biopsy),
       proposal("product-name", "g1", product("p1", "name"), known("trimethoprim-sulfamethoxazole"), regimen),
+      proposal("product-type", "g1", product("p1", "productType"), known("drug-or-biologic"), regimen),
       proposal("product-role", "g1", product("p1", "role"), known("suspect"), "I suspect trimethoprim-sulfamethoxazole"),
       proposal("product-dose", "g1", product("p1", "dose"), known("160/800 mg"), regimen),
       proposal("product-frequency", "g1", product("p1", "frequency"), known("twice daily"), regimen),
@@ -115,6 +121,61 @@ function layer1DeathResponse(): ModelProposalOutput {
 }
 
 const noSeriousOutcomes = ["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious"] as const;
+
+function layer2DeviceResponse(): ModelProposalOutput {
+  const patient = "Patient TEST-74 is a 74-year-old woman.";
+  const event = "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized.";
+  const result = "The pump was stopped, she received intravenous fluids, and she recovered.";
+  const context = "No relevant tests or medical history apply.";
+  const device = "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721.";
+  const operation = "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party.";
+  const proposals: ModelProposalOutput["proposals"] = [
+    proposal("patient-id", "patient", { entity: "patient", field: "identifier" }, known("TEST-74"), patient),
+    proposal("patient-age", "patient", { entity: "patient", field: "ageYears" }, known(74), patient),
+    proposal("patient-sex", "patient", { entity: "patient", field: "sex" }, known("female"), patient),
+    proposal("event-problem", "event", { entity: "event", field: "problemDescription" }, known("Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed"), event),
+    proposal("event-symptoms", "event", { entity: "event", field: "symptoms" }, known(["hypotension"]), event),
+    proposal("event-onset", "event", { entity: "event", field: "onsetDate" }, known("2026-09-08"), event),
+    proposal("event-hospitalized", "event", { entity: "event", field: "hospitalized" }, known(true), event),
+    proposal("event-treatment", "event", { entity: "event", field: "treatments" }, known(["intravenous fluids"]), result),
+    proposal("event-outcome", "event", { entity: "event", field: "outcome" }, known("recovered"), result),
+    proposal("tests-none", "event", { entity: "event", field: "relevantTestsAvailable" }, known(false), context),
+    proposal("history-none", "event", { entity: "event", field: "relevantHistory" }, { kind: "explicitly-absent" }, context),
+    proposal("availability", "event", { entity: "event", field: "productAvailability" }, known("available"), "The device is available for evaluation."),
+    proposal("device-name", "g1", product("device", "name"), known("Acme FlowGuard"), device),
+    proposal("device-type", "g1", product("device", "productType"), known("device"), device),
+    proposal("device-role", "g1", product("device", "role"), known("suspect"), device),
+    proposal("device-common", "g1", product("device", "commonName"), known("infusion pump"), device),
+    proposal("device-manufacturer", "g1", product("device", "manufacturer"), known("Acme Medical, Reno, Nevada"), device),
+    proposal("device-model", "g1", product("device", "modelNumber"), known("FG-200"), device),
+    proposal("device-lot", "g1", product("device", "lotNumber"), known("L-904"), device),
+    proposal("device-serial", "g1", product("device", "serialNumber"), known("SN-7721"), device),
+    proposal("device-udi", "g1", product("device", "udi"), known("(01)00812345000017(21)SN7721"), device),
+    proposal("device-operator", "g1", product("device", "deviceOperator"), known("health-professional"), operation),
+    proposal("device-implant", "g1", product("device", "implantDate"), { kind: "inapplicable" }, operation),
+    proposal("device-reprocessed", "g1", product("device", "reprocessedSingleUse"), known(false), operation),
+    proposal("device-serviced", "g1", product("device", "servicedByThirdParty"), known("no"), operation),
+  ];
+  for (const field of noSeriousOutcomes.filter((field) => field !== "hospitalized")) {
+    proposals.push(proposal(`event-${field}`, "event", { entity: "event", field }, known(false), "No other serious outcomes applied."));
+  }
+  return { products: [{ productReference: "device", groupReference: "g1" }], proposals };
+}
+
+function layer2ProductQualityResponse(): ModelProposalOutput {
+  const problem = "An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal.";
+  const noEvent = "The product was not administered to a patient, and no adverse event occurred.";
+  const suspect = "I am reporting Cardiovex as the suspect product.";
+  return { products: [{ productReference: "cardiovex", groupReference: "g1" }], proposals: [
+    proposal("problem", "event", { entity: "event", field: "problemDescription" }, known("Unopened Cardiovex 20 mg tablets contained visible brown particles under the seal"), problem),
+    proposal("symptoms-none", "event", { entity: "event", field: "symptoms" }, { kind: "explicitly-absent" }, noEvent),
+    proposal("availability", "event", { entity: "event", field: "productAvailability" }, known("available"), "The bottle is available for evaluation."),
+    proposal("product-name", "g1", product("cardiovex", "name"), known("Cardiovex 20 mg tablets"), problem),
+    proposal("product-type", "g1", product("cardiovex", "productType"), known("drug-or-biologic"), problem),
+    proposal("product-lot", "g1", product("cardiovex", "lotNumber"), known("CV-442"), problem),
+    proposal("product-role", "g1", product("cardiovex", "role"), known("suspect"), suspect),
+  ] };
+}
 
 function layer1TestsResponse(): ModelProposalOutput {
   const patient = "Patient TEST-51 is a 51-year-old woman.";
@@ -134,6 +195,7 @@ function layer1TestsResponse(): ModelProposalOutput {
     proposal("event-history", "event", { entity: "event", field: "relevantHistory" }, { kind: "explicitly-absent" }, "No other relevant medical history applies."),
     proposal("event-outcome", "event", { entity: "event", field: "outcome" }, known("improving"), "Atorvastatin was stopped, and she was improving."),
     proposal("product-name", "g1", product("p1", "name"), known("atorvastatin"), regimen),
+    proposal("product-type", "g1", product("p1", "productType"), known("drug-or-biologic"), regimen),
     proposal("product-role", "g1", product("p1", "role"), known("suspect"), "I suspect atorvastatin"),
     proposal("product-dose", "g1", product("p1", "dose"), known("40 mg"), regimen),
     proposal("product-frequency", "g1", product("p1", "frequency"), known("daily"), regimen),
@@ -184,6 +246,7 @@ function layer1RoleResponse(): ModelProposalOutput {
     proposal("inr-result", "gt1", test("inr", "testResult"), known("INR: 4.8"), inr),
     proposal("inr-date", "gt1", test("inr", "date"), known("2026-08-08"), inr),
     proposal("warfarin-name", "g1", product("warfarin", "name"), known("warfarin"), regimens),
+    proposal("warfarin-type", "g1", product("warfarin", "productType"), known("drug-or-biologic"), regimens),
     proposal("warfarin-role", "g1", product("warfarin", "role"), known("suspect"), roles),
     proposal("warfarin-dose", "g1", product("warfarin", "dose"), known("5 mg"), regimens),
     proposal("warfarin-frequency", "g1", product("warfarin", "frequency"), known("daily"), regimens),
@@ -192,6 +255,7 @@ function layer1RoleResponse(): ModelProposalOutput {
     proposal("warfarin-indication", "g1", product("warfarin", "indication"), known("atrial fibrillation"), regimens),
     proposal("warfarin-stopped", "g1", product("warfarin", "stopped"), known(true), result),
     proposal("acetaminophen-name", "g2", product("acetaminophen", "name"), known("acetaminophen"), regimens),
+    proposal("acetaminophen-type", "g2", product("acetaminophen", "productType"), known("drug-or-biologic"), regimens),
     proposal("acetaminophen-role", "g2", product("acetaminophen", "role"), known("concomitant"), roles),
     proposal("acetaminophen-dose", "g2", product("acetaminophen", "dose"), known("650 mg"), regimens),
     proposal("acetaminophen-frequency", "g2", product("acetaminophen", "frequency"), known("every six hours"), regimens),
@@ -233,6 +297,7 @@ function richResponse(): ModelProposalOutput {
     proposal("event-outcome", "event", { entity: "event", field: "outcome" }, known("recovered"), result),
     proposal("event-discharge", "event", { entity: "event", field: "dischargeDate" }, known("2026-08-05"), result),
     proposal("product-name", "g1", product("p1", "name"), known("cephalexin"), regimen),
+    proposal("product-type", "g1", product("p1", "productType"), known("drug-or-biologic"), regimen),
     proposal("product-role", "g1", product("p1", "role"), known("suspect"), "I suspect cephalexin"),
     proposal("product-dose", "g1", product("p1", "dose"), known("500 mg"), regimen),
     proposal("product-frequency", "g1", product("p1", "frequency"), known("twice daily"), regimen),
@@ -255,6 +320,7 @@ function sparseResponse(): ModelProposalOutput {
     proposal("event-onset", "event", { entity: "event", field: "onsetDate" }, { kind: "unknown" }, unknown),
     proposal("event-hospitalized", "event", { entity: "event", field: "hospitalized" }, known(false), "She was not hospitalized"),
     proposal("product-name", "g1", product("p1", "name"), known("metformin"), event),
+    proposal("product-type", "g1", product("p1", "productType"), known("drug-or-biologic"), event),
     proposal("product-role", "g1", product("p1", "role"), known("suspect"), "I suspect metformin"),
     proposal("product-dose", "g1", product("p1", "dose"), { kind: "unknown" }, unknown),
     proposal("product-start", "g1", product("p1", "startDate"), { kind: "unknown" }, unknown),
@@ -281,6 +347,7 @@ function repeatedResponse(): ModelProposalOutput {
   for (const [ref, name, dose, start] of [["p1", "acetaminophen (Tylenol)", "1,000 mg", "2026-07-01"], ["p2", "ibuprofen", "400 mg", "2026-07-03"]] as const) {
     proposals.push(
       proposal(`${ref}-name`, ref === "p1" ? "g1" : "g2", product(ref, "name"), known(name), regimens),
+      proposal(`${ref}-type`, ref === "p1" ? "g1" : "g2", product(ref, "productType"), known("drug-or-biologic"), regimens),
       proposal(`${ref}-role`, ref === "p1" ? "g1" : "g2", product(ref, "role"), known("suspect"), role),
       proposal(`${ref}-dose`, ref === "p1" ? "g1" : "g2", product(ref, "dose"), known(dose), regimens),
       proposal(`${ref}-frequency`, ref === "p1" ? "g1" : "g2", product(ref, "frequency"), known("twice daily"), regimens),
@@ -324,6 +391,7 @@ function regressionResponses(): [ModelProposalOutput, ModelProposalOutput] {
   for (const [ref, group, name, dose, frequency, regimen, dateEvidence, startDate, role] of regimens) {
     proposals.push(
       proposal(`${ref}-name`, group, product(ref, "name"), known(name), regimen),
+      proposal(`${ref}-type`, group, product(ref, "productType"), known("drug-or-biologic"), regimen),
       proposal(`${ref}-role`, group, product(ref, "role"), known(role), role === "suspect" ? "I suspect apixaban and naproxen" : regimen),
       proposal(`${ref}-dose`, group, product(ref, "dose"), known(dose), regimen),
       proposal(`${ref}-frequency`, group, product(ref, "frequency"), known(frequency), regimen),
@@ -346,6 +414,8 @@ function regressionResponses(): [ModelProposalOutput, ModelProposalOutput] {
 
 const [regressionOpeningResponse, regressionCorrectionResponse] = regressionResponses();
 const responses = [
+  { identityScope: "layer2-device", turn: "opening", output: layer2DeviceResponse() },
+  { identityScope: "layer2-product-quality", turn: "opening", output: layer2ProductQualityResponse() },
   { identityScope: "layer1-death", turn: "opening", output: layer1DeathResponse() },
   { identityScope: "layer1-tests", turn: "opening", output: layer1TestsResponse() },
   { identityScope: "layer1-tests-update", turn: "correction", output: layer1TestsCorrectionResponse() },

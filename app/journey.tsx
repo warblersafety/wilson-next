@@ -158,7 +158,7 @@ export default function Journey() {
         </div>
       </header>
       <aside className={styles.boundary} aria-label="Experiment boundary">
-        <strong>Fictional information only.</strong> This disposable operator preview supports a bounded set of adult medication adverse-event facts. Do not use it for a real report or as a production system. Closing this tab or starting a new case clears its saved case.
+        <strong>Fictional information only.</strong> This disposable operator preview supports bounded adult medication, single-device adverse-event, and product-quality facts. Do not use it for a real report or as a production system. Closing this tab or starting a new case clears its saved case.
       </aside>
       {error && <div className={styles.error} role="alert">{error}</div>}
       {boundaryNotice && <div className={styles.notice} role="status">{boundaryNotice}</div>}
@@ -189,15 +189,19 @@ export default function Journey() {
 function Describe({ opening, setOpening, busy, act }: {
   opening: string; setOpening: (value: string) => void; busy: boolean; act: (action: JourneyAction) => Promise<void>;
 }) {
+  const [reportType, setReportType] = useState<"adverse-event" | "product-problem">("adverse-event");
   return <>
     <p className={styles.eyebrow}>Describe</p>
     <h1 id="task-title">Describe what happened</h1>
     <p>Paste or type a fictional clinical account. Wilson will propose case knowledge for review; it will not accept those proposals as truth.</p>
     <label htmlFor="opening-account">Clinical account</label>
     <textarea id="opening-account" rows={13} value={opening} onChange={(event) => setOpening(event.target.value)} />
-    <fieldset className={styles.reportType}><legend>Report type</legend><label><input type="radio" checked readOnly /> Adverse event</label></fieldset>
+    <fieldset className={styles.reportType}><legend>Report type</legend>
+      <label><input type="radio" name="report-type" checked={reportType === "adverse-event"} onChange={() => setReportType("adverse-event")} /> Adverse event</label>
+      <label><input type="radio" name="report-type" checked={reportType === "product-problem"} onChange={() => setReportType("product-problem")} /> Product problem</label>
+    </fieldset>
     <p className={styles.hint}>You can also use device-native dictation. Wilson does not record audio.</p>
-    <button disabled={busy || !opening.trim()} onClick={() => void act({ action: "submit-opening", text: opening, reportType: "adverse-event" })}>
+    <button disabled={busy || !opening.trim()} onClick={() => void act({ action: "submit-opening", text: opening, reportType })}>
       {busy ? "Extracting case details…" : "Review Wilson’s understanding"}
     </button>
   </>;
@@ -444,7 +448,7 @@ function OutputComposition({ snapshot, update, setUpdate, busy, act, openPdf }: 
   act: (action: JourneyAction) => Promise<void>;
   openPdf: (mode: "preview" | "download") => Promise<void>;
 }) {
-  const { A, B, D, F, G } = snapshot.projection.sections;
+  const { A, B, C, D, E, F, G } = snapshot.projection.sections;
   const conflicts = snapshot.review.attention.filter(({ kind }) => kind === "conflict");
   return <div className={styles.outputWorkspace}>
     <section className={styles.outputSummary} aria-labelledby="output-title">
@@ -455,7 +459,9 @@ function OutputComposition({ snapshot, update, setUpdate, busy, act, openPdf }: 
         {B.eventDescription && <li>{B.eventDescription}</li>}
         {B.relevantTests.map((test) => <li key={test.testId}>{test.testResult}{test.date ? ` on ${displayDate(test.date)}` : ""}</li>)}
         {B.relevantHistory && <li>Relevant history: {B.relevantHistory}</li>}
+        {C.productAvailability && <li>Product availability: {C.productAvailability.replaceAll("-", " ")}</li>}
         {D.suspectProducts.map((product) => <li key={product.productId}>{product.name ?? "Unnamed product"} as a suspect product{product.dose ? `, ${product.dose}` : ""}</li>)}
+        {E.suspectDevice && <li>{E.suspectDevice.brandName ?? "Unnamed device"} as the suspect medical device{E.suspectDevice.modelNumber ? `, model ${E.suspectDevice.modelNumber}` : ""}</li>}
         {F.concomitantProducts.map((product) => <li key={product.productId}>{product.name ?? "Unnamed product"} as another medical product</li>)}
         {G.reporter.firstName && G.reporter.lastName && <li>Reporter: {G.reporter.firstName} {G.reporter.lastName}</li>}
       </Summary>
@@ -513,7 +519,7 @@ function ConflictCard({ snapshot, item, busy, act }: {
 }
 
 function FormPreview({ snapshot }: { snapshot: JourneySnapshot }) {
-  const { A, B, D, F, G } = snapshot.projection.sections;
+  const { A, B, C, D, E, F, G } = snapshot.projection.sections;
   const omissionByTarget = new Map(snapshot.projection.omissions.map((item) => [item.target, item.reason]));
   return <div className={styles.formPreview} aria-label="Form FDA 3500 preview">
     <header className={styles.formHeader}>
@@ -526,14 +532,18 @@ function FormPreview({ snapshot }: { snapshot: JourneySnapshot }) {
       <PreviewField label="Sex" value={A.sex} />
       <PreviewField label="Weight" value={A.weight ? `${A.weight.value} ${A.weight.unit}` : undefined} />
     </PreviewSection>
-    <PreviewSection letter="B" title="Adverse event">
-      <PreviewField label="Report type" value={B.reportType === "adverse-event" ? "Adverse event" : undefined} />
+    <PreviewSection letter="B" title="Adverse event or product problem">
+      <PreviewField label="Report type" value={B.reportType === "adverse-event" ? "Adverse event" : B.reportType === "product-problem" ? "Product problem" : undefined} />
       <PreviewField label="Serious outcomes" value={Object.entries(seriousOutcomeLabels).filter(([field]) => B[field as keyof typeof seriousOutcomeLabels] === true).map(([, label]) => label).join(", ") || "None recorded"} />
       <PreviewField label="Date of death" value={displayDate(B.deathDate)} />
       <PreviewField label="Date of event" value={displayDate(B.eventDate)} />
       <PreviewField label="Relevant tests" value={B.relevantTests.map((test) => [test.testResult, test.lowRange && `low ${test.lowRange}`, test.highRange && `high ${test.highRange}`, displayDate(test.date)].filter(Boolean).join(" · ")).join("; ") || undefined} />
       <PreviewField wide label="Relevant history" value={B.relevantHistory} />
       <PreviewField wide label="Describe event" value={B.eventDescription} />
+    </PreviewSection>
+    <PreviewSection letter="C" title="Product availability">
+      <PreviewField label="Available for evaluation" value={C.productAvailability?.replaceAll("-", " ")} />
+      <PreviewField label="Returned on" value={displayDate(C.productReturnDate)} />
     </PreviewSection>
     <PreviewSection letter="D" title="Suspect products">
       {D.suspectProducts.map((product, index) => <div className={styles.previewProduct} key={product.productId}>
@@ -542,6 +552,12 @@ function FormPreview({ snapshot }: { snapshot: JourneySnapshot }) {
         <span>Started: {product.startDate ? displayDate(product.startDate) : omissionText(omissionByTarget.get(`product:${product.productId}:startDate`))}</span>
         <span>Used for: {product.indication ?? omissionText(omissionByTarget.get(`product:${product.productId}:indication`))}</span>
       </div>)}
+    </PreviewSection>
+    <PreviewSection letter="E" title="Suspect medical device">
+      <PreviewField label="Brand and common name" value={E.suspectDevice ? [E.suspectDevice.brandName, E.suspectDevice.commonName].filter(Boolean).join(" · ") : undefined} />
+      <PreviewField label="Manufacturer" value={E.suspectDevice?.manufacturer} />
+      <PreviewField label="Model / lot / serial" value={E.suspectDevice ? [E.suspectDevice.modelNumber, E.suspectDevice.lotNumber, E.suspectDevice.serialNumber].filter(Boolean).join(" · ") : undefined} />
+      <PreviewField wide label="UDI" value={E.suspectDevice?.udi} />
     </PreviewSection>
     <PreviewSection letter="F" title="Other medical products">
       {F.concomitantProducts.length === 0 ? <PreviewField label="Product" /> : F.concomitantProducts.map((product) => <PreviewField key={product.productId} label="Product" value={product.name} />)}
@@ -575,12 +591,16 @@ function CaseCards({ snapshot, busy, act }: {
   if (snapshot.revision === 0) return <p className={styles.emptyCase}>Proposed case knowledge will appear here after Wilson reads the account.</p>;
   return <div className={styles.cards}>
     <CaseCard title="Patient" groupId="patient" facts={understanding.patient} fields={["identifier", "ageYears", "sex", "weight"]} allowChanges={snapshot.stage === "understanding"} busy={busy} act={act} />
-    <CaseCard title="Event" groupId="event" facts={understanding.event} fields={["reportType", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "treatments", "outcome", "dischargeDate", "relevantHistory"]} allowChanges={snapshot.stage === "understanding"} busy={busy} act={act} />
+    <CaseCard title="Event" groupId="event" facts={understanding.event} fields={["reportType", "problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate", "relevantHistory"]} allowChanges={snapshot.stage === "understanding"} busy={busy} act={act} />
     {understanding.relevantTests.map((test, index) => <CaseCard key={test.id} title={`Relevant test ${index + 1}`} eyebrow="Test or laboratory result" groupId={test.proposalGroupId} facts={test.facts} fields={["testResult", "lowRange", "highRange", "date"]} allowChanges={snapshot.stage === "understanding" && test.state === "proposed"} busy={busy} act={act} />)}
     {understanding.products.map((product) => {
       const name = formatFact(activeValue(product.facts.name));
       const role = formatFact(activeValue(product.facts.role));
-      return <CaseCard key={product.id} title={name} eyebrow={role === "suspect" ? "Suspect product" : "Other product"} groupId={product.proposalGroupId} facts={product.facts} fields={["dose", "frequency", "route", "startDate", "stopped", "stopDate", "indication"]} evidenceFields={["name", "role"]} allowChanges={snapshot.stage === "understanding" && product.state === "proposed"} allowRemove={snapshot.stage === "understanding" && product.state === "proposed"} busy={busy} act={act} />;
+      const productType = formatFact(activeValue(product.facts.productType));
+      const fields = productType === "device"
+        ? ["commonName", "manufacturer", "procode", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"]
+        : ["manufacturer", "lotNumber", "dose", "frequency", "route", "startDate", "stopped", "stopDate", "indication"];
+      return <CaseCard key={product.id} title={name} eyebrow={productType === "device" ? "Suspect medical device" : role === "suspect" ? "Suspect product" : "Other product"} groupId={product.proposalGroupId} facts={product.facts} fields={fields} evidenceFields={["name", "productType", "role"]} allowChanges={snapshot.stage === "understanding" && product.state === "proposed"} allowRemove={snapshot.stage === "understanding" && product.state === "proposed"} busy={busy} act={act} />;
     })}
     {Object.values(understanding.reporter).some((fact) => activeValue(fact)) && <CaseCard title="Reporter" groupId="reporter" facts={understanding.reporter} fields={["firstName", "lastName", "phone", "email", "address", "city", "state", "postalCode", "country", "healthProfessional", "occupation", "reportedTo", "doNotDiscloseIdentity"]} allowChanges={false} busy={busy} act={act} />}
   </div>;
@@ -674,12 +694,13 @@ function displayDate(value: string | undefined): string | undefined {
 
 function fieldLabel(field: string): string {
   const labels: Record<string, string> = {
-    identifier: "Identifier", ageYears: "Age", sex: "Sex", weight: "Weight", symptoms: "Symptoms", onsetDate: "Onset",
+    identifier: "Identifier", ageYears: "Age", sex: "Sex", weight: "Weight", problemDescription: "Product problem", symptoms: "Symptoms", onsetDate: "Onset",
     reportType: "Report type", death: "Death", deathDate: "Date of death", lifeThreatening: "Life-threatening", hospitalized: "Hospitalized",
     disability: "Disability or permanent damage", requiredIntervention: "Required intervention", congenitalAnomaly: "Congenital anomaly", otherSerious: "Other serious event",
     treatments: "Treatment", outcome: "Outcome", relevantTestsAvailable: "Relevant tests", relevantHistory: "Relevant history", testResult: "Test and result", lowRange: "Low range", highRange: "High range", date: "Date",
     dischargeDate: "Discharged", dose: "Dose", frequency: "Frequency", route: "Route", startDate: "Started",
-    stopped: "Stopped", stopDate: "Stopped date", indication: "Used for", name: "Name", role: "Role",
+    productAvailability: "Product availability", productReturnDate: "Returned to manufacturer", stopped: "Stopped", stopDate: "Stopped date", indication: "Used for", name: "Name", productType: "Product type", role: "Role", manufacturer: "Manufacturer", lotNumber: "Lot number",
+    commonName: "Common device name", procode: "Procode", modelNumber: "Model number", catalogNumber: "Catalog number", expirationDate: "Expiration date", serialNumber: "Serial number", udi: "Unique device identifier", deviceOperator: "Device operator", implantDate: "Implant date", explantDate: "Explant date", reprocessedSingleUse: "Reprocessed single-use device", reprocessor: "Reprocessor", servicedByThirdParty: "Third-party serviced",
     firstName: "First name", lastName: "Last name", address: "Address", city: "City", state: "State", postalCode: "ZIP/postal code", country: "Country",
     phone: "Phone", email: "Email", healthProfessional: "Health professional", occupation: "Occupation", reportedTo: "Also reported to", doNotDiscloseIdentity: "Keep identity from manufacturer",
   };

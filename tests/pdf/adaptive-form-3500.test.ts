@@ -17,9 +17,9 @@ describe("adaptive Form FDA 3500 projection fields", () => {
     const projection: Form3500Projection = {
       revision: 1,
       sections: {
-        A: {}, B: { relevantTests: [] },
+        A: {}, B: { relevantTests: [] }, C: {},
         D: { suspectProducts: [{ productId: "product-acetaminophen", name: "acetaminophen", frequency: "every six hours" }] },
-        F: { concomitantProducts: [] }, G: { reporter: {} },
+        E: {}, F: { concomitantProducts: [] }, G: { reporter: {} },
       },
       sourceTrace: {}, omissions: [], notIncluded: [],
     };
@@ -36,6 +36,72 @@ describe("adaptive Form FDA 3500 projection fields", () => {
     expect(namedFields).toMatchObject({
       "topmostSubform[0].Page4[0].Prod1[0].Prod1Freq[0]": "Other",
       "topmostSubform[0].Page4[0].Prod1[0].Prod1FreqOther[0]": "every six hours",
+    });
+  });
+
+  it("round-trips product availability and one suspect medical device through Sections C and E", async () => {
+    const projection: Form3500Projection = {
+      revision: 1,
+      sections: {
+        A: { patientIdentifier: "TEST-74" },
+        B: { reportType: "adverse-event", eventDescription: "Problem detail: Pump alarm failed. Symptoms: hypotension.", relevantTests: [] },
+        C: { productAvailability: "available" },
+        D: { suspectProducts: [] },
+        E: { suspectDevice: {
+          productId: "device-flowguard", brandName: "Acme FlowGuard", commonName: "infusion pump",
+          manufacturer: "Acme Medical, Reno, Nevada", modelNumber: "FG-200", lotNumber: "L-904",
+          serialNumber: "SN-7721", udi: "(01)00812345000017(21)SN7721", operator: "health-professional",
+          reprocessedSingleUse: false, servicedByThirdParty: "no",
+        } },
+        F: { concomitantProducts: [] }, G: { reporter: {} },
+      },
+      sourceTrace: {}, omissions: [], notIncluded: [],
+    };
+    const source = new Uint8Array(await readFile(sourcePath));
+    const result = await fillForm3500Projection(source, projection);
+    expect(result.readback.sections).toEqual(projection.sections);
+
+    const directory = await mkdtemp(join(tmpdir(), "wilson-device-pdf-"));
+    const path = join(directory, "device.pdf");
+    await writeFile(path, result.output);
+    const python = process.env.PYPDF_PYTHON ?? "python3";
+    const { stdout } = await execFileAsync(python, [readerPath, path, "--named"]);
+    const { namedFields } = JSON.parse(stdout) as { namedFields: Record<string, string> };
+    expect(namedFields).toMatchObject({
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/1",
+      "topmostSubform[0].Page6[0].SecE_Device[0].BrandName[0]": "Acme FlowGuard",
+      "topmostSubform[0].Page6[0].SecE_Device[0].HealthPro[0]": "/1",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ReuseNo[0]": "/1",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ServicedNo[0]": "/1",
+    });
+  });
+
+  it("maps a product-problem-only report and non-device lot to Sections B, C, and D", async () => {
+    const projection: Form3500Projection = {
+      revision: 1,
+      sections: {
+        A: {}, B: { reportType: "product-problem", eventDescription: "Problem detail: Visible particles.", relevantTests: [] },
+        C: { productAvailability: "available" },
+        D: { suspectProducts: [{ productId: "product-tablets", name: "Cardiovex 20 mg tablets", lotNumber: "CV-442" }] },
+        E: {}, F: { concomitantProducts: [] }, G: { reporter: {} },
+      },
+      sourceTrace: {}, omissions: [], notIncluded: [],
+    };
+    const source = new Uint8Array(await readFile(sourcePath));
+    const result = await fillForm3500Projection(source, projection);
+    expect(result.readback.sections).toEqual(projection.sections);
+
+    const directory = await mkdtemp(join(tmpdir(), "wilson-product-problem-pdf-"));
+    const path = join(directory, "product-problem.pdf");
+    await writeFile(path, result.output);
+    const python = process.env.PYPDF_PYTHON ?? "python3";
+    const { stdout } = await execFileAsync(python, [readerPath, path, "--named"]);
+    const { namedFields } = JSON.parse(stdout) as { namedFields: Record<string, string> };
+    expect(namedFields).toMatchObject({
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/1",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/1",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "Cardiovex 20 mg tablets",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1LotNum[0]": "CV-442",
     });
   });
 
@@ -57,8 +123,9 @@ describe("adaptive Form FDA 3500 projection fields", () => {
           congenitalAnomaly: false, otherSerious: false, relevantHistory: "Penicillin allergy",
           relevantTests,
         },
+        C: {},
         D: { suspectProducts: [] },
-        F: { concomitantProducts: [] },
+        E: {}, F: { concomitantProducts: [] },
         G: { reporter: {
           firstName: "Avery", lastName: "Chen", address: "100 Test Avenue", city: "Seattle", state: "WA", postalCode: "98101",
           country: "UNITED STATES", email: "avery.chen@example.test", healthProfessional: true, occupation: "Physician",

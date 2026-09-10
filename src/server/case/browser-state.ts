@@ -3,7 +3,7 @@ import type { SemanticCase } from "../../domain/case/types";
 import type { JourneySnapshot, JourneyStage } from "../journey/service";
 import { InMemoryCaseRepository, validateRestoredCase } from "./repository";
 
-export const browserStateVersion = "wilson-browser-state-v3";
+export const browserStateVersion = "wilson-browser-state-v4";
 
 export interface BrowserJourneyState {
   version: typeof browserStateVersion;
@@ -66,7 +66,8 @@ const patientFactsSchema = z.object({
   weight: factSchema(z.object({ value: z.number().positive(), unit: z.enum(["kg", "lb"]) }).strict()),
 }).strict();
 const eventFactsSchema = z.object({
-  reportType: factSchema(z.literal("adverse-event")),
+  reportType: factSchema(z.enum(["adverse-event", "product-problem"])),
+  problemDescription: factSchema(z.string()),
   symptoms: factSchema(z.array(z.string())),
   onsetDate: factSchema(isoDateSchema),
   death: factSchema(z.boolean()),
@@ -82,6 +83,8 @@ const eventFactsSchema = z.object({
   treatments: factSchema(z.array(z.string())),
   outcome: factSchema(z.string()),
   dischargeDate: factSchema(isoDateSchema),
+  productAvailability: factSchema(z.enum(["available", "not-available", "returned-to-manufacturer"])),
+  productReturnDate: factSchema(isoDateSchema),
 }).strict();
 const relevantTestFactsSchema = z.object({
   testResult: factSchema(z.string()),
@@ -99,7 +102,10 @@ const reporterFactsSchema = z.object({
 }).strict();
 const productFactsSchema = z.object({
   name: factSchema(z.string()),
+  productType: factSchema(z.enum(["drug-or-biologic", "device", "other"])),
   role: factSchema(z.enum(["suspect", "concomitant"])),
+  manufacturer: factSchema(z.string()),
+  lotNumber: factSchema(z.string()),
   dose: factSchema(z.string()),
   frequency: factSchema(z.string()),
   route: factSchema(z.string()),
@@ -107,6 +113,19 @@ const productFactsSchema = z.object({
   stopDate: factSchema(isoDateSchema),
   indication: factSchema(z.string()),
   stopped: factSchema(z.boolean()),
+  commonName: factSchema(z.string()),
+  procode: factSchema(z.string()),
+  modelNumber: factSchema(z.string()),
+  catalogNumber: factSchema(z.string()),
+  expirationDate: factSchema(isoDateSchema),
+  serialNumber: factSchema(z.string()),
+  udi: factSchema(z.string()),
+  deviceOperator: factSchema(z.enum(["health-professional", "patient-consumer", "other"])),
+  implantDate: factSchema(isoDateSchema),
+  explantDate: factSchema(isoDateSchema),
+  reprocessedSingleUse: factSchema(z.boolean()),
+  reprocessor: factSchema(z.string()),
+  servicedByThirdParty: factSchema(z.enum(["yes", "no", "unknown"])),
 }).strict();
 
 const sourceSchema = z.object({

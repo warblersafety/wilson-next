@@ -34,6 +34,7 @@ export function emptyPatientFacts(): PatientFacts {
 export function emptyEventFacts(): EventFacts {
   return {
     reportType: emptyFact(),
+    problemDescription: emptyFact(),
     symptoms: emptyFact(),
     onsetDate: emptyFact(),
     death: emptyFact(),
@@ -49,6 +50,8 @@ export function emptyEventFacts(): EventFacts {
     treatments: emptyFact(),
     outcome: emptyFact(),
     dischargeDate: emptyFact(),
+    productAvailability: emptyFact(),
+    productReturnDate: emptyFact(),
   };
 }
 
@@ -73,7 +76,10 @@ export function emptyReporterFacts(): ReporterFacts {
 export function emptyProductFacts(): ProductFacts {
   return {
     name: emptyFact(),
+    productType: emptyFact(),
     role: emptyFact(),
+    manufacturer: emptyFact(),
+    lotNumber: emptyFact(),
     dose: emptyFact(),
     frequency: emptyFact(),
     route: emptyFact(),
@@ -81,6 +87,19 @@ export function emptyProductFacts(): ProductFacts {
     stopDate: emptyFact(),
     indication: emptyFact(),
     stopped: emptyFact(),
+    commonName: emptyFact(),
+    procode: emptyFact(),
+    modelNumber: emptyFact(),
+    catalogNumber: emptyFact(),
+    expirationDate: emptyFact(),
+    serialNumber: emptyFact(),
+    udi: emptyFact(),
+    deviceOperator: emptyFact(),
+    implantDate: emptyFact(),
+    explantDate: emptyFact(),
+    reprocessedSingleUse: emptyFact(),
+    reprocessor: emptyFact(),
+    servicedByThirdParty: emptyFact(),
   };
 }
 

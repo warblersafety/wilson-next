@@ -48,13 +48,14 @@ function productProposals(
   dateExcerpt: string | undefined,
   role: "suspect" | "concomitant",
 ) {
-  const target = (field: "name" | "role" | "dose" | "frequency" | "route" | "startDate") => ({
+  const target = (field: "name" | "productType" | "role" | "dose" | "frequency" | "route" | "startDate") => ({
     entity: "product" as const,
     entityId: productId,
     field,
   });
   const values = [
     proposal(openingAccount, `${name}-name`, productId, target("name"), known(name), regimenExcerpt),
+    proposal(openingAccount, `${name}-type`, productId, target("productType"), known("drug-or-biologic"), regimenExcerpt),
     proposal(
       openingAccount,
       `${name}-role`,

@@ -37,7 +37,8 @@ export interface PatientFacts {
 }
 
 export interface EventFacts {
-  reportType: Fact<"adverse-event">;
+  reportType: Fact<"adverse-event" | "product-problem">;
+  problemDescription: Fact<string>;
   symptoms: Fact<string[]>;
   onsetDate: Fact<string>;
   death: Fact<boolean>;
@@ -53,6 +54,8 @@ export interface EventFacts {
   treatments: Fact<string[]>;
   outcome: Fact<string>;
   dischargeDate: Fact<string>;
+  productAvailability: Fact<"available" | "not-available" | "returned-to-manufacturer">;
+  productReturnDate: Fact<string>;
 }
 
 export interface RelevantTestFacts {
@@ -80,7 +83,10 @@ export interface ReporterFacts {
 
 export interface ProductFacts {
   name: Fact<string>;
+  productType: Fact<"drug-or-biologic" | "device" | "other">;
   role: Fact<"suspect" | "concomitant">;
+  manufacturer: Fact<string>;
+  lotNumber: Fact<string>;
   dose: Fact<string>;
   frequency: Fact<string>;
   route: Fact<string>;
@@ -88,6 +94,19 @@ export interface ProductFacts {
   stopDate: Fact<string>;
   indication: Fact<string>;
   stopped: Fact<boolean>;
+  commonName: Fact<string>;
+  procode: Fact<string>;
+  modelNumber: Fact<string>;
+  catalogNumber: Fact<string>;
+  expirationDate: Fact<string>;
+  serialNumber: Fact<string>;
+  udi: Fact<string>;
+  deviceOperator: Fact<"health-professional" | "patient-consumer" | "other">;
+  implantDate: Fact<string>;
+  explantDate: Fact<string>;
+  reprocessedSingleUse: Fact<boolean>;
+  reprocessor: Fact<string>;
+  servicedByThirdParty: Fact<"yes" | "no" | "unknown">;
 }
 
 export interface PatientEntity {

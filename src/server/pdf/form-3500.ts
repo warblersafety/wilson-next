@@ -22,6 +22,7 @@ const fields = {
   weightLb: "topmostSubform[0].Page1[0].SecA_Patient[0].WeightLB[0]",
   weightKg: "topmostSubform[0].Page1[0].SecA_Patient[0].WeightKG[0]",
   adverseEvent: "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]",
+  productProblem: "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]",
   hospitalized: "topmostSubform[0].Page1[0].SecA_Patient[0].Hospital[0]",
   death: "topmostSubform[0].Page1[0].SecA_Patient[0].Death[0]",
   deathDate: "topmostSubform[0].Page1[0].SecA_Patient[0].DeathDate[0]",
@@ -34,7 +35,13 @@ const fields = {
   eventNarrative:
     "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]",
   relevantHistory: "topmostSubform[0].Page3[0].Sec6Data[0].OtherHistory[0]",
+  productAvailableYes: "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]",
+  productAvailableNo: "topmostSubform[0].Page3[0].TestDataTable[0].EvalNo[0]",
+  productReturned: "topmostSubform[0].Page3[0].TestDataTable[0].EvalRetd[0]",
+  productReturnDate: "topmostSubform[0].Page3[0].TestDataTable[0].ReturnDate[0]",
   productOneName: "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]",
+  productOneManufacturer: "topmostSubform[0].Page4[0].Prod1[0].Prod1ManuComp[0]",
+  productOneLot: "topmostSubform[0].Page4[0].Prod1[0].Prod1LotNum[0]",
   productOneDose: "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]",
   productOneFrequency: "topmostSubform[0].Page4[0].Prod1[0].Prod1Freq[0]",
   productOneOtherFrequency: "topmostSubform[0].Page4[0].Prod1[0].Prod1FreqOther[0]",
@@ -43,6 +50,8 @@ const fields = {
   productOneStopDate: "topmostSubform[0].Page4[0].Prod1[0].Prod1TherapyStopDate[0]",
   productOneIndication: "topmostSubform[0].Page4[0].Prod1[0].Prod1Diagnosis[0]",
   productTwoName: "topmostSubform[0].Page5[0].Prod2[0].Prod2Name[0]",
+  productTwoManufacturer: "topmostSubform[0].Page5[0].Prod2[0].Prod2ManuComp[0]",
+  productTwoLot: "topmostSubform[0].Page5[0].Prod2[0].Prod2LotNum[0]",
   productTwoDose: "topmostSubform[0].Page5[0].Prod2[0].Prod2Dose[0]",
   productTwoFrequency: "topmostSubform[0].Page5[0].Prod2[0].Prod2Freq[0]",
   productTwoOtherFrequency: "topmostSubform[0].Page5[0].Prod2[0].Prod2FreqOther[0]",
@@ -50,6 +59,27 @@ const fields = {
   productTwoStartDate: "topmostSubform[0].Page5[0].Prod2[0].Prod2TherapyStartDate[0]",
   productTwoStopDate: "topmostSubform[0].Page5[0].Prod2[0].Prod2TherapyStopDate[0]",
   productTwoIndication: "topmostSubform[0].Page5[0].Prod2[0].Prod2Diagnosis[0]",
+  deviceBrandName: "topmostSubform[0].Page6[0].SecE_Device[0].BrandName[0]",
+  deviceCommonName: "topmostSubform[0].Page6[0].SecE_Device[0].CommName[0]",
+  deviceProcode: "topmostSubform[0].Page6[0].SecE_Device[0].Procode[0]",
+  deviceManufacturer: "topmostSubform[0].Page6[0].SecE_Device[0].ManuName[0]",
+  deviceModel: "topmostSubform[0].Page6[0].SecE_Device[0].ModelNum[0]",
+  deviceLot: "topmostSubform[0].Page6[0].SecE_Device[0].LotNum[0]",
+  deviceCatalog: "topmostSubform[0].Page6[0].SecE_Device[0].CatNum[0]",
+  deviceExpiration: "topmostSubform[0].Page6[0].SecE_Device[0].ExpDate[0]",
+  deviceSerial: "topmostSubform[0].Page6[0].SecE_Device[0].SerialNum[0]",
+  deviceUdi: "topmostSubform[0].Page6[0].SecE_Device[0].UDInum[0]",
+  deviceOperatorProfessional: "topmostSubform[0].Page6[0].SecE_Device[0].HealthPro[0]",
+  deviceOperatorPatient: "topmostSubform[0].Page6[0].SecE_Device[0].PatientCons[0]",
+  deviceOperatorOther: "topmostSubform[0].Page6[0].SecE_Device[0].OperatorOther[0]",
+  deviceImplantDate: "topmostSubform[0].Page6[0].SecE_Device[0].ImplantDate[0]",
+  deviceExplantDate: "topmostSubform[0].Page6[0].SecE_Device[0].ExplantDate[0]",
+  deviceReprocessedYes: "topmostSubform[0].Page6[0].SecE_Device[0].ReuseYes[0]",
+  deviceReprocessedNo: "topmostSubform[0].Page6[0].SecE_Device[0].ReuseNo[0]",
+  deviceReprocessor: "topmostSubform[0].Page6[0].SecE_Device[0].ReprocInfo[0]",
+  deviceServicedYes: "topmostSubform[0].Page6[0].SecE_Device[0].ServicedYes[0]",
+  deviceServicedNo: "topmostSubform[0].Page6[0].SecE_Device[0].ServicedNo[0]",
+  deviceServicedUnknown: "topmostSubform[0].Page6[0].SecE_Device[0].ServiceUnk[0]",
   concomitantOneName: "topmostSubform[0].Page6[0].SecF_Other[0].Table1[0].Row1[0].Prod1[0]",
   concomitantOneStartDate: "topmostSubform[0].Page6[0].SecF_Other[0].Table1[0].Row1[0].Start1[0]",
   concomitantOneStopDate: "topmostSubform[0].Page6[0].SecF_Other[0].Table1[0].Row1[0].End1[0]",
@@ -197,7 +227,7 @@ export async function fillForm3500Projection(
 
   const document = await loadForm(source);
   const form = document.getForm();
-  const { A, B, D, F } = projection.sections;
+  const { A, B, C, D, E, F } = projection.sections;
 
   setText(form, fields.patientIdentifier, A.patientIdentifier);
   setText(form, fields.ageValue, A.ageYears?.toString());
@@ -209,6 +239,7 @@ export async function fillForm3500Projection(
   setChecked(form, fields.weightLb, A.weight?.unit === "lb");
   setChecked(form, fields.weightKg, A.weight?.unit === "kg");
   setChecked(form, fields.adverseEvent, B.reportType === "adverse-event");
+  setChecked(form, fields.productProblem, B.reportType === "product-problem");
   setChecked(form, fields.hospitalized, B.hospitalized === true);
   for (const field of ["death", "lifeThreatening", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious"] as const) {
     setChecked(form, fields[field], B[field] === true);
@@ -224,10 +255,16 @@ export async function fillForm3500Projection(
     setText(form, names.highRange, test.highRange);
     setText(form, names.date, test.date ? formatDate(test.date) : undefined);
   });
+  setChecked(form, fields.productAvailableYes, C.productAvailability === "available");
+  setChecked(form, fields.productAvailableNo, C.productAvailability === "not-available");
+  setChecked(form, fields.productReturned, C.productAvailability === "returned-to-manufacturer");
+  setText(form, fields.productReturnDate, C.productReturnDate ? formatDate(C.productReturnDate) : undefined);
 
   const suspectFields = [
     {
       name: fields.productOneName,
+      manufacturer: fields.productOneManufacturer,
+      lotNumber: fields.productOneLot,
       dose: fields.productOneDose,
       frequency: fields.productOneFrequency,
       otherFrequency: fields.productOneOtherFrequency,
@@ -238,6 +275,8 @@ export async function fillForm3500Projection(
     },
     {
       name: fields.productTwoName,
+      manufacturer: fields.productTwoManufacturer,
+      lotNumber: fields.productTwoLot,
       dose: fields.productTwoDose,
       frequency: fields.productTwoFrequency,
       otherFrequency: fields.productTwoOtherFrequency,
@@ -248,6 +287,31 @@ export async function fillForm3500Projection(
     },
   ];
   D.suspectProducts.forEach((product, index) => writeSuspectProduct(form, suspectFields[index], product));
+
+  const device = E.suspectDevice;
+  if (device) {
+    setText(form, fields.deviceBrandName, device.brandName);
+    setText(form, fields.deviceCommonName, device.commonName);
+    setText(form, fields.deviceProcode, device.procode);
+    setText(form, fields.deviceManufacturer, device.manufacturer);
+    setText(form, fields.deviceModel, device.modelNumber);
+    setText(form, fields.deviceLot, device.lotNumber);
+    setText(form, fields.deviceCatalog, device.catalogNumber);
+    setText(form, fields.deviceExpiration, device.expirationDate ? formatDate(device.expirationDate) : undefined);
+    setText(form, fields.deviceSerial, device.serialNumber);
+    setText(form, fields.deviceUdi, device.udi);
+    setChecked(form, fields.deviceOperatorProfessional, device.operator === "health-professional");
+    setChecked(form, fields.deviceOperatorPatient, device.operator === "patient-consumer");
+    setChecked(form, fields.deviceOperatorOther, device.operator === "other");
+    setText(form, fields.deviceImplantDate, device.implantDate ? formatDate(device.implantDate) : undefined);
+    setText(form, fields.deviceExplantDate, device.explantDate ? formatDate(device.explantDate) : undefined);
+    setChecked(form, fields.deviceReprocessedYes, device.reprocessedSingleUse === true);
+    setChecked(form, fields.deviceReprocessedNo, device.reprocessedSingleUse === false);
+    setText(form, fields.deviceReprocessor, device.reprocessor);
+    setChecked(form, fields.deviceServicedYes, device.servicedByThirdParty === "yes");
+    setChecked(form, fields.deviceServicedNo, device.servicedByThirdParty === "no");
+    setChecked(form, fields.deviceServicedUnknown, device.servicedByThirdParty === "unknown");
+  }
 
   const concomitant = F.concomitantProducts[0];
   if (concomitant) {
@@ -339,10 +403,12 @@ function setChecked(form: ReturnType<PDFDocument["getForm"]>, name: string, valu
 
 function writeSuspectProduct(
   form: ReturnType<PDFDocument["getForm"]>,
-  names: { name: string; dose: string; frequency: string; otherFrequency: string; route: string; startDate: string; stopDate: string; indication: string },
+  names: { name: string; manufacturer: string; lotNumber: string; dose: string; frequency: string; otherFrequency: string; route: string; startDate: string; stopDate: string; indication: string },
   product: ProjectedProduct,
 ): void {
   setText(form, names.name, product.name);
+  setText(form, names.manufacturer, product.manufacturer);
+  setText(form, names.lotNumber, product.lotNumber);
   setText(form, names.dose, product.dose);
   if (product.frequency) {
     const encoded = encodeFrequency(product.frequency);
@@ -361,10 +427,12 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
   const reporter = G.reporter;
   const readSuspect = (
     expected: ProjectedProduct,
-    names: { name: string; dose: string; frequency: string; otherFrequency: string; route: string; startDate: string; stopDate: string; indication: string },
+    names: { name: string; manufacturer: string; lotNumber: string; dose: string; frequency: string; otherFrequency: string; route: string; startDate: string; stopDate: string; indication: string },
   ): ProjectedProduct => compact({
     productId: expected.productId,
     name: form.getTextField(names.name).getText(),
+    manufacturer: form.getTextField(names.manufacturer).getText(),
+    lotNumber: form.getTextField(names.lotNumber).getText(),
     dose: form.getTextField(names.dose).getText(),
     frequency: decodeFrequency(
       form.getDropdown(names.frequency).getSelected()[0],
@@ -376,8 +444,8 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
     indication: form.getTextField(names.indication).getText(),
   });
   const suspectNames = [
-    { name: fields.productOneName, dose: fields.productOneDose, frequency: fields.productOneFrequency, otherFrequency: fields.productOneOtherFrequency, route: fields.productOneRoute, startDate: fields.productOneStartDate, stopDate: fields.productOneStopDate, indication: fields.productOneIndication },
-    { name: fields.productTwoName, dose: fields.productTwoDose, frequency: fields.productTwoFrequency, otherFrequency: fields.productTwoOtherFrequency, route: fields.productTwoRoute, startDate: fields.productTwoStartDate, stopDate: fields.productTwoStopDate, indication: fields.productTwoIndication },
+    { name: fields.productOneName, manufacturer: fields.productOneManufacturer, lotNumber: fields.productOneLot, dose: fields.productOneDose, frequency: fields.productOneFrequency, otherFrequency: fields.productOneOtherFrequency, route: fields.productOneRoute, startDate: fields.productOneStartDate, stopDate: fields.productOneStopDate, indication: fields.productOneIndication },
+    { name: fields.productTwoName, manufacturer: fields.productTwoManufacturer, lotNumber: fields.productTwoLot, dose: fields.productTwoDose, frequency: fields.productTwoFrequency, otherFrequency: fields.productTwoOtherFrequency, route: fields.productTwoRoute, startDate: fields.productTwoStartDate, stopDate: fields.productTwoStopDate, indication: fields.productTwoIndication },
   ];
   const concomitantProducts = projection.sections.F.concomitantProducts.map((expected): ProjectedConcomitantProduct => compact({
     productId: expected.productId,
@@ -403,7 +471,8 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
         } : undefined,
       }),
       B: compact({
-        reportType: form.getCheckBox(fields.adverseEvent).isChecked() ? "adverse-event" : undefined,
+        reportType: form.getCheckBox(fields.adverseEvent).isChecked() ? "adverse-event"
+          : form.getCheckBox(fields.productProblem).isChecked() ? "product-problem" : undefined,
         eventDate: parseDate(form.getTextField(fields.eventDate).getText()),
         eventDescription: form.getTextField(fields.eventNarrative).getText(),
         hospitalized: B.hospitalized === undefined ? undefined : form.getCheckBox(fields.hospitalized).isChecked(),
@@ -423,9 +492,39 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
         })),
         relevantHistory: form.getTextField(fields.relevantHistory).getText(),
       }),
+      C: compact({
+        productAvailability: form.getCheckBox(fields.productReturned).isChecked() ? "returned-to-manufacturer"
+          : form.getCheckBox(fields.productAvailableYes).isChecked() ? "available"
+            : form.getCheckBox(fields.productAvailableNo).isChecked() ? "not-available" : undefined,
+        productReturnDate: parseDate(form.getTextField(fields.productReturnDate).getText()),
+      }),
       D: {
         suspectProducts: projection.sections.D.suspectProducts.map((product, index) => readSuspect(product, suspectNames[index])),
       },
+      E: { suspectDevice: projection.sections.E.suspectDevice ? compact({
+        productId: projection.sections.E.suspectDevice.productId,
+        brandName: form.getTextField(fields.deviceBrandName).getText(),
+        commonName: form.getTextField(fields.deviceCommonName).getText(),
+        procode: form.getTextField(fields.deviceProcode).getText(),
+        manufacturer: form.getTextField(fields.deviceManufacturer).getText(),
+        modelNumber: form.getTextField(fields.deviceModel).getText(),
+        lotNumber: form.getTextField(fields.deviceLot).getText(),
+        catalogNumber: form.getTextField(fields.deviceCatalog).getText(),
+        expirationDate: parseDate(form.getTextField(fields.deviceExpiration).getText()),
+        serialNumber: form.getTextField(fields.deviceSerial).getText(),
+        udi: form.getTextField(fields.deviceUdi).getText(),
+        operator: form.getCheckBox(fields.deviceOperatorProfessional).isChecked() ? "health-professional" as const
+          : form.getCheckBox(fields.deviceOperatorPatient).isChecked() ? "patient-consumer" as const
+            : form.getCheckBox(fields.deviceOperatorOther).isChecked() ? "other" as const : undefined,
+        implantDate: parseDate(form.getTextField(fields.deviceImplantDate).getText()),
+        explantDate: parseDate(form.getTextField(fields.deviceExplantDate).getText()),
+        reprocessedSingleUse: projection.sections.E.suspectDevice.reprocessedSingleUse === undefined ? undefined
+          : form.getCheckBox(fields.deviceReprocessedYes).isChecked(),
+        reprocessor: form.getTextField(fields.deviceReprocessor).getText(),
+        servicedByThirdParty: form.getCheckBox(fields.deviceServicedYes).isChecked() ? "yes" as const
+          : form.getCheckBox(fields.deviceServicedNo).isChecked() ? "no" as const
+            : form.getCheckBox(fields.deviceServicedUnknown).isChecked() ? "unknown" as const : undefined,
+      }) : undefined },
       F: { concomitantProducts },
       G: { reporter: compact({
         lastName: form.getTextField(fields.reporterLastName).getText(),

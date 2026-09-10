@@ -1,7 +1,9 @@
 import { readFileSync } from "node:fs";
 import { defineConfig } from "@playwright/test";
 
-const predeterminedResponses = readFileSync("tests/e2e/predetermined-model-responses.json", "utf8");
+const predeterminedResponses = JSON.stringify(
+  JSON.parse(readFileSync("tests/e2e/predetermined-model-responses.json", "utf8")),
+);
 
 export default defineConfig({
   testDir: "tests/e2e",
