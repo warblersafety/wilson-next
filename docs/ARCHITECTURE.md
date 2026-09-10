@@ -305,6 +305,26 @@ Domain code has no model-provider, PDF-library, framework, or deployment
 imports. The browser-held state is a deployment adapter concern and does not
 change `applyCaseCommand` as the sole semantic write boundary.
 
+Live application-model selection is fail-closed at the deployment adapter.
+Explicit predetermined responses select the deterministic test adapter before
+any live-model decision and never construct the Anthropic adapter. Otherwise,
+the live adapter is available only when Vercel classifies the runtime as a
+preview and supplies matching GitHub provider, owner, repository name,
+immutable repository ID, non-`main` branch, and pull-request metadata for
+`warblersafety/wilson-next`. Local development, CI, production, non-Git,
+incomplete, and unknown contexts refuse before constructing Anthropic. This
+gate governs the assembled application route; a separately authorized operator
+model-evidence tool remains governed by its issue and Delivery's call controls.
+
+Vercel Authentication remains the access-control boundary for that preview;
+the application gate is defense in depth and does not attest to Vercel's
+independently mutable protection setting. Before any approved live preview
+call, the operator verifies that deployment protection still covers the exact
+deployment and that no public protection exception or bypass exists. A future
+requirement for application-verifiable request authorization would reopen the
+security architecture rather than treating Git or environment metadata as an
+authentication claim.
+
 Experiment 1 accepts synthetic data only. It has no analytics, session replay,
 audio capture, or retained deployed case state. For the fixed, protected,
 operator-driven experiment, Vercel Runtime Logs are the single diagnostic

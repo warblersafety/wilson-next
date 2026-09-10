@@ -7,6 +7,16 @@ import {
 import { createAnthropicJourneyModel } from "./anthropic-journey";
 import type { JourneyModel } from "./journey-model";
 
+const AUTHORIZED_GIT_PREVIEW = {
+  provider: "github",
+  owner: "warblersafety",
+  repository: "wilson-next",
+  repositoryId: "1357402525",
+} as const;
+
+type ModelEnvironment = Readonly<Record<string, string | undefined>>;
+type LiveModelFactory = () => JourneyModel;
+
 const responseSchema = z.object({
   identityScope: z.string().regex(/^[a-z0-9-]+$/),
   turn: z.enum(["opening", "correction"]),
@@ -21,9 +31,35 @@ export function journeyModelForEnvironment(): Promise<JourneyModel> {
 }
 
 async function createConfiguredModel(): Promise<JourneyModel> {
-  const predetermined = process.env.WILSON_PREDETERMINED_MODEL_RESPONSES;
-  if (!predetermined) return createAnthropicJourneyModel();
+  return selectJourneyModel(process.env);
+}
 
+export function selectJourneyModel(
+  environment: ModelEnvironment,
+  createLiveModel: LiveModelFactory = createAnthropicJourneyModel,
+): JourneyModel {
+  const predetermined = environment.WILSON_PREDETERMINED_MODEL_RESPONSES;
+  if (predetermined) return predeterminedJourneyModel(predetermined);
+
+  if (!isAuthorizedGitPreview(environment)) {
+    throw new Error("The live application model is not available in this environment");
+  }
+
+  return createLiveModel();
+}
+
+function isAuthorizedGitPreview(environment: ModelEnvironment): boolean {
+  return environment.VERCEL_ENV === "preview"
+    && environment.VERCEL_GIT_PROVIDER === AUTHORIZED_GIT_PREVIEW.provider
+    && environment.VERCEL_GIT_REPO_OWNER === AUTHORIZED_GIT_PREVIEW.owner
+    && environment.VERCEL_GIT_REPO_SLUG === AUTHORIZED_GIT_PREVIEW.repository
+    && environment.VERCEL_GIT_REPO_ID === AUTHORIZED_GIT_PREVIEW.repositoryId
+    && environment.VERCEL_GIT_COMMIT_REF !== undefined
+    && environment.VERCEL_GIT_COMMIT_REF !== "main"
+    && /^[1-9]\d*$/.test(environment.VERCEL_GIT_PULL_REQUEST_ID ?? "");
+}
+
+function predeterminedJourneyModel(predetermined: string): JourneyModel {
   const decoded = JSON.parse(predetermined);
   const responses = z.array(responseSchema).min(1).parse(decoded);
   let next = 0;
