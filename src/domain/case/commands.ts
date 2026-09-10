@@ -3,6 +3,7 @@ import {
   assertCaseInvariants,
   cloneCase,
   emptyProductFacts,
+  emptyRelevantTestFacts,
   freezeCase,
   getFact,
   refreshFactState,
@@ -21,9 +22,11 @@ import type {
   GroundedProposal,
   GroundedValue,
   ProposalGroupDecision,
+  ProposedRelevantTest,
   SemanticCase,
   Source,
 } from "./types";
+import { nextCompletionQuestion } from "./completion-policy";
 
 export class StaleCaseRevisionError extends Error {}
 
@@ -58,7 +61,7 @@ export function applyCaseCommand(
 
   switch (command.type) {
     case "attach-grounded-proposals":
-      attachGroundedProposals(next, command.products, command.sources, command.proposals, change);
+      attachGroundedProposals(next, command.products, command.relevantTests ?? [], command.sources, command.proposals, change);
       break;
     case "review-proposal-groups":
       reviewProposalGroups(next, command.decisions, change);
@@ -66,6 +69,7 @@ export function applyCaseCommand(
     case "record-clinician-facts":
       if (command.facts.length === 0) throw new Error("A clinician fact command requires facts");
       addSource(next, command.source);
+      addRelevantTests(next, command.relevantTests ?? [], "resolved", change);
       change.sourceIds.push(command.source.id);
       for (const item of command.facts) {
         const grounded: GroundedValue<unknown> = {
@@ -78,18 +82,15 @@ export function applyCaseCommand(
         applyAcceptedValue(getFact(next, item.target), grounded, item.target, change);
       }
       if (command.answersNeed) {
-        const need = next.askedNeeds.find(({ key }) => key === command.answersNeed);
+        const need = [...next.askedNeeds].reverse().find(({ key, status }) => key === command.answersNeed && status === "open");
         if (!need || need.status !== "open") {
           throw new Error(`No open semantic need ${command.answersNeed}`);
         }
-        const answeredProductIds = command.facts.flatMap(({ target }) =>
-          target.entity === "product" && target.field === "indication" ? [target.entityId] : [],
-        );
-        if (command.facts.length !== need.productIds.length
-          || new Set(answeredProductIds).size !== need.productIds.length
-          || need.productIds.some((productId) => !answeredProductIds.includes(productId))) {
-          throw new Error(`Answer must address every product in semantic need ${command.answersNeed}`);
+        const answeredTargets = new Set(command.facts.map(({ target }) => targetKey(target)));
+        if (need.targetIds.some((target) => !answeredTargets.has(target))) {
+          throw new Error(`Answer must address every target in semantic need ${command.answersNeed}`);
         }
+        assertNeedAnswerTargets(command.answersNeed, command.facts.map(({ target }) => targetKey(target)), (command.relevantTests ?? []).map(({ id }) => id));
         need.status = command.facts.every(({ value }) => value.kind === "declined")
           ? "declined"
           : "answered";
@@ -97,7 +98,7 @@ export function applyCaseCommand(
       }
       break;
     case "record-asked-need":
-      recordAskedNeed(next, command.key, command.productIds, change);
+      recordAskedNeed(next, command.key, command.targetIds, change);
       break;
     case "resolve-conflict":
       addSource(next, command.source);
@@ -118,6 +119,7 @@ export function applyCaseCommand(
 function attachGroundedProposals(
   caseState: SemanticCase,
   products: Array<{ id: string; groupId: string }>,
+  relevantTests: ProposedRelevantTest[],
   sources: Source[],
   proposals: GroundedProposal[],
   change: Change,
@@ -139,6 +141,7 @@ function attachGroundedProposals(
     });
     change.affectedTargets.push(`product:${product.id}`);
   }
+  addRelevantTests(caseState, relevantTests, "proposed", change);
 
   for (const proposal of proposals) {
     if (!proposal.proposalId.trim() || !proposal.groupId.trim()) throw new Error("Proposal identity is required");
@@ -218,6 +221,13 @@ function reviewProposalGroups(
       product.state = decision.action === "accept" ? "resolved" : "rejected";
       found = true;
     }
+    const relevantTest = caseState.relevantTests.find(
+      ({ proposalGroupId, state }) => proposalGroupId === decision.groupId && state === "proposed",
+    );
+    if (relevantTest) {
+      relevantTest.state = decision.action === "accept" ? "resolved" : "rejected";
+      found = true;
+    }
     if (decision.action === "accept" && appliedCorrections.size !== (decision.corrections?.length ?? 0)) {
       throw new Error(`A correction did not match a proposal in group ${decision.groupId}`);
     }
@@ -274,27 +284,62 @@ function applyAcceptedValue(
 
 function recordAskedNeed(
   caseState: SemanticCase,
-  key: "suspect-product-indications",
-  productIds: string[],
+  key: import("./types").SemanticNeedKey,
+  targetIds: string[],
   change: Change,
 ): void {
-  if (caseState.askedNeeds.some((need) => need.key === key)) {
-    throw new Error(`Semantic need ${key} was already recorded`);
+  const uniqueTargets = unique(targetIds);
+  if (uniqueTargets.length === 0) throw new Error("A semantic need requires targets");
+  if (caseState.askedNeeds.some((need) => need.key === key
+    && need.targetIds.length === uniqueTargets.length
+    && need.targetIds.every((target, index) => target === uniqueTargets[index]))) {
+    throw new Error(`Semantic need ${key} was already recorded for these targets`);
   }
-  const uniqueProductIds = unique(productIds);
-  if (uniqueProductIds.length === 0) throw new Error("A semantic need requires products");
-  for (const productId of uniqueProductIds) {
-    const product = caseState.products.find(({ id, state }) => id === productId && state === "resolved");
-    if (!product) throw new Error(`Unknown resolved product ${productId}`);
-    if (product.facts.role.resolvedValue?.value.kind !== "known" || product.facts.role.resolvedValue.value.value !== "suspect") {
-      throw new Error(`Indication need may only target suspect product ${productId}`);
-    }
-    if (product.facts.indication.state !== "empty") {
-      throw new Error(`Product ${productId} does not have an empty indication`);
-    }
+  const expected = nextCompletionQuestion(caseState);
+  if (!expected || expected.key !== key || expected.targetIds.join("\u0000") !== uniqueTargets.join("\u0000")) {
+    throw new Error(`Semantic need ${key} is not the next applicable question`);
   }
-  caseState.askedNeeds.push({ key, productIds: uniqueProductIds, status: "open" });
+  for (const target of uniqueTargets) {
+    const fact = everyFact(caseState).find(({ target: candidate }) => targetKey(candidate) === target)?.fact;
+    if (!fact) throw new Error(`Unknown semantic need target ${target}`);
+    if (fact.state !== "empty") throw new Error(`Semantic need target ${target} is not empty`);
+  }
+  caseState.askedNeeds.push({ key, targetIds: uniqueTargets, status: "open" });
   change.affectedTargets.push(`need:${key}`);
+}
+
+function assertNeedAnswerTargets(key: import("./types").SemanticNeedKey, targets: string[], createdTestIds: string[]): void {
+  const allowed = (target: string) => {
+    if (key === "relevant-clinical-context") {
+      return target === "event:event:relevantTestsAvailable" || target === "event:event:relevantHistory"
+        || createdTestIds.some((id) => target.startsWith(`test:${id}:`));
+    }
+    if (key === "reporter-details") return target.startsWith("reporter:reporter:");
+    if (key === "suspect-product-indications") return /^product:[^:]+:indication$/.test(target);
+    if (key === "serious-outcomes") return /^event:event:(death|lifeThreatening|hospitalized|disability|requiredIntervention|congenitalAnomaly|otherSerious)$/.test(target);
+    return target === "event:event:deathDate";
+  };
+  if (targets.some((target) => !allowed(target))) throw new Error(`Answer contains a target outside semantic need ${key}`);
+}
+
+function addRelevantTests(
+  caseState: SemanticCase,
+  relevantTests: ProposedRelevantTest[],
+  state: "proposed" | "resolved",
+  change: Change,
+): void {
+  if (caseState.relevantTests.length + relevantTests.length > 8) throw new Error("The supported case accepts at most eight relevant tests");
+  for (const test of relevantTests) {
+    if (!test.id.trim() || !test.groupId.trim()) throw new Error("Relevant-test identity is required");
+    if (caseState.relevantTests.some(({ id }) => id === test.id)) throw new Error(`Relevant test ${test.id} already exists`);
+    caseState.relevantTests.push({
+      id: test.id,
+      proposalGroupId: test.groupId,
+      state,
+      facts: emptyRelevantTestFacts(),
+    });
+    change.affectedTargets.push(`test:${test.id}`);
+  }
 }
 
 function resolveConflict(
@@ -341,7 +386,7 @@ function addSource(caseState: SemanticCase, source: Source): void {
     throw new Error("Source identity and excerpt are required");
   }
   if (source.actor !== "clinician") throw new Error("Only clinician input may establish case evidence");
-  if (!["narrative", "selection", "answer", "correction", "resolution"].includes(source.inputType)) {
+  if (!["narrative", "selection", "answer", "correction", "resolution", "reporter-entry"].includes(source.inputType)) {
     throw new Error(`Unsupported source input type ${String(source.inputType)}`);
   }
   if (Number.isNaN(Date.parse(source.recordedAt))) throw new Error("Source recordedAt must be an ISO date-time");
@@ -382,6 +427,16 @@ function everyFact(caseState: SemanticCase): Array<{ target: FactTarget; fact: F
       facts.push({ target, fact: getFact(caseState, target) });
     }
   }
+  for (const test of caseState.relevantTests) {
+    for (const field of Object.keys(test.facts) as Array<keyof typeof test.facts>) {
+      const target: FactTarget = { entity: "test", entityId: test.id, field };
+      facts.push({ target, fact: getFact(caseState, target) });
+    }
+  }
+  for (const field of Object.keys(caseState.reporter.facts) as Array<keyof typeof caseState.reporter.facts>) {
+    const target: FactTarget = { entity: "reporter", entityId: "reporter", field };
+    facts.push({ target, fact: getFact(caseState, target) });
+  }
   return facts;
 }
 
@@ -401,13 +456,15 @@ function assertValueMatchesTarget(target: FactTarget, value: CaseValue<unknown>)
   if (!("value" in raw)) throw new Error(`${targetKey(target)} requires a known value`);
   const actual = raw.value;
   const stringFields = new Set([
-    "identifier", "reportType", "onsetDate", "hemoglobin", "outcome", "dischargeDate",
+    "identifier", "reportType", "onsetDate", "deathDate", "relevantHistory", "outcome", "dischargeDate",
+    "testResult", "lowRange", "highRange", "date",
     "name", "dose", "frequency", "route", "startDate", "stopDate", "indication",
+    "lastName", "firstName", "address", "city", "state", "postalCode", "country", "phone", "email", "occupation",
   ]);
   if (stringFields.has(target.field) && typeof actual !== "string") {
     throw new Error(`${targetKey(target)} requires a string value`);
   }
-  if (["onsetDate", "dischargeDate", "startDate", "stopDate"].includes(target.field)
+  if (["onsetDate", "deathDate", "dischargeDate", "startDate", "stopDate", "date"].includes(target.field)
     && (typeof actual !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(actual))) {
     throw new Error(`${targetKey(target)} requires an ISO calendar date`);
   }
@@ -417,11 +474,22 @@ function assertValueMatchesTarget(target: FactTarget, value: CaseValue<unknown>)
   if (target.field === "sex" && !["female", "male", "intersex"].includes(actual as string)) {
     throw new Error(`${targetKey(target)} requires a supported sex value`);
   }
+  if (target.field === "weight" && (!actual || typeof actual !== "object"
+    || typeof (actual as { value?: unknown }).value !== "number"
+    || !Number.isFinite((actual as { value: number }).value)
+    || (actual as { value: number }).value <= 0
+    || !["kg", "lb"].includes(String((actual as { unit?: unknown }).unit)))) {
+    throw new Error(`${targetKey(target)} requires a positive weight with kg or lb`);
+  }
   if (["symptoms", "treatments"].includes(target.field) && (!Array.isArray(actual) || actual.some((item) => typeof item !== "string"))) {
     throw new Error(`${targetKey(target)} requires a string array`);
   }
-  if (["hospitalized", "stopped"].includes(target.field) && typeof actual !== "boolean") {
+  if (["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "healthProfessional", "doNotDiscloseIdentity", "stopped"].includes(target.field) && typeof actual !== "boolean") {
     throw new Error(`${targetKey(target)} requires a boolean value`);
+  }
+  if (target.field === "reportedTo" && (!Array.isArray(actual)
+    || actual.some((item) => !["manufacturer", "user-facility", "distributor-importer", "packer"].includes(String(item))))) {
+    throw new Error(`${targetKey(target)} requires supported reporter destinations`);
   }
   if (target.field === "role" && !["suspect", "concomitant"].includes(actual as string)) {
     throw new Error(`${targetKey(target)} requires a supported role`);

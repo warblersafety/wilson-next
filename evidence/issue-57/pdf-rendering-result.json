@@ -1,0 +1,39 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 1,
+      "rendered" : true,
+      "screenshot" : "evidence\/issue-57\/adaptive-rich-pdf-page-1.png"
+    },
+    {
+      "page" : 2,
+      "rendered" : true,
+      "screenshot" : "evidence\/issue-57\/adaptive-rich-pdf-page-2.png"
+    },
+    {
+      "page" : 3,
+      "rendered" : true,
+      "screenshot" : "evidence\/issue-57\/adaptive-rich-pdf-page-3.png"
+    },
+    {
+      "page" : 4,
+      "rendered" : true,
+      "screenshot" : "evidence\/issue-57\/adaptive-rich-pdf-page-4.png"
+    },
+    {
+      "page" : 7,
+      "rendered" : true,
+      "screenshot" : "evidence\/issue-57\/adaptive-rich-pdf-page-7.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "No password prompt, corruption, or displaced form content is visible",
+    "FDA, MedWatch, Form 3500, OMB expiry, and page identity are preserved",
+    "Section A weight and Section B outcomes agree with the reviewed case",
+    "Section B tests and medical history agree with the reviewed case",
+    "Section D product details and Section G reporter details agree with the reviewed case"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "evidence\/issue-57\/adaptive-rich.pdf"
+}

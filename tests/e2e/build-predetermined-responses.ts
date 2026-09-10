@@ -2,6 +2,8 @@ import { writeFile } from "node:fs/promises";
 import type { ModelProposalOutput } from "../../src/domain/case/model-boundary.ts";
 
 export const richOpening = "Patient TEST-68 is a 68-year-old man. He began cephalexin 500 mg by mouth twice daily on 01-Aug-2026 for cellulitis. On 04-Aug-2026 he developed diffuse hives and facial swelling and was hospitalized. Cephalexin was stopped, he was treated with epinephrine and diphenhydramine, and he recovered and was discharged on 05-Aug-2026. I suspect cephalexin.";
+export const adaptiveRichOpening = "Patient TEST-72 is a 72-year-old woman weighing 64 kg. She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. Her relevant history is a penicillin allergy. Amoxicillin was stopped, she received epinephrine, and she recovered. I suspect amoxicillin.";
+export const adaptiveSparseOpening = "Patient TEST-26 is a 26-year-old man. He developed severe dizziness while taking propranolol. I suspect propranolol.";
 export const sparseOpening = "Patient TEST-31 is a 31-year-old woman. She developed nausea and vomiting while taking metformin. I suspect metformin. She does not know the dose, when metformin began, or when the symptoms started. She was not hospitalized.";
 export const repeatedOpening = "Patient TEST-44 is a 44-year-old man. He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain. On 05-Jul-2026 he developed nausea and right upper abdominal pain and was hospitalized. Tylenol and ibuprofen were stopped, he received intravenous fluids, and he recovered and was discharged on 07-Jul-2026. I suspect acetaminophen and ibuprofen.";
 export const repeatedUpdate = "Correction: the ibuprofen dose was 200 mg twice daily, not 400 mg twice daily. My medication list says acetaminophen began 02-Jul-2026 rather than 01-Jul-2026. I cannot resolve which date is correct.";
@@ -22,8 +24,59 @@ function proposal(
   return { proposalReference, groupReference, intent, target, value, evidenceQuote };
 }
 
-const known = <T extends string | number | boolean | string[]>(value: T) => ({ kind: "known" as const, value });
+const known = <T extends string | number | boolean | string[] | { value: number; unit: "kg" | "lb" }>(value: T) => ({ kind: "known" as const, value });
 const product = (productReference: string, field: "name" | "role" | "dose" | "frequency" | "route" | "startDate" | "stopDate" | "indication" | "stopped") => ({ entity: "product" as const, productReference, field });
+const test = (testReference: string, field: "testResult" | "lowRange" | "highRange" | "date") => ({ entity: "test" as const, testReference, field });
+
+function adaptiveRichResponse(): ModelProposalOutput {
+  const patient = "Patient TEST-72 is a 72-year-old woman weighing 64 kg.";
+  const regimen = "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis.";
+  const event = "On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized.";
+  const testEvidence = "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026.";
+  const result = "Amoxicillin was stopped, she received epinephrine, and she recovered.";
+  return {
+    products: [{ productReference: "p1", groupReference: "g1" }],
+    tests: [{ testReference: "t1", groupReference: "gt1" }],
+    proposals: [
+      proposal("patient-id", "patient", { entity: "patient", field: "identifier" }, known("TEST-72"), patient),
+      proposal("patient-age", "patient", { entity: "patient", field: "ageYears" }, known(72), patient),
+      proposal("patient-sex", "patient", { entity: "patient", field: "sex" }, known("female"), patient),
+      proposal("patient-weight", "patient", { entity: "patient", field: "weight" }, known({ value: 64, unit: "kg" }), patient),
+      proposal("event-symptoms", "event", { entity: "event", field: "symptoms" }, known(["generalized rash", "wheezing"]), event),
+      proposal("event-onset", "event", { entity: "event", field: "onsetDate" }, known("2026-09-03"), event),
+      proposal("event-life-threatening", "event", { entity: "event", field: "lifeThreatening" }, known(true), event),
+      proposal("event-hospitalized", "event", { entity: "event", field: "hospitalized" }, known(true), event),
+      proposal("event-history", "event", { entity: "event", field: "relevantHistory" }, known("Penicillin allergy"), "Her relevant history is a penicillin allergy."),
+      proposal("event-treatment", "event", { entity: "event", field: "treatments" }, known(["epinephrine"]), result),
+      proposal("event-outcome", "event", { entity: "event", field: "outcome" }, known("recovered"), result),
+      proposal("test-result", "gt1", test("t1", "testResult"), known("Serum tryptase: 18 ng/mL"), testEvidence),
+      proposal("test-low", "gt1", test("t1", "lowRange"), known("0 ng/mL"), testEvidence),
+      proposal("test-high", "gt1", test("t1", "highRange"), known("11.4 ng/mL"), testEvidence),
+      proposal("test-date", "gt1", test("t1", "date"), known("2026-09-03"), testEvidence),
+      proposal("product-name", "g1", product("p1", "name"), known("amoxicillin"), regimen),
+      proposal("product-role", "g1", product("p1", "role"), known("suspect"), "I suspect amoxicillin"),
+      proposal("product-dose", "g1", product("p1", "dose"), known("500 mg"), regimen),
+      proposal("product-frequency", "g1", product("p1", "frequency"), known("twice daily"), regimen),
+      proposal("product-route", "g1", product("p1", "route"), known("oral"), regimen),
+      proposal("product-start", "g1", product("p1", "startDate"), known("2026-09-01"), regimen),
+      proposal("product-indication", "g1", product("p1", "indication"), known("sinusitis"), regimen),
+      proposal("product-stopped", "g1", product("p1", "stopped"), known(true), result),
+    ],
+  };
+}
+
+function adaptiveSparseResponse(): ModelProposalOutput {
+  const patient = "Patient TEST-26 is a 26-year-old man.";
+  const event = "He developed severe dizziness while taking propranolol.";
+  return { products: [{ productReference: "p1", groupReference: "g1" }], proposals: [
+    proposal("patient-id", "patient", { entity: "patient", field: "identifier" }, known("TEST-26"), patient),
+    proposal("patient-age", "patient", { entity: "patient", field: "ageYears" }, known(26), patient),
+    proposal("patient-sex", "patient", { entity: "patient", field: "sex" }, known("male"), patient),
+    proposal("event-symptoms", "event", { entity: "event", field: "symptoms" }, known(["severe dizziness"]), event),
+    proposal("product-name", "g1", product("p1", "name"), known("propranolol"), event),
+    proposal("product-role", "g1", product("p1", "role"), known("suspect"), "I suspect propranolol"),
+  ] };
+}
 
 function richResponse(): ModelProposalOutput {
   const patient = "Patient TEST-68 is a 68-year-old man.";
@@ -124,7 +177,7 @@ function regressionResponses(): [ModelProposalOutput, ModelProposalOutput] {
     proposal("event-symptoms", "event", { entity: "event", field: "symptoms" }, known(["melena", "dizziness"]), event),
     proposal("event-onset", "event", { entity: "event", field: "onsetDate" }, known("2026-08-18"), event),
     proposal("event-hospitalized", "event", { entity: "event", field: "hospitalized" }, known(true), event),
-    proposal("event-hemoglobin", "event", { entity: "event", field: "hemoglobin" }, known("7.8 g/dL"), "Her hemoglobin was 7.8 g/dL"),
+    proposal("test-hemoglobin", "test-hemoglobin", test("hemoglobin", "testResult"), known("Hemoglobin: 7.8 g/dL"), "Her hemoglobin was 7.8 g/dL"),
     proposal("event-treatment", "event", { entity: "event", field: "treatments" }, known(["two units of packed red cells"]), result),
     proposal("event-outcome", "event", { entity: "event", field: "outcome" }, known("recovered"), result),
     proposal("event-discharge", "event", { entity: "event", field: "dischargeDate" }, known("2026-08-21"), result),
@@ -142,6 +195,7 @@ function regressionResponses(): [ModelProposalOutput, ModelProposalOutput] {
   }
   const rawOpening: ModelProposalOutput = {
     products: regimens.map(([productReference, groupReference]) => ({ productReference, groupReference })),
+    tests: [{ testReference: "hemoglobin", groupReference: "test-hemoglobin" }],
     proposals,
   };
   const rawCorrection: ModelProposalOutput = { products: [], proposals: [
@@ -153,6 +207,8 @@ function regressionResponses(): [ModelProposalOutput, ModelProposalOutput] {
 
 const [regressionOpeningResponse, regressionCorrectionResponse] = regressionResponses();
 const responses = [
+  { identityScope: "adaptive-rich", turn: "opening", output: adaptiveRichResponse() },
+  { identityScope: "adaptive-sparse", turn: "opening", output: adaptiveSparseResponse() },
   { identityScope: "rich", turn: "opening", output: richResponse() },
   { identityScope: "sparse", turn: "opening", output: sparseResponse() },
   { identityScope: "repeated", turn: "opening", output: repeatedResponse() },

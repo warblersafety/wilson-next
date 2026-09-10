@@ -2,8 +2,8 @@
 
 **Status:** Experiment 1 hypothesis completed with qualified technical success;
 Experiment 2's production-seed amendments were approved through Issue #42 and
-PR #43 and govern its remaining implementation under Delivery's standing
-execution authority
+PR #43; Issue #57 adds the bounded adaptive-completion amendment after
+Experiment 2 concluded `Revise`, without changing its deferred live-model risk
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification
@@ -49,6 +49,8 @@ Case
   patient
   event
   products[]        # stable ID and suspect/concomitant role
+  relevantTests[]   # stable ID; result, ranges, and date stay together
+  reporter          # direct clinician entry; never model-proposed
   askedNeeds[]      # small semantic follow-up history
   sources[]         # clinician inputs and exact excerpts
   changes[]         # accepted changes, supersession, and resolution
@@ -71,19 +73,21 @@ A resolved value is `known(value, optional precision or qualifier)`, `unknown`,
 exclusive. No value means `empty`; it does not mean unknown. Whether Wilson has
 asked about an empty fact belongs to interaction history, not clinical truth.
 
-The experiments use explicit typed fields only for their selected patient,
-event, and product facts. Product roles are facts, and proposed entities remain
-proposed until group review. `Fact<T>` supplies consistent behavior without
+The implemented slices use explicit typed fields only for their selected
+patient, event, product, relevant-test, and reporter facts. Product roles are
+facts, and proposed products and tests remain proposed until group review.
+Reporter facts enter directly from the clinician through `applyCaseCommand` and
+never pass through the model. `Fact<T>` supplies consistent behavior without
 claiming a complete Form 3500 ontology.
 
 ### Stable entity identity
 
 The application owns stable opaque case entity IDs. On opening input, the model
-may group mentions under response-local product references; the model boundary
-validates those groups and assigns case IDs before proposals reach
-`applyCaseCommand`. A later model input receives the relevant reviewed product
-IDs and names and may reference only those IDs for the selected Experiment 2
-updates. Stable identity is never derived from medicine name, list position,
+may group mentions under response-local product or relevant-test references;
+the model boundary validates those groups and assigns case IDs before proposals
+reach `applyCaseCommand`. A later model input receives the relevant reviewed
+product and test IDs and may reference only those IDs for supported updates.
+Stable identity is never derived from medicine or test name, list position,
 fixture data, or a PDF row. The model proposes mention linkage; it does not own
 case identity.
 
@@ -136,9 +140,10 @@ framework is required.
 
 ## Model responsibility
 
-The model may propose typed patient, event, and product facts, mention grouping
-or links to application-supplied entities, qualifiers, exact verbatim supporting
-text, and the presence of a correction or unresolved alternative. It may not:
+The model may propose typed patient, event, product, and relevant-test facts,
+mention grouping or links to application-supplied entities, qualifiers, exact
+verbatim supporting text, and the presence of a correction or unresolved
+alternative. It may not propose reporter identity or contact facts. It may not:
 
 - confirm, overwrite, or resolve case knowledge;
 - choose among conflicting evidence;
@@ -179,11 +184,18 @@ successfully remains visibly proposed for operator review and cannot become
 resolved without the ordinary clinician-review command. External semantic
 oracles and human scoring determine whether an experiment run passes.
 
-Experiment 2 retains one deterministic semantic rule to identify missing
-suspect-product indications. It renders authored copy and one labelled answer
-control per target product, including explicit unknown and declined choices.
-Those direct semantic answers use `applyCaseCommand` without a model call. A
-generic follow-up planner and model-generated question wording remain deferred.
+The supported adult medication adverse-event path uses one bounded,
+deterministic completion policy. After opening proposals are reviewed, it asks
+in order about missing suspect-product indications, unestablished serious
+outcomes, death date only when death applies, missing relevant tests and medical
+history, and reporter details. Accepted narrative facts suppress matching
+questions; related outcome and clinical-context needs are grouped; every group
+has authored wording and a plain-language reason. Unknown, declined,
+explicitly-absent, and inapplicable answers close the recorded need without a
+loop. A later reviewed correction may reopen a need only for a newly applicable
+semantic target. Direct answers use `applyCaseCommand` without a model call.
+This is not a generic follow-up planner, and model-generated question wording
+remains deferred.
 
 ## Views and Form 3500 projection
 
@@ -201,19 +213,20 @@ The semantic projection knows Form 3500 concepts but not PDF widget names,
 coordinates, checkbox encodings, or library details. Only the final versioned
 adapter knows those. A projection or rendering error leaves the case unchanged.
 
-Experiment 2 replaces the authored Experiment 1 sequence with state-derived
-work. Pending opening proposals require review; an unanswered consequential need
-requires clarification; a proposed correction or conflict requires attention;
-otherwise the reviewed projection is inspectable. The UI may offer actions only
-for the semantic targets represented in the current revision. It may not infer
-the stage from fixture input, product names, expected values, or a fixed turn
-number.
+The production seed replaces the authored Experiment 1 sequence with
+state-derived work. Pending opening proposals require review; the next
+applicable bounded need requires clarification; a proposed correction or
+conflict requires attention; otherwise the reviewed projection is inspectable.
+The UI may offer actions only for semantic targets represented in the current
+revision. It may not infer the stage from fixture input, product names, expected
+values, or a fixed turn number.
 
-For the selected Experiment 2 medication journeys, unresolved optional facts
-remain omitted and visible but do not block output after pending proposals and
-corrections have received their required review. Conflicting alternatives never
-project. The semantic projection supplies omission reasons; the PDF adapter does
-not decide completion. A broader report-completion policy remains deferred.
+For the selected adult medication journeys, unresolved optional facts remain
+omitted and visible but do not block output after proposals, corrections, and
+applicable bounded needs have received their required review or direct answer.
+Conflicting alternatives never project. The semantic projection supplies
+omission reasons; the PDF adapter does not decide completion. A broader
+report-completion policy remains deferred.
 
 The approved authority is Form FDA 3500 (09/2025), OMB expiry 09-30-2027. The
 [official PDF](https://www.fda.gov/media/76299/download?attachment=) must be

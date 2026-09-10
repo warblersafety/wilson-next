@@ -14,9 +14,11 @@ distortion than completing the form directly.
 
 The clinician describes the case naturally, sees what Wilson understood,
 corrects it, answers a small number of useful follow-ups, and downloads a form
-that faithfully reflects the reviewed case knowledge. Wilson succeeds only if
-a representative clinician would prefer that experience to completing Form
-FDA 3500 directly.
+that faithfully reflects the reviewed case knowledge. Preliminary physician
+feedback reports a strong preference for this approach if it works accurately,
+completely, and with low burden. Wilson therefore succeeds only when the
+assembled product first meets that condition and, after separate readiness
+approval, representative clinicians confirm the experience in use.
 
 ## Product boundaries
 
@@ -138,7 +140,7 @@ and disagreement between reviewed knowledge and the form are unacceptable.
 | Continuity | An unfinished case may be lost on reload or restart; one running session may start over |
 | Advice | No diagnosis, causality judgment, coding, classification, or treatment recommendation |
 | Development data | Synthetic only until real-data boundaries are approved |
-| Product proof | After separate product-completeness and readiness approval, representative healthcare professionals compare Wilson with the direct form |
+| Product proof | First demonstrate accurate, complete, low-burden assembled behavior; after separate product-completeness and readiness approval, representative healthcare professionals validate it in use |
 
 At least one drug or biologic case and one device or product-quality case are
 required before claiming meaningful product breadth. Unsupported paths remain
@@ -174,11 +176,13 @@ Corrections must behave consistently regardless of input path. Severe loss,
 invention, reversal, wrong attribution, contradictory form values, or silent
 failure stops expansion regardless of aggregate performance.
 
-Synthetic and operator evidence cannot prove clinician usability or preference.
-Representative clinician evidence will eventually be necessary for the product
-claim, but only after a separately approved product-completeness and readiness
-decision; it cannot establish general usability, safety, or clinical validity
-by itself.
+Synthetic and operator evidence cannot prove clinician usability. Preliminary
+physician feedback establishes only conditional preference for Wilson's
+approach: it does not prove that the assembled product is accurate, complete,
+or low burden. Representative clinician evidence will eventually be necessary
+for the product claim, but only after a separately approved product-completeness
+and readiness decision; it cannot establish general usability, safety, or
+clinical validity by itself.
 
 ## Form authority
 

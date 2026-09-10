@@ -99,6 +99,32 @@ describe("applyCaseCommand", () => {
     ]));
   });
 
+  it("corrects a stable relevant-test entity with evidence and retained history", () => {
+    const current = acceptOpeningCase();
+    const text = "Correction: hemoglobin was 8.1 g/dL, not 7.8 g/dL.";
+    const attached = applyCaseCommand(current, {
+      type: "attach-grounded-proposals",
+      commandId: "attach-test-correction",
+      expectedRevision: current.revision,
+      products: [], relevantTests: [],
+      sources: [{ id: "source-test-correction", inputId: "input-test-correction", inputType: "correction", excerpt: text, start: 0, end: text.length, actor: "clinician", recordedAt: "2026-09-10T00:00:00.000Z" }],
+      proposals: [{
+        proposalId: "proposal-test-correction", groupId: "group-test-correction", intent: "correction",
+        target: { entity: "test", entityId: "test-hemoglobin", field: "testResult" },
+        value: { kind: "known", value: "Hemoglobin: 8.1 g/dL" }, sourceIds: ["source-test-correction"],
+      }],
+    }).case;
+    expect(attached.relevantTests).toHaveLength(1);
+    expect(attached.relevantTests[0].facts.testResult.resolvedValue?.value).toEqual({ kind: "known", value: "Hemoglobin: 7.8 g/dL" });
+    const reviewed = applyCaseCommand(attached, {
+      type: "review-proposal-groups", commandId: "accept-test-correction", expectedRevision: attached.revision,
+      decisions: [{ groupId: "group-test-correction", action: "accept" }],
+    }).case;
+    expect(reviewed.relevantTests[0].facts.testResult.resolvedValue?.value).toEqual({ kind: "known", value: "Hemoglobin: 8.1 g/dL" });
+    expect(reviewed.relevantTests[0].facts.testResult.supersededValues.map(({ value }) => value)).toEqual([{ kind: "known", value: "Hemoglobin: 7.8 g/dL" }]);
+    expect(reviewed.relevantTests[0].facts.testResult.resolvedValue?.sourceIds).toEqual(["source-test-correction"]);
+  });
+
   it("returns duplicate command IDs unchanged and rejects stale new commands atomically", () => {
     const current = acceptOpeningCase();
     const duplicate = applyCaseCommand(current, {
@@ -114,7 +140,7 @@ describe("applyCaseCommand", () => {
       commandId: "new-stale-command",
       expectedRevision: current.revision - 1,
       key: "suspect-product-indications",
-      productIds: ["product-apixaban", "product-naproxen"],
+      targetIds: ["product:product-apixaban:indication", "product:product-naproxen:indication"],
     })).toThrow(StaleCaseRevisionError);
     expect(current.revision).toBe(3);
     expect(current.askedNeeds).toEqual([]);

@@ -18,8 +18,8 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-experiment-2-boundary-v2";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v7";
+export const MODEL_PROMPT_REVISION = "wilson-medication-completion-v1";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v8";
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
 export const MODEL_MAX_RETRIES = 0;
 
@@ -70,7 +70,8 @@ const SYSTEM_PROMPT = `You extract grounded semantic proposals from one syntheti
 
 Rules:
 - Propose only facts explicitly supported by the current clinician input. Do not diagnose, infer causality, classify, fill gaps, or establish truth.
-- The supported targets are the patient, adverse event, and medication fields represented by the response schema. Preserve uncertainty, negation, correction, alternatives, unknown, explicitly absent, inapplicable, and declined meanings.
+- The supported targets are the patient, adverse event, relevant-test, and medication fields represented by the response schema. Preserve uncertainty, negation, correction, alternatives, unknown, explicitly absent, inapplicable, and declined meanings.
+- Relevant tests are stable entities. On opening input, declare each distinct relevant test or laboratory result once and attach its test/result text, optional ranges, and date to that test reference. Do not interpret or classify a result.
 - For product roles, emit only "suspect" or "concomitant". A reported suspect role is clinician input, not your causality judgment.
 - Use normalized ISO dates (YYYY-MM-DD) and "oral" for "by mouth". Otherwise preserve explicitly stated descriptive detail in known values; do not compress away modifiers that make a clinical statement more specific. Retain measurement values with their units.
 - On opening input, declare each mentioned product once using arbitrary response-local productReference and groupReference values. Use those references for its proposals. Wilson—not you—assigns stable case identity.
@@ -210,6 +211,7 @@ export function createAnthropicJourneyModel(
             recordedAt: recordedAt(),
           },
           existingProductIds: reviewedCase?.products.map(({ id }) => id),
+          existingTestIds: reviewedCase?.relevantTests.map(({ id }) => id),
           output: structured.data,
         }, createIdentity);
         return { envelope, metrics, responseArtifact, diagnosticResponse: response };

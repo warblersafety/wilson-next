@@ -33,6 +33,7 @@ const reviewedCase: ReviewedCaseModelContext = {
       { field: "dose", value: { kind: "known", value: "10 mg" } },
     ],
   }],
+  relevantTests: [],
 };
 
 const opaqueIds: Record<string, string> = {
@@ -175,7 +176,7 @@ describe("Anthropic production model boundary", () => {
     const declarationFailure = await modelFailure(createAnthropicJourneyModel(
       async () => response(declared, "correction"), Date.now, undefined, identities, () => recordedAt,
     ).propose("correction", correctionText, reviewedCase));
-    expect(declarationFailure.diagnostic.issues?.[0].message).toContain("cannot declare new products");
+    expect(declarationFailure.diagnostic.issues?.[0].message).toContain("cannot declare new entities");
   });
 
   it("rejects a noncanonical product role without a medicine-specific rule", async () => {

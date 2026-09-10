@@ -2,6 +2,7 @@ import { applyCaseCommand } from "../../src/domain/case/commands";
 import { createSemanticCase } from "../../src/domain/case/create";
 import type {
   CaseValue,
+  EventFactKey,
   SemanticCase,
   Source,
 } from "../../src/domain/case/types";
@@ -58,6 +59,7 @@ export function acceptOpeningCase(caseState = createOpeningCase()): SemanticCase
       { groupId: "product-apixaban", action: "accept" },
       { groupId: "product-naproxen", action: "accept" },
       { groupId: "product-lisinopril", action: "accept" },
+      { groupId: "test-hemoglobin", action: "accept" },
     ],
   }).case;
 }
@@ -68,7 +70,7 @@ export function answerIndications(caseState: SemanticCase): SemanticCase {
     commandId: "command-ask-indications",
     expectedRevision: caseState.revision,
     key: "suspect-product-indications",
-    productIds: ["product-apixaban", "product-naproxen"],
+    targetIds: ["product:product-apixaban:indication", "product:product-naproxen:indication"],
   }).case;
   const text = "Apixaban was for postoperative VTE prophylaxis after knee replacement. Naproxen was for postoperative pain.";
   const source: Source = {
@@ -147,11 +149,53 @@ export function resolveApixabanDate(caseState: SemanticCase): SemanticCase {
 }
 
 export function completeResolvedCase(): SemanticCase {
-  return resolveApixabanDate(
+  return completeAdaptiveDetails(resolveApixabanDate(
     acceptCorrectionAndConflict(
       attachCorrectionAndContradiction(
         answerIndications(acceptOpeningCase()),
       ),
     ),
-  );
+  ));
+}
+
+export function completeAdaptiveDetails(caseState: SemanticCase): SemanticCase {
+  let current = caseState;
+  current = askAndAnswer(current, "serious-outcomes", [
+    "event:event:death", "event:event:lifeThreatening", "event:event:disability",
+    "event:event:requiredIntervention", "event:event:congenitalAnomaly", "event:event:otherSerious",
+  ], ["death", "lifeThreatening", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious"].map((field) => ({
+    target: { entity: "event" as const, entityId: "event" as const, field: field as EventFactKey },
+    value: { kind: "known" as const, value: false },
+  })));
+  current = askAndAnswer(current, "relevant-clinical-context", ["event:event:relevantHistory"], [{
+    target: { entity: "event", entityId: "event", field: "relevantHistory" }, value: { kind: "explicitly-absent" },
+  }]);
+  const reporterFields = ["lastName", "firstName", "phone", "email", "healthProfessional", "occupation", "reportedTo", "doNotDiscloseIdentity"] as const;
+  current = askAndAnswer(current, "reporter-details", reporterFields.map((field) => `reporter:reporter:${field}`), reporterFields.map((field) => ({
+    target: { entity: "reporter" as const, entityId: "reporter" as const, field }, value: { kind: "declined" as const },
+  })), "declined");
+  return current;
+}
+
+function askAndAnswer(
+  caseState: SemanticCase,
+  key: "serious-outcomes" | "relevant-clinical-context" | "reporter-details",
+  targetIds: string[],
+  facts: Array<{ target: import("../../src/domain/case/types").FactTarget; value: CaseValue<unknown> }>,
+  status: "answered" | "declined" = "answered",
+): SemanticCase {
+  const asked = applyCaseCommand(caseState, {
+    type: "record-asked-need", commandId: `command-ask-${key}`, expectedRevision: caseState.revision, key, targetIds,
+  }).case;
+  const text = `Recorded ${key}.`;
+  const answered = applyCaseCommand(asked, {
+    type: "record-clinician-facts", commandId: `command-answer-${key}`, expectedRevision: asked.revision,
+    source: { id: `source-${key}`, inputId: `input-${key}`, inputType: "answer", excerpt: text, start: 0, end: text.length, actor: "clinician", recordedAt: at },
+    answersNeed: key,
+    facts: facts.map((item, index) => ({ id: `value-${key}-${index}`, target: item.target, intent: "fact", value: item.value })),
+  }).case;
+  if (status === "declined" && answered.askedNeeds.find((need) => need.key === key)?.status !== "declined") {
+    throw new Error("Fixture expected a declined need");
+  }
+  return answered;
 }

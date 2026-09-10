@@ -33,17 +33,49 @@ export interface PatientFacts {
   identifier: Fact<string>;
   ageYears: Fact<number>;
   sex: Fact<"female" | "male" | "intersex">;
+  weight: Fact<{ value: number; unit: "kg" | "lb" }>;
 }
 
 export interface EventFacts {
   reportType: Fact<"adverse-event">;
   symptoms: Fact<string[]>;
   onsetDate: Fact<string>;
+  death: Fact<boolean>;
+  deathDate: Fact<string>;
+  lifeThreatening: Fact<boolean>;
   hospitalized: Fact<boolean>;
-  hemoglobin: Fact<string>;
+  disability: Fact<boolean>;
+  requiredIntervention: Fact<boolean>;
+  congenitalAnomaly: Fact<boolean>;
+  otherSerious: Fact<boolean>;
+  relevantTestsAvailable: Fact<boolean>;
+  relevantHistory: Fact<string>;
   treatments: Fact<string[]>;
   outcome: Fact<string>;
   dischargeDate: Fact<string>;
+}
+
+export interface RelevantTestFacts {
+  testResult: Fact<string>;
+  lowRange: Fact<string>;
+  highRange: Fact<string>;
+  date: Fact<string>;
+}
+
+export interface ReporterFacts {
+  lastName: Fact<string>;
+  firstName: Fact<string>;
+  address: Fact<string>;
+  city: Fact<string>;
+  state: Fact<string>;
+  postalCode: Fact<string>;
+  country: Fact<string>;
+  phone: Fact<string>;
+  email: Fact<string>;
+  healthProfessional: Fact<boolean>;
+  occupation: Fact<string>;
+  reportedTo: Fact<Array<"manufacturer" | "user-facility" | "distributor-importer" | "packer">>;
+  doNotDiscloseIdentity: Fact<boolean>;
 }
 
 export interface ProductFacts {
@@ -70,6 +102,18 @@ export interface EventEntity {
   facts: EventFacts;
 }
 
+export interface RelevantTestEntity {
+  id: string;
+  proposalGroupId: string;
+  state: EntityState;
+  facts: RelevantTestFacts;
+}
+
+export interface ReporterEntity {
+  id: "reporter";
+  facts: ReporterFacts;
+}
+
 export interface ProductEntity {
   id: string;
   proposalGroupId: string;
@@ -77,7 +121,7 @@ export interface ProductEntity {
   facts: ProductFacts;
 }
 
-export type InputType = "narrative" | "selection" | "answer" | "correction" | "resolution";
+export type InputType = "narrative" | "selection" | "answer" | "correction" | "resolution" | "reporter-entry";
 
 export interface Source {
   id: string;
@@ -90,11 +134,16 @@ export interface Source {
   recordedAt: string;
 }
 
-export type SemanticNeedKey = "suspect-product-indications";
+export type SemanticNeedKey =
+  | "suspect-product-indications"
+  | "serious-outcomes"
+  | "death-date"
+  | "relevant-clinical-context"
+  | "reporter-details";
 
 export interface AskedNeed {
   key: SemanticNeedKey;
-  productIds: string[];
+  targetIds: string[];
   status: "open" | "answered" | "declined";
 }
 
@@ -115,6 +164,8 @@ export interface SemanticCase {
   patient: PatientEntity;
   event: EventEntity;
   products: ProductEntity[];
+  relevantTests: RelevantTestEntity[];
+  reporter: ReporterEntity;
   askedNeeds: AskedNeed[];
   sources: Source[];
   changes: Change[];
@@ -123,11 +174,15 @@ export interface SemanticCase {
 export type PatientFactKey = keyof PatientFacts;
 export type EventFactKey = keyof EventFacts;
 export type ProductFactKey = keyof ProductFacts;
+export type RelevantTestFactKey = keyof RelevantTestFacts;
+export type ReporterFactKey = keyof ReporterFacts;
 
 export type FactTarget =
   | { entity: "patient"; entityId: "patient"; field: PatientFactKey }
   | { entity: "event"; entityId: "event"; field: EventFactKey }
-  | { entity: "product"; entityId: string; field: ProductFactKey };
+  | { entity: "product"; entityId: string; field: ProductFactKey }
+  | { entity: "test"; entityId: string; field: RelevantTestFactKey }
+  | { entity: "reporter"; entityId: "reporter"; field: ReporterFactKey };
 
 export interface GroundedProposal {
   proposalId: string;
@@ -143,6 +198,11 @@ export interface ProposedProduct {
   groupId: string;
 }
 
+export interface ProposedRelevantTest {
+  id: string;
+  groupId: string;
+}
+
 interface CommandEnvelope {
   commandId: string;
   expectedRevision: number;
@@ -151,6 +211,7 @@ interface CommandEnvelope {
 export interface AttachGroundedProposalsCommand extends CommandEnvelope {
   type: "attach-grounded-proposals";
   products: ProposedProduct[];
+  relevantTests?: ProposedRelevantTest[];
   sources: Source[];
   proposals: GroundedProposal[];
 }
@@ -176,6 +237,7 @@ export type ProposalGroupDecision =
 export interface RecordClinicianFactsCommand extends CommandEnvelope {
   type: "record-clinician-facts";
   source: Source;
+  relevantTests?: ProposedRelevantTest[];
   facts: Array<{
     id: string;
     target: FactTarget;
@@ -188,7 +250,7 @@ export interface RecordClinicianFactsCommand extends CommandEnvelope {
 export interface RecordAskedNeedCommand extends CommandEnvelope {
   type: "record-asked-need";
   key: SemanticNeedKey;
-  productIds: string[];
+  targetIds: string[];
 }
 
 export interface ResolveConflictCommand extends CommandEnvelope {

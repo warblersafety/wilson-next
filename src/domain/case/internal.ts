@@ -7,6 +7,8 @@ import type {
   GroundedValue,
   PatientFacts,
   ProductFacts,
+  RelevantTestFacts,
+  ReporterFacts,
   SemanticCase,
 } from "./types";
 
@@ -25,6 +27,7 @@ export function emptyPatientFacts(): PatientFacts {
     identifier: emptyFact(),
     ageYears: emptyFact(),
     sex: emptyFact(),
+    weight: emptyFact(),
   };
 }
 
@@ -33,11 +36,37 @@ export function emptyEventFacts(): EventFacts {
     reportType: emptyFact(),
     symptoms: emptyFact(),
     onsetDate: emptyFact(),
+    death: emptyFact(),
+    deathDate: emptyFact(),
+    lifeThreatening: emptyFact(),
     hospitalized: emptyFact(),
-    hemoglobin: emptyFact(),
+    disability: emptyFact(),
+    requiredIntervention: emptyFact(),
+    congenitalAnomaly: emptyFact(),
+    otherSerious: emptyFact(),
+    relevantTestsAvailable: emptyFact(),
+    relevantHistory: emptyFact(),
     treatments: emptyFact(),
     outcome: emptyFact(),
     dischargeDate: emptyFact(),
+  };
+}
+
+export function emptyRelevantTestFacts(): RelevantTestFacts {
+  return {
+    testResult: emptyFact(),
+    lowRange: emptyFact(),
+    highRange: emptyFact(),
+    date: emptyFact(),
+  };
+}
+
+export function emptyReporterFacts(): ReporterFacts {
+  return {
+    lastName: emptyFact(), firstName: emptyFact(), address: emptyFact(), city: emptyFact(),
+    state: emptyFact(), postalCode: emptyFact(), country: emptyFact(), phone: emptyFact(),
+    email: emptyFact(), healthProfessional: emptyFact(), occupation: emptyFact(),
+    reportedTo: emptyFact(), doNotDiscloseIdentity: emptyFact(),
   };
 }
 
@@ -79,6 +108,14 @@ export function getFact(caseState: SemanticCase, target: FactTarget): Fact<unkno
   }
   if (target.entity === "event") {
     return caseState.event.facts[target.field] as Fact<unknown>;
+  }
+  if (target.entity === "reporter") {
+    return caseState.reporter.facts[target.field] as Fact<unknown>;
+  }
+  if (target.entity === "test") {
+    const test = caseState.relevantTests.find(({ id }) => id === target.entityId);
+    if (!test) throw new Error(`Unknown relevant-test target ${target.entityId}`);
+    return test.facts[target.field] as Fact<unknown>;
   }
 
   const product = caseState.products.find(({ id }) => id === target.entityId);
@@ -139,11 +176,21 @@ export function assertCaseInvariants(caseState: SemanticCase): void {
   if (new Set(caseState.products.map(({ id }) => id)).size !== caseState.products.length) {
     throw new Error("Product IDs must be unique");
   }
+  if (new Set(caseState.relevantTests.map(({ id }) => id)).size !== caseState.relevantTests.length) {
+    throw new Error("Relevant-test IDs must be unique");
+  }
+  for (const test of caseState.relevantTests) {
+    if (test.state !== "rejected" && test.facts.testResult.state === "empty") {
+      throw new Error(`Relevant test ${test.id} requires test and result text`);
+    }
+  }
 
   const facts: Fact<unknown>[] = [
     ...Object.values(caseState.patient.facts),
     ...Object.values(caseState.event.facts),
     ...caseState.products.flatMap((product) => Object.values(product.facts)),
+    ...caseState.relevantTests.flatMap((test) => Object.values(test.facts)),
+    ...Object.values(caseState.reporter.facts),
   ] as Fact<unknown>[];
 
   for (const fact of facts) {

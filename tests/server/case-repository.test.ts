@@ -20,7 +20,7 @@ describe("temporary case repository", () => {
       commandId: "invalid-before-products",
       expectedRevision: 0,
       key: "suspect-product-indications",
-      productIds: [],
+      targetIds: [],
     }).catch((error: unknown) => error);
     expect(updated).toBeInstanceOf(Error);
     expect((await repository.load("case-1"))?.revision).toBe(0);

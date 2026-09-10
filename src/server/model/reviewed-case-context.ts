@@ -14,6 +14,9 @@ export function createReviewedCaseModelContext(
         name: resolvedName(product.facts.name),
         facts: resolvedFacts(product.facts),
       })),
+    relevantTests: caseState.relevantTests
+      .filter(({ state }) => state === "resolved")
+      .map((test) => ({ id: test.id, facts: resolvedFacts(test.facts) })),
   };
 }
 

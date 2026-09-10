@@ -170,7 +170,7 @@ export default function Journey() {
           <section className={styles.activeTask} aria-labelledby="task-title">
             {snapshot.stage === "describe" && <Describe opening={opening} setOpening={setOpening} busy={busy} act={act} />}
             {snapshot.stage === "understanding" && <UnderstandingTask snapshot={snapshot} busy={busy} act={act} />}
-            {snapshot.stage === "clarify" && <IndicationTask snapshot={snapshot} busy={busy} act={act} />}
+            {snapshot.stage === "clarify" && <CompletionTask key={snapshot.clarification?.key} snapshot={snapshot} busy={busy} act={act} />}
             {snapshot.stage === "review-update" && <UpdateReview snapshot={snapshot} busy={busy} act={act} />}
           </section>
           <section className={styles.casePanel} aria-labelledby="case-title">
@@ -216,10 +216,23 @@ function UnderstandingTask({ snapshot, busy, act }: {
 
 type IndicationChoice = "known" | "unknown" | "declined";
 
+function CompletionTask(props: { snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void> }) {
+  const question = props.snapshot.clarification;
+  if (!question) return null;
+  return <>
+    <p className={styles.eyebrow}>Clarify · {question.reason}</p>
+    {question.kind === "indications" && <IndicationTask {...props} />}
+    {question.kind === "serious-outcomes" && <SeriousOutcomesTask {...props} />}
+    {question.kind === "death-date" && <DeathDateTask {...props} />}
+    {question.kind === "clinical-context" && <ClinicalContextTask {...props} />}
+    {question.kind === "reporter" && <ReporterTask {...props} />}
+  </>;
+}
+
 function IndicationTask({ snapshot, busy, act }: {
   snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
 }) {
-  const productIds = snapshot.clarification?.productIds ?? [];
+  const productIds = snapshot.clarification?.kind === "indications" ? snapshot.clarification.productIds : [];
   const [choices, setChoices] = useState<Record<string, IndicationChoice>>({});
   const [texts, setTexts] = useState<Record<string, string>>({});
   const products = productIds.map((id) => snapshot.understanding.products.find((product) => product.id === id)).filter(Boolean);
@@ -228,7 +241,6 @@ function IndicationTask({ snapshot, busy, act }: {
     return choice === "unknown" || choice === "declined" || (choice === "known" && Boolean(texts[product!.id]?.trim()));
   });
   return <>
-    <p className={styles.eyebrow}>Clarify · one useful question</p>
     <h1 id="task-title">{snapshot.clarification?.question}</h1>
     <p>Answer each labelled product separately, or record that the information is unknown or declined.</p>
     {products.map((product) => {
@@ -250,6 +262,154 @@ function IndicationTask({ snapshot, busy, act }: {
           : { kind: choices[product!.id] as "unknown" | "declined" },
       })),
     })}>Add these answers</button>
+  </>;
+}
+
+const seriousOutcomeLabels = {
+  death: "Death",
+  lifeThreatening: "Life-threatening",
+  hospitalized: "Hospitalization (initial or prolonged)",
+  disability: "Disability or permanent damage",
+  requiredIntervention: "Required intervention to prevent permanent impairment or damage",
+  congenitalAnomaly: "Congenital anomaly or birth defect",
+  otherSerious: "Other serious or important medical event",
+} as const;
+type SeriousOutcomeKey = keyof typeof seriousOutcomeLabels;
+
+function SeriousOutcomesTask({ snapshot, busy, act }: {
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+}) {
+  const question = snapshot.clarification;
+  const missing = question?.kind === "serious-outcomes" ? new Set(question.targetIds.map((target) => target.split(":")[2])) : new Set<string>();
+  const [selected, setSelected] = useState<SeriousOutcomeKey[]>([]);
+  const existing = Object.fromEntries(Object.keys(seriousOutcomeLabels).map((field) => {
+    const value = activeValue(snapshot.understanding.event[field]);
+    return [field, value?.kind === "known" && value.value === true];
+  }));
+  return <>
+    <h1 id="task-title">{question?.question}</h1>
+    <p>Select every additional outcome that applies. Leaving an available outcome unchecked records that it did not apply. Accepted outcomes are shown and will not be asked again.</p>
+    <fieldset className={styles.answerGroup}>
+      <legend>Serious outcomes</legend>
+      {(Object.entries(seriousOutcomeLabels) as Array<[SeriousOutcomeKey, string]>).map(([field, label]) => <label key={field}>
+        <input type="checkbox" checked={Boolean(existing[field]) || selected.includes(field)} disabled={Boolean(existing[field]) || !missing.has(field)} onChange={(event) => setSelected(event.target.checked ? [...selected, field] : selected.filter((item) => item !== field))} /> {label}{existing[field] ? " — already recorded" : ""}
+      </label>)}
+    </fieldset>
+    <div className={styles.decisionActions}>
+      <button disabled={busy} onClick={() => void act({ action: "answer-serious-outcomes", selected, disposition: "known" })}>Confirm outcomes</button>
+      <button disabled={busy} onClick={() => void act({ action: "answer-serious-outcomes", selected: [], disposition: "unknown" })}>I don’t know</button>
+      <button disabled={busy} onClick={() => void act({ action: "answer-serious-outcomes", selected: [], disposition: "declined" })}>Prefer not to answer</button>
+    </div>
+  </>;
+}
+
+function DeathDateTask({ snapshot, busy, act }: {
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+}) {
+  const [date, setDate] = useState("");
+  return <>
+    <h1 id="task-title">{snapshot.clarification?.question}</h1>
+    <p>This detail is asked only because death is recorded as an outcome.</p>
+    <label htmlFor="death-date">Date of death</label>
+    <input id="death-date" type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+    <div className={styles.decisionActions}>
+      <button disabled={busy || !date} onClick={() => void act({ action: "answer-death-date", value: { kind: "known", value: date } })}>Add date</button>
+      <button disabled={busy} onClick={() => void act({ action: "answer-death-date", value: { kind: "unknown" } })}>Unknown</button>
+      <button disabled={busy} onClick={() => void act({ action: "answer-death-date", value: { kind: "declined" } })}>Prefer not to answer</button>
+    </div>
+  </>;
+}
+
+type ContextChoice = "known" | "explicitly-absent" | "unknown" | "declined";
+
+function ClinicalContextTask({ snapshot, busy, act }: {
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+}) {
+  const question = snapshot.clarification?.kind === "clinical-context" ? snapshot.clarification : undefined;
+  const [testChoice, setTestChoice] = useState<ContextChoice>();
+  const [historyChoice, setHistoryChoice] = useState<ContextChoice>();
+  const [testResult, setTestResult] = useState("");
+  const [lowRange, setLowRange] = useState("");
+  const [highRange, setHighRange] = useState("");
+  const [testDate, setTestDate] = useState("");
+  const [history, setHistory] = useState("");
+  const testComplete = !question?.askTests || (testChoice && (testChoice !== "known" || Boolean(testResult.trim())));
+  const historyComplete = !question?.askHistory || (historyChoice && (historyChoice !== "known" || Boolean(history.trim())));
+  const contextValue = (choice: ContextChoice | undefined, text: string): CaseValue<string> | undefined => choice === "known"
+    ? { kind: "known", value: text.trim() }
+    : choice ? { kind: choice } : undefined;
+  return <>
+    <h1 id="task-title">{question?.question}</h1>
+    <p>Add only context that is relevant to understanding this event. Unknown, none, and refusal are retained and will not trigger the same question again.</p>
+    {question?.askTests && <fieldset className={styles.answerGroup}>
+      <legend>Relevant tests or laboratory results</legend>
+      <label><input type="radio" name="test-choice" checked={testChoice === "known"} onChange={() => setTestChoice("known")} /> Add one relevant result</label>
+      {testChoice === "known" && <>
+        <label>Test and result <input aria-label="Test and result" value={testResult} onChange={(event) => setTestResult(event.target.value)} /></label>
+        <label>Low range (optional) <input aria-label="Low range" value={lowRange} onChange={(event) => setLowRange(event.target.value)} /></label>
+        <label>High range (optional) <input aria-label="High range" value={highRange} onChange={(event) => setHighRange(event.target.value)} /></label>
+        <label>Date (optional) <input aria-label="Test date" type="date" value={testDate} onChange={(event) => setTestDate(event.target.value)} /></label>
+      </>}
+      <label><input type="radio" name="test-choice" checked={testChoice === "explicitly-absent"} onChange={() => setTestChoice("explicitly-absent")} /> No relevant tests to add</label>
+      <label><input type="radio" name="test-choice" checked={testChoice === "unknown"} onChange={() => setTestChoice("unknown")} /> Unknown</label>
+      <label><input type="radio" name="test-choice" checked={testChoice === "declined"} onChange={() => setTestChoice("declined")} /> Prefer not to answer</label>
+    </fieldset>}
+    {question?.askHistory && <fieldset className={styles.answerGroup}>
+      <legend>Other relevant medical history</legend>
+      <label><input type="radio" name="history-choice" checked={historyChoice === "known"} onChange={() => setHistoryChoice("known")} /> Add relevant history</label>
+      {historyChoice === "known" && <textarea aria-label="Relevant medical history" rows={4} value={history} onChange={(event) => setHistory(event.target.value)} />}
+      <label><input type="radio" name="history-choice" checked={historyChoice === "explicitly-absent"} onChange={() => setHistoryChoice("explicitly-absent")} /> No relevant history to add</label>
+      <label><input type="radio" name="history-choice" checked={historyChoice === "unknown"} onChange={() => setHistoryChoice("unknown")} /> Unknown</label>
+      <label><input type="radio" name="history-choice" checked={historyChoice === "declined"} onChange={() => setHistoryChoice("declined")} /> Prefer not to answer</label>
+    </fieldset>}
+    <button disabled={busy || !testComplete || !historyComplete} onClick={() => void act({
+      action: "answer-clinical-context",
+      test: question?.askTests ? testChoice === "known" ? { kind: "known", testResult: testResult.trim(), lowRange: lowRange.trim() || undefined, highRange: highRange.trim() || undefined, date: testDate || undefined } : { kind: testChoice as Exclude<ContextChoice, "known"> } : undefined,
+      history: question?.askHistory ? contextValue(historyChoice, history) : undefined,
+    })}>Add this context</button>
+  </>;
+}
+
+function ReporterTask({ snapshot, busy, act }: {
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+}) {
+  const [values, setValues] = useState({ firstName: "", lastName: "", address: "", city: "", state: "", postalCode: "", country: "UNITED STATES", phone: "", email: "", occupation: "Physician" });
+  const [healthProfessional, setHealthProfessional] = useState(true);
+  const [reportedTo, setReportedTo] = useState<Array<"manufacturer" | "user-facility" | "distributor-importer" | "packer">>([]);
+  const [doNotDiscloseIdentity, setDoNotDiscloseIdentity] = useState(false);
+  const set = (field: keyof typeof values, value: string) => setValues((current) => ({ ...current, [field]: value }));
+  const complete = values.firstName.trim() && values.lastName.trim() && values.occupation && (values.phone.trim() || values.email.trim());
+  return <>
+    <h1 id="task-title">{snapshot.clarification?.question}</h1>
+    <p>Enter this directly. Wilson never infers reporter identity from the clinical narrative. A phone number or email is enough for this bounded path; address fields are optional.</p>
+    <fieldset className={styles.answerGroup}>
+      <legend>Reporter</legend>
+      <label>First name <input aria-label="Reporter first name" value={values.firstName} onChange={(event) => set("firstName", event.target.value)} /></label>
+      <label>Last name <input aria-label="Reporter last name" value={values.lastName} onChange={(event) => set("lastName", event.target.value)} /></label>
+      <label>Phone <input aria-label="Reporter phone" value={values.phone} onChange={(event) => set("phone", event.target.value)} /></label>
+      <label>Email <input aria-label="Reporter email" type="email" value={values.email} onChange={(event) => set("email", event.target.value)} /></label>
+      <label>Address (optional) <input aria-label="Reporter address" value={values.address} onChange={(event) => set("address", event.target.value)} /></label>
+      <label>City (optional) <input aria-label="Reporter city" value={values.city} onChange={(event) => set("city", event.target.value)} /></label>
+      <label>State (optional) <input aria-label="Reporter state" value={values.state} onChange={(event) => set("state", event.target.value)} /></label>
+      <label>ZIP/postal code (optional) <input aria-label="Reporter postal code" value={values.postalCode} onChange={(event) => set("postalCode", event.target.value)} /></label>
+      <label>Country <select aria-label="Reporter country" value={values.country} onChange={(event) => set("country", event.target.value)}><option>UNITED STATES</option><option>CANADA</option></select></label>
+      <label>Occupation <select aria-label="Reporter occupation" value={values.occupation} onChange={(event) => set("occupation", event.target.value)}>{["Physician", "Nurse", "Nurse Practitioner", "Pharmacist", "Physician Assistant", "Other Health Professional", "Non-Health Professional"].map((value) => <option key={value}>{value}</option>)}</select></label>
+      <label><input type="checkbox" checked={healthProfessional} onChange={(event) => setHealthProfessional(event.target.checked)} /> Health professional</label>
+    </fieldset>
+    <fieldset className={styles.answerGroup}><legend>Also reported to</legend>
+      {[["manufacturer", "Manufacturer or compounder"], ["user-facility", "User facility"], ["distributor-importer", "Distributor or importer"], ["packer", "Packer"]] .map(([value, label]) => <label key={value}><input type="checkbox" checked={reportedTo.includes(value as typeof reportedTo[number])} onChange={(event) => setReportedTo(event.target.checked ? [...reportedTo, value as typeof reportedTo[number]] : reportedTo.filter((item) => item !== value))} /> {label}</label>)}
+      <label><input type="checkbox" checked={doNotDiscloseIdentity} onChange={(event) => setDoNotDiscloseIdentity(event.target.checked)} /> Do not disclose my identity to the manufacturer</label>
+    </fieldset>
+    <div className={styles.decisionActions}>
+      <button disabled={busy || !complete} onClick={() => void act({ action: "answer-reporter", reporter: {
+        kind: "provided", firstName: values.firstName.trim(), lastName: values.lastName.trim(),
+        phone: values.phone.trim() || undefined, email: values.email.trim() || undefined,
+        address: values.address.trim() || undefined, city: values.city.trim() || undefined,
+        state: values.state.trim() || undefined, postalCode: values.postalCode.trim() || undefined,
+        country: values.country, occupation: values.occupation, healthProfessional, reportedTo, doNotDiscloseIdentity,
+      } })}>Add reporter details</button>
+      <button disabled={busy} onClick={() => void act({ action: "answer-reporter", reporter: { kind: "declined" } })}>Prefer not to provide reporter details</button>
+    </div>
   </>;
 }
 
@@ -284,17 +444,20 @@ function OutputComposition({ snapshot, update, setUpdate, busy, act, openPdf }: 
   act: (action: JourneyAction) => Promise<void>;
   openPdf: (mode: "preview" | "download") => Promise<void>;
 }) {
-  const { A, B, D, F } = snapshot.projection.sections;
+  const { A, B, D, F, G } = snapshot.projection.sections;
   const conflicts = snapshot.review.attention.filter(({ kind }) => kind === "conflict");
   return <div className={styles.outputWorkspace}>
     <section className={styles.outputSummary} aria-labelledby="output-title">
       <p className={styles.eyebrow}>Reviewed case and supported output</p>
       <h1 id="output-title">{snapshot.downloadReady ? "The supported form is ready" : "The form needs more reviewed information"}</h1>
       <Summary title="Included" tone="included">
-        <li>Patient {A.patientIdentifier ?? "identifier not provided"}{A.ageYears === undefined ? "" : `, age ${A.ageYears}`}{A.sex ? `, ${A.sex}` : ""}</li>
+        <li>Patient {A.patientIdentifier ?? "identifier not provided"}{A.ageYears === undefined ? "" : `, age ${A.ageYears}`}{A.sex ? `, ${A.sex}` : ""}{A.weight ? `, ${A.weight.value} ${A.weight.unit}` : ""}</li>
         {B.eventDescription && <li>{B.eventDescription}</li>}
+        {B.relevantTests.map((test) => <li key={test.testId}>{test.testResult}{test.date ? ` on ${displayDate(test.date)}` : ""}</li>)}
+        {B.relevantHistory && <li>Relevant history: {B.relevantHistory}</li>}
         {D.suspectProducts.map((product) => <li key={product.productId}>{product.name ?? "Unnamed product"} as a suspect product{product.dose ? `, ${product.dose}` : ""}</li>)}
         {F.concomitantProducts.map((product) => <li key={product.productId}>{product.name ?? "Unnamed product"} as another medical product</li>)}
+        {G.reporter.firstName && G.reporter.lastName && <li>Reporter: {G.reporter.firstName} {G.reporter.lastName}</li>}
       </Summary>
 
       <Summary title="Needs attention" tone={conflicts.length > 0 ? "attention" : "quiet"}>
@@ -350,7 +513,7 @@ function ConflictCard({ snapshot, item, busy, act }: {
 }
 
 function FormPreview({ snapshot }: { snapshot: JourneySnapshot }) {
-  const { A, B, D, F } = snapshot.projection.sections;
+  const { A, B, D, F, G } = snapshot.projection.sections;
   const omissionByTarget = new Map(snapshot.projection.omissions.map((item) => [item.target, item.reason]));
   return <div className={styles.formPreview} aria-label="Form FDA 3500 preview">
     <header className={styles.formHeader}>
@@ -361,12 +524,15 @@ function FormPreview({ snapshot }: { snapshot: JourneySnapshot }) {
       <PreviewField label="Patient identifier" value={A.patientIdentifier} />
       <PreviewField label="Age" value={A.ageYears === undefined ? undefined : `${A.ageYears} years`} />
       <PreviewField label="Sex" value={A.sex} />
+      <PreviewField label="Weight" value={A.weight ? `${A.weight.value} ${A.weight.unit}` : undefined} />
     </PreviewSection>
     <PreviewSection letter="B" title="Adverse event">
       <PreviewField label="Report type" value={B.reportType === "adverse-event" ? "Adverse event" : undefined} />
-      <PreviewField label="Outcome" value={B.hospitalized === undefined ? undefined : B.hospitalized ? "Hospitalization" : "Not hospitalized"} />
+      <PreviewField label="Serious outcomes" value={Object.entries(seriousOutcomeLabels).filter(([field]) => B[field as keyof typeof seriousOutcomeLabels] === true).map(([, label]) => label).join(", ") || "None recorded"} />
+      <PreviewField label="Date of death" value={displayDate(B.deathDate)} />
       <PreviewField label="Date of event" value={displayDate(B.eventDate)} />
-      <PreviewField label="Relevant tests" value={B.relevantTests} />
+      <PreviewField label="Relevant tests" value={B.relevantTests.map((test) => [test.testResult, test.lowRange && `low ${test.lowRange}`, test.highRange && `high ${test.highRange}`, displayDate(test.date)].filter(Boolean).join(" · ")).join("; ") || undefined} />
+      <PreviewField wide label="Relevant history" value={B.relevantHistory} />
       <PreviewField wide label="Describe event" value={B.eventDescription} />
     </PreviewSection>
     <PreviewSection letter="D" title="Suspect products">
@@ -379,6 +545,12 @@ function FormPreview({ snapshot }: { snapshot: JourneySnapshot }) {
     </PreviewSection>
     <PreviewSection letter="F" title="Other medical products">
       {F.concomitantProducts.length === 0 ? <PreviewField label="Product" /> : F.concomitantProducts.map((product) => <PreviewField key={product.productId} label="Product" value={product.name} />)}
+    </PreviewSection>
+    <PreviewSection letter="G" title="Reporter">
+      <PreviewField label="Name" value={G.reporter.firstName && G.reporter.lastName ? `${G.reporter.firstName} ${G.reporter.lastName}` : undefined} />
+      <PreviewField label="Contact" value={G.reporter.email ?? G.reporter.phone} />
+      <PreviewField label="Occupation" value={G.reporter.occupation} />
+      <PreviewField label="Identity disclosure" value={G.reporter.doNotDiscloseIdentity === undefined ? undefined : G.reporter.doNotDiscloseIdentity ? "Do not disclose" : "Disclosure permitted"} />
     </PreviewSection>
     <footer>FORM FDA 3500 (09/2025) · Supported fields preview</footer>
   </div>;
@@ -402,13 +574,15 @@ function CaseCards({ snapshot, busy, act }: {
   const understanding = snapshot.understanding;
   if (snapshot.revision === 0) return <p className={styles.emptyCase}>Proposed case knowledge will appear here after Wilson reads the account.</p>;
   return <div className={styles.cards}>
-    <CaseCard title="Patient" groupId="patient" facts={understanding.patient} fields={["identifier", "ageYears", "sex"]} allowChanges={snapshot.stage === "understanding"} busy={busy} act={act} />
-    <CaseCard title="Event" groupId="event" facts={understanding.event} fields={["reportType", "symptoms", "onsetDate", "hospitalized", "hemoglobin", "treatments", "outcome", "dischargeDate"]} allowChanges={snapshot.stage === "understanding"} busy={busy} act={act} />
+    <CaseCard title="Patient" groupId="patient" facts={understanding.patient} fields={["identifier", "ageYears", "sex", "weight"]} allowChanges={snapshot.stage === "understanding"} busy={busy} act={act} />
+    <CaseCard title="Event" groupId="event" facts={understanding.event} fields={["reportType", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "treatments", "outcome", "dischargeDate", "relevantHistory"]} allowChanges={snapshot.stage === "understanding"} busy={busy} act={act} />
+    {understanding.relevantTests.map((test, index) => <CaseCard key={test.id} title={`Relevant test ${index + 1}`} eyebrow="Test or laboratory result" groupId={test.proposalGroupId} facts={test.facts} fields={["testResult", "lowRange", "highRange", "date"]} allowChanges={snapshot.stage === "understanding" && test.state === "proposed"} busy={busy} act={act} />)}
     {understanding.products.map((product) => {
       const name = formatFact(activeValue(product.facts.name));
       const role = formatFact(activeValue(product.facts.role));
       return <CaseCard key={product.id} title={name} eyebrow={role === "suspect" ? "Suspect product" : "Other product"} groupId={product.proposalGroupId} facts={product.facts} fields={["dose", "frequency", "route", "startDate", "stopped", "stopDate", "indication"]} evidenceFields={["name", "role"]} allowChanges={snapshot.stage === "understanding" && product.state === "proposed"} allowRemove={snapshot.stage === "understanding" && product.state === "proposed"} busy={busy} act={act} />;
     })}
+    {Object.values(understanding.reporter).some((fact) => activeValue(fact)) && <CaseCard title="Reporter" groupId="reporter" facts={understanding.reporter} fields={["firstName", "lastName", "phone", "email", "address", "city", "state", "postalCode", "country", "healthProfessional", "occupation", "reportedTo", "doNotDiscloseIdentity"]} allowChanges={false} busy={busy} act={act} />}
   </div>;
 }
 
@@ -438,7 +612,7 @@ function CaseCard({ title, eyebrow, groupId, facts, fields, evidenceFields = [],
       const value = activeValue(fact);
       if (!value && fact.history.length === 0 && fact.conflicts.length === 0) return null;
       const proposal = fact.proposals.find(({ groupId: proposalGroup }) => proposalGroup === groupId);
-      const editable = allowChanges && proposal?.value.kind === "known" && !Array.isArray(proposal.value.value);
+      const editable = allowChanges && proposal?.value.kind === "known" && !Array.isArray(proposal.value.value) && (typeof proposal.value.value === "string" || typeof proposal.value.value === "number" || typeof proposal.value.value === "boolean");
       return <div key={field}>
         <dt>{fieldLabel(field)}</dt>
         <dd>{fact.state === "conflicted" ? "Unresolved conflict" : formatFact(value)}{fact.state === "proposed" && <span className={styles.proposed}>Proposed</span>}</dd>
@@ -482,6 +656,10 @@ function formatFact(value: CaseValue<unknown> | undefined): string {
   if (!value) return "Not provided";
   if (value.kind !== "known") return value.kind.replaceAll("-", " ");
   if (Array.isArray(value.value)) return value.value.join(" and ");
+  if (typeof value.value === "object" && value.value && "unit" in value.value) {
+    const measured = value.value as Record<string, unknown>;
+    return `${String(measured.value)} ${String(measured.unit)}`;
+  }
   if (typeof value.value === "boolean") return value.value ? "Yes" : "No";
   if (typeof value.value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value.value)) return displayDate(value.value) ?? value.value;
   return String(value.value);
@@ -496,16 +674,24 @@ function displayDate(value: string | undefined): string | undefined {
 
 function fieldLabel(field: string): string {
   const labels: Record<string, string> = {
-    identifier: "Identifier", ageYears: "Age", sex: "Sex", symptoms: "Symptoms", onsetDate: "Onset",
-    reportType: "Report type", hospitalized: "Hospitalized", hemoglobin: "Hemoglobin", treatments: "Treatment", outcome: "Outcome",
+    identifier: "Identifier", ageYears: "Age", sex: "Sex", weight: "Weight", symptoms: "Symptoms", onsetDate: "Onset",
+    reportType: "Report type", death: "Death", deathDate: "Date of death", lifeThreatening: "Life-threatening", hospitalized: "Hospitalized",
+    disability: "Disability or permanent damage", requiredIntervention: "Required intervention", congenitalAnomaly: "Congenital anomaly", otherSerious: "Other serious event",
+    treatments: "Treatment", outcome: "Outcome", relevantTestsAvailable: "Relevant tests", relevantHistory: "Relevant history", testResult: "Test and result", lowRange: "Low range", highRange: "High range", date: "Date",
     dischargeDate: "Discharged", dose: "Dose", frequency: "Frequency", route: "Route", startDate: "Started",
     stopped: "Stopped", stopDate: "Stopped date", indication: "Used for", name: "Name", role: "Role",
+    firstName: "First name", lastName: "Last name", address: "Address", city: "City", state: "State", postalCode: "ZIP/postal code", country: "Country",
+    phone: "Phone", email: "Email", healthProfessional: "Health professional", occupation: "Occupation", reportedTo: "Also reported to", doNotDiscloseIdentity: "Keep identity from manufacturer",
   };
   return labels[field] ?? field;
 }
 
 function targetLabel(snapshot: JourneySnapshot, target: string): string {
   const [entity, entityId, field] = target.split(":");
+  if (entity === "test") {
+    const index = snapshot.understanding.relevantTests.findIndex(({ id }) => id === entityId);
+    return `Relevant test ${index + 1} — ${fieldLabel(field ?? "")}`;
+  }
   if (entity !== "product") return field ? fieldLabel(field) : target;
   const product = snapshot.understanding.products.find(({ id }) => id === entityId);
   return `${formatFact(activeValue(product?.facts.name))} — ${fieldLabel(field ?? "")}`;

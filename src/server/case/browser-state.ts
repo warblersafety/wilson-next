@@ -3,7 +3,7 @@ import type { SemanticCase } from "../../domain/case/types";
 import type { JourneySnapshot, JourneyStage } from "../journey/service";
 import { InMemoryCaseRepository, validateRestoredCase } from "./repository";
 
-export const browserStateVersion = "wilson-browser-state-v2";
+export const browserStateVersion = "wilson-browser-state-v3";
 
 export interface BrowserJourneyState {
   version: typeof browserStateVersion;
@@ -63,16 +63,39 @@ const patientFactsSchema = z.object({
   identifier: factSchema(z.string()),
   ageYears: factSchema(z.number().int().min(0).max(130)),
   sex: factSchema(z.enum(["female", "male", "intersex"])),
+  weight: factSchema(z.object({ value: z.number().positive(), unit: z.enum(["kg", "lb"]) }).strict()),
 }).strict();
 const eventFactsSchema = z.object({
   reportType: factSchema(z.literal("adverse-event")),
   symptoms: factSchema(z.array(z.string())),
   onsetDate: factSchema(isoDateSchema),
+  death: factSchema(z.boolean()),
+  deathDate: factSchema(isoDateSchema),
+  lifeThreatening: factSchema(z.boolean()),
   hospitalized: factSchema(z.boolean()),
-  hemoglobin: factSchema(z.string()),
+  disability: factSchema(z.boolean()),
+  requiredIntervention: factSchema(z.boolean()),
+  congenitalAnomaly: factSchema(z.boolean()),
+  otherSerious: factSchema(z.boolean()),
+  relevantTestsAvailable: factSchema(z.boolean()),
+  relevantHistory: factSchema(z.string()),
   treatments: factSchema(z.array(z.string())),
   outcome: factSchema(z.string()),
   dischargeDate: factSchema(isoDateSchema),
+}).strict();
+const relevantTestFactsSchema = z.object({
+  testResult: factSchema(z.string()),
+  lowRange: factSchema(z.string()),
+  highRange: factSchema(z.string()),
+  date: factSchema(isoDateSchema),
+}).strict();
+const reporterFactsSchema = z.object({
+  lastName: factSchema(z.string()), firstName: factSchema(z.string()), address: factSchema(z.string()),
+  city: factSchema(z.string()), state: factSchema(z.string()), postalCode: factSchema(z.string()),
+  country: factSchema(z.string()), phone: factSchema(z.string()), email: factSchema(z.string()),
+  healthProfessional: factSchema(z.boolean()), occupation: factSchema(z.string()),
+  reportedTo: factSchema(z.array(z.enum(["manufacturer", "user-facility", "distributor-importer", "packer"]))),
+  doNotDiscloseIdentity: factSchema(z.boolean()),
 }).strict();
 const productFactsSchema = z.object({
   name: factSchema(z.string()),
@@ -89,7 +112,7 @@ const productFactsSchema = z.object({
 const sourceSchema = z.object({
   id: z.string().min(1),
   inputId: z.string().min(1),
-  inputType: z.enum(["narrative", "selection", "answer", "correction", "resolution"]),
+  inputType: z.enum(["narrative", "selection", "answer", "correction", "resolution", "reporter-entry"]),
   excerpt: z.string().min(1),
   start: z.number().int().nonnegative(),
   end: z.number().int().positive(),
@@ -116,11 +139,18 @@ const caseSchema = z.object({
     state: z.enum(["proposed", "resolved", "rejected"]),
     facts: productFactsSchema,
   }).strict()).max(3),
+  relevantTests: z.array(z.object({
+    id: z.string().min(1),
+    proposalGroupId: z.string().min(1),
+    state: z.enum(["proposed", "resolved", "rejected"]),
+    facts: relevantTestFactsSchema,
+  }).strict()).max(8),
+  reporter: z.object({ id: z.literal("reporter"), facts: reporterFactsSchema }).strict(),
   askedNeeds: z.array(z.object({
-    key: z.literal("suspect-product-indications"),
-    productIds: z.array(z.string().min(1)),
+    key: z.enum(["suspect-product-indications", "serious-outcomes", "death-date", "relevant-clinical-context", "reporter-details"]),
+    targetIds: z.array(z.string().min(1)),
     status: z.enum(["open", "answered", "declined"]),
-  }).strict()).max(1),
+  }).strict()).max(10),
   sources: z.array(sourceSchema),
   changes: z.array(z.object({
     commandId: z.string().min(1),

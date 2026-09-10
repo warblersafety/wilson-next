@@ -58,7 +58,7 @@ describe("runtime diagnostics", () => {
       expect(response.headers.get("x-wilson-run-id")).toBe(context.runId);
       expect(response.headers.get("x-wilson-operation-id")).toBe(context.operationId);
       expect(await response.json()).toMatchObject({
-        state: { version: "wilson-browser-state-v2", stage: "understanding", case: { revision: 2 } },
+        state: { version: "wilson-browser-state-v3", stage: "understanding", case: { revision: 2 } },
         snapshot: { stage: "understanding", revision: 2 },
       });
       const events = written.map((value) => JSON.parse(value) as RuntimeDiagnosticEvent);
