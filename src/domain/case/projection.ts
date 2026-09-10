@@ -12,7 +12,7 @@ export interface Form3500Projection {
   sections: {
     A: { patientIdentifier?: string; ageYears?: number; sex?: "female" | "male" | "intersex"; weight?: { value: number; unit: "kg" | "lb" } };
     B: {
-      reportType?: "adverse-event";
+      reportType?: "adverse-event" | "product-problem";
       eventDate?: string;
       eventDescription?: string;
       hospitalized?: boolean;
@@ -26,7 +26,12 @@ export interface Form3500Projection {
       relevantTests: ProjectedRelevantTest[];
       relevantHistory?: string;
     };
+    C: {
+      productAvailability?: "available" | "not-available" | "returned-to-manufacturer";
+      productReturnDate?: string;
+    };
     D: { suspectProducts: ProjectedProduct[] };
+    E: { suspectDevice?: ProjectedDevice };
     F: { concomitantProducts: ProjectedConcomitantProduct[] };
     G: { reporter: ProjectedReporter };
   };
@@ -54,12 +59,34 @@ export interface ProjectedReporter {
 export interface ProjectedProduct {
   productId: string;
   name?: string;
+  manufacturer?: string;
+  lotNumber?: string;
   dose?: string;
   frequency?: string;
   route?: string;
   startDate?: string;
   stopDate?: string;
   indication?: string;
+}
+
+export interface ProjectedDevice {
+  productId: string;
+  brandName?: string;
+  commonName?: string;
+  procode?: string;
+  manufacturer?: string;
+  modelNumber?: string;
+  lotNumber?: string;
+  catalogNumber?: string;
+  expirationDate?: string;
+  serialNumber?: string;
+  udi?: string;
+  operator?: "health-professional" | "patient-consumer" | "other";
+  implantDate?: string;
+  explantDate?: string;
+  reprocessedSingleUse?: boolean;
+  reprocessor?: string;
+  servicedByThirdParty?: "yes" | "no" | "unknown";
 }
 
 export interface ProjectedConcomitantProduct {
@@ -72,14 +99,14 @@ export interface ProjectedConcomitantProduct {
 export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   const projection: Form3500Projection = {
     revision: caseState.revision,
-    sections: { A: {}, B: { relevantTests: [] }, D: { suspectProducts: [] }, F: { concomitantProducts: [] }, G: { reporter: {} } },
+    sections: { A: {}, B: { relevantTests: [] }, C: {}, D: { suspectProducts: [] }, E: {}, F: { concomitantProducts: [] }, G: { reporter: {} } },
     sourceTrace: {},
     omissions: [],
     notIncluded: [
-      "Section E device products",
       "Patient date of birth and race or ethnicity",
-      "Section C product availability",
+      "Section C product pictures and additional comments",
       "Concomitant dose, frequency, and route (Section F has no fields for them)",
+      "Additional suspect medical devices beyond the first",
     ],
   };
 
@@ -97,6 +124,10 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     assign(projection, "sections.B.deathDate", "death date", "event:event:deathDate", caseState.event.facts.deathDate, projection.sections.B, "deathDate");
   }
   assign(projection, "sections.B.relevantHistory", "relevant medical history", "event:event:relevantHistory", caseState.event.facts.relevantHistory, projection.sections.B, "relevantHistory");
+  assign(projection, "sections.C.productAvailability", "product availability", "event:event:productAvailability", caseState.event.facts.productAvailability, projection.sections.C, "productAvailability");
+  if (known(caseState.event.facts.productAvailability)?.value === "returned-to-manufacturer") {
+    assign(projection, "sections.C.productReturnDate", "product return date", "event:event:productReturnDate", caseState.event.facts.productReturnDate, projection.sections.C, "productReturnDate");
+  }
 
   for (const test of caseState.relevantTests.filter(({ state }) => state === "resolved")) {
     const result: ProjectedRelevantTest = { testId: test.id };
@@ -125,6 +156,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
 
   for (const product of caseState.products.filter(({ state }) => state === "resolved")) {
     const role = known(product.facts.role);
+    const productType = known(product.facts.productType);
     if (!role || (role.value !== "suspect" && role.value !== "concomitant")) {
       projection.omissions.push({
         concept: `report role for ${product.id}`,
@@ -135,8 +167,14 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       continue;
     }
     if (role.value === "suspect") {
-      const target = projection.sections.D.suspectProducts;
-      target.push(projectProduct(product, projection, target.length));
+      if (productType?.value === "device") {
+        if (!projection.sections.E.suspectDevice) {
+          projection.sections.E.suspectDevice = projectDevice(product, projection);
+        }
+      } else {
+        const target = projection.sections.D.suspectProducts;
+        target.push(projectProduct(product, projection, target.length));
+      }
     } else {
       const target = projection.sections.F.concomitantProducts;
       target.push(projectConcomitantProduct(product, projection, target.length));
@@ -157,8 +195,24 @@ function projectProduct(
 ): ProjectedProduct {
   const result: ProjectedProduct = { productId: product.id };
   const prefix = `sections.D.suspectProducts.${index}`;
-  for (const field of ["name", "dose", "frequency", "route", "startDate", "stopDate", "indication"] as const) {
+  for (const field of ["name", "manufacturer", "lotNumber", "dose", "frequency", "route", "startDate", "stopDate", "indication"] as const) {
     assign(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field], result, field);
+  }
+  return result;
+}
+
+function projectDevice(product: ProductEntity, projection: Form3500Projection): ProjectedDevice {
+  const result: ProjectedDevice = { productId: product.id };
+  const mappings = [
+    ["name", "brandName"], ["commonName", "commonName"], ["procode", "procode"],
+    ["manufacturer", "manufacturer"], ["modelNumber", "modelNumber"], ["lotNumber", "lotNumber"],
+    ["catalogNumber", "catalogNumber"], ["expirationDate", "expirationDate"], ["serialNumber", "serialNumber"],
+    ["udi", "udi"], ["deviceOperator", "operator"], ["implantDate", "implantDate"],
+    ["explantDate", "explantDate"], ["reprocessedSingleUse", "reprocessedSingleUse"],
+    ["reprocessor", "reprocessor"], ["servicedByThirdParty", "servicedByThirdParty"],
+  ] as const;
+  for (const [field, output] of mappings) {
+    assign<unknown>(projection, `sections.E.suspectDevice.${output}`, `${output} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field] as Fact<unknown>, result, output);
   }
   return result;
 }
@@ -217,6 +271,7 @@ function buildEventDescription(caseState: SemanticCase): { value?: string; sourc
       sourceIds.push(...value.sourceIds);
     }
   };
+  append(caseState.event.facts.problemDescription, (value) => `Problem detail: ${value}.`);
   append(caseState.event.facts.symptoms, (value) => `Symptoms: ${value.join(" and ")}.`);
   append(caseState.event.facts.treatments, (value) => `Treatment: ${value.join("; ")}.`);
   append(caseState.event.facts.outcome, (value) => `Outcome: ${value}.`);

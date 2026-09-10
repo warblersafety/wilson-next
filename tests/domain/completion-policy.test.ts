@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { applyCaseCommand } from "../../src/domain/case/commands";
 import { nextCompletionQuestion } from "../../src/domain/case/completion-policy";
+import { createSemanticCase } from "../../src/domain/case/create";
 import type { CaseValue, EventFactKey, SemanticCase, Source } from "../../src/domain/case/types";
 import { acceptOpeningCase, answerIndications } from "./fixture";
 
@@ -87,6 +88,36 @@ describe("bounded medication completion policy", () => {
       key: "suspect-product-indications", targetIds: ["product:product-lisinopril:indication"],
     }).case;
     expect(askedAgain.askedNeeds.filter(({ key }) => key === "suspect-product-indications")).toHaveLength(2);
+  });
+
+  it("routes a product-problem-only report directly to reporter details", () => {
+    const problem = "Unopened tablets contained visible particles.";
+    const source: Source = {
+      id: "source-product-problem", inputId: "input-product-problem", inputType: "narrative",
+      excerpt: problem, start: 0, end: problem.length, actor: "clinician", recordedAt: "2026-09-10T00:00:00.000Z",
+    };
+    let current = applyCaseCommand(createSemanticCase("case-product-problem"), {
+      type: "attach-grounded-proposals", commandId: "attach-product-problem", expectedRevision: 0,
+      products: [{ id: "product-tablets", groupId: "product-tablets" }], sources: [source],
+      proposals: [
+        { proposalId: "problem", groupId: "event", intent: "fact", target: { entity: "event", entityId: "event", field: "problemDescription" }, value: { kind: "known", value: problem }, sourceIds: [source.id] },
+        { proposalId: "name", groupId: "product-tablets", intent: "fact", target: { entity: "product", entityId: "product-tablets", field: "name" }, value: { kind: "known", value: "Test tablets" }, sourceIds: [source.id] },
+        { proposalId: "type", groupId: "product-tablets", intent: "fact", target: { entity: "product", entityId: "product-tablets", field: "productType" }, value: { kind: "known", value: "drug-or-biologic" }, sourceIds: [source.id] },
+        { proposalId: "role", groupId: "product-tablets", intent: "fact", target: { entity: "product", entityId: "product-tablets", field: "role" }, value: { kind: "known", value: "suspect" }, sourceIds: [source.id] },
+      ],
+    }).case;
+    const selection = "Product problem";
+    current = applyCaseCommand(current, {
+      type: "record-clinician-facts", commandId: "select-product-problem", expectedRevision: current.revision,
+      source: { id: "source-product-problem-type", inputId: "input-product-problem-type", inputType: "selection", excerpt: selection, start: 0, end: selection.length, actor: "clinician", recordedAt: "2026-09-10T00:00:00.000Z" },
+      facts: [{ id: "product-problem-type", target: { entity: "event", entityId: "event", field: "reportType" }, intent: "fact", value: { kind: "known", value: "product-problem" } }],
+    }).case;
+    current = applyCaseCommand(current, {
+      type: "review-proposal-groups", commandId: "review-product-problem", expectedRevision: current.revision,
+      decisions: [{ groupId: "patient", action: "accept" }, { groupId: "event", action: "accept" }, { groupId: "product-tablets", action: "accept" }],
+    }).case;
+
+    expect(nextCompletionQuestion(current)).toMatchObject({ key: "reporter-details", kind: "reporter" });
   });
 });
 

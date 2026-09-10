@@ -48,7 +48,7 @@ const answerStringSchema = z.discriminatedUnion("kind", [
 ]);
 
 const actionSchema = z.discriminatedUnion("action", [
-  z.object({ action: z.literal("submit-opening"), text: z.string(), reportType: z.literal("adverse-event") }).strict(),
+  z.object({ action: z.literal("submit-opening"), text: z.string(), reportType: z.enum(["adverse-event", "product-problem"]) }).strict(),
   z.object({ action: z.literal("change-proposal"), groupId: z.string().min(1), proposalId: z.string().min(1), value: caseValueSchema, statement: z.string().min(1) }).strict(),
   z.object({ action: z.literal("reject-group"), groupId: z.string().min(1) }).strict(),
   z.object({ action: z.literal("accept-understanding") }).strict(),

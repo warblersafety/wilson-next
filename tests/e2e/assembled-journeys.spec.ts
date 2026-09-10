@@ -13,6 +13,8 @@ import {
   layer1RoleUpdate,
   layer1TestsOpening,
   layer1TestsUpdate,
+  layer2DeviceOpening,
+  layer2ProductQualityOpening,
   repeatedOpening,
   repeatedUpdate,
   richOpening,
@@ -25,12 +27,13 @@ const retainEvidence = process.env.WILSON_RETAIN_STAGE3_EVIDENCE === "1";
 const evidenceDirectory = process.env.WILSON_STAGE3_EVIDENCE_DIRECTORY ?? "evidence/experiment-2/stage-3";
 const retainAdaptiveOnly = evidenceDirectory.includes("issue-57");
 const retainLayer1RepresentativeOnly = evidenceDirectory.includes("issue-60");
+const retainLayer2RepresentativeOnly = evidenceDirectory.includes("issue-62");
 const readbacks: Record<string, IndependentReadback> = {};
 const checkpoints: Array<{ journey: string; state: string; assertion: string }> = [];
 const pdfs: Array<{ journey: string; bytes: number; sha256: string }> = [];
 const questionTrace: Array<{ journey: string; question: string; reason: string; answer: string }> = [];
 
-test("runs Layer 1 stress probes plus all Experiment 1 and 2 deterministic regressions through one assembled desktop path", async ({ page, browser }, testInfo) => {
+test("runs Layer 2 generalization probes plus all prior deterministic regressions through one assembled desktop path", async ({ page, browser }, testInfo) => {
   if (retainEvidence) await mkdir(evidenceDirectory, { recursive: true });
 
   const initial = await page.goto("/");
@@ -38,6 +41,60 @@ test("runs Layer 1 stress probes plus all Experiment 1 and 2 deterministic regre
   await expect(page.getByRole("heading", { name: "Describe what happened" })).toBeVisible();
   await expect(page.getByLabel("Experiment boundary")).toContainText("Fictional information only");
 
+  await submitOpening(page, layer2DeviceOpening);
+  await expect(productCard(page, "Acme FlowGuard")).toContainText("Suspect medical device");
+  await expect(productCard(page, "Acme FlowGuard")).toContainText("(01)00812345000017(21)SN7721");
+  await expect(productOrCaseCard(page, "Event")).toContainText("available");
+  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
+  questionTrace.push({ journey: "layer2-device", question: "reporter block", reason: "accepted outcomes and clinical context suppress medication-only and redundant clinical questions", answer: "structured reporter details" });
+  await fillReporter(page, { firstName: "Dana", lastName: "Mills", email: "dana.mills@example.test" });
+  await page.getByRole("button", { name: "Add reporter details" }).click();
+  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  const deviceCase = await semanticCase(page);
+  expect(deviceCase.products).toHaveLength(1);
+  expect(deviceCase.products[0].id).toBe("product-layer2-device-device");
+  expect(deviceCase.products[0].facts.productType.resolvedValue?.value).toEqual({ kind: "known", value: "device" });
+  expect(deviceCase.products[0].facts.implantDate.resolvedValue?.value).toEqual({ kind: "inapplicable" });
+  expect(deviceCase.askedNeeds.map(({ key }) => key)).toEqual(["reporter-details"]);
+  expect(await page.locator('[aria-label="Form FDA 3500 preview"]').textContent()).toContain("Acme Medical, Reno, Nevada");
+  checkpoints.push({ journey: "layer2-device", state: "output", assertion: "One stable suspect device preserved rich Section E knowledge while medication-only questions and Sections D/F stayed inactive." });
+  await retainScreenshot(page, "layer2-device-output.png");
+  await downloadAndCheck(page, "layer2-device", ["TEST-74", "Acme FlowGuard", "infusion pump", "Acme Medical, Reno, Nevada", "FG-200", "L-904", "SN-7721", "(01)00812345000017(21)SN7721", "Dana", "Mills"], [], {
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+    "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/1",
+    "topmostSubform[0].Page6[0].SecE_Device[0].BrandName[0]": "Acme FlowGuard",
+    "topmostSubform[0].Page6[0].SecE_Device[0].HealthPro[0]": "/1",
+    "topmostSubform[0].Page6[0].SecE_Device[0].ReuseNo[0]": "/1",
+    "topmostSubform[0].Page6[0].SecE_Device[0].ServicedNo[0]": "/1",
+  }, ["topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]"]);
+
+  await newCase(page);
+  await submitOpening(page, layer2ProductQualityOpening, "product-problem");
+  await expect(productCard(page, "Cardiovex 20 mg tablets")).toContainText("CV-442");
+  await expect(productOrCaseCard(page, "Patient")).not.toContainText("TEST-");
+  await expect(productOrCaseCard(page, "Event")).toContainText("Product problem");
+  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
+  questionTrace.push({ journey: "layer2-product-quality", question: "reporter block", reason: "a product-problem-only report does not trigger indication, serious-outcome, or clinical-context interrogation", answer: "structured reporter details" });
+  await fillReporter(page, { firstName: "Elliot", lastName: "Ross", phone: "202-555-0188" });
+  await page.getByRole("button", { name: "Add reporter details" }).click();
+  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  const qualityCase = await semanticCase(page);
+  expect(qualityCase.patient.facts.identifier.state).toBe("empty");
+  expect(qualityCase.event.facts.reportType.resolvedValue?.value).toEqual({ kind: "known", value: "product-problem" });
+  expect(qualityCase.event.facts.symptoms.resolvedValue?.value).toEqual({ kind: "explicitly-absent" });
+  expect(qualityCase.products[0].facts.lotNumber.resolvedValue?.value).toEqual({ kind: "known", value: "CV-442" });
+  expect(qualityCase.askedNeeds.map(({ key }) => key)).toEqual(["reporter-details"]);
+  checkpoints.push({ journey: "layer2-product-quality", state: "partial-output", assertion: "No patient or adverse event was invented; one sparse non-device product projected to Section D with the product-problem and availability selections." });
+  await downloadAndCheck(page, "layer2-product-quality", ["Cardiovex 20 mg tablets", "CV-442", "Problem detail: Unopened Cardiovex 20 mg tablets contained visible brown particles under the seal.", "Elliot", "Ross"], ["TEST-74", "Acme FlowGuard"], {
+    "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/1",
+    "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/1",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "Cardiovex 20 mg tablets",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1LotNum[0]": "CV-442",
+  }, ["topmostSubform[0].Page6[0].SecE_Device[0].BrandName[0]"]);
+
+  await newCase(page);
   await submitOpening(page, layer1DeathOpening);
   await expect(productOrCaseCard(page, "Event")).toContainText("Death");
   await expect(productOrCaseCard(page, "Relevant test 1")).toContainText("Skin biopsy: full-thickness epidermal necrosis");
@@ -298,9 +355,17 @@ test("runs Layer 1 stress probes plus all Experiment 1 and 2 deterministic regre
     await writeFile(`${evidenceDirectory}/journey-trace.json`, `${JSON.stringify({
       browser: `Chromium ${browser.version()}`,
       viewportOptions: { viewport: testInfo.project.use.viewport },
-      predeterminedApplicationModelCalls: 14,
+      predeterminedApplicationModelCalls: 16,
       liveApplicationModelCalls: 0,
       interactionSummary: [
+        {
+          journey: "layer2-device", groupedPromptCount: 1, duplicateQuestionCount: 0,
+          observedFriction: "The rich device facts required one explicit understanding review and the direct reporter block; no medication indication or redundant clinical prompt appeared.",
+        },
+        {
+          journey: "layer2-product-quality", groupedPromptCount: 1, duplicateQuestionCount: 0,
+          observedFriction: "The sparse product-quality report required one understanding review and the direct reporter block; no patient, outcome, indication, or clinical-context interrogation appeared.",
+        },
         {
           journey: "layer1-death", groupedPromptCount: 3, duplicateQuestionCount: 0,
           observedFriction: "The accepted death outcome required one grouped pass over only the remaining outcome flags, then one conditional date turn and the reporter block.",
@@ -329,8 +394,9 @@ test("runs Layer 1 stress probes plus all Experiment 1 and 2 deterministic regre
   }
 });
 
-async function submitOpening(page: Page, text: string) {
+async function submitOpening(page: Page, text: string, reportType: "adverse-event" | "product-problem" = "adverse-event") {
   await page.getByLabel("Clinical account").fill(text);
+  await page.getByLabel(reportType === "adverse-event" ? "Adverse event" : "Product problem").check();
   await page.getByRole("button", { name: "Review Wilson’s understanding" }).click();
   await expect(page.getByRole("heading", { name: "Check Wilson’s understanding" })).toBeVisible();
 }
@@ -450,5 +516,6 @@ async function retainScreenshot(page: Page, name: string) {
 function shouldRetain(journey: string): boolean {
   if (retainAdaptiveOnly) return journey.startsWith("adaptive-");
   if (retainLayer1RepresentativeOnly) return journey === "layer1-role";
+  if (retainLayer2RepresentativeOnly) return journey === "layer2-device";
   return true;
 }

@@ -40,10 +40,12 @@ export function nextCompletionQuestion(caseState: SemanticCase): CompletionQuest
   if (caseState.revision === 0 || caseState.patient.state !== "resolved" || caseState.event.state !== "resolved"
     || caseState.products.some(({ state }) => state === "proposed")
     || caseState.relevantTests.some(({ state }) => state === "proposed")) return null;
-  const indications = indicationQuestion(caseState);
-  if (indications) return indications;
+  const reportType = knownString(caseState.event.facts.reportType);
+  if (reportType === "adverse-event") {
+    const indications = indicationQuestion(caseState);
+    if (indications) return indications;
 
-  const outcomes = ordinaryQuestion(caseState, "serious-outcomes", () => {
+    const outcomes = ordinaryQuestion(caseState, "serious-outcomes", () => {
     const targetIds = seriousOutcomeFields
       .filter((field) => caseState.event.facts[field].state === "empty")
       .map((field) => `event:event:${field}`);
@@ -55,10 +57,10 @@ export function nextCompletionQuestion(caseState: SemanticCase): CompletionQuest
         : "Which serious outcomes applied to this event?",
       reason: "Serious outcomes are a concise, material summary used directly in the supported report.",
     };
-  });
-  if (outcomes) return outcomes;
+    });
+    if (outcomes) return outcomes;
 
-  const deathDate = ordinaryQuestion(caseState, "death-date", () => {
+    const deathDate = ordinaryQuestion(caseState, "death-date", () => {
     if (knownBoolean(caseState.event.facts.death) !== true || caseState.event.facts.deathDate.state !== "empty") return null;
     return {
       kind: "death-date" as const,
@@ -66,10 +68,10 @@ export function nextCompletionQuestion(caseState: SemanticCase): CompletionQuest
       question: "What was the date of death?",
       reason: "The form asks for a date only when death is an applicable outcome.",
     };
-  });
-  if (deathDate) return deathDate;
+    });
+    if (deathDate) return deathDate;
 
-  const context = ordinaryQuestion(caseState, "relevant-clinical-context", () => {
+    const context = ordinaryQuestion(caseState, "relevant-clinical-context", () => {
     const askTests = caseState.relevantTests.every(({ state }) => state === "rejected")
       && caseState.event.facts.relevantTestsAvailable.state === "empty";
     const askHistory = caseState.event.facts.relevantHistory.state === "empty";
@@ -88,8 +90,9 @@ export function nextCompletionQuestion(caseState: SemanticCase): CompletionQuest
         : askTests ? "Are there relevant tests or laboratory results to add?" : "Is there relevant medical history to add?",
       reason: "Relevant tests and history can make the event understandable without asking for unrelated clinical detail.",
     };
-  });
-  if (context) return context;
+    });
+    if (context) return context;
+  }
 
   return ordinaryQuestion(caseState, "reporter-details", () => ({
     kind: "reporter" as const,
@@ -138,12 +141,13 @@ function ordinaryQuestion<K extends Exclude<SemanticNeedKey, "suspect-product-in
 
 function isResolvedSuspectWithEmptyIndication(product: ProductEntity): boolean {
   return product.state === "resolved"
+    && knownString(product.facts.productType) !== "device"
     && product.facts.role.resolvedValue?.value.kind === "known"
     && product.facts.role.resolvedValue.value.value === "suspect"
     && product.facts.indication.state === "empty";
 }
 
-function knownString(fact: Fact<string>): string | undefined {
+function knownString<T extends string>(fact: Fact<T>): T | undefined {
   return fact.resolvedValue?.value.kind === "known" ? fact.resolvedValue.value.value : undefined;
 }
 

@@ -25,7 +25,7 @@ import { createReviewedCaseModelContext } from "../model/reviewed-case-context";
 export type JourneyStage = "describe" | "understanding" | "clarify" | "review-update" | "output";
 
 export type JourneyAction =
-  | { action: "submit-opening"; text: string; reportType: "adverse-event" }
+  | { action: "submit-opening"; text: string; reportType: "adverse-event" | "product-problem" }
   | {
       action: "change-proposal";
       groupId: string;
@@ -158,7 +158,7 @@ export async function performJourneyAction(
           expectedRevision: current.revision,
           ...opening.envelope,
         });
-        const reportTypeText = "Adverse event";
+        const reportTypeText = action.reportType === "adverse-event" ? "Adverse event" : "Product problem";
         await applyCommand({
           type: "record-clinician-facts",
           commandId: commandId("record-report-type"),
@@ -459,10 +459,17 @@ function outputReadinessIssues(
   if (createClarificationView(caseState)) issues.push("Answer or decline the open consequential question before opening the form.");
   const hasSuspect = caseState.products.some((product) => product.state === "resolved"
     && knownValue(product.facts.role) === "suspect"
-    && Boolean(knownValue(product.facts.name)));
+    && Boolean(knownValue(product.facts.name))
+    && Boolean(knownValue(product.facts.productType)));
   if (!hasSuspect) issues.push("Accept at least one named suspect product.");
-  if (knownValue(caseState.event.facts.reportType) !== "adverse-event") issues.push("Accept the adverse-event report type.");
-  if (!projection.sections.B.eventDescription) issues.push("Accept at least one event fact that contributes to the event description.");
+  const reportType = knownValue(caseState.event.facts.reportType);
+  if (!reportType) issues.push("Accept the selected report type.");
+  if (!projection.sections.B.eventDescription) issues.push("Accept at least one event or product-problem fact that contributes to the report description.");
+  if (caseState.products.filter((product) => product.state === "resolved"
+    && knownValue(product.facts.role) === "suspect"
+    && knownValue(product.facts.productType) === "device").length > 1) {
+    issues.push("This bounded path supports one suspect medical device.");
+  }
   return issues;
 }
 

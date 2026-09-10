@@ -3,7 +3,8 @@
 **Status:** Experiment 1 hypothesis completed with qualified technical success;
 Experiment 2's production-seed amendments were approved through Issue #42 and
 PR #43; Issue #57 adds the bounded adaptive-completion amendment after
-Experiment 2 concluded `Revise`, without changing its deferred live-model risk
+Experiment 2 concluded `Revise`; Issue #62 adds the bounded single-device and
+product-quality generalization without changing the deferred live-model risk
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification
@@ -48,7 +49,7 @@ Case
   revision
   patient
   event
-  products[]        # stable ID and suspect/concomitant role
+  products[]        # stable ID, product category, and suspect/concomitant role
   relevantTests[]   # stable ID; result, ranges, and date stay together
   reporter          # direct clinician entry; never model-proposed
   askedNeeds[]      # small semantic follow-up history
@@ -74,8 +75,11 @@ exclusive. No value means `empty`; it does not mean unknown. Whether Wilson has
 asked about an empty fact belongs to interaction history, not clinical truth.
 
 The implemented slices use explicit typed fields only for their selected
-patient, event, product, relevant-test, and reporter facts. Product roles are
-facts, and proposed products and tests remain proposed until group review.
+patient, event or product-problem, product, relevant-test, and reporter facts.
+Product category and role are facts, and proposed products and tests remain
+proposed until group review. One bounded suspect-device shape shares the same
+stable product identity and fact invariants while projecting to Section E;
+non-device suspects continue to project to Section D.
 Reporter facts enter directly from the clinician through `applyCaseCommand` and
 never pass through the model. `Fact<T>` supplies consistent behavior without
 claiming a complete Form 3500 ontology.
@@ -197,6 +201,15 @@ semantic target. Direct answers use `applyCaseCommand` without a model call.
 This is not a generic follow-up planner, and model-generated question wording
 remains deferred.
 
+The Layer 2 generalization keeps that medication ordering unchanged. A selected
+adverse-event report with one suspect device skips medication-indication needs
+but retains applicable serious-outcome, clinical-context, and direct-reporter
+needs. A selected product-problem-only report skips adverse-event and
+medication-specific clarification and proceeds to direct reporter details once
+its proposals are reviewed. Product availability is accepted as a semantic
+report fact and projected to Section C. These are two bounded applicability
+branches, not a general report-completion rules engine.
+
 ## Views and Form 3500 projection
 
 All user-visible knowledge and output derive from one revision:
@@ -221,7 +234,8 @@ The UI may offer actions only for semantic targets represented in the current
 revision. It may not infer the stage from fixture input, product names, expected
 values, or a fixed turn number.
 
-For the selected adult medication journeys, unresolved optional facts remain
+For the selected adult medication, single-device adverse-event, and
+product-problem-only journeys, unresolved optional facts remain
 omitted and visible but do not block output after proposals, corrections, and
 applicable bounded needs have received their required review or direct answer.
 Conflicting alternatives never project. The semantic projection supplies
@@ -322,7 +336,9 @@ must replace this synthetic-only logging policy before use.
   and saved-case storage.
 - General import or deterministic-derivation frameworks.
 - Full FHIR or ICH E2B compatibility.
-- Comprehensive question planning, full Form 3500 coverage, and devices.
+- Comprehensive question planning, full Form 3500 coverage, multiple devices,
+  combined device report types, and device-depth behavior beyond the selected
+  Layer 2 facts.
 - Large package taxonomies or a reusable internal platform.
 
 ## Falsification
@@ -346,3 +362,8 @@ It does not automatically authorize their Experiment 2 generalization or
 production use. Any follow-on experiment must name the retained and changed
 architecture explicitly and still does not authorize real clinical data,
 production deployment, full Form 3500 coverage, or deferred mechanisms.
+
+Issue #62 supplies that named bounded follow-on for one device adverse event and
+one product-quality-only report. Its deterministic evidence may support those
+selected paths without establishing live extraction reliability, comprehensive
+device coverage, real-data readiness, or production use.

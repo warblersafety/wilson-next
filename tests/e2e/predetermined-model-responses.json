@@ -1,5 +1,583 @@
 [
   {
+    "identityScope": "layer2-device",
+    "turn": "opening",
+    "output": {
+      "products": [
+        {
+          "productReference": "device",
+          "groupReference": "g1"
+        }
+      ],
+      "proposals": [
+        {
+          "proposalReference": "patient-id",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "identifier"
+          },
+          "value": {
+            "kind": "known",
+            "value": "TEST-74"
+          },
+          "evidenceQuote": "Patient TEST-74 is a 74-year-old woman."
+        },
+        {
+          "proposalReference": "patient-age",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "ageYears"
+          },
+          "value": {
+            "kind": "known",
+            "value": 74
+          },
+          "evidenceQuote": "Patient TEST-74 is a 74-year-old woman."
+        },
+        {
+          "proposalReference": "patient-sex",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "sex"
+          },
+          "value": {
+            "kind": "known",
+            "value": "female"
+          },
+          "evidenceQuote": "Patient TEST-74 is a 74-year-old woman."
+        },
+        {
+          "proposalReference": "event-problem",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "problemDescription"
+          },
+          "value": {
+            "kind": "known",
+            "value": "Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed"
+          },
+          "evidenceQuote": "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized."
+        },
+        {
+          "proposalReference": "event-symptoms",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "symptoms"
+          },
+          "value": {
+            "kind": "known",
+            "value": [
+              "hypotension"
+            ]
+          },
+          "evidenceQuote": "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized."
+        },
+        {
+          "proposalReference": "event-onset",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "onsetDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-09-08"
+          },
+          "evidenceQuote": "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized."
+        },
+        {
+          "proposalReference": "event-hospitalized",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "hospitalized"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized."
+        },
+        {
+          "proposalReference": "event-treatment",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "treatments"
+          },
+          "value": {
+            "kind": "known",
+            "value": [
+              "intravenous fluids"
+            ]
+          },
+          "evidenceQuote": "The pump was stopped, she received intravenous fluids, and she recovered."
+        },
+        {
+          "proposalReference": "event-outcome",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "outcome"
+          },
+          "value": {
+            "kind": "known",
+            "value": "recovered"
+          },
+          "evidenceQuote": "The pump was stopped, she received intravenous fluids, and she recovered."
+        },
+        {
+          "proposalReference": "tests-none",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "relevantTestsAvailable"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No relevant tests or medical history apply."
+        },
+        {
+          "proposalReference": "history-none",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "relevantHistory"
+          },
+          "value": {
+            "kind": "explicitly-absent"
+          },
+          "evidenceQuote": "No relevant tests or medical history apply."
+        },
+        {
+          "proposalReference": "availability",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "productAvailability"
+          },
+          "value": {
+            "kind": "known",
+            "value": "available"
+          },
+          "evidenceQuote": "The device is available for evaluation."
+        },
+        {
+          "proposalReference": "device-name",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "Acme FlowGuard"
+          },
+          "evidenceQuote": "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721."
+        },
+        {
+          "proposalReference": "device-type",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "device"
+          },
+          "evidenceQuote": "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721."
+        },
+        {
+          "proposalReference": "device-role",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721."
+        },
+        {
+          "proposalReference": "device-common",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "commonName"
+          },
+          "value": {
+            "kind": "known",
+            "value": "infusion pump"
+          },
+          "evidenceQuote": "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721."
+        },
+        {
+          "proposalReference": "device-manufacturer",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "manufacturer"
+          },
+          "value": {
+            "kind": "known",
+            "value": "Acme Medical, Reno, Nevada"
+          },
+          "evidenceQuote": "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721."
+        },
+        {
+          "proposalReference": "device-model",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "modelNumber"
+          },
+          "value": {
+            "kind": "known",
+            "value": "FG-200"
+          },
+          "evidenceQuote": "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721."
+        },
+        {
+          "proposalReference": "device-lot",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "lotNumber"
+          },
+          "value": {
+            "kind": "known",
+            "value": "L-904"
+          },
+          "evidenceQuote": "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721."
+        },
+        {
+          "proposalReference": "device-serial",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "serialNumber"
+          },
+          "value": {
+            "kind": "known",
+            "value": "SN-7721"
+          },
+          "evidenceQuote": "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721."
+        },
+        {
+          "proposalReference": "device-udi",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "udi"
+          },
+          "value": {
+            "kind": "known",
+            "value": "(01)00812345000017(21)SN7721"
+          },
+          "evidenceQuote": "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721."
+        },
+        {
+          "proposalReference": "device-operator",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "deviceOperator"
+          },
+          "value": {
+            "kind": "known",
+            "value": "health-professional"
+          },
+          "evidenceQuote": "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party."
+        },
+        {
+          "proposalReference": "device-implant",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "implantDate"
+          },
+          "value": {
+            "kind": "inapplicable"
+          },
+          "evidenceQuote": "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party."
+        },
+        {
+          "proposalReference": "device-reprocessed",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "reprocessedSingleUse"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party."
+        },
+        {
+          "proposalReference": "device-serviced",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "servicedByThirdParty"
+          },
+          "value": {
+            "kind": "known",
+            "value": "no"
+          },
+          "evidenceQuote": "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party."
+        },
+        {
+          "proposalReference": "event-death",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "death"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No other serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-lifeThreatening",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "lifeThreatening"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No other serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-disability",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "disability"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No other serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-requiredIntervention",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "requiredIntervention"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No other serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-congenitalAnomaly",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "congenitalAnomaly"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No other serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-otherSerious",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "otherSerious"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No other serious outcomes applied."
+        }
+      ]
+    }
+  },
+  {
+    "identityScope": "layer2-product-quality",
+    "turn": "opening",
+    "output": {
+      "products": [
+        {
+          "productReference": "cardiovex",
+          "groupReference": "g1"
+        }
+      ],
+      "proposals": [
+        {
+          "proposalReference": "problem",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "problemDescription"
+          },
+          "value": {
+            "kind": "known",
+            "value": "Unopened Cardiovex 20 mg tablets contained visible brown particles under the seal"
+          },
+          "evidenceQuote": "An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal."
+        },
+        {
+          "proposalReference": "symptoms-none",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "symptoms"
+          },
+          "value": {
+            "kind": "explicitly-absent"
+          },
+          "evidenceQuote": "The product was not administered to a patient, and no adverse event occurred."
+        },
+        {
+          "proposalReference": "availability",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "productAvailability"
+          },
+          "value": {
+            "kind": "known",
+            "value": "available"
+          },
+          "evidenceQuote": "The bottle is available for evaluation."
+        },
+        {
+          "proposalReference": "product-name",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "cardiovex",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "Cardiovex 20 mg tablets"
+          },
+          "evidenceQuote": "An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal."
+        },
+        {
+          "proposalReference": "product-type",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "cardiovex",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
+          },
+          "evidenceQuote": "An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal."
+        },
+        {
+          "proposalReference": "product-lot",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "cardiovex",
+            "field": "lotNumber"
+          },
+          "value": {
+            "kind": "known",
+            "value": "CV-442"
+          },
+          "evidenceQuote": "An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal."
+        },
+        {
+          "proposalReference": "product-role",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "cardiovex",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "I am reporting Cardiovex as the suspect product."
+        }
+      ]
+    }
+  },
+  {
     "identityScope": "layer1-death",
     "turn": "opening",
     "output": {
@@ -157,6 +735,21 @@
           "value": {
             "kind": "known",
             "value": "trimethoprim-sulfamethoxazole"
+          },
+          "evidenceQuote": "He began trimethoprim-sulfamethoxazole 160/800 mg by mouth twice daily on 01-Sep-2026 for a urinary tract infection."
+        },
+        {
+          "proposalReference": "product-type",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
           },
           "evidenceQuote": "He began trimethoprim-sulfamethoxazole 160/800 mg by mouth twice daily on 01-Sep-2026 for a urinary tract infection."
         },
@@ -405,6 +998,21 @@
           "value": {
             "kind": "known",
             "value": "atorvastatin"
+          },
+          "evidenceQuote": "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia."
+        },
+        {
+          "proposalReference": "product-type",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
           },
           "evidenceQuote": "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia."
         },
@@ -955,6 +1563,21 @@
           "evidenceQuote": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026."
         },
         {
+          "proposalReference": "warfarin-type",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "warfarin",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
+          },
+          "evidenceQuote": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026."
+        },
+        {
           "proposalReference": "warfarin-role",
           "groupReference": "g1",
           "intent": "fact",
@@ -1071,6 +1694,21 @@
           "value": {
             "kind": "known",
             "value": "acetaminophen"
+          },
+          "evidenceQuote": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026."
+        },
+        {
+          "proposalReference": "acetaminophen-type",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "acetaminophen",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
           },
           "evidenceQuote": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026."
         },
@@ -1529,6 +2167,21 @@
           "evidenceQuote": "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis."
         },
         {
+          "proposalReference": "product-type",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
+          },
+          "evidenceQuote": "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis."
+        },
+        {
           "proposalReference": "product-role",
           "groupReference": "g1",
           "intent": "fact",
@@ -1721,6 +2374,21 @@
           "evidenceQuote": "He developed severe dizziness while taking propranolol."
         },
         {
+          "proposalReference": "product-type",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
+          },
+          "evidenceQuote": "He developed severe dizziness while taking propranolol."
+        },
+        {
           "proposalReference": "product-role",
           "groupReference": "g1",
           "intent": "fact",
@@ -1893,6 +2561,21 @@
           "value": {
             "kind": "known",
             "value": "cephalexin"
+          },
+          "evidenceQuote": "He began cephalexin 500 mg by mouth twice daily on 01-Aug-2026 for cellulitis."
+        },
+        {
+          "proposalReference": "product-type",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
           },
           "evidenceQuote": "He began cephalexin 500 mg by mouth twice daily on 01-Aug-2026 for cellulitis."
         },
@@ -2117,6 +2800,21 @@
           "evidenceQuote": "She developed nausea and vomiting while taking metformin."
         },
         {
+          "proposalReference": "product-type",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
+          },
+          "evidenceQuote": "She developed nausea and vomiting while taking metformin."
+        },
+        {
           "proposalReference": "product-role",
           "groupReference": "g1",
           "intent": "fact",
@@ -2324,6 +3022,21 @@
           "evidenceQuote": "He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain."
         },
         {
+          "proposalReference": "p1-type",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
+          },
+          "evidenceQuote": "He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain."
+        },
+        {
           "proposalReference": "p1-role",
           "groupReference": "g1",
           "intent": "fact",
@@ -2440,6 +3153,21 @@
           "value": {
             "kind": "known",
             "value": "ibuprofen"
+          },
+          "evidenceQuote": "He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain."
+        },
+        {
+          "proposalReference": "p2-type",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
           },
           "evidenceQuote": "He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain."
         },
@@ -2777,6 +3505,21 @@
           "evidenceQuote": "apixaban 5 mg by mouth twice daily"
         },
         {
+          "proposalReference": "p1-type",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
+          },
+          "evidenceQuote": "apixaban 5 mg by mouth twice daily"
+        },
+        {
           "proposalReference": "p1-role",
           "groupReference": "g1",
           "intent": "fact",
@@ -2882,6 +3625,21 @@
           "evidenceQuote": "naproxen 500 mg by mouth twice daily starting 10-Aug-2026"
         },
         {
+          "proposalReference": "p2-type",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
+          },
+          "evidenceQuote": "naproxen 500 mg by mouth twice daily starting 10-Aug-2026"
+        },
+        {
           "proposalReference": "p2-role",
           "groupReference": "g2",
           "intent": "fact",
@@ -2983,6 +3741,21 @@
           "value": {
             "kind": "known",
             "value": "lisinopril"
+          },
+          "evidenceQuote": "lisinopril 10 mg by mouth daily as a concomitant medicine"
+        },
+        {
+          "proposalReference": "p3-type",
+          "groupReference": "g3",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p3",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
           },
           "evidenceQuote": "lisinopril 10 mg by mouth daily as a concomitant medicine"
         },
@@ -3236,6 +4009,21 @@
           "evidenceQuote": "apixaban 5 mg by mouth twice daily"
         },
         {
+          "proposalReference": "p1-type",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
+          },
+          "evidenceQuote": "apixaban 5 mg by mouth twice daily"
+        },
+        {
           "proposalReference": "p1-role",
           "groupReference": "g1",
           "intent": "fact",
@@ -3341,6 +4129,21 @@
           "evidenceQuote": "naproxen 500 mg by mouth twice daily starting 10-Aug-2026"
         },
         {
+          "proposalReference": "p2-type",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p2",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
+          },
+          "evidenceQuote": "naproxen 500 mg by mouth twice daily starting 10-Aug-2026"
+        },
+        {
           "proposalReference": "p2-role",
           "groupReference": "g2",
           "intent": "fact",
@@ -3442,6 +4245,21 @@
           "value": {
             "kind": "known",
             "value": "lisinopril"
+          },
+          "evidenceQuote": "lisinopril 10 mg by mouth daily as a concomitant medicine"
+        },
+        {
+          "proposalReference": "p3-type",
+          "groupReference": "g3",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p3",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "drug-or-biologic"
           },
           "evidenceQuote": "lisinopril 10 mg by mouth daily as a concomitant medicine"
         },
