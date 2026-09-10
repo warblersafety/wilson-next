@@ -1,0 +1,158 @@
+import type { Fact, ProductEntity, SemanticCase, SemanticNeedKey } from "./types";
+
+export type CompletionQuestion =
+  | BaseQuestion<"suspect-product-indications"> & { kind: "indications"; productIds: string[] }
+  | BaseQuestion<"serious-outcomes"> & { kind: "serious-outcomes" }
+  | BaseQuestion<"death-date"> & { kind: "death-date" }
+  | BaseQuestion<"relevant-clinical-context"> & { kind: "clinical-context"; askTests: boolean; askHistory: boolean }
+  | BaseQuestion<"reporter-details"> & { kind: "reporter" };
+
+interface BaseQuestion<K extends SemanticNeedKey> {
+  key: K;
+  status: "new" | "open";
+  targetIds: string[];
+  question: string;
+  reason: string;
+}
+
+const seriousOutcomeFields = [
+  "death",
+  "lifeThreatening",
+  "hospitalized",
+  "disability",
+  "requiredIntervention",
+  "congenitalAnomaly",
+  "otherSerious",
+] as const;
+
+const reporterCompletionFields = [
+  "lastName",
+  "firstName",
+  "phone",
+  "email",
+  "healthProfessional",
+  "occupation",
+  "reportedTo",
+  "doNotDiscloseIdentity",
+] as const;
+
+export function nextCompletionQuestion(caseState: SemanticCase): CompletionQuestion | null {
+  if (caseState.revision === 0 || caseState.patient.state !== "resolved" || caseState.event.state !== "resolved"
+    || caseState.products.some(({ state }) => state === "proposed")
+    || caseState.relevantTests.some(({ state }) => state === "proposed")) return null;
+  const indications = indicationQuestion(caseState);
+  if (indications) return indications;
+
+  const outcomes = ordinaryQuestion(caseState, "serious-outcomes", () => {
+    const targetIds = seriousOutcomeFields
+      .filter((field) => caseState.event.facts[field].state === "empty")
+      .map((field) => `event:event:${field}`);
+    return targetIds.length === 0 ? null : {
+      kind: "serious-outcomes" as const,
+      targetIds,
+      question: knownBoolean(caseState.event.facts.hospitalized) === true
+        ? "Hospitalization is already recorded. Did any other serious outcomes apply?"
+        : "Which serious outcomes applied to this event?",
+      reason: "Serious outcomes are a concise, material summary used directly in the supported report.",
+    };
+  });
+  if (outcomes) return outcomes;
+
+  const deathDate = ordinaryQuestion(caseState, "death-date", () => {
+    if (knownBoolean(caseState.event.facts.death) !== true || caseState.event.facts.deathDate.state !== "empty") return null;
+    return {
+      kind: "death-date" as const,
+      targetIds: ["event:event:deathDate"],
+      question: "What was the date of death?",
+      reason: "The form asks for a date only when death is an applicable outcome.",
+    };
+  });
+  if (deathDate) return deathDate;
+
+  const context = ordinaryQuestion(caseState, "relevant-clinical-context", () => {
+    const askTests = caseState.relevantTests.every(({ state }) => state === "rejected")
+      && caseState.event.facts.relevantTestsAvailable.state === "empty";
+    const askHistory = caseState.event.facts.relevantHistory.state === "empty";
+    const targetIds = [
+      ...(askTests ? ["event:event:relevantTestsAvailable"] : []),
+      ...(askHistory ? ["event:event:relevantHistory"] : []),
+    ];
+    if (targetIds.length === 0) return null;
+    return {
+      kind: "clinical-context" as const,
+      targetIds,
+      askTests,
+      askHistory,
+      question: askTests && askHistory
+        ? "Are there relevant tests or medical history to add?"
+        : askTests ? "Are there relevant tests or laboratory results to add?" : "Is there relevant medical history to add?",
+      reason: "Relevant tests and history can make the event understandable without asking for unrelated clinical detail.",
+    };
+  });
+  if (context) return context;
+
+  return ordinaryQuestion(caseState, "reporter-details", () => ({
+    kind: "reporter" as const,
+    targetIds: reporterCompletionFields.map((field) => `reporter:reporter:${field}`),
+    question: "Add the reporter details for this report",
+    reason: "Reporter information must come directly from you and cannot be inferred from the clinical account.",
+  }));
+}
+
+function indicationQuestion(caseState: SemanticCase): CompletionQuestion | null {
+  const indicationNeeds = caseState.askedNeeds.filter(({ key }) => key === "suspect-product-indications");
+  const existing = [...indicationNeeds].reverse().find(({ status }) => status === "open");
+  const coveredTargets = new Set(
+    indicationNeeds.filter(({ status }) => status !== "open").flatMap(({ targetIds }) => targetIds),
+  );
+  const products = existing
+    ? existing.targetIds.map((target) => target.split(":")[1]).map((id) => caseState.products.find((product) => product.id === id)).filter(isProduct)
+    : caseState.products.filter((product) => isResolvedSuspectWithEmptyIndication(product)
+      && !coveredTargets.has(`product:${product.id}:indication`));
+  if (products.length === 0) return null;
+  const names = products.map((product) => knownString(product.facts.name) ?? "this suspect product");
+  return {
+    key: "suspect-product-indications",
+    kind: "indications",
+    status: existing ? "open" : "new",
+    targetIds: products.map(({ id }) => `product:${id}:indication`),
+    productIds: products.map(({ id }) => id),
+    question: names.length === 1
+      ? `What was ${names[0]} being used for?`
+      : `What was ${names.slice(0, -1).join(", ")} being used for, and what was ${names.at(-1)} being used for?`,
+    reason: "The indication explains why each suspect product was used and maps directly to the supported report.",
+  };
+}
+
+function ordinaryQuestion<K extends Exclude<SemanticNeedKey, "suspect-product-indications">>(
+  caseState: SemanticCase,
+  key: K,
+  create: () => Omit<Extract<CompletionQuestion, { key: K }>, "key" | "status"> | null,
+): CompletionQuestion | null {
+  const existing = caseState.askedNeeds.find((need) => need.key === key);
+  if (existing && existing.status !== "open") return null;
+  const value = create();
+  if (!value) return null;
+  return { ...value, key, status: existing ? "open" : "new" } as CompletionQuestion;
+}
+
+function isResolvedSuspectWithEmptyIndication(product: ProductEntity): boolean {
+  return product.state === "resolved"
+    && product.facts.role.resolvedValue?.value.kind === "known"
+    && product.facts.role.resolvedValue.value.value === "suspect"
+    && product.facts.indication.state === "empty";
+}
+
+function knownString(fact: Fact<string>): string | undefined {
+  return fact.resolvedValue?.value.kind === "known" ? fact.resolvedValue.value.value : undefined;
+}
+
+function knownBoolean(fact: Fact<boolean>): boolean | undefined {
+  return fact.resolvedValue?.value.kind === "known" ? fact.resolvedValue.value.value : undefined;
+}
+
+function isProduct(value: ProductEntity | undefined): value is ProductEntity {
+  return value !== undefined;
+}
+
+export { reporterCompletionFields, seriousOutcomeFields };

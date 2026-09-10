@@ -3,9 +3,11 @@ import type {
   Fact,
   GroundedValue,
   ProductEntity,
+  RelevantTestEntity,
   SemanticCase,
   SemanticNeedKey,
 } from "./types";
+import { nextCompletionQuestion, type CompletionQuestion } from "./completion-policy";
 
 export interface FactView {
   state: Fact<unknown>["state"];
@@ -28,6 +30,8 @@ export interface UnderstandingView {
   patient: Record<string, FactView>;
   event: Record<string, FactView>;
   products: ProductView[];
+  relevantTests: ProductView[];
+  reporter: Record<string, FactView>;
 }
 
 export interface ReviewAttentionItem {
@@ -37,12 +41,7 @@ export interface ReviewAttentionItem {
   values: Array<{ id: string; value: CaseValue<unknown>; evidence: string[] }>;
 }
 
-export interface ClarificationView {
-  key: SemanticNeedKey;
-  status: "new" | "open";
-  productIds: string[];
-  question: string;
-}
+export type ClarificationView = CompletionQuestion;
 
 export function createUnderstandingView(caseState: SemanticCase): UnderstandingView {
   const sourceExcerpts = new Map(caseState.sources.map(({ id, excerpt }) => [id, excerpt]));
@@ -58,6 +57,10 @@ export function createUnderstandingView(caseState: SemanticCase): UnderstandingV
         state: product.state,
         facts: mapFacts(product.facts, sourceExcerpts),
       })),
+    relevantTests: caseState.relevantTests
+      .filter(({ state }) => state !== "rejected")
+      .map((test) => ({ id: test.id, proposalGroupId: test.proposalGroupId, state: test.state, facts: mapFacts(test.facts, sourceExcerpts) })),
+    reporter: mapFacts(caseState.reporter.facts, sourceExcerpts),
   };
 }
 
@@ -69,6 +72,8 @@ export function createReviewView(caseState: SemanticCase): { revision: number; a
     ["patient:patient", understanding.patient] as const,
     ["event:event", understanding.event] as const,
     ...understanding.products.map((product) => [`product:${product.id}`, product.facts] as const),
+    ...understanding.relevantTests.map((test) => [`test:${test.id}`, test.facts] as const),
+    ["reporter:reporter", understanding.reporter] as const,
   ]) {
     for (const [field, fact] of Object.entries(facts)) {
       if (fact.conflicts.length > 0) {
@@ -89,21 +94,7 @@ export function createReviewView(caseState: SemanticCase): { revision: number; a
 }
 
 export function createClarificationView(caseState: SemanticCase): ClarificationView | null {
-  const existing = caseState.askedNeeds.find(({ key }) => key === "suspect-product-indications");
-  if (existing && existing.status !== "open") return null;
-
-  const products = existing
-    ? existing.productIds.map((id) => caseState.products.find((product) => product.id === id)).filter(isProduct)
-    : caseState.products.filter((product) => isResolvedSuspectWithEmptyIndication(product));
-  if (products.length === 0) return null;
-
-  const names = products.map((product) => knownString(product.facts.name) ?? product.id);
-  return {
-    key: "suspect-product-indications",
-    status: existing ? "open" : "new",
-    productIds: products.map(({ id }) => id),
-    question: indicationQuestion(names),
-  };
+  return nextCompletionQuestion(caseState);
 }
 
 function mapFacts(
@@ -133,27 +124,6 @@ function factView(fact: Fact<unknown>, sourceExcerpts: Map<string, string>): Fac
   };
 }
 
-function isResolvedSuspectWithEmptyIndication(product: ProductEntity): boolean {
-  return product.state === "resolved"
-    && product.facts.role.resolvedValue?.value.kind === "known"
-    && product.facts.role.resolvedValue.value.value === "suspect"
-    && product.facts.indication.state === "empty";
-}
-
-function knownString(fact: Fact<string>): string | undefined {
-  return fact.resolvedValue?.value.kind === "known" ? fact.resolvedValue.value.value : undefined;
-}
-
-function indicationQuestion(names: string[]): string {
-  if (names.length === 1) return `What was ${names[0]} being used for?`;
-  const last = names.at(-1);
-  return `What was ${names.slice(0, -1).join(", ")} being used for, and what was ${last} being used for?`;
-}
-
 function isString(value: string | undefined): value is string {
-  return value !== undefined;
-}
-
-function isProduct(value: ProductEntity | undefined): value is ProductEntity {
   return value !== undefined;
 }

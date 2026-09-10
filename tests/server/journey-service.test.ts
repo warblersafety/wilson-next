@@ -15,10 +15,13 @@ describe("state-driven journey service", () => {
     snapshot = await performJourneyAction(repository, caseId, openingAction, fixedJourneyModel);
     expect(snapshot).toMatchObject({ stage: "understanding", revision: 2 });
     snapshot = await performJourneyAction(repository, caseId, { action: "accept-understanding" }, fixedJourneyModel);
-    expect(snapshot).toMatchObject({ stage: "clarify", revision: 4 });
-    expect(snapshot.clarification?.productIds).toEqual(["product-apixaban", "product-naproxen"]);
+    expect(snapshot).toMatchObject({ stage: "clarify", revision: 3 });
+    expect(snapshot.clarification?.kind).toBe("indications");
+    expect(snapshot.clarification?.kind === "indications" ? snapshot.clarification.productIds : []).toEqual(["product-apixaban", "product-naproxen"]);
     snapshot = await answerIndications(repository, caseId, "known");
-    expect(snapshot).toMatchObject({ stage: "output", revision: 5, downloadReady: true });
+    expect(snapshot.clarification?.key).toBe("serious-outcomes");
+    snapshot = await completeRemaining(repository, caseId);
+    expect(snapshot).toMatchObject({ stage: "output", downloadReady: true });
 
     let receivedContext: ReviewedCaseModelContext | undefined;
     const contextModel: JourneyModel = {
@@ -28,7 +31,7 @@ describe("state-driven journey service", () => {
       },
     };
     snapshot = await performJourneyAction(repository, caseId, { action: "submit-update", text: correctionAccount }, contextModel);
-    expect(snapshot).toMatchObject({ stage: "review-update", revision: 6, downloadReady: false });
+    expect(snapshot).toMatchObject({ stage: "review-update", downloadReady: false });
     expect(receivedContext?.products.map(({ id }) => id)).toEqual(["product-apixaban", "product-naproxen", "product-lisinopril"]);
 
     snapshot = await performJourneyAction(repository, caseId, {
@@ -41,7 +44,7 @@ describe("state-driven journey service", () => {
     snapshot = await performJourneyAction(repository, caseId, {
       action: "review-update-group", groupId: "apixaban-date-conflict", decision: "accept",
     }, fixedJourneyModel);
-    expect(snapshot).toMatchObject({ stage: "output", revision: 8, downloadReady: true });
+    expect(snapshot).toMatchObject({ stage: "output", downloadReady: true });
     expect(snapshot.projection.sections.D.suspectProducts[0].startDate).toBeUndefined();
     expect(snapshot.projection.omissions).toContainEqual(expect.objectContaining({ target: "product:product-apixaban:startDate", reason: "conflicted" }));
 
@@ -59,7 +62,9 @@ describe("state-driven journey service", () => {
     const caseId = `case-indication-${kind}`;
     await performJourneyAction(repository, caseId, openingAction, fixedJourneyModel);
     await performJourneyAction(repository, caseId, { action: "accept-understanding" }, fixedJourneyModel);
-    const snapshot = await answerIndications(repository, caseId, kind);
+    let snapshot = await answerIndications(repository, caseId, kind);
+    expect(snapshot.clarification?.key).toBe("serious-outcomes");
+    snapshot = await completeRemaining(repository, caseId);
     expect(snapshot).toMatchObject({ stage: "output", downloadReady: true, clarification: null });
     expect(snapshot.understanding.products.filter(({ id }) => id !== "product-lisinopril").map(({ facts }) => facts.indication.resolved))
       .toEqual([{ kind }, { kind }]);
@@ -104,4 +109,27 @@ async function answerIndications(repository: InMemoryCaseRepository, caseId: str
       { productId: "product-naproxen", value: kind === "known" ? { kind, value: "postoperative pain" } : { kind } },
     ],
   }, fixedJourneyModel);
+}
+
+async function completeRemaining(repository: InMemoryCaseRepository, caseId: string) {
+  let snapshot = await getJourneySnapshot(repository, caseId);
+  while (snapshot.stage === "clarify") {
+    const question = snapshot.clarification;
+    if (question?.kind === "serious-outcomes") {
+      snapshot = await performJourneyAction(repository, caseId, { action: "answer-serious-outcomes", selected: [], disposition: "known" }, fixedJourneyModel);
+    } else if (question?.kind === "death-date") {
+      snapshot = await performJourneyAction(repository, caseId, { action: "answer-death-date", value: { kind: "unknown" } }, fixedJourneyModel);
+    } else if (question?.kind === "clinical-context") {
+      snapshot = await performJourneyAction(repository, caseId, {
+        action: "answer-clinical-context",
+        test: question.askTests ? { kind: "unknown" } : undefined,
+        history: question.askHistory ? { kind: "explicitly-absent" } : undefined,
+      }, fixedJourneyModel);
+    } else if (question?.kind === "reporter") {
+      snapshot = await performJourneyAction(repository, caseId, { action: "answer-reporter", reporter: { kind: "declined" } }, fixedJourneyModel);
+    } else {
+      throw new Error(`Unexpected completion question ${question?.kind}`);
+    }
+  }
+  return snapshot;
 }

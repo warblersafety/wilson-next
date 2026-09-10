@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { createSemanticCase } from "../../domain/case/create";
 import { projectForm3500 } from "../../domain/case/projection";
-import type { CaseValue, Fact, FactTarget, SemanticCase, Source } from "../../domain/case/types";
+import type { CaseValue, EventFactKey, Fact, FactTarget, ReporterFactKey, SemanticCase, Source } from "../../domain/case/types";
 import {
   createClarificationView,
   createReviewView,
@@ -38,6 +38,25 @@ export type JourneyAction =
   | {
       action: "answer-indications";
       answers: Array<{ productId: string; value: CaseValue<string> }>;
+    }
+  | { action: "answer-serious-outcomes"; selected: EventFactKey[]; disposition: "known" | "unknown" | "declined" }
+  | { action: "answer-death-date"; value: CaseValue<string> }
+  | {
+      action: "answer-clinical-context";
+      test?: { kind: "known"; testResult: string; lowRange?: string; highRange?: string; date?: string }
+        | { kind: "explicitly-absent" | "unknown" | "declined" };
+      history?: CaseValue<string>;
+    }
+  | {
+      action: "answer-reporter";
+      reporter: { kind: "declined" } | {
+        kind: "provided";
+        lastName: string; firstName: string; address?: string; city?: string; state?: string;
+        postalCode?: string; country?: string; phone?: string; email?: string;
+        healthProfessional: boolean; occupation: string;
+        reportedTo: Array<"manufacturer" | "user-facility" | "distributor-importer" | "packer">;
+        doNotDiscloseIdentity: boolean;
+      };
     }
   | { action: "submit-update"; text: string }
   | { action: "review-update-group"; groupId: string; decision: "accept" | "reject" }
@@ -116,15 +135,15 @@ export async function performJourneyAction(
     });
   };
 
-  const ensureOpenIndicationNeed = async () => {
+  const ensureOpenCompletionNeed = async () => {
     const clarification = createClarificationView(current);
     if (clarification?.status !== "new") return;
     await applyCommand({
       type: "record-asked-need",
-      commandId: commandId("ask-indications"),
+      commandId: commandId(`ask-${clarification.key}`),
       expectedRevision: current.revision,
       key: clarification.key,
-      productIds: clarification.productIds,
+      targetIds: clarification.targetIds,
     });
   };
 
@@ -197,12 +216,11 @@ export async function performJourneyAction(
             decisions: groups.map((groupId) => ({ groupId, action: "accept" as const })),
           });
         }
-        await ensureOpenIndicationNeed();
         break;
       }
       case "answer-indications": {
         requireStage(expectedStage, "clarify");
-        await ensureOpenIndicationNeed();
+        await ensureOpenCompletionNeed();
         const need = current.askedNeeds.find(({ key, status }) => key === "suspect-product-indications" && status === "open");
         if (!need) throw new Error("The indication question is no longer open");
         const answerText = action.answers.map(({ productId, value }) => {
@@ -223,6 +241,102 @@ export async function performJourneyAction(
             intent: "fact" as const,
             value,
           })),
+        });
+        break;
+      }
+      case "answer-serious-outcomes": {
+        requireStage(expectedStage, "clarify");
+        if (createClarificationView(current)?.key !== "serious-outcomes") throw new Error("The serious-outcome question is no longer open");
+        await ensureOpenCompletionNeed();
+        const need = openNeed(current, "serious-outcomes");
+        const selected = new Set(action.selected);
+        const allowed = new Set(need.targetIds.map((target) => target.split(":")[2]));
+        if (action.selected.some((field) => !allowed.has(field))) {
+          throw new Error("A serious-outcome answer may include only the outcomes in the current question");
+        }
+        const answerText = action.disposition === "known"
+          ? selected.size > 0 ? `Additional serious outcomes selected: ${[...selected].join(", ")}.` : "No additional serious outcomes applied."
+          : action.disposition === "unknown" ? "Additional serious outcomes are unknown." : "The clinician declined to answer about additional serious outcomes.";
+        await applyCommand({
+          type: "record-clinician-facts",
+          commandId: commandId("answer-serious-outcomes"),
+          expectedRevision: current.revision,
+          source: fullSource("answer", answerText),
+          answersNeed: "serious-outcomes",
+          facts: need.targetIds.map((target, index) => {
+            const field = target.split(":")[2] as EventFactKey;
+            return {
+              id: valueId(`serious-outcome-${index}`),
+              target: { entity: "event" as const, entityId: "event" as const, field },
+              intent: "fact" as const,
+              value: action.disposition === "known"
+                ? { kind: "known" as const, value: selected.has(field) }
+                : { kind: action.disposition as "unknown" | "declined" },
+            };
+          }),
+        });
+        break;
+      }
+      case "answer-death-date": {
+        requireStage(expectedStage, "clarify");
+        if (createClarificationView(current)?.key !== "death-date") throw new Error("The death-date question is no longer open");
+        await ensureOpenCompletionNeed();
+        await applyCommand({
+          type: "record-clinician-facts",
+          commandId: commandId("answer-death-date"),
+          expectedRevision: current.revision,
+          source: fullSource("answer", `Death date: ${displayValue(action.value)}.`),
+          answersNeed: "death-date",
+          facts: [{ id: valueId("death-date"), target: { entity: "event", entityId: "event", field: "deathDate" }, intent: "fact", value: action.value }],
+        });
+        break;
+      }
+      case "answer-clinical-context": {
+        requireStage(expectedStage, "clarify");
+        const question = createClarificationView(current);
+        if (question?.key !== "relevant-clinical-context") throw new Error("The clinical-context question is no longer open");
+        await ensureOpenCompletionNeed();
+        const sourceText = clinicalContextSource(action);
+        const source = fullSource("answer", sourceText);
+        const facts: Array<{ id: string; target: FactTarget; intent: "fact"; value: CaseValue<unknown> }> = [];
+        const relevantTests: Array<{ id: string; groupId: string }> = [];
+        if (question.askTests) {
+          if (!action.test) throw new Error("The relevant-test answer is required");
+          if (action.test.kind === "known") {
+            const testId = `test-${randomUUID()}`;
+            relevantTests.push({ id: testId, groupId: `group-${testId}` });
+            facts.push(
+              { id: valueId("tests-available"), target: { entity: "event", entityId: "event", field: "relevantTestsAvailable" }, intent: "fact", value: { kind: "known", value: true } },
+              { id: valueId("test-result"), target: { entity: "test", entityId: testId, field: "testResult" }, intent: "fact", value: { kind: "known", value: action.test.testResult } },
+            );
+            for (const field of ["lowRange", "highRange", "date"] as const) {
+              const value = action.test[field];
+              if (value) facts.push({ id: valueId(`test-${field}`), target: { entity: "test", entityId: testId, field }, intent: "fact", value: { kind: "known", value } });
+            }
+          } else {
+            facts.push({ id: valueId("tests-availability"), target: { entity: "event", entityId: "event", field: "relevantTestsAvailable" }, intent: "fact", value: { kind: action.test.kind } });
+          }
+        }
+        if (question.askHistory) {
+          if (!action.history) throw new Error("The relevant-history answer is required");
+          facts.push({ id: valueId("relevant-history"), target: { entity: "event", entityId: "event", field: "relevantHistory" }, intent: "fact", value: action.history });
+        }
+        await applyCommand({
+          type: "record-clinician-facts",
+          commandId: commandId("answer-clinical-context"), expectedRevision: current.revision,
+          source, relevantTests, answersNeed: "relevant-clinical-context", facts,
+        });
+        break;
+      }
+      case "answer-reporter": {
+        requireStage(expectedStage, "clarify");
+        if (createClarificationView(current)?.key !== "reporter-details") throw new Error("The reporter question is no longer open");
+        await ensureOpenCompletionNeed();
+        const source = fullSource("reporter-entry", reporterSource(action.reporter));
+        const facts = reporterFacts(action.reporter);
+        await applyCommand({
+          type: "record-clinician-facts", commandId: commandId("answer-reporter"), expectedRevision: current.revision,
+          source, answersNeed: "reporter-details", facts,
         });
         break;
       }
@@ -329,7 +443,8 @@ export function stageFor(caseState: SemanticCase): JourneyStage {
   if (caseState.revision === 0) return "describe";
   if (caseState.patient.state === "proposed"
     || caseState.event.state === "proposed"
-    || caseState.products.some(({ state }) => state === "proposed")) return "understanding";
+    || caseState.products.some(({ state }) => state === "proposed")
+    || caseState.relevantTests.some(({ state }) => state === "proposed")) return "understanding";
   if (hasPendingProposals(caseState)) return "review-update";
   if (createClarificationView(caseState)) return "clarify";
   return "output";
@@ -356,6 +471,7 @@ function pendingOpeningGroups(caseState: SemanticCase): string[] {
     ...(caseState.patient.state === "proposed" ? ["patient"] : []),
     ...(caseState.event.state === "proposed" ? ["event"] : []),
     ...caseState.products.filter(({ state }) => state === "proposed").map(({ proposalGroupId }) => proposalGroupId),
+    ...caseState.relevantTests.filter(({ state }) => state === "proposed").map(({ proposalGroupId }) => proposalGroupId),
   ];
 }
 
@@ -386,6 +502,14 @@ function allFacts(caseState: SemanticCase): Array<{ target: FactTarget; fact: Fa
       result.push({ target: { entity: "product", entityId: product.id, field }, fact: product.facts[field] });
     }
   }
+  for (const test of caseState.relevantTests) {
+    for (const field of Object.keys(test.facts) as Array<keyof typeof test.facts>) {
+      result.push({ target: { entity: "test", entityId: test.id, field }, fact: test.facts[field] });
+    }
+  }
+  for (const field of Object.keys(caseState.reporter.facts) as Array<keyof typeof caseState.reporter.facts>) {
+    result.push({ target: { entity: "reporter", entityId: "reporter", field }, fact: caseState.reporter.facts[field] });
+  }
   return result;
 }
 
@@ -402,6 +526,8 @@ function targetKey(target: FactTarget): string {
 function targetStatement(caseState: SemanticCase, target: FactTarget): string {
   if (target.entity === "patient") return `the patient ${target.field}`;
   if (target.entity === "event") return `the event ${target.field}`;
+  if (target.entity === "reporter") return `the reporter ${target.field}`;
+  if (target.entity === "test") return `the relevant test ${target.field}`;
   const product = caseState.products.find(({ id }) => id === target.entityId);
   const name = knownValue(product?.facts.name) ?? "the selected product";
   return `the ${target.field} for ${name}`;
@@ -416,6 +542,78 @@ function displayValue(value: CaseValue<unknown>): string {
   if (value.kind !== "known") return value.kind.replaceAll("-", " ");
   if (Array.isArray(value.value)) return value.value.join(" and ");
   return String(value.value);
+}
+
+function openNeed(caseState: SemanticCase, key: import("../../domain/case/types").SemanticNeedKey) {
+  const need = caseState.askedNeeds.find((candidate) => candidate.key === key && candidate.status === "open");
+  if (!need) throw new Error(`The ${key} question is no longer open`);
+  return need;
+}
+
+function clinicalContextSource(action: Extract<JourneyAction, { action: "answer-clinical-context" }>): string {
+  const parts: string[] = [];
+  if (action.test) {
+    parts.push(action.test.kind === "known"
+      ? `Relevant test: ${action.test.testResult}${action.test.lowRange ? `; low range ${action.test.lowRange}` : ""}${action.test.highRange ? `; high range ${action.test.highRange}` : ""}${action.test.date ? `; date ${action.test.date}` : ""}.`
+      : `Relevant tests: ${action.test.kind.replaceAll("-", " ")}.`);
+  }
+  if (action.history) parts.push(`Relevant history: ${displayValue(action.history)}.`);
+  if (parts.length === 0) throw new Error("A clinical-context answer is required");
+  return parts.join(" ");
+}
+
+function reporterSource(reporter: Extract<JourneyAction, { action: "answer-reporter" }>["reporter"]): string {
+  if (reporter.kind === "declined") return "The clinician declined to provide reporter details.";
+  return [
+    `Reporter: ${reporter.firstName} ${reporter.lastName}.`,
+    reporter.address ? `Address: ${reporter.address}.` : "Address not provided.",
+    reporter.city ? `City: ${reporter.city}.` : "City not provided.",
+    reporter.state ? `State or region: ${reporter.state}.` : "State or region not provided.",
+    reporter.postalCode ? `Postal code: ${reporter.postalCode}.` : "Postal code not provided.",
+    reporter.country ? `Country: ${reporter.country}.` : "Country not provided.",
+    reporter.phone ? `Phone: ${reporter.phone}.` : "Phone not provided.",
+    reporter.email ? `Email: ${reporter.email}.` : "Email not provided.",
+    `Health professional: ${reporter.healthProfessional ? "yes" : "no"}.`,
+    `Occupation: ${reporter.occupation}.`,
+    `Also reported to: ${reporter.reportedTo.length > 0 ? reporter.reportedTo.join(", ") : "none"}.`,
+    `Do not disclose identity: ${reporter.doNotDiscloseIdentity ? "yes" : "no"}.`,
+  ].join(" ");
+}
+
+function reporterFacts(reporter: Extract<JourneyAction, { action: "answer-reporter" }>["reporter"]): Array<{
+  id: string;
+  target: { entity: "reporter"; entityId: "reporter"; field: ReporterFactKey };
+  intent: "fact";
+  value: CaseValue<unknown>;
+}> {
+  const fact = (field: ReporterFactKey, value: CaseValue<unknown>) => ({
+    id: valueId(`reporter-${field}`),
+    target: { entity: "reporter" as const, entityId: "reporter" as const, field },
+    intent: "fact" as const,
+    value,
+  });
+  if (reporter.kind === "declined") {
+    return (["lastName", "firstName", "address", "city", "state", "postalCode", "country", "phone", "email", "healthProfessional", "occupation", "reportedTo", "doNotDiscloseIdentity"] as ReporterFactKey[])
+      .map((field) => fact(field, { kind: "declined" }));
+  }
+  if (!reporter.firstName.trim() || !reporter.lastName.trim() || !reporter.occupation.trim()
+    || (!reporter.phone?.trim() && !reporter.email?.trim())) {
+    throw new Error("Reporter details require a name, occupation, and either phone or email");
+  }
+  const facts = [
+    fact("lastName", { kind: "known", value: reporter.lastName }),
+    fact("firstName", { kind: "known", value: reporter.firstName }),
+    fact("phone", reporter.phone ? { kind: "known", value: reporter.phone } : { kind: "explicitly-absent" }),
+    fact("email", reporter.email ? { kind: "known", value: reporter.email } : { kind: "explicitly-absent" }),
+    fact("healthProfessional", { kind: "known", value: reporter.healthProfessional }),
+    fact("occupation", { kind: "known", value: reporter.occupation }),
+    fact("reportedTo", { kind: "known", value: reporter.reportedTo }),
+    fact("doNotDiscloseIdentity", { kind: "known", value: reporter.doNotDiscloseIdentity }),
+  ];
+  for (const field of ["address", "city", "state", "postalCode", "country"] as const) {
+    if (reporter[field]) facts.push(fact(field, { kind: "known", value: reporter[field] }));
+  }
+  return facts;
 }
 
 function commandId(label: string): string {

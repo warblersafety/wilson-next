@@ -311,6 +311,7 @@ function result(input: {
   return {
     envelope: {
       products: input.products ?? [],
+      relevantTests: [],
       sources: input.sources.map(({ id, excerpt }) => {
         const start = input.caseText.indexOf(excerpt);
         return {

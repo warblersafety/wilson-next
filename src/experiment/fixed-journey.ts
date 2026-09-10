@@ -26,7 +26,9 @@ function proposal(
   if (!text.includes(excerpt)) throw new Error(`Fixed response excerpt is missing: ${excerpt}`);
   const modelTarget = target.entity === "product"
     ? { entity: "product" as const, productReference: target.entityId, field: target.field }
-    : { entity: target.entity, field: target.field };
+    : target.entity === "test"
+      ? { entity: "test" as const, testReference: target.entityId, field: target.field }
+      : { entity: target.entity, field: target.field };
   return {
     proposalReference: proposalId,
     groupReference: groupId,
@@ -93,6 +95,7 @@ export function parseFixedOpeningResponse(text: string) {
         { productReference: "product-naproxen", groupReference: "product-naproxen" },
         { productReference: "product-lisinopril", groupReference: "product-lisinopril" },
       ],
+      tests: [{ testReference: "test-hemoglobin", groupReference: "test-hemoglobin" }],
       proposals: [
       proposal(text, "patient-id", "patient", { entity: "patient", entityId: "patient", field: "identifier" }, known("TEST-57"), "Patient TEST-57"),
       proposal(text, "patient-age", "patient", { entity: "patient", entityId: "patient", field: "ageYears" }, known(57), "57-year-old"),
@@ -100,7 +103,7 @@ export function parseFixedOpeningResponse(text: string) {
       proposal(text, "event-symptoms", "event", { entity: "event", entityId: "event", field: "symptoms" }, known(["melena", "dizziness"]), "melena and dizziness"),
       proposal(text, "event-onset", "event", { entity: "event", entityId: "event", field: "onsetDate" }, known("2026-08-18"), "On 18-Aug-2026"),
       proposal(text, "event-hospitalized", "event", { entity: "event", entityId: "event", field: "hospitalized" }, known(true), "was hospitalized"),
-      proposal(text, "event-hemoglobin", "event", { entity: "event", entityId: "event", field: "hemoglobin" }, known("7.8 g/dL"), "hemoglobin was 7.8 g/dL"),
+      proposal(text, "test-hemoglobin", "test-hemoglobin", { entity: "test", entityId: "test-hemoglobin", field: "testResult" }, known("Hemoglobin: 7.8 g/dL"), "hemoglobin was 7.8 g/dL"),
       proposal(text, "event-treatment", "event", { entity: "event", entityId: "event", field: "treatments" }, known(["two units of packed red cells"]), "received two units of packed red cells"),
       proposal(text, "event-outcome", "event", { entity: "event", entityId: "event", field: "outcome" }, known("recovered"), "she recovered"),
       proposal(text, "event-discharge", "event", { entity: "event", entityId: "event", field: "dischargeDate" }, known("2026-08-21"), "discharged on 21-Aug-2026"),
@@ -124,6 +127,7 @@ export function parseFixedCorrectionResponse(text: string) {
     existingProductIds: ["product-apixaban", "product-naproxen", "product-lisinopril"],
     output: {
       products: [],
+      tests: [],
       proposals: [
         proposal(text, "naproxen-dose-correction", "naproxen-dose-correction", { entity: "product", entityId: "product-naproxen", field: "dose" }, known("250 mg"), "naproxen dose was 250 mg twice daily, not 500 mg twice daily", "correction"),
         proposal(text, "apixaban-date-alternative", "apixaban-date-conflict", { entity: "product", entityId: "product-apixaban", field: "startDate" }, known("2026-08-13"), "medication administration record lists apixaban starting 13-Aug-2026", "alternative"),
@@ -133,7 +137,7 @@ export function parseFixedCorrectionResponse(text: string) {
 }
 
 const fixedIdentity: ModelBoundaryIdentityFactory = (kind, reference) => {
-  if (kind === "product" || kind === "group" || kind === "proposal") return reference;
+  if (kind === "product" || kind === "test" || kind === "group" || kind === "proposal") return reference;
   if (kind === "source") return `source-${reference}`;
   return `input-${reference}`;
 };

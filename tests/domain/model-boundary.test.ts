@@ -164,6 +164,29 @@ describe("model proposal boundary", () => {
     expect(() => parseModelProposalEnvelope(later, identities)).toThrow("Unknown reviewed product ID Drug Z");
   });
 
+  it("assigns stable relevant-test identity and requires that ID on later correction", () => {
+    const opening = parseModelProposalEnvelope({
+      turn: "opening",
+      input: { id: "input-test", type: "narrative", text: "Serum tryptase was 18 ng/mL.", recordedAt },
+      output: {
+        products: [], tests: [{ testReference: "result-one", groupReference: "test-group" }],
+        proposals: [{ proposalReference: "test-result", groupReference: "test-group", intent: "fact", target: { entity: "test", testReference: "result-one", field: "testResult" }, value: { kind: "known", value: "Serum tryptase: 18 ng/mL" }, evidenceQuote: "Serum tryptase was 18 ng/mL" }],
+      },
+    }, identities);
+    expect(opening.relevantTests).toEqual([{ id: "test-result-one", groupId: "group-test-group" }]);
+    expect(opening.proposals[0].target).toEqual({ entity: "test", entityId: "test-result-one", field: "testResult" });
+
+    const later = {
+      turn: "correction" as const,
+      input: { id: "input-test-update", type: "correction" as const, text: "Correction: tryptase was 17 ng/mL.", recordedAt },
+      existingTestIds: ["test-result-one"],
+      output: { products: [], tests: [], proposals: [{ proposalReference: "test-correction", groupReference: "test-update", intent: "correction" as const, target: { entity: "test" as const, testReference: "test-result-one", field: "testResult" as const }, value: { kind: "known" as const, value: "Serum tryptase: 17 ng/mL" }, evidenceQuote: "tryptase was 17 ng/mL" }] },
+    };
+    expect(parseModelProposalEnvelope(later, identities).proposals[0].target).toEqual({ entity: "test", entityId: "test-result-one", field: "testResult" });
+    later.output.proposals[0].target.testReference = "tryptase";
+    expect(() => parseModelProposalEnvelope(later, identities)).toThrow("Unknown reviewed test ID tryptase");
+  });
+
   it("rejects a runtime value type that does not match its semantic target", () => {
     const malformed = candidate();
     malformed.output.proposals[0].value = { kind: "known", value: 57 } as never;

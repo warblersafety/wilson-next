@@ -6,7 +6,7 @@ import { journeyResponse } from "../../src/server/case/browser-state";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import type { RuntimeDiagnosticEvent } from "../../src/server/diagnostics/runtime-log";
 import { getJourneySnapshot } from "../../src/server/journey/service";
-import { acceptCorrectionAndConflict, acceptOpeningCase, attachCorrectionAndContradiction, answerIndications, completeResolvedCase } from "../domain/fixture";
+import { acceptCorrectionAndConflict, acceptOpeningCase, attachCorrectionAndContradiction, answerIndications, completeAdaptiveDetails, completeResolvedCase } from "../domain/fixture";
 
 describe("state-bearing PDF route", () => {
   it("refuses GET and an unreviewed state without a cacheable form", async () => {
@@ -29,7 +29,7 @@ describe("state-bearing PDF route", () => {
 
   it("fills a truthful partial PDF while a conflict remains unresolved", async () => {
     const conflicted = acceptCorrectionAndConflict(attachCorrectionAndContradiction(answerIndications(acceptOpeningCase())));
-    const { state } = await responseForCase(conflicted);
+    const { state } = await responseForCase(completeAdaptiveDetails(conflicted));
     const response = await postPdf(pdfRequest({ mode: "preview", state }));
     expect(response.status).toBe(200);
     expect((await response.arrayBuffer()).byteLength).toBeGreaterThan(100_000);

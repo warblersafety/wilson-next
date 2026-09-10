@@ -18,12 +18,22 @@ const fields = {
   ageYears: "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]",
   sexMale: "topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]",
   sexFemale: "topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]",
+  weightValue: "topmostSubform[0].Page1[0].SecA_Patient[0].WeightValue[0]",
+  weightLb: "topmostSubform[0].Page1[0].SecA_Patient[0].WeightLB[0]",
+  weightKg: "topmostSubform[0].Page1[0].SecA_Patient[0].WeightKG[0]",
   adverseEvent: "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]",
   hospitalized: "topmostSubform[0].Page1[0].SecA_Patient[0].Hospital[0]",
+  death: "topmostSubform[0].Page1[0].SecA_Patient[0].Death[0]",
+  deathDate: "topmostSubform[0].Page1[0].SecA_Patient[0].DeathDate[0]",
+  lifeThreatening: "topmostSubform[0].Page1[0].SecA_Patient[0].LifeThreaten[0]",
+  disability: "topmostSubform[0].Page1[0].SecA_Patient[0].Disability[0]",
+  requiredIntervention: "topmostSubform[0].Page1[0].SecA_Patient[0].ReqdInter[0]",
+  congenitalAnomaly: "topmostSubform[0].Page1[0].SecA_Patient[0].Congenital[0]",
+  otherSerious: "topmostSubform[0].Page1[0].SecA_Patient[0].OtherEvents[0]",
   eventDate: "topmostSubform[0].Page1[0].SecA_Patient[0].EventDate[0]",
   eventNarrative:
     "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]",
-  relevantTests: "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TestData1[0]",
+  relevantHistory: "topmostSubform[0].Page3[0].Sec6Data[0].OtherHistory[0]",
   productOneName: "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]",
   productOneDose: "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]",
   productOneFrequency: "topmostSubform[0].Page4[0].Prod1[0].Prod1Freq[0]",
@@ -41,7 +51,36 @@ const fields = {
   concomitantOneName: "topmostSubform[0].Page6[0].SecF_Other[0].Table1[0].Row1[0].Prod1[0]",
   concomitantOneStartDate: "topmostSubform[0].Page6[0].SecF_Other[0].Table1[0].Row1[0].Start1[0]",
   concomitantOneStopDate: "topmostSubform[0].Page6[0].SecF_Other[0].Table1[0].Row1[0].End1[0]",
+  reporterLastName: "topmostSubform[0].Page7[0].SecG_Reporter[0].LastName[0]",
+  reporterFirstName: "topmostSubform[0].Page7[0].SecG_Reporter[0].FirstName[0]",
+  reporterAddress: "topmostSubform[0].Page7[0].SecG_Reporter[0].Address[0]",
+  reporterCity: "topmostSubform[0].Page7[0].SecG_Reporter[0].City[0]",
+  reporterState: "topmostSubform[0].Page7[0].SecG_Reporter[0].State[0]",
+  reporterPostalCode: "topmostSubform[0].Page7[0].SecG_Reporter[0].ZipCode[0]",
+  reporterCountry: "topmostSubform[0].Page7[0].SecG_Reporter[0].Country[0]",
+  reporterPhone: "topmostSubform[0].Page7[0].SecG_Reporter[0].PhoneNum[0]",
+  reporterEmail: "topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]",
+  reporterProfessionalYes: "topmostSubform[0].Page7[0].SecG_Reporter[0].ProYes[0]",
+  reporterProfessionalNo: "topmostSubform[0].Page7[0].SecG_Reporter[0].ProNo[0]",
+  reporterOccupation: "topmostSubform[0].Page7[0].SecG_Reporter[0].Occupation[0]",
+  reporterManufacturer: "topmostSubform[0].Page7[0].SecG_Reporter[0].ManuComp[0]",
+  reporterUserFacility: "topmostSubform[0].Page7[0].SecG_Reporter[0].UserFac[0]",
+  reporterDistributorImporter: "topmostSubform[0].Page7[0].SecG_Reporter[0].DistImp[0]",
+  reporterPacker: "topmostSubform[0].Page7[0].SecG_Reporter[0].Packer[0]",
+  reporterIdentityNo: "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]",
 } as const;
+
+const relevantTestFields = Array.from({ length: 8 }, (_, index) => {
+  const row = index + 1;
+  const containerRow = row === 1 ? "Row1" : row === 2 ? "Row2" : row === 3 ? "Row3" : row === 4 ? "Row4" : row === 5 ? "Row5" : row === 6 ? "Row6" : row === 7 ? "Row7" : "Row8";
+  const dateRow = row <= 2 || row === 8 ? containerRow : "Row8";
+  return {
+    testResult: `topmostSubform[0].Page3[0].TestDataTable[0].${containerRow}[0].TestData${row}[0]`,
+    lowRange: `topmostSubform[0].Page3[0].TestDataTable[0].${containerRow}[0].TLowRange${row}[0]`,
+    highRange: `topmostSubform[0].Page3[0].TestDataTable[0].${row === 7 ? "Row8" : containerRow}[0].THighRange${row}[0]`,
+    date: `topmostSubform[0].Page3[0].TestDataTable[0].${dateRow}[0].TDate${row}[0]`,
+  };
+});
 
 export interface RepresentativeFormValues {
   patientIdentifier: string;
@@ -150,6 +189,9 @@ export async function fillForm3500Projection(
   if (projection.sections.F.concomitantProducts.length > 1) {
     throw new Error("Experiment 1 supports one concomitant product");
   }
+  if (projection.sections.B.relevantTests.length > relevantTestFields.length) {
+    throw new Error("The approved Form 3500 adapter supports at most eight relevant tests");
+  }
 
   const document = await loadForm(source);
   const form = document.getForm();
@@ -161,11 +203,25 @@ export async function fillForm3500Projection(
   if (A.sex === "intersex") throw new Error("The fixed Form 3500 adapter does not support intersex sex projection");
   setChecked(form, fields.sexMale, A.sex === "male");
   setChecked(form, fields.sexFemale, A.sex === "female");
+  setText(form, fields.weightValue, A.weight?.value.toString());
+  setChecked(form, fields.weightLb, A.weight?.unit === "lb");
+  setChecked(form, fields.weightKg, A.weight?.unit === "kg");
   setChecked(form, fields.adverseEvent, B.reportType === "adverse-event");
   setChecked(form, fields.hospitalized, B.hospitalized === true);
+  for (const field of ["death", "lifeThreatening", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious"] as const) {
+    setChecked(form, fields[field], B[field] === true);
+  }
+  setText(form, fields.deathDate, B.deathDate ? formatDate(B.deathDate) : undefined);
   setText(form, fields.eventDate, B.eventDate ? formatDate(B.eventDate) : undefined);
   setText(form, fields.eventNarrative, B.eventDescription);
-  setText(form, fields.relevantTests, B.relevantTests);
+  setText(form, fields.relevantHistory, B.relevantHistory);
+  B.relevantTests.forEach((test, index) => {
+    const names = relevantTestFields[index];
+    setText(form, names.testResult, test.testResult);
+    setText(form, names.lowRange, test.lowRange);
+    setText(form, names.highRange, test.highRange);
+    setText(form, names.date, test.date ? formatDate(test.date) : undefined);
+  });
 
   const suspectFields = [
     {
@@ -195,6 +251,24 @@ export async function fillForm3500Projection(
     setText(form, fields.concomitantOneStartDate, concomitant.startDate ? formatDate(concomitant.startDate) : undefined);
     setText(form, fields.concomitantOneStopDate, concomitant.stopDate ? formatDate(concomitant.stopDate) : undefined);
   }
+  const reporter = projection.sections.G.reporter;
+  setText(form, fields.reporterLastName, reporter.lastName);
+  setText(form, fields.reporterFirstName, reporter.firstName);
+  setText(form, fields.reporterAddress, reporter.address);
+  setText(form, fields.reporterCity, reporter.city);
+  setText(form, fields.reporterState, reporter.state);
+  setText(form, fields.reporterPostalCode, reporter.postalCode);
+  if (reporter.country) form.getDropdown(fields.reporterCountry).select(reporter.country);
+  setText(form, fields.reporterPhone, reporter.phone);
+  setText(form, fields.reporterEmail, reporter.email);
+  setChecked(form, fields.reporterProfessionalYes, reporter.healthProfessional === true);
+  setChecked(form, fields.reporterProfessionalNo, reporter.healthProfessional === false);
+  if (reporter.occupation) form.getDropdown(fields.reporterOccupation).select(reporter.occupation);
+  setChecked(form, fields.reporterManufacturer, reporter.reportedTo?.includes("manufacturer") === true);
+  setChecked(form, fields.reporterUserFacility, reporter.reportedTo?.includes("user-facility") === true);
+  setChecked(form, fields.reporterDistributorImporter, reporter.reportedTo?.includes("distributor-importer") === true);
+  setChecked(form, fields.reporterPacker, reporter.reportedTo?.includes("packer") === true);
+  setChecked(form, fields.reporterIdentityNo, reporter.doNotDiscloseIdentity === true);
 
   form.updateFieldAppearances();
   return {
@@ -275,6 +349,8 @@ function writeSuspectProduct(
 
 function readProjectionForm(document: PDFDocument, projection: Form3500Projection): Form3500ProjectionReadback {
   const form = document.getForm();
+  const { A, B, G } = projection.sections;
+  const reporter = G.reporter;
   const readSuspect = (
     expected: ProjectedProduct,
     names: { name: string; dose: string; frequency: string; route: string; startDate: string; stopDate: string; indication: string },
@@ -310,18 +386,53 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
         sex: form.getCheckBox(fields.sexFemale).isChecked()
           ? "female"
           : form.getCheckBox(fields.sexMale).isChecked() ? "male" : undefined,
+        weight: A.weight ? {
+          value: Number(form.getTextField(fields.weightValue).getText()),
+          unit: form.getCheckBox(fields.weightKg).isChecked() ? "kg" as const : "lb" as const,
+        } : undefined,
       }),
       B: compact({
         reportType: form.getCheckBox(fields.adverseEvent).isChecked() ? "adverse-event" : undefined,
         eventDate: parseDate(form.getTextField(fields.eventDate).getText()),
         eventDescription: form.getTextField(fields.eventNarrative).getText(),
-        hospitalized: form.getCheckBox(fields.hospitalized).isChecked() || undefined,
-        relevantTests: form.getTextField(fields.relevantTests).getText(),
+        hospitalized: B.hospitalized === undefined ? undefined : form.getCheckBox(fields.hospitalized).isChecked(),
+        death: B.death === undefined ? undefined : form.getCheckBox(fields.death).isChecked(),
+        deathDate: parseDate(form.getTextField(fields.deathDate).getText()),
+        lifeThreatening: B.lifeThreatening === undefined ? undefined : form.getCheckBox(fields.lifeThreatening).isChecked(),
+        disability: B.disability === undefined ? undefined : form.getCheckBox(fields.disability).isChecked(),
+        requiredIntervention: B.requiredIntervention === undefined ? undefined : form.getCheckBox(fields.requiredIntervention).isChecked(),
+        congenitalAnomaly: B.congenitalAnomaly === undefined ? undefined : form.getCheckBox(fields.congenitalAnomaly).isChecked(),
+        otherSerious: B.otherSerious === undefined ? undefined : form.getCheckBox(fields.otherSerious).isChecked(),
+        relevantTests: B.relevantTests.map((test, index) => compact({
+          testId: test.testId,
+          testResult: form.getTextField(relevantTestFields[index].testResult).getText(),
+          lowRange: form.getTextField(relevantTestFields[index].lowRange).getText(),
+          highRange: form.getTextField(relevantTestFields[index].highRange).getText(),
+          date: parseDate(form.getTextField(relevantTestFields[index].date).getText()),
+        })),
+        relevantHistory: form.getTextField(fields.relevantHistory).getText(),
       }),
       D: {
         suspectProducts: projection.sections.D.suspectProducts.map((product, index) => readSuspect(product, suspectNames[index])),
       },
       F: { concomitantProducts },
+      G: { reporter: compact({
+        lastName: form.getTextField(fields.reporterLastName).getText(),
+        firstName: form.getTextField(fields.reporterFirstName).getText(),
+        address: form.getTextField(fields.reporterAddress).getText(), city: form.getTextField(fields.reporterCity).getText(),
+        state: form.getTextField(fields.reporterState).getText(), postalCode: form.getTextField(fields.reporterPostalCode).getText(),
+        country: form.getDropdown(fields.reporterCountry).getSelected()[0], phone: form.getTextField(fields.reporterPhone).getText(),
+        email: form.getTextField(fields.reporterEmail).getText(),
+        healthProfessional: reporter.healthProfessional === undefined ? undefined : form.getCheckBox(fields.reporterProfessionalYes).isChecked(),
+        occupation: form.getDropdown(fields.reporterOccupation).getSelected()[0],
+        reportedTo: reporter.reportedTo === undefined ? undefined : [
+          ...(form.getCheckBox(fields.reporterManufacturer).isChecked() ? ["manufacturer" as const] : []),
+          ...(form.getCheckBox(fields.reporterUserFacility).isChecked() ? ["user-facility" as const] : []),
+          ...(form.getCheckBox(fields.reporterDistributorImporter).isChecked() ? ["distributor-importer" as const] : []),
+          ...(form.getCheckBox(fields.reporterPacker).isChecked() ? ["packer" as const] : []),
+        ],
+        doNotDiscloseIdentity: reporter.doNotDiscloseIdentity === undefined ? undefined : form.getCheckBox(fields.reporterIdentityNo).isChecked(),
+      }) },
     },
   };
 }

@@ -16,15 +16,18 @@ describe("pure case views and semantic Form 3500 projection", () => {
     expect(createClarificationView(opening)).toEqual({
       key: "suspect-product-indications",
       status: "new",
+      kind: "indications",
+      targetIds: ["product:product-apixaban:indication", "product:product-naproxen:indication"],
       productIds: ["product-apixaban", "product-naproxen"],
       question: "What was apixaban being used for, and what was naproxen being used for?",
+      reason: "The indication explains why each suspect product was used and maps directly to the supported report.",
     });
     const asked = applyCaseCommand(opening, {
       type: "record-asked-need",
       commandId: "command-ask-indications",
       expectedRevision: opening.revision,
       key: "suspect-product-indications",
-      productIds: ["product-apixaban", "product-naproxen"],
+      targetIds: ["product:product-apixaban:indication", "product:product-naproxen:indication"],
     }).case;
     expect(createClarificationView(asked)?.status).toBe("open");
     expect(() => applyCaseCommand(asked, {
@@ -32,9 +35,9 @@ describe("pure case views and semantic Form 3500 projection", () => {
       commandId: "command-repeat-indications",
       expectedRevision: asked.revision,
       key: "suspect-product-indications",
-      productIds: ["product-apixaban", "product-naproxen"],
+      targetIds: ["product:product-apixaban:indication", "product:product-naproxen:indication"],
     })).toThrow("already recorded");
-    expect(createClarificationView(answerIndications(opening))).toBeNull();
+    expect(createClarificationView(answerIndications(opening))?.key).toBe("serious-outcomes");
   });
 
   it("does not close the indication need when an answer omits one named product", () => {
@@ -44,7 +47,7 @@ describe("pure case views and semantic Form 3500 projection", () => {
       commandId: "command-ask-indications",
       expectedRevision: opening.revision,
       key: "suspect-product-indications",
-      productIds: ["product-apixaban", "product-naproxen"],
+      targetIds: ["product:product-apixaban:indication", "product:product-naproxen:indication"],
     }).case;
     const text = "Apixaban was for postoperative VTE prophylaxis.";
     expect(() => applyCaseCommand(asked, {
@@ -68,7 +71,7 @@ describe("pure case views and semantic Form 3500 projection", () => {
         intent: "fact",
         value: { kind: "known", value: "postoperative VTE prophylaxis" },
       }],
-    })).toThrow("must address every product");
+    })).toThrow("must address every target");
     expect(createClarificationView(asked)?.status).toBe("open");
     expect(asked.products.find(({ id }) => id === "product-apixaban")?.facts.indication.state).toBe("empty");
   });
@@ -115,7 +118,7 @@ describe("pure case views and semantic Form 3500 projection", () => {
       reportType: "adverse-event",
       eventDate: "2026-08-18",
       hospitalized: true,
-      relevantTests: "Hemoglobin: 7.8 g/dL",
+      relevantTests: [expect.objectContaining({ testId: "test-hemoglobin", testResult: "Hemoglobin: 7.8 g/dL" })],
     });
     expect(resolved.sections.B.eventDescription).toContain("melena and dizziness");
     expect(resolved.sections.B.eventDescription).toContain("Products stopped: apixaban and naproxen.");

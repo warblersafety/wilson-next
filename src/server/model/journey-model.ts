@@ -16,6 +16,10 @@ export interface ReviewedCaseModelContext {
     name: string | null;
     facts: ReviewedFactContext[];
   }>;
+  relevantTests: Array<{
+    id: string;
+    facts: ReviewedFactContext[];
+  }>;
 }
 
 export interface ModelCallMetrics {

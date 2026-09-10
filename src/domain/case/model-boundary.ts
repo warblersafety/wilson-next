@@ -1,13 +1,19 @@
 import { z } from "zod";
-import type { CaseValue, FactTarget, GroundedProposal, ProposedProduct, Source } from "./types";
+import type { CaseValue, FactTarget, GroundedProposal, ProposedProduct, ProposedRelevantTest, Source } from "./types";
 
-const patientFields = ["identifier", "ageYears", "sex"] as const;
-const eventFields = ["symptoms", "onsetDate", "hospitalized", "hemoglobin", "treatments", "outcome", "dischargeDate"] as const;
+const patientFields = ["identifier", "ageYears", "sex", "weight"] as const;
+const eventFields = ["symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantHistory", "treatments", "outcome", "dischargeDate"] as const;
 const productFields = ["name", "role", "dose", "frequency", "route", "startDate", "stopDate", "indication", "stopped"] as const;
+const relevantTestFields = ["testResult", "lowRange", "highRange", "date"] as const;
 
 const modelTargetSchema = z.discriminatedUnion("entity", [
   z.object({ entity: z.literal("patient"), field: z.enum(patientFields) }).strict(),
   z.object({ entity: z.literal("event"), field: z.enum(eventFields) }).strict(),
+  z.object({
+    entity: z.literal("test"),
+    testReference: z.string().min(1),
+    field: z.enum(relevantTestFields),
+  }).strict(),
   z.object({
     entity: z.literal("product"),
     productReference: z.string().min(1),
@@ -18,7 +24,7 @@ const modelTargetSchema = z.discriminatedUnion("entity", [
 const caseValueSchema = z.discriminatedUnion("kind", [
   z.object({
     kind: z.literal("known"),
-    value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string())])
+    value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string()), z.object({ value: z.number().positive(), unit: z.enum(["kg", "lb"]) }).strict()])
       .describe("Preserve explicitly stated descriptive detail; normalize only conventions defined by the model instructions."),
     qualifier: z.string().min(1).optional(),
   }).strict(),
@@ -33,6 +39,10 @@ export const modelProposalOutputSchema = z.object({
     productReference: z.string().min(1),
     groupReference: z.string().min(1),
   }).strict()),
+  tests: z.array(z.object({
+    testReference: z.string().min(1),
+    groupReference: z.string().min(1),
+  }).strict()).optional(),
   proposals: z.array(z.object({
     proposalReference: z.string().min(1),
     groupReference: z.string().min(1),
@@ -46,6 +56,8 @@ export const modelProposalOutputSchema = z.object({
 }).strict().superRefine((output, context) => {
   reportDuplicates(output.products.map(({ productReference }) => productReference), "productReference", ["products"], context);
   reportDuplicates(output.products.map(({ groupReference }) => groupReference), "product groupReference", ["products"], context);
+  reportDuplicates((output.tests ?? []).map(({ testReference }) => testReference), "testReference", ["tests"], context);
+  reportDuplicates((output.tests ?? []).map(({ groupReference }) => groupReference), "test groupReference", ["tests"], context);
   reportDuplicates(output.proposals.map(({ proposalReference }) => proposalReference), "proposalReference", ["proposals"], context);
   output.proposals.forEach((proposal, index) => {
     if (!proposal.evidenceQuote.trim()) {
@@ -62,18 +74,20 @@ const inputSchema = z.object({
 }).strict();
 
 export type ModelProposalOutput = z.infer<typeof modelProposalOutputSchema>;
-export type ModelBoundaryIdentityKind = "input" | "product" | "group" | "proposal" | "source";
+export type ModelBoundaryIdentityKind = "input" | "product" | "test" | "group" | "proposal" | "source";
 export type ModelBoundaryIdentityFactory = (kind: ModelBoundaryIdentityKind, responseReference: string) => string;
 
 export interface ParseModelProposalEnvelopeInput {
   turn: "opening" | "correction";
   input: z.infer<typeof inputSchema>;
   existingProductIds?: readonly string[];
+  existingTestIds?: readonly string[];
   output: unknown;
 }
 
 export interface ParsedModelProposalEnvelope {
   products: ProposedProduct[];
+  relevantTests: ProposedRelevantTest[];
   sources: Source[];
   proposals: GroundedProposal[];
 }
@@ -84,12 +98,14 @@ export function parseModelProposalEnvelope(
 ): ParsedModelProposalEnvelope {
   const input = inputSchema.parse(candidate.input);
   const output = modelProposalOutputSchema.parse(candidate.output);
+  const outputTests = output.tests ?? [];
   const existingProductIds = new Set(candidate.existingProductIds ?? []);
-  if (candidate.turn === "opening" && existingProductIds.size > 0) {
-    boundaryIssue(["existingProductIds"], "Opening input cannot reference existing products");
+  const existingTestIds = new Set(candidate.existingTestIds ?? []);
+  if (candidate.turn === "opening" && (existingProductIds.size > 0 || existingTestIds.size > 0)) {
+    boundaryIssue(["existingProductIds"], "Opening input cannot reference existing entities");
   }
-  if (candidate.turn === "correction" && output.products.length > 0) {
-    boundaryIssue(["products"], "Later input cannot declare new products in this experiment");
+  if (candidate.turn === "correction" && (output.products.length > 0 || outputTests.length > 0)) {
+    boundaryIssue(["products"], "Later input cannot declare new entities in this experiment");
   }
 
   const allocatedByKind = new Map<ModelBoundaryIdentityKind, Set<string>>();
@@ -117,14 +133,24 @@ export function parseModelProposalEnvelope(
       groupReference: product.groupReference,
     });
   }
+  const testByReference = new Map<string, { id: string; groupId: string; groupReference: string }>();
+  for (const test of outputTests) {
+    const groupId = allocate("group", test.groupReference);
+    groupByReference.set(test.groupReference, groupId);
+    testByReference.set(test.testReference, {
+      id: allocate("test", test.testReference),
+      groupId,
+      groupReference: test.groupReference,
+    });
+  }
 
   const sourceByQuote = new Map<string, Source>();
   const proposals: GroundedProposal[] = [];
   const groupTarget = new Map<string, string>();
   output.proposals.forEach((proposal, index) => {
     const path = ["proposals", index] as Array<string | number>;
-    const target = resolveTarget(candidate.turn, proposal.target, productByReference, existingProductIds, path);
-    const targetIdentity = target.entity === "product" ? `product:${target.entityId}` : target.entity;
+    const target = resolveTarget(candidate.turn, proposal.target, productByReference, existingProductIds, testByReference, existingTestIds, path);
+    const targetIdentity = ["product", "test"].includes(target.entity) ? `${target.entity}:${target.entityId}` : target.entity;
     const priorTarget = groupTarget.get(proposal.groupReference);
     if (priorTarget && priorTarget !== targetIdentity) {
       boundaryIssue([...path, "groupReference"], "A proposal group cannot span different case entities");
@@ -132,13 +158,14 @@ export function parseModelProposalEnvelope(
     groupTarget.set(proposal.groupReference, targetIdentity);
 
     let groupId: string;
-    if (candidate.turn === "opening" && target.entity !== "product") {
+    if (candidate.turn === "opening" && target.entity !== "product" && target.entity !== "test") {
       groupId = target.entity;
     } else if (candidate.turn === "opening") {
-      const reference = proposal.target.entity === "product" ? proposal.target.productReference : "";
-      const declared = productByReference.get(reference);
+      const reference = proposal.target.entity === "product" ? proposal.target.productReference
+        : proposal.target.entity === "test" ? proposal.target.testReference : "";
+      const declared = proposal.target.entity === "product" ? productByReference.get(reference) : testByReference.get(reference);
       if (!declared || declared.groupReference !== proposal.groupReference) {
-        boundaryIssue([...path, "groupReference"], "Opening product proposals must use their declared product group");
+        boundaryIssue([...path, "groupReference"], "Opening entity proposals must use their declared group");
       }
       groupId = declared.groupId;
     } else {
@@ -166,9 +193,15 @@ export function parseModelProposalEnvelope(
       boundaryIssue(["products"], `Declared product ${reference} has no proposals`);
     }
   }
+  for (const [reference] of testByReference) {
+    if (!output.proposals.some(({ target }) => target.entity === "test" && target.testReference === reference)) {
+      boundaryIssue(["tests"], `Declared relevant test ${reference} has no proposals`);
+    }
+  }
 
   return {
     products: [...productByReference.values()].map(({ id, groupId }) => ({ id, groupId })),
+    relevantTests: [...testByReference.values()].map(({ id, groupId }) => ({ id, groupId })),
     sources: [...sourceByQuote.values()],
     proposals,
   };
@@ -179,10 +212,23 @@ function resolveTarget(
   target: ModelProposalOutput["proposals"][number]["target"],
   proposedProducts: Map<string, { id: string }>,
   existingProductIds: Set<string>,
+  proposedTests: Map<string, { id: string }>,
+  existingTestIds: Set<string>,
   path: Array<string | number>,
 ): FactTarget {
   if (target.entity === "patient") return { entity: "patient", entityId: "patient", field: target.field };
   if (target.entity === "event") return { entity: "event", entityId: "event", field: target.field };
+  if (target.entity === "test") {
+    if (turn === "opening") {
+      const test = proposedTests.get(target.testReference);
+      if (!test) boundaryIssue([...path, "target", "testReference"], `Unknown proposed test reference ${target.testReference}`);
+      return { entity: "test", entityId: test.id, field: target.field };
+    }
+    if (!existingTestIds.has(target.testReference)) {
+      boundaryIssue([...path, "target", "testReference"], `Unknown reviewed test ID ${target.testReference}`);
+    }
+    return { entity: "test", entityId: target.testReference, field: target.field };
+  }
   if (turn === "opening") {
     const product = proposedProducts.get(target.productReference);
     if (!product) boundaryIssue([...path, "target", "productReference"], `Unknown proposed product reference ${target.productReference}`);
@@ -239,16 +285,20 @@ function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>): stri
   if (value.kind !== "known") return undefined;
   const actual = value.value;
   const stringFields = new Set([
-    "identifier", "reportType", "onsetDate", "hemoglobin", "outcome", "dischargeDate",
+    "identifier", "reportType", "onsetDate", "deathDate", "relevantHistory", "outcome", "dischargeDate",
+    "testResult", "lowRange", "highRange", "date",
     "name", "dose", "frequency", "route", "startDate", "stopDate", "indication",
   ]);
   if (stringFields.has(target.field) && typeof actual !== "string") return `${target.field} requires a string`;
-  if (["onsetDate", "dischargeDate", "startDate", "stopDate"].includes(target.field)
+  if (["onsetDate", "deathDate", "dischargeDate", "startDate", "stopDate", "date"].includes(target.field)
     && (typeof actual !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(actual))) return `${target.field} requires an ISO calendar date`;
   if (target.field === "ageYears" && (!Number.isInteger(actual) || (actual as number) < 0 || (actual as number) > 150)) return "ageYears requires a valid age";
   if (target.field === "sex" && !["female", "male", "intersex"].includes(actual as string)) return "sex requires a supported value";
+  if (target.field === "weight" && (!actual || typeof actual !== "object"
+    || typeof (actual as { value?: unknown }).value !== "number"
+    || !["kg", "lb"].includes(String((actual as { unit?: unknown }).unit)))) return "weight requires a value and kg or lb unit";
   if (["symptoms", "treatments"].includes(target.field) && (!Array.isArray(actual) || actual.some((item) => typeof item !== "string"))) return `${target.field} requires a string array`;
-  if (["hospitalized", "stopped"].includes(target.field) && typeof actual !== "boolean") return `${target.field} requires a boolean`;
+  if (["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "stopped"].includes(target.field) && typeof actual !== "boolean") return `${target.field} requires a boolean`;
   if (target.field === "role" && !["suspect", "concomitant"].includes(actual as string)) return "role requires suspect or concomitant";
   if (target.field === "reportType" && actual !== "adverse-event") return "reportType requires adverse-event";
   return undefined;

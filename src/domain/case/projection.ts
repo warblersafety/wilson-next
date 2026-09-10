@@ -10,20 +10,45 @@ export interface ProjectionOmission {
 export interface Form3500Projection {
   revision: number;
   sections: {
-    A: { patientIdentifier?: string; ageYears?: number; sex?: "female" | "male" | "intersex" };
+    A: { patientIdentifier?: string; ageYears?: number; sex?: "female" | "male" | "intersex"; weight?: { value: number; unit: "kg" | "lb" } };
     B: {
       reportType?: "adverse-event";
       eventDate?: string;
       eventDescription?: string;
       hospitalized?: boolean;
-      relevantTests?: string;
+      death?: boolean;
+      deathDate?: string;
+      lifeThreatening?: boolean;
+      disability?: boolean;
+      requiredIntervention?: boolean;
+      congenitalAnomaly?: boolean;
+      otherSerious?: boolean;
+      relevantTests: ProjectedRelevantTest[];
+      relevantHistory?: string;
     };
     D: { suspectProducts: ProjectedProduct[] };
     F: { concomitantProducts: ProjectedConcomitantProduct[] };
+    G: { reporter: ProjectedReporter };
   };
   sourceTrace: Record<string, string[]>;
   omissions: ProjectionOmission[];
   notIncluded: string[];
+}
+
+export interface ProjectedRelevantTest {
+  testId: string;
+  testResult?: string;
+  lowRange?: string;
+  highRange?: string;
+  date?: string;
+}
+
+export interface ProjectedReporter {
+  lastName?: string; firstName?: string; address?: string; city?: string; state?: string;
+  postalCode?: string; country?: string; phone?: string; email?: string;
+  healthProfessional?: boolean; occupation?: string;
+  reportedTo?: Array<"manufacturer" | "user-facility" | "distributor-importer" | "packer">;
+  doNotDiscloseIdentity?: boolean;
 }
 
 export interface ProjectedProduct {
@@ -47,12 +72,13 @@ export interface ProjectedConcomitantProduct {
 export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   const projection: Form3500Projection = {
     revision: caseState.revision,
-    sections: { A: {}, B: {}, D: { suspectProducts: [] }, F: { concomitantProducts: [] } },
+    sections: { A: {}, B: { relevantTests: [] }, D: { suspectProducts: [] }, F: { concomitantProducts: [] }, G: { reporter: {} } },
     sourceTrace: {},
     omissions: [],
     notIncluded: [
       "Section E device products",
-      "Section G reporter information",
+      "Patient date of birth and race or ethnicity",
+      "Section C product availability",
       "Concomitant dose, frequency, and route (Section F has no fields for them)",
     ],
   };
@@ -60,19 +86,34 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   assign(projection, "sections.A.patientIdentifier", "patient identifier", "patient:patient:identifier", caseState.patient.facts.identifier, projection.sections.A, "patientIdentifier");
   assign(projection, "sections.A.ageYears", "patient age", "patient:patient:ageYears", caseState.patient.facts.ageYears, projection.sections.A, "ageYears");
   assign(projection, "sections.A.sex", "patient sex", "patient:patient:sex", caseState.patient.facts.sex, projection.sections.A, "sex");
+  assign(projection, "sections.A.weight", "patient weight", "patient:patient:weight", caseState.patient.facts.weight, projection.sections.A, "weight");
   assign(projection, "sections.B.reportType", "report type", "event:event:reportType", caseState.event.facts.reportType, projection.sections.B, "reportType");
   assign(projection, "sections.B.eventDate", "event date", "event:event:onsetDate", caseState.event.facts.onsetDate, projection.sections.B, "eventDate");
   assign(projection, "sections.B.hospitalized", "hospitalization outcome", "event:event:hospitalized", caseState.event.facts.hospitalized, projection.sections.B, "hospitalized");
-  assign(
-    projection,
-    "sections.B.relevantTests",
-    "relevant tests",
-    "event:event:hemoglobin",
-    caseState.event.facts.hemoglobin,
-    projection.sections.B,
-    "relevantTests",
-    (value) => `Hemoglobin: ${value}`,
-  );
+  for (const field of ["death", "lifeThreatening", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious"] as const) {
+    assign(projection, `sections.B.${field}`, `${field} outcome`, `event:event:${field}`, caseState.event.facts[field], projection.sections.B, field);
+  }
+  if (known(caseState.event.facts.death)?.value === true) {
+    assign(projection, "sections.B.deathDate", "death date", "event:event:deathDate", caseState.event.facts.deathDate, projection.sections.B, "deathDate");
+  }
+  assign(projection, "sections.B.relevantHistory", "relevant medical history", "event:event:relevantHistory", caseState.event.facts.relevantHistory, projection.sections.B, "relevantHistory");
+
+  for (const test of caseState.relevantTests.filter(({ state }) => state === "resolved")) {
+    const result: ProjectedRelevantTest = { testId: test.id };
+    const index = projection.sections.B.relevantTests.length;
+    for (const field of ["testResult", "lowRange", "highRange", "date"] as const) {
+      assign(projection, `sections.B.relevantTests.${index}.${field}`, `${field} for ${test.id}`, `test:${test.id}:${field}`, test.facts[field], result, field);
+    }
+    projection.sections.B.relevantTests.push(result);
+  }
+  if (projection.sections.B.relevantTests.length === 0) {
+    projection.omissions.push({
+      concept: "relevant tests",
+      target: "event:event:relevantTestsAvailable",
+      reason: omissionReason(caseState.event.facts.relevantTestsAvailable),
+      sourceIds: caseState.event.facts.relevantTestsAvailable.sourceIds,
+    });
+  }
 
   const eventDescription = buildEventDescription(caseState);
   if (eventDescription.value) {
@@ -100,6 +141,10 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       const target = projection.sections.F.concomitantProducts;
       target.push(projectConcomitantProduct(product, projection, target.length));
     }
+  }
+
+  for (const field of ["lastName", "firstName", "address", "city", "state", "postalCode", "country", "phone", "email", "healthProfessional", "occupation", "reportedTo", "doNotDiscloseIdentity"] as const) {
+    assign<unknown>(projection, `sections.G.reporter.${field}`, `reporter ${field}`, `reporter:reporter:${field}`, caseState.reporter.facts[field] as Fact<unknown>, projection.sections.G.reporter, field);
   }
 
   return projection;
@@ -131,7 +176,7 @@ function projectConcomitantProduct(
   return result;
 }
 
-function assign<T extends string | number | boolean>(
+function assign<T>(
   projection: Form3500Projection,
   path: string,
   concept: string,
