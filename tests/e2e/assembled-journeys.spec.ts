@@ -15,12 +15,17 @@ import {
   layer1TestsUpdate,
   layer2DeviceOpening,
   layer2ProductQualityOpening,
+  layer3CombinedOpening,
+  layer3ConditionalOpening,
+  layer3CorrectionOpening,
+  layer3CorrectionUpdate,
   repeatedOpening,
   repeatedUpdate,
   richOpening,
   sparseOpening,
 } from "./build-predetermined-responses";
 import type { BrowserJourneyState } from "../../src/server/case/browser-state";
+import type { ReportType } from "../../src/domain/case/types";
 
 const execFileAsync = promisify(execFile);
 const retainEvidence = process.env.WILSON_RETAIN_STAGE3_EVIDENCE === "1";
@@ -28,12 +33,13 @@ const evidenceDirectory = process.env.WILSON_STAGE3_EVIDENCE_DIRECTORY ?? "evide
 const retainAdaptiveOnly = evidenceDirectory.includes("issue-57");
 const retainLayer1RepresentativeOnly = evidenceDirectory.includes("issue-60");
 const retainLayer2RepresentativeOnly = evidenceDirectory.includes("issue-62");
+const retainLayer3RepresentativeOnly = evidenceDirectory.includes("issue-64");
 const readbacks: Record<string, IndependentReadback> = {};
 const checkpoints: Array<{ journey: string; state: string; assertion: string }> = [];
 const pdfs: Array<{ journey: string; bytes: number; sha256: string }> = [];
 const questionTrace: Array<{ journey: string; question: string; reason: string; answer: string }> = [];
 
-test("runs Layer 2 generalization probes plus all prior deterministic regressions through one assembled desktop path", async ({ page, browser }, testInfo) => {
+test("runs Layer 3 device-depth probes plus all prior deterministic regressions through one assembled desktop path", async ({ page, browser }, testInfo) => {
   if (retainEvidence) await mkdir(evidenceDirectory, { recursive: true });
 
   const initial = await page.goto("/");
@@ -41,6 +47,91 @@ test("runs Layer 2 generalization probes plus all prior deterministic regression
   await expect(page.getByRole("heading", { name: "Describe what happened" })).toBeVisible();
   await expect(page.getByLabel("Experiment boundary")).toContainText("Fictional information only");
 
+  await submitOpening(page, layer3CombinedOpening, "adverse-event-and-product-problem");
+  await expect(productCard(page, "Acme ThermoPatch")).toContainText("wearable temperature monitor");
+  await expect(productOrCaseCard(page, "Event")).toContainText("blistering burn on left arm");
+  await expect(productOrCaseCard(page, "Event")).toContainText("Adverse event and product problem");
+  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
+  questionTrace.push({ journey: "layer3-combined", question: "reporter block", reason: "accepted combined event, problem, outcome, context, and device facts suppress redundant questions", answer: "structured reporter details" });
+  await fillReporter(page, { firstName: "Alex", lastName: "Morgan", email: "alex.morgan@example.test" });
+  await page.getByRole("button", { name: "Add reporter details" }).click();
+  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  const combinedCase = await semanticCase(page);
+  expect(combinedCase.event.facts.reportType.resolvedValue?.value).toEqual({ kind: "known", value: "adverse-event-and-product-problem" });
+  expect(combinedCase.products).toHaveLength(1);
+  expect(combinedCase.askedNeeds.map(({ key }) => key)).toEqual(["reporter-details"]);
+  checkpoints.push({ journey: "layer3-combined", state: "output", assertion: "One report-type fact retained both selected meanings and one stable device supplied aligned event, product-problem, availability, and Section E output." });
+  await downloadAndCheck(page, "layer3-combined", ["TEST-67", "Acme ThermoPatch", "Problem detail: Acme ThermoPatch overheated after its adhesive backing split. Symptoms: blistering burn on left arm. Treatment: cool compresses. Outcome: recovered.", "Alex", "Morgan"], [], {
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/1",
+    "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/1",
+    "topmostSubform[0].Page6[0].SecE_Device[0].BrandName[0]": "Acme ThermoPatch",
+  });
+
+  await newCase(page);
+  await submitOpening(page, layer3ConditionalOpening, "product-problem");
+  await expect(productCard(page, "Acme PulseLine")).toContainText("Implanted device");
+  await expect(productCard(page, "Acme PulseLine")).toContainText("Reprocessed single-use device");
+  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await expect(page.getByRole("heading", { name: "Add the applicable device details for Acme PulseLine" })).toBeVisible();
+  const implantGroup = page.getByRole("group", { name: "Implant date" });
+  await implantGroup.getByLabel("Known", { exact: true }).check();
+  await page.getByLabel("Device implant date").fill("2026-08-12");
+  const explantGroup = page.getByRole("group", { name: "Explant date" });
+  await explantGroup.getByLabel("Not applicable", { exact: true }).check();
+  const reprocessorGroup = page.getByRole("group", { name: "Reprocessor" });
+  await reprocessorGroup.getByLabel("Known", { exact: true }).check();
+  await page.getByLabel("Device reprocessor").fill("ReNew Medical LLC");
+  questionTrace.push({ journey: "layer3-conditional", question: "applicable device details", reason: "accepted implanted and reprocessed-single-use states make implant timing and reprocessor identity material", answer: "implant date known; explant inapplicable; reprocessor known" });
+  await page.getByRole("button", { name: "Add device details" }).click();
+  await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
+  await fillReporter(page, { firstName: "Sam", lastName: "Ortiz", phone: "202-555-0194" });
+  questionTrace.push({ journey: "layer3-conditional", question: "reporter block", reason: "reporter identity remains direct entry", answer: "structured reporter details" });
+  await page.getByRole("button", { name: "Add reporter details" }).click();
+  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  const conditionalCase = await semanticCase(page);
+  expect(conditionalCase.products[0].facts.implantDate.resolvedValue?.value).toEqual({ kind: "known", value: "2026-08-12" });
+  expect(conditionalCase.products[0].facts.explantDate.resolvedValue?.value).toEqual({ kind: "inapplicable" });
+  expect(conditionalCase.products[0].facts.reprocessor.resolvedValue?.value).toEqual({ kind: "known", value: "ReNew Medical LLC" });
+  expect(conditionalCase.askedNeeds.map(({ key }) => key)).toEqual(["device-details", "reporter-details"]);
+  checkpoints.push({ journey: "layer3-conditional", state: "output", assertion: "One grouped turn asked only details made applicable by accepted implanted and reprocessed states, then closed them without repetition." });
+  await downloadAndCheck(page, "layer3-conditional", ["Acme PulseLine", "12-AUG-2026", "ReNew Medical LLC", "Sam", "Ortiz"], [], {
+    "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/1",
+    "topmostSubform[0].Page6[0].SecE_Device[0].ImplantDate[0]": "12-AUG-2026",
+    "topmostSubform[0].Page6[0].SecE_Device[0].ReuseYes[0]": "/1",
+    "topmostSubform[0].Page6[0].SecE_Device[0].ReprocInfo[0]": "ReNew Medical LLC",
+  }, ["topmostSubform[0].Page6[0].SecE_Device[0].ExplantDate[0]"]);
+
+  await newCase(page);
+  await submitOpening(page, layer3CorrectionOpening, "product-problem");
+  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await fillReporter(page, { firstName: "Jamie", lastName: "Kim", email: "jamie.kim@example.test" });
+  questionTrace.push({ journey: "layer3-correction", question: "reporter block", reason: "opening device facts require no conditional detail turn", answer: "structured reporter details" });
+  await page.getByRole("button", { name: "Add reporter details" }).click();
+  await page.getByLabel("Clinical update").fill(layer3CorrectionUpdate);
+  await page.getByRole("button", { name: "Review this update" }).click();
+  await page.getByRole("article").filter({ hasText: "SN-1002" }).getByRole("button", { name: "Accept this update" }).click();
+  await expect(page.getByText("Earlier: SN-1001", { exact: true })).toBeVisible();
+  await page.getByRole("article").filter({ hasText: "NS-8" }).getByRole("button", { name: "Accept this update" }).click();
+  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  await expect(page.getByText("Acme NeuroSense — Model number has incompatible sources", { exact: false })).toBeVisible();
+  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("SN-1002");
+  await expect(page.getByRole("button", { name: "Download official PDF" })).toBeEnabled();
+  const correctedDeviceCase = await semanticCase(page);
+  expect(correctedDeviceCase.products).toHaveLength(1);
+  expect(correctedDeviceCase.products[0].id).toBe("product-layer3-correction-device");
+  expect(correctedDeviceCase.products[0].facts.serialNumber.resolvedValue?.value).toEqual({ kind: "known", value: "SN-1002" });
+  expect(correctedDeviceCase.products[0].facts.serialNumber.supersededValues.map(({ value }) => value)).toEqual([{ kind: "known", value: "SN-1001" }]);
+  expect(correctedDeviceCase.products[0].facts.modelNumber.state).toBe("conflicted");
+  expect(correctedDeviceCase.askedNeeds.map(({ key }) => key)).toEqual(["reporter-details"]);
+  checkpoints.push({ journey: "layer3-correction", state: "unresolved-partial-output", assertion: "The stable device retained its serial correction and history while incompatible model alternatives stayed visible and absent from the enabled partial PDF." });
+  await retainScreenshot(page, "layer3-correction-output.png");
+  await downloadAndCheck(page, "layer3-correction", ["Acme NeuroSense", "SN-1002", "Jamie", "Kim"], ["SN-1001", "NS-7", "NS-8"], {
+    "topmostSubform[0].Page6[0].SecE_Device[0].SerialNum[0]": "SN-1002",
+  }, ["topmostSubform[0].Page6[0].SecE_Device[0].ModelNum[0]"]);
+
+  await newCase(page);
   await submitOpening(page, layer2DeviceOpening);
   await expect(productCard(page, "Acme FlowGuard")).toContainText("Suspect medical device");
   await expect(productCard(page, "Acme FlowGuard")).toContainText("(01)00812345000017(21)SN7721");
@@ -355,9 +446,21 @@ test("runs Layer 2 generalization probes plus all prior deterministic regression
     await writeFile(`${evidenceDirectory}/journey-trace.json`, `${JSON.stringify({
       browser: `Chromium ${browser.version()}`,
       viewportOptions: { viewport: testInfo.project.use.viewport },
-      predeterminedApplicationModelCalls: 16,
+      predeterminedApplicationModelCalls: 20,
       liveApplicationModelCalls: 0,
       interactionSummary: [
+        {
+          journey: "layer3-combined", groupedPromptCount: 1, duplicateQuestionCount: 0,
+          observedFriction: "The combined report used one selection and understanding review; accepted facts suppressed every clarification except direct reporter entry.",
+        },
+        {
+          journey: "layer3-conditional", groupedPromptCount: 2, duplicateQuestionCount: 0,
+          observedFriction: "One attributed device-detail turn grouped implant timing and reprocessor identity before the reporter block.",
+        },
+        {
+          journey: "layer3-correction", groupedPromptCount: 1, correctionReviewCount: 2, duplicateQuestionCount: 0,
+          observedFriction: "The later input required two explicit reviews because correction and unresolved alternative target different device facts; no completion question reopened.",
+        },
         {
           journey: "layer2-device", groupedPromptCount: 1, duplicateQuestionCount: 0,
           observedFriction: "The rich device facts required one explicit understanding review and the direct reporter block; no medication indication or redundant clinical prompt appeared.",
@@ -394,9 +497,20 @@ test("runs Layer 2 generalization probes plus all prior deterministic regression
   }
 });
 
-async function submitOpening(page: Page, text: string, reportType: "adverse-event" | "product-problem" = "adverse-event") {
+async function submitOpening(page: Page, text: string, reportType: ReportType = "adverse-event") {
   await page.getByLabel("Clinical account").fill(text);
-  await page.getByLabel(reportType === "adverse-event" ? "Adverse event" : "Product problem").check();
+  const adverse = page.getByLabel("Adverse event", { exact: true });
+  const problem = page.getByLabel("Product problem", { exact: true });
+  if (reportType === "adverse-event") {
+    await adverse.check();
+    await problem.uncheck();
+  } else if (reportType === "product-problem") {
+    await adverse.uncheck();
+    await problem.check();
+  } else {
+    await adverse.check();
+    await problem.check();
+  }
   await page.getByRole("button", { name: "Review Wilson’s understanding" }).click();
   await expect(page.getByRole("heading", { name: "Check Wilson’s understanding" })).toBeVisible();
 }
@@ -517,5 +631,6 @@ function shouldRetain(journey: string): boolean {
   if (retainAdaptiveOnly) return journey.startsWith("adaptive-");
   if (retainLayer1RepresentativeOnly) return journey === "layer1-role";
   if (retainLayer2RepresentativeOnly) return journey === "layer2-device";
+  if (retainLayer3RepresentativeOnly) return journey === "layer3-correction";
   return true;
 }

@@ -105,6 +105,40 @@ describe("adaptive Form FDA 3500 projection fields", () => {
     });
   });
 
+  it("round-trips both report-type selections and conditionally supplied device details", async () => {
+    const projection: Form3500Projection = {
+      revision: 1,
+      sections: {
+        A: { patientIdentifier: "TEST-67" },
+        B: { reportType: "adverse-event-and-product-problem", eventDescription: "Problem detail: Device overheated. Symptoms: blistering burn.", relevantTests: [] },
+        C: { productAvailability: "available" }, D: { suspectProducts: [] },
+        E: { suspectDevice: {
+          productId: "device-combined", brandName: "Acme ThermoPatch", serialNumber: "SN-8804",
+          implantDate: "2026-08-12", reprocessedSingleUse: true, reprocessor: "ReNew Medical LLC",
+        } },
+        F: { concomitantProducts: [] }, G: { reporter: {} },
+      },
+      sourceTrace: {}, omissions: [], notIncluded: [],
+    };
+    const source = new Uint8Array(await readFile(sourcePath));
+    const result = await fillForm3500Projection(source, projection);
+    expect(result.readback.sections).toEqual(projection.sections);
+
+    const directory = await mkdtemp(join(tmpdir(), "wilson-combined-device-pdf-"));
+    const path = join(directory, "combined-device.pdf");
+    await writeFile(path, result.output);
+    const python = process.env.PYPDF_PYTHON ?? "python3";
+    const { stdout } = await execFileAsync(python, [readerPath, path, "--named"]);
+    const { namedFields } = JSON.parse(stdout) as { namedFields: Record<string, string> };
+    expect(namedFields).toMatchObject({
+      "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/1",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ImplantDate[0]": "12-AUG-2026",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ReuseYes[0]": "/1",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ReprocInfo[0]": "ReNew Medical LLC",
+    });
+  });
+
   it("round-trips the added patient, outcome, test, history, and reporter fields", async () => {
     const relevantTests = Array.from({ length: 8 }, (_, index) => ({
       testId: `test-${index + 1}`,

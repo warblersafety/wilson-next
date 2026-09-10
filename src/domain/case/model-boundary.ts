@@ -3,7 +3,7 @@ import type { CaseValue, FactTarget, GroundedProposal, ProposedProduct, Proposed
 
 const patientFields = ["identifier", "ageYears", "sex", "weight"] as const;
 const eventFields = ["problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "relevantHistory", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate"] as const;
-const productFields = ["name", "productType", "role", "manufacturer", "lotNumber", "dose", "frequency", "route", "startDate", "stopDate", "indication", "stopped", "commonName", "procode", "modelNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const;
+const productFields = ["name", "productType", "role", "manufacturer", "lotNumber", "dose", "frequency", "route", "startDate", "stopDate", "indication", "stopped", "commonName", "procode", "modelNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implanted", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const;
 const relevantTestFields = ["testResult", "lowRange", "highRange", "date"] as const;
 
 const modelTargetSchema = z.discriminatedUnion("entity", [
@@ -299,7 +299,7 @@ function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>): stri
     || typeof (actual as { value?: unknown }).value !== "number"
     || !["kg", "lb"].includes(String((actual as { unit?: unknown }).unit)))) return "weight requires a value and kg or lb unit";
   if (["symptoms", "treatments"].includes(target.field) && (!Array.isArray(actual) || actual.some((item) => typeof item !== "string"))) return `${target.field} requires a string array`;
-  if (["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "stopped", "reprocessedSingleUse"].includes(target.field) && typeof actual !== "boolean") return `${target.field} requires a boolean`;
+  if (["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "stopped", "implanted", "reprocessedSingleUse"].includes(target.field) && typeof actual !== "boolean") return `${target.field} requires a boolean`;
   if (target.field === "role" && !["suspect", "concomitant"].includes(actual as string)) return "role requires suspect or concomitant";
   if (target.field === "productType" && !["drug-or-biologic", "device", "other"].includes(actual as string)) return "productType requires a supported product category";
   if (target.field === "deviceOperator" && !["health-professional", "patient-consumer", "other"].includes(actual as string)) return "deviceOperator requires a supported operator";

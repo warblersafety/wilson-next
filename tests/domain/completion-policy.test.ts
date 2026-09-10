@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { applyCaseCommand } from "../../src/domain/case/commands";
 import { nextCompletionQuestion } from "../../src/domain/case/completion-policy";
 import { createSemanticCase } from "../../src/domain/case/create";
-import type { CaseValue, EventFactKey, SemanticCase, Source } from "../../src/domain/case/types";
+import type { CaseValue, EventFactKey, ReportType, SemanticCase, Source } from "../../src/domain/case/types";
 import { acceptOpeningCase, answerIndications } from "./fixture";
 
 describe("bounded medication completion policy", () => {
@@ -119,7 +119,81 @@ describe("bounded medication completion policy", () => {
 
     expect(nextCompletionQuestion(current)).toMatchObject({ key: "reporter-details", kind: "reporter" });
   });
+
+  it("retains the adverse-event completion branch for a combined report type", () => {
+    const current = acceptDeviceCase("adverse-event-and-product-problem");
+    expect(nextCompletionQuestion(current)).toMatchObject({ key: "serious-outcomes", kind: "serious-outcomes" });
+  });
+
+  it("asks only applicable implanted and reprocessed device details, then closes them", () => {
+    let current = acceptDeviceCase("product-problem");
+    const question = nextCompletionQuestion(current);
+    expect(question).toMatchObject({
+      key: "device-details",
+      kind: "device-details",
+      deviceId: "device-pulseline",
+      askImplantDate: true,
+      askExplantDate: true,
+      askReprocessor: true,
+      targetIds: [
+        "product:device-pulseline:implantDate",
+        "product:device-pulseline:explantDate",
+        "product:device-pulseline:reprocessor",
+      ],
+    });
+    if (question?.key !== "device-details") throw new Error("Expected device details");
+    current = applyCaseCommand(current, {
+      type: "record-asked-need", commandId: "ask-device-details", expectedRevision: current.revision,
+      key: question.key, targetIds: question.targetIds,
+    }).case;
+    const answer = "Implant date supplied; the device remains implanted; reprocessor supplied.";
+    current = applyCaseCommand(current, {
+      type: "record-clinician-facts", commandId: "answer-device-details", expectedRevision: current.revision,
+      source: { id: "source-device-answer", inputId: "input-device-answer", inputType: "answer", excerpt: answer, start: 0, end: answer.length, actor: "clinician", recordedAt: "2026-09-10T00:00:00.000Z" },
+      answersNeed: "device-details",
+      facts: [
+        { id: "implant-date", target: { entity: "product", entityId: "device-pulseline", field: "implantDate" }, intent: "fact", value: { kind: "known", value: "2026-08-12" } },
+        { id: "explant-date", target: { entity: "product", entityId: "device-pulseline", field: "explantDate" }, intent: "fact", value: { kind: "inapplicable" } },
+        { id: "reprocessor", target: { entity: "product", entityId: "device-pulseline", field: "reprocessor" }, intent: "fact", value: { kind: "known", value: "ReNew Medical LLC" } },
+      ],
+    }).case;
+    expect(nextCompletionQuestion(current)).toMatchObject({ key: "reporter-details", kind: "reporter" });
+    expect(current.askedNeeds).toEqual([{
+      key: "device-details",
+      targetIds: ["product:device-pulseline:implantDate", "product:device-pulseline:explantDate", "product:device-pulseline:reprocessor"],
+      status: "answered",
+    }]);
+  });
 });
+
+function acceptDeviceCase(reportType: ReportType): SemanticCase {
+  const account = "The suspect Acme PulseLine device was implanted and was a reprocessed single-use device after it stopped sensing.";
+  const source: Source = {
+    id: "source-device", inputId: "input-device", inputType: "narrative",
+    excerpt: account, start: 0, end: account.length, actor: "clinician", recordedAt: "2026-09-10T00:00:00.000Z",
+  };
+  let current = applyCaseCommand(createSemanticCase("case-device-completion"), {
+    type: "attach-grounded-proposals", commandId: "attach-device", expectedRevision: 0,
+    products: [{ id: "device-pulseline", groupId: "device" }], sources: [source], proposals: [
+      { proposalId: "problem", groupId: "event", intent: "fact", target: { entity: "event", entityId: "event", field: "problemDescription" }, value: { kind: "known", value: "Stopped sensing" }, sourceIds: [source.id] },
+      { proposalId: "name", groupId: "device", intent: "fact", target: { entity: "product", entityId: "device-pulseline", field: "name" }, value: { kind: "known", value: "Acme PulseLine" }, sourceIds: [source.id] },
+      { proposalId: "type", groupId: "device", intent: "fact", target: { entity: "product", entityId: "device-pulseline", field: "productType" }, value: { kind: "known", value: "device" }, sourceIds: [source.id] },
+      { proposalId: "role", groupId: "device", intent: "fact", target: { entity: "product", entityId: "device-pulseline", field: "role" }, value: { kind: "known", value: "suspect" }, sourceIds: [source.id] },
+      { proposalId: "implanted", groupId: "device", intent: "fact", target: { entity: "product", entityId: "device-pulseline", field: "implanted" }, value: { kind: "known", value: true }, sourceIds: [source.id] },
+      { proposalId: "reprocessed", groupId: "device", intent: "fact", target: { entity: "product", entityId: "device-pulseline", field: "reprocessedSingleUse" }, value: { kind: "known", value: true }, sourceIds: [source.id] },
+    ],
+  }).case;
+  const label = reportType === "adverse-event" ? "Adverse event" : reportType === "product-problem" ? "Product problem" : "Adverse event and product problem";
+  current = applyCaseCommand(current, {
+    type: "record-clinician-facts", commandId: "record-report-type", expectedRevision: current.revision,
+    source: { id: "source-report-type", inputId: "input-report-type", inputType: "selection", excerpt: label, start: 0, end: label.length, actor: "clinician", recordedAt: "2026-09-10T00:00:00.000Z" },
+    facts: [{ id: "report-type", target: { entity: "event", entityId: "event", field: "reportType" }, intent: "fact", value: { kind: "known", value: reportType } }],
+  }).case;
+  return applyCaseCommand(current, {
+    type: "review-proposal-groups", commandId: "review-device", expectedRevision: current.revision,
+    decisions: [{ groupId: "patient", action: "accept" }, { groupId: "event", action: "accept" }, { groupId: "device", action: "accept" }],
+  }).case;
+}
 
 function answerOutcomes(caseState: SemanticCase, selected: EventFactKey[]): SemanticCase {
   const question = nextCompletionQuestion(caseState);

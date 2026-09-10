@@ -18,8 +18,8 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-layer2-generalization-v1";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v9";
+export const MODEL_PROMPT_REVISION = "wilson-layer3-device-depth-v1";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v10";
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
 export const MODEL_MAX_RETRIES = 0;
 
@@ -66,13 +66,13 @@ export interface AnthropicStreamingClient {
   };
 }
 
-const SYSTEM_PROMPT = `You extract grounded semantic proposals from one synthetic clinician input for Wilson's bounded adult medication, single-device adverse-event, and non-device product-quality scope.
+const SYSTEM_PROMPT = `You extract grounded semantic proposals from one synthetic clinician input for Wilson's bounded adult medication, single-device adverse-event or product-problem, and non-device product-quality scope.
 
 Rules:
 - Propose only facts explicitly supported by the current clinician input. Do not diagnose, infer causality, classify, fill gaps, or establish truth.
 - The supported targets are the patient, event or product problem, relevant-test, medication or non-device product, and single suspect-device fields represented by the response schema. Preserve uncertainty, negation, correction, alternatives, unknown, explicitly absent, inapplicable, and declined meanings.
 - Relevant tests are stable entities. On opening input, declare each distinct relevant test or laboratory result once and attach its test/result text, optional ranges, and date to that test reference. Do not interpret or classify a result.
-- For every declared product, propose its supported productType ("drug-or-biologic", "device", or "other") and role. For product roles, emit only "suspect" or "concomitant". A reported suspect role is clinician input, not your causality judgment.
+- For every declared product, propose its supported productType ("drug-or-biologic", "device", or "other") and role. For product roles, emit only "suspect" or "concomitant". A reported suspect role is clinician input, not your causality judgment. For a device, preserve explicitly stated implanted and reprocessed-single-use status so Wilson can determine whether related Section E details are applicable.
 - Use normalized ISO dates (YYYY-MM-DD) and "oral" for "by mouth". Otherwise preserve explicitly stated descriptive detail in known values; do not compress away modifiers that make a clinical statement more specific. Retain measurement values with their units.
 - On opening input, declare each mentioned product once using arbitrary response-local productReference and groupReference values. Use those references for its proposals. Wilson—not you—assigns stable case identity.
 - On later input, declare no products. Refer to an existing product only by an exact application-supplied product ID from the reviewed-case context. A repeated name or alias does not create identity.

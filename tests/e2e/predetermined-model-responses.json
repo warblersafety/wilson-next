@@ -1,5 +1,916 @@
 [
   {
+    "identityScope": "layer3-combined",
+    "turn": "opening",
+    "output": {
+      "products": [
+        {
+          "productReference": "device",
+          "groupReference": "g1"
+        }
+      ],
+      "proposals": [
+        {
+          "proposalReference": "patient-id",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "identifier"
+          },
+          "value": {
+            "kind": "known",
+            "value": "TEST-67"
+          },
+          "evidenceQuote": "Patient TEST-67 is a 67-year-old woman."
+        },
+        {
+          "proposalReference": "patient-age",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "ageYears"
+          },
+          "value": {
+            "kind": "known",
+            "value": 67
+          },
+          "evidenceQuote": "Patient TEST-67 is a 67-year-old woman."
+        },
+        {
+          "proposalReference": "patient-sex",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "sex"
+          },
+          "value": {
+            "kind": "known",
+            "value": "female"
+          },
+          "evidenceQuote": "Patient TEST-67 is a 67-year-old woman."
+        },
+        {
+          "proposalReference": "event-problem",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "problemDescription"
+          },
+          "value": {
+            "kind": "known",
+            "value": "Acme ThermoPatch overheated after its adhesive backing split"
+          },
+          "evidenceQuote": "On 09-Sep-2026, an Acme ThermoPatch wearable monitor overheated after its adhesive backing split; it caused a blistering burn on her left arm."
+        },
+        {
+          "proposalReference": "event-symptoms",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "symptoms"
+          },
+          "value": {
+            "kind": "known",
+            "value": [
+              "blistering burn on left arm"
+            ]
+          },
+          "evidenceQuote": "On 09-Sep-2026, an Acme ThermoPatch wearable monitor overheated after its adhesive backing split; it caused a blistering burn on her left arm."
+        },
+        {
+          "proposalReference": "event-onset",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "onsetDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-09-09"
+          },
+          "evidenceQuote": "On 09-Sep-2026, an Acme ThermoPatch wearable monitor overheated after its adhesive backing split; it caused a blistering burn on her left arm."
+        },
+        {
+          "proposalReference": "event-treatment",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "treatments"
+          },
+          "value": {
+            "kind": "known",
+            "value": [
+              "cool compresses"
+            ]
+          },
+          "evidenceQuote": "The device was removed, the burn was treated with cool compresses, and she recovered."
+        },
+        {
+          "proposalReference": "event-outcome",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "outcome"
+          },
+          "value": {
+            "kind": "known",
+            "value": "recovered"
+          },
+          "evidenceQuote": "The device was removed, the burn was treated with cool compresses, and she recovered."
+        },
+        {
+          "proposalReference": "tests-none",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "relevantTestsAvailable"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No relevant tests or medical history apply."
+        },
+        {
+          "proposalReference": "history-none",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "relevantHistory"
+          },
+          "value": {
+            "kind": "explicitly-absent"
+          },
+          "evidenceQuote": "No relevant tests or medical history apply."
+        },
+        {
+          "proposalReference": "availability",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "productAvailability"
+          },
+          "value": {
+            "kind": "known",
+            "value": "available"
+          },
+          "evidenceQuote": "The device is available for evaluation."
+        },
+        {
+          "proposalReference": "device-name",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "Acme ThermoPatch"
+          },
+          "evidenceQuote": "The suspect device is an Acme ThermoPatch, common name wearable temperature monitor, manufactured by Acme Medical, model TP-9, lot T-144, serial SN-8804."
+        },
+        {
+          "proposalReference": "device-type",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "device"
+          },
+          "evidenceQuote": "The suspect device is an Acme ThermoPatch, common name wearable temperature monitor, manufactured by Acme Medical, model TP-9, lot T-144, serial SN-8804."
+        },
+        {
+          "proposalReference": "device-role",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "The suspect device is an Acme ThermoPatch, common name wearable temperature monitor, manufactured by Acme Medical, model TP-9, lot T-144, serial SN-8804."
+        },
+        {
+          "proposalReference": "device-common",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "commonName"
+          },
+          "value": {
+            "kind": "known",
+            "value": "wearable temperature monitor"
+          },
+          "evidenceQuote": "The suspect device is an Acme ThermoPatch, common name wearable temperature monitor, manufactured by Acme Medical, model TP-9, lot T-144, serial SN-8804."
+        },
+        {
+          "proposalReference": "device-manufacturer",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "manufacturer"
+          },
+          "value": {
+            "kind": "known",
+            "value": "Acme Medical"
+          },
+          "evidenceQuote": "The suspect device is an Acme ThermoPatch, common name wearable temperature monitor, manufactured by Acme Medical, model TP-9, lot T-144, serial SN-8804."
+        },
+        {
+          "proposalReference": "device-model",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "modelNumber"
+          },
+          "value": {
+            "kind": "known",
+            "value": "TP-9"
+          },
+          "evidenceQuote": "The suspect device is an Acme ThermoPatch, common name wearable temperature monitor, manufactured by Acme Medical, model TP-9, lot T-144, serial SN-8804."
+        },
+        {
+          "proposalReference": "device-lot",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "lotNumber"
+          },
+          "value": {
+            "kind": "known",
+            "value": "T-144"
+          },
+          "evidenceQuote": "The suspect device is an Acme ThermoPatch, common name wearable temperature monitor, manufactured by Acme Medical, model TP-9, lot T-144, serial SN-8804."
+        },
+        {
+          "proposalReference": "device-serial",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "serialNumber"
+          },
+          "value": {
+            "kind": "known",
+            "value": "SN-8804"
+          },
+          "evidenceQuote": "The suspect device is an Acme ThermoPatch, common name wearable temperature monitor, manufactured by Acme Medical, model TP-9, lot T-144, serial SN-8804."
+        },
+        {
+          "proposalReference": "device-operator",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "deviceOperator"
+          },
+          "value": {
+            "kind": "known",
+            "value": "patient-consumer"
+          },
+          "evidenceQuote": "It was patient-operated, was not implanted, was not a reprocessed single-use device, and was not serviced by a third party."
+        },
+        {
+          "proposalReference": "device-implanted",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "implanted"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "It was patient-operated, was not implanted, was not a reprocessed single-use device, and was not serviced by a third party."
+        },
+        {
+          "proposalReference": "device-implant-date",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "implantDate"
+          },
+          "value": {
+            "kind": "inapplicable"
+          },
+          "evidenceQuote": "It was patient-operated, was not implanted, was not a reprocessed single-use device, and was not serviced by a third party."
+        },
+        {
+          "proposalReference": "device-reprocessed",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "reprocessedSingleUse"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "It was patient-operated, was not implanted, was not a reprocessed single-use device, and was not serviced by a third party."
+        },
+        {
+          "proposalReference": "device-serviced",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "servicedByThirdParty"
+          },
+          "value": {
+            "kind": "known",
+            "value": "no"
+          },
+          "evidenceQuote": "It was patient-operated, was not implanted, was not a reprocessed single-use device, and was not serviced by a third party."
+        },
+        {
+          "proposalReference": "event-death",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "death"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-lifeThreatening",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "lifeThreatening"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-hospitalized",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "hospitalized"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-disability",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "disability"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-requiredIntervention",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "requiredIntervention"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-congenitalAnomaly",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "congenitalAnomaly"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-otherSerious",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "otherSerious"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        }
+      ]
+    }
+  },
+  {
+    "identityScope": "layer3-conditional",
+    "turn": "opening",
+    "output": {
+      "products": [
+        {
+          "productReference": "device",
+          "groupReference": "g1"
+        }
+      ],
+      "proposals": [
+        {
+          "proposalReference": "problem",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "problemDescription"
+          },
+          "value": {
+            "kind": "known",
+            "value": "Acme PulseLine temporary pacing lead stopped sensing during an intraoperative function check after placement"
+          },
+          "evidenceQuote": "An Acme PulseLine temporary pacing lead stopped sensing during an intraoperative function check after placement."
+        },
+        {
+          "proposalReference": "symptoms-none",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "symptoms"
+          },
+          "value": {
+            "kind": "explicitly-absent"
+          },
+          "evidenceQuote": "No patient symptoms or adverse event occurred."
+        },
+        {
+          "proposalReference": "availability",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "productAvailability"
+          },
+          "value": {
+            "kind": "known",
+            "value": "available"
+          },
+          "evidenceQuote": "The device is available for evaluation."
+        },
+        {
+          "proposalReference": "device-name",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "Acme PulseLine"
+          },
+          "evidenceQuote": "The suspect device is an Acme PulseLine, common name temporary pacing lead, manufactured by Acme Medical, model PL-4, serial SN-4012."
+        },
+        {
+          "proposalReference": "device-type",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "device"
+          },
+          "evidenceQuote": "The suspect device is an Acme PulseLine, common name temporary pacing lead, manufactured by Acme Medical, model PL-4, serial SN-4012."
+        },
+        {
+          "proposalReference": "device-role",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "The suspect device is an Acme PulseLine, common name temporary pacing lead, manufactured by Acme Medical, model PL-4, serial SN-4012."
+        },
+        {
+          "proposalReference": "device-common",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "commonName"
+          },
+          "value": {
+            "kind": "known",
+            "value": "temporary pacing lead"
+          },
+          "evidenceQuote": "The suspect device is an Acme PulseLine, common name temporary pacing lead, manufactured by Acme Medical, model PL-4, serial SN-4012."
+        },
+        {
+          "proposalReference": "device-manufacturer",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "manufacturer"
+          },
+          "value": {
+            "kind": "known",
+            "value": "Acme Medical"
+          },
+          "evidenceQuote": "The suspect device is an Acme PulseLine, common name temporary pacing lead, manufactured by Acme Medical, model PL-4, serial SN-4012."
+        },
+        {
+          "proposalReference": "device-model",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "modelNumber"
+          },
+          "value": {
+            "kind": "known",
+            "value": "PL-4"
+          },
+          "evidenceQuote": "The suspect device is an Acme PulseLine, common name temporary pacing lead, manufactured by Acme Medical, model PL-4, serial SN-4012."
+        },
+        {
+          "proposalReference": "device-serial",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "serialNumber"
+          },
+          "value": {
+            "kind": "known",
+            "value": "SN-4012"
+          },
+          "evidenceQuote": "The suspect device is an Acme PulseLine, common name temporary pacing lead, manufactured by Acme Medical, model PL-4, serial SN-4012."
+        },
+        {
+          "proposalReference": "device-implanted",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "implanted"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "It was implanted and was a reprocessed single-use device."
+        },
+        {
+          "proposalReference": "device-reprocessed",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "reprocessedSingleUse"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "It was implanted and was a reprocessed single-use device."
+        }
+      ]
+    }
+  },
+  {
+    "identityScope": "layer3-correction",
+    "turn": "opening",
+    "output": {
+      "products": [
+        {
+          "productReference": "device",
+          "groupReference": "g1"
+        }
+      ],
+      "proposals": [
+        {
+          "proposalReference": "problem",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "problemDescription"
+          },
+          "value": {
+            "kind": "known",
+            "value": "Acme NeuroSense monitor displayed repeated false high readings during setup"
+          },
+          "evidenceQuote": "An Acme NeuroSense monitor displayed repeated false high readings during setup."
+        },
+        {
+          "proposalReference": "symptoms-none",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "symptoms"
+          },
+          "value": {
+            "kind": "explicitly-absent"
+          },
+          "evidenceQuote": "No patient symptoms or adverse event occurred."
+        },
+        {
+          "proposalReference": "availability",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "productAvailability"
+          },
+          "value": {
+            "kind": "known",
+            "value": "available"
+          },
+          "evidenceQuote": "The device is available for evaluation."
+        },
+        {
+          "proposalReference": "device-name",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "Acme NeuroSense"
+          },
+          "evidenceQuote": "The suspect device is an Acme NeuroSense, common name physiologic monitor, manufactured by Acme Medical, model NS-7, serial SN-1001."
+        },
+        {
+          "proposalReference": "device-type",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "productType"
+          },
+          "value": {
+            "kind": "known",
+            "value": "device"
+          },
+          "evidenceQuote": "The suspect device is an Acme NeuroSense, common name physiologic monitor, manufactured by Acme Medical, model NS-7, serial SN-1001."
+        },
+        {
+          "proposalReference": "device-role",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "The suspect device is an Acme NeuroSense, common name physiologic monitor, manufactured by Acme Medical, model NS-7, serial SN-1001."
+        },
+        {
+          "proposalReference": "device-common",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "commonName"
+          },
+          "value": {
+            "kind": "known",
+            "value": "physiologic monitor"
+          },
+          "evidenceQuote": "The suspect device is an Acme NeuroSense, common name physiologic monitor, manufactured by Acme Medical, model NS-7, serial SN-1001."
+        },
+        {
+          "proposalReference": "device-manufacturer",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "manufacturer"
+          },
+          "value": {
+            "kind": "known",
+            "value": "Acme Medical"
+          },
+          "evidenceQuote": "The suspect device is an Acme NeuroSense, common name physiologic monitor, manufactured by Acme Medical, model NS-7, serial SN-1001."
+        },
+        {
+          "proposalReference": "device-model",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "modelNumber"
+          },
+          "value": {
+            "kind": "known",
+            "value": "NS-7"
+          },
+          "evidenceQuote": "The suspect device is an Acme NeuroSense, common name physiologic monitor, manufactured by Acme Medical, model NS-7, serial SN-1001."
+        },
+        {
+          "proposalReference": "device-serial",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "serialNumber"
+          },
+          "value": {
+            "kind": "known",
+            "value": "SN-1001"
+          },
+          "evidenceQuote": "The suspect device is an Acme NeuroSense, common name physiologic monitor, manufactured by Acme Medical, model NS-7, serial SN-1001."
+        },
+        {
+          "proposalReference": "device-implanted",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "implanted"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "It was not implanted, was not a reprocessed single-use device, and was not serviced by a third party."
+        },
+        {
+          "proposalReference": "device-implant-date",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "implantDate"
+          },
+          "value": {
+            "kind": "inapplicable"
+          },
+          "evidenceQuote": "It was not implanted, was not a reprocessed single-use device, and was not serviced by a third party."
+        },
+        {
+          "proposalReference": "device-reprocessed",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "reprocessedSingleUse"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "It was not implanted, was not a reprocessed single-use device, and was not serviced by a third party."
+        },
+        {
+          "proposalReference": "device-serviced",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "device",
+            "field": "servicedByThirdParty"
+          },
+          "value": {
+            "kind": "known",
+            "value": "no"
+          },
+          "evidenceQuote": "It was not implanted, was not a reprocessed single-use device, and was not serviced by a third party."
+        }
+      ]
+    }
+  },
+  {
+    "identityScope": "layer3-correction-update",
+    "turn": "correction",
+    "output": {
+      "products": [],
+      "proposals": [
+        {
+          "proposalReference": "serial-correction",
+          "groupReference": "u1",
+          "intent": "correction",
+          "target": {
+            "entity": "product",
+            "productReference": "product-layer3-correction-device",
+            "field": "serialNumber"
+          },
+          "value": {
+            "kind": "known",
+            "value": "SN-1002"
+          },
+          "evidenceQuote": "Correction: the Acme NeuroSense serial number is SN-1002, not SN-1001."
+        },
+        {
+          "proposalReference": "model-alternative",
+          "groupReference": "u2",
+          "intent": "alternative",
+          "target": {
+            "entity": "product",
+            "productReference": "product-layer3-correction-device",
+            "field": "modelNumber"
+          },
+          "value": {
+            "kind": "known",
+            "value": "NS-8"
+          },
+          "evidenceQuote": "The service log lists model NS-8 rather than NS-7, and I cannot resolve which model number is correct."
+        }
+      ]
+    }
+  },
+  {
     "identityScope": "layer2-device",
     "turn": "opening",
     "output": {

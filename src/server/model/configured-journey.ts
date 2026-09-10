@@ -53,8 +53,8 @@ async function createConfiguredModel(): Promise<JourneyModel> {
         }, createIdentity),
         metrics: {
           model: "predetermined-model-response",
-          promptRevision: "wilson-layer2-generalization-v1",
-          schemaRevision: "wilson-grounded-proposals-v9",
+          promptRevision: "wilson-layer3-device-depth-v1",
+          schemaRevision: "wilson-grounded-proposals-v10",
           inputTokens: 0,
           outputTokens: 0,
           latencyMs: 0,
