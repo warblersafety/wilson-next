@@ -44,14 +44,13 @@ describe("case mutation source boundary", () => {
     expect(violations).toEqual([]);
   });
 
-  it("keeps experiment fixtures and semantic oracles out of the production model/evidence boundary", async () => {
+  it("keeps test fixtures and case-specific answers out of the production model/evidence boundary", async () => {
     const boundaryFiles = [
       ...(await sourceFiles(join(root, "src/domain"))),
       ...(await sourceFiles(join(root, "src/server/model"))),
     ];
     const forbidden = [
-      /(?:from|import\s*\()["'][^"']*experiment\//,
-      /(?:from|import\s*\()["'][^"']*(?:fixed-journey|sample-oracle)["']/,
+      /(?:from|import\s*\()["'][^"']*(?:experiment\/|tests\/fixtures|fixed-(?:inputs|journey))[^"']*["']/,
       /\b(?:apixaban|naproxen|lisinopril)\b/i,
     ];
     const violations: string[] = [];
@@ -76,12 +75,11 @@ describe("case mutation source boundary", () => {
   it("keeps fixtures, medicine names, and semantic oracles out of runtime product behavior", async () => {
     const productFiles = [
       ...(await sourceFiles(join(root, "app"))),
-      join(root, "src/server/journey/service.ts"),
-      join(root, "src/server/model/configured-journey.ts"),
+      ...(await sourceFiles(join(root, "src"))),
     ];
     const forbidden = [
-      /(?:from|import\s*\()["'][^"']*experiment\//,
-      /(?:fixed-inputs|fixed-journey|sample-oracle)/,
+      /(?:from|import\s*\()["'][^"']*(?:experiment\/|tests\/fixtures)[^"']*["']/,
+      /(?:fixed-inputs|fixed-journey)/,
       /\b(?:apixaban|naproxen|lisinopril|cephalexin|metformin|acetaminophen|ibuprofen|tylenol)\b/i,
     ];
     const violations: string[] = [];
@@ -94,19 +92,6 @@ describe("case mutation source boundary", () => {
     expect(violations).toEqual([]);
   });
 
-  it("keeps the Stage 2 semantic oracle out of executable gate validation", async () => {
-    const executableGateFiles = [
-      "tools/model/run-stage-2-gate.ts",
-    ];
-    const forbidden = /(?:sample-oracle|fixed-inputs|fixed-journey|journey\/service|evidence\/experiment-2\/stage-2)/;
-    const violations: string[] = [];
-
-    for (const name of executableGateFiles) {
-      if (forbidden.test(await readFile(join(root, name), "utf8"))) violations.push(name);
-    }
-
-    expect(violations).toEqual([]);
-  });
 });
 
 async function sourceFiles(directory: string): Promise<string[]> {

@@ -45,11 +45,7 @@ export type ModelFailurePhase =
   | "provider-stop"
   | "structured-json"
   | "structured-schema"
-  | "domain-boundary"
-  | "metrics"
-  | "spend-cap"
-  | "semantic-oracle"
-  | "case-replay";
+  | "domain-boundary";
 
 export interface ModelDiagnosticIssue {
   path: string;

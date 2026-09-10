@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { correctionAccount, openingAccount } from "../../src/experiment/fixed-inputs";
-import { fixedJourneyModel } from "../../src/experiment/fixed-journey";
+import { correctionAccount, openingAccount } from "../fixtures/fixed-inputs";
+import { fixedJourneyModel } from "../fixtures/fixed-journey";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { getJourneySnapshot, performJourneyAction } from "../../src/server/journey/service";
 import type { JourneyModel, ReviewedCaseModelContext } from "../../src/server/model/journey-model";

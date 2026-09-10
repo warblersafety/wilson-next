@@ -6,8 +6,8 @@ import type {
   SemanticCase,
   Source,
 } from "../../src/domain/case/types";
-import { correctionAccount, openingAccount } from "../../src/experiment/fixed-inputs";
-import { parseFixedCorrectionResponse, parseFixedOpeningResponse } from "../../src/experiment/fixed-journey";
+import { correctionAccount, openingAccount } from "../fixtures/fixed-inputs";
+import { parseFixedCorrectionResponse, parseFixedOpeningResponse } from "../fixtures/fixed-journey";
 
 export { correctionAccount, openingAccount };
 

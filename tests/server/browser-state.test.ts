@@ -13,8 +13,8 @@ import {
 } from "../../src/server/case/browser-state";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { getJourneySnapshot, performJourneyAction } from "../../src/server/journey/service";
-import { openingAccount } from "../../src/experiment/fixed-inputs";
-import { fixedJourneyModel } from "../../src/experiment/fixed-journey";
+import { openingAccount } from "../fixtures/fixed-inputs";
+import { fixedJourneyModel } from "../fixtures/fixed-journey";
 
 describe("browser-held journey state boundary", () => {
   it("reconstructs the same compatible state through fresh request repositories", async () => {
