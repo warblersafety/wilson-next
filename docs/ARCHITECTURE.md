@@ -6,7 +6,8 @@ PR #43; Issue #57 adds the bounded adaptive-completion amendment after
 Experiment 2 concluded `Revise`; Issue #62 adds the bounded single-device and
 product-quality generalization; Issue #64 adds combined report types,
 semantic device-detail applicability, and stable-device correction/uncertainty
-without changing the deferred live-model risk
+without changing the deferred live-model risk; Issue #37 restores fail-closed
+live application-model selection for the protected Git-preview path
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification
@@ -315,6 +316,9 @@ immutable repository ID, non-`main` branch, and pull-request metadata for
 incomplete, and unknown contexts refuse before constructing Anthropic. This
 gate governs the assembled application route; a separately authorized operator
 model-evidence tool remains governed by its issue and Delivery's call controls.
+The Vercel project must keep **Automatically expose System Environment
+Variables** enabled for the preview; if those values are unavailable, the gate
+fails safely by refusing the live adapter.
 
 Vercel Authentication remains the access-control boundary for that preview;
 the application gate is defense in depth and does not attest to Vercel's

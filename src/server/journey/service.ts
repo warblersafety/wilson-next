@@ -14,7 +14,6 @@ import {
   silentDiagnosticLogger,
   type RuntimeDiagnosticLogger,
 } from "../diagnostics/runtime-log";
-import { createAnthropicJourneyModel } from "../model/anthropic-journey";
 import {
   ModelCallFailure,
   type JourneyModel,
@@ -107,7 +106,7 @@ export async function performJourneyAction(
   repository: CaseRepository,
   caseId: string,
   action: JourneyAction,
-  model: JourneyModel = createAnthropicJourneyModel(),
+  model: JourneyModel,
   diagnostics: RuntimeDiagnosticLogger = silentDiagnosticLogger,
 ): Promise<JourneySnapshot> {
   let current = await ensureJourneyCase(repository, caseId);

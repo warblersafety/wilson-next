@@ -65,14 +65,14 @@ async function runLockedSample(): Promise<void> {
     },
   );
   if (!openingCompleted) throw new Error("The opening call stopped Slice 3; no retry was attempted.");
-  await performJourneyAction(repository, caseId, { action: "accept-understanding" });
+  await performJourneyAction(repository, caseId, { action: "accept-understanding" }, model);
   await performJourneyAction(repository, caseId, {
     action: "answer-indications",
     answers: [
       { productId: "product-apixaban", value: { kind: "known", value: "postoperative VTE prophylaxis after knee replacement" } },
       { productId: "product-naproxen", value: { kind: "known", value: "postoperative pain" } },
     ],
-  });
+  }, model);
 
   const correctionCompleted = await runTurn(
     model.propose("correction", correctionAccount),
