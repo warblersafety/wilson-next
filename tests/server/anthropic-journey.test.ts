@@ -62,11 +62,20 @@ describe("Anthropic production model boundary", () => {
     expect(requestText).toContain("evidenceQuote");
     expect(requestText).toContain("Completeness outranks brevity");
     expect(requestText).toContain("preserve explicitly stated descriptive detail");
+    expect(requestText).toContain("administered only to treat the adverse event belongs in event.treatments");
+    expect(requestText).toContain("do not declare it as a report product merely because the treatment is named");
     expect(requestText).not.toMatch(/apixaban|naproxen|lisinopril/i);
     expect(schema).toContain("evidenceQuote");
     expect(schema).toContain("Completeness outranks brevity");
     expect(schema).toContain("Preserve explicitly stated descriptive detail");
     expect(schema).toContain("productReference");
+    expect(schema).toContain('"const":"known"');
+    expect(schema).toContain('"enum":["available","not-available","returned-to-manufacturer"]');
+    expect(schema).toContain('"format":"date"');
+    expect(schema).not.toContain("minLength");
+    expect(schema).not.toContain("exclusiveMinimum");
+    expect(schema).not.toContain('"minimum":');
+    expect(schema).not.toContain('"maximum":');
     expect(schema).not.toContain('"start"');
     expect(schema).not.toContain('"end"');
     expect(MODEL_MAX_RETRIES).toBe(0);
@@ -187,8 +196,38 @@ describe("Anthropic production model boundary", () => {
       async () => response(output, "opening"), Date.now, undefined, identities, () => recordedAt,
     ).propose("opening", openingText));
     expect(failure.diagnostic).toMatchObject({
-      phase: "domain-boundary",
+      phase: "structured-schema",
       issues: [{ message: "role requires suspect or concomitant" }],
+    });
+  });
+
+  it.each([
+    ["scalar symptoms", () => {
+      const output = openingOutput();
+      output.proposals.find(({ target }) => target.entity === "event" && target.field === "symptoms")!.value = {
+        kind: "known", value: "rash",
+      } as never;
+      return output;
+    }, "symptoms requires a string array"],
+    ["free-text product availability", () => {
+      const output = openingOutput();
+      output.proposals.push({
+        proposalReference: "availability",
+        groupReference: "event-group",
+        intent: "fact",
+        target: { entity: "event", field: "productAvailability" },
+        value: { kind: "known", value: "available for evaluation" },
+        evidenceQuote: "reported rash",
+      });
+      return output;
+    }, "productAvailability requires a supported availability state"],
+  ])("rejects the recorded %s failure before the domain envelope", async (_label, output, message) => {
+    const failure = await modelFailure(createAnthropicJourneyModel(
+      async () => response(output(), "opening"), Date.now, undefined, identities, () => recordedAt,
+    ).propose("opening", openingText));
+    expect(failure.diagnostic).toMatchObject({
+      phase: "structured-schema",
+      issues: [{ message }],
     });
   });
 

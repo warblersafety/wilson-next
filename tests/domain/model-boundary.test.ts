@@ -1,8 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+  modelProposalOutputSchema,
   parseModelProposalEnvelope,
+  providerModelProposalOutputSchema,
   type ModelBoundaryIdentityFactory,
 } from "../../src/domain/case/model-boundary";
+import { modelTargetValueContracts } from "../../src/domain/case/value-contract";
 
 const recordedAt = "2026-09-05T20:00:00.000Z";
 
@@ -193,6 +196,39 @@ describe("model proposal boundary", () => {
     expect(() => parseModelProposalEnvelope(malformed, identities)).toThrow("identifier requires a string");
   });
 
+  it.each([
+    ["symptoms list", { entity: "event", field: "symptoms" }, ["rash"], true],
+    ["symptoms scalar", { entity: "event", field: "symptoms" }, "rash", false],
+    ["availability enum", { entity: "event", field: "productAvailability" }, "available", true],
+    ["availability free text", { entity: "event", field: "productAvailability" }, "available for evaluation", false],
+    ["ISO date", { entity: "event", field: "onsetDate" }, "2026-09-10", true],
+    ["non-ISO date", { entity: "event", field: "onsetDate" }, "September 10", false],
+    ["boolean", { entity: "event", field: "hospitalized" }, true, true],
+    ["boolean text", { entity: "event", field: "hospitalized" }, "yes", false],
+    ["age boundary", { entity: "patient", field: "ageYears" }, 150, true],
+    ["age outside boundary", { entity: "patient", field: "ageYears" }, 151, false],
+    ["sex enum", { entity: "patient", field: "sex" }, "intersex", true],
+    ["sex free text", { entity: "patient", field: "sex" }, "not recorded", false],
+    ["product role", { entity: "product", productReference: "product", field: "role" }, "suspect", true],
+    ["product role free text", { entity: "product", productReference: "product", field: "role" }, "causal", false],
+    ["test text", { entity: "test", testReference: "test", field: "testResult" }, "Tryptase: 18 ng/mL", true],
+  ] as const)("locally decodes target-dependent %s values", (_label, target, value, accepted) => {
+    const result = modelProposalOutputSchema.safeParse(modelOutput(target, value));
+    expect(result.success).toBe(accepted);
+  });
+
+  it("expresses every model target in a provider-enforced target/value variant", () => {
+    for (const [entity, contracts] of Object.entries(modelTargetValueContracts)) {
+      for (const [field, contract] of Object.entries(contracts)) {
+        expect(providerValueSchema(entity, field), `${entity}.${field}`).toMatchObject(
+          expectedProviderValue(contract),
+        );
+      }
+    }
+    expect(JSON.stringify(providerModelProposalOutputSchema)).not.toContain("reportType");
+    expect(JSON.stringify(providerModelProposalOutputSchema)).not.toContain("reporter");
+  });
+
   it.each(["unknown", "explicitly-absent", "inapplicable", "declined"] as const)(
     "preserves an explicitly stated %s meaning as an unaccepted proposal",
     (kind) => {
@@ -247,4 +283,51 @@ function roleCandidate(role: string) {
       }],
     },
   };
+}
+
+function modelOutput(target: object, value: unknown) {
+  return {
+    products: [],
+    proposals: [{
+      proposalReference: "proposal",
+      groupReference: "group",
+      intent: "fact",
+      target,
+      value: { kind: "known", value },
+      evidenceQuote: "synthetic evidence",
+    }],
+  };
+}
+
+function providerValueSchema(entity: string, field: string): Record<string, unknown> {
+  const proposals = providerModelProposalOutputSchema.properties as Record<string, Record<string, unknown>>;
+  const proposalArray = proposals.proposals;
+  const items = proposalArray.items as { anyOf: Array<Record<string, unknown>> };
+  for (const variant of items.anyOf) {
+    const properties = variant.properties as Record<string, Record<string, unknown>>;
+    const value = properties.value;
+    const valueProperties = value?.properties as Record<string, Record<string, unknown>> | undefined;
+    if (valueProperties?.kind?.const !== "known") continue;
+    const target = properties.target;
+    const targetVariants = (target.anyOf as Array<Record<string, unknown>> | undefined) ?? [target];
+    if (targetVariants.some((candidate) => {
+      const candidateProperties = candidate.properties as Record<string, Record<string, unknown>>;
+      return candidateProperties.entity.const === entity
+        && (candidateProperties.field.enum as string[]).includes(field);
+    })) return valueProperties.value;
+  }
+  throw new Error(`No provider contract for ${entity}.${field}`);
+}
+
+function expectedProviderValue(contract: { shape: string; values?: readonly string[] }) {
+  switch (contract.shape) {
+    case "string": return { type: "string" };
+    case "iso-date": return { type: "string", format: "date" };
+    case "integer": return { type: "integer" };
+    case "boolean": return { type: "boolean" };
+    case "string-array": return { type: "array", items: { type: "string" } };
+    case "measurement": return { type: "object", properties: { value: { type: "number" }, unit: { enum: ["kg", "lb"] } } };
+    case "enum": return { type: "string", enum: [...(contract.values ?? [])] };
+    default: throw new Error(`Unexpected model value contract ${contract.shape}`);
+  }
 }

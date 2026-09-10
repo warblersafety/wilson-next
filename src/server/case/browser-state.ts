@@ -61,7 +61,7 @@ function factSchema<T extends z.ZodType>(value: T) {
 const isoDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const patientFactsSchema = z.object({
   identifier: factSchema(z.string()),
-  ageYears: factSchema(z.number().int().min(0).max(130)),
+  ageYears: factSchema(z.number().int().min(0).max(150)),
   sex: factSchema(z.enum(["female", "male", "intersex"])),
   weight: factSchema(z.object({ value: z.number().positive(), unit: z.enum(["kg", "lb"]) }).strict()),
 }).strict();

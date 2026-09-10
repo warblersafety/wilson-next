@@ -4,7 +4,11 @@ import {
   parseModelProposalEnvelope,
   type ModelBoundaryIdentityFactory,
 } from "../../domain/case/model-boundary";
-import { createAnthropicJourneyModel } from "./anthropic-journey";
+import {
+  createAnthropicJourneyModel,
+  MODEL_PROMPT_REVISION,
+  MODEL_SCHEMA_REVISION,
+} from "./anthropic-journey";
 import type { JourneyModel } from "./journey-model";
 
 const AUTHORIZED_GIT_PREVIEW = {
@@ -89,8 +93,8 @@ function predeterminedJourneyModel(predetermined: string): JourneyModel {
         }, createIdentity),
         metrics: {
           model: "predetermined-model-response",
-          promptRevision: "wilson-layer3-device-depth-v1",
-          schemaRevision: "wilson-grounded-proposals-v10",
+          promptRevision: MODEL_PROMPT_REVISION,
+          schemaRevision: MODEL_SCHEMA_REVISION,
           inputTokens: 0,
           outputTokens: 0,
           latencyMs: 0,

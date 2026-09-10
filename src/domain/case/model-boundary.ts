@@ -1,5 +1,10 @@
 import { z } from "zod";
 import type { CaseValue, FactTarget, GroundedProposal, ProposedProduct, ProposedRelevantTest, Source } from "./types";
+import {
+  knownValueMismatch,
+  modelTargetValueContracts,
+  type KnownValueContract,
+} from "./value-contract";
 
 const patientFields = ["identifier", "ageYears", "sex", "weight"] as const;
 const eventFields = ["problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "relevantHistory", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate"] as const;
@@ -63,8 +68,14 @@ export const modelProposalOutputSchema = z.object({
     if (!proposal.evidenceQuote.trim()) {
       context.addIssue({ code: "custom", path: ["proposals", index, "evidenceQuote"], message: "Evidence quotation must not be blank" });
     }
+    const mismatch = knownValueMismatch(modelFactTarget(proposal.target), proposal.value);
+    if (mismatch) {
+      context.addIssue({ code: "custom", path: ["proposals", index, "value"], message: mismatch });
+    }
   });
 });
+
+export const providerModelProposalOutputSchema = createProviderModelProposalOutputSchema();
 
 const inputSchema = z.object({
   id: z.string().min(1),
@@ -281,29 +292,174 @@ function reportDuplicates(
   });
 }
 
-function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>): string | undefined {
-  if (value.kind !== "known") return undefined;
-  const actual = value.value;
-  const stringFields = new Set([
-    "identifier", "reportType", "problemDescription", "onsetDate", "deathDate", "relevantHistory", "outcome", "dischargeDate", "productAvailability", "productReturnDate",
-    "testResult", "lowRange", "highRange", "date",
-    "name", "productType", "manufacturer", "lotNumber", "dose", "frequency", "route", "startDate", "stopDate", "indication",
-    "commonName", "procode", "modelNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessor", "servicedByThirdParty",
-  ]);
-  if (stringFields.has(target.field) && typeof actual !== "string") return `${target.field} requires a string`;
-  if (["onsetDate", "deathDate", "dischargeDate", "productReturnDate", "startDate", "stopDate", "date", "expirationDate", "implantDate", "explantDate"].includes(target.field)
-    && (typeof actual !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(actual))) return `${target.field} requires an ISO calendar date`;
-  if (target.field === "ageYears" && (!Number.isInteger(actual) || (actual as number) < 0 || (actual as number) > 150)) return "ageYears requires a valid age";
-  if (target.field === "sex" && !["female", "male", "intersex"].includes(actual as string)) return "sex requires a supported value";
-  if (target.field === "weight" && (!actual || typeof actual !== "object"
-    || typeof (actual as { value?: unknown }).value !== "number"
-    || !["kg", "lb"].includes(String((actual as { unit?: unknown }).unit)))) return "weight requires a value and kg or lb unit";
-  if (["symptoms", "treatments"].includes(target.field) && (!Array.isArray(actual) || actual.some((item) => typeof item !== "string"))) return `${target.field} requires a string array`;
-  if (["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "stopped", "implanted", "reprocessedSingleUse"].includes(target.field) && typeof actual !== "boolean") return `${target.field} requires a boolean`;
-  if (target.field === "role" && !["suspect", "concomitant"].includes(actual as string)) return "role requires suspect or concomitant";
-  if (target.field === "productType" && !["drug-or-biologic", "device", "other"].includes(actual as string)) return "productType requires a supported product category";
-  if (target.field === "deviceOperator" && !["health-professional", "patient-consumer", "other"].includes(actual as string)) return "deviceOperator requires a supported operator";
-  if (target.field === "servicedByThirdParty" && !["yes", "no", "unknown"].includes(actual as string)) return "servicedByThirdParty requires yes, no, or unknown";
-  if (target.field === "productAvailability" && !["available", "not-available", "returned-to-manufacturer"].includes(actual as string)) return "productAvailability requires a supported availability state";
-  return undefined;
+function modelFactTarget(target: ModelProposalOutput["proposals"][number]["target"]): FactTarget {
+  if (target.entity === "patient") return { entity: "patient", entityId: "patient", field: target.field };
+  if (target.entity === "event") return { entity: "event", entityId: "event", field: target.field };
+  if (target.entity === "product") return { entity: "product", entityId: target.productReference, field: target.field };
+  return { entity: "test", entityId: target.testReference, field: target.field };
+}
+
+type ProviderSchema = Record<string, unknown>;
+type ModelEntity = keyof typeof modelTargetValueContracts;
+
+interface ContractGroup {
+  contract: KnownValueContract;
+  fields: Record<ModelEntity, string[]>;
+}
+
+function createProviderModelProposalOutputSchema(): ProviderSchema {
+  const knownVariants = groupedModelContracts().map(({ contract, fields }) => proposalSchema(
+    providerTargetSchema(fields),
+    providerKnownValueSchema(contract),
+  ));
+  const nonKnownVariant = proposalSchema(
+    providerTargetSchema(modelFieldsByEntity()),
+    {
+      type: "object",
+      properties: { kind: { type: "string", enum: ["unknown", "explicitly-absent", "inapplicable", "declined"] } },
+      required: ["kind"],
+      additionalProperties: false,
+    },
+  );
+
+  return {
+    type: "object",
+    properties: {
+      products: {
+        type: "array",
+        items: declarationSchema("productReference"),
+      },
+      tests: {
+        type: "array",
+        items: declarationSchema("testReference"),
+      },
+      proposals: {
+        type: "array",
+        minItems: 1,
+        items: { anyOf: [...knownVariants, nonKnownVariant] },
+      },
+    },
+    required: ["products", "proposals"],
+    additionalProperties: false,
+  };
+}
+
+function groupedModelContracts(): ContractGroup[] {
+  const groups = new Map<string, ContractGroup>();
+  for (const [entity, contracts] of Object.entries(modelTargetValueContracts) as Array<
+    [ModelEntity, Record<string, KnownValueContract>]
+  >) {
+    for (const [field, contract] of Object.entries(contracts)) {
+      const key = JSON.stringify(contract);
+      const group = groups.get(key) ?? {
+        contract,
+        fields: { patient: [], event: [], product: [], test: [] },
+      };
+      group.fields[entity].push(field);
+      groups.set(key, group);
+    }
+  }
+  return [...groups.values()];
+}
+
+function modelFieldsByEntity(): Record<ModelEntity, string[]> {
+  return Object.fromEntries(
+    Object.entries(modelTargetValueContracts).map(([entity, contracts]) => [entity, Object.keys(contracts)]),
+  ) as Record<ModelEntity, string[]>;
+}
+
+function providerTargetSchema(fieldsByEntity: Record<ModelEntity, string[]>): ProviderSchema {
+  const variants = (Object.entries(fieldsByEntity) as Array<[ModelEntity, string[]]>)
+    .filter(([, fields]) => fields.length > 0)
+    .map(([entity, fields]) => {
+      const reference = entity === "product" ? "productReference" : entity === "test" ? "testReference" : undefined;
+      return {
+        type: "object",
+        properties: {
+          entity: { type: "string", const: entity },
+          ...(reference ? { [reference]: nonEmptyStringGuidance() } : {}),
+          field: { type: "string", enum: fields },
+        },
+        required: ["entity", ...(reference ? [reference] : []), "field"],
+        additionalProperties: false,
+      };
+    });
+  return variants.length === 1 ? variants[0] : { anyOf: variants };
+}
+
+function providerKnownValueSchema(contract: KnownValueContract): ProviderSchema {
+  const valueSchema = providerValueSchema(contract);
+  const valueDescription = [
+    valueSchema.description,
+    "Preserve explicitly stated descriptive detail; normalize only conventions defined by the model instructions.",
+  ].filter(Boolean).join(" ");
+  return {
+    type: "object",
+    properties: {
+      kind: { type: "string", const: "known" },
+      value: { ...valueSchema, description: valueDescription },
+      qualifier: nonEmptyStringGuidance(),
+    },
+    required: ["kind", "value"],
+    additionalProperties: false,
+  };
+}
+
+function providerValueSchema(contract: KnownValueContract): ProviderSchema {
+  switch (contract.shape) {
+    case "string": return { type: "string" };
+    case "iso-date": return { type: "string", format: "date" };
+    case "integer": return {
+      type: "integer",
+      description: `Must be between ${contract.minimum} and ${contract.maximum}, inclusive; Wilson validates the bounds locally.`,
+    };
+    case "boolean": return { type: "boolean" };
+    case "string-array": return { type: "array", items: { type: "string" } };
+    case "measurement": return {
+      type: "object",
+      properties: {
+        value: { type: "number", description: "Must be positive; Wilson validates this locally." },
+        unit: { type: "string", enum: [...contract.units] },
+      },
+      required: ["value", "unit"],
+      additionalProperties: false,
+    };
+    case "enum": return { type: "string", enum: [...contract.values] };
+    case "enum-array": return { type: "array", items: { type: "string", enum: [...contract.values] } };
+  }
+}
+
+function proposalSchema(target: ProviderSchema, value: ProviderSchema): ProviderSchema {
+  return {
+    type: "object",
+    properties: {
+      proposalReference: nonEmptyStringGuidance(),
+      groupReference: nonEmptyStringGuidance(),
+      intent: { type: "string", enum: ["fact", "correction", "alternative"] },
+      target,
+      value,
+      evidenceQuote: {
+        ...nonEmptyStringGuidance(),
+        description: "An exact contiguous quotation that independently identifies the subject and complete claim. Completeness outranks brevity, including wording needed for negation, correction, alternatives, or unresolved uncertainty. Wilson validates presence and uniqueness locally.",
+      },
+    },
+    required: ["proposalReference", "groupReference", "intent", "target", "value", "evidenceQuote"],
+    additionalProperties: false,
+  };
+}
+
+function declarationSchema(reference: "productReference" | "testReference"): ProviderSchema {
+  return {
+    type: "object",
+    properties: {
+      [reference]: nonEmptyStringGuidance(),
+      groupReference: nonEmptyStringGuidance(),
+    },
+    required: [reference, "groupReference"],
+    additionalProperties: false,
+  };
+}
+
+function nonEmptyStringGuidance(): ProviderSchema {
+  return { type: "string", description: "Must be non-empty; Wilson validates this locally." };
 }

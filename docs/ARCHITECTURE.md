@@ -7,7 +7,9 @@ Experiment 2 concluded `Revise`; Issue #62 adds the bounded single-device and
 product-quality generalization; Issue #64 adds combined report types,
 semantic device-detail applicability, and stable-device correction/uncertainty
 without changing the deferred live-model risk; Issue #37 restores fail-closed
-live application-model selection for the protected Git-preview path
+live application-model selection for the protected Git-preview path; Issue #67
+makes the provider proposal contract target-dependent without moving semantic
+authority out of the domain
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification
@@ -164,6 +166,26 @@ A model may propose `unknown`, `explicitly absent`, `inapplicable`, or `declined
 only when the current clinician input states that meaning explicitly and the
 proposal cites it. Those proposals remain unaccepted until ordinary review.
 Absence of a proposal remains empty and never acquires one of those meanings.
+
+The provider-facing proposal schema couples each supported target group to its
+known value shape: strings, ISO dates, integers, booleans, string lists,
+measurements, and bounded semantic enums. It sends provider-supported `const`,
+`enum`, `format`, and structural constraints directly rather than allowing the
+installed SDK helper to demote them to descriptions. Unsupported numerical and
+non-empty-string constraints remain truthful guidance and are enforced after
+decoding. One domain-owned target/value contract supplies both that schema and
+the final command check; local structured decoding and the resolved-identity
+model boundary also reject mismatches. Provider grammar is an early mechanical
+guard, not semantic authority, and `applyCaseCommand` remains the final
+deterministic write boundary.
+
+A medicine or other product named only as treatment administered in response
+to the adverse event belongs in the event treatment fact and is not a report
+product merely because it is named. The model may additionally propose it as a
+product only when clinician input separately describes it as suspect,
+concomitant, or otherwise involved in the report. This instruction clarifies
+the existing event-versus-product semantics; it does not classify causality or
+silently accept either proposal.
 
 The runtime model boundary rejects only mechanically decidable contract
 violations before review:
