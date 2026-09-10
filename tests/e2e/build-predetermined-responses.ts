@@ -4,6 +4,11 @@ import type { ModelProposalOutput } from "../../src/domain/case/model-boundary.t
 export const richOpening = "Patient TEST-68 is a 68-year-old man. He began cephalexin 500 mg by mouth twice daily on 01-Aug-2026 for cellulitis. On 04-Aug-2026 he developed diffuse hives and facial swelling and was hospitalized. Cephalexin was stopped, he was treated with epinephrine and diphenhydramine, and he recovered and was discharged on 05-Aug-2026. I suspect cephalexin.";
 export const adaptiveRichOpening = "Patient TEST-72 is a 72-year-old woman weighing 64 kg. She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. Her relevant history is a penicillin allergy. Amoxicillin was stopped, she received epinephrine, and she recovered. I suspect amoxicillin.";
 export const adaptiveSparseOpening = "Patient TEST-26 is a 26-year-old man. He developed severe dizziness while taking propranolol. I suspect propranolol.";
+export const layer1DeathOpening = "Patient TEST-63 is a 63-year-old man. He began trimethoprim-sulfamethoxazole 160/800 mg by mouth twice daily on 01-Sep-2026 for a urinary tract infection. On 06-Sep-2026 he developed a widespread blistering rash and died. A skin biopsy on 06-Sep-2026 showed full-thickness epidermal necrosis. No other relevant medical history applies. Trimethoprim-sulfamethoxazole was stopped. I suspect trimethoprim-sulfamethoxazole.";
+export const layer1TestsOpening = "Patient TEST-51 is a 51-year-old woman. She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia. On 05-Sep-2026 she developed muscle pain and weakness. ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. No serious outcomes applied. No other relevant medical history applies. Atorvastatin was stopped, and she was improving. I suspect atorvastatin.";
+export const layer1TestsUpdate = "Correction: the ALT result was 123 U/L, not 132 U/L.";
+export const layer1RoleOpening = "Patient TEST-47 is a 47-year-old man. He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026. Warfarin is suspect; acetaminophen is concomitant. On 08-Aug-2026 he developed epistaxis and easy bruising. INR was 4.8 on 08-Aug-2026. No serious outcomes applied. No other relevant medical history applies. Warfarin was stopped and the symptoms resolved.";
+export const layer1RoleUpdate = "Correction: acetaminophen should be treated as a suspect product, not a concomitant product.";
 export const sparseOpening = "Patient TEST-31 is a 31-year-old woman. She developed nausea and vomiting while taking metformin. I suspect metformin. She does not know the dose, when metformin began, or when the symptoms started. She was not hospitalized.";
 export const repeatedOpening = "Patient TEST-44 is a 44-year-old man. He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain. On 05-Jul-2026 he developed nausea and right upper abdominal pain and was hospitalized. Tylenol and ibuprofen were stopped, he received intravenous fluids, and he recovered and was discharged on 07-Jul-2026. I suspect acetaminophen and ibuprofen.";
 export const repeatedUpdate = "Correction: the ibuprofen dose was 200 mg twice daily, not 400 mg twice daily. My medication list says acetaminophen began 02-Jul-2026 rather than 01-Jul-2026. I cannot resolve which date is correct.";
@@ -75,6 +80,140 @@ function adaptiveSparseResponse(): ModelProposalOutput {
     proposal("event-symptoms", "event", { entity: "event", field: "symptoms" }, known(["severe dizziness"]), event),
     proposal("product-name", "g1", product("p1", "name"), known("propranolol"), event),
     proposal("product-role", "g1", product("p1", "role"), known("suspect"), "I suspect propranolol"),
+  ] };
+}
+
+function layer1DeathResponse(): ModelProposalOutput {
+  const patient = "Patient TEST-63 is a 63-year-old man.";
+  const regimen = "He began trimethoprim-sulfamethoxazole 160/800 mg by mouth twice daily on 01-Sep-2026 for a urinary tract infection.";
+  const event = "On 06-Sep-2026 he developed a widespread blistering rash and died.";
+  const biopsy = "A skin biopsy on 06-Sep-2026 showed full-thickness epidermal necrosis.";
+  const stopped = "Trimethoprim-sulfamethoxazole was stopped.";
+  return {
+    products: [{ productReference: "p1", groupReference: "g1" }],
+    tests: [{ testReference: "biopsy", groupReference: "gt1" }],
+    proposals: [
+      proposal("patient-id", "patient", { entity: "patient", field: "identifier" }, known("TEST-63"), patient),
+      proposal("patient-age", "patient", { entity: "patient", field: "ageYears" }, known(63), patient),
+      proposal("patient-sex", "patient", { entity: "patient", field: "sex" }, known("male"), patient),
+      proposal("event-symptoms", "event", { entity: "event", field: "symptoms" }, known(["widespread blistering rash"]), event),
+      proposal("event-onset", "event", { entity: "event", field: "onsetDate" }, known("2026-09-06"), event),
+      proposal("event-death", "event", { entity: "event", field: "death" }, known(true), event),
+      proposal("event-history", "event", { entity: "event", field: "relevantHistory" }, { kind: "explicitly-absent" }, "No other relevant medical history applies."),
+      proposal("test-result", "gt1", test("biopsy", "testResult"), known("Skin biopsy: full-thickness epidermal necrosis"), biopsy),
+      proposal("test-date", "gt1", test("biopsy", "date"), known("2026-09-06"), biopsy),
+      proposal("product-name", "g1", product("p1", "name"), known("trimethoprim-sulfamethoxazole"), regimen),
+      proposal("product-role", "g1", product("p1", "role"), known("suspect"), "I suspect trimethoprim-sulfamethoxazole"),
+      proposal("product-dose", "g1", product("p1", "dose"), known("160/800 mg"), regimen),
+      proposal("product-frequency", "g1", product("p1", "frequency"), known("twice daily"), regimen),
+      proposal("product-route", "g1", product("p1", "route"), known("oral"), regimen),
+      proposal("product-start", "g1", product("p1", "startDate"), known("2026-09-01"), regimen),
+      proposal("product-indication", "g1", product("p1", "indication"), known("urinary tract infection"), regimen),
+      proposal("product-stopped", "g1", product("p1", "stopped"), known(true), stopped),
+    ],
+  };
+}
+
+const noSeriousOutcomes = ["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious"] as const;
+
+function layer1TestsResponse(): ModelProposalOutput {
+  const patient = "Patient TEST-51 is a 51-year-old woman.";
+  const regimen = "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia.";
+  const event = "On 05-Sep-2026 she developed muscle pain and weakness.";
+  const tests = [
+    ["alt", "gt1", "ALT: 132 U/L", "7 U/L", "56 U/L", "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026"],
+    ["ast", "gt2", "AST: 118 U/L", "10 U/L", "40 U/L", "AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026"],
+    ["bilirubin", "gt3", "Total bilirubin: 2.1 mg/dL", "", "", "total bilirubin was 2.1 mg/dL on 05-Sep-2026"],
+  ] as const;
+  const proposals: ModelProposalOutput["proposals"] = [
+    proposal("patient-id", "patient", { entity: "patient", field: "identifier" }, known("TEST-51"), patient),
+    proposal("patient-age", "patient", { entity: "patient", field: "ageYears" }, known(51), patient),
+    proposal("patient-sex", "patient", { entity: "patient", field: "sex" }, known("female"), patient),
+    proposal("event-symptoms", "event", { entity: "event", field: "symptoms" }, known(["muscle pain", "weakness"]), event),
+    proposal("event-onset", "event", { entity: "event", field: "onsetDate" }, known("2026-09-05"), event),
+    proposal("event-history", "event", { entity: "event", field: "relevantHistory" }, { kind: "explicitly-absent" }, "No other relevant medical history applies."),
+    proposal("event-outcome", "event", { entity: "event", field: "outcome" }, known("improving"), "Atorvastatin was stopped, and she was improving."),
+    proposal("product-name", "g1", product("p1", "name"), known("atorvastatin"), regimen),
+    proposal("product-role", "g1", product("p1", "role"), known("suspect"), "I suspect atorvastatin"),
+    proposal("product-dose", "g1", product("p1", "dose"), known("40 mg"), regimen),
+    proposal("product-frequency", "g1", product("p1", "frequency"), known("daily"), regimen),
+    proposal("product-route", "g1", product("p1", "route"), known("oral"), regimen),
+    proposal("product-start", "g1", product("p1", "startDate"), known("2026-08-01"), regimen),
+    proposal("product-indication", "g1", product("p1", "indication"), known("hyperlipidemia"), regimen),
+    proposal("product-stopped", "g1", product("p1", "stopped"), known(true), "Atorvastatin was stopped, and she was improving."),
+  ];
+  noSeriousOutcomes.forEach((field) => proposals.push(
+    proposal(`event-${field}`, "event", { entity: "event", field }, known(false), "No serious outcomes applied."),
+  ));
+  for (const [reference, group, result, low, high, evidence] of tests) {
+    proposals.push(
+      proposal(`${reference}-result`, group, test(reference, "testResult"), known(result), evidence),
+      proposal(`${reference}-date`, group, test(reference, "date"), known("2026-09-05"), evidence),
+    );
+    if (low) proposals.push(proposal(`${reference}-low`, group, test(reference, "lowRange"), known(low), evidence));
+    if (high) proposals.push(proposal(`${reference}-high`, group, test(reference, "highRange"), known(high), evidence));
+  }
+  return {
+    products: [{ productReference: "p1", groupReference: "g1" }],
+    tests: tests.map(([testReference, groupReference]) => ({ testReference, groupReference })),
+    proposals,
+  };
+}
+
+function layer1TestsCorrectionResponse(): ModelProposalOutput {
+  return { products: [], proposals: [
+    proposal("alt-correction", "u1", test("test-layer1-tests-alt", "testResult"), known("ALT: 123 U/L"), layer1TestsUpdate, "correction"),
+  ] };
+}
+
+function layer1RoleResponse(): ModelProposalOutput {
+  const patient = "Patient TEST-47 is a 47-year-old man.";
+  const regimens = "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026.";
+  const roles = "Warfarin is suspect; acetaminophen is concomitant.";
+  const event = "On 08-Aug-2026 he developed epistaxis and easy bruising.";
+  const inr = "INR was 4.8 on 08-Aug-2026.";
+  const result = "Warfarin was stopped and the symptoms resolved.";
+  const proposals: ModelProposalOutput["proposals"] = [
+    proposal("patient-id", "patient", { entity: "patient", field: "identifier" }, known("TEST-47"), patient),
+    proposal("patient-age", "patient", { entity: "patient", field: "ageYears" }, known(47), patient),
+    proposal("patient-sex", "patient", { entity: "patient", field: "sex" }, known("male"), patient),
+    proposal("event-symptoms", "event", { entity: "event", field: "symptoms" }, known(["epistaxis", "easy bruising"]), event),
+    proposal("event-onset", "event", { entity: "event", field: "onsetDate" }, known("2026-08-08"), event),
+    proposal("event-history", "event", { entity: "event", field: "relevantHistory" }, { kind: "explicitly-absent" }, "No other relevant medical history applies."),
+    proposal("event-outcome", "event", { entity: "event", field: "outcome" }, known("resolved"), result),
+    proposal("inr-result", "gt1", test("inr", "testResult"), known("INR: 4.8"), inr),
+    proposal("inr-date", "gt1", test("inr", "date"), known("2026-08-08"), inr),
+    proposal("warfarin-name", "g1", product("warfarin", "name"), known("warfarin"), regimens),
+    proposal("warfarin-role", "g1", product("warfarin", "role"), known("suspect"), roles),
+    proposal("warfarin-dose", "g1", product("warfarin", "dose"), known("5 mg"), regimens),
+    proposal("warfarin-frequency", "g1", product("warfarin", "frequency"), known("daily"), regimens),
+    proposal("warfarin-route", "g1", product("warfarin", "route"), known("oral"), regimens),
+    proposal("warfarin-start", "g1", product("warfarin", "startDate"), known("2026-08-01"), regimens),
+    proposal("warfarin-indication", "g1", product("warfarin", "indication"), known("atrial fibrillation"), regimens),
+    proposal("warfarin-stopped", "g1", product("warfarin", "stopped"), known(true), result),
+    proposal("acetaminophen-name", "g2", product("acetaminophen", "name"), known("acetaminophen"), regimens),
+    proposal("acetaminophen-role", "g2", product("acetaminophen", "role"), known("concomitant"), roles),
+    proposal("acetaminophen-dose", "g2", product("acetaminophen", "dose"), known("650 mg"), regimens),
+    proposal("acetaminophen-frequency", "g2", product("acetaminophen", "frequency"), known("every six hours"), regimens),
+    proposal("acetaminophen-route", "g2", product("acetaminophen", "route"), known("oral"), regimens),
+    proposal("acetaminophen-start", "g2", product("acetaminophen", "startDate"), known("2026-08-02"), regimens),
+  ];
+  noSeriousOutcomes.forEach((field) => proposals.push(
+    proposal(`event-${field}`, "event", { entity: "event", field }, known(false), "No serious outcomes applied."),
+  ));
+  return {
+    products: [
+      { productReference: "warfarin", groupReference: "g1" },
+      { productReference: "acetaminophen", groupReference: "g2" },
+    ],
+    tests: [{ testReference: "inr", groupReference: "gt1" }],
+    proposals,
+  };
+}
+
+function layer1RoleCorrectionResponse(): ModelProposalOutput {
+  return { products: [], proposals: [
+    proposal("role-correction", "u1", product("product-layer1-role-acetaminophen", "role"), known("suspect"), layer1RoleUpdate, "correction"),
   ] };
 }
 
@@ -207,6 +346,11 @@ function regressionResponses(): [ModelProposalOutput, ModelProposalOutput] {
 
 const [regressionOpeningResponse, regressionCorrectionResponse] = regressionResponses();
 const responses = [
+  { identityScope: "layer1-death", turn: "opening", output: layer1DeathResponse() },
+  { identityScope: "layer1-tests", turn: "opening", output: layer1TestsResponse() },
+  { identityScope: "layer1-tests-update", turn: "correction", output: layer1TestsCorrectionResponse() },
+  { identityScope: "layer1-role", turn: "opening", output: layer1RoleResponse() },
+  { identityScope: "layer1-role-update", turn: "correction", output: layer1RoleCorrectionResponse() },
   { identityScope: "adaptive-rich", turn: "opening", output: adaptiveRichResponse() },
   { identityScope: "adaptive-sparse", turn: "opening", output: adaptiveSparseResponse() },
   { identityScope: "rich", turn: "opening", output: richResponse() },

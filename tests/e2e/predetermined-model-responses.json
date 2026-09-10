@@ -1,5 +1,1280 @@
 [
   {
+    "identityScope": "layer1-death",
+    "turn": "opening",
+    "output": {
+      "products": [
+        {
+          "productReference": "p1",
+          "groupReference": "g1"
+        }
+      ],
+      "tests": [
+        {
+          "testReference": "biopsy",
+          "groupReference": "gt1"
+        }
+      ],
+      "proposals": [
+        {
+          "proposalReference": "patient-id",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "identifier"
+          },
+          "value": {
+            "kind": "known",
+            "value": "TEST-63"
+          },
+          "evidenceQuote": "Patient TEST-63 is a 63-year-old man."
+        },
+        {
+          "proposalReference": "patient-age",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "ageYears"
+          },
+          "value": {
+            "kind": "known",
+            "value": 63
+          },
+          "evidenceQuote": "Patient TEST-63 is a 63-year-old man."
+        },
+        {
+          "proposalReference": "patient-sex",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "sex"
+          },
+          "value": {
+            "kind": "known",
+            "value": "male"
+          },
+          "evidenceQuote": "Patient TEST-63 is a 63-year-old man."
+        },
+        {
+          "proposalReference": "event-symptoms",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "symptoms"
+          },
+          "value": {
+            "kind": "known",
+            "value": [
+              "widespread blistering rash"
+            ]
+          },
+          "evidenceQuote": "On 06-Sep-2026 he developed a widespread blistering rash and died."
+        },
+        {
+          "proposalReference": "event-onset",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "onsetDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-09-06"
+          },
+          "evidenceQuote": "On 06-Sep-2026 he developed a widespread blistering rash and died."
+        },
+        {
+          "proposalReference": "event-death",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "death"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "On 06-Sep-2026 he developed a widespread blistering rash and died."
+        },
+        {
+          "proposalReference": "event-history",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "relevantHistory"
+          },
+          "value": {
+            "kind": "explicitly-absent"
+          },
+          "evidenceQuote": "No other relevant medical history applies."
+        },
+        {
+          "proposalReference": "test-result",
+          "groupReference": "gt1",
+          "intent": "fact",
+          "target": {
+            "entity": "test",
+            "testReference": "biopsy",
+            "field": "testResult"
+          },
+          "value": {
+            "kind": "known",
+            "value": "Skin biopsy: full-thickness epidermal necrosis"
+          },
+          "evidenceQuote": "A skin biopsy on 06-Sep-2026 showed full-thickness epidermal necrosis."
+        },
+        {
+          "proposalReference": "test-date",
+          "groupReference": "gt1",
+          "intent": "fact",
+          "target": {
+            "entity": "test",
+            "testReference": "biopsy",
+            "field": "date"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-09-06"
+          },
+          "evidenceQuote": "A skin biopsy on 06-Sep-2026 showed full-thickness epidermal necrosis."
+        },
+        {
+          "proposalReference": "product-name",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "trimethoprim-sulfamethoxazole"
+          },
+          "evidenceQuote": "He began trimethoprim-sulfamethoxazole 160/800 mg by mouth twice daily on 01-Sep-2026 for a urinary tract infection."
+        },
+        {
+          "proposalReference": "product-role",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "I suspect trimethoprim-sulfamethoxazole"
+        },
+        {
+          "proposalReference": "product-dose",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "dose"
+          },
+          "value": {
+            "kind": "known",
+            "value": "160/800 mg"
+          },
+          "evidenceQuote": "He began trimethoprim-sulfamethoxazole 160/800 mg by mouth twice daily on 01-Sep-2026 for a urinary tract infection."
+        },
+        {
+          "proposalReference": "product-frequency",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "frequency"
+          },
+          "value": {
+            "kind": "known",
+            "value": "twice daily"
+          },
+          "evidenceQuote": "He began trimethoprim-sulfamethoxazole 160/800 mg by mouth twice daily on 01-Sep-2026 for a urinary tract infection."
+        },
+        {
+          "proposalReference": "product-route",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "route"
+          },
+          "value": {
+            "kind": "known",
+            "value": "oral"
+          },
+          "evidenceQuote": "He began trimethoprim-sulfamethoxazole 160/800 mg by mouth twice daily on 01-Sep-2026 for a urinary tract infection."
+        },
+        {
+          "proposalReference": "product-start",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "startDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-09-01"
+          },
+          "evidenceQuote": "He began trimethoprim-sulfamethoxazole 160/800 mg by mouth twice daily on 01-Sep-2026 for a urinary tract infection."
+        },
+        {
+          "proposalReference": "product-indication",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "indication"
+          },
+          "value": {
+            "kind": "known",
+            "value": "urinary tract infection"
+          },
+          "evidenceQuote": "He began trimethoprim-sulfamethoxazole 160/800 mg by mouth twice daily on 01-Sep-2026 for a urinary tract infection."
+        },
+        {
+          "proposalReference": "product-stopped",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "stopped"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "Trimethoprim-sulfamethoxazole was stopped."
+        }
+      ]
+    }
+  },
+  {
+    "identityScope": "layer1-tests",
+    "turn": "opening",
+    "output": {
+      "products": [
+        {
+          "productReference": "p1",
+          "groupReference": "g1"
+        }
+      ],
+      "tests": [
+        {
+          "testReference": "alt",
+          "groupReference": "gt1"
+        },
+        {
+          "testReference": "ast",
+          "groupReference": "gt2"
+        },
+        {
+          "testReference": "bilirubin",
+          "groupReference": "gt3"
+        }
+      ],
+      "proposals": [
+        {
+          "proposalReference": "patient-id",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "identifier"
+          },
+          "value": {
+            "kind": "known",
+            "value": "TEST-51"
+          },
+          "evidenceQuote": "Patient TEST-51 is a 51-year-old woman."
+        },
+        {
+          "proposalReference": "patient-age",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "ageYears"
+          },
+          "value": {
+            "kind": "known",
+            "value": 51
+          },
+          "evidenceQuote": "Patient TEST-51 is a 51-year-old woman."
+        },
+        {
+          "proposalReference": "patient-sex",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "sex"
+          },
+          "value": {
+            "kind": "known",
+            "value": "female"
+          },
+          "evidenceQuote": "Patient TEST-51 is a 51-year-old woman."
+        },
+        {
+          "proposalReference": "event-symptoms",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "symptoms"
+          },
+          "value": {
+            "kind": "known",
+            "value": [
+              "muscle pain",
+              "weakness"
+            ]
+          },
+          "evidenceQuote": "On 05-Sep-2026 she developed muscle pain and weakness."
+        },
+        {
+          "proposalReference": "event-onset",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "onsetDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-09-05"
+          },
+          "evidenceQuote": "On 05-Sep-2026 she developed muscle pain and weakness."
+        },
+        {
+          "proposalReference": "event-history",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "relevantHistory"
+          },
+          "value": {
+            "kind": "explicitly-absent"
+          },
+          "evidenceQuote": "No other relevant medical history applies."
+        },
+        {
+          "proposalReference": "event-outcome",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "outcome"
+          },
+          "value": {
+            "kind": "known",
+            "value": "improving"
+          },
+          "evidenceQuote": "Atorvastatin was stopped, and she was improving."
+        },
+        {
+          "proposalReference": "product-name",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "atorvastatin"
+          },
+          "evidenceQuote": "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia."
+        },
+        {
+          "proposalReference": "product-role",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "I suspect atorvastatin"
+        },
+        {
+          "proposalReference": "product-dose",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "dose"
+          },
+          "value": {
+            "kind": "known",
+            "value": "40 mg"
+          },
+          "evidenceQuote": "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia."
+        },
+        {
+          "proposalReference": "product-frequency",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "frequency"
+          },
+          "value": {
+            "kind": "known",
+            "value": "daily"
+          },
+          "evidenceQuote": "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia."
+        },
+        {
+          "proposalReference": "product-route",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "route"
+          },
+          "value": {
+            "kind": "known",
+            "value": "oral"
+          },
+          "evidenceQuote": "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia."
+        },
+        {
+          "proposalReference": "product-start",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "startDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-01"
+          },
+          "evidenceQuote": "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia."
+        },
+        {
+          "proposalReference": "product-indication",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "indication"
+          },
+          "value": {
+            "kind": "known",
+            "value": "hyperlipidemia"
+          },
+          "evidenceQuote": "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia."
+        },
+        {
+          "proposalReference": "product-stopped",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "p1",
+            "field": "stopped"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "Atorvastatin was stopped, and she was improving."
+        },
+        {
+          "proposalReference": "event-death",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "death"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-lifeThreatening",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "lifeThreatening"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-hospitalized",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "hospitalized"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-disability",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "disability"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-requiredIntervention",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "requiredIntervention"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-congenitalAnomaly",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "congenitalAnomaly"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-otherSerious",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "otherSerious"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "alt-result",
+          "groupReference": "gt1",
+          "intent": "fact",
+          "target": {
+            "entity": "test",
+            "testReference": "alt",
+            "field": "testResult"
+          },
+          "value": {
+            "kind": "known",
+            "value": "ALT: 132 U/L"
+          },
+          "evidenceQuote": "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026"
+        },
+        {
+          "proposalReference": "alt-date",
+          "groupReference": "gt1",
+          "intent": "fact",
+          "target": {
+            "entity": "test",
+            "testReference": "alt",
+            "field": "date"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-09-05"
+          },
+          "evidenceQuote": "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026"
+        },
+        {
+          "proposalReference": "alt-low",
+          "groupReference": "gt1",
+          "intent": "fact",
+          "target": {
+            "entity": "test",
+            "testReference": "alt",
+            "field": "lowRange"
+          },
+          "value": {
+            "kind": "known",
+            "value": "7 U/L"
+          },
+          "evidenceQuote": "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026"
+        },
+        {
+          "proposalReference": "alt-high",
+          "groupReference": "gt1",
+          "intent": "fact",
+          "target": {
+            "entity": "test",
+            "testReference": "alt",
+            "field": "highRange"
+          },
+          "value": {
+            "kind": "known",
+            "value": "56 U/L"
+          },
+          "evidenceQuote": "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026"
+        },
+        {
+          "proposalReference": "ast-result",
+          "groupReference": "gt2",
+          "intent": "fact",
+          "target": {
+            "entity": "test",
+            "testReference": "ast",
+            "field": "testResult"
+          },
+          "value": {
+            "kind": "known",
+            "value": "AST: 118 U/L"
+          },
+          "evidenceQuote": "AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026"
+        },
+        {
+          "proposalReference": "ast-date",
+          "groupReference": "gt2",
+          "intent": "fact",
+          "target": {
+            "entity": "test",
+            "testReference": "ast",
+            "field": "date"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-09-05"
+          },
+          "evidenceQuote": "AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026"
+        },
+        {
+          "proposalReference": "ast-low",
+          "groupReference": "gt2",
+          "intent": "fact",
+          "target": {
+            "entity": "test",
+            "testReference": "ast",
+            "field": "lowRange"
+          },
+          "value": {
+            "kind": "known",
+            "value": "10 U/L"
+          },
+          "evidenceQuote": "AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026"
+        },
+        {
+          "proposalReference": "ast-high",
+          "groupReference": "gt2",
+          "intent": "fact",
+          "target": {
+            "entity": "test",
+            "testReference": "ast",
+            "field": "highRange"
+          },
+          "value": {
+            "kind": "known",
+            "value": "40 U/L"
+          },
+          "evidenceQuote": "AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026"
+        },
+        {
+          "proposalReference": "bilirubin-result",
+          "groupReference": "gt3",
+          "intent": "fact",
+          "target": {
+            "entity": "test",
+            "testReference": "bilirubin",
+            "field": "testResult"
+          },
+          "value": {
+            "kind": "known",
+            "value": "Total bilirubin: 2.1 mg/dL"
+          },
+          "evidenceQuote": "total bilirubin was 2.1 mg/dL on 05-Sep-2026"
+        },
+        {
+          "proposalReference": "bilirubin-date",
+          "groupReference": "gt3",
+          "intent": "fact",
+          "target": {
+            "entity": "test",
+            "testReference": "bilirubin",
+            "field": "date"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-09-05"
+          },
+          "evidenceQuote": "total bilirubin was 2.1 mg/dL on 05-Sep-2026"
+        }
+      ]
+    }
+  },
+  {
+    "identityScope": "layer1-tests-update",
+    "turn": "correction",
+    "output": {
+      "products": [],
+      "proposals": [
+        {
+          "proposalReference": "alt-correction",
+          "groupReference": "u1",
+          "intent": "correction",
+          "target": {
+            "entity": "test",
+            "testReference": "test-layer1-tests-alt",
+            "field": "testResult"
+          },
+          "value": {
+            "kind": "known",
+            "value": "ALT: 123 U/L"
+          },
+          "evidenceQuote": "Correction: the ALT result was 123 U/L, not 132 U/L."
+        }
+      ]
+    }
+  },
+  {
+    "identityScope": "layer1-role",
+    "turn": "opening",
+    "output": {
+      "products": [
+        {
+          "productReference": "warfarin",
+          "groupReference": "g1"
+        },
+        {
+          "productReference": "acetaminophen",
+          "groupReference": "g2"
+        }
+      ],
+      "tests": [
+        {
+          "testReference": "inr",
+          "groupReference": "gt1"
+        }
+      ],
+      "proposals": [
+        {
+          "proposalReference": "patient-id",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "identifier"
+          },
+          "value": {
+            "kind": "known",
+            "value": "TEST-47"
+          },
+          "evidenceQuote": "Patient TEST-47 is a 47-year-old man."
+        },
+        {
+          "proposalReference": "patient-age",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "ageYears"
+          },
+          "value": {
+            "kind": "known",
+            "value": 47
+          },
+          "evidenceQuote": "Patient TEST-47 is a 47-year-old man."
+        },
+        {
+          "proposalReference": "patient-sex",
+          "groupReference": "patient",
+          "intent": "fact",
+          "target": {
+            "entity": "patient",
+            "field": "sex"
+          },
+          "value": {
+            "kind": "known",
+            "value": "male"
+          },
+          "evidenceQuote": "Patient TEST-47 is a 47-year-old man."
+        },
+        {
+          "proposalReference": "event-symptoms",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "symptoms"
+          },
+          "value": {
+            "kind": "known",
+            "value": [
+              "epistaxis",
+              "easy bruising"
+            ]
+          },
+          "evidenceQuote": "On 08-Aug-2026 he developed epistaxis and easy bruising."
+        },
+        {
+          "proposalReference": "event-onset",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "onsetDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-08"
+          },
+          "evidenceQuote": "On 08-Aug-2026 he developed epistaxis and easy bruising."
+        },
+        {
+          "proposalReference": "event-history",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "relevantHistory"
+          },
+          "value": {
+            "kind": "explicitly-absent"
+          },
+          "evidenceQuote": "No other relevant medical history applies."
+        },
+        {
+          "proposalReference": "event-outcome",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "outcome"
+          },
+          "value": {
+            "kind": "known",
+            "value": "resolved"
+          },
+          "evidenceQuote": "Warfarin was stopped and the symptoms resolved."
+        },
+        {
+          "proposalReference": "inr-result",
+          "groupReference": "gt1",
+          "intent": "fact",
+          "target": {
+            "entity": "test",
+            "testReference": "inr",
+            "field": "testResult"
+          },
+          "value": {
+            "kind": "known",
+            "value": "INR: 4.8"
+          },
+          "evidenceQuote": "INR was 4.8 on 08-Aug-2026."
+        },
+        {
+          "proposalReference": "inr-date",
+          "groupReference": "gt1",
+          "intent": "fact",
+          "target": {
+            "entity": "test",
+            "testReference": "inr",
+            "field": "date"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-08"
+          },
+          "evidenceQuote": "INR was 4.8 on 08-Aug-2026."
+        },
+        {
+          "proposalReference": "warfarin-name",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "warfarin",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "warfarin"
+          },
+          "evidenceQuote": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026."
+        },
+        {
+          "proposalReference": "warfarin-role",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "warfarin",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "Warfarin is suspect; acetaminophen is concomitant."
+        },
+        {
+          "proposalReference": "warfarin-dose",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "warfarin",
+            "field": "dose"
+          },
+          "value": {
+            "kind": "known",
+            "value": "5 mg"
+          },
+          "evidenceQuote": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026."
+        },
+        {
+          "proposalReference": "warfarin-frequency",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "warfarin",
+            "field": "frequency"
+          },
+          "value": {
+            "kind": "known",
+            "value": "daily"
+          },
+          "evidenceQuote": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026."
+        },
+        {
+          "proposalReference": "warfarin-route",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "warfarin",
+            "field": "route"
+          },
+          "value": {
+            "kind": "known",
+            "value": "oral"
+          },
+          "evidenceQuote": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026."
+        },
+        {
+          "proposalReference": "warfarin-start",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "warfarin",
+            "field": "startDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-01"
+          },
+          "evidenceQuote": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026."
+        },
+        {
+          "proposalReference": "warfarin-indication",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "warfarin",
+            "field": "indication"
+          },
+          "value": {
+            "kind": "known",
+            "value": "atrial fibrillation"
+          },
+          "evidenceQuote": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026."
+        },
+        {
+          "proposalReference": "warfarin-stopped",
+          "groupReference": "g1",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "warfarin",
+            "field": "stopped"
+          },
+          "value": {
+            "kind": "known",
+            "value": true
+          },
+          "evidenceQuote": "Warfarin was stopped and the symptoms resolved."
+        },
+        {
+          "proposalReference": "acetaminophen-name",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "acetaminophen",
+            "field": "name"
+          },
+          "value": {
+            "kind": "known",
+            "value": "acetaminophen"
+          },
+          "evidenceQuote": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026."
+        },
+        {
+          "proposalReference": "acetaminophen-role",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "acetaminophen",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "concomitant"
+          },
+          "evidenceQuote": "Warfarin is suspect; acetaminophen is concomitant."
+        },
+        {
+          "proposalReference": "acetaminophen-dose",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "acetaminophen",
+            "field": "dose"
+          },
+          "value": {
+            "kind": "known",
+            "value": "650 mg"
+          },
+          "evidenceQuote": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026."
+        },
+        {
+          "proposalReference": "acetaminophen-frequency",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "acetaminophen",
+            "field": "frequency"
+          },
+          "value": {
+            "kind": "known",
+            "value": "every six hours"
+          },
+          "evidenceQuote": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026."
+        },
+        {
+          "proposalReference": "acetaminophen-route",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "acetaminophen",
+            "field": "route"
+          },
+          "value": {
+            "kind": "known",
+            "value": "oral"
+          },
+          "evidenceQuote": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026."
+        },
+        {
+          "proposalReference": "acetaminophen-start",
+          "groupReference": "g2",
+          "intent": "fact",
+          "target": {
+            "entity": "product",
+            "productReference": "acetaminophen",
+            "field": "startDate"
+          },
+          "value": {
+            "kind": "known",
+            "value": "2026-08-02"
+          },
+          "evidenceQuote": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026."
+        },
+        {
+          "proposalReference": "event-death",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "death"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-lifeThreatening",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "lifeThreatening"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-hospitalized",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "hospitalized"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-disability",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "disability"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-requiredIntervention",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "requiredIntervention"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-congenitalAnomaly",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "congenitalAnomaly"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        },
+        {
+          "proposalReference": "event-otherSerious",
+          "groupReference": "event",
+          "intent": "fact",
+          "target": {
+            "entity": "event",
+            "field": "otherSerious"
+          },
+          "value": {
+            "kind": "known",
+            "value": false
+          },
+          "evidenceQuote": "No serious outcomes applied."
+        }
+      ]
+    }
+  },
+  {
+    "identityScope": "layer1-role-update",
+    "turn": "correction",
+    "output": {
+      "products": [],
+      "proposals": [
+        {
+          "proposalReference": "role-correction",
+          "groupReference": "u1",
+          "intent": "correction",
+          "target": {
+            "entity": "product",
+            "productReference": "product-layer1-role-acetaminophen",
+            "field": "role"
+          },
+          "value": {
+            "kind": "known",
+            "value": "suspect"
+          },
+          "evidenceQuote": "Correction: acetaminophen should be treated as a suspect product, not a concomitant product."
+        }
+      ]
+    }
+  },
+  {
     "identityScope": "adaptive-rich",
     "turn": "opening",
     "output": {

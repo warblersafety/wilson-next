@@ -8,22 +8,29 @@ import {
   regressionUpdate,
   adaptiveRichOpening,
   adaptiveSparseOpening,
+  layer1DeathOpening,
+  layer1RoleOpening,
+  layer1RoleUpdate,
+  layer1TestsOpening,
+  layer1TestsUpdate,
   repeatedOpening,
   repeatedUpdate,
   richOpening,
   sparseOpening,
 } from "./build-predetermined-responses";
+import type { BrowserJourneyState } from "../../src/server/case/browser-state";
 
 const execFileAsync = promisify(execFile);
 const retainEvidence = process.env.WILSON_RETAIN_STAGE3_EVIDENCE === "1";
 const evidenceDirectory = process.env.WILSON_STAGE3_EVIDENCE_DIRECTORY ?? "evidence/experiment-2/stage-3";
 const retainAdaptiveOnly = evidenceDirectory.includes("issue-57");
+const retainLayer1RepresentativeOnly = evidenceDirectory.includes("issue-60");
 const readbacks: Record<string, IndependentReadback> = {};
 const checkpoints: Array<{ journey: string; state: string; assertion: string }> = [];
 const pdfs: Array<{ journey: string; bytes: number; sha256: string }> = [];
 const questionTrace: Array<{ journey: string; question: string; reason: string; answer: string }> = [];
 
-test("runs adaptive completion plus all Experiment 1 and 2 deterministic regressions through one assembled desktop path", async ({ page, browser }, testInfo) => {
+test("runs Layer 1 stress probes plus all Experiment 1 and 2 deterministic regressions through one assembled desktop path", async ({ page, browser }, testInfo) => {
   if (retainEvidence) await mkdir(evidenceDirectory, { recursive: true });
 
   const initial = await page.goto("/");
@@ -31,6 +38,114 @@ test("runs adaptive completion plus all Experiment 1 and 2 deterministic regress
   await expect(page.getByRole("heading", { name: "Describe what happened" })).toBeVisible();
   await expect(page.getByLabel("Experiment boundary")).toContainText("Fictional information only");
 
+  await submitOpening(page, layer1DeathOpening);
+  await expect(productOrCaseCard(page, "Event")).toContainText("Death");
+  await expect(productOrCaseCard(page, "Relevant test 1")).toContainText("Skin biopsy: full-thickness epidermal necrosis");
+  await expect(productCard(page, "trimethoprim-sulfamethoxazole")).toContainText("urinary tract infection");
+  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await expect(page.getByRole("heading", { name: "Which serious outcomes applied to this event?" })).toBeVisible();
+  await expect(page.getByLabel("Death — already recorded")).toBeChecked();
+  questionTrace.push({ journey: "layer1-death", question: "serious outcomes", reason: "preserve accepted death and resolve only the remaining outcome flags", answer: "no additional outcomes" });
+  await page.getByRole("button", { name: "Confirm outcomes" }).click();
+  await expect(page.getByRole("heading", { name: "What was the date of death?" })).toBeVisible();
+  questionTrace.push({ journey: "layer1-death", question: "death date", reason: "death was accepted and its conditional date remained empty", answer: "7-Sep-2026" });
+  await page.locator("#death-date").fill("2026-09-07");
+  await page.getByRole("button", { name: "Add date" }).click();
+  await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
+  questionTrace.push({ journey: "layer1-death", question: "reporter block", reason: "reporter identity must be entered directly", answer: "structured reporter details" });
+  await fillReporter(page, { firstName: "Morgan", lastName: "Reed", email: "morgan.reed@example.test" });
+  await page.getByRole("button", { name: "Add reporter details" }).click();
+  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  const deathCase = await semanticCase(page);
+  expect(deathCase.event.facts.death.resolvedValue?.value).toEqual({ kind: "known", value: true });
+  expect(deathCase.event.facts.deathDate.resolvedValue?.value).toEqual({ kind: "known", value: "2026-09-07" });
+  expect(deathCase.askedNeeds.map(({ key }) => key)).toEqual(["serious-outcomes", "death-date", "reporter-details"]);
+  expect(deathCase.relevantTests).toHaveLength(1);
+  checkpoints.push({ journey: "layer1-death", state: "output", assertion: "Accepted death stayed true; only unresolved outcomes, the conditional death date, and reporter details were asked." });
+  await downloadAndCheck(page, "layer1-death", ["TEST-63", "trimethoprim-sulfamethoxazole", "Skin biopsy: full-thickness epidermal necrosis", "07-SEP-2026", "Morgan", "Reed"], [], {
+    "topmostSubform[0].Page1[0].SecA_Patient[0].Death[0]": "/1",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].DeathDate[0]": "07-SEP-2026",
+  });
+
+  await newCase(page);
+  await submitOpening(page, layer1TestsOpening);
+  await expect(productOrCaseCard(page, "Relevant test 1")).toContainText("ALT: 132 U/L");
+  await expect(productOrCaseCard(page, "Relevant test 2")).toContainText("AST: 118 U/L");
+  await expect(productOrCaseCard(page, "Relevant test 3")).toContainText("Total bilirubin: 2.1 mg/dL");
+  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
+  questionTrace.push({ journey: "layer1-tests", question: "reporter block", reason: "accepted indications, outcomes, three tests, and history suppress earlier groups", answer: "structured reporter details" });
+  await fillReporter(page, { firstName: "Riley", lastName: "Patel", phone: "202-555-0162" });
+  await page.getByRole("button", { name: "Add reporter details" }).click();
+  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  const testsBeforeCorrection = await semanticCase(page);
+  expect(testsBeforeCorrection.relevantTests.map(({ id }) => id)).toEqual([
+    "test-layer1-tests-alt", "test-layer1-tests-ast", "test-layer1-tests-bilirubin",
+  ]);
+  await page.getByLabel("Clinical update").fill(layer1TestsUpdate);
+  await page.getByRole("button", { name: "Review this update" }).click();
+  await expect(page.getByRole("heading", { name: "Review the proposed update" })).toBeVisible();
+  const proposedTestCorrection = await semanticCase(page);
+  expect(proposedTestCorrection.relevantTests).toHaveLength(3);
+  expect(proposedTestCorrection.relevantTests[0].facts.testResult.resolvedValue?.value).toEqual({ kind: "known", value: "ALT: 132 U/L" });
+  expect(proposedTestCorrection.relevantTests[0].facts.testResult.proposedValues[0]?.value).toEqual({ kind: "known", value: "ALT: 123 U/L" });
+  await page.getByRole("article").filter({ hasText: "ALT: 123 U/L" }).getByRole("button", { name: "Accept this update" }).click();
+  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  await expect(page.getByText("Earlier: ALT: 132 U/L", { exact: true })).toBeVisible();
+  const testsAfterCorrection = await semanticCase(page);
+  expect(testsAfterCorrection.relevantTests.map(({ id }) => id)).toEqual(testsBeforeCorrection.relevantTests.map(({ id }) => id));
+  expect(testsAfterCorrection.relevantTests).toHaveLength(3);
+  expect(testsAfterCorrection.relevantTests[0].facts.testResult.resolvedValue?.value).toEqual({ kind: "known", value: "ALT: 123 U/L" });
+  expect(testsAfterCorrection.relevantTests[0].facts.testResult.supersededValues.map(({ value }) => value)).toEqual([{ kind: "known", value: "ALT: 132 U/L" }]);
+  expect(testsAfterCorrection.relevantTests[1].facts.testResult.resolvedValue?.value).toEqual({ kind: "known", value: "AST: 118 U/L" });
+  expect(testsAfterCorrection.relevantTests[2].facts.testResult.resolvedValue?.value).toEqual({ kind: "known", value: "Total bilirubin: 2.1 mg/dL" });
+  expect(testsAfterCorrection.askedNeeds.map(({ key }) => key)).toEqual(["reporter-details"]);
+  checkpoints.push({ journey: "layer1-tests", state: "corrected-output", assertion: "Three stable test entities remained distinct; the accepted ALT correction superseded only its prior value and did not reopen completion." });
+  await downloadAndCheck(page, "layer1-tests", ["TEST-51", "atorvastatin", "ALT: 123 U/L", "AST: 118 U/L", "Total bilirubin: 2.1 mg/dL", "Riley", "Patel"], ["ALT: 132 U/L"]);
+
+  await newCase(page);
+  await submitOpening(page, layer1RoleOpening);
+  await expect(productCard(page, "warfarin")).toContainText("Suspect product");
+  await expect(productCard(page, "acetaminophen")).toContainText("Other product");
+  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
+  questionTrace.push({ journey: "layer1-role", question: "reporter block", reason: "accepted opening knowledge suppresses all earlier completion groups", answer: "structured reporter details" });
+  await fillReporter(page, { firstName: "Taylor", lastName: "Ng", email: "taylor.ng@example.test" });
+  await page.getByRole("button", { name: "Add reporter details" }).click();
+  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  const roleBeforeCorrection = await semanticCase(page);
+  expect(roleBeforeCorrection.products.map(({ id }) => id)).toEqual([
+    "product-layer1-role-warfarin", "product-layer1-role-acetaminophen",
+  ]);
+  await page.getByLabel("Clinical update").fill(layer1RoleUpdate);
+  await page.getByRole("button", { name: "Review this update" }).click();
+  await page.getByRole("article").filter({ hasText: "Suspect product" }).getByRole("button", { name: "Accept this update" }).click();
+  await expect(page.getByRole("heading", { name: "What was acetaminophen being used for?" })).toBeVisible();
+  questionTrace.push({ journey: "layer1-role", question: "newly applicable suspect indication", reason: "accepted role correction made only acetaminophen indication newly applicable", answer: "headache" });
+  const acetaminophenAnswer = page.getByRole("group", { name: "acetaminophen" });
+  await acetaminophenAnswer.getByLabel("Known", { exact: true }).check();
+  await page.getByLabel("acetaminophen indication").fill("headache");
+  await page.getByRole("button", { name: "Add these answers" }).click();
+  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  const roleAfterCorrection = await semanticCase(page);
+  expect(roleAfterCorrection.products.map(({ id }) => id)).toEqual(roleBeforeCorrection.products.map(({ id }) => id));
+  expect(roleAfterCorrection.products.map(({ facts }) => facts.role.resolvedValue?.value)).toEqual([
+    { kind: "known", value: "suspect" }, { kind: "known", value: "suspect" },
+  ]);
+  expect(roleAfterCorrection.products[1].facts.role.supersededValues.map(({ value }) => value)).toEqual([{ kind: "known", value: "concomitant" }]);
+  expect(roleAfterCorrection.products[1].facts.indication.resolvedValue?.value).toEqual({ kind: "known", value: "headache" });
+  expect(roleAfterCorrection.askedNeeds.map(({ key }) => key)).toEqual(["reporter-details", "suspect-product-indications"]);
+  checkpoints.push({ journey: "layer1-role", state: "recomputed-output", assertion: "The stable acetaminophen entity moved from concomitant to suspect, reopened only its indication, and projected with warfarin in Section D." });
+  await retainScreenshot(page, "layer1-role-output.png");
+  await downloadAndCheck(page, "layer1-role", ["TEST-47", "warfarin", "atrial fibrillation", "acetaminophen", "headache", "every six hours", "Taylor", "Ng"], [], {
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "warfarin",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2Name[0]": "acetaminophen",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2Diagnosis[0]": "headache",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2Freq[0]": "Other",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2FreqOther[0]": "every six hours",
+  }, ["topmostSubform[0].Page6[0].SecF_Other[0].Table1[0].Row1[0].Prod1[0]"]);
+
+  await newCase(page);
   await submitOpening(page, adaptiveRichOpening);
   await expect(productOrCaseCard(page, "Patient")).toContainText("64 kg");
   await expect(productOrCaseCard(page, "Relevant test 1")).toContainText("Serum tryptase: 18 ng/mL");
@@ -183,9 +298,21 @@ test("runs adaptive completion plus all Experiment 1 and 2 deterministic regress
     await writeFile(`${evidenceDirectory}/journey-trace.json`, `${JSON.stringify({
       browser: `Chromium ${browser.version()}`,
       viewportOptions: { viewport: testInfo.project.use.viewport },
-      predeterminedApplicationModelCalls: 9,
+      predeterminedApplicationModelCalls: 14,
       liveApplicationModelCalls: 0,
       interactionSummary: [
+        {
+          journey: "layer1-death", groupedPromptCount: 3, duplicateQuestionCount: 0,
+          observedFriction: "The accepted death outcome required one grouped pass over only the remaining outcome flags, then one conditional date turn and the reporter block.",
+        },
+        {
+          journey: "layer1-tests", groupedPromptCount: 1, correctionReviewCount: 1, duplicateQuestionCount: 0,
+          observedFriction: "Three accepted tests suppressed the context question; one later ALT correction required one explicit review and no completion groups reopened.",
+        },
+        {
+          journey: "layer1-role", groupedPromptCount: 2, correctionReviewCount: 1, duplicateQuestionCount: 0,
+          observedFriction: "The role correction required one review and one newly applicable indication turn; outcomes, context, and reporter details did not repeat.",
+        },
         {
           journey: "adaptive-rich", groupedPromptCount: 2, duplicateQuestionCount: 0,
           observedFriction: "The reporter block was the longest turn; all accepted clinical facts suppressed duplicate prompts.",
@@ -222,7 +349,14 @@ function productOrCaseCard(page: Page, name: string) {
   return productCard(page, name);
 }
 
-async function downloadAndCheck(page: Page, journey: string, included: string[], excluded: string[], named: Record<string, string> = {}) {
+async function downloadAndCheck(
+  page: Page,
+  journey: string,
+  included: string[],
+  excluded: string[],
+  named: Record<string, string> = {},
+  absentNamed: string[] = [],
+) {
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download official PDF" }).click();
   const download = await downloadPromise;
@@ -239,9 +373,18 @@ async function downloadAndCheck(page: Page, journey: string, included: string[],
   for (const value of included) expect(readback.fieldValues).toContain(value);
   for (const value of excluded) expect(readback.fieldValues).not.toContain(value);
   expect(readback.namedFields).toMatchObject(named);
+  for (const name of absentNamed) expect(readback.namedFields[name]).toBeUndefined();
   readbacks[journey] = readback;
   pdfs.push({ journey, bytes: bytes.byteLength, sha256: createHash("sha256").update(bytes).digest("hex") });
-  if (retainEvidence && (!retainAdaptiveOnly || journey.startsWith("adaptive-"))) await writeFile(`${evidenceDirectory}/${journey}.pdf`, bytes);
+  if (retainEvidence && shouldRetain(journey)) await writeFile(`${evidenceDirectory}/${journey}.pdf`, bytes);
+}
+
+async function semanticCase(page: Page): Promise<BrowserJourneyState["case"]> {
+  return page.evaluate(() => {
+    const stored = window.sessionStorage.getItem("wilson-journey-state-v2");
+    if (!stored) throw new Error("Wilson browser case state was unavailable");
+    return (JSON.parse(stored) as BrowserJourneyState).case;
+  });
 }
 
 async function completeQuestions(page: Page) {
@@ -301,5 +444,11 @@ async function independentReadback(path: string): Promise<IndependentReadback> {
 }
 
 async function retainScreenshot(page: Page, name: string) {
-  if (retainEvidence && (!retainAdaptiveOnly || name.startsWith("adaptive-"))) await page.screenshot({ path: `${evidenceDirectory}/${name}`, fullPage: true });
+  if (retainEvidence && shouldRetain(name.replace(/-output\.png$/, ""))) await page.screenshot({ path: `${evidenceDirectory}/${name}`, fullPage: true });
+}
+
+function shouldRetain(journey: string): boolean {
+  if (retainAdaptiveOnly) return journey.startsWith("adaptive-");
+  if (retainLayer1RepresentativeOnly) return journey === "layer1-role";
+  return true;
 }

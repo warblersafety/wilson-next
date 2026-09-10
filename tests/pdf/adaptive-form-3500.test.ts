@@ -13,6 +13,32 @@ const sourcePath = fileURLToPath(new URL("../../assets/fda/form-fda-3500-09-2025
 const readerPath = fileURLToPath(new URL("../../tools/pdf/independent_readback.py", import.meta.url));
 
 describe("adaptive Form FDA 3500 projection fields", () => {
+  it("preserves a frequency outside the form's standard vocabulary in its Other field", async () => {
+    const projection: Form3500Projection = {
+      revision: 1,
+      sections: {
+        A: {}, B: { relevantTests: [] },
+        D: { suspectProducts: [{ productId: "product-acetaminophen", name: "acetaminophen", frequency: "every six hours" }] },
+        F: { concomitantProducts: [] }, G: { reporter: {} },
+      },
+      sourceTrace: {}, omissions: [], notIncluded: [],
+    };
+    const source = new Uint8Array(await readFile(sourcePath));
+    const result = await fillForm3500Projection(source, projection);
+    expect(result.readback.sections).toEqual(projection.sections);
+
+    const directory = await mkdtemp(join(tmpdir(), "wilson-frequency-pdf-"));
+    const path = join(directory, "frequency.pdf");
+    await writeFile(path, result.output);
+    const python = process.env.PYPDF_PYTHON ?? "python3";
+    const { stdout } = await execFileAsync(python, [readerPath, path, "--named"]);
+    const { namedFields } = JSON.parse(stdout) as { namedFields: Record<string, string> };
+    expect(namedFields).toMatchObject({
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Freq[0]": "Other",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1FreqOther[0]": "every six hours",
+    });
+  });
+
   it("round-trips the added patient, outcome, test, history, and reporter fields", async () => {
     const relevantTests = Array.from({ length: 8 }, (_, index) => ({
       testId: `test-${index + 1}`,
