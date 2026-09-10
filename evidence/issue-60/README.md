@@ -98,5 +98,6 @@ This layer does not add device or product-problem paths, pediatric cases, a
 complete Form 3500 ontology, arbitrary medication-frequency or route mappings,
 persistence, production infrastructure, real clinical data, or direct FDA
 submission. It does not revisit Issue #55 or make any live application-model
-call. Layer 2 should next probe uncertainty and refusal combinations without
-expanding the product path.
+call. Under tracker #59, Layer 2 should next probe one information-rich device
+adverse event and one sparse product-quality report in its own bounded issue;
+Issue #60 does not authorize that expansion.
