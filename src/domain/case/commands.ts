@@ -90,7 +90,7 @@ export function applyCaseCommand(
         if (need.targetIds.some((target) => !answeredTargets.has(target))) {
           throw new Error(`Answer must address every target in semantic need ${command.answersNeed}`);
         }
-        assertNeedAnswerTargets(command.answersNeed, command.facts.map(({ target }) => targetKey(target)), (command.relevantTests ?? []).map(({ id }) => id));
+        assertNeedAnswerTargets(command.answersNeed, command.facts.map(({ target }) => targetKey(target)), (command.relevantTests ?? []).map(({ id }) => id), need.targetIds);
         need.status = command.facts.every(({ value }) => value.kind === "declined")
           ? "declined"
           : "answered";
@@ -308,13 +308,18 @@ function recordAskedNeed(
   change.affectedTargets.push(`need:${key}`);
 }
 
-function assertNeedAnswerTargets(key: import("./types").SemanticNeedKey, targets: string[], createdTestIds: string[]): void {
+function assertNeedAnswerTargets(key: import("./types").SemanticNeedKey, targets: string[], createdTestIds: string[], requiredTargets: string[]): void {
+  if (key === "device-details" && (targets.length !== requiredTargets.length
+    || targets.some((target) => !requiredTargets.includes(target)))) {
+    throw new Error(`Answer contains a target outside semantic need ${key}`);
+  }
   const allowed = (target: string) => {
     if (key === "relevant-clinical-context") {
       return target === "event:event:relevantTestsAvailable" || target === "event:event:relevantHistory"
         || createdTestIds.some((id) => target.startsWith(`test:${id}:`));
     }
     if (key === "reporter-details") return target.startsWith("reporter:reporter:");
+    if (key === "device-details") return /^product:[^:]+:(implantDate|explantDate|reprocessor)$/.test(target);
     if (key === "suspect-product-indications") return /^product:[^:]+:indication$/.test(target);
     if (key === "serious-outcomes") return /^event:event:(death|lifeThreatening|hospitalized|disability|requiredIntervention|congenitalAnomaly|otherSerious)$/.test(target);
     return target === "event:event:deathDate";
@@ -485,7 +490,7 @@ function assertValueMatchesTarget(target: FactTarget, value: CaseValue<unknown>)
   if (["symptoms", "treatments"].includes(target.field) && (!Array.isArray(actual) || actual.some((item) => typeof item !== "string"))) {
     throw new Error(`${targetKey(target)} requires a string array`);
   }
-  if (["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "healthProfessional", "doNotDiscloseIdentity", "stopped", "reprocessedSingleUse"].includes(target.field) && typeof actual !== "boolean") {
+  if (["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "healthProfessional", "doNotDiscloseIdentity", "stopped", "implanted", "reprocessedSingleUse"].includes(target.field) && typeof actual !== "boolean") {
     throw new Error(`${targetKey(target)} requires a boolean value`);
   }
   if (target.field === "reportedTo" && (!Array.isArray(actual)
@@ -495,7 +500,7 @@ function assertValueMatchesTarget(target: FactTarget, value: CaseValue<unknown>)
   if (target.field === "role" && !["suspect", "concomitant"].includes(actual as string)) {
     throw new Error(`${targetKey(target)} requires a supported role`);
   }
-  if (target.field === "reportType" && !["adverse-event", "product-problem"].includes(actual as string)) {
+  if (target.field === "reportType" && !["adverse-event", "product-problem", "adverse-event-and-product-problem"].includes(actual as string)) {
     throw new Error(`${targetKey(target)} requires the supported report type`);
   }
   if (target.field === "productType" && !["drug-or-biologic", "device", "other"].includes(actual as string)) {

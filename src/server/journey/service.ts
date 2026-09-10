@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { createSemanticCase } from "../../domain/case/create";
 import { projectForm3500 } from "../../domain/case/projection";
-import type { CaseValue, EventFactKey, Fact, FactTarget, ReporterFactKey, SemanticCase, Source } from "../../domain/case/types";
+import type { CaseValue, EventFactKey, Fact, FactTarget, ProductFactKey, ReporterFactKey, ReportType, SemanticCase, Source } from "../../domain/case/types";
 import {
   createClarificationView,
   createReviewView,
@@ -25,7 +25,7 @@ import { createReviewedCaseModelContext } from "../model/reviewed-case-context";
 export type JourneyStage = "describe" | "understanding" | "clarify" | "review-update" | "output";
 
 export type JourneyAction =
-  | { action: "submit-opening"; text: string; reportType: "adverse-event" | "product-problem" }
+  | { action: "submit-opening"; text: string; reportType: ReportType }
   | {
       action: "change-proposal";
       groupId: string;
@@ -46,6 +46,12 @@ export type JourneyAction =
       test?: { kind: "known"; testResult: string; lowRange?: string; highRange?: string; date?: string }
         | { kind: "explicitly-absent" | "unknown" | "declined" };
       history?: CaseValue<string>;
+    }
+  | {
+      action: "answer-device-details";
+      implantDate?: CaseValue<string>;
+      explantDate?: CaseValue<string>;
+      reprocessor?: CaseValue<string>;
     }
   | {
       action: "answer-reporter";
@@ -158,7 +164,8 @@ export async function performJourneyAction(
           expectedRevision: current.revision,
           ...opening.envelope,
         });
-        const reportTypeText = action.reportType === "adverse-event" ? "Adverse event" : "Product problem";
+        const reportTypeText = action.reportType === "adverse-event" ? "Adverse event"
+          : action.reportType === "product-problem" ? "Product problem" : "Adverse event and product problem";
         await applyCommand({
           type: "record-clinician-facts",
           commandId: commandId("record-report-type"),
@@ -325,6 +332,37 @@ export async function performJourneyAction(
           type: "record-clinician-facts",
           commandId: commandId("answer-clinical-context"), expectedRevision: current.revision,
           source, relevantTests, answersNeed: "relevant-clinical-context", facts,
+        });
+        break;
+      }
+      case "answer-device-details": {
+        requireStage(expectedStage, "clarify");
+        const question = createClarificationView(current);
+        if (question?.kind !== "device-details") throw new Error("The device-details question is no longer open");
+        await ensureOpenCompletionNeed();
+        const values = {
+          implantDate: action.implantDate,
+          explantDate: action.explantDate,
+          reprocessor: action.reprocessor,
+        };
+        const fields = question.targetIds.map((target) => target.split(":")[2] as "implantDate" | "explantDate" | "reprocessor");
+        if (fields.some((field) => !values[field])) throw new Error("Every applicable device detail requires an answer");
+        const device = current.products.find(({ id }) => id === question.deviceId);
+        const name = knownValue(device?.facts.name) ?? "suspect device";
+        const labels = { implantDate: "implant date", explantDate: "explant date", reprocessor: "reprocessor" } as const;
+        const sourceText = fields.map((field) => `${labels[field]}: ${displayValue(values[field]!)}.`).join(" ");
+        await applyCommand({
+          type: "record-clinician-facts",
+          commandId: commandId("answer-device-details"),
+          expectedRevision: current.revision,
+          source: fullSource("answer", `${name} ${sourceText}`),
+          answersNeed: "device-details",
+          facts: fields.map((field) => ({
+            id: valueId(`device-${field}`),
+            target: { entity: "product" as const, entityId: question.deviceId, field: field as ProductFactKey },
+            intent: "fact" as const,
+            value: values[field]!,
+          })),
         });
         break;
       }

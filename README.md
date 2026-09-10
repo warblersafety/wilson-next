@@ -21,10 +21,12 @@ knowledge, reporter entry that bypasses the model, and matching Sections A, B,
 and G projection. Issue #59 now tracks layered deterministic journey coverage
 with root-cause gates. Issue #60 / PR #61 completed its first cohort, stressing
 conditional death detail, multiple-test correction, and role-driven
-applicability. Issue #62 is the bounded Layer 2 cohort for one information-rich
-device adverse event and one sparse product-quality report while retaining all
-earlier deterministic journeys. None of this campaign work calls or remediates
-the deferred live model in Issue #55.
+applicability. Issue #62 / PR #63 completed Layer 2 for one information-rich
+device adverse event and one sparse product-quality report. Issue #64 is the
+bounded Layer 3 cohort for combined device report types, conditionally
+applicable device details, and stable-device correction/uncertainty while
+retaining all earlier deterministic journeys. None of this campaign work calls
+or remediates the deferred live model in Issue #55.
 
 Experiment 2 and Delivery's standing execution authority allow Codex to carry
 its remaining bounded implementation, review, protected-preview, and synthetic

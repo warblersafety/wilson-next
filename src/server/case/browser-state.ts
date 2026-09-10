@@ -3,7 +3,7 @@ import type { SemanticCase } from "../../domain/case/types";
 import type { JourneySnapshot, JourneyStage } from "../journey/service";
 import { InMemoryCaseRepository, validateRestoredCase } from "./repository";
 
-export const browserStateVersion = "wilson-browser-state-v4";
+export const browserStateVersion = "wilson-browser-state-v5";
 
 export interface BrowserJourneyState {
   version: typeof browserStateVersion;
@@ -66,7 +66,7 @@ const patientFactsSchema = z.object({
   weight: factSchema(z.object({ value: z.number().positive(), unit: z.enum(["kg", "lb"]) }).strict()),
 }).strict();
 const eventFactsSchema = z.object({
-  reportType: factSchema(z.enum(["adverse-event", "product-problem"])),
+  reportType: factSchema(z.enum(["adverse-event", "product-problem", "adverse-event-and-product-problem"])),
   problemDescription: factSchema(z.string()),
   symptoms: factSchema(z.array(z.string())),
   onsetDate: factSchema(isoDateSchema),
@@ -121,6 +121,7 @@ const productFactsSchema = z.object({
   serialNumber: factSchema(z.string()),
   udi: factSchema(z.string()),
   deviceOperator: factSchema(z.enum(["health-professional", "patient-consumer", "other"])),
+  implanted: factSchema(z.boolean()),
   implantDate: factSchema(isoDateSchema),
   explantDate: factSchema(isoDateSchema),
   reprocessedSingleUse: factSchema(z.boolean()),
@@ -166,7 +167,7 @@ const caseSchema = z.object({
   }).strict()).max(8),
   reporter: z.object({ id: z.literal("reporter"), facts: reporterFactsSchema }).strict(),
   askedNeeds: z.array(z.object({
-    key: z.enum(["suspect-product-indications", "serious-outcomes", "death-date", "relevant-clinical-context", "reporter-details"]),
+    key: z.enum(["suspect-product-indications", "serious-outcomes", "death-date", "relevant-clinical-context", "device-details", "reporter-details"]),
     targetIds: z.array(z.string().min(1)),
     status: z.enum(["open", "answered", "declined"]),
   }).strict()).max(10),

@@ -5,6 +5,13 @@ export type CompletionQuestion =
   | BaseQuestion<"serious-outcomes"> & { kind: "serious-outcomes" }
   | BaseQuestion<"death-date"> & { kind: "death-date" }
   | BaseQuestion<"relevant-clinical-context"> & { kind: "clinical-context"; askTests: boolean; askHistory: boolean }
+  | BaseQuestion<"device-details"> & {
+      kind: "device-details";
+      deviceId: string;
+      askImplantDate: boolean;
+      askExplantDate: boolean;
+      askReprocessor: boolean;
+    }
   | BaseQuestion<"reporter-details"> & { kind: "reporter" };
 
 interface BaseQuestion<K extends SemanticNeedKey> {
@@ -41,7 +48,7 @@ export function nextCompletionQuestion(caseState: SemanticCase): CompletionQuest
     || caseState.products.some(({ state }) => state === "proposed")
     || caseState.relevantTests.some(({ state }) => state === "proposed")) return null;
   const reportType = knownString(caseState.event.facts.reportType);
-  if (reportType === "adverse-event") {
+  if (reportType === "adverse-event" || reportType === "adverse-event-and-product-problem") {
     const indications = indicationQuestion(caseState);
     if (indications) return indications;
 
@@ -93,6 +100,34 @@ export function nextCompletionQuestion(caseState: SemanticCase): CompletionQuest
     });
     if (context) return context;
   }
+
+  const deviceDetails = ordinaryQuestion(caseState, "device-details", () => {
+    const device = caseState.products.find((product) => product.state === "resolved"
+      && knownString(product.facts.productType) === "device"
+      && knownString(product.facts.role) === "suspect");
+    if (!device) return null;
+    const askImplantDate = knownBoolean(device.facts.implanted) === true && device.facts.implantDate.state === "empty";
+    const askExplantDate = knownBoolean(device.facts.implanted) === true && device.facts.explantDate.state === "empty";
+    const askReprocessor = knownBoolean(device.facts.reprocessedSingleUse) === true && device.facts.reprocessor.state === "empty";
+    const targetIds = [
+      ...(askImplantDate ? [`product:${device.id}:implantDate`] : []),
+      ...(askExplantDate ? [`product:${device.id}:explantDate`] : []),
+      ...(askReprocessor ? [`product:${device.id}:reprocessor`] : []),
+    ];
+    if (targetIds.length === 0) return null;
+    const name = knownString(device.facts.name) ?? "the suspect device";
+    return {
+      kind: "device-details" as const,
+      deviceId: device.id,
+      targetIds,
+      askImplantDate,
+      askExplantDate,
+      askReprocessor,
+      question: `Add the applicable device details for ${name}`,
+      reason: "Implant timing and reprocessor identity are asked only when accepted device facts make them applicable to Section E.",
+    };
+  });
+  if (deviceDetails) return deviceDetails;
 
   return ordinaryQuestion(caseState, "reporter-details", () => ({
     kind: "reporter" as const,

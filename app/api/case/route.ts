@@ -46,9 +46,15 @@ const answerStringSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("explicitly-absent") }).strict(),
   z.object({ kind: z.literal("declined") }).strict(),
 ]);
+const deviceAnswerStringSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("known"), value: z.string().min(1) }).strict(),
+  z.object({ kind: z.literal("unknown") }).strict(),
+  z.object({ kind: z.literal("inapplicable") }).strict(),
+  z.object({ kind: z.literal("declined") }).strict(),
+]);
 
 const actionSchema = z.discriminatedUnion("action", [
-  z.object({ action: z.literal("submit-opening"), text: z.string(), reportType: z.enum(["adverse-event", "product-problem"]) }).strict(),
+  z.object({ action: z.literal("submit-opening"), text: z.string(), reportType: z.enum(["adverse-event", "product-problem", "adverse-event-and-product-problem"]) }).strict(),
   z.object({ action: z.literal("change-proposal"), groupId: z.string().min(1), proposalId: z.string().min(1), value: caseValueSchema, statement: z.string().min(1) }).strict(),
   z.object({ action: z.literal("reject-group"), groupId: z.string().min(1) }).strict(),
   z.object({ action: z.literal("accept-understanding") }).strict(),
@@ -68,6 +74,12 @@ const actionSchema = z.discriminatedUnion("action", [
       z.object({ kind: z.literal("declined") }).strict(),
     ]).optional(),
     history: answerStringSchema.optional(),
+  }).strict(),
+  z.object({
+    action: z.literal("answer-device-details"),
+    implantDate: deviceAnswerStringSchema.optional(),
+    explantDate: deviceAnswerStringSchema.optional(),
+    reprocessor: deviceAnswerStringSchema.optional(),
   }).strict(),
   z.object({
     action: z.literal("answer-reporter"),

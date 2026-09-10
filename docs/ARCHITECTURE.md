@@ -4,7 +4,9 @@
 Experiment 2's production-seed amendments were approved through Issue #42 and
 PR #43; Issue #57 adds the bounded adaptive-completion amendment after
 Experiment 2 concluded `Revise`; Issue #62 adds the bounded single-device and
-product-quality generalization without changing the deferred live-model risk
+product-quality generalization; Issue #64 adds combined report types,
+semantic device-detail applicability, and stable-device correction/uncertainty
+without changing the deferred live-model risk
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification
@@ -78,8 +80,10 @@ The implemented slices use explicit typed fields only for their selected
 patient, event or product-problem, product, relevant-test, and reporter facts.
 Product category and role are facts, and proposed products and tests remain
 proposed until group review. One bounded suspect-device shape shares the same
-stable product identity and fact invariants while projecting to Section E;
-non-device suspects continue to project to Section D.
+stable product identity and fact invariants while projecting to Section E. Its
+explicit implanted fact determines whether implant and explant timing can earn
+a clarification turn but is not itself a Form 3500 field; non-device suspects
+continue to project to Section D.
 Reporter facts enter directly from the clinician through `applyCaseCommand` and
 never pass through the model. `Fact<T>` supplies consistent behavior without
 claiming a complete Form 3500 ontology.
@@ -210,6 +214,18 @@ its proposals are reviewed. Product availability is accepted as a semantic
 report fact and projected to Section C. These are two bounded applicability
 branches, not a general report-completion rules engine.
 
+Layer 3 retains that ordering and adds two bounded branches. A clinician may
+select adverse event and product problem together as one reviewed semantic
+report-type value; both Form 3500 boxes then derive from that value, and the
+adverse-event completion needs remain applicable. For one resolved suspect
+device, an accepted implanted value makes empty implant and explant dates one
+authored device-detail question, and accepted reprocessed-single-use status
+makes an empty reprocessor identity part of the same question. Unknown,
+inapplicable, and declined answers close those targets without a loop. A later
+device correction or incompatible alternative continues to use its stable
+opaque product ID and the existing supersession/conflict invariants. This is
+not a generic device completion planner.
+
 ## Views and Form 3500 projection
 
 All user-visible knowledge and output derive from one revision:
@@ -234,8 +250,8 @@ The UI may offer actions only for semantic targets represented in the current
 revision. It may not infer the stage from fixture input, product names, expected
 values, or a fixed turn number.
 
-For the selected adult medication, single-device adverse-event, and
-product-problem-only journeys, unresolved optional facts remain
+For the selected adult medication, single-device adverse-event,
+product-problem-only, and bounded combined-report journeys, unresolved optional facts remain
 omitted and visible but do not block output after proposals, corrections, and
 applicable bounded needs have received their required review or direct answer.
 Conflicting alternatives never project. The semantic projection supplies
@@ -337,8 +353,8 @@ must replace this synthetic-only logging policy before use.
 - General import or deterministic-derivation frameworks.
 - Full FHIR or ICH E2B compatibility.
 - Comprehensive question planning, full Form 3500 coverage, multiple devices,
-  combined device report types, and device-depth behavior beyond the selected
-  Layer 2 facts.
+  concomitant-role device projection, and device-depth behavior beyond the
+  selected Layer 3 applicability and correction facts.
 - Large package taxonomies or a reusable internal platform.
 
 ## Falsification
@@ -366,4 +382,10 @@ production deployment, full Form 3500 coverage, or deferred mechanisms.
 Issue #62 supplies that named bounded follow-on for one device adverse event and
 one product-quality-only report. Its deterministic evidence may support those
 selected paths without establishing live extraction reliability, comprehensive
+device coverage, real-data readiness, or production use.
+
+Issue #64 supplies the next bounded follow-on for one combined device report,
+one applicable-detail path, and one stable-device correction/conflict path. Its
+deterministic evidence may support only those single-device paths and does not
+establish multiple-device behavior, live extraction reliability, comprehensive
 device coverage, real-data readiness, or production use.

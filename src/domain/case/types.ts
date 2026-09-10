@@ -36,8 +36,10 @@ export interface PatientFacts {
   weight: Fact<{ value: number; unit: "kg" | "lb" }>;
 }
 
+export type ReportType = "adverse-event" | "product-problem" | "adverse-event-and-product-problem";
+
 export interface EventFacts {
-  reportType: Fact<"adverse-event" | "product-problem">;
+  reportType: Fact<ReportType>;
   problemDescription: Fact<string>;
   symptoms: Fact<string[]>;
   onsetDate: Fact<string>;
@@ -102,6 +104,7 @@ export interface ProductFacts {
   serialNumber: Fact<string>;
   udi: Fact<string>;
   deviceOperator: Fact<"health-professional" | "patient-consumer" | "other">;
+  implanted: Fact<boolean>;
   implantDate: Fact<string>;
   explantDate: Fact<string>;
   reprocessedSingleUse: Fact<boolean>;
@@ -158,6 +161,7 @@ export type SemanticNeedKey =
   | "serious-outcomes"
   | "death-date"
   | "relevant-clinical-context"
+  | "device-details"
   | "reporter-details";
 
 export interface AskedNeed {

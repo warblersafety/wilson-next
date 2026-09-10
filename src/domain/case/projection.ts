@@ -1,4 +1,4 @@
-import type { Fact, ProductEntity, SemanticCase } from "./types";
+import type { Fact, ProductEntity, ReportType, SemanticCase } from "./types";
 
 export interface ProjectionOmission {
   concept: string;
@@ -12,7 +12,7 @@ export interface Form3500Projection {
   sections: {
     A: { patientIdentifier?: string; ageYears?: number; sex?: "female" | "male" | "intersex"; weight?: { value: number; unit: "kg" | "lb" } };
     B: {
-      reportType?: "adverse-event" | "product-problem";
+      reportType?: ReportType;
       eventDate?: string;
       eventDescription?: string;
       hospitalized?: boolean;

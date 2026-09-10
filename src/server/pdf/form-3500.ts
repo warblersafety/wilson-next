@@ -238,8 +238,8 @@ export async function fillForm3500Projection(
   setText(form, fields.weightValue, A.weight?.value.toString());
   setChecked(form, fields.weightLb, A.weight?.unit === "lb");
   setChecked(form, fields.weightKg, A.weight?.unit === "kg");
-  setChecked(form, fields.adverseEvent, B.reportType === "adverse-event");
-  setChecked(form, fields.productProblem, B.reportType === "product-problem");
+  setChecked(form, fields.adverseEvent, B.reportType === "adverse-event" || B.reportType === "adverse-event-and-product-problem");
+  setChecked(form, fields.productProblem, B.reportType === "product-problem" || B.reportType === "adverse-event-and-product-problem");
   setChecked(form, fields.hospitalized, B.hospitalized === true);
   for (const field of ["death", "lifeThreatening", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious"] as const) {
     setChecked(form, fields[field], B[field] === true);
@@ -471,8 +471,10 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
         } : undefined,
       }),
       B: compact({
-        reportType: form.getCheckBox(fields.adverseEvent).isChecked() ? "adverse-event"
-          : form.getCheckBox(fields.productProblem).isChecked() ? "product-problem" : undefined,
+        reportType: form.getCheckBox(fields.adverseEvent).isChecked() && form.getCheckBox(fields.productProblem).isChecked()
+          ? "adverse-event-and-product-problem"
+          : form.getCheckBox(fields.adverseEvent).isChecked() ? "adverse-event"
+            : form.getCheckBox(fields.productProblem).isChecked() ? "product-problem" : undefined,
         eventDate: parseDate(form.getTextField(fields.eventDate).getText()),
         eventDescription: form.getTextField(fields.eventNarrative).getText(),
         hospitalized: B.hospitalized === undefined ? undefined : form.getCheckBox(fields.hospitalized).isChecked(),

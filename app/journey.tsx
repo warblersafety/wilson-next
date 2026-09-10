@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import type { CaseValue } from "../src/domain/case/types";
+import type { CaseValue, ReportType } from "../src/domain/case/types";
 import type { FactView, ReviewAttentionItem } from "../src/domain/case/views";
 import type { BrowserJourneyState, JourneyResponse } from "../src/server/case/browser-state";
 import type { JourneyAction, JourneySnapshot } from "../src/server/journey/service";
@@ -158,7 +158,7 @@ export default function Journey() {
         </div>
       </header>
       <aside className={styles.boundary} aria-label="Experiment boundary">
-        <strong>Fictional information only.</strong> This disposable operator preview supports bounded adult medication, single-device adverse-event, and product-quality facts. Do not use it for a real report or as a production system. Closing this tab or starting a new case clears its saved case.
+        <strong>Fictional information only.</strong> This disposable operator preview supports bounded adult medication, single-device adverse-event and product-problem, and non-device product-quality facts. Do not use it for a real report or as a production system. Closing this tab or starting a new case clears its saved case.
       </aside>
       {error && <div className={styles.error} role="alert">{error}</div>}
       {boundaryNotice && <div className={styles.notice} role="status">{boundaryNotice}</div>}
@@ -189,7 +189,10 @@ export default function Journey() {
 function Describe({ opening, setOpening, busy, act }: {
   opening: string; setOpening: (value: string) => void; busy: boolean; act: (action: JourneyAction) => Promise<void>;
 }) {
-  const [reportType, setReportType] = useState<"adverse-event" | "product-problem">("adverse-event");
+  const [adverseEvent, setAdverseEvent] = useState(true);
+  const [productProblem, setProductProblem] = useState(false);
+  const reportType: ReportType | undefined = adverseEvent && productProblem ? "adverse-event-and-product-problem"
+    : adverseEvent ? "adverse-event" : productProblem ? "product-problem" : undefined;
   return <>
     <p className={styles.eyebrow}>Describe</p>
     <h1 id="task-title">Describe what happened</h1>
@@ -197,11 +200,11 @@ function Describe({ opening, setOpening, busy, act }: {
     <label htmlFor="opening-account">Clinical account</label>
     <textarea id="opening-account" rows={13} value={opening} onChange={(event) => setOpening(event.target.value)} />
     <fieldset className={styles.reportType}><legend>Report type</legend>
-      <label><input type="radio" name="report-type" checked={reportType === "adverse-event"} onChange={() => setReportType("adverse-event")} /> Adverse event</label>
-      <label><input type="radio" name="report-type" checked={reportType === "product-problem"} onChange={() => setReportType("product-problem")} /> Product problem</label>
+      <label><input type="checkbox" checked={adverseEvent} onChange={(event) => setAdverseEvent(event.target.checked)} /> Adverse event</label>
+      <label><input type="checkbox" checked={productProblem} onChange={(event) => setProductProblem(event.target.checked)} /> Product problem</label>
     </fieldset>
     <p className={styles.hint}>You can also use device-native dictation. Wilson does not record audio.</p>
-    <button disabled={busy || !opening.trim()} onClick={() => void act({ action: "submit-opening", text: opening, reportType })}>
+    <button disabled={busy || !opening.trim() || !reportType} onClick={() => reportType && void act({ action: "submit-opening", text: opening, reportType })}>
       {busy ? "Extracting case details…" : "Review Wilson’s understanding"}
     </button>
   </>;
@@ -229,6 +232,7 @@ function CompletionTask(props: { snapshot: JourneySnapshot; busy: boolean; act: 
     {question.kind === "serious-outcomes" && <SeriousOutcomesTask {...props} />}
     {question.kind === "death-date" && <DeathDateTask {...props} />}
     {question.kind === "clinical-context" && <ClinicalContextTask {...props} />}
+    {question.kind === "device-details" && <DeviceDetailsTask {...props} />}
     {question.kind === "reporter" && <ReporterTask {...props} />}
   </>;
 }
@@ -371,6 +375,59 @@ function ClinicalContextTask({ snapshot, busy, act }: {
       test: question?.askTests ? testChoice === "known" ? { kind: "known", testResult: testResult.trim(), lowRange: lowRange.trim() || undefined, highRange: highRange.trim() || undefined, date: testDate || undefined } : { kind: testChoice as Exclude<ContextChoice, "known"> } : undefined,
       history: question?.askHistory ? contextValue(historyChoice, history) : undefined,
     })}>Add this context</button>
+  </>;
+}
+
+type DeviceDetailChoice = "known" | "unknown" | "inapplicable" | "declined";
+
+function DeviceDetailsTask({ snapshot, busy, act }: {
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+}) {
+  const question = snapshot.clarification?.kind === "device-details" ? snapshot.clarification : undefined;
+  const [implantChoice, setImplantChoice] = useState<DeviceDetailChoice>();
+  const [explantChoice, setExplantChoice] = useState<DeviceDetailChoice>();
+  const [reprocessorChoice, setReprocessorChoice] = useState<Exclude<DeviceDetailChoice, "inapplicable">>();
+  const [implantDate, setImplantDate] = useState("");
+  const [explantDate, setExplantDate] = useState("");
+  const [reprocessor, setReprocessor] = useState("");
+  const completeChoice = (asked: boolean | undefined, choice: DeviceDetailChoice | undefined, value: string) => !asked
+    || Boolean(choice && (choice !== "known" || value.trim()));
+  const complete = completeChoice(question?.askImplantDate, implantChoice, implantDate)
+    && completeChoice(question?.askExplantDate, explantChoice, explantDate)
+    && completeChoice(question?.askReprocessor, reprocessorChoice, reprocessor);
+  const value = (choice: DeviceDetailChoice | undefined, text: string): CaseValue<string> | undefined => choice === "known"
+    ? { kind: "known", value: text.trim() }
+    : choice ? { kind: choice } : undefined;
+  const choices = (name: string, choice: DeviceDetailChoice | undefined, setChoice: (choice: DeviceDetailChoice) => void, allowInapplicable: boolean) => <>
+    <label><input type="radio" name={name} checked={choice === "known"} onChange={() => setChoice("known")} /> Known</label>
+    <label><input type="radio" name={name} checked={choice === "unknown"} onChange={() => setChoice("unknown")} /> Unknown</label>
+    {allowInapplicable && <label><input type="radio" name={name} checked={choice === "inapplicable"} onChange={() => setChoice("inapplicable")} /> Not applicable</label>}
+    <label><input type="radio" name={name} checked={choice === "declined"} onChange={() => setChoice("declined")} /> Prefer not to answer</label>
+  </>;
+  return <>
+    <h1 id="task-title">{question?.question}</h1>
+    <p>These details are asked only because the reviewed device facts make them applicable. Unknown, not applicable, and refusal close the detail without a repeat.</p>
+    {question?.askImplantDate && <fieldset className={styles.answerGroup}>
+      <legend>Implant date</legend>
+      {choices("implant-date-choice", implantChoice, setImplantChoice, false)}
+      {implantChoice === "known" && <input aria-label="Device implant date" type="date" value={implantDate} onChange={(event) => setImplantDate(event.target.value)} />}
+    </fieldset>}
+    {question?.askExplantDate && <fieldset className={styles.answerGroup}>
+      <legend>Explant date</legend>
+      {choices("explant-date-choice", explantChoice, setExplantChoice, true)}
+      {explantChoice === "known" && <input aria-label="Device explant date" type="date" value={explantDate} onChange={(event) => setExplantDate(event.target.value)} />}
+    </fieldset>}
+    {question?.askReprocessor && <fieldset className={styles.answerGroup}>
+      <legend>Reprocessor</legend>
+      {choices("reprocessor-choice", reprocessorChoice, (choice) => setReprocessorChoice(choice as Exclude<DeviceDetailChoice, "inapplicable">), false)}
+      {reprocessorChoice === "known" && <input aria-label="Device reprocessor" value={reprocessor} onChange={(event) => setReprocessor(event.target.value)} />}
+    </fieldset>}
+    <button disabled={busy || !complete} onClick={() => void act({
+      action: "answer-device-details",
+      implantDate: question?.askImplantDate ? value(implantChoice, implantDate) : undefined,
+      explantDate: question?.askExplantDate ? value(explantChoice, explantDate) : undefined,
+      reprocessor: question?.askReprocessor ? value(reprocessorChoice, reprocessor) : undefined,
+    })}>Add device details</button>
   </>;
 }
 
@@ -533,7 +590,7 @@ function FormPreview({ snapshot }: { snapshot: JourneySnapshot }) {
       <PreviewField label="Weight" value={A.weight ? `${A.weight.value} ${A.weight.unit}` : undefined} />
     </PreviewSection>
     <PreviewSection letter="B" title="Adverse event or product problem">
-      <PreviewField label="Report type" value={B.reportType === "adverse-event" ? "Adverse event" : B.reportType === "product-problem" ? "Product problem" : undefined} />
+      <PreviewField label="Report type" value={B.reportType === "adverse-event" ? "Adverse event" : B.reportType === "product-problem" ? "Product problem" : B.reportType === "adverse-event-and-product-problem" ? "Adverse event and product problem" : undefined} />
       <PreviewField label="Serious outcomes" value={Object.entries(seriousOutcomeLabels).filter(([field]) => B[field as keyof typeof seriousOutcomeLabels] === true).map(([, label]) => label).join(", ") || "None recorded"} />
       <PreviewField label="Date of death" value={displayDate(B.deathDate)} />
       <PreviewField label="Date of event" value={displayDate(B.eventDate)} />
@@ -598,7 +655,7 @@ function CaseCards({ snapshot, busy, act }: {
       const role = formatFact(activeValue(product.facts.role));
       const productType = formatFact(activeValue(product.facts.productType));
       const fields = productType === "device"
-        ? ["commonName", "manufacturer", "procode", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"]
+        ? ["commonName", "manufacturer", "procode", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implanted", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"]
         : ["manufacturer", "lotNumber", "dose", "frequency", "route", "startDate", "stopped", "stopDate", "indication"];
       return <CaseCard key={product.id} title={name} eyebrow={productType === "device" ? "Suspect medical device" : role === "suspect" ? "Suspect product" : "Other product"} groupId={product.proposalGroupId} facts={product.facts} fields={fields} evidenceFields={["name", "productType", "role"]} allowChanges={snapshot.stage === "understanding" && product.state === "proposed"} allowRemove={snapshot.stage === "understanding" && product.state === "proposed"} busy={busy} act={act} />;
     })}
@@ -681,7 +738,15 @@ function formatFact(value: CaseValue<unknown> | undefined): string {
     return `${String(measured.value)} ${String(measured.unit)}`;
   }
   if (typeof value.value === "boolean") return value.value ? "Yes" : "No";
-  if (typeof value.value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value.value)) return displayDate(value.value) ?? value.value;
+  if (typeof value.value === "string") {
+    const label = {
+      "adverse-event": "Adverse event",
+      "product-problem": "Product problem",
+      "adverse-event-and-product-problem": "Adverse event and product problem",
+    }[value.value];
+    if (label) return label;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value.value)) return displayDate(value.value) ?? value.value;
+  }
   return String(value.value);
 }
 
@@ -700,7 +765,7 @@ function fieldLabel(field: string): string {
     treatments: "Treatment", outcome: "Outcome", relevantTestsAvailable: "Relevant tests", relevantHistory: "Relevant history", testResult: "Test and result", lowRange: "Low range", highRange: "High range", date: "Date",
     dischargeDate: "Discharged", dose: "Dose", frequency: "Frequency", route: "Route", startDate: "Started",
     productAvailability: "Product availability", productReturnDate: "Returned to manufacturer", stopped: "Stopped", stopDate: "Stopped date", indication: "Used for", name: "Name", productType: "Product type", role: "Role", manufacturer: "Manufacturer", lotNumber: "Lot number",
-    commonName: "Common device name", procode: "Procode", modelNumber: "Model number", catalogNumber: "Catalog number", expirationDate: "Expiration date", serialNumber: "Serial number", udi: "Unique device identifier", deviceOperator: "Device operator", implantDate: "Implant date", explantDate: "Explant date", reprocessedSingleUse: "Reprocessed single-use device", reprocessor: "Reprocessor", servicedByThirdParty: "Third-party serviced",
+    commonName: "Common device name", procode: "Procode", modelNumber: "Model number", catalogNumber: "Catalog number", expirationDate: "Expiration date", serialNumber: "Serial number", udi: "Unique device identifier", deviceOperator: "Device operator", implanted: "Implanted device", implantDate: "Implant date", explantDate: "Explant date", reprocessedSingleUse: "Reprocessed single-use device", reprocessor: "Reprocessor", servicedByThirdParty: "Third-party serviced",
     firstName: "First name", lastName: "Last name", address: "Address", city: "City", state: "State", postalCode: "ZIP/postal code", country: "Country",
     phone: "Phone", email: "Email", healthProfessional: "Health professional", occupation: "Occupation", reportedTo: "Also reported to", doNotDiscloseIdentity: "Keep identity from manufacturer",
   };

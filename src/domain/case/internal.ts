@@ -95,6 +95,7 @@ export function emptyProductFacts(): ProductFacts {
     serialNumber: emptyFact(),
     udi: emptyFact(),
     deviceOperator: emptyFact(),
+    implanted: emptyFact(),
     implantDate: emptyFact(),
     explantDate: emptyFact(),
     reprocessedSingleUse: emptyFact(),

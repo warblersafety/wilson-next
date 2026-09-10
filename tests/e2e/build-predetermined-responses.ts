@@ -12,6 +12,10 @@ export const layer1RoleOpening = "Patient TEST-47 is a 47-year-old man. He began
 export const layer1RoleUpdate = "Correction: acetaminophen should be treated as a suspect product, not a concomitant product.";
 export const layer2DeviceOpening = "Patient TEST-74 is a 74-year-old woman. On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. The pump was stopped, she received intravenous fluids, and she recovered. No other serious outcomes applied. No relevant tests or medical history apply. The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. The device is available for evaluation.";
 export const layer2ProductQualityOpening = "An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal. The product was not administered to a patient, and no adverse event occurred. The bottle is available for evaluation. I am reporting Cardiovex as the suspect product.";
+export const layer3CombinedOpening = "Patient TEST-67 is a 67-year-old woman. On 09-Sep-2026, an Acme ThermoPatch wearable monitor overheated after its adhesive backing split; it caused a blistering burn on her left arm. The device was removed, the burn was treated with cool compresses, and she recovered. No serious outcomes applied. No relevant tests or medical history apply. The suspect device is an Acme ThermoPatch, common name wearable temperature monitor, manufactured by Acme Medical, model TP-9, lot T-144, serial SN-8804. It was patient-operated, was not implanted, was not a reprocessed single-use device, and was not serviced by a third party. The device is available for evaluation.";
+export const layer3ConditionalOpening = "An Acme PulseLine temporary pacing lead stopped sensing during an intraoperative function check after placement. No patient symptoms or adverse event occurred. The suspect device is an Acme PulseLine, common name temporary pacing lead, manufactured by Acme Medical, model PL-4, serial SN-4012. It was implanted and was a reprocessed single-use device. The implant and explant dates are not in the note, and the reprocessor is not identified. The device is available for evaluation.";
+export const layer3CorrectionOpening = "An Acme NeuroSense monitor displayed repeated false high readings during setup. No patient symptoms or adverse event occurred. The suspect device is an Acme NeuroSense, common name physiologic monitor, manufactured by Acme Medical, model NS-7, serial SN-1001. It was not implanted, was not a reprocessed single-use device, and was not serviced by a third party. The device is available for evaluation.";
+export const layer3CorrectionUpdate = "Correction: the Acme NeuroSense serial number is SN-1002, not SN-1001. The service log lists model NS-8 rather than NS-7, and I cannot resolve which model number is correct.";
 export const sparseOpening = "Patient TEST-31 is a 31-year-old woman. She developed nausea and vomiting while taking metformin. I suspect metformin. She does not know the dose, when metformin began, or when the symptoms started. She was not hospitalized.";
 export const repeatedOpening = "Patient TEST-44 is a 44-year-old man. He began acetaminophen (Tylenol) 1,000 mg by mouth twice daily on 01-Jul-2026 for back pain and ibuprofen 400 mg by mouth twice daily on 03-Jul-2026 for back pain. On 05-Jul-2026 he developed nausea and right upper abdominal pain and was hospitalized. Tylenol and ibuprofen were stopped, he received intravenous fluids, and he recovered and was discharged on 07-Jul-2026. I suspect acetaminophen and ibuprofen.";
 export const repeatedUpdate = "Correction: the ibuprofen dose was 200 mg twice daily, not 400 mg twice daily. My medication list says acetaminophen began 02-Jul-2026 rather than 01-Jul-2026. I cannot resolve which date is correct.";
@@ -174,6 +178,94 @@ function layer2ProductQualityResponse(): ModelProposalOutput {
     proposal("product-type", "g1", product("cardiovex", "productType"), known("drug-or-biologic"), problem),
     proposal("product-lot", "g1", product("cardiovex", "lotNumber"), known("CV-442"), problem),
     proposal("product-role", "g1", product("cardiovex", "role"), known("suspect"), suspect),
+  ] };
+}
+
+function layer3CombinedResponse(): ModelProposalOutput {
+  const patient = "Patient TEST-67 is a 67-year-old woman.";
+  const event = "On 09-Sep-2026, an Acme ThermoPatch wearable monitor overheated after its adhesive backing split; it caused a blistering burn on her left arm.";
+  const result = "The device was removed, the burn was treated with cool compresses, and she recovered.";
+  const context = "No relevant tests or medical history apply.";
+  const device = "The suspect device is an Acme ThermoPatch, common name wearable temperature monitor, manufactured by Acme Medical, model TP-9, lot T-144, serial SN-8804.";
+  const operation = "It was patient-operated, was not implanted, was not a reprocessed single-use device, and was not serviced by a third party.";
+  const proposals: ModelProposalOutput["proposals"] = [
+    proposal("patient-id", "patient", { entity: "patient", field: "identifier" }, known("TEST-67"), patient),
+    proposal("patient-age", "patient", { entity: "patient", field: "ageYears" }, known(67), patient),
+    proposal("patient-sex", "patient", { entity: "patient", field: "sex" }, known("female"), patient),
+    proposal("event-problem", "event", { entity: "event", field: "problemDescription" }, known("Acme ThermoPatch overheated after its adhesive backing split"), event),
+    proposal("event-symptoms", "event", { entity: "event", field: "symptoms" }, known(["blistering burn on left arm"]), event),
+    proposal("event-onset", "event", { entity: "event", field: "onsetDate" }, known("2026-09-09"), event),
+    proposal("event-treatment", "event", { entity: "event", field: "treatments" }, known(["cool compresses"]), result),
+    proposal("event-outcome", "event", { entity: "event", field: "outcome" }, known("recovered"), result),
+    proposal("tests-none", "event", { entity: "event", field: "relevantTestsAvailable" }, known(false), context),
+    proposal("history-none", "event", { entity: "event", field: "relevantHistory" }, { kind: "explicitly-absent" }, context),
+    proposal("availability", "event", { entity: "event", field: "productAvailability" }, known("available"), "The device is available for evaluation."),
+    proposal("device-name", "g1", product("device", "name"), known("Acme ThermoPatch"), device),
+    proposal("device-type", "g1", product("device", "productType"), known("device"), device),
+    proposal("device-role", "g1", product("device", "role"), known("suspect"), device),
+    proposal("device-common", "g1", product("device", "commonName"), known("wearable temperature monitor"), device),
+    proposal("device-manufacturer", "g1", product("device", "manufacturer"), known("Acme Medical"), device),
+    proposal("device-model", "g1", product("device", "modelNumber"), known("TP-9"), device),
+    proposal("device-lot", "g1", product("device", "lotNumber"), known("T-144"), device),
+    proposal("device-serial", "g1", product("device", "serialNumber"), known("SN-8804"), device),
+    proposal("device-operator", "g1", product("device", "deviceOperator"), known("patient-consumer"), operation),
+    proposal("device-implanted", "g1", product("device", "implanted"), known(false), operation),
+    proposal("device-implant-date", "g1", product("device", "implantDate"), { kind: "inapplicable" }, operation),
+    proposal("device-reprocessed", "g1", product("device", "reprocessedSingleUse"), known(false), operation),
+    proposal("device-serviced", "g1", product("device", "servicedByThirdParty"), known("no"), operation),
+  ];
+  noSeriousOutcomes.forEach((field) => proposals.push(
+    proposal(`event-${field}`, "event", { entity: "event", field }, known(false), "No serious outcomes applied."),
+  ));
+  return { products: [{ productReference: "device", groupReference: "g1" }], proposals };
+}
+
+function layer3ConditionalResponse(): ModelProposalOutput {
+  const problem = "An Acme PulseLine temporary pacing lead stopped sensing during an intraoperative function check after placement.";
+  const device = "The suspect device is an Acme PulseLine, common name temporary pacing lead, manufactured by Acme Medical, model PL-4, serial SN-4012.";
+  const conditions = "It was implanted and was a reprocessed single-use device.";
+  return { products: [{ productReference: "device", groupReference: "g1" }], proposals: [
+    proposal("problem", "event", { entity: "event", field: "problemDescription" }, known("Acme PulseLine temporary pacing lead stopped sensing during an intraoperative function check after placement"), problem),
+    proposal("symptoms-none", "event", { entity: "event", field: "symptoms" }, { kind: "explicitly-absent" }, "No patient symptoms or adverse event occurred."),
+    proposal("availability", "event", { entity: "event", field: "productAvailability" }, known("available"), "The device is available for evaluation."),
+    proposal("device-name", "g1", product("device", "name"), known("Acme PulseLine"), device),
+    proposal("device-type", "g1", product("device", "productType"), known("device"), device),
+    proposal("device-role", "g1", product("device", "role"), known("suspect"), device),
+    proposal("device-common", "g1", product("device", "commonName"), known("temporary pacing lead"), device),
+    proposal("device-manufacturer", "g1", product("device", "manufacturer"), known("Acme Medical"), device),
+    proposal("device-model", "g1", product("device", "modelNumber"), known("PL-4"), device),
+    proposal("device-serial", "g1", product("device", "serialNumber"), known("SN-4012"), device),
+    proposal("device-implanted", "g1", product("device", "implanted"), known(true), conditions),
+    proposal("device-reprocessed", "g1", product("device", "reprocessedSingleUse"), known(true), conditions),
+  ] };
+}
+
+function layer3CorrectionResponse(): ModelProposalOutput {
+  const problem = "An Acme NeuroSense monitor displayed repeated false high readings during setup.";
+  const device = "The suspect device is an Acme NeuroSense, common name physiologic monitor, manufactured by Acme Medical, model NS-7, serial SN-1001.";
+  const operation = "It was not implanted, was not a reprocessed single-use device, and was not serviced by a third party.";
+  return { products: [{ productReference: "device", groupReference: "g1" }], proposals: [
+    proposal("problem", "event", { entity: "event", field: "problemDescription" }, known("Acme NeuroSense monitor displayed repeated false high readings during setup"), problem),
+    proposal("symptoms-none", "event", { entity: "event", field: "symptoms" }, { kind: "explicitly-absent" }, "No patient symptoms or adverse event occurred."),
+    proposal("availability", "event", { entity: "event", field: "productAvailability" }, known("available"), "The device is available for evaluation."),
+    proposal("device-name", "g1", product("device", "name"), known("Acme NeuroSense"), device),
+    proposal("device-type", "g1", product("device", "productType"), known("device"), device),
+    proposal("device-role", "g1", product("device", "role"), known("suspect"), device),
+    proposal("device-common", "g1", product("device", "commonName"), known("physiologic monitor"), device),
+    proposal("device-manufacturer", "g1", product("device", "manufacturer"), known("Acme Medical"), device),
+    proposal("device-model", "g1", product("device", "modelNumber"), known("NS-7"), device),
+    proposal("device-serial", "g1", product("device", "serialNumber"), known("SN-1001"), device),
+    proposal("device-implanted", "g1", product("device", "implanted"), known(false), operation),
+    proposal("device-implant-date", "g1", product("device", "implantDate"), { kind: "inapplicable" }, operation),
+    proposal("device-reprocessed", "g1", product("device", "reprocessedSingleUse"), known(false), operation),
+    proposal("device-serviced", "g1", product("device", "servicedByThirdParty"), known("no"), operation),
+  ] };
+}
+
+function layer3CorrectionUpdateResponse(): ModelProposalOutput {
+  return { products: [], proposals: [
+    proposal("serial-correction", "u1", product("product-layer3-correction-device", "serialNumber"), known("SN-1002"), "Correction: the Acme NeuroSense serial number is SN-1002, not SN-1001.", "correction"),
+    proposal("model-alternative", "u2", product("product-layer3-correction-device", "modelNumber"), known("NS-8"), "The service log lists model NS-8 rather than NS-7, and I cannot resolve which model number is correct.", "alternative"),
   ] };
 }
 
@@ -414,6 +506,10 @@ function regressionResponses(): [ModelProposalOutput, ModelProposalOutput] {
 
 const [regressionOpeningResponse, regressionCorrectionResponse] = regressionResponses();
 const responses = [
+  { identityScope: "layer3-combined", turn: "opening", output: layer3CombinedResponse() },
+  { identityScope: "layer3-conditional", turn: "opening", output: layer3ConditionalResponse() },
+  { identityScope: "layer3-correction", turn: "opening", output: layer3CorrectionResponse() },
+  { identityScope: "layer3-correction-update", turn: "correction", output: layer3CorrectionUpdateResponse() },
   { identityScope: "layer2-device", turn: "opening", output: layer2DeviceResponse() },
   { identityScope: "layer2-product-quality", turn: "opening", output: layer2ProductQualityResponse() },
   { identityScope: "layer1-death", turn: "opening", output: layer1DeathResponse() },
