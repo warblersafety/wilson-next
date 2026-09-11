@@ -1,14 +1,16 @@
 import { z } from "zod";
 import type { SemanticCase } from "../../domain/case/types";
+import { maximumCaseProducts } from "../../domain/case/value-contract";
 import type { JourneySnapshot, JourneyStage } from "../journey/service";
 import { InMemoryCaseRepository, validateRestoredCase } from "./repository";
 
-export const browserStateVersion = "wilson-browser-state-v5";
+export const browserStateVersion = "wilson-browser-state-v6";
 
 export interface BrowserJourneyState {
   version: typeof browserStateVersion;
   stage: JourneyStage;
   case: SemanticCase;
+  unrepresented: JourneySnapshot["unrepresented"];
 }
 
 export interface JourneyResponse {
@@ -61,7 +63,7 @@ function factSchema<T extends z.ZodType>(value: T) {
 const isoDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const patientFactsSchema = z.object({
   identifier: factSchema(z.string()),
-  ageYears: factSchema(z.number().int().min(0).max(130)),
+  ageYears: factSchema(z.number().int().min(0).max(150)),
   sex: factSchema(z.enum(["female", "male", "intersex"])),
   weight: factSchema(z.object({ value: z.number().positive(), unit: z.enum(["kg", "lb"]) }).strict()),
 }).strict();
@@ -158,7 +160,7 @@ const caseSchema = z.object({
     proposalGroupId: z.string().min(1),
     state: z.enum(["proposed", "resolved", "rejected"]),
     facts: productFactsSchema,
-  }).strict()).max(3),
+  }).strict()).max(maximumCaseProducts),
   relevantTests: z.array(z.object({
     id: z.string().min(1),
     proposalGroupId: z.string().min(1),
@@ -200,15 +202,34 @@ const stateSchema = z.object({
     "output",
   ]),
   case: z.unknown(),
+  unrepresented: z.array(z.object({
+    entity: z.string().min(1),
+    field: z.string().min(1),
+    evidenceQuote: z.string().min(1),
+    reason: z.enum([
+      "unsupported-proposal",
+      "unsupported-target",
+      "product-limit",
+      "incompatible-value",
+      "unresolved-entity",
+      "evidence-not-found",
+      "evidence-ambiguous",
+      "incomplete-relevant-test",
+    ]),
+  }).strict()),
 }).strict();
 
 export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
+  const version = z.object({ version: z.string() }).passthrough().safeParse(input);
+  if (!version.success) {
+    throw new BrowserStateError("The saved synthetic preview state is malformed", "malformed-browser-state");
+  }
+  if (version.data.version !== browserStateVersion) {
+    throw new BrowserStateError("The saved synthetic preview state is incompatible", "incompatible-browser-state");
+  }
   const envelope = stateSchema.safeParse(input);
   if (!envelope.success) {
     throw new BrowserStateError("The saved synthetic preview state is malformed", "malformed-browser-state");
-  }
-  if (envelope.data.version !== browserStateVersion) {
-    throw new BrowserStateError("The saved synthetic preview state is incompatible", "incompatible-browser-state");
   }
   const parsedCase = caseSchema.safeParse(envelope.data.case);
   if (!parsedCase.success) {
@@ -220,7 +241,12 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
   } catch {
     throw new BrowserStateError("The saved synthetic preview case failed validation", "malformed-browser-state");
   }
-  return { version: browserStateVersion, stage: envelope.data.stage, case: caseState };
+  return {
+    version: browserStateVersion,
+    stage: envelope.data.stage,
+    case: caseState,
+    unrepresented: envelope.data.unrepresented,
+  };
 }
 
 export function repositoryForBrowserState(state: BrowserJourneyState): InMemoryCaseRepository {
@@ -240,7 +266,12 @@ export async function journeyResponse(
   const caseState = await repository.loadByOnlyCase();
   if (!caseState) throw new Error("The request-local case is unavailable");
   return {
-    state: { version: browserStateVersion, stage: snapshot.stage, case: caseState },
+    state: {
+      version: browserStateVersion,
+      stage: snapshot.stage,
+      case: caseState,
+      unrepresented: snapshot.unrepresented,
+    },
     snapshot,
   };
 }

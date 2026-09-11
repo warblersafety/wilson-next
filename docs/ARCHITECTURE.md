@@ -7,7 +7,9 @@ Experiment 2 concluded `Revise`; Issue #62 adds the bounded single-device and
 product-quality generalization; Issue #64 adds combined report types,
 semantic device-detail applicability, and stable-device correction/uncertainty
 without changing the deferred live-model risk; Issue #37 restores fail-closed
-live application-model selection for the protected Git-preview path
+live application-model selection for the protected Git-preview path; Issue #67
+keeps the provider wire simple and visibly quarantines proposal-local faults
+without weakening accepted case or output authority
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification
@@ -165,16 +167,36 @@ only when the current clinician input states that meaning explicitly and the
 proposal cites it. Those proposals remain unaccepted until ordinary review.
 Absence of a proposal remains empty and never acquires one of those meanings.
 
-The runtime model boundary rejects only mechanically decidable contract
-violations before review:
+The provider receives generated target/value guidance from the same domain-owned
+value contract used by local decoding and the final command boundary. The
+provider wire remains the simple proposal shape already exercised successfully;
+provider guidance improves yield but is not accepted-case authority. A medicine
+or other product named only as treatment administered in response to the event
+belongs in the event treatment fact. It is proposed as a report product only
+when the clinician separately describes it as suspect, concomitant, or
+otherwise involved in the report.
+
+The runtime model boundary classifies mechanically decidable contract faults
+before review. Response-level faults reject the complete response and leave
+accepted knowledge unchanged:
 
 - the provider did not complete normally;
 - returned content is not valid structured output;
-- a field, entity, identifier, or value cannot be represented by the selected
-  experiment domain types;
+- a proposal omits the minimum response-local reference, group, target, or exact
+  citation needed to identify and display a truthful quarantine notice;
 - proposal or source identities are duplicated or internally inconsistent; or
-- supporting text is empty, absent from the exact clinician input, or has more
-  than one exact occurrence and therefore cannot be anchored unambiguously.
+- every proposal is unrepresentable.
+
+A response that preserves that minimum may contain a proposal-local
+representation, target, resolved-identity, or exact-evidence fault. That
+proposal is quarantined before source or proposal identity is created and never
+enters the semantic case or Form FDA 3500. The remaining valid proposals attach
+in one atomic command, and the clinician sees the omitted target, the exact text
+the model cited, and a plain-language reason throughout the disposable tab
+session. Declarations that lose every proposal are pruned, including product
+declarations beyond the supported three-product limit; a relevant test is also
+pruned when its required test-and-result proposal is quarantined. No value is
+coerced, repaired, guessed, or retried.
 
 These checks are finite application-input validation, not a hallucination
 guard. The model returns a self-contained exact quotation rather than character
@@ -182,8 +204,7 @@ offsets. Deterministic code locates its single exact occurrence, assigns source
 identity, and records the resulting offsets. A successful match proves only
 where the clinician's words appear; deterministic code does not establish that
 the excerpt semantically supports the proposal. An absent or ambiguous match
-rejects the proposal batch before attachment, presents a recoverable failure,
-and leaves accepted knowledge unchanged. Do not add fuzzy matching, broad
+quarantines that proposal as described above. Do not add fuzzy matching, broad
 normalization, or fixture-specific source repair without a new approved premise.
 
 The runtime boundary must not compare live proposals with an experiment's
@@ -305,6 +326,13 @@ architecture decision.
 Domain code has no model-provider, PDF-library, framework, or deployment
 imports. The browser-held state is a deployment adapter concern and does not
 change `applyCaseCommand` as the sole semantic write boundary.
+
+The browser-held interaction state also retains any proposal-quarantine notices
+for the life of the disposable tab so an acknowledged omission cannot disappear
+after another review action. Those notices are not semantic case knowledge and
+cannot project to the form. The bounded three-product and eight-relevant-test
+limits are enforced at the command boundary as well as during browser restore,
+so an accepted write cannot create unrestorable browser state.
 
 Live application-model selection is fail-closed at the deployment adapter.
 Explicit predetermined responses select the deterministic test adapter before

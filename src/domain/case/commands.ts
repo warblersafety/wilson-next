@@ -15,7 +15,6 @@ import {
 import type {
   ApplyCaseCommandResult,
   CaseCommand,
-  CaseValue,
   Change,
   Fact,
   FactTarget,
@@ -27,6 +26,10 @@ import type {
   Source,
 } from "./types";
 import { nextCompletionQuestion } from "./completion-policy";
+import {
+  assertCaseValueMatchesTarget as assertValueMatchesTarget,
+  maximumCaseProducts,
+} from "./value-contract";
 
 export class StaleCaseRevisionError extends Error {}
 
@@ -125,6 +128,9 @@ function attachGroundedProposals(
   change: Change,
 ): void {
   if (proposals.length === 0) throw new Error("A proposal command requires proposals");
+  if (caseState.products.length + products.length > maximumCaseProducts) {
+    throw new Error("The supported case accepts at most three products");
+  }
   for (const source of sources) addSource(caseState, source);
   change.sourceIds.push(...sources.map(({ id }) => id));
 
@@ -443,76 +449,4 @@ function everyFact(caseState: SemanticCase): Array<{ target: FactTarget; fact: F
     facts.push({ target, fact: getFact(caseState, target) });
   }
   return facts;
-}
-
-function assertValueMatchesTarget(target: FactTarget, value: CaseValue<unknown>): void {
-  if (!value || typeof value !== "object") throw new Error(`${targetKey(target)} requires a case value`);
-  const raw = value as unknown as Record<string, unknown>;
-  const kind = raw.kind;
-  if (!["known", "unknown", "explicitly-absent", "inapplicable", "declined"].includes(kind as string)) {
-    throw new Error(`${targetKey(target)} has an unsupported resolved meaning`);
-  }
-  if (kind !== "known") {
-    if ("value" in raw || "qualifier" in raw) {
-      throw new Error(`${targetKey(target)} mixes mutually exclusive resolved meanings`);
-    }
-    return;
-  }
-  if (!("value" in raw)) throw new Error(`${targetKey(target)} requires a known value`);
-  const actual = raw.value;
-  const stringFields = new Set([
-    "identifier", "reportType", "problemDescription", "onsetDate", "deathDate", "relevantHistory", "outcome", "dischargeDate", "productAvailability", "productReturnDate",
-    "testResult", "lowRange", "highRange", "date",
-    "name", "productType", "manufacturer", "lotNumber", "dose", "frequency", "route", "startDate", "stopDate", "indication",
-    "commonName", "procode", "modelNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessor", "servicedByThirdParty",
-    "lastName", "firstName", "address", "city", "state", "postalCode", "country", "phone", "email", "occupation",
-  ]);
-  if (stringFields.has(target.field) && typeof actual !== "string") {
-    throw new Error(`${targetKey(target)} requires a string value`);
-  }
-  if (["onsetDate", "deathDate", "dischargeDate", "productReturnDate", "startDate", "stopDate", "date", "expirationDate", "implantDate", "explantDate"].includes(target.field)
-    && (typeof actual !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(actual))) {
-    throw new Error(`${targetKey(target)} requires an ISO calendar date`);
-  }
-  if (target.field === "ageYears" && (!Number.isInteger(actual) || (actual as number) < 0 || (actual as number) > 150)) {
-    throw new Error(`${targetKey(target)} requires a valid age`);
-  }
-  if (target.field === "sex" && !["female", "male", "intersex"].includes(actual as string)) {
-    throw new Error(`${targetKey(target)} requires a supported sex value`);
-  }
-  if (target.field === "weight" && (!actual || typeof actual !== "object"
-    || typeof (actual as { value?: unknown }).value !== "number"
-    || !Number.isFinite((actual as { value: number }).value)
-    || (actual as { value: number }).value <= 0
-    || !["kg", "lb"].includes(String((actual as { unit?: unknown }).unit)))) {
-    throw new Error(`${targetKey(target)} requires a positive weight with kg or lb`);
-  }
-  if (["symptoms", "treatments"].includes(target.field) && (!Array.isArray(actual) || actual.some((item) => typeof item !== "string"))) {
-    throw new Error(`${targetKey(target)} requires a string array`);
-  }
-  if (["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "healthProfessional", "doNotDiscloseIdentity", "stopped", "implanted", "reprocessedSingleUse"].includes(target.field) && typeof actual !== "boolean") {
-    throw new Error(`${targetKey(target)} requires a boolean value`);
-  }
-  if (target.field === "reportedTo" && (!Array.isArray(actual)
-    || actual.some((item) => !["manufacturer", "user-facility", "distributor-importer", "packer"].includes(String(item))))) {
-    throw new Error(`${targetKey(target)} requires supported reporter destinations`);
-  }
-  if (target.field === "role" && !["suspect", "concomitant"].includes(actual as string)) {
-    throw new Error(`${targetKey(target)} requires a supported role`);
-  }
-  if (target.field === "reportType" && !["adverse-event", "product-problem", "adverse-event-and-product-problem"].includes(actual as string)) {
-    throw new Error(`${targetKey(target)} requires the supported report type`);
-  }
-  if (target.field === "productType" && !["drug-or-biologic", "device", "other"].includes(actual as string)) {
-    throw new Error(`${targetKey(target)} requires a supported product category`);
-  }
-  if (target.field === "deviceOperator" && !["health-professional", "patient-consumer", "other"].includes(actual as string)) {
-    throw new Error(`${targetKey(target)} requires a supported device operator`);
-  }
-  if (target.field === "servicedByThirdParty" && !["yes", "no", "unknown"].includes(actual as string)) {
-    throw new Error(`${targetKey(target)} requires yes, no, or unknown`);
-  }
-  if (target.field === "productAvailability" && !["available", "not-available", "returned-to-manufacturer"].includes(actual as string)) {
-    throw new Error(`${targetKey(target)} requires a supported availability state`);
-  }
 }

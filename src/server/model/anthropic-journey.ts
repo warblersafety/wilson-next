@@ -3,6 +3,7 @@ import Anthropic, { APIError } from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
 import {
+  modelProposalEnvelopeSchema,
   modelProposalOutputSchema,
   parseModelProposalEnvelope,
   type ModelBoundaryIdentityFactory,
@@ -18,8 +19,8 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-layer3-device-depth-v1";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v10";
+export const MODEL_PROMPT_REVISION = "wilson-visible-quarantine-v1";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v11-simple";
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
 export const MODEL_MAX_RETRIES = 0;
 
@@ -73,6 +74,7 @@ Rules:
 - The supported targets are the patient, event or product problem, relevant-test, medication or non-device product, and single suspect-device fields represented by the response schema. Preserve uncertainty, negation, correction, alternatives, unknown, explicitly absent, inapplicable, and declined meanings.
 - Relevant tests are stable entities. On opening input, declare each distinct relevant test or laboratory result once and attach its test/result text, optional ranges, and date to that test reference. Do not interpret or classify a result.
 - For every declared product, propose its supported productType ("drug-or-biologic", "device", or "other") and role. For product roles, emit only "suspect" or "concomitant". A reported suspect role is clinician input, not your causality judgment. For a device, preserve explicitly stated implanted and reprocessed-single-use status so Wilson can determine whether related Section E details are applicable.
+- A medicine or other product named only as treatment administered in response to the adverse event belongs in event.treatments. Propose it as a report product only when the clinician separately describes it as suspect, concomitant, or otherwise involved in the report.
 - Use normalized ISO dates (YYYY-MM-DD) and "oral" for "by mouth". Otherwise preserve explicitly stated descriptive detail in known values; do not compress away modifiers that make a clinical statement more specific. Retain measurement values with their units.
 - On opening input, declare each mentioned product once using arbitrary response-local productReference and groupReference values. Use those references for its proposals. Wilson—not you—assigns stable case identity.
 - On later input, declare no products. Refer to an existing product only by an exact application-supplied product ID from the reviewed-case context. A repeated name or alias does not create identity.
@@ -186,7 +188,7 @@ export function createAnthropicJourneyModel(
           response,
         );
       }
-      const structured = modelProposalOutputSchema.safeParse(decoded);
+      const structured = modelProposalEnvelopeSchema.safeParse(decoded);
       if (!structured.success) {
         throw new ModelCallFailure(
           "Wilson could not interpret the fictional account. Accepted case knowledge is unchanged.",

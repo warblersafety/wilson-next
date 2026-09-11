@@ -1,10 +1,14 @@
 import { z } from "zod";
 import {
-  modelProposalOutputSchema,
+  modelProposalEnvelopeSchema,
   parseModelProposalEnvelope,
   type ModelBoundaryIdentityFactory,
 } from "../../domain/case/model-boundary";
-import { createAnthropicJourneyModel } from "./anthropic-journey";
+import {
+  createAnthropicJourneyModel,
+  MODEL_PROMPT_REVISION,
+  MODEL_SCHEMA_REVISION,
+} from "./anthropic-journey";
 import type { JourneyModel } from "./journey-model";
 
 const AUTHORIZED_GIT_PREVIEW = {
@@ -20,7 +24,7 @@ type LiveModelFactory = () => JourneyModel;
 const responseSchema = z.object({
   identityScope: z.string().regex(/^[a-z0-9-]+$/),
   turn: z.enum(["opening", "correction"]),
-  output: modelProposalOutputSchema,
+  output: modelProposalEnvelopeSchema,
 }).strict();
 
 let configuredModel: Promise<JourneyModel> | undefined;
@@ -89,8 +93,8 @@ function predeterminedJourneyModel(predetermined: string): JourneyModel {
         }, createIdentity),
         metrics: {
           model: "predetermined-model-response",
-          promptRevision: "wilson-layer3-device-depth-v1",
-          schemaRevision: "wilson-grounded-proposals-v10",
+          promptRevision: MODEL_PROMPT_REVISION,
+          schemaRevision: MODEL_SCHEMA_REVISION,
           inputTokens: 0,
           outputTokens: 0,
           latencyMs: 0,

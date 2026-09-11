@@ -218,4 +218,75 @@ describe("applyCaseCommand", () => {
     expect(() => applyCaseCommand(current, malformed)).toThrow("mixes mutually exclusive resolved meanings");
     expect(current).toEqual(createSemanticCase("case-malformed"));
   });
+
+  it.each([
+    ["symptoms scalar", { entity: "event", entityId: "event", field: "symptoms" }, "rash", "requires a string array"],
+    ["availability free text", { entity: "event", entityId: "event", field: "productAvailability" }, "available for evaluation", "requires a supported availability state"],
+    ["non-ISO date", { entity: "event", entityId: "event", field: "onsetDate" }, "September 10", "requires an ISO calendar date"],
+    ["boolean text", { entity: "event", entityId: "event", field: "hospitalized" }, "yes", "requires a boolean"],
+    ["age above domain limit", { entity: "patient", entityId: "patient", field: "ageYears" }, 151, "requires a valid age"],
+    ["noncanonical enum", { entity: "patient", entityId: "patient", field: "sex" }, "not recorded", "requires a supported value"],
+    ["invalid reporter destination", { entity: "reporter", entityId: "reporter", field: "reportedTo" }, ["other"], "requires supported reporter destinations"],
+  ] as const)("rejects %s at the authoritative command boundary", (_label, target, value, message) => {
+    const current = createSemanticCase(`case-command-contract-${String(target.field)}`);
+    const text = "Synthetic direct-entry evidence";
+    const command = {
+      type: "record-clinician-facts",
+      commandId: `command-${String(target.field)}`,
+      expectedRevision: 0,
+      source: {
+        id: `source-${String(target.field)}`,
+        inputId: `input-${String(target.field)}`,
+        inputType: "answer",
+        excerpt: text,
+        start: 0,
+        end: text.length,
+        actor: "clinician",
+        recordedAt: "2026-09-10T00:00:00.000Z",
+      },
+      facts: [{
+        id: `value-${String(target.field)}`,
+        target,
+        intent: "fact",
+        value: { kind: "known", value },
+      }],
+    } as unknown as CaseCommand;
+
+    expect(() => applyCaseCommand(current, command)).toThrow(message);
+    expect(current.revision).toBe(0);
+  });
+
+  it("refuses a fourth product atomically at the authoritative command boundary", () => {
+    const current = createOpeningCase();
+    const text = "Synthetic fourth product";
+    const command: CaseCommand = {
+      type: "attach-grounded-proposals",
+      commandId: "command-fourth-product",
+      expectedRevision: current.revision,
+      products: [{ id: "product-fourth", groupId: "group-fourth" }],
+      relevantTests: [],
+      sources: [{
+        id: "source-fourth",
+        inputId: "input-fourth",
+        inputType: "narrative",
+        excerpt: text,
+        start: 0,
+        end: text.length,
+        actor: "clinician",
+        recordedAt: "2026-09-10T00:00:00.000Z",
+      }],
+      proposals: [{
+        proposalId: "proposal-fourth-name",
+        groupId: "group-fourth",
+        intent: "fact",
+        target: { entity: "product", entityId: "product-fourth", field: "name" },
+        value: { kind: "known", value: "Fourth product" },
+        sourceIds: ["source-fourth"],
+      }],
+    };
+
+    expect(() => applyCaseCommand(current, command)).toThrow("at most three products");
+    expect(current.products).toHaveLength(3);
+    expect(current.revision).toBe(1);
+  });
 });

@@ -31,8 +31,8 @@ describe("browser-held journey state boundary", () => {
     const firstRequest = repositoryForBrowserState(parsed);
     const secondRequest = repositoryForBrowserState(parsed);
     expect(firstRequest).not.toBe(secondRequest);
-    const firstSnapshot = await getJourneySnapshot(firstRequest, caseId);
-    const secondSnapshot = await getJourneySnapshot(secondRequest, caseId);
+    const firstSnapshot = await getJourneySnapshot(firstRequest, caseId, parsed.unrepresented);
+    const secondSnapshot = await getJourneySnapshot(secondRequest, caseId, parsed.unrepresented);
     assertStoredStage(parsed, firstSnapshot);
     assertStoredStage(parsed, secondSnapshot);
     expect(firstSnapshot).toEqual(response.snapshot);
@@ -50,6 +50,7 @@ describe("browser-held journey state boundary", () => {
       version: browserStateVersion,
       stage: "describe",
       case: { id: "case-not-complete" },
+      unrepresented: [],
     })).toThrowError(expect.objectContaining({ code: "malformed-browser-state" }));
 
     const repository = new InMemoryCaseRepository({ maxCases: 1 });
@@ -77,6 +78,46 @@ describe("browser-held journey state boundary", () => {
     const malformed = structuredClone(response.state);
     malformed.case.changes[1].priorRevision = 99;
     expect(() => parseBrowserJourneyState(malformed)).toThrowError(
+      expect.objectContaining({ code: "malformed-browser-state" }),
+    );
+  });
+
+  it("retains quarantine notices outside accepted case knowledge through browser reconstruction", async () => {
+    const repository = new InMemoryCaseRepository({ maxCases: 1 });
+    const caseId = `case-${randomUUID()}`;
+    const snapshot = await performJourneyAction(repository, caseId, {
+      action: "submit-opening", text: openingAccount, reportType: "adverse-event",
+    }, fixedJourneyModel);
+    snapshot.unrepresented.push({
+      entity: "event",
+      field: "symptoms",
+      evidenceQuote: "melena and dizziness",
+      reason: "incompatible-value",
+    });
+    const response = await journeyResponse(repository, snapshot);
+    const parsed = parseBrowserJourneyState(structuredClone(response.state));
+    const restoredRepository = repositoryForBrowserState(parsed);
+    const restoredSnapshot = await getJourneySnapshot(restoredRepository, caseId, parsed.unrepresented);
+
+    expect(parsed.case).not.toHaveProperty("unrepresented");
+    expect(restoredSnapshot.unrepresented).toEqual(snapshot.unrepresented);
+  });
+
+  it("uses the domain-owned 150-year age boundary when restoring browser state", async () => {
+    const repository = new InMemoryCaseRepository({ maxCases: 1 });
+    const caseId = `case-${randomUUID()}`;
+    const snapshot = await performJourneyAction(repository, caseId, {
+      action: "submit-opening", text: openingAccount, reportType: "adverse-event",
+    }, fixedJourneyModel);
+    const response = await journeyResponse(repository, snapshot);
+    const atBoundary = structuredClone(response.state);
+    atBoundary.case.patient.facts.ageYears.proposedValues[0].value = { kind: "known", value: 150 };
+    expect(parseBrowserJourneyState(atBoundary).case.patient.facts.ageYears.proposedValues[0].value)
+      .toEqual({ kind: "known", value: 150 });
+
+    const outsideBoundary = structuredClone(atBoundary);
+    outsideBoundary.case.patient.facts.ageYears.proposedValues[0].value = { kind: "known", value: 151 };
+    expect(() => parseBrowserJourneyState(outsideBoundary)).toThrowError(
       expect.objectContaining({ code: "malformed-browser-state" }),
     );
   });
