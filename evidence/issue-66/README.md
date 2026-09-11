@@ -99,5 +99,19 @@ build`, and the one-test assembled Playwright suite. The two retained output
 screenshots were inspected at their full-page capture size for active values,
 labels, no-tests and stopped-device wording, history, and PDF agreement.
 
-The exact reviewed commit and required independent review disposition will be
-added here and to PR #77 before merge disposition.
+Claude Code 2.1.241 reviewed exact implementation/evidence commit
+`deb3f58c8a16b27ec06bc6a620aa908f0b1c3c3f` with the current Sonnet model
+(`claude-sonnet-5`) under the standard `wilson-review-v1` prompt. The CLI was
+configured for high effort after subscription preflight confirmed `claude.ai`
+Max and unset provider override variables. The reviewer reported one blocker:
+the UI exposed entity withdrawal during clarification even though the service
+correctly restricts that action to output.
+
+Commit `5c2bc5a` gates product/test withdrawal on output and adds reachable
+clarification-stage browser assertions. Post-fix typecheck, all 143 tests,
+production build, diff check, and the complete assembled Playwright run passed.
+The policy-authorized targeted recheck inspected the exact two-file remediation
+delta, found the blocker resolved, and reported no new blocking or independently
+valuable follow-up finding. The verbatim results, dispositions, prompt, run
+metadata, and disclosed reviewer limitations are retained under `review/` and
+will be posted to PR #77 before merge disposition.
