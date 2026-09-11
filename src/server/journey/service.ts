@@ -1,8 +1,9 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { UnrepresentedModelProposal } from "../../domain/case/model-boundary";
 import { createSemanticCase } from "../../domain/case/create";
+import { allFacts, getFact, targetFromKey, targetKey } from "../../domain/case/facts";
 import { projectForm3500 } from "../../domain/case/projection";
-import type { CaseValue, EventFactKey, Fact, FactTarget, ProductFactKey, ReporterFactKey, ReportType, SemanticCase, Source } from "../../domain/case/types";
+import type { CaseValue, Fact, FactTarget, ProductFactKey, ReporterFactKey, SemanticCase, Source } from "../../domain/case/types";
 import {
   createClarificationView,
   createReviewView,
@@ -21,52 +22,15 @@ import {
   type ReviewedCaseModelContext,
 } from "../model/journey-model";
 import { createReviewedCaseModelContext } from "../model/reviewed-case-context";
+import {
+  seriousOutcomeFields,
+  type JourneyAction,
+  type SeriousOutcomeField,
+} from "./action-contract";
+
+export type { JourneyAction } from "./action-contract";
 
 export type JourneyStage = "describe" | "understanding" | "clarify" | "review-update" | "output";
-
-export type JourneyAction =
-  | { action: "submit-opening"; text: string; reportType: ReportType }
-  | {
-      action: "change-proposal";
-      groupId: string;
-      proposalId: string;
-      value: CaseValue<unknown>;
-      statement: string;
-    }
-  | { action: "reject-group"; groupId: string }
-  | { action: "accept-understanding" }
-  | {
-      action: "answer-indications";
-      answers: Array<{ productId: string; value: CaseValue<string> }>;
-    }
-  | { action: "answer-serious-outcomes"; selected: EventFactKey[]; disposition: "known" | "unknown" | "declined" }
-  | { action: "answer-death-date"; value: CaseValue<string> }
-  | {
-      action: "answer-clinical-context";
-      test?: { kind: "known"; testResult: string; lowRange?: string; highRange?: string; date?: string }
-        | { kind: "explicitly-absent" | "unknown" | "declined" };
-      history?: CaseValue<string>;
-    }
-  | {
-      action: "answer-device-details";
-      implantDate?: CaseValue<string>;
-      explantDate?: CaseValue<string>;
-      reprocessor?: CaseValue<string>;
-    }
-  | {
-      action: "answer-reporter";
-      reporter: { kind: "declined" } | {
-        kind: "provided";
-        lastName: string; firstName: string; address?: string; city?: string; state?: string;
-        postalCode?: string; country?: string; phone?: string; email?: string;
-        healthProfessional: boolean; occupation: string;
-        reportedTo: Array<"manufacturer" | "user-facility" | "distributor-importer" | "packer">;
-        doNotDiscloseIdentity: boolean;
-      };
-    }
-  | { action: "submit-update"; text: string }
-  | { action: "review-update-group"; groupId: string; decision: "accept" | "reject" }
-  | { action: "resolve-conflict"; target: string; chosenValueId: string };
 
 export interface JourneySnapshot {
   stage: JourneyStage;
@@ -267,7 +231,14 @@ export async function performJourneyAction(
         await ensureOpenCompletionNeed();
         const need = openNeed(current, "serious-outcomes");
         const selected = new Set(action.selected);
-        const allowed = new Set(need.targetIds.map((target) => target.split(":")[2]));
+        const outcomeFields = need.targetIds.map((key): SeriousOutcomeField => {
+          const target = targetFromKey(current, key);
+          if (target.entity !== "event" || !seriousOutcomeFields.includes(target.field as SeriousOutcomeField)) {
+            throw new Error("The serious-outcome question contains an unsupported target");
+          }
+          return target.field as SeriousOutcomeField;
+        });
+        const allowed = new Set(outcomeFields);
         if (action.selected.some((field) => !allowed.has(field))) {
           throw new Error("A serious-outcome answer may include only the outcomes in the current question");
         }
@@ -280,8 +251,7 @@ export async function performJourneyAction(
           expectedRevision: current.revision,
           source: fullSource("answer", answerText),
           answersNeed: "serious-outcomes",
-          facts: need.targetIds.map((target, index) => {
-            const field = target.split(":")[2] as EventFactKey;
+          facts: outcomeFields.map((field, index) => {
             return {
               id: valueId(`serious-outcome-${index}`),
               target: { entity: "event" as const, entityId: "event" as const, field },
@@ -355,7 +325,15 @@ export async function performJourneyAction(
           explantDate: action.explantDate,
           reprocessor: action.reprocessor,
         };
-        const fields = question.targetIds.map((target) => target.split(":")[2] as "implantDate" | "explantDate" | "reprocessor");
+        const fields = question.targetIds.map((key) => {
+          const target = targetFromKey(current, key);
+          if (target.entity !== "product"
+            || target.entityId !== question.deviceId
+            || !["implantDate", "explantDate", "reprocessor"].includes(target.field)) {
+            throw new Error("The device-details question contains an unsupported target");
+          }
+          return target.field as "implantDate" | "explantDate" | "reprocessor";
+        });
         if (fields.some((field) => !values[field])) throw new Error("Every applicable device detail requires an answer");
         const device = current.products.find(({ id }) => id === question.deviceId);
         const name = knownValue(device?.facts.name) ?? "suspect device";
@@ -414,7 +392,7 @@ export async function performJourneyAction(
       case "resolve-conflict": {
         requireStage(expectedStage, "output");
         const target = targetFromKey(current, action.target);
-        const fact = factFor(current, target);
+        const fact = getFact(current, target);
         const chosen = fact.conflictingValues.find(({ id }) => id === action.chosenValueId);
         if (!chosen) throw new Error("The selected conflict alternative is unavailable");
         await applyCommand({
@@ -539,46 +517,6 @@ function hasPendingProposals(caseState: SemanticCase): boolean {
 
 function findProposal(caseState: SemanticCase, groupId: string, proposalId: string) {
   return allFacts(caseState).find(({ fact }) => fact.proposedValues.some((value) => value.groupId === groupId && value.id === proposalId));
-}
-
-function targetFromKey(caseState: SemanticCase, key: string): FactTarget {
-  const found = allFacts(caseState).find(({ target }) => targetKey(target) === key);
-  if (!found) throw new Error("The selected case fact is unavailable");
-  return found.target;
-}
-
-function allFacts(caseState: SemanticCase): Array<{ target: FactTarget; fact: Fact<unknown> }> {
-  const result: Array<{ target: FactTarget; fact: Fact<unknown> }> = [];
-  for (const field of Object.keys(caseState.patient.facts) as Array<keyof typeof caseState.patient.facts>) {
-    result.push({ target: { entity: "patient", entityId: "patient", field }, fact: caseState.patient.facts[field] });
-  }
-  for (const field of Object.keys(caseState.event.facts) as Array<keyof typeof caseState.event.facts>) {
-    result.push({ target: { entity: "event", entityId: "event", field }, fact: caseState.event.facts[field] });
-  }
-  for (const product of caseState.products) {
-    for (const field of Object.keys(product.facts) as Array<keyof typeof product.facts>) {
-      result.push({ target: { entity: "product", entityId: product.id, field }, fact: product.facts[field] });
-    }
-  }
-  for (const test of caseState.relevantTests) {
-    for (const field of Object.keys(test.facts) as Array<keyof typeof test.facts>) {
-      result.push({ target: { entity: "test", entityId: test.id, field }, fact: test.facts[field] });
-    }
-  }
-  for (const field of Object.keys(caseState.reporter.facts) as Array<keyof typeof caseState.reporter.facts>) {
-    result.push({ target: { entity: "reporter", entityId: "reporter", field }, fact: caseState.reporter.facts[field] });
-  }
-  return result;
-}
-
-function factFor(caseState: SemanticCase, target: FactTarget): Fact<unknown> {
-  const found = allFacts(caseState).find(({ target: candidate }) => targetKey(candidate) === targetKey(target));
-  if (!found) throw new Error("The selected case fact is unavailable");
-  return found.fact;
-}
-
-function targetKey(target: FactTarget): string {
-  return `${target.entity}:${target.entityId}:${target.field}`;
 }
 
 function targetStatement(caseState: SemanticCase, target: FactTarget): string {

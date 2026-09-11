@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { FactTarget, GroundedProposal, ProposedProduct, ProposedRelevantTest, Source } from "./types";
-import { knownValueMismatch, maximumCaseProducts, modelKnownValueGuidance } from "./value-contract";
+import { knownValueMismatch, modelKnownValueGuidance } from "./value-contract";
+import { maximumCaseProducts } from "./limits";
 
 const patientFields = ["identifier", "ageYears", "sex", "weight"] as const;
 const eventFields = ["problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "relevantHistory", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate"] as const;

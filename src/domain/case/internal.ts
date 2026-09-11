@@ -3,7 +3,6 @@ import type {
   CaseValue,
   EventFacts,
   Fact,
-  FactTarget,
   GroundedValue,
   PatientFacts,
   ProductFacts,
@@ -11,6 +10,12 @@ import type {
   ReporterFacts,
   SemanticCase,
 } from "./types";
+import { allFacts } from "./facts";
+import {
+  maximumAskedNeeds,
+  maximumCaseProducts,
+  maximumRelevantTests,
+} from "./limits";
 
 export function emptyFact<T>(): Fact<T> {
   return {
@@ -122,33 +127,6 @@ function deepFreeze<T>(value: T): T {
   return value;
 }
 
-export function getFact(caseState: SemanticCase, target: FactTarget): Fact<unknown> {
-  if (target.entity === "patient") {
-    return caseState.patient.facts[target.field] as Fact<unknown>;
-  }
-  if (target.entity === "event") {
-    return caseState.event.facts[target.field] as Fact<unknown>;
-  }
-  if (target.entity === "reporter") {
-    return caseState.reporter.facts[target.field] as Fact<unknown>;
-  }
-  if (target.entity === "test") {
-    const test = caseState.relevantTests.find(({ id }) => id === target.entityId);
-    if (!test) throw new Error(`Unknown relevant-test target ${target.entityId}`);
-    return test.facts[target.field] as Fact<unknown>;
-  }
-
-  const product = caseState.products.find(({ id }) => id === target.entityId);
-  if (!product) {
-    throw new Error(`Unknown product target ${target.entityId}`);
-  }
-  return product.facts[target.field] as Fact<unknown>;
-}
-
-export function targetKey(target: FactTarget): string {
-  return `${target.entity}:${target.entityId}:${target.field}`;
-}
-
 export function valuesEqual(
   left: CaseValue<unknown>,
   right: CaseValue<unknown>,
@@ -186,6 +164,15 @@ export function refreshFactState(fact: Fact<unknown>): void {
 }
 
 export function assertCaseInvariants(caseState: SemanticCase): void {
+  if (caseState.products.length > maximumCaseProducts) {
+    throw new Error(`The supported case accepts at most ${maximumCaseProducts} products`);
+  }
+  if (caseState.relevantTests.length > maximumRelevantTests) {
+    throw new Error(`The supported case accepts at most ${maximumRelevantTests} relevant tests`);
+  }
+  if (caseState.askedNeeds.length > maximumAskedNeeds) {
+    throw new Error(`The supported case accepts at most ${maximumAskedNeeds} asked needs`);
+  }
   const sourceIds = new Set(caseState.sources.map(({ id }) => id));
   if (sourceIds.size !== caseState.sources.length) {
     throw new Error("Source IDs must be unique");
@@ -205,15 +192,7 @@ export function assertCaseInvariants(caseState: SemanticCase): void {
     }
   }
 
-  const facts: Fact<unknown>[] = [
-    ...Object.values(caseState.patient.facts),
-    ...Object.values(caseState.event.facts),
-    ...caseState.products.flatMap((product) => Object.values(product.facts)),
-    ...caseState.relevantTests.flatMap((test) => Object.values(test.facts)),
-    ...Object.values(caseState.reporter.facts),
-  ] as Fact<unknown>[];
-
-  for (const fact of facts) {
+  for (const { fact } of allFacts(caseState)) {
     const values = [
       ...fact.proposedValues,
       ...(fact.resolvedValue ? [fact.resolvedValue] : []),

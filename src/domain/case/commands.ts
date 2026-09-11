@@ -5,13 +5,12 @@ import {
   emptyProductFacts,
   emptyRelevantTestFacts,
   freezeCase,
-  getFact,
   refreshFactState,
   removeProposal,
-  targetKey,
   unique,
   valuesEqual,
 } from "./internal";
+import { allFacts, getFact, targetFromKey, targetKey } from "./facts";
 import type {
   ApplyCaseCommandResult,
   CaseCommand,
@@ -28,8 +27,12 @@ import type {
 import { nextCompletionQuestion } from "./completion-policy";
 import {
   assertCaseValueMatchesTarget as assertValueMatchesTarget,
-  maximumCaseProducts,
 } from "./value-contract";
+import {
+  maximumAskedNeeds,
+  maximumCaseProducts,
+  maximumRelevantTests,
+} from "./limits";
 
 export class StaleCaseRevisionError extends Error {}
 
@@ -183,7 +186,7 @@ function reviewProposalGroups(
   for (const decision of decisions) {
     let found = false;
     const appliedCorrections = new Set<string>();
-    for (const { target, fact } of everyFact(caseState)) {
+    for (const { target, fact } of allFacts(caseState)) {
       const matching = fact.proposedValues.filter(({ groupId }) => groupId === decision.groupId);
       for (const proposal of matching) {
         found = true;
@@ -294,6 +297,9 @@ function recordAskedNeed(
   targetIds: string[],
   change: Change,
 ): void {
+  if (caseState.askedNeeds.length >= maximumAskedNeeds) {
+    throw new Error(`The supported case accepts at most ${maximumAskedNeeds} asked needs`);
+  }
   const uniqueTargets = unique(targetIds);
   if (uniqueTargets.length === 0) throw new Error("A semantic need requires targets");
   if (caseState.askedNeeds.some((need) => need.key === key
@@ -306,8 +312,12 @@ function recordAskedNeed(
     throw new Error(`Semantic need ${key} is not the next applicable question`);
   }
   for (const target of uniqueTargets) {
-    const fact = everyFact(caseState).find(({ target: candidate }) => targetKey(candidate) === target)?.fact;
-    if (!fact) throw new Error(`Unknown semantic need target ${target}`);
+    let fact: Fact<unknown>;
+    try {
+      fact = getFact(caseState, targetFromKey(caseState, target));
+    } catch {
+      throw new Error(`Unknown semantic need target ${target}`);
+    }
     if (fact.state !== "empty") throw new Error(`Semantic need target ${target} is not empty`);
   }
   caseState.askedNeeds.push({ key, targetIds: uniqueTargets, status: "open" });
@@ -339,7 +349,9 @@ function addRelevantTests(
   state: "proposed" | "resolved",
   change: Change,
 ): void {
-  if (caseState.relevantTests.length + relevantTests.length > 8) throw new Error("The supported case accepts at most eight relevant tests");
+  if (caseState.relevantTests.length + relevantTests.length > maximumRelevantTests) {
+    throw new Error(`The supported case accepts at most ${maximumRelevantTests} relevant tests`);
+  }
   for (const test of relevantTests) {
     if (!test.id.trim() || !test.groupId.trim()) throw new Error("Relevant-test identity is required");
     if (caseState.relevantTests.some(({ id }) => id === test.id)) throw new Error(`Relevant test ${test.id} already exists`);
@@ -420,33 +432,4 @@ function allFactValues(fact: Fact<unknown>): GroundedValue<unknown>[] {
     ...fact.conflictingValues,
     ...fact.supersededValues,
   ];
-}
-
-function everyFact(caseState: SemanticCase): Array<{ target: FactTarget; fact: Fact<unknown> }> {
-  const facts: Array<{ target: FactTarget; fact: Fact<unknown> }> = [];
-  for (const field of Object.keys(caseState.patient.facts) as Array<keyof typeof caseState.patient.facts>) {
-    const target: FactTarget = { entity: "patient", entityId: "patient", field };
-    facts.push({ target, fact: getFact(caseState, target) });
-  }
-  for (const field of Object.keys(caseState.event.facts) as Array<keyof typeof caseState.event.facts>) {
-    const target: FactTarget = { entity: "event", entityId: "event", field };
-    facts.push({ target, fact: getFact(caseState, target) });
-  }
-  for (const product of caseState.products) {
-    for (const field of Object.keys(product.facts) as Array<keyof typeof product.facts>) {
-      const target: FactTarget = { entity: "product", entityId: product.id, field };
-      facts.push({ target, fact: getFact(caseState, target) });
-    }
-  }
-  for (const test of caseState.relevantTests) {
-    for (const field of Object.keys(test.facts) as Array<keyof typeof test.facts>) {
-      const target: FactTarget = { entity: "test", entityId: test.id, field };
-      facts.push({ target, fact: getFact(caseState, target) });
-    }
-  }
-  for (const field of Object.keys(caseState.reporter.facts) as Array<keyof typeof caseState.reporter.facts>) {
-    const target: FactTarget = { entity: "reporter", entityId: "reporter", field };
-    facts.push({ target, fact: getFact(caseState, target) });
-  }
-  return facts;
 }

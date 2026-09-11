@@ -1,4 +1,3 @@
-import { writeFile } from "node:fs/promises";
 import type { ModelProposalOutput } from "../../src/domain/case/model-boundary.ts";
 import type { ProductFactKey } from "../../src/domain/case/types.ts";
 
@@ -513,30 +512,69 @@ function regressionResponses(): [ModelProposalOutput, ModelProposalOutput] {
 }
 
 const [regressionOpeningResponse, regressionCorrectionResponse] = regressionResponses();
-const responses = [
-  { identityScope: "issue67-quarantine", turn: "opening", output: quarantineResponse() },
-  { identityScope: "layer3-combined", turn: "opening", output: layer3CombinedResponse() },
-  { identityScope: "layer3-conditional", turn: "opening", output: layer3ConditionalResponse() },
-  { identityScope: "layer3-correction", turn: "opening", output: layer3CorrectionResponse() },
-  { identityScope: "layer3-correction-update", turn: "correction", output: layer3CorrectionUpdateResponse() },
-  { identityScope: "layer2-device", turn: "opening", output: layer2DeviceResponse() },
-  { identityScope: "layer2-product-quality", turn: "opening", output: layer2ProductQualityResponse() },
-  { identityScope: "layer1-death", turn: "opening", output: layer1DeathResponse() },
-  { identityScope: "layer1-tests", turn: "opening", output: layer1TestsResponse() },
-  { identityScope: "layer1-tests-update", turn: "correction", output: layer1TestsCorrectionResponse() },
-  { identityScope: "layer1-role", turn: "opening", output: layer1RoleResponse() },
-  { identityScope: "layer1-role-update", turn: "correction", output: layer1RoleCorrectionResponse() },
-  { identityScope: "adaptive-rich", turn: "opening", output: adaptiveRichResponse() },
-  { identityScope: "adaptive-sparse", turn: "opening", output: adaptiveSparseResponse() },
-  { identityScope: "rich", turn: "opening", output: richResponse() },
-  { identityScope: "sparse", turn: "opening", output: sparseResponse() },
-  { identityScope: "repeated", turn: "opening", output: repeatedResponse() },
-  { identityScope: "repeated-update", turn: "correction", output: repeatedCorrectionResponse() },
-  { identityScope: "change-remove", turn: "opening", output: regressionOpeningResponse },
-  { identityScope: "experiment-1", turn: "opening", output: regressionOpeningResponse },
-  { identityScope: "experiment-1-update", turn: "correction", output: regressionCorrectionResponse },
-];
 
-if (process.argv[1]?.endsWith("build-predetermined-responses.ts")) {
-  await writeFile("tests/e2e/predetermined-model-responses.json", `${JSON.stringify(responses, null, 2)}\n`);
+interface PredeterminedModelResponse {
+  identityScope: string;
+  turn: "opening" | "correction";
+  output: ModelProposalOutput;
 }
+
+export const predeterminedResponseScenarios = {
+  issue67Quarantine: [
+    { identityScope: "issue67-quarantine", turn: "opening", output: quarantineResponse() },
+  ],
+  layer3Combined: [
+    { identityScope: "layer3-combined", turn: "opening", output: layer3CombinedResponse() },
+  ],
+  layer3Conditional: [
+    { identityScope: "layer3-conditional", turn: "opening", output: layer3ConditionalResponse() },
+  ],
+  layer3Correction: [
+    { identityScope: "layer3-correction", turn: "opening", output: layer3CorrectionResponse() },
+    { identityScope: "layer3-correction-update", turn: "correction", output: layer3CorrectionUpdateResponse() },
+  ],
+  layer2Device: [
+    { identityScope: "layer2-device", turn: "opening", output: layer2DeviceResponse() },
+  ],
+  layer2ProductQuality: [
+    { identityScope: "layer2-product-quality", turn: "opening", output: layer2ProductQualityResponse() },
+  ],
+  layer1Death: [
+    { identityScope: "layer1-death", turn: "opening", output: layer1DeathResponse() },
+  ],
+  layer1Tests: [
+    { identityScope: "layer1-tests", turn: "opening", output: layer1TestsResponse() },
+    { identityScope: "layer1-tests-update", turn: "correction", output: layer1TestsCorrectionResponse() },
+  ],
+  layer1Role: [
+    { identityScope: "layer1-role", turn: "opening", output: layer1RoleResponse() },
+    { identityScope: "layer1-role-update", turn: "correction", output: layer1RoleCorrectionResponse() },
+  ],
+  adaptiveRich: [
+    { identityScope: "adaptive-rich", turn: "opening", output: adaptiveRichResponse() },
+  ],
+  adaptiveSparse: [
+    { identityScope: "adaptive-sparse", turn: "opening", output: adaptiveSparseResponse() },
+  ],
+  rich: [
+    { identityScope: "rich", turn: "opening", output: richResponse() },
+  ],
+  sparse: [
+    { identityScope: "sparse", turn: "opening", output: sparseResponse() },
+  ],
+  repeated: [
+    { identityScope: "repeated", turn: "opening", output: repeatedResponse() },
+    { identityScope: "repeated-update", turn: "correction", output: repeatedCorrectionResponse() },
+  ],
+  changeRemove: [
+    { identityScope: "change-remove", turn: "opening", output: regressionOpeningResponse },
+  ],
+  experiment1: [
+    { identityScope: "experiment-1", turn: "opening", output: regressionOpeningResponse },
+    { identityScope: "experiment-1-update", turn: "correction", output: regressionCorrectionResponse },
+  ],
+} as const satisfies Record<string, readonly PredeterminedModelResponse[]>;
+
+export const predeterminedModelResponses: PredeterminedModelResponse[] = Object.values(
+  predeterminedResponseScenarios,
+).flat();
