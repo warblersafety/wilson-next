@@ -2,10 +2,11 @@ import { randomUUID } from "node:crypto";
 import Anthropic, { APIError } from "@anthropic-ai/sdk";
 import { z } from "zod";
 import {
-  modelProposalOutputSchema,
+  decodeProviderModelProposalOutput,
   parseModelProposalEnvelope,
   providerModelProposalOutputSchema,
   type ModelBoundaryIdentityFactory,
+  type ModelProposalOutput,
 } from "../../domain/case/model-boundary";
 import { ModelCallFailure } from "./journey-model";
 import type {
@@ -18,8 +19,8 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-target-contract-v1";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v11";
+export const MODEL_PROMPT_REVISION = "wilson-target-contract-v2";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v12";
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
 export const MODEL_MAX_RETRIES = 0;
 
@@ -78,6 +79,7 @@ Rules:
 - On opening input, declare each mentioned product once using arbitrary response-local productReference and groupReference values. Use those references for its proposals. Wilson—not you—assigns stable case identity.
 - On later input, declare no products. Refer to an existing product only by an exact application-supplied product ID from the reviewed-case context. A repeated name or alias does not create identity.
 - proposalReference and groupReference are response-local linkage values, not case IDs. Keep a group within one case entity.
+- Put each proposal in the response bucket whose target and value contract it matches. Return every bucket, using an empty array when it has no proposals. Bucket placement changes only the provider wire format; each proposal remains an ordinary Wilson proposal.
 - Every proposal must include an exact, contiguous, self-contained evidenceQuote from the current clinician input that lets a reviewer identify both the subject and the complete claim without relying on target metadata. Include all wording needed to support negation, correction, alternatives, or unresolved uncertainty. Completeness outranks brevity; only then choose the shortest sufficient quotation. Return the quotation itself, never character offsets or a source ID.
 - Reviewed-case context is supplied only to link later mentions and distinguish accepted knowledge from corrections or alternatives. Never cite context as clinician evidence.
 - Omit unsupported facts. Every proposal remains unaccepted until ordinary human review.`;
@@ -187,15 +189,18 @@ export function createAnthropicJourneyModel(
           response,
         );
       }
-      const structured = modelProposalOutputSchema.safeParse(decoded);
-      if (!structured.success) {
+      let structured: ModelProposalOutput;
+      try {
+        structured = decodeProviderModelProposalOutput(decoded);
+      } catch (error) {
         throw new ModelCallFailure(
           "Wilson could not interpret the fictional account. Accepted case knowledge is unchanged.",
           {
             phase: "structured-schema",
             requestId: response.id,
             responseArtifact,
-            issues: zodIssues(structured.error),
+            errorName: errorName(error),
+            issues: error instanceof z.ZodError ? zodIssues(error) : undefined,
           },
           metrics,
           response,
@@ -213,7 +218,7 @@ export function createAnthropicJourneyModel(
           },
           existingProductIds: reviewedCase?.products.map(({ id }) => id),
           existingTestIds: reviewedCase?.relevantTests.map(({ id }) => id),
-          output: structured.data,
+          output: structured,
         }, createIdentity);
         return { envelope, metrics, responseArtifact, diagnosticResponse: response };
       } catch (error) {

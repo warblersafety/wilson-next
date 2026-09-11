@@ -1,6 +1,11 @@
 import { APIError } from "@anthropic-ai/sdk";
 import { describe, expect, it, vi } from "vitest";
-import type { ModelBoundaryIdentityFactory, ModelProposalOutput } from "../../src/domain/case/model-boundary";
+import {
+  decodeProviderModelProposalOutput,
+  encodeProviderModelProposalOutput,
+  type ModelBoundaryIdentityFactory,
+  type ModelProposalOutput,
+} from "../../src/domain/case/model-boundary";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { performJourneyAction } from "../../src/server/journey/service";
 import {
@@ -67,9 +72,10 @@ describe("Anthropic production model boundary", () => {
     expect(requestText).not.toMatch(/apixaban|naproxen|lisinopril/i);
     expect(schema).toContain("evidenceQuote");
     expect(schema).toContain("Completeness outranks brevity");
-    expect(schema).toContain("Preserve explicitly stated descriptive detail");
+    expect(schema).toContain("Preserve explicit detail");
     expect(schema).toContain("productReference");
-    expect(schema).toContain('"const":"known"');
+    expect(schema).toContain('"patientProposals"');
+    expect(schema).toContain('"productProposals"');
     expect(schema).toContain('"enum":["available","not-available","returned-to-manufacturer"]');
     expect(schema).toContain('"format":"date"');
     expect(schema).not.toContain("minLength");
@@ -252,7 +258,10 @@ describe("Anthropic production model boundary", () => {
     (decoded.proposals[0] as { intent: string }).intent = "unsupported";
     setResponseOutput(invalidSchema, decoded);
     expect((await modelFailure(createAnthropicJourneyModel(async () => invalidSchema).propose("opening", openingText))).diagnostic)
-      .toMatchObject({ phase: "structured-schema", issues: [{ path: "proposals.0.intent" }] });
+      .toMatchObject({
+        phase: "structured-schema",
+        issues: [{ path: "patientProposals.stringProposals.0.metadata.intent" }],
+      });
   });
 
   it("retains safe provider status metadata without provider detail", async () => {
@@ -386,7 +395,7 @@ function response(output: ModelProposalOutput, turn: "opening" | "correction"): 
     id: `message-${turn}`,
     model: ANTHROPIC_MODEL_ID,
     stop_reason: "end_turn",
-    content: [{ type: "text", text: JSON.stringify(output) }],
+    content: [{ type: "text", text: JSON.stringify(encodeProviderModelProposalOutput(output)) }],
     usage: {
       input_tokens: 100,
       cache_creation_input_tokens: 10,
@@ -397,11 +406,11 @@ function response(output: ModelProposalOutput, turn: "opening" | "correction"): 
 }
 
 function responseOutput(value: AnthropicModelResponse): ModelProposalOutput {
-  return JSON.parse((value.content[0] as { text: string }).text) as ModelProposalOutput;
+  return decodeProviderModelProposalOutput(JSON.parse((value.content[0] as { text: string }).text));
 }
 
 function setResponseOutput(value: AnthropicModelResponse, output: ModelProposalOutput): void {
-  value.content = [{ type: "text", text: JSON.stringify(output) }];
+  value.content = [{ type: "text", text: JSON.stringify(encodeProviderModelProposalOutput(output)) }];
 }
 
 async function modelFailure(promise: Promise<unknown>): Promise<ModelCallFailure> {

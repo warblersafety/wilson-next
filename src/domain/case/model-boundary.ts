@@ -10,6 +10,8 @@ const patientFields = ["identifier", "ageYears", "sex", "weight"] as const;
 const eventFields = ["problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "relevantHistory", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate"] as const;
 const productFields = ["name", "productType", "role", "manufacturer", "lotNumber", "dose", "frequency", "route", "startDate", "stopDate", "indication", "stopped", "commonName", "procode", "modelNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implanted", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const;
 const relevantTestFields = ["testResult", "lowRange", "highRange", "date"] as const;
+const modelEntities = ["patient", "event", "product", "test"] as const;
+type ModelEntity = typeof modelEntities[number];
 
 const modelTargetSchema = z.discriminatedUnion("entity", [
   z.object({ entity: z.literal("patient"), field: z.enum(patientFields) }).strict(),
@@ -300,107 +302,255 @@ function modelFactTarget(target: ModelProposalOutput["proposals"][number]["targe
 }
 
 type ProviderSchema = Record<string, unknown>;
-type ModelEntity = keyof typeof modelTargetValueContracts;
 
-interface ContractGroup {
+interface ProviderProposalBucket {
+  name: string;
   contract: KnownValueContract;
-  fields: Record<ModelEntity, string[]>;
+  fields: string[];
+}
+
+interface ProviderProposalMetadata {
+  proposalReference: string;
+  groupReference: string;
+  intent: "fact" | "correction" | "alternative";
+  evidenceQuote: string;
+}
+
+interface ProviderKnownProposalWire {
+  metadata: ProviderProposalMetadata;
+  field: string;
+  productReference?: string;
+  testReference?: string;
+  value: unknown;
+  qualifier?: unknown;
+}
+
+interface ProviderNonKnownProposalWire extends Omit<ProviderKnownProposalWire, "value" | "qualifier"> {
+  kind: unknown;
 }
 
 function createProviderModelProposalOutputSchema(): ProviderSchema {
-  const knownVariants = groupedModelContracts().map(({ contract, fields }) => proposalSchema(
-    providerTargetSchema(fields),
-    providerKnownValueSchema(contract),
-  ));
-  const nonKnownVariant = proposalSchema(
-    providerTargetSchema(modelFieldsByEntity()),
-    {
-      type: "object",
-      properties: { kind: { type: "string", enum: ["unknown", "explicitly-absent", "inapplicable", "declined"] } },
-      required: ["kind"],
-      additionalProperties: false,
+  const entitySchemas = Object.fromEntries(modelEntities.map((entity) => [providerEntityKey(entity), {
+    type: "object",
+    properties: {
+      ...Object.fromEntries(providerProposalBuckets(entity).map(({ name, contract, fields }) => [name, {
+        type: "array",
+        description: `Known ${entity} ${providerBucketDescription(contract)} proposals; empty when unused.`,
+        items: providerKnownProposalSchema(entity, fields, contract),
+      }])),
+      nonKnownProposals: {
+        type: "array",
+        description: `Non-known ${entity} proposals; empty when unused.`,
+        items: providerNonKnownProposalSchema(entity, Object.keys(modelTargetValueContracts[entity])),
+      },
     },
-  );
+    required: [...providerProposalBuckets(entity).map(({ name }) => name), "nonKnownProposals"],
+    additionalProperties: false,
+  }]));
 
   return {
     type: "object",
-    properties: {
-      products: {
-        type: "array",
-        items: declarationSchema("productReference"),
+    $defs: {
+      nonEmptyString: nonEmptyStringGuidance(),
+      intent: { type: "string", enum: ["fact", "correction", "alternative"] },
+      evidenceQuote: {
+        ...nonEmptyStringGuidance(),
+        description: "An exact contiguous quotation that independently identifies the subject and complete claim. Completeness outranks brevity, including wording needed for negation, correction, alternatives, or unresolved uncertainty. Wilson validates presence and uniqueness locally.",
       },
-      tests: {
-        type: "array",
-        items: declarationSchema("testReference"),
-      },
-      proposals: {
-        type: "array",
-        minItems: 1,
-        items: { anyOf: [...knownVariants, nonKnownVariant] },
+      proposalMetadata: {
+        type: "object",
+        properties: {
+          proposalReference: providerDefinitionReference("nonEmptyString"),
+          groupReference: providerDefinitionReference("nonEmptyString"),
+          intent: providerDefinitionReference("intent"),
+          evidenceQuote: providerDefinitionReference("evidenceQuote"),
+        },
+        required: ["proposalReference", "groupReference", "intent", "evidenceQuote"],
+        additionalProperties: false,
       },
     },
-    required: ["products", "proposals"],
+    properties: {
+      products: { type: "array", items: declarationSchema("productReference") },
+      tests: { type: "array", items: declarationSchema("testReference") },
+      ...entitySchemas,
+    },
+    required: ["products", "tests", ...modelEntities.map(providerEntityKey)],
     additionalProperties: false,
   };
 }
 
-function groupedModelContracts(): ContractGroup[] {
-  const groups = new Map<string, ContractGroup>();
-  for (const [entity, contracts] of Object.entries(modelTargetValueContracts) as Array<
-    [ModelEntity, Record<string, KnownValueContract>]
-  >) {
-    for (const [field, contract] of Object.entries(contracts)) {
-      const key = JSON.stringify(contract);
-      const group = groups.get(key) ?? {
-        contract,
-        fields: { patient: [], event: [], product: [], test: [] },
-      };
-      group.fields[entity].push(field);
-      groups.set(key, group);
+const providerMetadataDecoder = z.object({
+  proposalReference: z.string(),
+  groupReference: z.string(),
+  intent: z.enum(["fact", "correction", "alternative"]),
+  evidenceQuote: z.string(),
+}).strict();
+
+function providerWireItemDecoder(entity: ModelEntity, known: boolean): z.ZodObject {
+  const reference = entity === "product" ? { productReference: z.string() }
+    : entity === "test" ? { testReference: z.string() } : {};
+  return known
+    ? z.object({ metadata: providerMetadataDecoder, field: z.string(), ...reference, value: z.unknown(), qualifier: z.unknown().optional() }).strict()
+    : z.object({ metadata: providerMetadataDecoder, field: z.string(), ...reference, kind: z.unknown() }).strict();
+}
+
+const providerWireOutputSchema = z.object({
+  products: z.array(z.unknown()),
+  tests: z.array(z.unknown()),
+  ...Object.fromEntries(modelEntities.map((entity) => [providerEntityKey(entity), z.object({
+    ...Object.fromEntries(providerProposalBuckets(entity).map(({ name }) => [name, z.array(providerWireItemDecoder(entity, true))])),
+    nonKnownProposals: z.array(providerWireItemDecoder(entity, false)),
+  }).strict()])),
+}).strict();
+
+export function decodeProviderModelProposalOutput(output: unknown): ModelProposalOutput {
+  const decoded = providerWireOutputSchema.parse(output) as Record<string, unknown>;
+  const proposals: unknown[] = [];
+  for (const entity of modelEntities) {
+    const entityOutput = decoded[providerEntityKey(entity)] as Record<string, unknown[]>;
+    for (const { name } of providerProposalBuckets(entity)) {
+      proposals.push(...entityOutput[name].map((item) => decodeProviderProposal(entity, item as ProviderKnownProposalWire, true)));
     }
+    proposals.push(...entityOutput.nonKnownProposals.map((item) => (
+      decodeProviderProposal(entity, item as ProviderNonKnownProposalWire, false)
+    )));
+  }
+  return modelProposalOutputSchema.parse({ products: decoded.products, tests: decoded.tests, proposals });
+}
+
+export function encodeProviderModelProposalOutput(output: ModelProposalOutput): Record<string, unknown> {
+  const entityOutputs = Object.fromEntries(modelEntities.map((entity) => [providerEntityKey(entity), {
+    ...Object.fromEntries(providerProposalBuckets(entity).map(({ name }) => [name, [] as unknown[]])),
+    nonKnownProposals: [] as unknown[],
+  }])) as Record<string, Record<string, unknown[]>>;
+
+  for (const proposal of output.proposals) {
+    const entityOutput = entityOutputs[providerEntityKey(proposal.target.entity)];
+    const item = encodeProviderProposal(proposal);
+    if (proposal.value.kind === "known") {
+      const contracts = modelTargetValueContracts[proposal.target.entity] as Record<string, KnownValueContract>;
+      entityOutput[providerBucketName(contracts[proposal.target.field])].push(item);
+    } else {
+      entityOutput.nonKnownProposals.push(item);
+    }
+  }
+  return { products: output.products, tests: output.tests ?? [], ...entityOutputs };
+}
+
+function decodeProviderProposal(
+  entity: ModelEntity,
+  item: ProviderKnownProposalWire | ProviderNonKnownProposalWire,
+  known: boolean,
+): unknown {
+  const target = {
+    entity,
+    ...(entity === "product" ? { productReference: item.productReference } : {}),
+    ...(entity === "test" ? { testReference: item.testReference } : {}),
+    field: item.field,
+  };
+  const knownItem = item as ProviderKnownProposalWire;
+  const value = known
+    ? { kind: "known", value: knownItem.value,
+      ...(knownItem.qualifier === undefined ? {} : { qualifier: knownItem.qualifier }) }
+    : { kind: (item as ProviderNonKnownProposalWire).kind };
+  return { ...item.metadata, target, value };
+}
+
+function encodeProviderProposal(proposal: ModelProposalOutput["proposals"][number]): ProviderKnownProposalWire | ProviderNonKnownProposalWire {
+  const metadata = {
+    proposalReference: proposal.proposalReference,
+    groupReference: proposal.groupReference,
+    intent: proposal.intent,
+    evidenceQuote: proposal.evidenceQuote,
+  };
+  const common = {
+    metadata,
+    field: proposal.target.field,
+    ...(proposal.target.entity === "product" ? { productReference: proposal.target.productReference } : {}),
+    ...(proposal.target.entity === "test" ? { testReference: proposal.target.testReference } : {}),
+  };
+  if (proposal.value.kind !== "known") return { ...common, kind: proposal.value.kind };
+  return {
+    ...common,
+    value: proposal.value.value,
+    ...(proposal.value.qualifier === undefined ? {} : { qualifier: proposal.value.qualifier }),
+  };
+}
+
+function providerProposalBuckets(entity: ModelEntity): ProviderProposalBucket[] {
+  const groups = new Map<string, ProviderProposalBucket>();
+  for (const [field, contract] of Object.entries(modelTargetValueContracts[entity]) as Array<[string, KnownValueContract]>) {
+    const name = providerBucketName(contract);
+    const group = groups.get(name) ?? { name, contract, fields: [] };
+    group.fields.push(field);
+    groups.set(name, group);
   }
   return [...groups.values()];
 }
 
-function modelFieldsByEntity(): Record<ModelEntity, string[]> {
-  return Object.fromEntries(
-    Object.entries(modelTargetValueContracts).map(([entity, contracts]) => [entity, Object.keys(contracts)]),
-  ) as Record<ModelEntity, string[]>;
+function providerEntityKey(entity: ModelEntity): string {
+  return `${entity}Proposals`;
 }
 
-function providerTargetSchema(fieldsByEntity: Record<ModelEntity, string[]>): ProviderSchema {
-  const variants = (Object.entries(fieldsByEntity) as Array<[ModelEntity, string[]]>)
-    .filter(([, fields]) => fields.length > 0)
-    .map(([entity, fields]) => {
-      const reference = entity === "product" ? "productReference" : entity === "test" ? "testReference" : undefined;
-      return {
-        type: "object",
-        properties: {
-          entity: { type: "string", const: entity },
-          ...(reference ? { [reference]: nonEmptyStringGuidance() } : {}),
-          field: { type: "string", enum: fields },
-        },
-        required: ["entity", ...(reference ? [reference] : []), "field"],
-        additionalProperties: false,
-      };
-    });
-  return variants.length === 1 ? variants[0] : { anyOf: variants };
+function providerBucketName(contract: KnownValueContract): string {
+  switch (contract.shape) {
+    case "string": return "stringProposals";
+    case "iso-date": return "dateProposals";
+    case "integer": return "ageProposals";
+    case "boolean": return "booleanProposals";
+    case "string-array": return "stringArrayProposals";
+    case "measurement": return "measurementProposals";
+    case "enum-array": return "enumArrayProposals";
+    case "enum": {
+      const values = contract.values.join("|");
+      if (values === "female|male|intersex") return "sexProposals";
+      if (values === "available|not-available|returned-to-manufacturer") return "productAvailabilityProposals";
+      if (values === "drug-or-biologic|device|other") return "productTypeProposals";
+      if (values === "suspect|concomitant") return "productRoleProposals";
+      if (values === "health-professional|patient-consumer|other") return "deviceOperatorProposals";
+      if (values === "yes|no|unknown") return "serviceStatusProposals";
+      throw new Error(`Unsupported provider enum contract: ${values}`);
+    }
+  }
 }
 
-function providerKnownValueSchema(contract: KnownValueContract): ProviderSchema {
+function providerBucketDescription(contract: KnownValueContract): string {
+  if (contract.shape === "enum") return `${providerBucketName(contract).replace(/Proposals$/, "")} enum`;
+  return contract.shape;
+}
+
+function providerKnownProposalSchema(entity: ModelEntity, fields: string[], contract: KnownValueContract): ProviderSchema {
   const valueSchema = providerValueSchema(contract);
   const valueDescription = [
     valueSchema.description,
-    "Preserve explicitly stated descriptive detail; normalize only conventions defined by the model instructions.",
+    "Preserve explicit detail; normalize only as instructed.",
   ].filter(Boolean).join(" ");
+  const reference = entity === "product" ? "productReference" : entity === "test" ? "testReference" : undefined;
   return {
     type: "object",
     properties: {
-      kind: { type: "string", const: "known" },
+      metadata: providerDefinitionReference("proposalMetadata"),
+      ...(reference ? { [reference]: providerDefinitionReference("nonEmptyString") } : {}),
+      field: { type: "string", enum: fields },
       value: { ...valueSchema, description: valueDescription },
-      qualifier: nonEmptyStringGuidance(),
+      qualifier: providerDefinitionReference("nonEmptyString"),
     },
-    required: ["kind", "value"],
+    required: ["metadata", ...(reference ? [reference] : []), "field", "value"],
+    additionalProperties: false,
+  };
+}
+
+function providerNonKnownProposalSchema(entity: ModelEntity, fields: string[]): ProviderSchema {
+  const reference = entity === "product" ? "productReference" : entity === "test" ? "testReference" : undefined;
+  return {
+    type: "object",
+    properties: {
+      metadata: providerDefinitionReference("proposalMetadata"),
+      ...(reference ? { [reference]: providerDefinitionReference("nonEmptyString") } : {}),
+      field: { type: "string", enum: fields },
+      kind: { type: "string", enum: ["unknown", "explicitly-absent", "inapplicable", "declined"] },
+    },
+    required: ["metadata", ...(reference ? [reference] : []), "field", "kind"],
     additionalProperties: false,
   };
 }
@@ -429,31 +579,12 @@ function providerValueSchema(contract: KnownValueContract): ProviderSchema {
   }
 }
 
-function proposalSchema(target: ProviderSchema, value: ProviderSchema): ProviderSchema {
-  return {
-    type: "object",
-    properties: {
-      proposalReference: nonEmptyStringGuidance(),
-      groupReference: nonEmptyStringGuidance(),
-      intent: { type: "string", enum: ["fact", "correction", "alternative"] },
-      target,
-      value,
-      evidenceQuote: {
-        ...nonEmptyStringGuidance(),
-        description: "An exact contiguous quotation that independently identifies the subject and complete claim. Completeness outranks brevity, including wording needed for negation, correction, alternatives, or unresolved uncertainty. Wilson validates presence and uniqueness locally.",
-      },
-    },
-    required: ["proposalReference", "groupReference", "intent", "target", "value", "evidenceQuote"],
-    additionalProperties: false,
-  };
-}
-
 function declarationSchema(reference: "productReference" | "testReference"): ProviderSchema {
   return {
     type: "object",
     properties: {
-      [reference]: nonEmptyStringGuidance(),
-      groupReference: nonEmptyStringGuidance(),
+      [reference]: providerDefinitionReference("nonEmptyString"),
+      groupReference: providerDefinitionReference("nonEmptyString"),
     },
     required: [reference, "groupReference"],
     additionalProperties: false,
@@ -462,4 +593,8 @@ function declarationSchema(reference: "productReference" | "testReference"): Pro
 
 function nonEmptyStringGuidance(): ProviderSchema {
   return { type: "string", description: "Must be non-empty; Wilson validates this locally." };
+}
+
+function providerDefinitionReference(name: string): ProviderSchema {
+  return { $ref: `#/$defs/${name}` };
 }

@@ -1,9 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+  decodeProviderModelProposalOutput,
+  encodeProviderModelProposalOutput,
   modelProposalOutputSchema,
   parseModelProposalEnvelope,
   providerModelProposalOutputSchema,
   type ModelBoundaryIdentityFactory,
+  type ModelProposalOutput,
 } from "../../src/domain/case/model-boundary";
 import { modelTargetValueContracts } from "../../src/domain/case/value-contract";
 
@@ -229,6 +232,20 @@ describe("model proposal boundary", () => {
     expect(JSON.stringify(providerModelProposalOutputSchema)).not.toContain("reporter");
   });
 
+  it("keeps provider grammar bounded while preserving the local proposal envelope", () => {
+    const output = modelOutput({ entity: "event", field: "symptoms" }, ["rash"]);
+    const wire = encodeProviderModelProposalOutput(output as ModelProposalOutput);
+
+    expect(decodeProviderModelProposalOutput(wire)).toEqual({ ...output, tests: [] });
+    expect(Object.keys(wire)).not.toContain("proposals");
+    expect(schemaComplexity(providerModelProposalOutputSchema)).toMatchObject({
+      optionalProperties: 18,
+      anyOfNodes: 0,
+      anyOfBranches: 0,
+    });
+    expect(Buffer.byteLength(JSON.stringify(providerModelProposalOutputSchema))).toBeLessThan(16_000);
+  });
+
   it.each(["unknown", "explicitly-absent", "inapplicable", "declined"] as const)(
     "preserves an explicitly stated %s meaning as an unaccepted proposal",
     (kind) => {
@@ -300,23 +317,40 @@ function modelOutput(target: object, value: unknown) {
 }
 
 function providerValueSchema(entity: string, field: string): Record<string, unknown> {
-  const proposals = providerModelProposalOutputSchema.properties as Record<string, Record<string, unknown>>;
-  const proposalArray = proposals.proposals;
-  const items = proposalArray.items as { anyOf: Array<Record<string, unknown>> };
-  for (const variant of items.anyOf) {
+  const rootProperties = providerModelProposalOutputSchema.properties as Record<string, Record<string, unknown>>;
+  const entitySchema = rootProperties[`${entity}Proposals`];
+  const propertiesByBucket = entitySchema.properties as Record<string, Record<string, unknown>>;
+  for (const [name, proposalArray] of Object.entries(propertiesByBucket)) {
+    if (name === "nonKnownProposals") continue;
+    const variant = proposalArray.items as Record<string, unknown>;
     const properties = variant.properties as Record<string, Record<string, unknown>>;
-    const value = properties.value;
-    const valueProperties = value?.properties as Record<string, Record<string, unknown>> | undefined;
-    if (valueProperties?.kind?.const !== "known") continue;
-    const target = properties.target;
-    const targetVariants = (target.anyOf as Array<Record<string, unknown>> | undefined) ?? [target];
-    if (targetVariants.some((candidate) => {
-      const candidateProperties = candidate.properties as Record<string, Record<string, unknown>>;
-      return candidateProperties.entity.const === entity
-        && (candidateProperties.field.enum as string[]).includes(field);
-    })) return valueProperties.value;
+    if ((properties.field.enum as string[]).includes(field)) return properties.value;
   }
   throw new Error(`No provider contract for ${entity}.${field}`);
+}
+
+function schemaComplexity(schema: unknown) {
+  let optionalProperties = 0;
+  let anyOfNodes = 0;
+  let anyOfBranches = 0;
+  const visit = (value: unknown): void => {
+    if (!value || typeof value !== "object") return;
+    if (Array.isArray(value)) {
+      value.forEach(visit);
+      return;
+    }
+    const record = value as Record<string, unknown>;
+    const properties = record.properties as Record<string, unknown> | undefined;
+    const required = new Set(Array.isArray(record.required) ? record.required as string[] : []);
+    if (properties) optionalProperties += Object.keys(properties).filter((key) => !required.has(key)).length;
+    if (Array.isArray(record.anyOf)) {
+      anyOfNodes += 1;
+      anyOfBranches += record.anyOf.length;
+    }
+    Object.values(record).forEach(visit);
+  };
+  visit(schema);
+  return { optionalProperties, anyOfNodes, anyOfBranches };
 }
 
 function expectedProviderValue(contract: { shape: string; values?: readonly string[] }) {

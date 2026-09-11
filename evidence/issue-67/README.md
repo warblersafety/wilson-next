@@ -2,9 +2,10 @@
 
 Issue #67 revisits the deferred live-model risk in Issue #55 after the same
 target/value typing class recurred in the independent Layer 3 device journey.
-The implementation baseline is merged `main` at `f5c09ee` after PR #70. No
-live application-model call, preview exercise, deployment, release, real data,
-or physician participation is part of the implementation record below.
+The implementation baseline is merged `main` at `f5c09ee` after PR #70. The
+record now includes one protected synthetic application-model attempt against
+the reviewed pull-request implementation. It includes no real data, release,
+production deployment, or physician participation.
 
 ## Premise and root cause
 
@@ -17,10 +18,11 @@ recorded invalid combinations: scalar `event.symptoms` and free-text
 `event.productAvailability`. Local/domain validation rejected both atomically,
 so accepted case state remained safe, but the user action failed before review.
 
-The provider supports `const`, primitive `enum`, `format`, and `anyOf`; numeric
-bounds and string-length constraints are not supported. The implementation
-therefore sends one raw target-dependent schema containing supported structural
-constraints and retains local validation for the complete contract. See
+The provider supports primitive `enum`, `format`, typed buckets, and local
+`$defs`/`$ref`; numeric bounds and string-length constraints are not supported.
+The final implementation therefore sends a target-dependent typed-bucket schema
+containing supported structural constraints and retains local validation for
+the complete contract. See
 [Anthropic's structured-output limits](https://platform.claude.com/docs/en/build-with-claude/structured-outputs#json-schema-limitations).
 
 ## Target/value enforcement matrix
@@ -74,23 +76,71 @@ cleanup after the integrated rehearsal, not inside Issue #67.
 ## Implementation evidence
 
 - Model: `claude-sonnet-5` (no application call made during implementation).
-- Prompt revision: `wilson-target-contract-v1`.
-- Schema revision: `wilson-grounded-proposals-v11`.
-- Focused target/value, model-adapter, configured-model, browser-state, and
-  command checks: 5 files / 86 tests passed.
+- Initial prompt revision: `wilson-target-contract-v1`.
+- Initial schema revision: `wilson-grounded-proposals-v11`.
+- Remediated prompt revision: `wilson-target-contract-v2`.
+- Remediated schema revision: `wilson-grounded-proposals-v12`.
+- Focused target/value and model-adapter checks after remediation: 2 files / 48
+  tests passed.
 - `npm run typecheck`: passed.
-- Full deterministic suite with the repository's pypdf interpreter: 17 files /
-  139 tests passed.
+- Full deterministic suite with the repository's pypdf interpreter after
+  remediation: 17 files / 140 tests passed.
 - `npm run build`: passed.
-- Local assembled Chromium/PDF journey with predetermined responses: 1 passed;
-  no live application-model call or remote preview request.
+- Local assembled Chromium/PDF journey with predetermined responses after
+  remediation: 1 passed.
 - `git diff --check`: passed.
 
-## Pending protected live evidence
+## Protected live evidence and schema-premise reconciliation
 
-After the exact implementation commit passes the required independent review
-and is available through the automatically built protected pull-request
-preview, Issue #67 calls for exactly two no-retry opening actions:
+The reviewed v11 implementation at `d2bcaa3`, merged with current `main` and
+published at checkpoint `94136b6`, passed GitHub `verify`, Vercel build, local
+deterministic checks, and the recorded Claude review. The exact protected
+preview was deployment `dpl_EXbZxHhY1rDbB2Ru6nw6gnFgkcsi`. Deployment
+Protection was verified before the call; temporary synthetic-run access was
+revoked afterward and unauthenticated access again returned a redirect.
+
+The first approved opening used only the existing fictional rich medication
+account for `TEST-68`. It reached the ordinary application route and made
+exactly one provider request with retries disabled. Anthropic rejected the
+request before generation with HTTP 400 and provider type
+`invalid_request_error`. The safe application diagnostic reference was
+`71f9e30b-7090-4ee7-b369-7e751f54e77f`; the correlated synthetic run ID was
+`8a3fb899-9733-4b03-92fb-85bb3775a9e5`; and the provider request ID was
+`req_011Cew4Dib652UvrYZkybZ2M`. There was no provider response, accepted
+command, token count, model latency, or model cost. Raw logs and responses were
+not retained. The conditional-device opening was not attempted.
+
+The failure falsified the premise that a provider-supported keyword set was by
+itself sufficient. The v11 schema contained no documented unsupported keyword
+and remained below the provider's published optional-parameter and union-count
+ceilings, but serialized to 22,599 bytes and compiled one proposal item through
+5 nested `anyOf` nodes with 26 total branches. The provider diagnostic surface
+intentionally omitted the raw error message, so attributing the 400 to the
+documented internal compiled-grammar complexity ceiling is an evidence-backed
+inference rather than a retained provider quotation.
+
+The v12 remediation changes only the provider wire representation. It groups
+known proposals by entity and value contract, shares response metadata through
+local `$defs`/`$ref`, and flattens the response back into the unchanged Wilson
+proposal envelope before the existing local and domain checks. Every
+model-visible field remains enumerated; product and relevant-test references
+remain required in their entity buckets; reporter fields and `event.reportType`
+remain excluded; and unknown, absent, inapplicable, and declined meanings retain
+entity-specific target constraints. The schema is under 16,000 serialized bytes
+with 18 optional qualifiers, zero `anyOf` nodes, and zero union branches.
+
+The typed buckets do not change accepted case state, review behavior,
+diagnostics, response-artifact capability, or PDF projection. The provider wire
+order is normalized by entity and value contract before proposals enter the
+domain; Wilson's fact and group presentation is determined by the case model,
+not provider array order.
+
+## Pending post-remediation live evidence
+
+After the v12 material delta passes the required independent review and is
+available through the automatically built protected pull-request preview, the
+bounded evidence proposal is one no-retry retry of the rich medication opening
+and, only if that succeeds, one no-retry conditional-device opening:
 
 1. The existing fictional rich medication account for `TEST-68` in
    `docs/EXPERIMENT-2.md`, submitted as `adverse-event`.
@@ -105,5 +155,5 @@ prompt/schema revisions, tokens, latency, estimated cost, proposal/evidence
 summaries, and sanitized mechanical/semantic verdicts, and do not retain raw
 provider responses or logs. The two calls must use the ordinary application
 route, automatic retries remain disabled, and no correction, retry,
-confirmation sample, PDF generation, or additional model turn is authorized by
-this evidence plan.
+confirmation sample, PDF generation, or additional model turn beyond those two
+bounded attempts is authorized by this evidence plan.
