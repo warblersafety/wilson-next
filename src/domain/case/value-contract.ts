@@ -18,6 +18,8 @@ export type KnownValueContract =
   | { shape: "enum"; values: readonly string[]; mismatch: string }
   | { shape: "enum-array"; values: readonly string[]; mismatch: string };
 
+export const maximumCaseProducts = 3;
+
 type CaseValueContracts = {
   patient: Record<PatientFactKey, KnownValueContract>;
   event: Record<EventFactKey, KnownValueContract>;

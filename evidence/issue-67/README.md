@@ -19,14 +19,18 @@ accepted without clinician review.
 - One domain-owned value contract now supplies local target/value checks, the
   final command check, and generated text guidance on the provider's previously
   accepted simple wire shape.
-- Proposal-local schema, target, resolved-identity, value, and exact-evidence
-  faults are quarantined before source or proposal identity is created. The
-  case receives no coerced or repaired substitute.
+- Once a response supplies the minimum reference, group, target, and exact
+  citation needed for a truthful visible notice, proposal-local format, target,
+  resolved-identity, value, and exact-evidence faults are quarantined before
+  source or proposal identity is created. The case receives no coerced or
+  repaired substitute. A proposal missing that minimum makes the response
+  envelope invalid; Wilson does not invent the missing notice content.
 - Duplicate identities, cross-entity proposal groups, invalid response
   envelopes, and an all-quarantined response still reject the response.
-- A declared product with no retained proposals is pruned. A relevant test is
-  pruned with its remaining details when its required test-and-result proposal
-  cannot be represented.
+- A declared product with no retained proposals is pruned. Products beyond the
+  supported three-product limit are visibly quarantined before case identity is
+  allocated. A relevant test is pruned with its remaining details when its
+  required test-and-result proposal cannot be represented.
 - The physician-facing notice names the affected case field, preserves the
   exact text the model cited, explains the controlled reason, and remains
   visible in versioned disposable browser interaction state through review and
@@ -50,10 +54,10 @@ Baseline on clean `main` before changes:
 - `PYPDF_PYTHON=.venv-pdf-evidence/bin/python npx vitest run` — 17 files / 113
   tests passed.
 
-Replacement implementation before independent review:
+Replacement implementation and reviewer-requested remediation:
 
 - `npm run typecheck` — passed.
-- `PYPDF_PYTHON=.venv-pdf-evidence/bin/python npx vitest run` — 17 files / 130
+- `PYPDF_PYTHON=.venv-pdf-evidence/bin/python npx vitest run` — 17 files / 131
   tests passed.
 - `npm run build` — passed.
 - `PYPDF_PYTHON=.venv-pdf-evidence/bin/python npm run test:e2e` — the assembled
@@ -66,17 +70,26 @@ Replacement implementation before independent review:
 - `git diff --check` — passed.
 
 Focused recurrence coverage includes the two recorded value failures, unknown
-fields and unresolved entities, absent and ambiguous evidence, relevant-test
-dependency pruning, duplicate/group response rejection, all-quarantined
-rejection, every model-visible target's presence in the domain contract, the
-same target/value checks at `applyCaseCommand`, the three-product command cap,
-150-year restore alignment, browser-held notice reconstruction, diagnostics,
-and the final PDF omission behavior.
+fields and unresolved entities, absent and ambiguous evidence, minimum notice
+envelope rejection, product-limit and relevant-test dependency pruning,
+duplicate/group response rejection, all-quarantined rejection, every
+model-visible target's presence in the domain contract, the same target/value
+checks at `applyCaseCommand`, the three-product command backstop, 150-year
+restore alignment, browser-held notice reconstruction, diagnostics, and the
+final PDF omission behavior.
 
 ## Pending evidence
 
-The required fresh-context standard Sonnet review and the two bounded protected
-synthetic live openings remain pending. No application-model call has been made
-for this replacement implementation. Before either live call, the operator will
-present the exact bounded plan and obtain Steve's explicit approval as required
-by the direct Issue #67 continuation instruction.
+The fresh-context standard Sonnet review at `de3ccc0` found two blocking gaps:
+the fourth-product guard still rejected the entire model batch, and the evidence
+record did not state the minimum target/citation content required to render a
+truthful quarantine notice. The first is now remediated by proposal quarantine
+before identity allocation; the command guard remains a backstop. The second is
+now explicit as a response-envelope rule, because Wilson must not invent a
+missing target or citation. The same-session targeted recheck remains pending.
+
+The two bounded protected synthetic live openings also remain pending. No
+application-model call has been made for this replacement implementation.
+Before either live call, the operator will present the exact bounded plan and
+obtain Steve's explicit approval as required by the direct Issue #67
+continuation instruction.

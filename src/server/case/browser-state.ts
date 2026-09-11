@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { SemanticCase } from "../../domain/case/types";
+import { maximumCaseProducts } from "../../domain/case/value-contract";
 import type { JourneySnapshot, JourneyStage } from "../journey/service";
 import { InMemoryCaseRepository, validateRestoredCase } from "./repository";
 
@@ -159,7 +160,7 @@ const caseSchema = z.object({
     proposalGroupId: z.string().min(1),
     state: z.enum(["proposed", "resolved", "rejected"]),
     facts: productFactsSchema,
-  }).strict()).max(3),
+  }).strict()).max(maximumCaseProducts),
   relevantTests: z.array(z.object({
     id: z.string().min(1),
     proposalGroupId: z.string().min(1),
@@ -208,6 +209,7 @@ const stateSchema = z.object({
     reason: z.enum([
       "unsupported-proposal",
       "unsupported-target",
+      "product-limit",
       "incompatible-value",
       "unresolved-entity",
       "evidence-not-found",

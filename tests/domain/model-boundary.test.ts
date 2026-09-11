@@ -70,12 +70,13 @@ describe("model proposal boundary", () => {
     expect(() => parseModelProposalEnvelope(blank, identities)).toThrow("must not be blank");
   });
 
-  it("does not accept model-calculated offsets or source identities", () => {
+  it("rejects the response when a proposal lacks the minimum citation required for visible quarantine", () => {
     const malformed = candidate() as unknown as {
       output: { proposals: Array<Record<string, unknown>> };
     };
     delete malformed.output.proposals[0].evidenceQuote;
     malformed.output.proposals[0].source = { id: "model-source", start: 8, end: 15 };
+    malformed.output.proposals.push(companionProposal("Patient TEST-57"));
 
     expect(() => parseModelProposalEnvelope(malformed as never, identities)).toThrow();
   });
@@ -139,6 +140,48 @@ describe("model proposal boundary", () => {
     ]);
     expect(JSON.stringify(parsed)).not.toContain("first-mention");
     expect(JSON.stringify(parsed)).not.toContain("second-mention");
+  });
+
+  it("quarantines products beyond the supported limit before allocating case identity", () => {
+    const createIdentity = vi.fn<ModelBoundaryIdentityFactory>(identities);
+    const productNames = ["Drug A", "Drug B", "Drug C", "Drug D"];
+    const parsed = parseModelProposalEnvelope({
+      turn: "opening",
+      input: {
+        id: "input-four-products",
+        type: "narrative",
+        text: productNames.join(", "),
+        recordedAt,
+      },
+      output: {
+        products: productNames.map((_, index) => ({
+          productReference: `product-${index + 1}`,
+          groupReference: `group-${index + 1}`,
+        })),
+        proposals: productNames.map((name, index) => ({
+          proposalReference: `name-${index + 1}`,
+          groupReference: `group-${index + 1}`,
+          intent: "fact" as const,
+          target: { entity: "product" as const, productReference: `product-${index + 1}`, field: "name" as const },
+          value: { kind: "known" as const, value: name },
+          evidenceQuote: name,
+        })),
+      },
+    }, createIdentity);
+
+    expect(parsed.products).toHaveLength(3);
+    expect(parsed.proposals).toHaveLength(3);
+    expect(parsed.sources.map(({ excerpt }) => excerpt)).toEqual(["Drug A", "Drug B", "Drug C"]);
+    expect(parsed.unrepresented).toEqual([{
+      entity: "product",
+      field: "name",
+      evidenceQuote: "Drug D",
+      reason: "product-limit",
+    }]);
+    expect(createIdentity).not.toHaveBeenCalledWith("product", "product-4");
+    expect(createIdentity).not.toHaveBeenCalledWith("group", "group-4");
+    expect(createIdentity).not.toHaveBeenCalledWith("proposal", "name-4");
+    expect(createIdentity).not.toHaveBeenCalledWith("source", "name-4");
   });
 
   it("links later product mentions only to supplied stable application IDs", () => {

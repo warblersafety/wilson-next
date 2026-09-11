@@ -26,7 +26,10 @@ import type {
   Source,
 } from "./types";
 import { nextCompletionQuestion } from "./completion-policy";
-import { assertCaseValueMatchesTarget as assertValueMatchesTarget } from "./value-contract";
+import {
+  assertCaseValueMatchesTarget as assertValueMatchesTarget,
+  maximumCaseProducts,
+} from "./value-contract";
 
 export class StaleCaseRevisionError extends Error {}
 
@@ -125,7 +128,7 @@ function attachGroundedProposals(
   change: Change,
 ): void {
   if (proposals.length === 0) throw new Error("A proposal command requires proposals");
-  if (caseState.products.length + products.length > 3) {
+  if (caseState.products.length + products.length > maximumCaseProducts) {
     throw new Error("The supported case accepts at most three products");
   }
   for (const source of sources) addSource(caseState, source);

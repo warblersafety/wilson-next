@@ -795,6 +795,7 @@ function unrepresentedReason(reason: JourneySnapshot["unrepresented"][number]["r
   return {
     "unsupported-proposal": "The suggestion did not use Wilson’s supported proposal format.",
     "unsupported-target": "Wilson does not support that case field in this path.",
+    "product-limit": "The suggestion was for a product beyond Wilson’s supported three-product limit.",
     "incompatible-value": "The suggested value did not match the supported format for this field.",
     "unresolved-entity": "The suggestion could not be linked to a reviewed product or relevant test.",
     "evidence-not-found": "The cited wording was not found exactly in the clinician’s input.",

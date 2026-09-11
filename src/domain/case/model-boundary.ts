@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { FactTarget, GroundedProposal, ProposedProduct, ProposedRelevantTest, Source } from "./types";
-import { knownValueMismatch, modelKnownValueGuidance } from "./value-contract";
+import { knownValueMismatch, maximumCaseProducts, modelKnownValueGuidance } from "./value-contract";
 
 const patientFields = ["identifier", "ageYears", "sex", "weight"] as const;
 const eventFields = ["problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "relevantHistory", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate"] as const;
@@ -97,6 +97,7 @@ export type ModelBoundaryIdentityFactory = (kind: ModelBoundaryIdentityKind, res
 export type UnrepresentedProposalReason =
   | "unsupported-proposal"
   | "unsupported-target"
+  | "product-limit"
   | "incompatible-value"
   | "unresolved-entity"
   | "evidence-not-found"
@@ -167,9 +168,13 @@ export function parseModelProposalEnvelope(
     return id;
   };
 
+  const declaredProductByReference = new Map(output.products.map((product) => [product.productReference, product]));
   const productByReference = new Map<string, DeclaredEntity>();
+  const excessProductReferences = new Set(
+    output.products.slice(maximumCaseProducts).map(({ productReference }) => productReference),
+  );
   const groupByReference = new Map<string, string>();
-  for (const product of output.products) {
+  for (const product of output.products.slice(0, maximumCaseProducts)) {
     const groupId = allocate("group", product.groupReference);
     groupByReference.set(product.groupReference, groupId);
     productByReference.set(product.productReference, {
@@ -185,7 +190,7 @@ export function parseModelProposalEnvelope(
     });
   }
 
-  assertResponseLevelProposalConsistency(output.proposals, productByReference, testByReference);
+  assertResponseLevelProposalConsistency(output.proposals, declaredProductByReference, testByReference);
 
   const unrepresented: UnrepresentedModelProposal[] = [];
   let prepared: PreparedProposal[] = [];
@@ -196,6 +201,10 @@ export function parseModelProposalEnvelope(
       continue;
     }
     const proposal = parsed.data;
+    if (proposal.target.entity === "product" && excessProductReferences.has(proposal.target.productReference)) {
+      unrepresented.push(quarantine(rawProposal, "product-limit"));
+      continue;
+    }
     const target = resolveTarget(
       candidate.turn, proposal.target, productByReference, existingProductIds, testByReference, existingTestIds,
     );
@@ -233,7 +242,7 @@ export function parseModelProposalEnvelope(
       boundaryIssue(["tests"], `Declared relevant test ${reference} has no proposals`);
     }
   }
-  for (const [reference] of productByReference) {
+  for (const { productReference: reference } of output.products) {
     if (!output.proposals.some(({ target }) => target.entity === "product" && target.productReference === reference)) {
       boundaryIssue(["products"], `Declared product ${reference} has no proposals`);
     }
@@ -325,7 +334,7 @@ function resolveGroupId(
 
 function assertResponseLevelProposalConsistency(
   proposals: QuarantinableProposal[],
-  proposedProducts: Map<string, DeclaredEntity>,
+  proposedProducts: Map<string, { groupReference: string }>,
   proposedTests: Map<string, DeclaredEntity>,
 ): void {
   const groupTargets = new Map<string, string>();

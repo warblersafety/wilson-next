@@ -182,18 +182,21 @@ accepted knowledge unchanged:
 
 - the provider did not complete normally;
 - returned content is not valid structured output;
+- a proposal omits the minimum response-local reference, group, target, or exact
+  citation needed to identify and display a truthful quarantine notice;
 - proposal or source identities are duplicated or internally inconsistent; or
 - every proposal is unrepresentable.
 
-A supported response may contain a proposal-local representation, target,
-resolved-identity, or exact-evidence fault. That proposal is quarantined before
-source or proposal identity is created and never enters the semantic case or
-Form FDA 3500. The remaining valid proposals attach in one atomic command, and
-the clinician sees the omitted target, the exact text the model cited, and a
-plain-language reason throughout the disposable tab session. Declarations that
-lose every proposal are pruned; a relevant test is also pruned when its required
-test-and-result proposal is quarantined. No value is coerced, repaired, guessed,
-or retried.
+A response that preserves that minimum may contain a proposal-local
+representation, target, resolved-identity, or exact-evidence fault. That
+proposal is quarantined before source or proposal identity is created and never
+enters the semantic case or Form FDA 3500. The remaining valid proposals attach
+in one atomic command, and the clinician sees the omitted target, the exact text
+the model cited, and a plain-language reason throughout the disposable tab
+session. Declarations that lose every proposal are pruned, including product
+declarations beyond the supported three-product limit; a relevant test is also
+pruned when its required test-and-result proposal is quarantined. No value is
+coerced, repaired, guessed, or retried.
 
 These checks are finite application-input validation, not a hallucination
 guard. The model returns a self-contained exact quotation rather than character
