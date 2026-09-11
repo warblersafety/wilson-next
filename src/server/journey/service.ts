@@ -706,9 +706,7 @@ function assertDirectlyEditableTarget(caseState: SemanticCase, target: FactTarge
 
 function diagnosticAction(action: JourneyAction): unknown {
   const sanitized = { ...action } as Record<string, unknown>;
-  for (const key of ["text", "statement"]) {
-    if (typeof sanitized[key] === "string") sanitized[key] = diagnosticInput(sanitized[key]);
-  }
+  if (typeof sanitized.text === "string") sanitized.text = diagnosticInput(sanitized.text);
   return sanitized;
 }
 

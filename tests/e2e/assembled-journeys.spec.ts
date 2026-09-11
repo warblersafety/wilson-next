@@ -36,6 +36,7 @@ const retainAdaptiveOnly = evidenceDirectory.includes("issue-57");
 const retainLayer1RepresentativeOnly = evidenceDirectory.includes("issue-60");
 const retainLayer2RepresentativeOnly = evidenceDirectory.includes("issue-62");
 const retainLayer3RepresentativeOnly = evidenceDirectory.includes("issue-64");
+const retainIssue66Only = evidenceDirectory.includes("issue-66");
 const readbacks: Record<string, IndependentReadback> = {};
 const checkpoints: Array<{ journey: string; state: string; assertion: string }> = [];
 const pdfs: Array<{ journey: string; bytes: number; sha256: string }> = [];
@@ -561,7 +562,7 @@ test("runs Issue 66 direct correction, Issue 67 quarantine, and all prior determ
         },
         {
           journey: "layer2-device", groupedPromptCount: 1, duplicateQuestionCount: 0,
-          observedFriction: "The rich device facts required one explicit understanding review and the direct reporter block; no medication indication or redundant clinical prompt appeared.",
+          observedFriction: "The rich device case rejected an erroneous test, corrected device operator in the atomic opening review, used one reporter block, and then directly corrected the stable model number without another model call.",
         },
         {
           journey: "layer2-product-quality", groupedPromptCount: 1, duplicateQuestionCount: 0,
@@ -573,7 +574,7 @@ test("runs Issue 66 direct correction, Issue 67 quarantine, and all prior determ
         },
         {
           journey: "layer1-tests", groupedPromptCount: 1, correctionReviewCount: 1, duplicateQuestionCount: 0,
-          observedFriction: "Three accepted tests suppressed the context question; one later ALT correction required one explicit review and no completion groups reopened.",
+          observedFriction: "Three accepted tests suppressed the context question; a later ALT correction required one explicit review, and withdrawing bilirubin preserved its history while recomputing the output without reopening completion groups.",
         },
         {
           journey: "layer1-role", groupedPromptCount: 2, correctionReviewCount: 1, duplicateQuestionCount: 0,
@@ -581,7 +582,7 @@ test("runs Issue 66 direct correction, Issue 67 quarantine, and all prior determ
         },
         {
           journey: "adaptive-rich", groupedPromptCount: 2, duplicateQuestionCount: 0,
-          observedFriction: "The reporter block was the longest turn; all accepted clinical facts suppressed duplicate prompts.",
+          observedFriction: "Age and weight changed in one atomic opening review; discharge, report type, dose, and reporter email then changed directly while accepted facts suppressed duplicate prompts.",
         },
         {
           journey: "adaptive-sparse", groupedPromptCount: 4, duplicateQuestionCount: 0,
@@ -591,7 +592,11 @@ test("runs Issue 66 direct correction, Issue 67 quarantine, and all prior determ
       questionTrace,
       checkpoints,
     }, null, 2)}\n`);
-    await writeFile(`${evidenceDirectory}/pdf-agreement.json`, `${JSON.stringify({ readbacks, pdfs }, null, 2)}\n`);
+    const retainedReadbacks = retainIssue66Only
+      ? Object.fromEntries(Object.entries(readbacks).filter(([journey]) => shouldRetain(journey)))
+      : readbacks;
+    const retainedPdfs = retainIssue66Only ? pdfs.filter(({ journey }) => shouldRetain(journey)) : pdfs;
+    await writeFile(`${evidenceDirectory}/pdf-agreement.json`, `${JSON.stringify({ readbacks: retainedReadbacks, pdfs: retainedPdfs }, null, 2)}\n`);
   }
 });
 
@@ -730,5 +735,6 @@ function shouldRetain(journey: string): boolean {
   if (retainLayer1RepresentativeOnly) return journey === "layer1-role";
   if (retainLayer2RepresentativeOnly) return journey === "layer2-device";
   if (retainLayer3RepresentativeOnly) return journey === "layer3-correction";
+  if (retainIssue66Only) return ["adaptive-rich", "layer2-device", "layer1-tests-withdrawal"].includes(journey);
   return true;
 }

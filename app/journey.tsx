@@ -5,7 +5,7 @@ import type { CaseValue, ReportType } from "../src/domain/case/types";
 import type { FactView, ReviewAttentionItem } from "../src/domain/case/views";
 import type { BrowserJourneyState, JourneyResponse } from "../src/server/case/browser-state";
 import type { JourneyAction, JourneySnapshot } from "../src/server/journey/service";
-import { factControl, knownOptionLabel, type FactControl } from "./fact-controls";
+import { factControl, knownOptionLabel, type FactControl, type FactControlEntity } from "./fact-controls";
 import {
   clearJourneySession,
   JourneyRequestError,
@@ -849,7 +849,7 @@ function displayDate(value: string | undefined): string | undefined {
 
 function fieldLabel(entity: string, field?: string): string {
   if (!field) return humanizeIdentifier(entity);
-  return factControl(entity as keyof typeof import("./fact-controls").factControlRegistry, field)?.label ?? humanizeIdentifier(field);
+  return factControl(entity as FactControlEntity, field)?.label ?? humanizeIdentifier(field);
 }
 
 function unrepresentedTargetLabel(entity: string, field: string): string {

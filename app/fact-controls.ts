@@ -126,8 +126,9 @@ const reporter = {
 } as const satisfies Record<ReporterFactKey, FactControl>;
 
 export const factControlRegistry = { patient, event, product, test, reporter };
+export type FactControlEntity = keyof typeof factControlRegistry;
 
-export function factControl(entity: keyof typeof factControlRegistry, field: string): FactControl | undefined {
+export function factControl(entity: FactControlEntity, field: string): FactControl | undefined {
   return (factControlRegistry[entity] as Record<string, FactControl>)[field];
 }
 

@@ -9,7 +9,9 @@ semantic device-detail applicability, and stable-device correction/uncertainty
 without changing the deferred live-model risk; Issue #37 restores fail-closed
 live application-model selection for the protected Git-preview path; Issue #67
 keeps the provider wire simple and visibly quarantines proposal-local faults
-without weakening accepted case or output authority
+without weakening accepted case or output authority; Issue #66 makes the
+bounded supported facts directly correctable and preserves withdrawn reviewed
+products or tests as inactive history
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification
@@ -82,7 +84,10 @@ asked about an empty fact belongs to interaction history, not clinical truth.
 The implemented slices use explicit typed fields only for their selected
 patient, event or product-problem, product, relevant-test, and reporter facts.
 Product category and role are facts, and proposed products and tests remain
-proposed until group review. One bounded suspect-device shape shares the same
+proposed until group review. A reviewed product or relevant test may become
+`withdrawn` through one authoritative command; its stable identity, facts,
+sources, and change record remain, while completion, model context, and output
+exclude it from the active report. One bounded suspect-device shape shares the same
 stable product identity and fact invariants while projecting to Section E. Its
 explicit implanted fact determines whether implant and explant timing can earn
 a clarification turn but is not itself a Form 3500 field; non-device suspects
@@ -122,7 +127,8 @@ first experiment needs only commands to:
 - review proposals by accepting, correcting, or rejecting semantic groups;
 - record a clinician answer or direct correction;
 - record incompatible evidence as a conflict; and
-- resolve a conflict explicitly.
+- resolve a conflict explicitly; and
+- withdraw one reviewed product or relevant test without deleting its history.
 
 Each command includes an expected case revision and command ID. It applies at
 most once and either commits the complete new case plus change entry or changes
@@ -143,6 +149,15 @@ A natural-language correction identified by the model is still a proposal. The
 old value remains active until the clinician explicitly accepts the correction;
 the accepted command then activates the new value and retains the old value as
 superseded history.
+
+Issue #66 adds no second correction boundary. Multiple typed changes drafted
+inside one opening proposal group are submitted together to the existing group
+review command. Once a group is reviewed, direct typed additions and corrections
+use `record-clinician-facts`; the server derives fact versus correction intent
+from the current fact, and a correction retains the previous resolved value as
+superseded history. Report type and reporter facts use this same path. The UI's
+explicit field-control registry supplies labels and input shapes only; the
+domain-owned target/value contract remains authoritative.
 
 One narrow automated source-boundary assertion must show that application
 routes and UI modules cannot import lower-level mutation helpers. It may be a
@@ -271,6 +286,13 @@ conflict requires attention; otherwise the reviewed projection is inspectable.
 The UI may offer actions only for semantic targets represented in the current
 revision. It may not infer the stage from fixture input, product names, expected
 values, or a fixed turn number.
+
+For the bounded directly-correctable paths, typed controls cover the existing
+text, age, date, boolean, enum, string-list, weight, reporter-destination, and
+resolved missing-value shapes. A proposed product or relevant test may be
+rejected during opening review. A reviewed product or test may be withdrawn
+only after the case reaches output; it remains visible as inactive history and
+is omitted from subsequent projection and PDF generation.
 
 For the selected adult medication, single-device adverse-event,
 product-problem-only, and bounded combined-report journeys, unresolved optional facts remain

@@ -1,0 +1,273 @@
+{
+  "browser": "Chromium 153.0.8010.12",
+  "viewportOptions": {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  "predeterminedApplicationModelCalls": 21,
+  "liveApplicationModelCalls": 0,
+  "interactionSummary": [
+    {
+      "journey": "layer3-combined",
+      "groupedPromptCount": 1,
+      "duplicateQuestionCount": 0,
+      "observedFriction": "The combined report used one selection and understanding review; accepted facts suppressed every clarification except direct reporter entry."
+    },
+    {
+      "journey": "layer3-conditional",
+      "groupedPromptCount": 2,
+      "duplicateQuestionCount": 0,
+      "observedFriction": "One attributed device-detail turn grouped implant timing and reprocessor identity before the reporter block."
+    },
+    {
+      "journey": "layer3-correction",
+      "groupedPromptCount": 1,
+      "correctionReviewCount": 2,
+      "duplicateQuestionCount": 0,
+      "observedFriction": "The later input required two explicit reviews because correction and unresolved alternative target different device facts; no completion question reopened."
+    },
+    {
+      "journey": "layer2-device",
+      "groupedPromptCount": 1,
+      "duplicateQuestionCount": 0,
+      "observedFriction": "The rich device case rejected an erroneous test, corrected device operator in the atomic opening review, used one reporter block, and then directly corrected the stable model number without another model call."
+    },
+    {
+      "journey": "layer2-product-quality",
+      "groupedPromptCount": 1,
+      "duplicateQuestionCount": 0,
+      "observedFriction": "The sparse product-quality report required one understanding review and the direct reporter block; no patient, outcome, indication, or clinical-context interrogation appeared."
+    },
+    {
+      "journey": "layer1-death",
+      "groupedPromptCount": 3,
+      "duplicateQuestionCount": 0,
+      "observedFriction": "The accepted death outcome required one grouped pass over only the remaining outcome flags, then one conditional date turn and the reporter block."
+    },
+    {
+      "journey": "layer1-tests",
+      "groupedPromptCount": 1,
+      "correctionReviewCount": 1,
+      "duplicateQuestionCount": 0,
+      "observedFriction": "Three accepted tests suppressed the context question; a later ALT correction required one explicit review, and withdrawing bilirubin preserved its history while recomputing the output without reopening completion groups."
+    },
+    {
+      "journey": "layer1-role",
+      "groupedPromptCount": 2,
+      "correctionReviewCount": 1,
+      "duplicateQuestionCount": 0,
+      "observedFriction": "The role correction required one review and one newly applicable indication turn; outcomes, context, and reporter details did not repeat."
+    },
+    {
+      "journey": "adaptive-rich",
+      "groupedPromptCount": 2,
+      "duplicateQuestionCount": 0,
+      "observedFriction": "Age and weight changed in one atomic opening review; discharge, report type, dose, and reporter email then changed directly while accepted facts suppressed duplicate prompts."
+    },
+    {
+      "journey": "adaptive-sparse",
+      "groupedPromptCount": 4,
+      "duplicateQuestionCount": 0,
+      "observedFriction": "Tests and history required two explicit dispositions but remained one attributed clinical-context turn."
+    }
+  ],
+  "questionTrace": [
+    {
+      "journey": "layer3-combined",
+      "question": "reporter block",
+      "reason": "accepted combined event, problem, outcome, context, and device facts suppress redundant questions",
+      "answer": "structured reporter details"
+    },
+    {
+      "journey": "layer3-conditional",
+      "question": "applicable device details",
+      "reason": "accepted implanted and reprocessed-single-use states make implant timing and reprocessor identity material",
+      "answer": "implant date known; explant inapplicable; reprocessor known"
+    },
+    {
+      "journey": "layer3-conditional",
+      "question": "reporter block",
+      "reason": "reporter identity remains direct entry",
+      "answer": "structured reporter details"
+    },
+    {
+      "journey": "layer3-correction",
+      "question": "reporter block",
+      "reason": "opening device facts require no conditional detail turn",
+      "answer": "structured reporter details"
+    },
+    {
+      "journey": "layer2-device",
+      "question": "reporter block",
+      "reason": "accepted outcomes and clinical context suppress medication-only and redundant clinical questions",
+      "answer": "structured reporter details"
+    },
+    {
+      "journey": "layer2-product-quality",
+      "question": "reporter block",
+      "reason": "a product-problem-only report does not trigger indication, serious-outcome, or clinical-context interrogation",
+      "answer": "structured reporter details"
+    },
+    {
+      "journey": "layer1-death",
+      "question": "serious outcomes",
+      "reason": "preserve accepted death and resolve only the remaining outcome flags",
+      "answer": "no additional outcomes"
+    },
+    {
+      "journey": "layer1-death",
+      "question": "death date",
+      "reason": "death was accepted and its conditional date remained empty",
+      "answer": "7-Sep-2026"
+    },
+    {
+      "journey": "layer1-death",
+      "question": "reporter block",
+      "reason": "reporter identity must be entered directly",
+      "answer": "structured reporter details"
+    },
+    {
+      "journey": "layer1-tests",
+      "question": "reporter block",
+      "reason": "accepted indications, outcomes, three tests, and history suppress earlier groups",
+      "answer": "structured reporter details"
+    },
+    {
+      "journey": "layer1-role",
+      "question": "reporter block",
+      "reason": "accepted opening knowledge suppresses all earlier completion groups",
+      "answer": "structured reporter details"
+    },
+    {
+      "journey": "layer1-role",
+      "question": "newly applicable suspect indication",
+      "reason": "accepted role correction made only acetaminophen indication newly applicable",
+      "answer": "headache"
+    },
+    {
+      "journey": "adaptive-rich",
+      "question": "serious outcomes",
+      "reason": "confirm only outcomes not already accepted",
+      "answer": "no additional outcomes"
+    },
+    {
+      "journey": "adaptive-rich",
+      "question": "reporter block",
+      "reason": "reporter identity must be entered directly",
+      "answer": "structured reporter details"
+    },
+    {
+      "journey": "adaptive-sparse",
+      "question": "suspect indication",
+      "reason": "missing indication contributes directly to the report",
+      "answer": "unknown"
+    },
+    {
+      "journey": "adaptive-sparse",
+      "question": "serious outcomes",
+      "reason": "no outcome was accepted from the narrative",
+      "answer": "none"
+    },
+    {
+      "journey": "adaptive-sparse",
+      "question": "tests and history",
+      "reason": "both relevant context categories were still unresolved",
+      "answer": "tests unknown; history declined"
+    },
+    {
+      "journey": "adaptive-sparse",
+      "question": "reporter block",
+      "reason": "reporter identity must be entered directly",
+      "answer": "minimal contact details"
+    }
+  ],
+  "checkpoints": [
+    {
+      "journey": "issue67-quarantine",
+      "state": "partial-output",
+      "assertion": "Two malformed suggestions stayed visible and outside accepted case/PDF state while valid proposals completed through review and PDF download."
+    },
+    {
+      "journey": "layer3-combined",
+      "state": "output",
+      "assertion": "One report-type fact retained both selected meanings and one stable device supplied aligned event, product-problem, availability, and Section E output."
+    },
+    {
+      "journey": "layer3-conditional",
+      "state": "output",
+      "assertion": "One grouped turn asked only details made applicable by accepted implanted and reprocessed states, then closed them without repetition."
+    },
+    {
+      "journey": "layer3-correction",
+      "state": "unresolved-partial-output",
+      "assertion": "The stable device retained its serial correction and history while incompatible model alternatives stayed visible and absent from the enabled partial PDF."
+    },
+    {
+      "journey": "layer2-device",
+      "state": "directly-corrected-output",
+      "assertion": "The operator rejected an erroneous test, atomically corrected a typed opening value, then directly corrected the reviewed stable device; explicit no-tests and stopped status remained visible without another model call."
+    },
+    {
+      "journey": "layer2-product-quality",
+      "state": "partial-output",
+      "assertion": "No patient or adverse event was invented; one sparse non-device product projected to Section D with the product-problem and availability selections."
+    },
+    {
+      "journey": "layer1-death",
+      "state": "output",
+      "assertion": "Accepted death stayed true; only unresolved outcomes, the conditional death date, and reporter details were asked."
+    },
+    {
+      "journey": "layer1-tests",
+      "state": "corrected-output",
+      "assertion": "Three stable test entities remained distinct; the accepted ALT correction superseded only its prior value and did not reopen completion."
+    },
+    {
+      "journey": "layer1-tests",
+      "state": "withdrawn-test-output",
+      "assertion": "A reviewed relevant test became inactive without deletion; its facts and source history remained visible while projection and PDF recomputed without it."
+    },
+    {
+      "journey": "layer1-role",
+      "state": "recomputed-output",
+      "assertion": "The stable acetaminophen entity moved from concomitant to suspect, reopened only its indication, and projected with warfarin in Section D."
+    },
+    {
+      "journey": "adaptive-rich",
+      "state": "directly-corrected-output",
+      "assertion": "Two typed patient corrections were accepted atomically; an omitted date, reviewed dose, report type, and reporter email were then directly updated with retained history and no additional model call."
+    },
+    {
+      "journey": "adaptive-sparse",
+      "state": "partial-output",
+      "assertion": "Four grouped prompts captured unknown and refusal once, exposed omissions, and allowed truthful partial output."
+    },
+    {
+      "journey": "rich",
+      "state": "output",
+      "assertion": "No duplicate indication question was asked; new bounded completion groups were answered without changing accepted rich facts."
+    },
+    {
+      "journey": "sparse",
+      "state": "partial-output",
+      "assertion": "One attributed question recorded unknown once; optional empty and unknown values remain visible omissions."
+    },
+    {
+      "journey": "repeated",
+      "state": "unresolved-partial-output",
+      "assertion": "Alias identity stayed singular, dose correction superseded history, and both dates remain visible while neither projects."
+    },
+    {
+      "journey": "shared-controls",
+      "state": "understanding",
+      "assertion": "Generic Change and Remove controls updated the server-returned case rather than browser state."
+    },
+    {
+      "journey": "experiment-1-regression",
+      "state": "resolved-output",
+      "assertion": "Original identity, correction, conflict resolution, projection, and PDF path remain aligned."
+    }
+  ]
+}
