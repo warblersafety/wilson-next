@@ -7,6 +7,7 @@ import type {
   RelevantTestFactKey,
   ReporterFactKey,
 } from "./types";
+import { targetKey } from "./facts";
 
 export type KnownValueContract =
   | { shape: "string" }
@@ -17,8 +18,6 @@ export type KnownValueContract =
   | { shape: "measurement"; units: readonly ["kg", "lb"] }
   | { shape: "enum"; values: readonly string[]; mismatch: string }
   | { shape: "enum-array"; values: readonly string[]; mismatch: string };
-
-export const maximumCaseProducts = 3;
 
 type CaseValueContracts = {
   patient: Record<PatientFactKey, KnownValueContract>;
@@ -246,8 +245,4 @@ function omit<const T extends Record<string, KnownValueContract>, const K extend
   const copy = { ...value };
   delete copy[key];
   return copy;
-}
-
-function targetKey(target: FactTarget): string {
-  return `${target.entity}:${target.entityId}:${target.field}`;
 }

@@ -330,9 +330,10 @@ change `applyCaseCommand` as the sole semantic write boundary.
 The browser-held interaction state also retains any proposal-quarantine notices
 for the life of the disposable tab so an acknowledged omission cannot disappear
 after another review action. Those notices are not semantic case knowledge and
-cannot project to the form. The bounded three-product and eight-relevant-test
-limits are enforced at the command boundary as well as during browser restore,
-so an accepted write cannot create unrestorable browser state.
+cannot project to the form. The bounded three-product, eight-relevant-test, and
+ten-asked-need collection limits are domain-owned and enforced at the command
+boundary as well as during browser restore, so an accepted write cannot create
+unrestorable browser state.
 
 Live application-model selection is fail-closed at the deployment adapter.
 Explicit predetermined responses select the deterministic test adapter before

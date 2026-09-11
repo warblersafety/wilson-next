@@ -19,6 +19,7 @@ import {
   layer3ConditionalOpening,
   layer3CorrectionOpening,
   layer3CorrectionUpdate,
+  predeterminedModelResponses,
   repeatedOpening,
   repeatedUpdate,
   richOpening,
@@ -472,7 +473,7 @@ test("runs Issue 67 quarantine, Layer 3 device-depth probes, and all prior deter
     await writeFile(`${evidenceDirectory}/journey-trace.json`, `${JSON.stringify({
       browser: `Chromium ${browser.version()}`,
       viewportOptions: { viewport: testInfo.project.use.viewport },
-      predeterminedApplicationModelCalls: 20,
+      predeterminedApplicationModelCalls: predeterminedModelResponses.length,
       liveApplicationModelCalls: 0,
       interactionSummary: [
         {

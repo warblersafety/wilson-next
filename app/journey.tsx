@@ -342,6 +342,7 @@ function DeathDateTask({ snapshot, busy, act }: {
 }
 
 type ContextChoice = "known" | "explicitly-absent" | "unknown" | "declined";
+type ClinicalHistoryValue = Extract<JourneyAction, { action: "answer-clinical-context" }>["history"];
 
 function ClinicalContextTask({ snapshot, busy, act }: {
   snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
@@ -356,7 +357,7 @@ function ClinicalContextTask({ snapshot, busy, act }: {
   const [history, setHistory] = useState("");
   const testComplete = !question?.askTests || (testChoice && (testChoice !== "known" || Boolean(testResult.trim())));
   const historyComplete = !question?.askHistory || (historyChoice && (historyChoice !== "known" || Boolean(history.trim())));
-  const contextValue = (choice: ContextChoice | undefined, text: string): CaseValue<string> | undefined => choice === "known"
+  const contextValue = (choice: ContextChoice | undefined, text: string): ClinicalHistoryValue => choice === "known"
     ? { kind: "known", value: text.trim() }
     : choice ? { kind: choice } : undefined;
   return <>
@@ -392,6 +393,7 @@ function ClinicalContextTask({ snapshot, busy, act }: {
 }
 
 type DeviceDetailChoice = "known" | "unknown" | "inapplicable" | "declined";
+type DeviceDetailValue = Extract<JourneyAction, { action: "answer-device-details" }>["implantDate"];
 
 function DeviceDetailsTask({ snapshot, busy, act }: {
   snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
@@ -408,7 +410,7 @@ function DeviceDetailsTask({ snapshot, busy, act }: {
   const complete = completeChoice(question?.askImplantDate, implantChoice, implantDate)
     && completeChoice(question?.askExplantDate, explantChoice, explantDate)
     && completeChoice(question?.askReprocessor, reprocessorChoice, reprocessor);
-  const value = (choice: DeviceDetailChoice | undefined, text: string): CaseValue<string> | undefined => choice === "known"
+  const value = (choice: DeviceDetailChoice | undefined, text: string): DeviceDetailValue => choice === "known"
     ? { kind: "known", value: text.trim() }
     : choice ? { kind: choice } : undefined;
   const choices = (name: string, choice: DeviceDetailChoice | undefined, setChoice: (choice: DeviceDetailChoice) => void, allowInapplicable: boolean) => <>
@@ -731,7 +733,10 @@ function groupAttention(items: ReviewAttentionItem[]) {
   return [...groups].map(([groupId, grouped]) => ({ groupId, items: grouped }));
 }
 
-function replacementFor(original: CaseValue<unknown>, replacement: string): CaseValue<unknown> {
+function replacementFor(
+  original: CaseValue<unknown>,
+  replacement: string,
+): Extract<JourneyAction, { action: "change-proposal" }>["value"] {
   if (original.kind !== "known") return { kind: "known", value: replacement };
   if (typeof original.value === "number") return { kind: "known", value: Number(replacement) };
   if (typeof original.value === "boolean") return { kind: "known", value: replacement.toLowerCase() === "yes" || replacement.toLowerCase() === "true" };

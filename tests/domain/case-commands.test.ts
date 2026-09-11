@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { applyCaseCommand, StaleCaseRevisionError } from "../../src/domain/case/commands";
 import { createSemanticCase } from "../../src/domain/case/create";
+import { emptyRelevantTestFacts } from "../../src/domain/case/internal";
+import { maximumAskedNeeds, maximumRelevantTests } from "../../src/domain/case/limits";
 import type { CaseCommand, CaseValue, Source } from "../../src/domain/case/types";
 import {
   acceptCorrectionAndConflict,
@@ -288,5 +290,63 @@ describe("applyCaseCommand", () => {
     expect(() => applyCaseCommand(current, command)).toThrow("at most three products");
     expect(current.products).toHaveLength(3);
     expect(current.revision).toBe(1);
+  });
+
+  it("refuses a ninth relevant test atomically at the authoritative command boundary", () => {
+    const current = structuredClone(createSemanticCase("case-test-limit"));
+    current.relevantTests = Array.from({ length: maximumRelevantTests }, (_, index) => ({
+      id: `test-existing-${index}`,
+      proposalGroupId: `group-existing-${index}`,
+      state: "rejected" as const,
+      facts: emptyRelevantTestFacts(),
+    }));
+    const text = "Synthetic ninth test result";
+    const command: CaseCommand = {
+      type: "attach-grounded-proposals",
+      commandId: "command-ninth-test",
+      expectedRevision: current.revision,
+      products: [],
+      relevantTests: [{ id: "test-ninth", groupId: "group-ninth" }],
+      sources: [{
+        id: "source-ninth-test",
+        inputId: "input-ninth-test",
+        inputType: "narrative",
+        excerpt: text,
+        start: 0,
+        end: text.length,
+        actor: "clinician",
+        recordedAt: "2026-09-11T00:00:00.000Z",
+      }],
+      proposals: [{
+        proposalId: "proposal-ninth-test",
+        groupId: "group-ninth",
+        intent: "fact",
+        target: { entity: "test", entityId: "test-ninth", field: "testResult" },
+        value: { kind: "known", value: text },
+        sourceIds: ["source-ninth-test"],
+      }],
+    };
+
+    expect(() => applyCaseCommand(current, command)).toThrow(`at most ${maximumRelevantTests} relevant tests`);
+    expect(current.relevantTests).toHaveLength(maximumRelevantTests);
+    expect(current.revision).toBe(0);
+  });
+
+  it("refuses interaction history beyond the restorable asked-need boundary", () => {
+    const current = structuredClone(acceptOpeningCase());
+    current.askedNeeds = Array.from({ length: maximumAskedNeeds }, (_, index) => ({
+      key: "reporter-details" as const,
+      targetIds: [`reporter:reporter:field-${index}`],
+      status: "answered" as const,
+    }));
+
+    expect(() => applyCaseCommand(current, {
+      type: "record-asked-need",
+      commandId: "command-asked-need-overflow",
+      expectedRevision: current.revision,
+      key: "reporter-details",
+      targetIds: ["reporter:reporter:lastName"],
+    })).toThrow(`at most ${maximumAskedNeeds} asked needs`);
+    expect(current.askedNeeds).toHaveLength(maximumAskedNeeds);
   });
 });

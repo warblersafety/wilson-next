@@ -1,6 +1,10 @@
 import { z } from "zod";
 import type { SemanticCase } from "../../domain/case/types";
-import { maximumCaseProducts } from "../../domain/case/value-contract";
+import {
+  maximumAskedNeeds,
+  maximumCaseProducts,
+  maximumRelevantTests,
+} from "../../domain/case/limits";
 import type { JourneySnapshot, JourneyStage } from "../journey/service";
 import { InMemoryCaseRepository, validateRestoredCase } from "./repository";
 
@@ -166,13 +170,13 @@ const caseSchema = z.object({
     proposalGroupId: z.string().min(1),
     state: z.enum(["proposed", "resolved", "rejected"]),
     facts: relevantTestFactsSchema,
-  }).strict()).max(8),
+  }).strict()).max(maximumRelevantTests),
   reporter: z.object({ id: z.literal("reporter"), facts: reporterFactsSchema }).strict(),
   askedNeeds: z.array(z.object({
     key: z.enum(["suspect-product-indications", "serious-outcomes", "death-date", "relevant-clinical-context", "device-details", "reporter-details"]),
     targetIds: z.array(z.string().min(1)),
     status: z.enum(["open", "answered", "declined"]),
-  }).strict()).max(10),
+  }).strict()).max(maximumAskedNeeds),
   sources: z.array(sourceSchema),
   changes: z.array(z.object({
     commandId: z.string().min(1),
