@@ -21,6 +21,7 @@ export const repeatedOpening = "Patient TEST-44 is a 44-year-old man. He began a
 export const repeatedUpdate = "Correction: the ibuprofen dose was 200 mg twice daily, not 400 mg twice daily. My medication list says acetaminophen began 02-Jul-2026 rather than 01-Jul-2026. I cannot resolve which date is correct.";
 export const regressionOpening = "Patient TEST-57 is a 57-year-old woman. She was taking apixaban 5 mg by mouth twice daily; I recorded the start as 12-Aug-2026. She also took naproxen 500 mg by mouth twice daily starting 10-Aug-2026, and lisinopril 10 mg by mouth daily as a concomitant medicine. On 18-Aug-2026 she developed melena and dizziness and was hospitalized. Her hemoglobin was 7.8 g/dL. Apixaban and naproxen were stopped, she received two units of packed red cells, and she recovered and was discharged on 21-Aug-2026. I suspect apixaban and naproxen.";
 export const regressionUpdate = "Correction: the naproxen dose was 250 mg twice daily, not 500 mg twice daily. Also, the medication administration record lists apixaban starting 13-Aug-2026, but my note says 12-Aug-2026. I can't resolve that yet.";
+export const quarantineOpening = layer2DeviceOpening;
 
 type Target = ModelProposalOutput["proposals"][number]["target"];
 type Value = ModelProposalOutput["proposals"][number]["value"];
@@ -164,6 +165,13 @@ function layer2DeviceResponse(): ModelProposalOutput {
     proposals.push(proposal(`event-${field}`, "event", { entity: "event", field }, known(false), "No other serious outcomes applied."));
   }
   return { products: [{ productReference: "device", groupReference: "g1" }], proposals };
+}
+
+function quarantineResponse(): ModelProposalOutput {
+  const output = layer2DeviceResponse();
+  output.proposals.find(({ target }) => target.entity === "event" && target.field === "symptoms")!.value = known("hypotension");
+  output.proposals.find(({ target }) => target.entity === "event" && target.field === "productAvailability")!.value = known("available for evaluation");
+  return output;
 }
 
 function layer2ProductQualityResponse(): ModelProposalOutput {
@@ -506,6 +514,7 @@ function regressionResponses(): [ModelProposalOutput, ModelProposalOutput] {
 
 const [regressionOpeningResponse, regressionCorrectionResponse] = regressionResponses();
 const responses = [
+  { identityScope: "issue67-quarantine", turn: "opening", output: quarantineResponse() },
   { identityScope: "layer3-combined", turn: "opening", output: layer3CombinedResponse() },
   { identityScope: "layer3-conditional", turn: "opening", output: layer3ConditionalResponse() },
   { identityScope: "layer3-correction", turn: "opening", output: layer3CorrectionResponse() },

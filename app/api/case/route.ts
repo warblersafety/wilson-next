@@ -164,7 +164,7 @@ export async function postCase(request: NextRequest, model?: JourneyModel) {
   try {
     const state = parseBrowserJourneyState(requestBody.state);
     repository = repositoryForBrowserState(state);
-    snapshot = await getJourneySnapshot(repository, state.case.id);
+    snapshot = await getJourneySnapshot(repository, state.case.id, state.unrepresented);
     assertStoredStage(state, snapshot);
     if (requestBody.operation === "act") {
       assertExpectedBrowserRevision(state, requestBody.expectedRevision);
@@ -187,6 +187,7 @@ export async function postCase(request: NextRequest, model?: JourneyModel) {
         requestBody.action,
         model ?? await journeyModelForEnvironment(),
         diagnostics,
+        snapshot.unrepresented,
       );
     }
     const body = await journeyResponse(repository, snapshot);

@@ -162,6 +162,7 @@ export default function Journey() {
       </aside>
       {error && <div className={styles.error} role="alert">{error}</div>}
       {boundaryNotice && <div className={styles.notice} role="status">{boundaryNotice}</div>}
+      {snapshot.unrepresented.length > 0 && <UnrepresentedNotice items={snapshot.unrepresented} />}
       {busy && <div className={styles.progress} role="status">Updating the reviewed case…</div>}
       {snapshot.stage === "output" ? (
         <OutputComposition snapshot={snapshot} update={update} setUpdate={setUpdate} busy={busy} act={act} openPdf={openPdf} />
@@ -219,6 +220,18 @@ function UnderstandingTask({ snapshot, busy, act }: {
     <p>Review the proposed groups and their source evidence. Change a supported value or remove a product before accepting the remaining proposals.</p>
     <button disabled={busy} onClick={() => void act({ action: "accept-understanding" })}>Accept the remaining understanding</button>
   </>;
+}
+
+function UnrepresentedNotice({ items }: { items: JourneySnapshot["unrepresented"] }) {
+  return <section className={styles.quarantine} role="status" aria-labelledby="unrepresented-title">
+    <h2 id="unrepresented-title">Some details were left out</h2>
+    <p>Wilson could not safely represent these suggestions, so they were not added to the case or Form FDA 3500. Review the cited text and add a correction later if the detail matters.</p>
+    <ul>{items.map((item, index) => <li key={`${item.entity}-${item.field}-${item.evidenceQuote}-${index}`}>
+      <strong>{unrepresentedTargetLabel(item.entity, item.field)}</strong>
+      <span>{unrepresentedReason(item.reason)}</span>
+      <blockquote>Text Wilson cited: “{item.evidenceQuote}”</blockquote>
+    </li>)}</ul>
+  </section>;
 }
 
 type IndicationChoice = "known" | "unknown" | "declined";
@@ -769,7 +782,30 @@ function fieldLabel(field: string): string {
     firstName: "First name", lastName: "Last name", address: "Address", city: "City", state: "State", postalCode: "ZIP/postal code", country: "Country",
     phone: "Phone", email: "Email", healthProfessional: "Health professional", occupation: "Occupation", reportedTo: "Also reported to", doNotDiscloseIdentity: "Keep identity from manufacturer",
   };
-  return labels[field] ?? field;
+  return labels[field] ?? humanizeIdentifier(field);
+}
+
+function unrepresentedTargetLabel(entity: string, field: string): string {
+  const entityLabel = { patient: "Patient", event: "Event", product: "Product", test: "Relevant test" }[entity]
+    ?? "Case detail";
+  return `${entityLabel} — ${fieldLabel(field)}`;
+}
+
+function unrepresentedReason(reason: JourneySnapshot["unrepresented"][number]["reason"]): string {
+  return {
+    "unsupported-proposal": "The suggestion did not use Wilson’s supported proposal format.",
+    "unsupported-target": "Wilson does not support that case field in this path.",
+    "incompatible-value": "The suggested value did not match the supported format for this field.",
+    "unresolved-entity": "The suggestion could not be linked to a reviewed product or relevant test.",
+    "evidence-not-found": "The cited wording was not found exactly in the clinician’s input.",
+    "evidence-ambiguous": "The cited wording occurred more than once and could not be anchored unambiguously.",
+    "incomplete-relevant-test": "The relevant test could not be kept without its test-and-result detail.",
+  }[reason];
+}
+
+function humanizeIdentifier(value: string): string {
+  const spaced = value.replace(/([a-z0-9])([A-Z])/g, "$1 $2").replaceAll("-", " ").trim();
+  return spaced ? `${spaced[0].toUpperCase()}${spaced.slice(1)}` : "Proposed detail";
 }
 
 function targetLabel(snapshot: JourneySnapshot, target: string): string {

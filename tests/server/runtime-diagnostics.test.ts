@@ -58,7 +58,7 @@ describe("runtime diagnostics", () => {
       expect(response.headers.get("x-wilson-run-id")).toBe(context.runId);
       expect(response.headers.get("x-wilson-operation-id")).toBe(context.operationId);
       expect(await response.json()).toMatchObject({
-        state: { version: "wilson-browser-state-v5", stage: "understanding", case: { revision: 2 } },
+        state: { version: "wilson-browser-state-v6", stage: "understanding", case: { revision: 2 } },
         snapshot: { stage: "understanding", revision: 2 },
       });
       const events = written.map((value) => JSON.parse(value) as RuntimeDiagnosticEvent);
@@ -136,6 +136,41 @@ describe("runtime diagnostics", () => {
     expect(serialized).toContain("product-apixaban");
     expect(serialized).toContain('"stage":"understanding"');
     expect(serialized).not.toContain("case-secret-session-value");
+  });
+
+  it("records quarantined proposal details with the successful envelope and action result", async () => {
+    const repository = new InMemoryCaseRepository();
+    const events: RuntimeDiagnosticEvent[] = [];
+    const diagnostics = createRuntimeDiagnosticLogger(context, (event) => events.push(event));
+    const model: JourneyModel = {
+      async propose(turn, text, reviewedCase) {
+        const result = await fixedJourneyModel.propose(turn, text, reviewedCase);
+        return {
+          ...result,
+          envelope: {
+            ...result.envelope,
+            unrepresented: [{
+              entity: "event",
+              field: "symptoms",
+              evidenceQuote: "melena and dizziness",
+              reason: "incompatible-value",
+            }],
+          },
+        };
+      },
+    };
+
+    const snapshot = await performJourneyAction(repository, "case-quarantine-diagnostic", {
+      action: "submit-opening", text: openingAccount, reportType: "adverse-event",
+    }, model, diagnostics);
+
+    expect(snapshot.unrepresented).toEqual([
+      expect.objectContaining({ field: "symptoms", evidenceQuote: "melena and dizziness" }),
+    ]);
+    expect(events.find(({ phase }) => phase === "proposal-envelope")?.details).toMatchObject({
+      unrepresented: [expect.objectContaining({ reason: "incompatible-value" })],
+    });
+    expect(events.at(-1)?.details).toMatchObject({ result: { unrepresented: snapshot.unrepresented } });
   });
 
   it("records a controlled failure without advancing the case", async () => {

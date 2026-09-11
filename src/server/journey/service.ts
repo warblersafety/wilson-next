@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
+import type { UnrepresentedModelProposal } from "../../domain/case/model-boundary";
 import { createSemanticCase } from "../../domain/case/create";
 import { projectForm3500 } from "../../domain/case/projection";
 import type { CaseValue, EventFactKey, Fact, FactTarget, ProductFactKey, ReporterFactKey, ReportType, SemanticCase, Source } from "../../domain/case/types";
@@ -76,6 +77,7 @@ export interface JourneySnapshot {
   projection: ReturnType<typeof projectForm3500>;
   downloadReady: boolean;
   outputIssues: string[];
+  unrepresented: UnrepresentedModelProposal[];
 }
 
 export async function ensureJourneyCase(repository: CaseRepository, caseId: string): Promise<SemanticCase> {
@@ -86,7 +88,11 @@ export async function ensureJourneyCase(repository: CaseRepository, caseId: stri
   return created;
 }
 
-export async function getJourneySnapshot(repository: CaseRepository, caseId: string): Promise<JourneySnapshot> {
+export async function getJourneySnapshot(
+  repository: CaseRepository,
+  caseId: string,
+  unrepresented: UnrepresentedModelProposal[] = [],
+): Promise<JourneySnapshot> {
   const caseState = await ensureJourneyCase(repository, caseId);
   const projection = projectForm3500(caseState);
   const outputIssues = outputReadinessIssues(caseState, projection);
@@ -99,6 +105,7 @@ export async function getJourneySnapshot(repository: CaseRepository, caseId: str
     projection,
     downloadReady: outputIssues.length === 0,
     outputIssues,
+    unrepresented,
   };
 }
 
@@ -108,8 +115,10 @@ export async function performJourneyAction(
   action: JourneyAction,
   model: JourneyModel,
   diagnostics: RuntimeDiagnosticLogger = silentDiagnosticLogger,
+  retainedUnrepresented: UnrepresentedModelProposal[] = [],
 ): Promise<JourneySnapshot> {
   let current = await ensureJourneyCase(repository, caseId);
+  let unrepresented = [...retainedUnrepresented];
   const expectedStage = stageFor(current);
   diagnostics.event("state-transition", "action-dispatch", "start", {
     action: diagnosticAction(action),
@@ -157,11 +166,13 @@ export async function performJourneyAction(
       case "submit-opening": {
         requireStage(expectedStage, "describe");
         const opening = await proposeWithDiagnostics(model, "opening", action.text, diagnostics);
+        const { unrepresented: openingUnrepresented, ...openingEnvelope } = opening.envelope;
+        unrepresented = [...unrepresented, ...openingUnrepresented];
         await applyCommand({
           type: "attach-grounded-proposals",
           commandId: commandId("attach-opening"),
           expectedRevision: current.revision,
-          ...opening.envelope,
+          ...openingEnvelope,
         });
         const reportTypeText = action.reportType === "adverse-event" ? "Adverse event"
           : action.reportType === "product-problem" ? "Product problem" : "Adverse event and product problem";
@@ -381,11 +392,13 @@ export async function performJourneyAction(
         requireStage(expectedStage, "output");
         const context = createReviewedCaseModelContext(current);
         const update = await proposeWithDiagnostics(model, "correction", action.text, diagnostics, context);
+        const { unrepresented: updateUnrepresented, ...updateEnvelope } = update.envelope;
+        unrepresented = [...unrepresented, ...updateUnrepresented];
         await applyCommand({
           type: "attach-grounded-proposals",
           commandId: commandId("attach-update"),
           expectedRevision: current.revision,
-          ...update.envelope,
+          ...updateEnvelope,
         });
         break;
       }
@@ -424,7 +437,7 @@ export async function performJourneyAction(
     throw error;
   }
 
-  const snapshot = await getJourneySnapshot(repository, caseId);
+  const snapshot = await getJourneySnapshot(repository, caseId, unrepresented);
   diagnostics.event("state-transition", "action-complete", "success", {
     action: action.action,
     result: snapshot,
@@ -456,6 +469,7 @@ async function proposeWithDiagnostics(
       products: result.envelope.products,
       proposals: result.envelope.proposals,
       sources: result.envelope.sources,
+      unrepresented: result.envelope.unrepresented,
     });
     return result;
   } catch (error) {

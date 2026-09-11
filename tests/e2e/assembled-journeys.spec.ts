@@ -22,6 +22,7 @@ import {
   repeatedOpening,
   repeatedUpdate,
   richOpening,
+  quarantineOpening,
   sparseOpening,
 } from "./build-predetermined-responses";
 import type { BrowserJourneyState } from "../../src/server/case/browser-state";
@@ -39,7 +40,7 @@ const checkpoints: Array<{ journey: string; state: string; assertion: string }> 
 const pdfs: Array<{ journey: string; bytes: number; sha256: string }> = [];
 const questionTrace: Array<{ journey: string; question: string; reason: string; answer: string }> = [];
 
-test("runs Layer 3 device-depth probes plus all prior deterministic regressions through one assembled desktop path", async ({ page, browser }, testInfo) => {
+test("runs Issue 67 quarantine, Layer 3 device-depth probes, and all prior deterministic regressions through one assembled desktop path", async ({ page, browser }, testInfo) => {
   if (retainEvidence) await mkdir(evidenceDirectory, { recursive: true });
 
   const initial = await page.goto("/");
@@ -47,6 +48,31 @@ test("runs Layer 3 device-depth probes plus all prior deterministic regressions 
   await expect(page.getByRole("heading", { name: "Describe what happened" })).toBeVisible();
   await expect(page.getByLabel("Experiment boundary")).toContainText("Fictional information only");
 
+  await submitOpening(page, quarantineOpening);
+  const quarantine = page.getByRole("status").filter({ hasText: "Some details were left out" });
+  await expect(quarantine).toContainText("Event — Symptoms");
+  await expect(quarantine).toContainText("Event — Product availability");
+  await expect(quarantine).toContainText("she developed hypotension and was hospitalized");
+  await expect(quarantine).toContainText("The device is available for evaluation");
+  const quarantinedCase = await semanticCase(page);
+  expect(quarantinedCase.event.facts.symptoms.state).toBe("empty");
+  expect(quarantinedCase.event.facts.productAvailability.state).toBe("empty");
+  expect(quarantinedCase.products).toHaveLength(1);
+  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
+  await expect(quarantine).toBeVisible();
+  await fillReporter(page, { firstName: "Taylor", lastName: "Quinn", email: "taylor.quinn@example.test" });
+  await page.getByRole("button", { name: "Add reporter details" }).click();
+  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  await expect(quarantine).toBeVisible();
+  await downloadAndCheck(page, "issue67-quarantine", ["TEST-74", "Acme FlowGuard", "Taylor", "Quinn"], ["hypotension"], {
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+    "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/Off",
+    "topmostSubform[0].Page6[0].SecE_Device[0].BrandName[0]": "Acme FlowGuard",
+  });
+  checkpoints.push({ journey: "issue67-quarantine", state: "partial-output", assertion: "Two malformed suggestions stayed visible and outside accepted case/PDF state while valid proposals completed through review and PDF download." });
+
+  await newCase(page);
   await submitOpening(page, layer3CombinedOpening, "adverse-event-and-product-problem");
   await expect(productCard(page, "Acme ThermoPatch")).toContainText("wearable temperature monitor");
   await expect(productOrCaseCard(page, "Event")).toContainText("blistering burn on left arm");

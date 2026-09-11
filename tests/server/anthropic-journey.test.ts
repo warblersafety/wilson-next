@@ -62,10 +62,14 @@ describe("Anthropic production model boundary", () => {
     expect(requestText).toContain("evidenceQuote");
     expect(requestText).toContain("Completeness outranks brevity");
     expect(requestText).toContain("preserve explicitly stated descriptive detail");
+    expect(requestText).toContain("named only as treatment administered in response");
     expect(requestText).not.toMatch(/apixaban|naproxen|lisinopril/i);
     expect(schema).toContain("evidenceQuote");
     expect(schema).toContain("Completeness outranks brevity");
     expect(schema).toContain("Preserve explicitly stated descriptive detail");
+    expect(schema).toContain("Known values must match their target");
+    expect(schema).toContain("event.symptoms");
+    expect(schema).toContain("event.productAvailability");
     expect(schema).toContain("productReference");
     expect(schema).not.toContain('"start"');
     expect(schema).not.toContain('"end"');
@@ -131,45 +135,63 @@ describe("Anthropic production model boundary", () => {
     expect(requester).not.toHaveBeenCalled();
   });
 
-  it("rejects absent and ambiguous quotations at the domain boundary", async () => {
+  it("quarantines absent and ambiguous quotations while returning valid proposals", async () => {
     const absent = openingOutput();
     absent.proposals[0].evidenceQuote = "not present";
-    const absentFailure = await modelFailure(createAnthropicJourneyModel(
+    const absentResult = await createAnthropicJourneyModel(
       async () => response(absent, "opening"),
       Date.now,
       undefined,
       identities,
       () => recordedAt,
-    ).propose("opening", openingText));
-    expect(absentFailure.diagnostic).toMatchObject({
-      phase: "domain-boundary",
-      issues: [{ path: "proposals.0.evidenceQuote", message: expect.stringContaining("absent") }],
-    });
+    ).propose("opening", openingText);
+    expect(absentResult.envelope.unrepresented).toEqual([
+      expect.objectContaining({ evidenceQuote: "not present", reason: "evidence-not-found" }),
+    ]);
 
     const ambiguousText = "rash improved, then rash returned";
     const ambiguous = openingOutput();
     ambiguous.products = [];
-    ambiguous.proposals = [eventProposal("symptoms", ["rash"], "rash")];
-    const ambiguousFailure = await modelFailure(createAnthropicJourneyModel(
+    ambiguous.proposals = [
+      eventProposal("symptoms", ["rash"], "rash"),
+      {
+        proposalReference: "event-description",
+        groupReference: "event-group",
+        intent: "fact",
+        target: { entity: "event", field: "problemDescription" },
+        value: { kind: "known", value: ambiguousText },
+        evidenceQuote: ambiguousText,
+      },
+    ];
+    const ambiguousResult = await createAnthropicJourneyModel(
       async () => response(ambiguous, "opening"),
       Date.now,
       undefined,
       identities,
       () => recordedAt,
-    ).propose("opening", ambiguousText));
-    expect(ambiguousFailure.diagnostic).toMatchObject({
-      phase: "domain-boundary",
-      issues: [{ message: expect.stringContaining("more than once") }],
-    });
+    ).propose("opening", ambiguousText);
+    expect(ambiguousResult.envelope.unrepresented).toEqual([
+      expect.objectContaining({ evidenceQuote: "rash", reason: "evidence-ambiguous" }),
+    ]);
   });
 
   it("rejects unknown later product references and later product declarations", async () => {
     const unknown = correctionOutput();
     unknown.proposals[0].target = { entity: "product", productReference: "Product A", field: "dose" };
-    const unknownFailure = await modelFailure(createAnthropicJourneyModel(
+    unknown.proposals.push({
+      proposalReference: "event-correction",
+      groupReference: "event-correction-group",
+      intent: "correction",
+      target: { entity: "event", field: "problemDescription" },
+      value: { kind: "known", value: correctionText },
+      evidenceQuote: correctionText,
+    });
+    const unknownResult = await createAnthropicJourneyModel(
       async () => response(unknown, "correction"), Date.now, undefined, identities, () => recordedAt,
-    ).propose("correction", correctionText, reviewedCase));
-    expect(unknownFailure.diagnostic.issues?.[0].message).toContain("Unknown reviewed product ID");
+    ).propose("correction", correctionText, reviewedCase);
+    expect(unknownResult.envelope.unrepresented).toEqual([
+      expect.objectContaining({ entity: "product", field: "dose", reason: "unresolved-entity" }),
+    ]);
 
     const declared = correctionOutput();
     declared.products = [{ productReference: "new-product", groupReference: "new-group" }];
@@ -179,17 +201,16 @@ describe("Anthropic production model boundary", () => {
     expect(declarationFailure.diagnostic.issues?.[0].message).toContain("cannot declare new entities");
   });
 
-  it("rejects a noncanonical product role without a medicine-specific rule", async () => {
+  it("quarantines a noncanonical product role without a medicine-specific rule", async () => {
     const output = openingOutput();
     const role = output.proposals.find(({ target }) => target.entity === "product" && target.field === "role")!;
     role.value = { kind: "known", value: "causal" };
-    const failure = await modelFailure(createAnthropicJourneyModel(
+    const result = await createAnthropicJourneyModel(
       async () => response(output, "opening"), Date.now, undefined, identities, () => recordedAt,
-    ).propose("opening", openingText));
-    expect(failure.diagnostic).toMatchObject({
-      phase: "domain-boundary",
-      issues: [{ message: "role requires suspect or concomitant" }],
-    });
+    ).propose("opening", openingText);
+    expect(result.envelope.unrepresented).toEqual([
+      expect.objectContaining({ entity: "product", field: "role", reason: "incompatible-value" }),
+    ]);
   });
 
   it("distinguishes provider, stop, JSON, and structured-schema failures without retrying", async () => {
@@ -210,10 +231,10 @@ describe("Anthropic production model boundary", () => {
 
     const invalidSchema = response(openingOutput(), "opening");
     const decoded = responseOutput(invalidSchema);
-    (decoded.proposals[0] as { intent: string }).intent = "unsupported";
+    delete (decoded.proposals[0] as Partial<ModelProposalOutput["proposals"][number]>).evidenceQuote;
     setResponseOutput(invalidSchema, decoded);
     expect((await modelFailure(createAnthropicJourneyModel(async () => invalidSchema).propose("opening", openingText))).diagnostic)
-      .toMatchObject({ phase: "structured-schema", issues: [{ path: "proposals.0.intent" }] });
+      .toMatchObject({ phase: "structured-schema", issues: [{ path: "proposals.0.evidenceQuote" }] });
   });
 
   it("retains safe provider status metadata without provider detail", async () => {
