@@ -86,7 +86,10 @@ record did not state the minimum target/citation content required to render a
 truthful quarantine notice. The first is now remediated by proposal quarantine
 before identity allocation; the command guard remains a backstop. The second is
 now explicit as a response-envelope rule, because Wilson must not invent a
-missing target or citation. The same-session targeted recheck remains pending.
+missing target or citation. The same-session targeted recheck at `d0fe1e3`
+independently reran every stated deterministic gate, resolved both blockers,
+and reported no new blocking or independently valuable follow-up finding. The
+PR holds the complete review record.
 
 The two bounded protected synthetic live openings also remain pending. No
 application-model call has been made for this replacement implementation.
