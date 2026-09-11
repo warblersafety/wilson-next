@@ -28,12 +28,11 @@ applicable device details, and stable-device correction/uncertainty while
 retaining all earlier deterministic journeys. None of this campaign work calls
 or remediates the deferred live model in Issue #55.
 
-Experiment 2 and Delivery's standing execution authority allow Codex to carry
-its remaining bounded implementation, review, protected-preview, and synthetic
-model work through review-ready pull requests without repeated permission
-steps. Steve retains approval and merge, premise changes, real data, external
-participation, production release, destructive actions, expanded review, and
-spend above the standing cap. At Issue #42's 2026-09-08 stop-and-reconcile
+Delivery's standing execution authority allows Codex to carry approved bounded
+work through objective, autonomous merge without repeated permission steps.
+Material premise changes, real data, destructive actions outside ordinary
+branch work, expanded review, and spend above the standing cap remain outside
+that authority. At Issue #42's 2026-09-08 stop-and-reconcile
 checkpoint, Steve explicitly required any further experiment both to answer its
 bounded questions and to replace the fixed journey with production-seed code
 for the supported adult medication adverse-event scope. `docs/EXPERIMENT-2.md`
@@ -55,10 +54,11 @@ other documents link to it or apply it only where their narrower scope requires.
    supported and deferred scope, selected stack, implementation slices,
    verification, deployment, and disposal contract.
 4. [`docs/EXPERIMENT-2.md`](docs/EXPERIMENT-2.md) owns the approved
-   operator-only generalization and conditional-reliability plan and the
-   authorization boundaries for each slice.
+   operator-only generalization and conditional-reliability plan, including
+   each slice's evidence bounds.
 5. [`docs/DELIVERY.md`](docs/DELIVERY.md) owns issues, branches, pull requests,
-   independent review, approval, merge controls, and durable traceability.
+   execution authority, independent review, merge controls, and durable
+   traceability.
 6. [`docs/RECOVERY.md`](docs/RECOVERY.md) preserves the evidence and lessons
    behind the active decisions. It is historical evidence, not a second
    backlog or competing source of product authority.

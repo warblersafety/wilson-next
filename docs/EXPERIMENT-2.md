@@ -556,21 +556,22 @@ when it remains within existing premises and spending limits.
    bounded revisit independently of Experiment 2 completion.
 
 Each implementation slice uses one coherent issue, branch, draft PR,
-proportional evidence, and explicit merge approval. Pure evidence/outcome work
-retains a durable issue/PR record but requires no automatic independent review
-when it changes no behavior or governing premise. A failed premise stops later
-work. Do not split work further unless an independently valuable defect or
-decision cannot be resolved coherently inside its slice.
+proportional evidence, and Delivery's objective merge controls. Pure
+evidence/outcome work retains a durable issue/PR record but requires no
+automatic independent review when it changes no behavior or governing premise.
+A failed premise stops later work. Do not split work further unless an
+independently valuable defect or decision cannot be resolved coherently inside
+its slice.
 
-## Review and authorization
+## Review and execution authority
 
 Issue #42 and PR #43 define the plan; Issue #49 applies Delivery's standing
 execution authority to its remaining work. Codex may create and complete the
 named implementation issues, run required standard Sonnet reviews, exercise
 protected synthetic preview, and make bounded synthetic application-model
 calls without repeated permission. Ordinary defects and their remediation stay
-inside the slice; Steve reviews the complete outcome and remaining risk at
-merge.
+inside the slice; the pull request records the complete outcome and remaining
+risk before Codex merges it under Delivery's objective controls.
 
 Issue #53 records Steve's conditional-reliability refocus. Steve explicitly
 waived independent review for that minor documentation correction only. The
@@ -579,11 +580,11 @@ requires the ordinary standard review.
 
 Issue #55 records Steve's later decision to defer that remediation and complete
 Experiment 2 as `Revise`. Any future work triggered from #55 is a new
-unit under Delivery and does not inherit Experiment 2 sampling authority merely
-because the limitation is recorded here.
+unit under Delivery. Its approved issue must define a new bounded sample rather
+than inherit Experiment 2's historical sample design; once defined, Delivery's
+ordinary execution and merge authority applies.
 
-Steve's explicit approval remains required for each PR merge, a material change
-to the experiment premise or scope, spend above the standing limit, expanded
-review, physician or other external participation, real clinical data, and
-production deployment or release. Historical Stage 2 authorization records
-remain accurate.
+Delivery exclusively owns development execution and merge authority. This
+completed experiment does not define future physician participation, real
+clinical data, or production deployment/release; those remain outside its
+scope. Historical Stage 2 authorization records remain accurate.
