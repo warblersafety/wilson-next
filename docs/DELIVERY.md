@@ -1,18 +1,18 @@
 # Wilson delivery and independent review
 
-**Status:** Approved by Steve through 2026-09-09, including standing authority
-for routine bounded agent work and the retained human merge boundary
+**Status:** Approved by Steve through 2026-09-10, including standing authority
+for bounded agent work through objective, autonomous merge
 
 **Owns:** Work items, branches, pull requests, verification, independent review,
-approval, merge controls, stop-and-reconcile, and durable trace
+execution authority, merge controls, stop-and-reconcile, and durable trace
 
 ## Purpose
 
 Preserve useful implementation history and independent challenge without
 recreating the process weight that obscured legacy Wilson's assembled product.
 Every meaningful change is isolated, checked, independently reviewed when
-needed, and approved by Steve at merge. Durable product or technical
-decisions live in their single owning active document.
+needed, and merged when its objective readiness criteria pass. Durable product
+or technical decisions live in their single owning active document.
 
 ## Unit of work
 
@@ -40,8 +40,8 @@ codex/<issue-number>-<short-description>
 
 Use one short-lived branch per coherent issue. Do not create long-running
 development or experiment branches. Open a draft pull request after the first
-meaningful commit. Codex may create, update, publish, and mark the PR ready as
-part of normal delivery. The PR records:
+meaningful commit. Codex may create, update, publish, mark ready, and merge the
+PR as part of normal delivery. The PR records:
 
 - plain-English outcome and linked issue;
 - included and excluded scope;
@@ -49,7 +49,7 @@ part of normal delivery. The PR records:
 - exact automated and manual evidence;
 - required screenshots, traces, model samples, or PDFs;
 - deviations, stop-and-reconcile decisions, and unresolved risk; and
-- the exact decision requested from Steve.
+- the final disposition and remaining risk.
 
 Update it at meaningful boundaries, not with routine terminal narration.
 Successful branches are deleted after squash merge. If an experiment falsifies
@@ -59,12 +59,13 @@ disposition is decided.
 ## Standing execution authority
 
 Once Steve has approved an outcome, experiment plan, or concrete request, Codex
-may complete the ordinary work needed to deliver it without asking permission
-again at each step. Within the governing documents and the issue/PR scope, this
-includes:
+may complete the ordinary work needed to deliver and merge it without asking
+permission again at each step. Within the governing documents and the issue/PR
+scope, this includes:
 
 - creating and updating issues, branches, commits, pull requests, comments, and
-  review-ready state;
+  review-ready state, then squash-merging a ready pull request and completing
+  its issue/branch disposition;
 - implementing the change, fixing ordinary defects, and running local, CI,
   browser, PDF, protected-preview, and other proportionate checks;
 - running each standard Claude Sonnet review required below, continuing the
@@ -76,28 +77,40 @@ includes:
 - recording results, costs, limitations, and dispositions in the smallest
   durable location that later work will actually consult.
 
-The default autonomous application-model allowance is **USD 5 per batch and USD
-20 total per issue**. Estimate or reserve enough capacity before each call,
-never split work to evade a limit, and record exposed calls, tokens, latency,
-and actual or estimated spend afterward. A narrower experiment cap still wins.
+The issue or owning experiment defines the synthetic inputs, call count,
+evidence handling, retry policy, and any narrower limit. A pre-execution update
+is notification, not a request for permission. The default autonomous
+application-model allowance is **USD 5 per batch and USD 20 total per issue**.
+Estimate or reserve enough capacity before each call, never split work to evade
+a limit, and record exposed calls, tokens, latency, and actual or estimated
+spend afterward. A narrower experiment cap still wins.
 
-Steve's explicit approval remains required only for:
+Stop and reconcile rather than extending the work when it would require:
 
-- approving and merging a pull request;
 - changing a material product, architecture, privacy, security, clinical-data,
   or experiment premise beyond existing authority;
-- using real clinical data or involving a physician or other external
-  participant;
-- production deployment or release, a new paid-plan purchase, or spend above
-  the standing limit;
+- using real clinical data;
+- a new paid-plan purchase or spend above the standing limit;
 - destructive or difficult-to-reverse action outside ordinary branch work; or
 - expanded review with Opus, multiple independent reviewers, or another
   exceptional review program.
 
+Production deployment/release and physician or other external participation are
+not actions in Wilson's development lifecycle. This document neither defines
+nor authorizes them; their future relevance would require a new owning product
+or experiment decision rather than a routine delivery approval.
+
 A later direct instruction from Steve may narrow or expand authority for that
-specific task. Routine execution should otherwise continue to a verified,
-review-ready PR; do not turn the controls in this document into repeated
-requests to follow the document.
+specific task. Routine execution should otherwise continue through verified
+merge; do not turn the controls in this document into repeated requests to
+follow the document. Status updates that preview authorized review, model, Git,
+or GitHub work do not create approval gates.
+
+This authority governs what Codex may do. Host filesystem, network, credential,
+and application permission settings govern what it can do. A host restriction
+may block an authorized action, but it does not create a new Wilson approval
+requirement. Record the exact platform limitation and stop only when the host
+provides no authorized path forward.
 
 ## Verification and review flow
 
@@ -110,16 +123,17 @@ Before a PR is ready:
    the complete change and evidence when this document requires a new review.
 4. Blocking findings are fixed or explicitly resolved. Follow-ups become issues
    only when independently worth doing.
-5. The PR presents Steve with a concise acceptance summary and remaining risk.
+5. The PR records a concise acceptance summary and remaining risk.
 
 Review checks code correctness and whether implementation hides a bad premise;
 local conformance is not enough. It runs against the exact final material
-change. Steve's required GitHub approval is merge authorization: the delivered
-scope, evidence, review disposition, and risk are acceptable. It does not
-require Steve to perform a line-by-line technical audit.
+change. Codex determines merge readiness from the delivered scope, acceptance
+evidence, review disposition, required checks, and remaining risk. When those
+criteria and the merge controls below pass, Codex marks the PR ready and
+squash-merges it without a separate approval step.
 
-New material commits after Steve's approval require review of the latest change and a
-renewed approval before merge.
+New material commits after the recorded review require proportionate review of
+the latest change before merge.
 
 ### Proportional closure without recursive model runs
 
@@ -134,7 +148,7 @@ editorial consolidation may rely on its approved source decisions, when the PR:
   evidence, or process premise, and removes or weakens no approved decision
   without naming that change in the PR;
 - passes an implementer audit and its narrow checks; and
-- receives Steve's explicit approval of the final result.
+- satisfies the objective merge controls below.
 
 No new Claude run is required merely to confirm its own dispositions or to
 restate approved decisions more coherently. A change beyond those bounds needs
@@ -144,8 +158,13 @@ fresh independent review. Steve may request another review at any time.
 
 When Codex implements or coordinates a substantive change requiring a new
 review, Claude is the default fresh-context reviewer and the run is covered by
-the standing authority above. Substitution requires Steve's agreement. Claude
-cannot edit, post to GitHub, approve, or merge.
+the standing authority above. The standard review sends the private repository
+diff, governing documents, relevant issue/PR records, surrounding code, and
+acceptance evidence to Anthropic through Steve's authenticated Claude CLI; that
+bounded disclosure is part of the approved review, not a separate permission
+step. If Claude is unavailable, record the limitation and stop rather than
+silently substituting another reviewer. Claude cannot edit, post to GitHub, or
+merge.
 
 ### Standard review
 
@@ -194,20 +213,13 @@ complete review merely for reassurance. Repeat the complete standard review
 only when remediation materially changes behavior, contracts, architecture,
 privacy, scope, evidence, or another owning premise.
 
-Expanded review is exceptional and also requires explicit permission. Use it
+Expanded review is exceptional and must be separately requested. Use it
 for multiple distinct consequential risks such as security/privacy, durable
 data migration, model semantics, consequential workflow, clinical/output
 accuracy, broad architecture, or the integrated pre-physician checkpoint. It
 may use Claude Opus at `high` or `xhigh`; Opus `xhigh` is the maximum. Do not use
 Opus `max`, Fable, or a model/effort outside these bounds. Multiple reviewers,
 agents, or fresh passes require separate permission and risk-specific roles.
-
-Before the first physician session, integrated review—if explicitly
-authorized as part of that exceptional external-participant step—asks whether
-the doctor can complete the task with low friction,
-knowledge and uncertainty are correct, privacy/failure evidence matches the
-boundary, and the PDF is accurate and traceable. It uses working-product traces,
-transcripts, screenshots, and PDFs but never replaces physician feedback.
 
 ### Review record
 
@@ -240,31 +252,33 @@ versus observed behavior, owner, options, and recommendation in the issue/PR.
 A failure does not by itself require Steve's intervention. Continue useful
 independent checks or experiment calls within scope and budget when the failure
 does not invalidate their interpretation, increase consequential risk, or cross
-one of the explicit-approval boundaries above. Record the limitation and use the
-remaining evidence to make the eventual decision better.
+the standing authority or issue evidence bounds above. Record the limitation
+and use the remaining evidence to make the eventual decision better.
 
 Fix an ordinary defect locally with focused recurrence evidence. If an owning
-premise is wrong or ambiguous, stop the affected work and return to Steve for a
-decision. Tests may follow an approved decision change; they may not be
-weakened to bless a workaround. Reversible naming, organization, refactoring,
-library adaptation, and visual polish within approved behavior remain
-implementation discretion.
+premise is wrong or ambiguous, stop the affected work with evidence and a
+recommendation rather than forcing a decision. Tests may follow an approved
+decision change; they may not be weakened to bless a workaround. Reversible
+naming, organization, refactoring, library adaptation, and visual polish within
+approved behavior remain implementation discretion.
 
 ## Merge controls
 
 `main` is protected. Require:
 
-- pull requests and one approving review;
-- approval of the latest material change;
+- pull requests;
+- acceptance evidence and required independent review against the latest
+  material change, with no unresolved blocking finding;
 - resolved review conversations;
 - linear history;
-- no force push, deletion, administrator, or application bypass; and
+- no force push, deletion, or bypass; and
 - the single `verify` status check after it exists.
 
-Use squash merge. Merge queues, CODEOWNERS, multiple routine reviewers, signed
-commits, coverage thresholds, release branches, automatic releases, and
-deployment approval environments remain deferred until evidence shows value.
-Merge never implies external deployment, purchase, or production authorization.
+Codex marks the pull request ready and uses squash merge as soon as these
+controls pass. Merge queues, CODEOWNERS, multiple routine reviewers, signed
+commits, coverage thresholds, release branches, and automatic releases remain
+deferred until evidence shows value. Wilson has no production deployment or
+release step.
 
 ## Durable trace
 
@@ -301,8 +315,8 @@ bookkeeping that does not change the product or decision.
 
 Experiment 1 retained useful signal from isolated issues/branches, protected
 main, focused deterministic checks, fresh-context review of consequential
-premises, exact deployed evidence, and Steve's explicit merge decisions. Keep
-those controls for Experiment 2.
+premises, and exact deployed evidence. Keep those controls for Experiment 2;
+replace its historical human merge decisions with the objective controls above.
 
 Recursive review, repeated live runs without a new decision question, runner
 ceremony that obscures the product result, and attempts to convert the fixed
