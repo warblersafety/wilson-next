@@ -135,25 +135,51 @@ order is normalized by entity and value contract before proposals enter the
 domain; Wilson's fact and group presentation is determined by the case model,
 not provider array order.
 
-## Pending post-remediation live evidence
+## Expanded premise review and approved disposition
 
-After the v12 material delta passes the required independent review and is
-available through the automatically built protected pull-request preview, the
-bounded evidence proposal is one no-retry retry of the rich medication opening
-and, only if that succeeds, one no-retry conditional-device opening:
+Steve stopped implementation after the failed provider request and requested a
+second opinion from a different model with fresh context. One read-only expanded
+review ran on 2026-09-10 using Claude Opus at `xhigh` effort through Claude Code
+2.1.241. Subscription preflight confirmed first-party `claude.ai` authentication
+with the API-key, auth-token, and alternate-base-url variables unset. The CLI
+alias was `opus`; the canonical model ID was not emitted. The reviewer inspected
+clean `main` at `14aa6a4` before inspecting v11 at `94136b6` and v12 at
+`fe8baaf`. It ran no tests, provider calls, application-model calls, network
+requests, subreviews, repository edits, or Git changes.
 
-1. The existing fictional rich medication account for `TEST-68` in
-   `docs/EXPERIMENT-2.md`, submitted as `adverse-event`.
-2. The existing fictional Acme PulseLine conditional-device account in
-   `tests/e2e/build-predetermined-responses.ts`, submitted as
-   `product-problem`.
+The exact review inputs and complete result are retained as:
 
-Before either call, separately verify Vercel Deployment Protection covers the
-exact deployment and no public exception or bypass exists. Inspect the
-synthetic-only Runtime Logs in place, retain only request/model identifiers,
-prompt/schema revisions, tokens, latency, estimated cost, proposal/evidence
-summaries, and sanitized mechanical/semantic verdicts, and do not retain raw
-provider responses or logs. The two calls must use the ordinary application
-route, automatic retries remain disabled, and no correction, retry,
-confirmation sample, PDF generation, or additional model turn beyond those two
-bounded attempts is authorized by this evidence plan.
+- `opus-expanded-review-prompt.md`
+- `opus-expanded-review.md`
+
+The review concluded that provider-perfect typing is neither necessary nor
+sufficient for Wilson's safety. The safety invariants are atomic commands,
+explicit clinician acceptance, exact local evidence checks, conflict-aware
+projection, and strictly validated PDF output. Whole-response rejection because
+one proposal is unrepresentable is an implementation choice that destroys useful
+work; it is not an accepted-state safety requirement.
+
+Steve approved that conclusion and the following premise reset:
+
+1. Target/value compatibility remains structural in local decoding and at the
+   authoritative command boundary; the provider receives truthful generated
+   guidance on the already accepted simple wire shape.
+2. Individual unrepresentable proposals are visibly quarantined with their
+   quotation, target, and reason. They never enter case state. Response-level
+   faults and an all-quarantined response still fail atomically.
+3. Command atomicity and accepted-state safety remain invariants; rejecting a
+   complete response for one proposal-local fault does not.
+4. No coercion, fuzzy repair, guessed normalization, automatic retry, new
+   question planner, PDF change, or Issue #66 work is authorized.
+5. Keep the shared domain value contract, enumerated recurrence tests, age-bound
+   alignment, and general treatment-versus-report-product instruction. Discard
+   the bespoke provider schema compiler and v12 wire adapters.
+6. Close PR #71 without merging and continue Issue #67 from clean `main` on a
+   replacement branch. The existing v11/v12 commits remain the durable record of
+   the falsified direction.
+
+No replacement implementation or additional live call was performed in this
+session. The next session should first update Issue #67 and the owning
+architecture sentence to encode this approved premise, then implement the
+narrow visible-quarantine flow and separately reconcile the newly identified
+product-cap restoration defect before any protected synthetic evidence call.
