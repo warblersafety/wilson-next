@@ -78,7 +78,7 @@ checks at `applyCaseCommand`, the three-product command backstop, 150-year
 restore alignment, browser-held notice reconstruction, diagnostics, and the
 final PDF omission behavior.
 
-## Pending evidence
+## Independent review
 
 The fresh-context standard Sonnet review at `de3ccc0` found two blocking gaps:
 the fourth-product guard still rejected the entire model batch, and the evidence
@@ -91,8 +91,69 @@ independently reran every stated deterministic gate, resolved both blockers,
 and reported no new blocking or independently valuable follow-up finding. The
 PR holds the complete review record.
 
-The two bounded protected synthetic live openings also remain pending. No
-application-model call has been made for this replacement implementation.
-Before either live call, the operator will present the exact bounded plan and
-obtain Steve's explicit approval as required by the direct Issue #67
-continuation instruction.
+## Protected synthetic live evidence
+
+Steve explicitly approved the exact two-call, no-retry plan and then explicitly
+approved one temporary two-call-scoped Vercel automation bypass. The batch ran
+against protected non-production deployment
+`dpl_5bvhKmtos1h1vRJSxMTr28VsGRVq`, exact Git SHA `4527280`, branch
+`codex/67-visible-quarantine`, PR #74. Before each call the operator confirmed
+the deployment was ready, its immutable Git metadata matched, Vercel
+Authentication and fork protection were enabled, system Git metadata was
+exposed to the fail-closed application gate, and exactly one sensitive
+preview-only `ANTHROPIC_API_KEY` existed.
+
+One earlier GET-only Vercel CLI access probe unexpectedly created an automation
+bypass as an undocumented side effect. It made no application-model call. The
+operator immediately revoked that bypass and verified zero remaining bypasses
+and an unauthenticated 302 before requesting and receiving approval for the
+explicit batch-scoped bypass. The approved bypass was the only active bypass
+during the batch and was unconditionally revoked afterward; final bypass count
+was zero and unauthenticated access again returned 302.
+
+Exactly two opening actions ran through the actual browser and application
+route, with automatic retries disabled:
+
+1. **Rich medication (`TEST-68`, adverse event): Pass.** The response reached
+   ordinary understanding at revision 2 with 18 proposals and one cephalexin
+   product. Symptoms were `diffuse hives` and `facial swelling`; epinephrine and
+   diphenhydramine were event treatments, not report products. All 18 retained
+   proposals had one exact evidence anchor. Nothing was quarantined.
+2. **Conditional device (Acme PulseLine, product problem): Pass after external
+   oracle disposition.** The response reached ordinary understanding at
+   revision 2 with 15 proposals and one device. It preserved explicitly absent
+   patient symptoms, supported `available` product availability, implanted and
+   reprocessed-single-use status, and unknown implant date, explant date, and
+   reprocessor. All retained proposals had exact evidence and nothing was
+   quarantined. The runner initially stopped because it required the event
+   description to duplicate `Acme PulseLine temporary pacing lead`; the actual
+   value, `stopped sensing during an intraoperative function check after
+   placement`, is truthful, material, and supported by the exact complete
+   sentence, while product name and common name were separately preserved.
+   This was an over-specific external oracle, not a Wilson semantic failure; no
+   retry or application change was made.
+
+Ephemeral Runtime Logs yielded 38 correlated diagnostic events: two model
+requests, two successful provider responses, two successful proposal commands,
+and no failure or rejection event. No credential-shaped content was detected.
+
+| Opening | Provider request | Model | Input tokens | Output tokens | Latency | Estimated cost |
+|---|---|---|---:|---:|---:|---:|
+| Rich medication | `msg_011Cex3WKGFfWV1krS8urWGM` | `claude-sonnet-5` | 4,677 | 3,228 | 26,988 ms | $0.041634 |
+| Conditional device | `msg_011Cex3YRhkaDCtZAhYUrwea` | `claude-sonnet-5` | 4,684 | 2,969 | 23,941 ms | $0.039058 |
+
+Both used prompt revision `wilson-visible-quarantine-v1` and schema revision
+`wilson-grounded-proposals-v11-simple`. Total estimated spend was $0.080692,
+within the approved USD 5 batch limit. No raw provider response, raw Runtime
+Log, browser state, network archive, screenshot, PDF bytes, credential, or
+bypass was retained.
+
+## Disposition
+
+`Proceed`. The revised premise is not contradicted. Both independently selected
+openings reached truthful ordinary review through the simple provider wire,
+with accepted-state authority unchanged, exact evidence intact, correct
+treatment/product attribution, no retry, and no material invention, silent
+loss, or wrong attribution. The deterministic malformed-proposal journey
+remains the meaningful visible-quarantine evidence; a live quarantine was not
+required and neither live response happened to need one.
