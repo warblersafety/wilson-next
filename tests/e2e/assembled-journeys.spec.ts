@@ -369,6 +369,8 @@ test("runs Issue 66 direct correction, Issue 67 quarantine, and all prior determ
   await expect(page.getByRole("heading", { name: "Hospitalization is already recorded. Did any other serious outcomes apply?" })).toBeVisible();
   await expect(page.getByLabel("Hospitalization (initial or prolonged) — already recorded")).toBeChecked();
   await expect(page.getByLabel("Life-threatening — already recorded")).toBeChecked();
+  await expect(productOrCaseCard(page, "amoxicillin").getByRole("button", { name: "Withdraw amoxicillin" })).toHaveCount(0);
+  await expect(productOrCaseCard(page, "Relevant test 1").getByRole("button", { name: "Withdraw Relevant test 1" })).toHaveCount(0);
   questionTrace.push({ journey: "adaptive-rich", question: "serious outcomes", reason: "confirm only outcomes not already accepted", answer: "no additional outcomes" });
   await page.getByRole("button", { name: "Confirm outcomes" }).click();
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
