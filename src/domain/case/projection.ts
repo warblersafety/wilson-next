@@ -138,10 +138,13 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     projection.sections.B.relevantTests.push(result);
   }
   if (projection.sections.B.relevantTests.length === 0) {
+    const testsAvailable = known(caseState.event.facts.relevantTestsAvailable);
     projection.omissions.push({
       concept: "relevant tests",
       target: "event:event:relevantTestsAvailable",
-      reason: omissionReason(caseState.event.facts.relevantTestsAvailable),
+      reason: testsAvailable?.value === false
+        ? "explicitly-absent"
+        : omissionReason(caseState.event.facts.relevantTestsAvailable),
       sourceIds: caseState.event.facts.relevantTestsAvailable.sourceIds,
     });
   }
@@ -276,7 +279,7 @@ function buildEventDescription(caseState: SemanticCase): { value?: string; sourc
   append(caseState.event.facts.treatments, (value) => `Treatment: ${value.join("; ")}.`);
   append(caseState.event.facts.outcome, (value) => `Outcome: ${value}.`);
   append(caseState.event.facts.dischargeDate, (value) => `Discharged ${displayDate(value)}.`);
-  const stopped = caseState.products.flatMap((product) => {
+  const stopped = caseState.products.filter(({ state }) => state === "resolved").flatMap((product) => {
     const name = known(product.facts.name);
     const wasStopped = known(product.facts.stopped);
     if (!name || !wasStopped?.value) return [];

@@ -79,7 +79,7 @@ export function nextCompletionQuestion(caseState: SemanticCase): CompletionQuest
     if (deathDate) return deathDate;
 
     const context = ordinaryQuestion(caseState, "relevant-clinical-context", () => {
-    const askTests = caseState.relevantTests.every(({ state }) => state === "rejected")
+    const askTests = caseState.relevantTests.every(({ state }) => state === "rejected" || state === "withdrawn")
       && caseState.event.facts.relevantTestsAvailable.state === "empty";
     const askHistory = caseState.event.facts.relevantHistory.state === "empty";
     const targetIds = [

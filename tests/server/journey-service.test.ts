@@ -4,6 +4,7 @@ import { fixedJourneyModel } from "../fixtures/fixed-journey";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { getJourneySnapshot, performJourneyAction } from "../../src/server/journey/service";
 import type { JourneyModel, ReviewedCaseModelContext } from "../../src/server/model/journey-model";
+import { completeResolvedCase } from "../domain/fixture";
 
 describe("state-driven journey service", () => {
   it("retains the Experiment 1 semantic case through shared review, update, conflict, and output behavior", async () => {
@@ -74,17 +75,26 @@ describe("state-driven journey service", () => {
     ]));
   });
 
-  it("applies generic Change and Remove controls through the same command boundary", async () => {
+  it("applies atomic typed group corrections and Remove through the same command boundary", async () => {
     const repository = new InMemoryCaseRepository();
     const caseId = "case-review-controls";
     let snapshot = await performJourneyAction(repository, caseId, openingAction, fixedJourneyModel);
     const age = snapshot.understanding.patient.ageYears.proposals[0];
     snapshot = await performJourneyAction(repository, caseId, {
-      action: "change-proposal", groupId: age.groupId, proposalId: age.id,
-      value: { kind: "known", value: 58 }, statement: "Age corrected to 58.",
+      action: "review-opening-group", groupId: age.groupId,
+      corrections: [
+        { proposalId: age.id, value: { kind: "known", value: 58 } },
+        {
+          proposalId: snapshot.understanding.patient.identifier.proposals[0].id,
+          value: { kind: "known", value: "TEST-58" },
+        },
+      ],
     }, fixedJourneyModel);
     expect(snapshot.understanding.patient.ageYears).toMatchObject({
-      resolved: { kind: "known", value: 58 }, evidence: expect.arrayContaining(["Age corrected to 58."]),
+      resolved: { kind: "known", value: 58 }, evidence: expect.arrayContaining(["Clinician corrected this value during opening review."]),
+    });
+    expect(snapshot.understanding.patient.identifier).toMatchObject({
+      resolved: { kind: "known", value: "TEST-58" },
     });
 
     snapshot = await performJourneyAction(repository, caseId, { action: "reject-group", groupId: "product-lisinopril" }, fixedJourneyModel);
@@ -96,6 +106,56 @@ describe("state-driven journey service", () => {
     await expect(performJourneyAction(repository, "case-order", { action: "accept-understanding" }, fixedJourneyModel))
       .rejects.toThrow("not available during describe");
     expect((await getJourneySnapshot(repository, "case-order")).revision).toBe(0);
+  });
+
+  it("adds and corrects supported facts directly, then withdraws an entity without a model call", async () => {
+    const initial = completeResolvedCase();
+    const repository = new InMemoryCaseRepository({ initialCase: initial });
+    const model: JourneyModel = { propose: async () => { throw new Error("Direct edits must not call the model"); } };
+    const caseId = initial.id;
+
+    let snapshot = await performJourneyAction(repository, caseId, {
+      action: "set-fact",
+      target: "patient:patient:weight",
+      value: { kind: "known", value: { value: 70, unit: "kg" } },
+    }, model);
+    expect(snapshot.projection.sections.A.weight).toEqual({ value: 70, unit: "kg" });
+
+    snapshot = await performJourneyAction(repository, caseId, {
+      action: "set-fact",
+      target: "event:event:reportType",
+      value: { kind: "known", value: "adverse-event-and-product-problem" },
+    }, model);
+    expect(snapshot.projection.sections.B.reportType).toBe("adverse-event-and-product-problem");
+    expect(snapshot.understanding.event.reportType.history).toEqual([
+      expect.objectContaining({ value: { kind: "known", value: "adverse-event" } }),
+    ]);
+
+    snapshot = await performJourneyAction(repository, caseId, {
+      action: "set-fact",
+      target: "reporter:reporter:lastName",
+      value: { kind: "known", value: "Reed-Smith" },
+    }, model);
+    expect(snapshot.projection.sections.G.reporter.lastName).toBe("Reed-Smith");
+    expect(snapshot.understanding.reporter.lastName.history[0].value).toEqual({ kind: "declined" });
+
+    snapshot = await performJourneyAction(repository, caseId, {
+      action: "withdraw-entity",
+      entity: "test",
+      entityId: "test-hemoglobin",
+    }, model);
+    expect(snapshot.understanding.relevantTests[0]).toMatchObject({ id: "test-hemoglobin", state: "withdrawn" });
+    expect(snapshot.projection.sections.B.relevantTests).toEqual([]);
+
+    snapshot = await performJourneyAction(repository, caseId, {
+      action: "withdraw-entity",
+      entity: "product",
+      entityId: "product-lisinopril",
+    }, model);
+    expect(snapshot.understanding.products.find(({ id }) => id === "product-lisinopril"))
+      .toMatchObject({ state: "withdrawn" });
+    expect(snapshot.projection.sections.F.concomitantProducts).toEqual([]);
+    expect(snapshot.downloadReady).toBe(true);
   });
 });
 

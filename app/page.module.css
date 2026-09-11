@@ -212,8 +212,15 @@ button:disabled {
 .cardActions button { background: transparent; border: 0; color: #2e6655; cursor: pointer; font-weight: 700; padding: 5px; }
 .inlineAction { background: transparent; border: 0; color: #2e6655; cursor: pointer; font-size: .75rem; font-weight: 700; padding: 4px 0; }
 .inlineEdit { display: flex; gap: 4px; grid-column: 1 / -1; margin-top: 5px; }
-.inlineEdit input { border: 1px solid #aeb9b4; border-radius: 4px; min-width: 0; padding: 5px; width: 100%; }
+.inlineEdit input, .inlineEdit select, .inlineEdit textarea { border: 1px solid #aeb9b4; border-radius: 4px; font: inherit; min-width: 0; padding: 5px; width: 100%; }
 .inlineEdit button { background: #2e6655; border: 0; border-radius: 4px; color: white; cursor: pointer; font-size: .7rem; font-weight: 700; }
+.factEditor { display: grid; flex: 1; gap: 6px; }
+.factEditor label { font-size: .75rem; font-weight: 700; margin: 0; }
+.factEditor fieldset { border: 0; display: grid; gap: 3px; margin: 0; padding: 0; }
+.factEditor fieldset label { align-items: center; display: flex; gap: 4px; }
+.measurement { display: grid; gap: 4px; grid-template-columns: 1fr auto; }
+.groupReview { background: #2e6655; border: 0; border-radius: 5px; color: white; cursor: pointer; font-weight: 800; padding: 8px 10px; }
+.withdrawn { background: #f5f3ed; color: #5f6964; font-size: .8rem; padding: 7px; }
 
 .caseCard dl { display: grid; gap: 7px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 10px; }
 .caseCard dl > div { border-top: 1px solid #edf0ee; padding-top: 7px; }

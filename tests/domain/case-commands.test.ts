@@ -127,6 +127,47 @@ describe("applyCaseCommand", () => {
     expect(reviewed.relevantTests[0].facts.testResult.resolvedValue?.sourceIds).toEqual(["source-test-correction"]);
   });
 
+  it("withdraws a reviewed entity without deleting its facts, sources, or history", () => {
+    const current = acceptOpeningCase();
+    const text = "The hemoglobin result should not be included in this report.";
+    const withdrawn = applyCaseCommand(current, {
+      type: "withdraw-case-entity",
+      commandId: "withdraw-hemoglobin-test",
+      expectedRevision: current.revision,
+      target: { entity: "test", entityId: "test-hemoglobin" },
+      source: {
+        id: "source-withdraw-hemoglobin",
+        inputId: "input-withdraw-hemoglobin",
+        inputType: "correction",
+        excerpt: text,
+        start: 0,
+        end: text.length,
+        actor: "clinician",
+        recordedAt: "2026-09-11T19:00:00.000Z",
+      },
+    }).case;
+
+    expect(withdrawn.relevantTests).toHaveLength(1);
+    expect(withdrawn.relevantTests[0]).toMatchObject({
+      id: "test-hemoglobin",
+      state: "withdrawn",
+      facts: { testResult: { resolvedValue: current.relevantTests[0].facts.testResult.resolvedValue } },
+    });
+    expect(withdrawn.sources.map(({ id }) => id)).toContain("source-withdraw-hemoglobin");
+    expect(withdrawn.changes.at(-1)).toMatchObject({
+      type: "withdraw-case-entity",
+      affectedTargets: ["test:test-hemoglobin"],
+      sourceIds: ["source-withdraw-hemoglobin"],
+    });
+    expect(() => applyCaseCommand(withdrawn, {
+      type: "withdraw-case-entity",
+      commandId: "withdraw-hemoglobin-again",
+      expectedRevision: withdrawn.revision,
+      target: { entity: "test", entityId: "test-hemoglobin" },
+      source: { ...withdrawn.sources.at(-1)!, id: "source-withdraw-again", inputId: "input-withdraw-again" },
+    })).toThrow("Only a reviewed test can be withdrawn");
+  });
+
   it("returns duplicate command IDs unchanged and rejects stale new commands atomically", () => {
     const current = acceptOpeningCase();
     const duplicate = applyCaseCommand(current, {

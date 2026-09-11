@@ -1,4 +1,4 @@
-export type EntityState = "proposed" | "resolved" | "rejected";
+export type EntityState = "proposed" | "resolved" | "rejected" | "withdrawn";
 
 export type NonKnownValue =
   | { kind: "unknown" }
@@ -283,12 +283,19 @@ export interface ResolveConflictCommand extends CommandEnvelope {
   source: Source;
 }
 
+export interface WithdrawCaseEntityCommand extends CommandEnvelope {
+  type: "withdraw-case-entity";
+  target: { entity: "product" | "test"; entityId: string };
+  source: Source;
+}
+
 export type CaseCommand =
   | AttachGroundedProposalsCommand
   | ReviewProposalGroupsCommand
   | RecordClinicianFactsCommand
   | RecordAskedNeedCommand
-  | ResolveConflictCommand;
+  | ResolveConflictCommand
+  | WithdrawCaseEntityCommand;
 
 export type CaseCommandType = CaseCommand["type"];
 

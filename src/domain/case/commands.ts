@@ -110,6 +110,10 @@ export function applyCaseCommand(
       addSource(next, command.source);
       resolveConflict(next, command.target, command.chosenValueId, command.source, change);
       break;
+    case "withdraw-case-entity":
+      addSource(next, command.source);
+      withdrawCaseEntity(next, command.target, command.source, change);
+      break;
     default:
       throw new Error(`Unsupported case command ${String((command as { type?: unknown }).type)}`);
   }
@@ -120,6 +124,26 @@ export function applyCaseCommand(
   next.changes.push(change);
   assertCaseInvariants(next);
   return { case: freezeCase(next), applied: true };
+}
+
+function withdrawCaseEntity(
+  caseState: SemanticCase,
+  target: { entity: "product" | "test"; entityId: string },
+  source: Source,
+  change: Change,
+): void {
+  const collection = target.entity === "product" ? caseState.products : caseState.relevantTests;
+  const entity = collection.find(({ id }) => id === target.entityId);
+  if (!entity) throw new Error(`Unknown ${target.entity} ${target.entityId}`);
+  if (entity.state !== "resolved") {
+    throw new Error(`Only a reviewed ${target.entity} can be withdrawn`);
+  }
+  if (Object.values(entity.facts).some((fact) => fact.proposedValues.length > 0)) {
+    throw new Error(`Review pending ${target.entity} proposals before withdrawal`);
+  }
+  entity.state = "withdrawn";
+  change.sourceIds.push(source.id);
+  change.affectedTargets.push(`${target.entity}:${target.entityId}`);
 }
 
 function attachGroundedProposals(
