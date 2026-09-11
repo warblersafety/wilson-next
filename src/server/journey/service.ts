@@ -154,25 +154,27 @@ export async function performJourneyAction(
         });
         break;
       }
-      case "change-proposal": {
+      case "review-opening-group": {
         requireStage(expectedStage, "understanding");
-        if (!findProposal(current, action.groupId, action.proposalId)) {
-          throw new Error("The proposed value is no longer available");
+        for (const correction of action.corrections) {
+          const located = findProposal(current, action.groupId, correction.proposalId);
+          if (!located) {
+            throw new Error("A proposed value is no longer available");
+          }
         }
-        if (!action.statement.trim()) throw new Error("A correction statement is required");
         await applyCommand({
           type: "review-proposal-groups",
-          commandId: commandId("change-proposal"),
+          commandId: commandId("review-opening-group"),
           expectedRevision: current.revision,
           decisions: [{
             groupId: action.groupId,
             action: "accept",
-            corrections: [{
-              proposalId: action.proposalId,
+            corrections: action.corrections.map((correction) => ({
+              proposalId: correction.proposalId,
               replacementId: valueId("corrected"),
-              value: action.value,
-              source: fullSource("correction", action.statement),
-            }],
+              value: correction.value,
+              source: fullSource("correction", "Clinician corrected this value during opening review."),
+            })),
           }],
         });
         break;
@@ -197,6 +199,38 @@ export async function performJourneyAction(
             decisions: groups.map((groupId) => ({ groupId, action: "accept" as const })),
           });
         }
+        break;
+      }
+      case "set-fact": {
+        requireOneOfStages(expectedStage, ["clarify", "output"]);
+        const target = targetFromKey(current, action.target);
+        assertDirectlyEditableTarget(current, target);
+        const fact = getFact(current, target);
+        if (fact.state === "proposed" || fact.state === "conflicted") {
+          throw new Error("Resolve the pending review before editing this fact directly");
+        }
+        const intent = fact.resolvedValue ? "correction" as const : "fact" as const;
+        await applyCommand({
+          type: "record-clinician-facts",
+          commandId: commandId("set-fact"),
+          expectedRevision: current.revision,
+          source: fullSource(
+            intent === "correction" ? "correction" : "answer",
+            `Clinician ${intent === "correction" ? "corrected this value directly" : "added this value directly"}.`,
+          ),
+          facts: [{ id: valueId("direct-fact"), target, intent, value: action.value }],
+        });
+        break;
+      }
+      case "withdraw-entity": {
+        requireStage(expectedStage, "output");
+        await applyCommand({
+          type: "withdraw-case-entity",
+          commandId: commandId("withdraw-entity"),
+          expectedRevision: current.revision,
+          target: { entity: action.entity, entityId: action.entityId },
+          source: fullSource("correction", withdrawalStatement(current, action.entity, action.entityId)),
+        });
         break;
       }
       case "answer-indications": {
@@ -529,6 +563,15 @@ function targetStatement(caseState: SemanticCase, target: FactTarget): string {
   return `the ${target.field} for ${name}`;
 }
 
+function withdrawalStatement(caseState: SemanticCase, entity: "product" | "test", entityId: string): string {
+  if (entity === "product") {
+    const product = caseState.products.find(({ id }) => id === entityId);
+    return `${knownValue(product?.facts.name) ?? "The selected product"} withdrawn from this report.`;
+  }
+  const index = caseState.relevantTests.findIndex(({ id }) => id === entityId);
+  return `${index < 0 ? "The selected relevant test" : `Relevant test ${index + 1}`} withdrawn from this report.`;
+}
+
 function knownValue<T>(fact: Fact<T> | undefined): T | undefined {
   const value = fact?.resolvedValue?.value;
   return value?.kind === "known" ? value.value : undefined;
@@ -640,11 +683,30 @@ function requireStage(actual: JourneyStage, expected: JourneyStage): void {
   if (actual !== expected) throw new Error(`This action is not available during ${actual}`);
 }
 
+function requireOneOfStages(actual: JourneyStage, expected: JourneyStage[]): void {
+  if (!expected.includes(actual)) throw new Error(`This action is not available during ${actual}`);
+}
+
+function assertDirectlyEditableTarget(caseState: SemanticCase, target: FactTarget): void {
+  if (target.entity === "patient" && caseState.patient.state !== "resolved") {
+    throw new Error("The patient group must be reviewed before direct editing");
+  }
+  if (target.entity === "event" && caseState.event.state !== "resolved") {
+    throw new Error("The event group must be reviewed before direct editing");
+  }
+  if (target.entity === "product") {
+    const product = caseState.products.find(({ id }) => id === target.entityId);
+    if (product?.state !== "resolved") throw new Error("The product must be active and reviewed before direct editing");
+  }
+  if (target.entity === "test") {
+    const test = caseState.relevantTests.find(({ id }) => id === target.entityId);
+    if (test?.state !== "resolved") throw new Error("The relevant test must be active and reviewed before direct editing");
+  }
+}
+
 function diagnosticAction(action: JourneyAction): unknown {
   const sanitized = { ...action } as Record<string, unknown>;
-  for (const key of ["text", "statement"]) {
-    if (typeof sanitized[key] === "string") sanitized[key] = diagnosticInput(sanitized[key]);
-  }
+  if (typeof sanitized.text === "string") sanitized.text = diagnosticInput(sanitized.text);
   return sanitized;
 }
 

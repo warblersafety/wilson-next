@@ -1,0 +1,41 @@
+import { describe, expect, it } from "vitest";
+import { factControlRegistry } from "../../app/fact-controls";
+import { caseValueContracts } from "../../src/domain/case/value-contract";
+
+describe("direct fact controls", () => {
+  it("covers every currently supported fact key without becoming value authority", () => {
+    for (const entity of Object.keys(caseValueContracts) as Array<keyof typeof caseValueContracts>) {
+      expect(Object.keys(factControlRegistry[entity]).sort()).toEqual(
+        Object.keys(caseValueContracts[entity]).sort(),
+      );
+    }
+  });
+
+  it("uses a matching typed input shape for each domain-owned value contract", () => {
+    for (const entity of Object.keys(caseValueContracts) as Array<keyof typeof caseValueContracts>) {
+      for (const [field, contract] of Object.entries(caseValueContracts[entity])) {
+        const control = (factControlRegistry[entity] as Record<string, { shape: string }>)[field];
+        const expected = contract.shape === "string" ? "text"
+          : contract.shape === "iso-date" ? "date"
+          : contract.shape === "integer" ? "age"
+          : contract.shape === "string-array" ? "list"
+          : contract.shape === "measurement" ? "weight"
+          : contract.shape === "enum-array" ? "choices"
+          : contract.shape === "enum" ? "choice"
+          : "boolean";
+        expect(control.shape, `${entity}.${field}`).toBe(expected);
+      }
+    }
+  });
+
+  it("provides clinician-facing labels for every enum choice", () => {
+    for (const controls of Object.values(factControlRegistry)) {
+      for (const control of Object.values(controls)) {
+        for (const option of control.options ?? []) {
+          expect(option.label).not.toBe(option.value);
+          expect(option.label).not.toMatch(/^[a-z]+-[a-z-]+$/);
+        }
+      }
+    }
+  });
+});

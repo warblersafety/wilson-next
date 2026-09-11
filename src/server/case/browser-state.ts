@@ -8,7 +8,7 @@ import {
 import type { JourneySnapshot, JourneyStage } from "../journey/service";
 import { InMemoryCaseRepository, validateRestoredCase } from "./repository";
 
-export const browserStateVersion = "wilson-browser-state-v6";
+export const browserStateVersion = "wilson-browser-state-v7";
 
 export interface BrowserJourneyState {
   version: typeof browserStateVersion;
@@ -151,24 +151,24 @@ const caseSchema = z.object({
   revision: z.number().int().nonnegative(),
   patient: z.object({
     id: z.literal("patient"),
-    state: z.enum(["proposed", "resolved", "rejected"]),
+    state: z.enum(["proposed", "resolved", "rejected", "withdrawn"]),
     facts: patientFactsSchema,
   }).strict(),
   event: z.object({
     id: z.literal("event"),
-    state: z.enum(["proposed", "resolved", "rejected"]),
+    state: z.enum(["proposed", "resolved", "rejected", "withdrawn"]),
     facts: eventFactsSchema,
   }).strict(),
   products: z.array(z.object({
     id: z.string().min(1),
     proposalGroupId: z.string().min(1),
-    state: z.enum(["proposed", "resolved", "rejected"]),
+    state: z.enum(["proposed", "resolved", "rejected", "withdrawn"]),
     facts: productFactsSchema,
   }).strict()).max(maximumCaseProducts),
   relevantTests: z.array(z.object({
     id: z.string().min(1),
     proposalGroupId: z.string().min(1),
-    state: z.enum(["proposed", "resolved", "rejected"]),
+    state: z.enum(["proposed", "resolved", "rejected", "withdrawn"]),
     facts: relevantTestFactsSchema,
   }).strict()).max(maximumRelevantTests),
   reporter: z.object({ id: z.literal("reporter"), facts: reporterFactsSchema }).strict(),
@@ -186,6 +186,7 @@ const caseSchema = z.object({
       "record-clinician-facts",
       "record-asked-need",
       "resolve-conflict",
+      "withdraw-case-entity",
     ]),
     affectedTargets: z.array(z.string()),
     sourceIds: z.array(z.string()),

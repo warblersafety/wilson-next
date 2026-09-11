@@ -36,12 +36,13 @@ const retainAdaptiveOnly = evidenceDirectory.includes("issue-57");
 const retainLayer1RepresentativeOnly = evidenceDirectory.includes("issue-60");
 const retainLayer2RepresentativeOnly = evidenceDirectory.includes("issue-62");
 const retainLayer3RepresentativeOnly = evidenceDirectory.includes("issue-64");
+const retainIssue66Only = evidenceDirectory.includes("issue-66");
 const readbacks: Record<string, IndependentReadback> = {};
 const checkpoints: Array<{ journey: string; state: string; assertion: string }> = [];
 const pdfs: Array<{ journey: string; bytes: number; sha256: string }> = [];
 const questionTrace: Array<{ journey: string; question: string; reason: string; answer: string }> = [];
 
-test("runs Issue 67 quarantine, Layer 3 device-depth probes, and all prior deterministic regressions through one assembled desktop path", async ({ page, browser }, testInfo) => {
+test("runs Issue 66 direct correction, Issue 67 quarantine, and all prior deterministic regressions through one assembled desktop path", async ({ page, browser }, testInfo) => {
   if (retainEvidence) await mkdir(evidenceDirectory, { recursive: true });
 
   const initial = await page.goto("/");
@@ -162,26 +163,47 @@ test("runs Issue 67 quarantine, Layer 3 device-depth probes, and all prior deter
   await submitOpening(page, layer2DeviceOpening);
   await expect(productCard(page, "Acme FlowGuard")).toContainText("Suspect medical device");
   await expect(productCard(page, "Acme FlowGuard")).toContainText("(01)00812345000017(21)SN7721");
+  await expect(productCard(page, "Acme FlowGuard")).toContainText("Stopped or removed");
+  await expect(productCard(page, "Acme FlowGuard")).toContainText("Patient or consumer");
+  await expect(page.getByText("health-professional", { exact: true })).toHaveCount(0);
   await expect(productOrCaseCard(page, "Event")).toContainText("available");
+  await productCard(page, "Relevant test 1").getByRole("button", { name: "Remove Relevant test 1" }).click();
+  const operatorRow = productCard(page, "Acme FlowGuard").locator("dl > div").filter({ has: page.getByText("Device operator", { exact: true }) });
+  await operatorRow.getByRole("button", { name: "Change" }).click();
+  await page.getByLabel("New Device operator").selectOption("health-professional");
+  await operatorRow.getByRole("button", { name: "Keep draft" }).click();
+  await productCard(page, "Acme FlowGuard").getByRole("button", { name: "Accept Acme FlowGuard with 1 change" }).click();
   await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer2-device", question: "reporter block", reason: "accepted outcomes and clinical context suppress medication-only and redundant clinical questions", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Dana", lastName: "Mills", email: "dana.mills@example.test" });
   await page.getByRole("button", { name: "Add reporter details" }).click();
   await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("No relevant tests");
+  const modelRow = productCard(page, "Acme FlowGuard").locator("dl > div").filter({ has: page.getByText("Model number", { exact: true }) });
+  await modelRow.getByRole("button", { name: "Change" }).click();
+  await page.getByLabel("New Model number").fill("FG-201");
+  await modelRow.getByRole("button", { name: "Apply correction" }).click();
+  await expect(page.getByText("Earlier: FG-200", { exact: true })).toBeVisible();
   const deviceCase = await semanticCase(page);
   expect(deviceCase.products).toHaveLength(1);
   expect(deviceCase.products[0].id).toBe("product-layer2-device-device");
   expect(deviceCase.products[0].facts.productType.resolvedValue?.value).toEqual({ kind: "known", value: "device" });
+  expect(deviceCase.products[0].facts.deviceOperator.resolvedValue?.value).toEqual({ kind: "known", value: "health-professional" });
+  expect(deviceCase.products[0].facts.modelNumber.resolvedValue?.value).toEqual({ kind: "known", value: "FG-201" });
+  expect(deviceCase.products[0].facts.modelNumber.supersededValues.map(({ value }) => value)).toEqual([{ kind: "known", value: "FG-200" }]);
+  expect(deviceCase.products[0].facts.stopped.resolvedValue?.value).toEqual({ kind: "known", value: true });
   expect(deviceCase.products[0].facts.implantDate.resolvedValue?.value).toEqual({ kind: "inapplicable" });
+  expect(deviceCase.relevantTests[0]).toMatchObject({ state: "rejected" });
   expect(deviceCase.askedNeeds.map(({ key }) => key)).toEqual(["reporter-details"]);
   expect(await page.locator('[aria-label="Form FDA 3500 preview"]').textContent()).toContain("Acme Medical, Reno, Nevada");
-  checkpoints.push({ journey: "layer2-device", state: "output", assertion: "One stable suspect device preserved rich Section E knowledge while medication-only questions and Sections D/F stayed inactive." });
+  checkpoints.push({ journey: "layer2-device", state: "directly-corrected-output", assertion: "The operator rejected an erroneous test, atomically corrected a typed opening value, then directly corrected the reviewed stable device; explicit no-tests and stopped status remained visible without another model call." });
   await retainScreenshot(page, "layer2-device-output.png");
-  await downloadAndCheck(page, "layer2-device", ["TEST-74", "Acme FlowGuard", "infusion pump", "Acme Medical, Reno, Nevada", "FG-200", "L-904", "SN-7721", "(01)00812345000017(21)SN7721", "Dana", "Mills"], [], {
+  await downloadAndCheck(page, "layer2-device", ["TEST-74", "Acme FlowGuard", "infusion pump", "Acme Medical, Reno, Nevada", "FG-201", "L-904", "SN-7721", "(01)00812345000017(21)SN7721", "Dana", "Mills"], ["FG-200"], {
     "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
     "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/1",
     "topmostSubform[0].Page6[0].SecE_Device[0].BrandName[0]": "Acme FlowGuard",
+    "topmostSubform[0].Page6[0].SecE_Device[0].ModelNum[0]": "FG-201",
     "topmostSubform[0].Page6[0].SecE_Device[0].HealthPro[0]": "/1",
     "topmostSubform[0].Page6[0].SecE_Device[0].ReuseNo[0]": "/1",
     "topmostSubform[0].Page6[0].SecE_Device[0].ServicedNo[0]": "/1",
@@ -277,6 +299,14 @@ test("runs Issue 67 quarantine, Layer 3 device-depth probes, and all prior deter
   expect(testsAfterCorrection.askedNeeds.map(({ key }) => key)).toEqual(["reporter-details"]);
   checkpoints.push({ journey: "layer1-tests", state: "corrected-output", assertion: "Three stable test entities remained distinct; the accepted ALT correction superseded only its prior value and did not reopen completion." });
   await downloadAndCheck(page, "layer1-tests", ["TEST-51", "atorvastatin", "ALT: 123 U/L", "AST: 118 U/L", "Total bilirubin: 2.1 mg/dL", "Riley", "Patel"], ["ALT: 132 U/L"]);
+  await productCard(page, "Relevant test 3").getByRole("button", { name: "Withdraw Relevant test 3" }).click();
+  await expect(productCard(page, "Relevant test 3")).toContainText("Withdrawn from the active report");
+  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).not.toContainText("Total bilirubin: 2.1 mg/dL");
+  const testsAfterWithdrawal = await semanticCase(page);
+  expect(testsAfterWithdrawal.relevantTests[2]).toMatchObject({ state: "withdrawn" });
+  expect(testsAfterWithdrawal.relevantTests[2].facts.testResult.resolvedValue?.value).toEqual({ kind: "known", value: "Total bilirubin: 2.1 mg/dL" });
+  checkpoints.push({ journey: "layer1-tests", state: "withdrawn-test-output", assertion: "A reviewed relevant test became inactive without deletion; its facts and source history remained visible while projection and PDF recomputed without it." });
+  await downloadAndCheck(page, "layer1-tests-withdrawal", ["TEST-51", "atorvastatin", "ALT: 123 U/L", "AST: 118 U/L", "Riley", "Patel"], ["ALT: 132 U/L", "Total bilirubin: 2.1 mg/dL"]);
 
   await newCase(page);
   await submitOpening(page, layer1RoleOpening);
@@ -325,10 +355,22 @@ test("runs Issue 67 quarantine, Layer 3 device-depth probes, and all prior deter
   await expect(productOrCaseCard(page, "Patient")).toContainText("64 kg");
   await expect(productOrCaseCard(page, "Relevant test 1")).toContainText("Serum tryptase: 18 ng/mL");
   await expect(productOrCaseCard(page, "Event")).toContainText("Penicillin allergy");
+  const richPatient = productOrCaseCard(page, "Patient");
+  const richAge = richPatient.locator("dl > div").filter({ has: page.getByText("Age", { exact: true }) });
+  await richAge.getByRole("button", { name: "Change" }).click();
+  await page.getByLabel("New Age").fill("73");
+  await richAge.getByRole("button", { name: "Keep draft" }).click();
+  const richWeight = richPatient.locator("dl > div").filter({ has: page.getByText("Weight", { exact: true }) });
+  await richWeight.getByRole("button", { name: "Change" }).click();
+  await page.getByLabel("New Weight").fill("65");
+  await richWeight.getByRole("button", { name: "Keep draft" }).click();
+  await richPatient.getByRole("button", { name: "Accept Patient with 2 changes" }).click();
   await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
   await expect(page.getByRole("heading", { name: "Hospitalization is already recorded. Did any other serious outcomes apply?" })).toBeVisible();
   await expect(page.getByLabel("Hospitalization (initial or prolonged) — already recorded")).toBeChecked();
   await expect(page.getByLabel("Life-threatening — already recorded")).toBeChecked();
+  await expect(productOrCaseCard(page, "amoxicillin").getByRole("button", { name: "Withdraw amoxicillin" })).toHaveCount(0);
+  await expect(productOrCaseCard(page, "Relevant test 1").getByRole("button", { name: "Withdraw Relevant test 1" })).toHaveCount(0);
   questionTrace.push({ journey: "adaptive-rich", question: "serious outcomes", reason: "confirm only outcomes not already accepted", answer: "no additional outcomes" });
   await page.getByRole("button", { name: "Confirm outcomes" }).click();
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
@@ -339,17 +381,48 @@ test("runs Issue 67 quarantine, Layer 3 device-depth probes, and all prior deter
   questionTrace.push({ journey: "adaptive-rich", question: "reporter block", reason: "reporter identity must be entered directly", answer: "structured reporter details" });
   await page.getByRole("button", { name: "Add reporter details" }).click();
   await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  const richEvent = productOrCaseCard(page, "Event");
+  const discharge = richEvent.locator("dl > div").filter({ has: page.getByText("Discharged", { exact: true }) });
+  await discharge.getByRole("button", { name: "Add" }).click();
+  await page.getByLabel("New Discharged").fill("2026-09-04");
+  await discharge.getByRole("button", { name: "Add fact" }).click();
+  const reportType = productOrCaseCard(page, "Event").locator("dl > div").filter({ has: page.getByText("Report type", { exact: true }) });
+  await reportType.getByRole("button", { name: "Change" }).click();
+  await page.getByLabel("New Report type").selectOption("adverse-event-and-product-problem");
+  await reportType.getByRole("button", { name: "Apply correction" }).click();
+  const dose = productCard(page, "amoxicillin").locator("dl > div").filter({ has: page.getByText("Dose", { exact: true }) });
+  await dose.getByRole("button", { name: "Change" }).click();
+  await page.getByLabel("New Dose").fill("250 mg");
+  await dose.getByRole("button", { name: "Apply correction" }).click();
+  const reporterEmail = productOrCaseCard(page, "Reporter").locator("dl > div").filter({ has: page.getByText("Email", { exact: true }) });
+  await reporterEmail.getByRole("button", { name: "Change" }).click();
+  await page.getByLabel("New Email").fill("avery.chen.corrected@example.test");
+  await reporterEmail.getByRole("button", { name: "Apply correction" }).click();
+  await expect(page.getByText("Earlier: 500 mg", { exact: true })).toBeVisible();
+  await expect(page.getByText("Earlier: avery.chen@example.test", { exact: true })).toBeVisible();
   await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("Serum tryptase: 18 ng/mL");
-  checkpoints.push({ journey: "adaptive-rich", state: "output", assertion: "Accepted weight, outcomes, test, history, and product facts suppressed duplicate asks; only two grouped prompts remained." });
+  const richCase = await semanticCase(page);
+  expect(richCase.patient.facts.ageYears.resolvedValue?.value).toEqual({ kind: "known", value: 73 });
+  expect(richCase.patient.facts.weight.resolvedValue?.value).toEqual({ kind: "known", value: { value: 65, unit: "kg" } });
+  expect(richCase.event.facts.dischargeDate.resolvedValue?.value).toEqual({ kind: "known", value: "2026-09-04" });
+  expect(richCase.event.facts.reportType.resolvedValue?.value).toEqual({ kind: "known", value: "adverse-event-and-product-problem" });
+  expect(richCase.products[0].facts.dose.supersededValues.map(({ value }) => value)).toEqual([{ kind: "known", value: "500 mg" }]);
+  checkpoints.push({ journey: "adaptive-rich", state: "directly-corrected-output", assertion: "Two typed patient corrections were accepted atomically; an omitted date, reviewed dose, report type, and reporter email were then directly updated with retained history and no additional model call." });
   await retainScreenshot(page, "adaptive-rich-output.png");
-  await downloadAndCheck(page, "adaptive-rich", ["TEST-72", "64", "amoxicillin", "Serum tryptase: 18 ng/mL", "Penicillin allergy", "Avery", "Chen"], [], {
+  await downloadAndCheck(page, "adaptive-rich", ["TEST-72", "73", "65", "amoxicillin", "250 mg", "Serum tryptase: 18 ng/mL", "Penicillin allergy", "Avery", "Chen", "avery.chen.corrected@example.test"], ["500 mg", "avery.chen@example.test"], {
+    "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "73",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].WeightValue[0]": "65",
     "topmostSubform[0].Page1[0].SecA_Patient[0].WeightKG[0]": "/1",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/1",
     "topmostSubform[0].Page1[0].SecA_Patient[0].LifeThreaten[0]": "/1",
+    "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Symptoms: generalized rash and wheezing. Treatment: epinephrine. Outcome: recovered. Discharged 4-Sep-2026. Products stopped: amoxicillin.",
     "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TLowRange1[0]": "0 ng/mL",
     "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].THighRange1[0]": "11.4 ng/mL",
     "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TDate1[0]": "03-SEP-2026",
     "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]": "/1",
     "topmostSubform[0].Page7[0].SecG_Reporter[0].Packer[0]": "/1",
+    "topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]": "avery.chen.corrected@example.test",
   });
 
   await newCase(page);
@@ -369,8 +442,8 @@ test("runs Issue 67 quarantine, Layer 3 device-depth probes, and all prior deter
   await page.getByRole("button", { name: "Add reporter details" }).click();
   await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
   await expect(page.locator("li").filter({ hasText: "Relevant tests: unknown" })).toBeVisible();
-  await expect(page.locator("li").filter({ hasText: "Relevant history: declined" })).toBeVisible();
-  await expect(page.locator("li").filter({ hasText: "Address: explicitly absent" })).toBeVisible();
+  await expect(page.locator("li").filter({ hasText: "Relevant history: prefer not to answer" })).toBeVisible();
+  await expect(page.locator("li").filter({ hasText: "Address: not present" })).toBeVisible();
   checkpoints.push({ journey: "adaptive-sparse", state: "partial-output", assertion: "Four grouped prompts captured unknown and refusal once, exposed omissions, and allowed truthful partial output." });
   await retainScreenshot(page, "adaptive-sparse-output.png");
   await downloadAndCheck(page, "adaptive-sparse", ["TEST-26", "propranolol", "Jordan", "Lee", "202-555-0147"], ["Serum tryptase: 18 ng/mL"]);
@@ -442,7 +515,8 @@ test("runs Issue 67 quarantine, Layer 3 device-depth probes, and all prior deter
   const ageRow = patient.locator("dl > div").filter({ has: page.getByText("Age", { exact: true }) });
   await ageRow.getByRole("button", { name: "Change" }).click();
   await page.getByLabel("New Age").fill("58");
-  await ageRow.getByRole("button", { name: "Apply change" }).click();
+  await ageRow.getByRole("button", { name: "Keep draft" }).click();
+  await patient.getByRole("button", { name: "Accept Patient with 1 change" }).click();
   await expect(patient).toContainText("58");
   await productCard(page, "lisinopril").getByRole("button", { name: "Remove lisinopril" }).click();
   await expect(productCard(page, "lisinopril")).toHaveCount(0);
@@ -490,7 +564,7 @@ test("runs Issue 67 quarantine, Layer 3 device-depth probes, and all prior deter
         },
         {
           journey: "layer2-device", groupedPromptCount: 1, duplicateQuestionCount: 0,
-          observedFriction: "The rich device facts required one explicit understanding review and the direct reporter block; no medication indication or redundant clinical prompt appeared.",
+          observedFriction: "The rich device case rejected an erroneous test, corrected device operator in the atomic opening review, used one reporter block, and then directly corrected the stable model number without another model call.",
         },
         {
           journey: "layer2-product-quality", groupedPromptCount: 1, duplicateQuestionCount: 0,
@@ -502,7 +576,7 @@ test("runs Issue 67 quarantine, Layer 3 device-depth probes, and all prior deter
         },
         {
           journey: "layer1-tests", groupedPromptCount: 1, correctionReviewCount: 1, duplicateQuestionCount: 0,
-          observedFriction: "Three accepted tests suppressed the context question; one later ALT correction required one explicit review and no completion groups reopened.",
+          observedFriction: "Three accepted tests suppressed the context question; a later ALT correction required one explicit review, and withdrawing bilirubin preserved its history while recomputing the output without reopening completion groups.",
         },
         {
           journey: "layer1-role", groupedPromptCount: 2, correctionReviewCount: 1, duplicateQuestionCount: 0,
@@ -510,7 +584,7 @@ test("runs Issue 67 quarantine, Layer 3 device-depth probes, and all prior deter
         },
         {
           journey: "adaptive-rich", groupedPromptCount: 2, duplicateQuestionCount: 0,
-          observedFriction: "The reporter block was the longest turn; all accepted clinical facts suppressed duplicate prompts.",
+          observedFriction: "Age and weight changed in one atomic opening review; discharge, report type, dose, and reporter email then changed directly while accepted facts suppressed duplicate prompts.",
         },
         {
           journey: "adaptive-sparse", groupedPromptCount: 4, duplicateQuestionCount: 0,
@@ -520,7 +594,11 @@ test("runs Issue 67 quarantine, Layer 3 device-depth probes, and all prior deter
       questionTrace,
       checkpoints,
     }, null, 2)}\n`);
-    await writeFile(`${evidenceDirectory}/pdf-agreement.json`, `${JSON.stringify({ readbacks, pdfs }, null, 2)}\n`);
+    const retainedReadbacks = retainIssue66Only
+      ? Object.fromEntries(Object.entries(readbacks).filter(([journey]) => shouldRetain(journey)))
+      : readbacks;
+    const retainedPdfs = retainIssue66Only ? pdfs.filter(({ journey }) => shouldRetain(journey)) : pdfs;
+    await writeFile(`${evidenceDirectory}/pdf-agreement.json`, `${JSON.stringify({ readbacks: retainedReadbacks, pdfs: retainedPdfs }, null, 2)}\n`);
   }
 });
 
@@ -659,5 +737,6 @@ function shouldRetain(journey: string): boolean {
   if (retainLayer1RepresentativeOnly) return journey === "layer1-role";
   if (retainLayer2RepresentativeOnly) return journey === "layer2-device";
   if (retainLayer3RepresentativeOnly) return journey === "layer3-correction";
+  if (retainIssue66Only) return ["adaptive-rich", "layer2-device", "layer1-tests-withdrawal"].includes(journey);
   return true;
 }

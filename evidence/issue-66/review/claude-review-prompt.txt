@@ -1,0 +1,189 @@
+Review this exact Wilson change and find material reasons it should not
+merge. Inspect the complete diff, issue, governing artifacts, relevant
+surrounding code, and acceptance evidence. Check correctness, missing
+behavior, regression risk, and whether the implementation hides a faulty
+requirement or architectural premise. Do not edit anything. Report only
+BLOCKING findings and independently valuable FOLLOW-UP findings, with
+evidence and precise locations. State what you inspected and ran, material
+limitations, and explicitly say when no findings remain.
+
+Target and authority
+
+- Repository: warblersafety/wilson-next.
+- Exact target commit: deb3f58c8a16b27ec06bc6a620aa908f0b1c3c3f.
+- Exact base commit: 15b3de3b9896a44157e3feb427fbf6be0705775e (main).
+- Draft PR: #77, `Make supported journeys directly correctable`.
+- The operator authorized Issue #66 implementation and the standard review.
+- The operator's prior permission to transmit private repository material to
+  an external reviewer explicitly applies to this review.
+- This is one fresh-context standard review using `wilson-review-v1` from
+  docs/DELIVERY.md at the target commit.
+- Use read-only tools only. Do not edit files, alter Git state, access the
+  network, invoke agents, post to GitHub, or perform implementation.
+- Do not seek or adopt implementer conclusions or earlier reviewer findings.
+  There is no earlier review of this implementation commit.
+
+Complete diff
+
+- Read `/private/tmp/wilson-issue66-review-deb3f58.diff` completely, in chunks
+  if necessary. It is the exact complete textual `base...target` diff; Git
+  records the seven new PNG/PDF artifacts as binary entries, and you may inspect
+  those files directly with read-only tools if useful.
+- Size: 318998 bytes.
+- SHA-256: 47c0b912350ecd57028c2f54141bdab313a480f96a66db77fb8b80e073f4709e.
+- The coordinator confirmed the local target and remote branch head equal the
+  target commit, the worktree was clean, and `git diff --check base...target`
+  passed before this run.
+
+Governing corpus
+
+Read these files completely and apply their stated authority:
+
+- README.md
+- docs/PRODUCT.md
+- docs/ARCHITECTURE.md
+- docs/EXPERIMENT-1.md
+- docs/EXPERIMENT-2.md
+- docs/DELIVERY.md
+- docs/RECOVERY.md
+
+Inspect every changed file, relevant surrounding application code, and the
+retained acceptance evidence under `evidence/issue-66/`. Assess only Issue
+#66's existing adult-medication and single-device scope. Issue #55 remediation,
+prompt/schema tuning, live-model sampling, new report categories, expanded
+ontology/Form 3500 scope, persistence, and production infrastructure are
+excluded.
+
+Exact Issue #66
+
+Title: Make supported journeys directly correctable for physician readiness
+State: OPEN
+URL: https://github.com/warblersafety/wilson-next/issues/66
+
+## Outcome
+
+Make Wilson's existing adult-medication and single-device prototype directly
+correctable enough for a meaningful physician-readiness decision. Using
+fictional data and predetermined application-model responses, an operator can
+detect and correct ordinary misunderstandings or omissions without restarting
+the case or asking the model to reinterpret a deterministic field edit. The
+reviewed case, visible output, and downloaded Form FDA 3500 remain aligned.
+
+This is a product-completeness slice after the closed Issue #59 campaign. It is
+not Layer 4, Layer 5, or remediation of Issue #55.
+
+## Discovery audit on merged baseline
+
+Two existing fictional journeys provide the bounded audit cases: the
+information-rich `adaptiveRichOpening` adult medication adverse event and the
+information-rich `layer2DeviceOpening` single-device adverse event.
+
+The audit found: opening Change supported only a proposed known scalar and
+immediately accepted its group; reviewed facts/report type/reporter facts had
+no deterministic edit; supported omitted facts were hidden; proposed tests and
+reviewed product/test withdrawal were unsupported; device stopped was hidden;
+explicit no-tests appeared as unprovided; and enum literals could reach users.
+The existing Fact representation, record-clinician-facts command,
+supersession, target validation, projection, and browser state were assessed as
+sufficient. Opening multi-correction should use the existing group command.
+Accepted-entity withdrawal may add only one small authoritative command and
+must not become deletion or a lifecycle framework. No new domain/PDF field was
+found necessary.
+
+## Included scope
+
+- Preserve the two fictional showcase narratives and compact fact traces from
+  account through understanding, accepted case, output, and PDF.
+- Permit multiple typed corrections within one proposal group before accepting
+  it, applied atomically through the existing proposal-review command.
+- Permit direct deterministic addition/correction of supported facts after
+  acceptance through the authoritative write boundary, retaining source and
+  superseded history.
+- Cover only already-used text, age, date, boolean, current enums, string lists,
+  weight, reporter destinations, and existing known/unknown/explicitly-absent/
+  inapplicable/declined meanings.
+- Use user-facing controls and labels, not enum literals or record paths.
+- Make report type and reporter details directly correctable.
+- Allow erroneous proposed product/test groups to be rejected. Allow a reviewed
+  product/test to be withdrawn only through a small general command preserving
+  inactive history and recomputing readiness.
+- Show represented device stopped/removed status and fix explicit-no-tests
+  presentation.
+- Recompute clarification, omissions, readiness, preview, and PDF from the new
+  case revision.
+
+## Explicit exclusions
+
+- Issue #55 remediation, prompt/schema tuning, or live-model sampling.
+- Layer 4 recovery hardening or Layer 5 residual coverage.
+- New report categories, multiple devices, concomitant-device reporting,
+  pediatric cases, medication-error expansion, or unusual combinations.
+- General Form 3500 completeness, new ontology fields, recursive JSON editor,
+  dynamic form/schema framework, rules engine, persistence, infrastructure, or
+  real clinical data.
+- Visual redesign, broad accessibility certification, browser matrix, visual
+  regression framework, or generalized evaluation platform.
+- A third conflict value unless a selected case proves it necessary.
+
+## Acceptance evidence required
+
+- Medication: correct at least two opening values in one group, including one
+  non-scalar, without early sibling acceptance.
+- Medication: add one omitted fact, correct an accepted fact and reporter
+  details directly, retain superseded history, and match PDF without a model
+  call.
+- Device: reject one erroneous product/test, correct a typed device choice, and
+  later correct an accepted device identifier without a model call.
+- Device: truthful no-tests, visible stopped/removed, no internal enum literal.
+- Direct report-type correction updates projection and PDF checkboxes.
+- Reviewed product/test withdrawal preserves inactive history and recomputes
+  output/projection without deleting evidence.
+- All mutations pass through applyCaseCommand; no browser semantic mutation or
+  fixture-aware runtime behavior.
+- Both showcases and every prior deterministic browser/PDF regression pass in
+  Chromium with predetermined responses and zero live calls.
+- Independent PDF readback agrees, excluding superseded/withdrawn values.
+- Typecheck, focused tests, build, GitHub verify, this review, and Steve's
+  explicit merge approval complete.
+
+## Stop conditions
+
+Stop for a premise decision if correction requires a second write path,
+browser mutation, weakened proposal-before-acceptance, or lost history; group
+correction cannot remain atomic; withdrawal requires deletion/event sourcing/
+persistence/broad lifecycle; a showcase needs fixture/product-name/expected-
+value/journey-sequence runtime behavior; a field expands ontology/Form scope;
+the work depends on Issue #55 or a live call; or case/omission/projection/PDF
+cannot agree after one generalized lowest-layer fix.
+
+Prerequisite comments establish that Issue #75/PR #76 completed the fact/target
+traversal, collection limits, journey action schema/type, and one deterministic
+response source on main at the exact base. The assembled journey has 21
+predetermined calls and zero live calls. Issue #66 was explicitly unblocked.
+
+Acceptance evidence supplied
+
+- `npm run typecheck`: passed.
+- `PYPDF_PYTHON=$PWD/.venv-pdf-evidence/bin/python npm test`: all 21 files and
+  143 tests passed.
+- `npm run build`: passed.
+- Retained assembled Playwright suite: one test passed in Chromium
+  153.0.8010.12 at 1440x900, covering every prior deterministic regression and
+  the Issue #66 cases with 21 predetermined application-model calls and zero
+  live calls.
+- `pypdf` 6.16.2 independently read back all retained PDFs and confirmed active
+  corrected values while excluding superseded and withdrawn values.
+- Two retained full-page output screenshots were inspected for labels, active
+  values, explicit no-tests, device stopped, history, and preview agreement.
+- No live model sample was run because this issue excludes it and the retained
+  Issue #67 evidence does not change that need.
+- GitHub checks are not yet final; they will be verified after this review
+  unless already complete while you inspect.
+
+Output
+
+Return one Markdown review. Include the exact commit, configured and canonical
+model, effort, CLI version, disposition, complete findings, inspected-and-ran
+record, and limitations. Do not dilute findings with style suggestions. If no
+BLOCKING or independently valuable FOLLOW-UP findings remain, say that
+explicitly.

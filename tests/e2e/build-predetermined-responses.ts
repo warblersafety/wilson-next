@@ -155,15 +155,21 @@ function layer2DeviceResponse(): ModelProposalOutput {
     proposal("device-lot", "g1", product("device", "lotNumber"), known("L-904"), device),
     proposal("device-serial", "g1", product("device", "serialNumber"), known("SN-7721"), device),
     proposal("device-udi", "g1", product("device", "udi"), known("(01)00812345000017(21)SN7721"), device),
-    proposal("device-operator", "g1", product("device", "deviceOperator"), known("health-professional"), operation),
+    proposal("device-operator", "g1", product("device", "deviceOperator"), known("patient-consumer"), operation),
+    proposal("device-stopped", "g1", product("device", "stopped"), known(true), result),
     proposal("device-implant", "g1", product("device", "implantDate"), { kind: "inapplicable" }, operation),
     proposal("device-reprocessed", "g1", product("device", "reprocessedSingleUse"), known(false), operation),
     proposal("device-serviced", "g1", product("device", "servicedByThirdParty"), known("no"), operation),
+    proposal("erroneous-test", "gt-error", test("erroneous", "testResult"), known("No relevant tests"), context),
   ];
   for (const field of noSeriousOutcomes.filter((field) => field !== "hospitalized")) {
     proposals.push(proposal(`event-${field}`, "event", { entity: "event", field }, known(false), "No other serious outcomes applied."));
   }
-  return { products: [{ productReference: "device", groupReference: "g1" }], proposals };
+  return {
+    products: [{ productReference: "device", groupReference: "g1" }],
+    tests: [{ testReference: "erroneous", groupReference: "gt-error" }],
+    proposals,
+  };
 }
 
 function quarantineResponse(): ModelProposalOutput {

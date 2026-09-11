@@ -5,6 +5,7 @@ import type { CaseValue, ReportType } from "../src/domain/case/types";
 import type { FactView, ReviewAttentionItem } from "../src/domain/case/views";
 import type { BrowserJourneyState, JourneyResponse } from "../src/server/case/browser-state";
 import type { JourneyAction, JourneySnapshot } from "../src/server/journey/service";
+import { factControl, knownOptionLabel, type FactControl, type FactControlEntity } from "./fact-controls";
 import {
   clearJourneySession,
   JourneyRequestError,
@@ -217,7 +218,7 @@ function UnderstandingTask({ snapshot, busy, act }: {
   return <>
     <p className={styles.eyebrow}>Check understanding</p>
     <h1 id="task-title">Check Wilson’s understanding</h1>
-    <p>Review the proposed groups and their source evidence. Change a supported value or remove a product before accepting the remaining proposals.</p>
+    <p>Review the proposed groups and their source evidence. You can draft several typed changes in one group and accept them together, or remove an incorrect product or test.</p>
     <button disabled={busy} onClick={() => void act({ action: "accept-understanding" })}>Accept the remaining understanding</button>
   </>;
 }
@@ -501,7 +502,7 @@ function UpdateReview({ snapshot, busy, act }: {
       <span className={styles.attentionLabel}>{items.some(({ kind }) => kind === "correction") ? "Proposed correction" : "Proposed information"}</span>
       {items.map((item) => <div key={item.target}>
         <h2>{targetLabel(snapshot, item.target)}</h2>
-        <p><strong>{formatFact(item.values[0]?.value)}</strong></p>
+        <p><strong>{formatFact(item.values[0]?.value, controlForTarget(item.target))}</strong></p>
         <Evidence excerpt={item.values[0]?.evidence} expanded />
       </div>)}
       <div className={styles.decisionActions}>
@@ -582,9 +583,9 @@ function ConflictCard({ snapshot, item, busy, act }: {
   return <fieldset className={styles.conflictChoice}>
     <legend>{targetLabel(snapshot, item.target)}</legend>
     {item.values.map((value) => <div className={styles.conflictOption} key={value.id}>
-      <strong>{formatFact(value.value)}</strong>
+      <strong>{formatFact(value.value, controlForTarget(item.target))}</strong>
       <Evidence excerpt={value.evidence} expanded />
-      <button disabled={busy} onClick={() => void act({ action: "resolve-conflict", target: item.target, chosenValueId: value.id })}>Use {formatFact(value.value)}</button>
+      <button disabled={busy} onClick={() => void act({ action: "resolve-conflict", target: item.target, chosenValueId: value.id })}>Use {formatFact(value.value, controlForTarget(item.target))}</button>
     </div>)}
     <p className={styles.hint}>You may leave this unresolved. Neither alternative will be put in the form.</p>
   </fieldset>;
@@ -609,7 +610,8 @@ function FormPreview({ snapshot }: { snapshot: JourneySnapshot }) {
       <PreviewField label="Serious outcomes" value={Object.entries(seriousOutcomeLabels).filter(([field]) => B[field as keyof typeof seriousOutcomeLabels] === true).map(([, label]) => label).join(", ") || "None recorded"} />
       <PreviewField label="Date of death" value={displayDate(B.deathDate)} />
       <PreviewField label="Date of event" value={displayDate(B.eventDate)} />
-      <PreviewField label="Relevant tests" value={B.relevantTests.map((test) => [test.testResult, test.lowRange && `low ${test.lowRange}`, test.highRange && `high ${test.highRange}`, displayDate(test.date)].filter(Boolean).join(" · ")).join("; ") || undefined} />
+      <PreviewField label="Relevant tests" value={B.relevantTests.map((test) => [test.testResult, test.lowRange && `low ${test.lowRange}`, test.highRange && `high ${test.highRange}`, displayDate(test.date)].filter(Boolean).join(" · ")).join("; ")
+        || (omissionByTarget.get("event:event:relevantTestsAvailable") === "explicitly-absent" ? "No relevant tests" : undefined)} />
       <PreviewField wide label="Relevant history" value={B.relevantHistory} />
       <PreviewField wide label="Describe event" value={B.eventDescription} />
     </PreviewSection>
@@ -660,68 +662,142 @@ function CaseCards({ snapshot, busy, act }: {
   snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
 }) {
   const understanding = snapshot.understanding;
+  const openingReview = snapshot.stage === "understanding";
+  const directEdit = snapshot.stage === "clarify" || snapshot.stage === "output";
+  const entityWithdrawal = snapshot.stage === "output";
   if (snapshot.revision === 0) return <p className={styles.emptyCase}>Proposed case knowledge will appear here after Wilson reads the account.</p>;
   return <div className={styles.cards}>
-    <CaseCard title="Patient" groupId="patient" facts={understanding.patient} fields={["identifier", "ageYears", "sex", "weight"]} allowChanges={snapshot.stage === "understanding"} busy={busy} act={act} />
-    <CaseCard title="Event" groupId="event" facts={understanding.event} fields={["reportType", "problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate", "relevantHistory"]} allowChanges={snapshot.stage === "understanding"} busy={busy} act={act} />
-    {understanding.relevantTests.map((test, index) => <CaseCard key={test.id} title={`Relevant test ${index + 1}`} eyebrow="Test or laboratory result" groupId={test.proposalGroupId} facts={test.facts} fields={["testResult", "lowRange", "highRange", "date"]} allowChanges={snapshot.stage === "understanding" && test.state === "proposed"} busy={busy} act={act} />)}
+    <CaseCard title="Patient" entity="patient" entityId="patient" entityState="resolved" groupId="patient" facts={understanding.patient} fields={["identifier", "ageYears", "sex", "weight"]} allowOpeningReview={openingReview && Object.values(understanding.patient).some(({ proposals }) => proposals.some(({ groupId }) => groupId === "patient"))} allowDirectEdit={directEdit} busy={busy} act={act} />
+    <CaseCard title="Event" entity="event" entityId="event" entityState="resolved" groupId="event" facts={understanding.event} fields={["reportType", "problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate", "relevantHistory"]} allowOpeningReview={openingReview && Object.values(understanding.event).some(({ proposals }) => proposals.some(({ groupId }) => groupId === "event"))} allowDirectEdit={directEdit} busy={busy} act={act} />
+    {understanding.relevantTests.map((test, index) => <CaseCard key={test.id} title={`Relevant test ${index + 1}`} eyebrow="Test or laboratory result" entity="test" entityId={test.id} entityState={test.state} groupId={test.proposalGroupId} facts={test.facts} fields={["testResult", "lowRange", "highRange", "date"]} allowOpeningReview={openingReview && test.state === "proposed"} allowDirectEdit={directEdit && test.state === "resolved"} allowRemove={openingReview && test.state === "proposed"} allowWithdraw={entityWithdrawal && test.state === "resolved"} busy={busy} act={act} />)}
     {understanding.products.map((product) => {
       const name = formatFact(activeValue(product.facts.name));
-      const role = formatFact(activeValue(product.facts.role));
-      const productType = formatFact(activeValue(product.facts.productType));
+      const role = knownString(activeValue(product.facts.role));
+      const productType = knownString(activeValue(product.facts.productType));
       const fields = productType === "device"
-        ? ["commonName", "manufacturer", "procode", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implanted", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"]
+        ? ["commonName", "manufacturer", "procode", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "stopped", "implanted", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"]
         : ["manufacturer", "lotNumber", "dose", "frequency", "route", "startDate", "stopped", "stopDate", "indication"];
-      return <CaseCard key={product.id} title={name} eyebrow={productType === "device" ? "Suspect medical device" : role === "suspect" ? "Suspect product" : "Other product"} groupId={product.proposalGroupId} facts={product.facts} fields={fields} evidenceFields={["name", "productType", "role"]} allowChanges={snapshot.stage === "understanding" && product.state === "proposed"} allowRemove={snapshot.stage === "understanding" && product.state === "proposed"} busy={busy} act={act} />;
+      return <CaseCard key={product.id} title={name} eyebrow={product.state === "withdrawn" ? "Withdrawn product" : productType === "device" ? "Suspect medical device" : role === "suspect" ? "Suspect product" : "Other product"} entity="product" entityId={product.id} entityState={product.state} groupId={product.proposalGroupId} facts={product.facts} fields={fields} evidenceFields={["name", "productType", "role"]} allowOpeningReview={openingReview && product.state === "proposed"} allowDirectEdit={directEdit && product.state === "resolved"} allowRemove={openingReview && product.state === "proposed"} allowWithdraw={entityWithdrawal && product.state === "resolved"} busy={busy} act={act} />;
     })}
-    {Object.values(understanding.reporter).some((fact) => activeValue(fact)) && <CaseCard title="Reporter" groupId="reporter" facts={understanding.reporter} fields={["firstName", "lastName", "phone", "email", "address", "city", "state", "postalCode", "country", "healthProfessional", "occupation", "reportedTo", "doNotDiscloseIdentity"]} allowChanges={false} busy={busy} act={act} />}
+    {Object.values(understanding.reporter).some((fact) => activeValue(fact)) && <CaseCard title="Reporter" entity="reporter" entityId="reporter" entityState="resolved" groupId="reporter" facts={understanding.reporter} fields={["firstName", "lastName", "phone", "email", "address", "city", "state", "postalCode", "country", "healthProfessional", "occupation", "reportedTo", "doNotDiscloseIdentity"]} allowOpeningReview={false} allowDirectEdit={directEdit} busy={busy} act={act} />}
   </div>;
 }
 
-function CaseCard({ title, eyebrow, groupId, facts, fields, evidenceFields = [], allowChanges, allowRemove = false, busy, act }: {
+type EditableCaseValue = Extract<JourneyAction, { action: "set-fact" }>["value"];
+
+function CaseCard({ title, eyebrow, entity, entityId, entityState, groupId, facts, fields, evidenceFields = [], allowOpeningReview, allowDirectEdit, allowRemove = false, allowWithdraw = false, busy, act }: {
   title: string;
   eyebrow?: string;
+  entity: "patient" | "event" | "product" | "test" | "reporter";
+  entityId: string;
+  entityState: "proposed" | "resolved" | "rejected" | "withdrawn";
   groupId: string;
   facts: Record<string, FactView>;
   fields: string[];
   evidenceFields?: string[];
-  allowChanges: boolean;
+  allowOpeningReview: boolean;
+  allowDirectEdit: boolean;
   allowRemove?: boolean;
+  allowWithdraw?: boolean;
   busy: boolean;
   act: (action: JourneyAction) => Promise<void>;
 }) {
   const [editing, setEditing] = useState<string>();
-  const [replacement, setReplacement] = useState("");
+  const [drafts, setDrafts] = useState<Record<string, EditableCaseValue>>({});
   const evidence = [...new Set([...fields, ...evidenceFields].flatMap((field) => facts[field]?.evidence ?? []))];
+  const groupCorrections = Object.entries(drafts).flatMap(([field, value]) => {
+    const proposal = facts[field]?.proposals.find(({ groupId: proposalGroup }) => proposalGroup === groupId);
+    return proposal ? [{ proposalId: proposal.id, value }] : [];
+  });
   return <article className={styles.caseCard}>
     <div className={styles.cardTitle}>
       <div>{eyebrow && <span>{eyebrow}</span>}<h3>{title}</h3></div>
-      {allowRemove && <div className={styles.cardActions}><button disabled={busy} onClick={() => void act({ action: "reject-group", groupId })}>Remove {title}</button></div>}
+      <div className={styles.cardActions}>
+        {allowRemove && <button disabled={busy} onClick={() => void act({ action: "reject-group", groupId })}>Remove {title}</button>}
+        {allowWithdraw && <button disabled={busy} onClick={() => void act({ action: "withdraw-entity", entity: entity as "product" | "test", entityId })}>Withdraw {title}</button>}
+      </div>
     </div>
+    {entityState === "withdrawn" && <p className={styles.withdrawn}>Withdrawn from the active report; reviewed facts and source history are retained below.</p>}
     <dl>{fields.map((field) => {
       const fact = facts[field];
       if (!fact) return null;
       const value = activeValue(fact);
-      if (!value && fact.history.length === 0 && fact.conflicts.length === 0) return null;
       const proposal = fact.proposals.find(({ groupId: proposalGroup }) => proposalGroup === groupId);
-      const editable = allowChanges && proposal?.value.kind === "known" && !Array.isArray(proposal.value.value) && (typeof proposal.value.value === "string" || typeof proposal.value.value === "number" || typeof proposal.value.value === "boolean");
+      const editable = Boolean((allowOpeningReview && proposal) || allowDirectEdit);
+      if (!value && fact.history.length === 0 && fact.conflicts.length === 0 && !editable) return null;
+      const control = factControl(entity, field);
+      if (!control) return null;
+      const draft = drafts[field];
       return <div key={field}>
-        <dt>{fieldLabel(field)}</dt>
-        <dd>{fact.state === "conflicted" ? "Unresolved conflict" : formatFact(value)}{fact.state === "proposed" && <span className={styles.proposed}>Proposed</span>}</dd>
-        {fact.history.map((history, index) => <dd key={index} className={styles.history}>Earlier: {formatFact(history.value)}</dd>)}
-        {editable && editing !== field && <button className={styles.inlineAction} disabled={busy} onClick={() => { setEditing(field); setReplacement(String(proposal.value.kind === "known" ? proposal.value.value : "")); }}>Change</button>}
-        {editable && editing === field && <div className={styles.inlineEdit}>
-          <input aria-label={`New ${fieldLabel(field)}`} value={replacement} onChange={(event) => setReplacement(event.target.value)} />
-          <button disabled={busy || !replacement.trim()} onClick={() => {
-            const replacementValue = replacementFor(proposal.value, replacement);
-            void act({ action: "change-proposal", groupId, proposalId: proposal.id, value: replacementValue, statement: `${fieldLabel(field)} corrected to ${replacement}.` });
+        <dt>{control.label}</dt>
+        <dd>{fact.state === "conflicted" ? "Unresolved conflict" : formatFact(value, control)}{fact.state === "proposed" && <span className={styles.proposed}>Proposed</span>}</dd>
+        {fact.history.map((history, index) => <dd key={index} className={styles.history}>Earlier: {formatFact(history.value, control)}</dd>)}
+        {editable && editing !== field && fact.state !== "conflicted" && <button className={styles.inlineAction} disabled={busy} onClick={() => {
+          setEditing(field);
+          setDrafts((current) => ({ ...current, [field]: editableInitialValue(value, control) }));
+        }}>{value ? "Change" : "Add"}</button>}
+        {editable && editing === field && draft && <div className={styles.inlineEdit}>
+          <FactValueEditor label={control.label} control={control} value={draft} onChange={(next) => setDrafts((current) => ({ ...current, [field]: next }))} />
+          <button disabled={busy || !validEditableValue(draft, control)} onClick={() => {
+            if (allowOpeningReview && proposal) {
+              setEditing(undefined);
+              return;
+            }
+            void act({ action: "set-fact", target: `${entity}:${entityId}:${field}`, value: draft });
             setEditing(undefined);
-          }}>Apply change</button>
+            setDrafts((current) => Object.fromEntries(Object.entries(current).filter(([key]) => key !== field)));
+          }}>{allowOpeningReview && proposal ? "Keep draft" : value ? "Apply correction" : "Add fact"}</button>
         </div>}
       </div>;
     })}</dl>
+    {allowOpeningReview && <button className={styles.groupReview} disabled={busy || Object.entries(drafts).some(([field, value]) => !validEditableValue(value, factControl(entity, field)!))} onClick={() => void act({ action: "review-opening-group", groupId, corrections: groupCorrections })}>
+      Accept {title}{groupCorrections.length > 0 ? ` with ${groupCorrections.length} ${groupCorrections.length === 1 ? "change" : "changes"}` : ""}
+    </button>}
     {evidence.length > 0 && <Evidence excerpt={evidence} />}
   </article>;
+}
+
+function FactValueEditor({ label, control, value, onChange }: { label: string; control: FactControl; value: EditableCaseValue; onChange: (value: EditableCaseValue) => void }) {
+  const known = value.kind === "known" ? value.value : undefined;
+  return <div className={styles.factEditor}>
+    <label>{label} status<select aria-label={`${label} status`} value={value.kind} onChange={(event) => onChange(event.target.value === "known" ? editableInitialValue(undefined, control) : { kind: event.target.value as Exclude<EditableCaseValue["kind"], "known"> })}>
+      <option value="known">Known</option><option value="unknown">Unknown</option><option value="explicitly-absent">Not present</option><option value="inapplicable">Not applicable</option><option value="declined">Prefer not to answer</option>
+    </select></label>
+    {value.kind === "known" && control.shape === "text" && <input aria-label={`New ${label}`} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />}
+    {value.kind === "known" && control.shape === "age" && <input aria-label={`New ${label}`} type="number" min="0" max="150" value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: Number(event.target.value) })} />}
+    {value.kind === "known" && control.shape === "date" && <input aria-label={`New ${label}`} type="date" value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />}
+    {value.kind === "known" && control.shape === "boolean" && <select aria-label={`New ${label}`} value={String(known)} onChange={(event) => onChange({ kind: "known", value: event.target.value === "true" })}><option value="true">Yes</option><option value="false">No</option></select>}
+    {value.kind === "known" && control.shape === "list" && <textarea aria-label={`New ${label}`} rows={3} value={Array.isArray(known) ? known.join("\n") : ""} onChange={(event) => onChange({ kind: "known", value: splitList(event.target.value) })} />}
+    {value.kind === "known" && control.shape === "weight" && <div className={styles.measurement}>
+      <input aria-label={`New ${label}`} type="number" min="0.1" step="0.1" value={typeof known === "object" && known && "value" in known ? String(known.value) : ""} onChange={(event) => onChange({ kind: "known", value: { value: Number(event.target.value), unit: typeof known === "object" && known && "unit" in known && known.unit === "lb" ? "lb" : "kg" } })} />
+      <select aria-label={`${label} unit`} value={typeof known === "object" && known && "unit" in known ? String(known.unit) : "kg"} onChange={(event) => onChange({ kind: "known", value: { value: typeof known === "object" && known && "value" in known ? Number(known.value) : 0, unit: event.target.value as "kg" | "lb" } })}><option value="kg">kg</option><option value="lb">lb</option></select>
+    </div>}
+    {value.kind === "known" && control.shape === "choice" && <select aria-label={`New ${label}`} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })}>{control.options?.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select>}
+    {value.kind === "known" && control.shape === "choices" && <fieldset><legend>New {label}</legend>{control.options?.map((option) => <label key={option.value}><input type="checkbox" checked={Array.isArray(known) && known.includes(option.value)} onChange={(event) => onChange({ kind: "known", value: event.target.checked ? [...(Array.isArray(known) ? known : []), option.value] : (Array.isArray(known) ? known : []).filter((item) => item !== option.value) })} /> {option.label}</label>)}</fieldset>}
+  </div>;
+}
+
+function editableInitialValue(value: CaseValue<unknown> | undefined, control: FactControl): EditableCaseValue {
+  if (value) return value as EditableCaseValue;
+  if (control.shape === "age") return { kind: "known", value: 0 };
+  if (control.shape === "boolean") return { kind: "known", value: false };
+  if (control.shape === "list" || control.shape === "choices") return { kind: "known", value: [] };
+  if (control.shape === "weight") return { kind: "known", value: { value: 0, unit: "kg" } };
+  if (control.shape === "choice") return { kind: "known", value: control.options?.[0]?.value ?? "" };
+  return { kind: "known", value: "" };
+}
+
+function validEditableValue(value: EditableCaseValue, control: FactControl): boolean {
+  if (value.kind !== "known") return true;
+  if (control.shape === "text" || control.shape === "date" || control.shape === "choice") return typeof value.value === "string" && Boolean(value.value.trim());
+  if (control.shape === "age") return typeof value.value === "number" && Number.isInteger(value.value) && value.value >= 0 && value.value <= 150;
+  if (control.shape === "weight") return typeof value.value === "object" && !Array.isArray(value.value) && value.value.value > 0;
+  if (control.shape === "list") return Array.isArray(value.value) && value.value.length > 0;
+  return true;
+}
+
+function splitList(value: string): string[] {
+  return value.split(/\n|,/).map((item) => item.trim()).filter(Boolean);
 }
 
 function groupAttention(items: ReviewAttentionItem[]) {
@@ -733,35 +809,32 @@ function groupAttention(items: ReviewAttentionItem[]) {
   return [...groups].map(([groupId, grouped]) => ({ groupId, items: grouped }));
 }
 
-function replacementFor(
-  original: CaseValue<unknown>,
-  replacement: string,
-): Extract<JourneyAction, { action: "change-proposal" }>["value"] {
-  if (original.kind !== "known") return { kind: "known", value: replacement };
-  if (typeof original.value === "number") return { kind: "known", value: Number(replacement) };
-  if (typeof original.value === "boolean") return { kind: "known", value: replacement.toLowerCase() === "yes" || replacement.toLowerCase() === "true" };
-  return { kind: "known", value: replacement };
-}
-
 function activeValue(fact: FactView | undefined): CaseValue<unknown> | undefined {
   return fact?.resolved ?? fact?.proposals[0]?.value;
 }
 
-function formatFact(value: CaseValue<unknown> | undefined): string {
+function knownString(value: CaseValue<unknown> | undefined): string | undefined {
+  return value?.kind === "known" && typeof value.value === "string" ? value.value : undefined;
+}
+
+function formatFact(value: CaseValue<unknown> | undefined, control?: FactControl): string {
   if (!value) return "Not provided";
-  if (value.kind !== "known") return value.kind.replaceAll("-", " ");
-  if (Array.isArray(value.value)) return value.value.join(" and ");
+  if (value.kind !== "known") return {
+    unknown: "Unknown",
+    "explicitly-absent": "Not present",
+    inapplicable: "Not applicable",
+    declined: "Prefer not to answer",
+  }[value.kind];
+  if (Array.isArray(value.value)) return value.value
+    .map((item) => control?.options?.find((option) => option.value === item)?.label ?? item)
+    .join(" and ");
   if (typeof value.value === "object" && value.value && "unit" in value.value) {
     const measured = value.value as Record<string, unknown>;
     return `${String(measured.value)} ${String(measured.unit)}`;
   }
   if (typeof value.value === "boolean") return value.value ? "Yes" : "No";
   if (typeof value.value === "string") {
-    const label = {
-      "adverse-event": "Adverse event",
-      "product-problem": "Product problem",
-      "adverse-event-and-product-problem": "Adverse event and product problem",
-    }[value.value];
+    const label = control?.options?.find((option) => option.value === value.value)?.label ?? knownOptionLabel(value.value);
     if (label) return label;
     if (/^\d{4}-\d{2}-\d{2}$/.test(value.value)) return displayDate(value.value) ?? value.value;
   }
@@ -775,25 +848,15 @@ function displayDate(value: string | undefined): string | undefined {
   return `${Number(day)}-${name}-${year}`;
 }
 
-function fieldLabel(field: string): string {
-  const labels: Record<string, string> = {
-    identifier: "Identifier", ageYears: "Age", sex: "Sex", weight: "Weight", problemDescription: "Product problem", symptoms: "Symptoms", onsetDate: "Onset",
-    reportType: "Report type", death: "Death", deathDate: "Date of death", lifeThreatening: "Life-threatening", hospitalized: "Hospitalized",
-    disability: "Disability or permanent damage", requiredIntervention: "Required intervention", congenitalAnomaly: "Congenital anomaly", otherSerious: "Other serious event",
-    treatments: "Treatment", outcome: "Outcome", relevantTestsAvailable: "Relevant tests", relevantHistory: "Relevant history", testResult: "Test and result", lowRange: "Low range", highRange: "High range", date: "Date",
-    dischargeDate: "Discharged", dose: "Dose", frequency: "Frequency", route: "Route", startDate: "Started",
-    productAvailability: "Product availability", productReturnDate: "Returned to manufacturer", stopped: "Stopped", stopDate: "Stopped date", indication: "Used for", name: "Name", productType: "Product type", role: "Role", manufacturer: "Manufacturer", lotNumber: "Lot number",
-    commonName: "Common device name", procode: "Procode", modelNumber: "Model number", catalogNumber: "Catalog number", expirationDate: "Expiration date", serialNumber: "Serial number", udi: "Unique device identifier", deviceOperator: "Device operator", implanted: "Implanted device", implantDate: "Implant date", explantDate: "Explant date", reprocessedSingleUse: "Reprocessed single-use device", reprocessor: "Reprocessor", servicedByThirdParty: "Third-party serviced",
-    firstName: "First name", lastName: "Last name", address: "Address", city: "City", state: "State", postalCode: "ZIP/postal code", country: "Country",
-    phone: "Phone", email: "Email", healthProfessional: "Health professional", occupation: "Occupation", reportedTo: "Also reported to", doNotDiscloseIdentity: "Keep identity from manufacturer",
-  };
-  return labels[field] ?? humanizeIdentifier(field);
+function fieldLabel(entity: string, field?: string): string {
+  if (!field) return humanizeIdentifier(entity);
+  return factControl(entity as FactControlEntity, field)?.label ?? humanizeIdentifier(field);
 }
 
 function unrepresentedTargetLabel(entity: string, field: string): string {
   const entityLabel = { patient: "Patient", event: "Event", product: "Product", test: "Relevant test" }[entity]
     ?? "Case detail";
-  return `${entityLabel} — ${fieldLabel(field)}`;
+  return `${entityLabel} — ${fieldLabel(entity, field)}`;
 }
 
 function unrepresentedReason(reason: JourneySnapshot["unrepresented"][number]["reason"]): string {
@@ -818,15 +881,28 @@ function targetLabel(snapshot: JourneySnapshot, target: string): string {
   const [entity, entityId, field] = target.split(":");
   if (entity === "test") {
     const index = snapshot.understanding.relevantTests.findIndex(({ id }) => id === entityId);
-    return `Relevant test ${index + 1} — ${fieldLabel(field ?? "")}`;
+    return `Relevant test ${index + 1} — ${fieldLabel("test", field)}`;
   }
-  if (entity !== "product") return field ? fieldLabel(field) : target;
+  if (entity !== "product") return field ? fieldLabel(entity, field) : target;
   const product = snapshot.understanding.products.find(({ id }) => id === entityId);
-  return `${formatFact(activeValue(product?.facts.name))} — ${fieldLabel(field ?? "")}`;
+  return `${formatFact(activeValue(product?.facts.name))} — ${fieldLabel("product", field)}`;
+}
+
+function controlForTarget(target: string): FactControl | undefined {
+  const [entity, , field] = target.split(":");
+  if (!field || !["patient", "event", "product", "test", "reporter"].includes(entity)) return undefined;
+  return factControl(entity as "patient" | "event" | "product" | "test" | "reporter", field);
 }
 
 function omissionLabel(reason: string): string {
-  return reason === "empty" ? "not provided" : reason.replaceAll("-", " ");
+  return {
+    empty: "not provided",
+    unknown: "unknown",
+    "explicitly-absent": "not present",
+    inapplicable: "not applicable",
+    declined: "prefer not to answer",
+    conflicted: "unresolved conflict",
+  }[reason] ?? reason.replaceAll("-", " ");
 }
 
 function omissionText(reason: string | undefined): string {
@@ -835,7 +911,8 @@ function omissionText(reason: string | undefined): string {
 
 export function humanOmission(snapshot: JourneySnapshot, target: string, fallback: string): string {
   const [entity, , field] = target.split(":");
-  if (entity !== "product") return field ? fieldLabel(field) : fallback;
+  if (target === "event:event:relevantTestsAvailable") return "Relevant tests";
+  if (entity !== "product") return field ? fieldLabel(entity, field) : fallback;
   return targetLabel(snapshot, target);
 }
 

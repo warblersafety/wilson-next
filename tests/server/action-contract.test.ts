@@ -8,9 +8,11 @@ describe("journey action contract", () => {
   it("is the runtime and TypeScript contract for every existing action", () => {
     const actions: JourneyAction[] = [
       { action: "submit-opening", text: "Synthetic account", reportType: "adverse-event" },
-      { action: "change-proposal", groupId: "group", proposalId: "proposal", value: { kind: "known", value: ["one"] }, statement: "Corrected." },
+      { action: "review-opening-group", groupId: "group", corrections: [{ proposalId: "proposal", value: { kind: "known", value: ["one"] } }] },
       { action: "reject-group", groupId: "group" },
       { action: "accept-understanding" },
+      { action: "set-fact", target: "event:event:symptoms", value: { kind: "known", value: ["one"] } },
+      { action: "withdraw-entity", entity: "test", entityId: "test" },
       { action: "answer-indications", answers: [{ productId: "product", value: { kind: "unknown" } }] },
       { action: "answer-serious-outcomes", selected: ["hospitalized"], disposition: "known" },
       { action: "answer-death-date", value: { kind: "explicitly-absent" } },
@@ -40,7 +42,7 @@ describe("journey action contract", () => {
     const invalid = [
       { action: "submit-opening", text: "Synthetic account", reportType: "unsupported" },
       { action: "accept-understanding", extra: true },
-      { action: "change-proposal", groupId: "", proposalId: "proposal", value: { kind: "known" }, statement: "Corrected." },
+      { action: "review-opening-group", groupId: "", corrections: [{ proposalId: "proposal", value: { kind: "known" } }] },
       { action: "answer-indications", answers: [] },
       { action: "answer-serious-outcomes", selected: ["outcome"], disposition: "known" },
       { action: "answer-clinical-context", test: { kind: "known", testResult: "Result", date: "11-Sep-2026" } },

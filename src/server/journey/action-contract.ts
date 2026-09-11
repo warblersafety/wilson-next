@@ -57,14 +57,25 @@ export const journeyActionSchema = z.discriminatedUnion("action", [
     reportType: z.enum(["adverse-event", "product-problem", "adverse-event-and-product-problem"]),
   }).strict(),
   z.object({
-    action: z.literal("change-proposal"),
+    action: z.literal("review-opening-group"),
     groupId: z.string().min(1),
-    proposalId: z.string().min(1),
-    value: caseValueSchema,
-    statement: z.string().min(1),
+    corrections: z.array(z.object({
+      proposalId: z.string().min(1),
+      value: caseValueSchema,
+    }).strict()),
   }).strict(),
   z.object({ action: z.literal("reject-group"), groupId: z.string().min(1) }).strict(),
   z.object({ action: z.literal("accept-understanding") }).strict(),
+  z.object({
+    action: z.literal("set-fact"),
+    target: z.string().min(1),
+    value: caseValueSchema,
+  }).strict(),
+  z.object({
+    action: z.literal("withdraw-entity"),
+    entity: z.enum(["product", "test"]),
+    entityId: z.string().min(1),
+  }).strict(),
   z.object({
     action: z.literal("answer-indications"),
     answers: z.array(z.object({
