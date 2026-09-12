@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     });
     if (!snapshot.downloadReady || snapshot.stage !== "output") {
       return pdfError(
-        snapshot.outputIssues[0] ?? "Review the case before opening the official PDF",
+        snapshot.outputIssues[0]?.message ?? "Review the case before opening the official PDF",
         "pdf-not-ready",
         409,
         context,

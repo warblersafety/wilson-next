@@ -1,4 +1,5 @@
 import type { Fact, ProductEntity, SemanticCase, SemanticNeedKey } from "./types";
+import { productDisplayLabel } from "./product-label";
 
 export type CompletionQuestion =
   | BaseQuestion<"suspect-product-indications"> & { kind: "indications"; productIds: string[] }
@@ -115,7 +116,7 @@ export function nextCompletionQuestion(caseState: SemanticCase): CompletionQuest
       ...(askReprocessor ? [`product:${device.id}:reprocessor`] : []),
     ];
     if (targetIds.length === 0) return null;
-    const name = knownString(device.facts.name) ?? "the suspect device";
+    const name = displayLabel(caseState, device);
     return {
       kind: "device-details" as const,
       deviceId: device.id,
@@ -148,7 +149,7 @@ function indicationQuestion(caseState: SemanticCase): CompletionQuestion | null 
     : caseState.products.filter((product) => isResolvedSuspectWithEmptyIndication(product)
       && !coveredTargets.has(`product:${product.id}:indication`));
   if (products.length === 0) return null;
-  const names = products.map((product) => knownString(product.facts.name) ?? "this suspect product");
+  const names = products.map((product) => displayLabel(caseState, product));
   return {
     key: "suspect-product-indications",
     kind: "indications",
@@ -176,10 +177,18 @@ function ordinaryQuestion<K extends Exclude<SemanticNeedKey, "suspect-product-in
 
 function isResolvedSuspectWithEmptyIndication(product: ProductEntity): boolean {
   return product.state === "resolved"
+    && knownString(product.facts.productType) !== undefined
     && knownString(product.facts.productType) !== "device"
     && product.facts.role.resolvedValue?.value.kind === "known"
     && product.facts.role.resolvedValue.value.value === "suspect"
     && product.facts.indication.state === "empty";
+}
+
+function displayLabel(caseState: SemanticCase, product: ProductEntity): string {
+  return productDisplayLabel(
+    knownString(product.facts.name),
+    caseState.products.findIndex(({ id }) => id === product.id) + 1,
+  );
 }
 
 function knownString<T extends string>(fact: Fact<T>): T | undefined {

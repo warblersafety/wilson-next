@@ -2,6 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import type { UnrepresentedModelProposal } from "../../domain/case/model-boundary";
 import { createSemanticCase } from "../../domain/case/create";
 import { allFacts, getFact, targetFromKey, targetKey } from "../../domain/case/facts";
+import { productDisplayLabel } from "../../domain/case/product-label";
 import { projectForm3500 } from "../../domain/case/projection";
 import type { CaseValue, Fact, FactTarget, ProductFactKey, ReporterFactKey, SemanticCase, Source } from "../../domain/case/types";
 import {
@@ -40,8 +41,27 @@ export interface JourneySnapshot {
   clarification: ReturnType<typeof createClarificationView>;
   projection: ReturnType<typeof projectForm3500>;
   downloadReady: boolean;
-  outputIssues: string[];
+  outputIssues: OutputReadinessIssue[];
+  transitionNotice?: string;
   unrepresented: UnrepresentedModelProposal[];
+}
+
+export type OutputReadinessIssueCode =
+  | "pending-proposal-review"
+  | "open-clarification"
+  | "incomplete-product"
+  | "no-retained-product"
+  | "no-complete-suspect-product"
+  | "missing-report-type"
+  | "missing-event-description"
+  | "multiple-suspect-devices"
+  | "unsupported-concomitant-device";
+
+export interface OutputReadinessIssue {
+  code: OutputReadinessIssueCode;
+  message: string;
+  targets: string[];
+  entityIds: string[];
 }
 
 export async function ensureJourneyCase(repository: CaseRepository, caseId: string): Promise<SemanticCase> {
@@ -84,6 +104,7 @@ export async function performJourneyAction(
   let current = await ensureJourneyCase(repository, caseId);
   let unrepresented = [...retainedUnrepresented];
   const expectedStage = stageFor(current);
+  const expectedClarification = createClarificationView(current)?.key;
   diagnostics.event("state-transition", "action-dispatch", "start", {
     action: diagnosticAction(action),
     current: { stage: expectedStage, revision: current.revision },
@@ -240,7 +261,7 @@ export async function performJourneyAction(
         if (!need) throw new Error("The indication question is no longer open");
         const answerText = action.answers.map(({ productId, value }) => {
           const product = current.products.find(({ id }) => id === productId);
-          const name = knownValue(product?.facts.name) ?? productId;
+          const name = knownValue(product?.facts.name) ?? "the selected product";
           return `${name} indication: ${displayValue(value)}.`;
         }).join(" ");
         const source = fullSource("answer", answerText);
@@ -450,6 +471,17 @@ export async function performJourneyAction(
   }
 
   const snapshot = await getJourneySnapshot(repository, caseId, unrepresented);
+  if (action.action === "set-fact"
+    && action.target.startsWith("product:")
+    && ["name", "productType", "role"].includes(action.target.split(":")[2] ?? "")
+    && snapshot.stage === "clarify"
+    && (expectedStage === "output" || snapshot.clarification?.key !== expectedClarification)) {
+    const productId = action.target.split(":")[1];
+    const product = current.products.find(({ id }) => id === productId);
+    if (product) {
+      snapshot.transitionNotice = `${productLabel(current, product.id)} now makes another report detail applicable. Complete this clarification before returning to output.`;
+    }
+  }
   diagnostics.event("state-transition", "action-complete", "success", {
     action: action.action,
     result: snapshot,
@@ -513,27 +545,111 @@ export function stageFor(caseState: SemanticCase): JourneyStage {
   return "output";
 }
 
-function outputReadinessIssues(
+export function outputReadinessIssues(
   caseState: SemanticCase,
   projection: ReturnType<typeof projectForm3500>,
-): string[] {
-  const issues: string[] = [];
-  if (hasPendingProposals(caseState)) issues.push("Review every pending proposal before opening the form.");
-  if (createClarificationView(caseState)) issues.push("Answer or decline the open consequential question before opening the form.");
-  const hasSuspect = caseState.products.some((product) => product.state === "resolved"
-    && knownValue(product.facts.role) === "suspect"
+): OutputReadinessIssue[] {
+  const issues: OutputReadinessIssue[] = [];
+  const issue = (code: OutputReadinessIssueCode, message: string, targets: string[] = [], entityIds: string[] = []) => {
+    issues.push({ code, message, targets, entityIds });
+  };
+  if (hasPendingProposals(caseState)) {
+    issue(
+      "pending-proposal-review",
+      "Review every pending proposal before opening the form.",
+      allFacts(caseState).filter(({ fact }) => fact.proposedValues.length > 0).map(({ target }) => targetKey(target)),
+    );
+  }
+  const clarification = createClarificationView(caseState);
+  if (clarification) {
+    issue("open-clarification", "Answer or decline the open consequential question before opening the form.", clarification.targetIds);
+  }
+
+  const retainedProducts = caseState.products.filter(({ state }) => state === "resolved");
+  const completeSuspects = retainedProducts.filter((product) =>
+    knownValue(product.facts.role) === "suspect"
     && Boolean(knownValue(product.facts.name))
     && Boolean(knownValue(product.facts.productType)));
-  if (!hasSuspect) issues.push("Accept at least one named suspect product.");
+
+  if (retainedProducts.length === 0) {
+    issue(
+      "no-retained-product",
+      "No reviewed product remains in this bounded case. Use New case to begin again with a product Wilson can retain.",
+    );
+  } else {
+    const incomplete = retainedProducts.flatMap((product) => {
+      const role = knownValue(product.facts.role);
+      const missing = [
+        ...(!knownValue(product.facts.name) ? ["name" as const] : []),
+        ...(!role ? ["role" as const] : []),
+        ...(!knownValue(product.facts.productType) ? ["productType" as const] : []),
+      ];
+      return missing.length > 0 ? [{ product, missing }] : [];
+    });
+    for (const { product, missing } of incomplete) {
+      const labels = missing.map((field) => ({ name: "Name", productType: "Product type", role: "Role" })[field]);
+      issue(
+        "incomplete-product",
+        `${productLabel(caseState, product.id)} needs ${joinList(labels)} before Wilson can classify and include it truthfully.`,
+        missing.map((field) => `product:${product.id}:${field}`),
+        [product.id],
+      );
+    }
+    if (completeSuspects.length === 0 && incomplete.length === 0) {
+      issue(
+        "no-complete-suspect-product",
+        "At least one retained product must have Role set to Suspect before output.",
+        retainedProducts.map(({ id }) => `product:${id}:role`),
+        retainedProducts.map(({ id }) => id),
+      );
+    }
+  }
+
   const reportType = knownValue(caseState.event.facts.reportType);
-  if (!reportType) issues.push("Accept the selected report type.");
-  if (!projection.sections.B.eventDescription) issues.push("Accept at least one event or product-problem fact that contributes to the report description.");
-  if (caseState.products.filter((product) => product.state === "resolved"
+  if (!reportType) issue("missing-report-type", "Accept the selected report type.", ["event:event:reportType"], ["event"]);
+  if (!projection.sections.B.eventDescription) {
+    issue(
+      "missing-event-description",
+      "Accept at least one event or product-problem fact that contributes to the report description.",
+      ["event:event:problemDescription", "event:event:symptoms", "event:event:treatments", "event:event:outcome"],
+      ["event"],
+    );
+  }
+  const suspectDevices = caseState.products.filter((product) => product.state === "resolved"
     && knownValue(product.facts.role) === "suspect"
-    && knownValue(product.facts.productType) === "device").length > 1) {
-    issues.push("This bounded path supports one suspect medical device.");
+    && knownValue(product.facts.productType) === "device");
+  if (suspectDevices.length > 1) {
+    issue(
+      "multiple-suspect-devices",
+      "This bounded path supports one suspect medical device. Change a Role or withdraw a device before output.",
+      suspectDevices.map(({ id }) => `product:${id}:role`),
+      suspectDevices.map(({ id }) => id),
+    );
+  }
+  const concomitantDevices = caseState.products.filter((product) => product.state === "resolved"
+    && knownValue(product.facts.role) === "concomitant"
+    && knownValue(product.facts.productType) === "device");
+  for (const product of concomitantDevices) {
+    issue(
+      "unsupported-concomitant-device",
+      `${productLabel(caseState, product.id)} is a concomitant medical device, which this bounded path cannot report. Restore a supported Role, withdraw the product, or use New case.`,
+      [`product:${product.id}:role`, `product:${product.id}:productType`],
+      [product.id],
+    );
   }
   return issues;
+}
+
+function productLabel(caseState: SemanticCase, productId: string): string {
+  const index = caseState.products.findIndex(({ id }) => id === productId);
+  const product = caseState.products[index];
+  return productDisplayLabel(knownValue(product?.facts.name), index + 1);
+}
+
+function joinList(values: string[]): string {
+  if (values.length <= 1) return values[0] ?? "required identity details";
+  if (values.length === 2) return `${values[0]} and ${values[1]}`;
+  return `${values.slice(0, -1).join(", ")}, and ${values.at(-1)}`;
 }
 
 function pendingOpeningGroups(caseState: SemanticCase): string[] {

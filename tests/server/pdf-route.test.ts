@@ -23,6 +23,7 @@ describe("state-bearing PDF route", () => {
     expect(response.headers.get("cache-control")).toContain("no-store");
     expect(await response.json()).toMatchObject({
       code: "pdf-not-ready",
+      error: expect.stringContaining("No reviewed product remains"),
       diagnosticReference: expect.any(String),
     });
   });

@@ -1,4 +1,10 @@
-import type { Fact, ProductEntity, ReportType, SemanticCase } from "./types";
+import { productDisplayLabel } from "./product-label";
+import type { Fact, ProductEntity, ProductFactKey, ReportType, SemanticCase } from "./types";
+
+const sectionDProductFields = ["name", "manufacturer", "lotNumber", "dose", "frequency", "route", "startDate", "stopDate", "indication"] as const satisfies readonly ProductFactKey[];
+const sectionEProductFields = ["name", "commonName", "procode", "manufacturer", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const satisfies readonly ProductFactKey[];
+const sectionFProductFields = ["name", "startDate", "stopDate"] as const satisfies readonly ProductFactKey[];
+const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "role", "stopped"]);
 
 export interface ProjectionOmission {
   concept: string;
@@ -105,7 +111,6 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     notIncluded: [
       "Patient date of birth and race or ethnicity",
       "Section C product pictures and additional comments",
-      "Concomitant dose, frequency, and route (Section F has no fields for them)",
       "Additional suspect medical devices beyond the first",
     ],
   };
@@ -169,18 +174,37 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       });
       continue;
     }
+    if (!productType) {
+      projection.omissions.push({
+        concept: `product type for ${productLabel(caseState, product)}`,
+        target: `product:${product.id}:productType`,
+        reason: omissionReason(product.facts.productType),
+        sourceIds: product.facts.productType.sourceIds,
+      });
+      continue;
+    }
     if (role.value === "suspect") {
-      if (productType?.value === "device") {
+      if (productType.value === "device") {
         if (!projection.sections.E.suspectDevice) {
           projection.sections.E.suspectDevice = projectDevice(product, projection);
+          recordNonCarriedProductFacts(caseState, product, sectionEProductFields, "Section E", projection);
+        } else {
+          projection.notIncluded.push(`${productLabel(caseState, product)} is not included because this bounded path supports one suspect medical device.`);
         }
       } else {
         const target = projection.sections.D.suspectProducts;
         target.push(projectProduct(product, projection, target.length));
+        recordNonCarriedProductFacts(caseState, product, sectionDProductFields, "Section D", projection);
       }
     } else {
+      if (productType.value === "device") {
+        projection.notIncluded.push(`${productLabel(caseState, product)} is a concomitant medical device and is not included because that reporting path is unsupported.`);
+        recordNonCarriedProductFacts(caseState, product, [], "the unsupported concomitant-device path", projection);
+        continue;
+      }
       const target = projection.sections.F.concomitantProducts;
       target.push(projectConcomitantProduct(product, projection, target.length));
+      recordNonCarriedProductFacts(caseState, product, sectionFProductFields, "Section F", projection);
     }
   }
 
@@ -198,10 +222,44 @@ function projectProduct(
 ): ProjectedProduct {
   const result: ProjectedProduct = { productId: product.id };
   const prefix = `sections.D.suspectProducts.${index}`;
-  for (const field of ["name", "manufacturer", "lotNumber", "dose", "frequency", "route", "startDate", "stopDate", "indication"] as const) {
+  for (const field of sectionDProductFields) {
     assign(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field], result, field);
   }
   return result;
+}
+
+function recordNonCarriedProductFacts(
+  caseState: SemanticCase,
+  product: ProductEntity,
+  carried: readonly ProductFactKey[],
+  destination: string,
+  projection: Form3500Projection,
+): void {
+  const carriedFields = new Set<ProductFactKey>(carried);
+  for (const [field, fact] of Object.entries(product.facts) as Array<[ProductFactKey, Fact<unknown>]>) {
+    if (carriedFields.has(field) || productSelectorOrSharedFields.has(field) || !hasAcceptedKnowledge(fact)) continue;
+    projection.notIncluded.push(
+      `${productLabel(caseState, product)} — ${humanizeProductField(field)} remains in reviewed knowledge but is not included in ${destination} for the current product type and role.`,
+    );
+  }
+}
+
+function hasAcceptedKnowledge(fact: Fact<unknown>): boolean {
+  return fact.state === "resolved" || fact.state === "conflicted" || fact.supersededValues.length > 0;
+}
+
+function productLabel(caseState: SemanticCase, product: ProductEntity): string {
+  return productDisplayLabel(
+    known(product.facts.name)?.value,
+    caseState.products.findIndex(({ id }) => id === product.id) + 1,
+  );
+}
+
+function humanizeProductField(field: ProductFactKey): string {
+  if (field === "udi") return "UDI";
+  if (field === "procode") return "Procode";
+  const spaced = field.replace(/([a-z0-9])([A-Z])/g, "$1 $2").toLowerCase();
+  return `${spaced[0].toUpperCase()}${spaced.slice(1)}`;
 }
 
 function projectDevice(product: ProductEntity, projection: Form3500Projection): ProjectedDevice {

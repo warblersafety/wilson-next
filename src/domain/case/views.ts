@@ -18,11 +18,19 @@ export interface FactView {
   evidence: string[];
 }
 
-export interface ProductView {
+interface EntityView {
   id: string;
   proposalGroupId: string;
-  state: ProductEntity["state"];
   facts: Record<string, FactView>;
+}
+
+export interface ProductView extends EntityView {
+  ordinal: number;
+  state: ProductEntity["state"];
+}
+
+export interface RelevantTestView extends EntityView {
+  state: RelevantTestEntity["state"];
 }
 
 export interface UnderstandingView {
@@ -30,7 +38,7 @@ export interface UnderstandingView {
   patient: Record<string, FactView>;
   event: Record<string, FactView>;
   products: ProductView[];
-  relevantTests: ProductView[];
+  relevantTests: RelevantTestView[];
   reporter: Record<string, FactView>;
 }
 
@@ -50,13 +58,14 @@ export function createUnderstandingView(caseState: SemanticCase): UnderstandingV
     patient: mapFacts(caseState.patient.facts, sourceExcerpts),
     event: mapFacts(caseState.event.facts, sourceExcerpts),
     products: caseState.products
-      .filter(({ state }) => state !== "rejected")
-      .map((product) => ({
+      .map((product, index) => ({
         id: product.id,
+        ordinal: index + 1,
         proposalGroupId: product.proposalGroupId,
         state: product.state,
         facts: mapFacts(product.facts, sourceExcerpts),
-      })),
+      }))
+      .filter(({ state }) => state !== "rejected"),
     relevantTests: caseState.relevantTests
       .filter(({ state }) => state !== "rejected")
       .map((test) => ({ id: test.id, proposalGroupId: test.proposalGroupId, state: test.state, facts: mapFacts(test.facts, sourceExcerpts) })),

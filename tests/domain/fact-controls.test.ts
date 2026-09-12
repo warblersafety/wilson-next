@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { factControlRegistry } from "../../app/fact-controls";
+import { productCardFieldUniverse, productCardFields } from "../../app/product-fields";
 import { caseValueContracts } from "../../src/domain/case/value-contract";
+import type { FactView } from "../../src/domain/case/views";
 
 describe("direct fact controls", () => {
   it("covers every currently supported fact key without becoming value authority", () => {
@@ -38,4 +40,23 @@ describe("direct fact controls", () => {
       }
     }
   });
+
+  it("keeps every supported product fact renderable across category-aware cards", () => {
+    expect([...productCardFieldUniverse].sort()).toEqual(Object.keys(caseValueContracts.product).sort());
+
+    const facts = Object.fromEntries(Object.keys(caseValueContracts.product).map((field) => [field, emptyFactView()]));
+    facts.dose = resolvedFactView("500 mg");
+    facts.modelNumber = resolvedFactView("FG-200");
+    expect(productCardFields(undefined, facts)).toEqual(expect.arrayContaining(["name", "productType", "role", "dose", "modelNumber"]));
+    expect(productCardFields("device", facts)).toContain("dose");
+    expect(productCardFields("drug-or-biologic", facts)).toContain("modelNumber");
+  });
 });
+
+function emptyFactView(): FactView {
+  return { state: "empty", proposals: [], conflicts: [], history: [], evidence: [] };
+}
+
+function resolvedFactView(value: string): FactView {
+  return { ...emptyFactView(), state: "resolved", resolved: { kind: "known", value } };
+}
