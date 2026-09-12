@@ -3,7 +3,10 @@
 **Status:** Complete with a `Revise` disposition and remediation deferred. Stage 3 completed in
 PR #52, Issue #53 refocused the outcome on conditional reliability, and Issue
 #55 preserves the live-model limitation and explicit revisit triggers. No
-immediate remediation or further Experiment 2 model sampling is planned.
+immediate remediation or further Experiment 2 model sampling is planned. Issue
+#83 later authorizes one bounded, synthetic-only cofounder walkthrough before
+any physician involvement; it is an access and product-review exception, not
+additional reliability sampling or a change to the `Revise` disposition.
 
 **Owns:** The single bounded investment decision, its separate evidence
 dimensions, the production-seed quality bar, supported and deferred scope,
@@ -66,11 +69,12 @@ That decision sets a code-quality and reuse bar inside the bounded experimental
 scope. Together with Delivery's standing execution authority, this plan now
 authorizes its remaining in-scope implementation and synthetic evaluation
 without per-stage permission. It does not authorize production infrastructure
-or release, durable data, real clinical data, external participation, or
-broader product scope. Here, `production-seed` means maintainable shared domain
-and workflow seams retained after the experiment; the temporary preview,
-synthetic diagnostic, and browser-held-state adapters remain temporary by
-design.
+or release, durable data, real clinical data, general external participation,
+or broader product scope. Issue #83's later cofounder-review exception is
+recorded under Operators and information boundary. Here, `production-seed`
+means maintainable shared domain and workflow seams retained after the
+experiment; the temporary preview, synthetic diagnostic, and
+browser-held-state adapters remain temporary by design.
 
 ## Experiment 1 input
 
@@ -142,15 +146,36 @@ of this result. The sanitized Stage 4 observation record is retained in
 
 ## Operators and information boundary
 
-Steve and Codex are the only experiment operators. All people, identifiers,
-events, products, and outcomes are fictional. No physician or other external
-participant is involved in Experiment 2; the preliminary feedback reported by
-Steve predates it and authorizes no new participation.
+Steve and Codex were the only operators of the concluded Experiment 2. All
+people, identifiers, events, products, and outcomes are fictional. No physician
+participated; the preliminary feedback reported by Steve predates the
+experiment and authorizes no physician participation.
 
 The protected Vercel preview remains non-production and synthetic-limited to
 approved synthetic cases. Browser-held state and transient Runtime Logs retain
 the Experiment 1 limitations. No case persistence, log drain, analytics,
 session replay, or additional diagnostic store is added.
+
+### Issue #83 cofounder-review exception
+
+After Experiment 2 and the Issue #78 operator-readiness repair, Steve required
+one designated non-physician cofounder to see Wilson before any physician is
+considered. Issue #83 therefore authorizes one product walkthrough through a
+Vercel Shareable Link bound to an exact, verified Git-preview deployment. The
+link expires at Vercel after 604800 seconds (seven days) and is revoked sooner
+if Steve confirms completion. The ordinary deployment URL remains protected by
+Vercel Authentication, and the secret-bearing URL is delivered only to Steve;
+it is never retained in the repository, GitHub, screenshots, logs, or evidence.
+
+The cofounder may run the existing fictional TEST-72 amoxicillin journey and
+the existing fictional TEST-74 Acme FlowGuard journey once each. One affected
+journey may be retried only after a transport or infrastructure failure. These
+runs are experiential product review, not independent live-model samples, and
+do not change the model-reliability disposition. Real data, redistribution,
+additional reviewers, physician participation, production deployment, custom
+domains, project-wide bypasses, and deployment-protection exceptions remain
+unauthorized. The exception ends automatically with the Shareable Link TTL and
+creates no standing external-participant authority.
 
 ## Supported scope
 
