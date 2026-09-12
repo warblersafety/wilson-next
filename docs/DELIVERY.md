@@ -51,6 +51,16 @@ PR as part of normal delivery. The PR records:
 - deviations, stop-and-reconcile decisions, and unresolved risk; and
 - the final disposition and remaining risk.
 
+An automatic Git preview can be created from the first branch push before the
+draft pull request exists. When an application gate requires pull-request
+metadata, that pre-PR deployment is not an operator-ready preview even if the
+hosting deployment itself succeeds. After opening the draft PR, push the next
+meaningful commit before handing the preview to an operator. If the material
+change is already complete, one explicitly labelled empty deployment-trigger
+commit is permitted instead. Verify that the replacement deployment targets
+that post-PR commit and was created after the PR; do not relax the application
+gate to make the earlier deployment usable.
+
 Update it at meaningful boundaries, not with routine terminal narration.
 Successful branches are deleted after squash merge. If an experiment falsifies
 its premise, close without merging and retain a named branch or commit until its
