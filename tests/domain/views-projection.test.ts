@@ -148,7 +148,11 @@ describe("pure case views and semantic Form 3500 projection", () => {
         name: "lisinopril",
       },
     ]);
-    expect(resolved.notIncluded).toContain("Concomitant dose, frequency, and route (Section F has no fields for them)");
+    expect(resolved.notIncluded).toEqual(expect.arrayContaining([
+      expect.stringContaining("lisinopril — Dose remains in reviewed knowledge but is not included in Section F"),
+      expect.stringContaining("lisinopril — Frequency remains in reviewed knowledge but is not included in Section F"),
+      expect.stringContaining("lisinopril — Route remains in reviewed knowledge but is not included in Section F"),
+    ]));
     expect(resolved.sourceTrace["sections.D.suspectProducts.0.startDate"]).toEqual(expect.arrayContaining([
       "source-apixaban-date-alternative",
       "source-date-resolution",
@@ -162,4 +166,48 @@ describe("pure case views and semantic Form 3500 projection", () => {
       expect.objectContaining({ target: "product:product-naproxen:stopDate", reason: "empty" }),
     ]));
   });
+
+  it("does not classify a suspect with missing type and keeps non-carried facts explicit across type changes", () => {
+    const missingType = structuredClone(completeResolvedCase());
+    const apixaban = missingType.products.find(({ id }) => id === "product-apixaban")!;
+    clearFact(apixaban.facts.productType);
+    const missingProjection = projectForm3500(missingType);
+    expect(missingProjection.sections.D.suspectProducts.map(({ productId }) => productId)).not.toContain(apixaban.id);
+    expect(missingProjection.sections.E.suspectDevice).toBeUndefined();
+    expect(missingProjection.omissions).toContainEqual(expect.objectContaining({
+      target: `product:${apixaban.id}:productType`, reason: "empty",
+    }));
+
+    const changedToDevice = structuredClone(completeResolvedCase());
+    const changedProduct = changedToDevice.products.find(({ id }) => id === "product-apixaban")!;
+    changedProduct.facts.productType.resolvedValue!.value = { kind: "known", value: "device" };
+    const deviceProjection = projectForm3500(changedToDevice);
+    expect(deviceProjection.sections.E.suspectDevice?.productId).toBe(changedProduct.id);
+    expect(deviceProjection.sections.D.suspectProducts.map(({ productId }) => productId)).not.toContain(changedProduct.id);
+    expect(deviceProjection.notIncluded).toContainEqual(expect.stringContaining("apixaban — Dose remains in reviewed knowledge but is not included in Section E"));
+
+    changedProduct.facts.modelNumber = structuredClone(changedProduct.facts.dose);
+    changedProduct.facts.modelNumber.resolvedValue!.value = { kind: "known", value: "MODEL-1" };
+    changedProduct.facts.productType.resolvedValue!.value = { kind: "known", value: "drug-or-biologic" };
+    const changedBack = projectForm3500(changedToDevice);
+    expect(changedBack.notIncluded).toContainEqual(expect.stringContaining("apixaban — Model number remains in reviewed knowledge but is not included in Section D"));
+  });
+
+  it("keeps product display ordinals stable when an earlier product is rejected", () => {
+    const current = structuredClone(completeResolvedCase());
+    current.products[0].state = "rejected";
+    expect(createUnderstandingView(current).products.map(({ id, ordinal }) => ({ id, ordinal }))).toEqual([
+      { id: "product-naproxen", ordinal: 2 },
+      { id: "product-lisinopril", ordinal: 3 },
+    ]);
+  });
 });
+
+function clearFact(fact: import("../../src/domain/case/types").Fact<unknown>): void {
+  fact.state = "empty";
+  fact.proposedValues = [];
+  fact.resolvedValue = undefined;
+  fact.conflictingValues = [];
+  fact.sourceIds = [];
+  fact.supersededValues = [];
+}

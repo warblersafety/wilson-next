@@ -21,6 +21,7 @@ export const repeatedUpdate = "Correction: the ibuprofen dose was 200 mg twice d
 export const regressionOpening = "Patient TEST-57 is a 57-year-old woman. She was taking apixaban 5 mg by mouth twice daily; I recorded the start as 12-Aug-2026. She also took naproxen 500 mg by mouth twice daily starting 10-Aug-2026, and lisinopril 10 mg by mouth daily as a concomitant medicine. On 18-Aug-2026 she developed melena and dizziness and was hospitalized. Her hemoglobin was 7.8 g/dL. Apixaban and naproxen were stopped, she received two units of packed red cells, and she recovered and was discharged on 21-Aug-2026. I suspect apixaban and naproxen.";
 export const regressionUpdate = "Correction: the naproxen dose was 250 mg twice daily, not 500 mg twice daily. Also, the medication administration record lists apixaban starting 13-Aug-2026, but my note says 12-Aug-2026. I can't resolve that yet.";
 export const quarantineOpening = layer2DeviceOpening;
+export const identityQuarantineOpening = adaptiveRichOpening;
 
 type Target = ModelProposalOutput["proposals"][number]["target"];
 type Value = ModelProposalOutput["proposals"][number]["value"];
@@ -176,6 +177,17 @@ function quarantineResponse(): ModelProposalOutput {
   const output = layer2DeviceResponse();
   output.proposals.find(({ target }) => target.entity === "event" && target.field === "symptoms")!.value = known("hypotension");
   output.proposals.find(({ target }) => target.entity === "event" && target.field === "productAvailability")!.value = known("available for evaluation");
+  return output;
+}
+
+function identityQuarantineResponse(): ModelProposalOutput {
+  const output = adaptiveRichResponse();
+  output.proposals = output.proposals.filter(({ target }) => !(target.entity === "product" && target.field === "indication"));
+  for (const proposal of output.proposals) {
+    if (proposal.target.entity === "product" && ["name", "productType"].includes(proposal.target.field)) {
+      proposal.evidenceQuote = "Amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis";
+    }
+  }
   return output;
 }
 
@@ -526,6 +538,9 @@ interface PredeterminedModelResponse {
 }
 
 export const predeterminedResponseScenarios = {
+  issue78IdentityQuarantine: [
+    { identityScope: "issue78-identity-quarantine", turn: "opening", output: identityQuarantineResponse() },
+  ],
   issue67Quarantine: [
     { identityScope: "issue67-quarantine", turn: "opening", output: quarantineResponse() },
   ],

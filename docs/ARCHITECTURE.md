@@ -11,7 +11,9 @@ live application-model selection for the protected Git-preview path; Issue #67
 keeps the provider wire simple and visibly quarantines proposal-local faults
 without weakening accepted case or output authority; Issue #66 makes the
 bounded supported facts directly correctable and preserves withdrawn reviewed
-products or tests as inactive history
+products or tests as inactive history; Issue #78 retains incomplete reviewed
+products for direct repair, adds explicit output-readiness policy, and makes
+branch-dependent product facts and responsive operator controls truthful
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification
@@ -95,6 +97,14 @@ continue to project to Section D.
 Reporter facts enter directly from the clinician through `applyCaseCommand` and
 never pass through the model. `Fact<T>` supplies consistent behavior without
 claiming a complete Form 3500 ontology.
+
+A reviewed product is not deleted merely because proposal-local quarantine
+leaves its name, role, or category incomplete. It remains in the semantic case,
+appears in the reviewed-case UI under a stable collection-ordinal label such as
+`Product 2`, and can be repaired through the same direct typed command path as
+other reviewed facts. Rejecting or withdrawing an earlier product does not
+renumber later products. Zero retained products is a distinct state whose
+operator action is to begin a new case, not to navigate to a nonexistent card.
 
 ### Stable entity identity
 
@@ -213,6 +223,13 @@ declarations beyond the supported three-product limit; a relevant test is also
 pruned when its required test-and-result proposal is quarantined. No value is
 coerced, repaired, guessed, or retried.
 
+The required-result pruning rule is an invariant, not a fixture convention:
+tests must prove that a relevant-test declaration cannot survive when its
+result proposal is quarantined. Exact-citation differences in capitalization,
+punctuation, or spacing remain operator-visible quarantine failures. Record
+such failures as evidence about the exact-location contract; do not tune the
+fixture, add normalization, or sample a live model to make them disappear.
+
 These checks are finite application-input validation, not a hallucination
 guard. The model returns a self-contained exact quotation rather than character
 offsets. Deterministic code locates its single exact occurrence, assigns source
@@ -293,6 +310,24 @@ resolved missing-value shapes. A proposed product or relevant test may be
 rejected during opening review. A reviewed product or test may be withdrawn
 only after the case reaches output; it remains visible as inactive history and
 is omitted from subsequent projection and PDF generation.
+
+Output readiness is application-owned and separate from question completion.
+For these bounded paths, output requires at least one retained product and at
+least one complete suspect product whose name, role, and category are known.
+Every retained incomplete product is named in the readiness explanation and
+navigable for repair. A direct repair that makes a clarification newly
+applicable returns the case to clarification with an explicit transition
+notice; it does not call the model or bypass the command boundary. Multiple
+suspect devices and a device in the concomitant role are outside the supported
+projection and therefore block output explicitly.
+
+A missing product category is never treated as implicitly non-device. The
+projection omits category-dependent Section D, E, and F fields until category is
+known. Once category is known, the reviewed-case card and semantic projection
+show the selected branch while retaining any accepted or historical facts from
+the other branch with an explicit not-carried-forward explanation. This keeps
+clinician evidence visible without silently projecting it into an inapplicable
+form section.
 
 For the selected adult medication, single-device adverse-event,
 product-problem-only, and bounded combined-report journeys, unresolved optional facts remain

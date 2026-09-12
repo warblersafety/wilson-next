@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
 import { promisify } from "node:util";
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 import {
   regressionOpening,
   regressionUpdate,
@@ -19,6 +19,7 @@ import {
   layer3ConditionalOpening,
   layer3CorrectionOpening,
   layer3CorrectionUpdate,
+  identityQuarantineOpening,
   predeterminedModelResponses,
   repeatedOpening,
   repeatedUpdate,
@@ -37,18 +38,107 @@ const retainLayer1RepresentativeOnly = evidenceDirectory.includes("issue-60");
 const retainLayer2RepresentativeOnly = evidenceDirectory.includes("issue-62");
 const retainLayer3RepresentativeOnly = evidenceDirectory.includes("issue-64");
 const retainIssue66Only = evidenceDirectory.includes("issue-66");
+const retainIssue78Only = evidenceDirectory.includes("issue-78");
 const readbacks: Record<string, IndependentReadback> = {};
 const checkpoints: Array<{ journey: string; state: string; assertion: string }> = [];
 const pdfs: Array<{ journey: string; bytes: number; sha256: string }> = [];
 const questionTrace: Array<{ journey: string; question: string; reason: string; answer: string }> = [];
 
-test("runs Issue 66 direct correction, Issue 67 quarantine, and all prior deterministic regressions through one assembled desktop path", async ({ page, browser }, testInfo) => {
+test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 quarantine, and all prior deterministic regressions through one assembled desktop path", async ({ page, browser }, testInfo) => {
   if (retainEvidence) await mkdir(evidenceDirectory, { recursive: true });
 
   const initial = await page.goto("/");
   expect(initial?.headers()["x-robots-tag"]).toBe("noindex, nofollow");
   await expect(page.getByRole("heading", { name: "Describe what happened" })).toBeVisible();
   await expect(page.getByLabel("Experiment boundary")).toContainText("Fictional information only");
+
+  await submitOpening(page, identityQuarantineOpening);
+  const identityQuarantine = page.getByRole("status").filter({ hasText: "Some details were left out" });
+  await expect(identityQuarantine).toContainText("Product — Name");
+  await expect(identityQuarantine).toContainText("Product — Product type");
+  await expect(identityQuarantine).toContainText("add missing identity in its reviewed product card");
+  await expect(productCard(page, "Product 1")).toContainText("500 mg");
+  const quarantinedIdentityCase = await semanticCase(page);
+  expect(quarantinedIdentityCase.products).toHaveLength(1);
+  expect(quarantinedIdentityCase.products[0].facts.name.state).toBe("empty");
+  expect(quarantinedIdentityCase.products[0].facts.productType.state).toBe("empty");
+  expect(quarantinedIdentityCase.products[0].facts.role.resolvedValue).toBeUndefined();
+  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Confirm outcomes" }).click();
+  await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
+  await expect(page.getByRole("status").filter({ hasText: "Required before adding" }))
+    .toContainText("first name, last name, and phone or email");
+
+  const reporterControls = [
+    "Reporter first name", "Reporter last name", "Reporter phone", "Reporter email", "Reporter address",
+    "Reporter city", "Reporter state", "Reporter postal code", "Reporter country", "Reporter occupation",
+  ].map((label) => page.getByLabel(label));
+  for (const viewport of [{ width: 1440, height: 900 }, { width: 1280, height: 800 }]) {
+    await page.setViewportSize(viewport);
+    await assertTaskControlsOperable(page, reporterControls);
+    await expectNoDocumentOverflow(page);
+    await retainViewportScreenshot(page, `issue78-reporter-${viewport.width}x${viewport.height}.png`);
+  }
+  await fillReporter(page, { firstName: "Casey", lastName: "Reed", email: "casey.reed@example.test" });
+  await expect(page.getByRole("status").filter({ hasText: "Required before adding" })).toHaveCount(0);
+  const addReporter = page.getByRole("button", { name: "Add reporter details" });
+  await expect(addReporter).toBeEnabled();
+  await addReporter.click({ trial: true });
+  await addReporter.click();
+
+  await expect(page.getByRole("heading", { name: "The form needs more reviewed information" })).toBeVisible();
+  await expect(page.getByText("Product 1 needs Name and Product type", { exact: false })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Download official PDF" })).toBeDisabled();
+  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).not.toContainText("amoxicillin");
+  await retainViewportScreenshot(page, "issue78-blocked-output-1280x800.png");
+  await page.getByRole("button", { name: "Review Product 1" }).click();
+
+  const nameRow = productCard(page, "Product 1").locator("dl > div").filter({ has: page.getByText("Name", { exact: true }) });
+  await nameRow.getByRole("button", { name: "Add" }).click();
+  await page.getByLabel("New Name").fill("amoxicillin");
+  await nameRow.getByRole("button", { name: "Add fact" }).click();
+  const typeRow = productCard(page, "amoxicillin").locator("dl > div").filter({ has: page.getByText("Product type", { exact: true }) });
+  await typeRow.getByRole("button", { name: "Add" }).click();
+  await page.getByLabel("New Product type").selectOption("drug-or-biologic");
+  await typeRow.getByRole("button", { name: "Add fact" }).click();
+
+  await expect(page.getByRole("heading", { name: "What was amoxicillin being used for?" })).toBeVisible();
+  await expect(page.getByRole("status").filter({ hasText: "another report detail applicable" })).toBeVisible();
+  const indicationGroup = page.getByRole("group", { name: "amoxicillin" });
+  const indicationControls = [
+    indicationGroup.getByLabel("Known", { exact: true }),
+    page.getByLabel("amoxicillin indication"),
+    indicationGroup.getByLabel("Unknown", { exact: true }),
+    indicationGroup.getByLabel("Prefer not to answer", { exact: true }),
+  ];
+  for (const viewport of [{ width: 1280, height: 800 }, { width: 1440, height: 900 }]) {
+    await page.setViewportSize(viewport);
+    await assertTaskControlsOperable(page, indicationControls);
+    await expectNoDocumentOverflow(page);
+    await retainViewportScreenshot(page, `issue78-indication-${viewport.width}x${viewport.height}.png`);
+  }
+  await indicationGroup.getByLabel("Known", { exact: true }).check();
+  await page.getByLabel("amoxicillin indication").fill("sinusitis");
+  const addIndication = page.getByRole("button", { name: "Add these answers" });
+  await expect(addIndication).toBeEnabled();
+  await addIndication.click({ trial: true });
+  await addIndication.click();
+  questionTrace.push({
+    journey: "issue78-identity-recovery",
+    question: "newly applicable suspect indication",
+    reason: "direct repair supplied the quarantined name and product type, making only the medication indication newly applicable",
+    answer: "sinusitis",
+  });
+  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  const repairedCase = await semanticCase(page);
+  expect(repairedCase.products[0].facts.name.resolvedValue?.value).toEqual({ kind: "known", value: "amoxicillin" });
+  expect(repairedCase.products[0].facts.productType.resolvedValue?.value).toEqual({ kind: "known", value: "drug-or-biologic" });
+  expect(repairedCase.products[0].facts.indication.resolvedValue?.value).toEqual({ kind: "known", value: "sinusitis" });
+  checkpoints.push({ journey: "issue78-identity-recovery", state: "repaired-output", assertion: "Exact-evidence quarantine stayed outside accepted state; direct identity repair reopened one applicable clarification and restored aligned reviewed output and PDF without another model call." });
+  await retainViewportScreenshot(page, "issue78-repaired-output-1440x900.png");
+  await downloadAndCheck(page, "issue78-identity-recovery", ["TEST-72", "amoxicillin", "500 mg", "01-SEP-2026", "Casey", "Reed"], []);
+
+  await newCase(page);
 
   await submitOpening(page, quarantineOpening);
   const quarantine = page.getByRole("status").filter({ hasText: "Some details were left out" });
@@ -551,6 +641,10 @@ test("runs Issue 66 direct correction, Issue 67 quarantine, and all prior determ
       liveApplicationModelCalls: 0,
       interactionSummary: [
         {
+          journey: "issue78-identity-recovery", groupedPromptCount: 2, directRepairCount: 2, duplicateQuestionCount: 0,
+          observedFriction: "Two exact-evidence identity failures stayed visibly quarantined while one retained product reached reporter entry, explicit output blocking, direct repair, one newly applicable indication, and aligned output without another model call.",
+        },
+        {
           journey: "layer3-combined", groupedPromptCount: 1, duplicateQuestionCount: 0,
           observedFriction: "The combined report used one selection and understanding review; accepted facts suppressed every clarification except direct reporter entry.",
         },
@@ -594,10 +688,10 @@ test("runs Issue 66 direct correction, Issue 67 quarantine, and all prior determ
       questionTrace,
       checkpoints,
     }, null, 2)}\n`);
-    const retainedReadbacks = retainIssue66Only
+    const retainedReadbacks = retainIssue66Only || retainIssue78Only
       ? Object.fromEntries(Object.entries(readbacks).filter(([journey]) => shouldRetain(journey)))
       : readbacks;
-    const retainedPdfs = retainIssue66Only ? pdfs.filter(({ journey }) => shouldRetain(journey)) : pdfs;
+    const retainedPdfs = retainIssue66Only || retainIssue78Only ? pdfs.filter(({ journey }) => shouldRetain(journey)) : pdfs;
     await writeFile(`${evidenceDirectory}/pdf-agreement.json`, `${JSON.stringify({ readbacks: retainedReadbacks, pdfs: retainedPdfs }, null, 2)}\n`);
   }
 });
@@ -732,11 +826,35 @@ async function retainScreenshot(page: Page, name: string) {
   if (retainEvidence && shouldRetain(name.replace(/-output\.png$/, ""))) await page.screenshot({ path: `${evidenceDirectory}/${name}`, fullPage: true });
 }
 
+async function retainViewportScreenshot(page: Page, name: string) {
+  if (retainEvidence && shouldRetain("issue78-identity-recovery")) {
+    await page.screenshot({ path: `${evidenceDirectory}/${name}`, fullPage: false });
+  }
+}
+
+async function assertTaskControlsOperable(page: Page, controls: Locator[]) {
+  const task = page.locator("section").filter({ has: page.locator("#task-title") }).first();
+  for (const control of controls) {
+    await control.scrollIntoViewIfNeeded();
+    const [taskBox, controlBox] = await Promise.all([task.boundingBox(), control.boundingBox()]);
+    expect(taskBox).not.toBeNull();
+    expect(controlBox).not.toBeNull();
+    expect(controlBox!.x).toBeGreaterThanOrEqual(taskBox!.x - 1);
+    expect(controlBox!.x + controlBox!.width).toBeLessThanOrEqual(taskBox!.x + taskBox!.width + 1);
+    await control.click({ trial: true });
+  }
+}
+
+async function expectNoDocumentOverflow(page: Page) {
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+}
+
 function shouldRetain(journey: string): boolean {
   if (retainAdaptiveOnly) return journey.startsWith("adaptive-");
   if (retainLayer1RepresentativeOnly) return journey === "layer1-role";
   if (retainLayer2RepresentativeOnly) return journey === "layer2-device";
   if (retainLayer3RepresentativeOnly) return journey === "layer3-correction";
   if (retainIssue66Only) return ["adaptive-rich", "layer2-device", "layer1-tests-withdrawal"].includes(journey);
+  if (retainIssue78Only) return journey === "issue78-identity-recovery";
   return true;
 }

@@ -43,7 +43,7 @@ describe("bounded medication completion policy", () => {
   });
 
   it("rejects attempts to record a later or unrelated need out of order", () => {
-    const current = acceptOpeningCase();
+    const current = structuredClone(acceptOpeningCase());
     expect(() => applyCaseCommand(current, {
       type: "record-asked-need",
       commandId: "skip-to-reporter",
@@ -88,6 +88,18 @@ describe("bounded medication completion policy", () => {
       key: "suspect-product-indications", targetIds: ["product:product-lisinopril:indication"],
     }).case;
     expect(askedAgain.askedNeeds.filter(({ key }) => key === "suspect-product-indications")).toHaveLength(2);
+  });
+
+  it("does not treat a missing product type as a non-device indication path", () => {
+    const current = structuredClone(acceptOpeningCase());
+    for (const product of current.products) {
+      if (product.state !== "resolved" || product.facts.role.resolvedValue?.value.kind !== "known"
+        || product.facts.role.resolvedValue.value.value !== "suspect") continue;
+      product.facts.productType.state = "empty";
+      product.facts.productType.resolvedValue = undefined;
+      product.facts.productType.sourceIds = [];
+    }
+    expect(nextCompletionQuestion(current)?.key).toBe("serious-outcomes");
   });
 
   it("routes a product-problem-only report directly to reporter details", () => {
