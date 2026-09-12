@@ -13,7 +13,9 @@ without weakening accepted case or output authority; Issue #66 makes the
 bounded supported facts directly correctable and preserves withdrawn reviewed
 products or tests as inactive history; Issue #78 retains incomplete reviewed
 products for direct repair, adds explicit output-readiness policy, and makes
-branch-dependent product facts and responsive operator controls truthful
+branch-dependent product facts and responsive operator controls truthful;
+Issue #83 adds one expiring, exact-deployment Shareable Link for a designated
+synthetic-only cofounder walkthrough without creating a production release
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification
@@ -410,9 +412,16 @@ Vercel Authentication remains the access-control boundary for that preview;
 the application gate is defense in depth and does not attest to Vercel's
 independently mutable protection setting. Before any approved live preview
 call, the operator verifies that deployment protection still covers the exact
-deployment and that no public protection exception or bypass exists. A future
-requirement for application-verifiable request authorization would reopen the
-security architecture rather than treating Git or environment metadata as an
+deployment and that no public protection exception or project-wide bypass
+exists. A URL-scoped Vercel Shareable Link is permitted only when an owning
+issue names the external-review purpose, exact deployment, synthetic-data and
+call limits, secret-handling boundary, and platform-enforced expiry. Issue #83
+authorizes one such link for the exact verified cofounder-review deployment
+with a 604800-second TTL. Its ordinary URL stays protected, its bearer secret
+is not durable evidence, and the exception conveys no production or general
+external access authority. Any broader requirement for
+application-verifiable request authorization would reopen the security
+architecture rather than treating Git or environment metadata as an
 authentication claim.
 
 Experiment 1 accepts synthetic data only. It has no analytics, session replay,
