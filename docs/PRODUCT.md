@@ -53,8 +53,11 @@ and ready enough to justify the participant's time.
 These are stages of work, not a requirement for separate pages or linear
 navigation.
 
-1. **Describe:** enter a natural account by typing or device-native dictation.
-   Wilson does not capture or retain audio.
+1. **Describe:** enter a natural account by typing, pasting, or device-native
+   dictation. Review and edit the captured text before explicitly submitting it
+   for interpretation, then review Wilson’s understanding in the next stage.
+   Dictation help explains the computer’s controls; Wilson does not capture or
+   retain audio.
 2. **Check understanding:** inspect a concise, case-oriented read-back with
    enough source context to detect invention, loss, or misattribution.
 3. **Clarify:** answer, qualify, decline, or mark unknown only for a small
