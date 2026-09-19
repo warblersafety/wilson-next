@@ -218,7 +218,7 @@ function NarrativeInput({ id, label, context, rows, value, onChange }: {
   value: string; onChange: (value: string) => void;
 }) {
   const [helpOpen, setHelpOpen] = useState(false);
-  return <div className={styles.narrativeInput}>
+  return <div>
     <div className={styles.narrativeLabel}>
       <label htmlFor={id}>{label}</label>
       <button type="button" className={styles.dictationToggle} aria-expanded={helpOpen} aria-controls={`${id}-dictation`}
