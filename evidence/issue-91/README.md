@@ -51,9 +51,27 @@ reliability. #92 and #94 remain separate.
   garbled and partial observations. Independent pypdf widget-coordinate checks
   also found and verify the narrow B6 visual-row mapping repair: native field
   suffixes 5/8 did not line up with their reference bounds and dates.
-- PR #93 fallback alias was checked without mutation: deployment
-  `dpl_Dh1QnPGgLArPbnzXQ6myFXdapoQM`, SHA `996450f`, ready, with its existing grant
-  expiring 2026-09-27 19:19:52 UTC.
+- Standard fresh-context Claude Sonnet high review of `593ae34` completed in
+  253,229 ms through the authenticated subscription, Read/Glob/Grep only.
+  Its one blocker was a stale architecture invariant contradicting the approved
+  partial-observation support. `d59ea38` reconciles that paragraph. Historical
+  quarantine notices are intentionally retained for v7/v8 compatibility, and
+  date-only rows are explicitly documented as repairable partial information.
+  The actual review and dispositions are canonical in PR #95. No code changed
+  after review; the originating review covers the documentation remediation.
 
-Live/deployment results and independent Claude disposition will be recorded
-before merge.
+## Preview access limitation
+
+PR #93 deployment `dpl_Dh1QnPGgLArPbnzXQ6myFXdapoQM` / SHA `996450f` remains
+unchanged. Candidate `593ae34` deployed after PR #95 creation, with PR metadata,
+and passed fresh Chromium/Firefox access, blank-case API and disclosure/reset
+checks. Ordinary URLs remain protected; project-wide bypass remains absent.
+
+The current hosting plan permits only one active share link. Creating the
+candidate grant automatically revoked the fallback grant; restoring fallback
+access then revoked the candidate grant and interrupted a PDF download. This
+matches the previously recorded issue-85 hosting limitation. Both deployments
+have individually passed fresh-browser checks; those checks do not establish
+simultaneous anonymous access. No deployment was replaced, protection weakened,
+or plan purchased. The user was asked which preview should own the share link.
+Final access selection and live evaluation disposition are pending.

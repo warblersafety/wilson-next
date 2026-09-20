@@ -1,0 +1,590 @@
+{
+  "sha": "593ae340a459136d1049bc339325cf59115d1a87",
+  "deployment": "dpl_7a7gGoyPVBAMCXPmCk1PNTHugXmP",
+  "startedAt": "2026-09-20T20:41:24.641Z",
+  "callBudget": 6,
+  "usdCap": 5,
+  "retries": 0,
+  "cases": [
+    {
+      "id": "tryptase",
+      "exposedAt": "2026-09-20T20:41:25.806Z",
+      "expected": [
+        {
+          "testName": "Serum tryptase",
+          "testResult": "18 ng/mL",
+          "lowRange": "0",
+          "highRange": "11.4",
+          "date": "2026-09-03"
+        }
+      ],
+      "status": 200,
+      "operationId": "2ea8c39b-00b6-4432-a5fe-cade7e8569c4",
+      "observed": [
+        {
+          "id": "test-accc20c3-7c79-47b2-83a4-264ad9a83945",
+          "facts": {
+            "testName": [
+              {
+                "kind": "known",
+                "value": "Serum tryptase"
+              }
+            ],
+            "testResult": [
+              {
+                "kind": "known",
+                "value": "18 ng/mL"
+              }
+            ],
+            "lowRange": [
+              {
+                "kind": "known",
+                "value": "0"
+              }
+            ],
+            "highRange": [
+              {
+                "kind": "known",
+                "value": "11.4"
+              }
+            ],
+            "date": [
+              {
+                "kind": "known",
+                "value": "2026-09-03"
+              }
+            ]
+          }
+        }
+      ],
+      "unrepresented": [],
+      "clarifications": [
+        "serious-outcomes",
+        "relevant-clinical-context",
+        "reporter-details"
+      ],
+      "correction": {
+        "exposedAt": "2026-09-20T20:41:45.424Z",
+        "expectedResult": "17 ng/mL",
+        "status": 200,
+        "operationId": "ed635ccb-3d16-4253-b578-83042400aeea",
+        "unrepresented": [],
+        "reviewed": [
+          {
+            "id": "test-accc20c3-7c79-47b2-83a4-264ad9a83945",
+            "facts": {
+              "testName": {
+                "kind": "known",
+                "value": "Serum tryptase"
+              },
+              "testResult": {
+                "kind": "known",
+                "value": "17 ng/mL"
+              },
+              "lowRange": {
+                "kind": "known",
+                "value": "0"
+              },
+              "highRange": {
+                "kind": "known",
+                "value": "11.4"
+              },
+              "date": {
+                "kind": "known",
+                "value": "2026-09-03"
+              }
+            }
+          }
+        ],
+        "metrics": {
+          "model": "claude-sonnet-5",
+          "promptRevision": "wilson-laboratory-fidelity-v1",
+          "schemaRevision": "wilson-grounded-proposals-v13-simple",
+          "inputTokens": 5760,
+          "outputTokens": 161,
+          "latencyMs": 2117,
+          "estimatedCostUsd": 0.01313
+        },
+        "observedBeforeReview": [
+          {
+            "id": "test-accc20c3-7c79-47b2-83a4-264ad9a83945",
+            "facts": {
+              "testName": {
+                "kind": "known",
+                "value": "Serum tryptase"
+              },
+              "testResult": {
+                "kind": "known",
+                "value": "18 ng/mL"
+              },
+              "lowRange": {
+                "kind": "known",
+                "value": "0"
+              },
+              "highRange": {
+                "kind": "known",
+                "value": "11.4"
+              },
+              "date": {
+                "kind": "known",
+                "value": "2026-09-03"
+              }
+            }
+          }
+        ]
+      },
+      "reviewed": [
+        {
+          "id": "test-accc20c3-7c79-47b2-83a4-264ad9a83945",
+          "facts": {
+            "testName": {
+              "kind": "known",
+              "value": "Serum tryptase"
+            },
+            "testResult": {
+              "kind": "known",
+              "value": "17 ng/mL"
+            },
+            "lowRange": {
+              "kind": "known",
+              "value": "0"
+            },
+            "highRange": {
+              "kind": "known",
+              "value": "11.4"
+            },
+            "date": {
+              "kind": "known",
+              "value": "2026-09-03"
+            }
+          }
+        }
+      ],
+      "projection": [
+        {
+          "testId": "test-accc20c3-7c79-47b2-83a4-264ad9a83945",
+          "testResult": "Serum tryptase: 17 ng/mL",
+          "lowRange": "0",
+          "highRange": "11.4",
+          "date": "2026-09-03"
+        }
+      ],
+      "downloaded": true,
+      "finishedAt": "2026-09-20T20:41:50.995Z",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-laboratory-fidelity-v1",
+        "schemaRevision": "wilson-grounded-proposals-v13-simple",
+        "inputTokens": 4997,
+        "outputTokens": 2490,
+        "latencyMs": 17882,
+        "estimatedCostUsd": 0.034894
+      },
+      "assessment": {
+        "identityAndResult": "pass",
+        "omissions": [],
+        "unsupportedAdditions": [],
+        "wrongTestAttribution": [],
+        "clarificationBurden": "No laboratory repair question; existing history, outcomes and reporter questions only.",
+        "operatorLabCorrections": 0,
+        "correction": "Accepted result 17 ng/mL on the original stable test ID; name, date and ranges unchanged."
+      },
+      "independentPdfRows": [
+        {
+          "date": "03-SEP-2026",
+          "highRange": "11.4",
+          "lowRange": "0",
+          "testResult": "Serum tryptase: 17 ng/mL"
+        }
+      ]
+    },
+    {
+      "id": "demo24",
+      "exposedAt": "2026-09-20T20:42:24.861Z",
+      "expected": [
+        {
+          "testName": "hemoglobin",
+          "testResult": "9.1 g/dL",
+          "lowRange": "12",
+          "highRange": "16",
+          "date": "2026-09-11"
+        },
+        {
+          "testName": "stool test",
+          "testResult": "positive for occult blood",
+          "date": "2026-09-11"
+        }
+      ],
+      "status": 200,
+      "operationId": "499e9199-6dad-4fdd-9bdb-efc093a3598e",
+      "observed": [
+        {
+          "id": "test-f4e7327f-653c-45d6-b62e-4ad56134208a",
+          "facts": {
+            "testName": [
+              {
+                "kind": "known",
+                "value": "hemoglobin"
+              }
+            ],
+            "testResult": [
+              {
+                "kind": "known",
+                "value": "9.1 g/dL"
+              }
+            ],
+            "lowRange": [
+              {
+                "kind": "known",
+                "value": "12"
+              }
+            ],
+            "highRange": [
+              {
+                "kind": "known",
+                "value": "16"
+              }
+            ],
+            "date": [
+              {
+                "kind": "known",
+                "value": "2026-09-11"
+              }
+            ]
+          }
+        },
+        {
+          "id": "test-49f22c4f-621e-4b9c-9273-939ca7022613",
+          "facts": {
+            "testName": [
+              {
+                "kind": "known",
+                "value": "stool test for occult blood"
+              }
+            ],
+            "testResult": [
+              {
+                "kind": "known",
+                "value": "positive"
+              }
+            ],
+            "date": [
+              {
+                "kind": "known",
+                "value": "2026-09-11"
+              }
+            ]
+          }
+        }
+      ],
+      "unrepresented": [],
+      "clarifications": [
+        "serious-outcomes",
+        "relevant-clinical-context",
+        "reporter-details"
+      ],
+      "reviewed": [
+        {
+          "id": "test-f4e7327f-653c-45d6-b62e-4ad56134208a",
+          "facts": {
+            "testName": {
+              "kind": "known",
+              "value": "hemoglobin"
+            },
+            "testResult": {
+              "kind": "known",
+              "value": "9.1 g/dL"
+            },
+            "lowRange": {
+              "kind": "known",
+              "value": "12"
+            },
+            "highRange": {
+              "kind": "known",
+              "value": "16"
+            },
+            "date": {
+              "kind": "known",
+              "value": "2026-09-11"
+            }
+          }
+        },
+        {
+          "id": "test-49f22c4f-621e-4b9c-9273-939ca7022613",
+          "facts": {
+            "testName": {
+              "kind": "known",
+              "value": "stool test for occult blood"
+            },
+            "testResult": {
+              "kind": "known",
+              "value": "positive"
+            },
+            "date": {
+              "kind": "known",
+              "value": "2026-09-11"
+            }
+          }
+        }
+      ],
+      "projection": [
+        {
+          "testId": "test-f4e7327f-653c-45d6-b62e-4ad56134208a",
+          "testResult": "hemoglobin: 9.1 g/dL",
+          "lowRange": "12",
+          "highRange": "16",
+          "date": "2026-09-11"
+        },
+        {
+          "testId": "test-49f22c4f-621e-4b9c-9273-939ca7022613",
+          "testResult": "stool test for occult blood: positive",
+          "date": "2026-09-11"
+        }
+      ],
+      "downloaded": true,
+      "finishedAt": "2026-09-20T20:42:53.256Z",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-laboratory-fidelity-v1",
+        "schemaRevision": "wilson-grounded-proposals-v13-simple",
+        "inputTokens": 5018,
+        "outputTokens": 3248,
+        "latencyMs": 24161,
+        "estimatedCostUsd": 0.042516
+      },
+      "assessment": {
+        "identityAndResult": "pass",
+        "omissions": [],
+        "unsupportedAdditions": [],
+        "wrongTestAttribution": [],
+        "clarificationBurden": "No laboratory repair question; existing history, outcomes and reporter questions only.",
+        "operatorLabCorrections": 0,
+        "wordingVariation": "Stool test for occult blood + positive is semantically equivalent to stool test + positive for occult blood; identity/specimen and qualitative finding are both retained."
+      },
+      "independentPdfRows": [
+        {
+          "date": "11-SEP-2026",
+          "highRange": "16",
+          "lowRange": "12",
+          "testResult": "hemoglobin: 9.1 g/dL"
+        },
+        {
+          "date": "11-SEP-2026",
+          "highRange": "",
+          "lowRange": "",
+          "testResult": "stool test for occult blood: positive"
+        }
+      ]
+    },
+    {
+      "id": "contrasting",
+      "exposedAt": "2026-09-20T20:43:38.910Z",
+      "expected": [
+        {
+          "testName": "Urine culture",
+          "testResult": "no growth",
+          "date": null
+        },
+        {
+          "testName": "Platelet count",
+          "testResult": "82",
+          "date": null
+        },
+        {
+          "testName": "skin biopsy",
+          "testResult": null
+        }
+      ],
+      "status": 200,
+      "operationId": "554435a0-9153-4f8b-9b2f-a5c0c703fca2",
+      "observed": [
+        {
+          "id": "test-f0c8bab6-cd1c-443a-8168-ab808c58cd0d",
+          "facts": {
+            "testName": [
+              {
+                "kind": "known",
+                "value": "Urine culture"
+              }
+            ],
+            "testResult": [
+              {
+                "kind": "known",
+                "value": "no growth"
+              }
+            ],
+            "date": [
+              {
+                "kind": "unknown"
+              }
+            ]
+          }
+        },
+        {
+          "id": "test-1b72bba5-2b69-4998-b9e0-2537b4dc57d1",
+          "facts": {
+            "testName": [
+              {
+                "kind": "known",
+                "value": "Platelet count"
+              }
+            ],
+            "testResult": [
+              {
+                "kind": "known",
+                "value": "82",
+                "qualifier": "units unknown"
+              }
+            ],
+            "date": [
+              {
+                "kind": "unknown"
+              }
+            ]
+          }
+        },
+        {
+          "id": "test-ef808459-1d9c-43ea-8306-c63bd57a2b33",
+          "facts": {
+            "testName": [
+              {
+                "kind": "known",
+                "value": "skin biopsy"
+              }
+            ],
+            "testResult": [
+              {
+                "kind": "unknown"
+              }
+            ]
+          }
+        }
+      ],
+      "unrepresented": [],
+      "clarifications": [
+        "serious-outcomes",
+        "relevant-clinical-context",
+        "reporter-details"
+      ],
+      "reviewed": [
+        {
+          "id": "test-f0c8bab6-cd1c-443a-8168-ab808c58cd0d",
+          "facts": {
+            "testName": {
+              "kind": "known",
+              "value": "Urine culture"
+            },
+            "testResult": {
+              "kind": "known",
+              "value": "no growth"
+            },
+            "date": {
+              "kind": "unknown"
+            }
+          }
+        },
+        {
+          "id": "test-1b72bba5-2b69-4998-b9e0-2537b4dc57d1",
+          "facts": {
+            "testName": {
+              "kind": "known",
+              "value": "Platelet count"
+            },
+            "testResult": {
+              "kind": "known",
+              "value": "82",
+              "qualifier": "units unknown"
+            },
+            "date": {
+              "kind": "unknown"
+            }
+          }
+        },
+        {
+          "id": "test-ef808459-1d9c-43ea-8306-c63bd57a2b33",
+          "facts": {
+            "testName": {
+              "kind": "known",
+              "value": "skin biopsy"
+            },
+            "testResult": {
+              "kind": "unknown"
+            }
+          }
+        }
+      ],
+      "projection": [
+        {
+          "testId": "test-f0c8bab6-cd1c-443a-8168-ab808c58cd0d",
+          "testResult": "Urine culture: no growth"
+        },
+        {
+          "testId": "test-1b72bba5-2b69-4998-b9e0-2537b4dc57d1",
+          "testResult": "Platelet count: 82"
+        },
+        {
+          "testId": "test-ef808459-1d9c-43ea-8306-c63bd57a2b33",
+          "testResult": "skin biopsy: Result not recorded"
+        }
+      ],
+      "driverFailure": "PDF download did not start after the hosting service revoked the candidate share grant when the fallback grant was restored. No PDF application request was logged. No model retry.",
+      "assessment": {
+        "identityAndResult": "pass",
+        "omissions": [],
+        "unsupportedAdditions": [],
+        "wrongTestAttribution": [],
+        "clarificationBurden": "No laboratory repair question; existing history, outcomes and reporter questions only.",
+        "operatorLabCorrections": 0,
+        "partialInformation": "Culture/platelet dates explicitly unknown, platelet units not invented, biopsy result unknown. Units-unknown qualifier remains in semantic state; PDF value has no unit."
+      },
+      "localPdfRecovery": {
+        "modelCalls": 0,
+        "reviewedCaseReused": true,
+        "independentPdfRows": [
+          {
+            "date": "",
+            "highRange": "",
+            "lowRange": "",
+            "testResult": "Urine culture: no growth"
+          },
+          {
+            "date": "",
+            "highRange": "",
+            "lowRange": "",
+            "testResult": "Platelet count: 82"
+          },
+          {
+            "date": "",
+            "highRange": "",
+            "lowRange": "",
+            "testResult": "skin biopsy: Result not recorded"
+          }
+        ],
+        "location": "local production build of identical material source",
+        "limitation": "Protected preview PDF check pending restored candidate access."
+      },
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-laboratory-fidelity-v1",
+        "schemaRevision": "wilson-grounded-proposals-v13-simple",
+        "inputTokens": 5017,
+        "outputTokens": 3735,
+        "latencyMs": 30033,
+        "estimatedCostUsd": 0.047384
+      }
+    }
+  ],
+  "metricsSource": "Vercel diagnostic events inspected in memory; only selected synthetic observations and metrics retained, no raw log archive.",
+  "totals": {
+    "calls": 4,
+    "inputTokens": 20792,
+    "outputTokens": 9634,
+    "estimatedCostUsd": 0.137924
+  },
+  "limitations": [
+    "Bounded synthetic laboratory evaluation only; no model reliability rate, native dictation or real-data claim.",
+    "Broad clinical-term ambiguity detection remains deferred; deterministic tests preserve unfamiliar terms for review.",
+    "Two planned calls remain unexposed pending the preview access choice.",
+    "The contrasted platelet unit uncertainty is retained in semantic qualifier metadata; the PDF preserves the number without inventing a unit."
+  ]
+}

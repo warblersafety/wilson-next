@@ -1,0 +1,25 @@
+{
+  "sha": "593ae340a459136d1049bc339325cf59115d1a87",
+  "host": "wilson-next-laboratory-fidelity.vercel.app",
+  "deployment": "dpl_7a7gGoyPVBAMCXPmCk1PNTHugXmP",
+  "expiresAt": "2026-09-27T20:39:56+00:00",
+  "browsers": [
+    {
+      "name": "chromium",
+      "version": "153.0.8010.12",
+      "sharedAccess": true,
+      "blankCaseApi": 200,
+      "disclosureAndDraftReset": true,
+      "liveModelCalls": 0
+    },
+    {
+      "name": "firefox",
+      "version": "155.0",
+      "sharedAccess": true,
+      "blankCaseApi": 200,
+      "disclosureAndDraftReset": true,
+      "liveModelCalls": 0
+    }
+  ],
+  "ordinaryUrlsProtected": true
+}
