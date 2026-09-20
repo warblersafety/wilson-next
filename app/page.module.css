@@ -94,10 +94,10 @@
 }
 
 .workspace { grid-template-columns: minmax(430px, .9fr) minmax(560px, 1.1fr); }
-.openingWorkspace { margin: 0 auto; max-width: 880px; padding: 32px 24px; }
-.openingWorkspace .activeTask { border: 1px solid #d0d8d3; border-radius: 12px; padding: 32px clamp(24px, 4vw, 56px); }
+.openingWorkspace { margin: 0 auto; max-width: 880px; padding: 24px; }
+.openingWorkspace .activeTask { border: 1px solid #d0d8d3; border-radius: 12px; padding: 24px clamp(24px, 4vw, 56px); }
 .openingWorkspace h1 { font-size: clamp(2rem, 3.3vw, 2.8rem); }
-.openingWorkspace textarea { min-height: 180px; height: 220px; }
+.openingWorkspace textarea { min-height: 180px; height: 200px; }
 .outputWorkspace { grid-template-columns: minmax(430px, .85fr) minmax(640px, 1.15fr); }
 
 .activeTask, .outputSummary {
