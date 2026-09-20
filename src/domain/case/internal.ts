@@ -63,6 +63,7 @@ export function emptyEventFacts(): EventFacts {
 
 export function emptyRelevantTestFacts(): RelevantTestFacts {
   return {
+    testName: emptyFact(),
     testResult: emptyFact(),
     lowRange: emptyFact(),
     highRange: emptyFact(),
@@ -189,8 +190,8 @@ export function assertCaseInvariants(caseState: SemanticCase): void {
     throw new Error("Relevant-test IDs must be unique");
   }
   for (const test of caseState.relevantTests) {
-    if (test.state !== "rejected" && test.facts.testResult.state === "empty") {
-      throw new Error(`Relevant test ${test.id} requires test and result text`);
+    if (test.state !== "rejected" && Object.values(test.facts).every((fact) => fact.state === "empty")) {
+      throw new Error(`Relevant test ${test.id} requires at least one supported detail`);
     }
   }
 

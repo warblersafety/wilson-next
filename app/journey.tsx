@@ -440,12 +440,13 @@ function ClinicalContextTask({ snapshot, busy, act }: {
   const question = snapshot.clarification?.kind === "clinical-context" ? snapshot.clarification : undefined;
   const [testChoice, setTestChoice] = useState<ContextChoice>();
   const [historyChoice, setHistoryChoice] = useState<ContextChoice>();
+  const [testName, setTestName] = useState("");
   const [testResult, setTestResult] = useState("");
   const [lowRange, setLowRange] = useState("");
   const [highRange, setHighRange] = useState("");
   const [testDate, setTestDate] = useState("");
   const [history, setHistory] = useState("");
-  const testComplete = !question?.askTests || (testChoice && (testChoice !== "known" || Boolean(testResult.trim())));
+  const testComplete = !question?.askTests || (testChoice && (testChoice !== "known" || Boolean(testName.trim() || testResult.trim())));
   const historyComplete = !question?.askHistory || (historyChoice && (historyChoice !== "known" || Boolean(history.trim())));
   const contextValue = (choice: ContextChoice | undefined, text: string): ClinicalHistoryValue => choice === "known"
     ? { kind: "known", value: text.trim() }
@@ -457,7 +458,9 @@ function ClinicalContextTask({ snapshot, busy, act }: {
       <legend>Relevant tests or laboratory results</legend>
       <label><input type="radio" name="test-choice" checked={testChoice === "known"} onChange={() => setTestChoice("known")} /> Add one relevant result</label>
       {testChoice === "known" && <>
-        <label>Test and result <input aria-label="Test and result" value={testResult} onChange={(event) => setTestResult(event.target.value)} /></label>
+        <p>Enter the details you know. Leave missing units or dates blank; do not guess clinical terms.</p>
+        <label>Test identity <input aria-label="Test identity" value={testName} onChange={(event) => setTestName(event.target.value)} /></label>
+        <label>Result and stated units <input aria-label="Result and stated units" value={testResult} onChange={(event) => setTestResult(event.target.value)} /></label>
         <label>Low range (optional) <input aria-label="Low range" value={lowRange} onChange={(event) => setLowRange(event.target.value)} /></label>
         <label>High range (optional) <input aria-label="High range" value={highRange} onChange={(event) => setHighRange(event.target.value)} /></label>
         <label>Date (optional) <input aria-label="Test date" type="date" value={testDate} onChange={(event) => setTestDate(event.target.value)} /></label>
@@ -476,7 +479,7 @@ function ClinicalContextTask({ snapshot, busy, act }: {
     </fieldset>}
     <button disabled={busy || !testComplete || !historyComplete} onClick={() => void act({
       action: "answer-clinical-context",
-      test: question?.askTests ? testChoice === "known" ? { kind: "known", testResult: testResult.trim(), lowRange: lowRange.trim() || undefined, highRange: highRange.trim() || undefined, date: testDate || undefined } : { kind: testChoice as Exclude<ContextChoice, "known"> } : undefined,
+      test: question?.askTests ? testChoice === "known" ? { kind: "known", testName: testName.trim() || undefined, testResult: testResult.trim() || undefined, lowRange: lowRange.trim() || undefined, highRange: highRange.trim() || undefined, date: testDate || undefined } : { kind: testChoice as Exclude<ContextChoice, "known"> } : undefined,
       history: question?.askHistory ? contextValue(historyChoice, history) : undefined,
     })}>Add this context</button>
   </>;
@@ -792,7 +795,7 @@ function CaseCards({ snapshot, busy, act }: {
   return <div className={styles.cards}>
     <CaseCard domId="case-card-patient" title="Patient" entity="patient" entityId="patient" entityState="resolved" groupId="patient" facts={understanding.patient} fields={["identifier", "ageYears", "sex", "weight"]} allowOpeningReview={openingReview && Object.values(understanding.patient).some(({ proposals }) => proposals.some(({ groupId }) => groupId === "patient"))} allowDirectEdit={directEdit} busy={busy} act={act} />
     <CaseCard domId="case-card-event" title="Event" entity="event" entityId="event" entityState="resolved" groupId="event" facts={understanding.event} fields={["reportType", "reportDate", "problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate", "relevantHistory"]} allowOpeningReview={openingReview && Object.values(understanding.event).some(({ proposals }) => proposals.some(({ groupId }) => groupId === "event"))} allowDirectEdit={directEdit} busy={busy} act={act} />
-    {understanding.relevantTests.map((test, index) => <CaseCard domId={`case-card-test-${index + 1}`} key={test.id} title={`Relevant test ${index + 1}`} eyebrow="Test or laboratory result" entity="test" entityId={test.id} entityState={test.state} groupId={test.proposalGroupId} facts={test.facts} fields={["testResult", "lowRange", "highRange", "date"]} allowOpeningReview={openingReview && test.state === "proposed"} allowDirectEdit={directEdit && test.state === "resolved"} allowRemove={openingReview && test.state === "proposed"} allowWithdraw={entityWithdrawal && test.state === "resolved"} busy={busy} act={act} />)}
+    {understanding.relevantTests.map((test, index) => <CaseCard domId={`case-card-test-${index + 1}`} key={test.id} title={`Relevant test ${index + 1}`} eyebrow="Test or laboratory result" entity="test" entityId={test.id} entityState={test.state} groupId={test.proposalGroupId} facts={test.facts} fields={["testName", "testResult", "lowRange", "highRange", "date"]} allowOpeningReview={openingReview && test.state === "proposed"} allowDirectEdit={directEdit && test.state === "resolved"} allowRemove={openingReview && test.state === "proposed"} allowWithdraw={entityWithdrawal && test.state === "resolved"} busy={busy} act={act} />)}
     {understanding.products.map((product) => {
       const name = productViewLabel(product);
       const role = knownString(activeValue(product.facts.role));
@@ -840,13 +843,14 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
       </div>
     </div>
     {entityState === "withdrawn" && <p className={styles.withdrawn}>Withdrawn from the active report; reviewed facts and source history are retained below.</p>}
+    {entity === "test" && entityState !== "withdrawn" && !knownString(activeValue(facts.testName)) && <p role="status">Test identity is not recorded as known. Check the source wording; {allowOpeningReview ? "accept the understanding, then add the identity in this test card" : "use Test identity below to add or correct it"}. You can leave it unknown and continue with a partial report.</p>}
     <dl>{fields.map((field) => {
       const fact = facts[field];
       if (!fact) return null;
       const value = activeValue(fact);
       const proposal = fact.proposals.find(({ groupId: proposalGroup }) => proposalGroup === groupId);
       const editable = Boolean((allowOpeningReview && proposal) || allowDirectEdit);
-      if (!value && fact.history.length === 0 && fact.conflicts.length === 0 && !editable) return null;
+      if (!value && fact.history.length === 0 && fact.conflicts.length === 0 && !editable && !(entity === "test" && (field === "testName" || field === "testResult"))) return null;
       const control = factControl(entity, field);
       if (!control) return null;
       const draft = drafts[field];

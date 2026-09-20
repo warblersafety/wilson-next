@@ -173,6 +173,7 @@ describe("report-completeness state upgrade", () => {
     legacy.version = "wilson-browser-state-v7";
     delete legacy.case.event.facts.reportDate;
     for (const product of legacy.case.products) delete product.facts.strength;
+    for (const test of legacy.case.relevantTests) delete test.facts.testName;
     const upgraded = parseBrowserJourneyState(legacy);
     expect(upgraded).toEqual(state);
     expect(upgraded.case.revision).toBe(legacy.case.revision);
@@ -182,5 +183,25 @@ describe("report-completeness state upgrade", () => {
     const brokenCurrent = JSON.parse(JSON.stringify(state));
     delete brokenCurrent.case.event.facts.reportDate;
     expect(() => parseBrowserJourneyState(brokenCurrent)).toThrow(BrowserStateError);
+  });
+});
+
+
+describe("laboratory state upgrade", () => {
+  it("upgrades v8 without guessing identity from legacy combined text or altering history", async () => {
+    const repository = new InMemoryCaseRepository();
+    const snapshot = await performJourneyAction(repository, `case-${randomUUID()}`, { action: "submit-opening", text: openingAccount, reportType: "adverse-event" }, fixedJourneyModel);
+    const { state } = await journeyResponse(repository, snapshot);
+    const legacy = JSON.parse(JSON.stringify(state));
+    legacy.version = "wilson-browser-state-v8";
+    for (const test of legacy.case.relevantTests) delete test.facts.testName;
+    const upgraded = parseBrowserJourneyState(legacy);
+    expect(upgraded).toEqual(state);
+    expect(upgraded.case.relevantTests[0].facts.testName.state).toBe("empty");
+    expect(upgraded.case.relevantTests[0].facts.testResult).toEqual(legacy.case.relevantTests[0].facts.testResult);
+    expect(upgraded.case.sources).toEqual(legacy.case.sources);
+    expect(upgraded.case.changes).toEqual(legacy.case.changes);
+    delete legacy.case.relevantTests[0].facts.testResult;
+    expect(() => parseBrowserJourneyState(legacy)).toThrow(BrowserStateError);
   });
 });

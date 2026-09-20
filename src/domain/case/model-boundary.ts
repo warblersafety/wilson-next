@@ -6,7 +6,7 @@ import { maximumCaseProducts } from "./limits";
 const patientFields = ["identifier", "ageYears", "sex", "weight"] as const;
 const eventFields = ["problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "relevantHistory", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate"] as const;
 const productFields = ["name", "productType", "role", "manufacturer", "lotNumber", "dose", "strength", "frequency", "route", "startDate", "stopDate", "indication", "stopped", "commonName", "procode", "modelNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implanted", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const;
-const relevantTestFields = ["testResult", "lowRange", "highRange", "date"] as const;
+const relevantTestFields = ["testName", "testResult", "lowRange", "highRange", "date"] as const;
 
 const modelTargetSchema = z.discriminatedUnion("entity", [
   z.object({ entity: z.literal("patient"), field: z.enum(patientFields) }).strict(),
@@ -194,7 +194,7 @@ export function parseModelProposalEnvelope(
   assertResponseLevelProposalConsistency(output.proposals, declaredProductByReference, testByReference);
 
   const unrepresented: UnrepresentedModelProposal[] = [];
-  let prepared: PreparedProposal[] = [];
+  const prepared: PreparedProposal[] = [];
   for (const [index, rawProposal] of output.proposals.entries()) {
     const parsed = modelProposalSchema.safeParse(rawProposal);
     if (!parsed.success) {
@@ -233,12 +233,7 @@ export function parseModelProposalEnvelope(
     prepared.push({ proposal, target, groupId, evidenceStart: evidence });
   }
 
-  for (const [reference, declaration] of testByReference) {
-    const forTest = prepared.filter(({ target }) => target.entity === "test" && target.entityId === declaration.id);
-    if (forTest.length > 0 && !forTest.some(({ target }) => target.field === "testResult")) {
-      for (const item of forTest) unrepresented.push(quarantine(item.proposal, "incomplete-relevant-test"));
-      prepared = prepared.filter(({ target }) => target.entity !== "test" || target.entityId !== declaration.id);
-    }
+  for (const reference of testByReference.keys()) {
     if (!output.proposals.some(({ target }) => target.entity === "test" && target.testReference === reference)) {
       boundaryIssue(["tests"], `Declared relevant test ${reference} has no proposals`);
     }

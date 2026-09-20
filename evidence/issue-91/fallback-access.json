@@ -1,0 +1,26 @@
+{
+  "sha": "996450f1a0eb50ff35f9f8975b370afdfc6a8bc3",
+  "host": "wilson-next-report-completeness.vercel.app",
+  "deployment": "dpl_Dh1QnPGgLArPbnzXQ6myFXdapoQM",
+  "expiresAt": "2026-09-27T20:44:08+00:00",
+  "browsers": [
+    {
+      "name": "chromium",
+      "version": "153.0.8010.12",
+      "sharedAccess": true,
+      "blankCaseApi": 200,
+      "disclosureAndDraftReset": true,
+      "liveModelCalls": 0
+    },
+    {
+      "name": "firefox",
+      "version": "155.0",
+      "sharedAccess": true,
+      "blankCaseApi": 200,
+      "disclosureAndDraftReset": true,
+      "liveModelCalls": 0
+    }
+  ],
+  "ordinaryUrlsProtected": true,
+  "statusAfterUserDecision": "Deployment retained unchanged for rollback; shared grant moved to latest candidate. This historical fresh-browser verification used a grant that is no longer active. Current direct access requires Vercel sign-in."
+}

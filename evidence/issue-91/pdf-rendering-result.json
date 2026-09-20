@@ -1,0 +1,19 @@
+{
+  "capturedPages": [
+    {
+      "page": 3,
+      "rendered": true,
+      "screenshot": "evidence/issue-91/laboratory-pdf-page-3.png"
+    }
+  ],
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "evidence/issue-91/laboratory.pdf",
+  "inspection": [
+    "All eight B6 observation texts are visible and readable.",
+    "Identity/result, reference limits and dates occupy the same visual row.",
+    "Unstated dates and units remain blank; partial observations are explicitly marked.",
+    "Source form labels and page identity remain intact."
+  ],
+  "independentGeometryCheck": "tests/pdf/adaptive-form-3500.test.ts reads pypdf widget coordinates and checks all eight rows independently of adapter field names."
+}

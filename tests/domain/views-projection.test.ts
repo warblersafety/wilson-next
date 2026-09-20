@@ -118,7 +118,7 @@ describe("pure case views and semantic Form 3500 projection", () => {
       reportType: "adverse-event",
       eventDate: "2026-08-18",
       hospitalized: true,
-      relevantTests: [expect.objectContaining({ testId: "test-hemoglobin", testResult: "Hemoglobin: 7.8 g/dL" })],
+      relevantTests: [expect.objectContaining({ testId: "test-hemoglobin", testResult: "Test identity not recorded: Hemoglobin: 7.8 g/dL" })],
     });
     expect(resolved.sections.B.eventDescription).toContain("melena and dizziness");
     expect(resolved.sections.B.eventDescription).toContain("Products stopped: apixaban and naproxen.");

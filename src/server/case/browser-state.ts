@@ -8,7 +8,7 @@ import {
 import type { JourneySnapshot, JourneyStage } from "../journey/service";
 import { InMemoryCaseRepository, validateRestoredCase } from "./repository";
 
-export const browserStateVersion = "wilson-browser-state-v8";
+export const browserStateVersion = "wilson-browser-state-v9";
 
 export interface BrowserJourneyState {
   version: typeof browserStateVersion;
@@ -94,6 +94,7 @@ const eventFactsSchema = z.object({
   productReturnDate: factSchema(isoDateSchema),
 }).strict();
 const relevantTestFactsSchema = z.object({
+  testName: factSchema(z.string()),
   testResult: factSchema(z.string()),
   lowRange: factSchema(z.string()),
   highRange: factSchema(z.string()),
@@ -199,7 +200,10 @@ const caseSchema = z.object({
   }).strict()),
 }).strict();
 
-const legacyCaseSchema = caseSchema.extend({
+const v8CaseSchema = caseSchema.extend({
+  relevantTests: z.array(caseSchema.shape.relevantTests.element.extend({ facts: relevantTestFactsSchema.omit({ testName: true }) })).max(maximumRelevantTests),
+});
+const legacyCaseSchema = v8CaseSchema.extend({
   event: caseSchema.shape.event.extend({ facts: eventFactsSchema.omit({ reportDate: true }) }),
   products: z.array(caseSchema.shape.products.element.extend({ facts: productFactsSchema.omit({ strength: true }) })).max(maximumCaseProducts),
 });
@@ -236,7 +240,7 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
   if (!version.success) {
     throw new BrowserStateError("The saved synthetic preview state is malformed", "malformed-browser-state");
   }
-  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v7") {
+  if (![browserStateVersion, "wilson-browser-state-v8", "wilson-browser-state-v7"].includes(version.data.version)) {
     throw new BrowserStateError("The saved synthetic preview state is incompatible", "incompatible-browser-state");
   }
   const envelope = stateSchema.safeParse(input);
@@ -252,6 +256,14 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
       event: { ...legacy.data.event, facts: { ...legacy.data.event.facts, reportDate: emptyAddedFact() } },
       products: legacy.data.products.map((product) => ({ ...product, facts: { ...product.facts, strength: emptyAddedFact() } })),
     };
+  }
+  if (version.data.version !== browserStateVersion) {
+    const legacy = v8CaseSchema.safeParse(candidate);
+    if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
+    // Preserve legacy combined text verbatim; splitting it would guess clinical identity.
+    candidate = { ...legacy.data, relevantTests: legacy.data.relevantTests.map((test) => ({
+      ...test, facts: { ...test.facts, testName: emptyAddedFact() },
+    })) };
   }
   const parsedCase = caseSchema.safeParse(candidate);
   if (!parsedCase.success) {

@@ -61,6 +61,15 @@ commit is permitted instead. Verify that the replacement deployment targets
 that post-PR commit and was created after the PR; do not relax the application
 gate to make the earlier deployment usable.
 
+The shared synthetic preview follows the latest verified candidate. Steve's
+2026-09-20 instruction authorizes updating that shared link as work progresses
+and rolling it back when necessary. Retain the previous working deployment for
+rollback; simultaneous anonymous access to old and new deployments is not a
+requirement. If the hosting plan permits only one share grant, move that grant
+to the latest candidate without another approval step. Older deployments may
+require Vercel sign-in. Verify the promoted link and keep existing protection;
+this does not authorize a paid-plan purchase or production release.
+
 Update it at meaningful boundaries, not with routine terminal narration.
 Successful branches are deleted after squash merge. If an experiment falsifies
 its premise, close without merging and retain a named branch or commit until its

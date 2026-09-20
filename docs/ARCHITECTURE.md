@@ -61,7 +61,7 @@ Case
   patient
   event
   products[]        # stable ID, product category, and suspect/concomitant role
-  relevantTests[]   # stable ID; result, ranges, and date stay together
+  relevantTests[]   # stable ID; identity, result, ranges, and date stay together
   reporter          # direct clinician entry; never model-proposed
   askedNeeds[]      # small semantic follow-up history
   sources[]         # clinician inputs and exact excerpts
@@ -135,8 +135,30 @@ saved-case migration framework.
 The output explicitly discloses the remaining Section D subtype, purchase,
 identifier, expiration, dose-reduction/duration and withdrawal/reintroduction
 mapping gaps. Download readiness remains the supported-path condition, not a
-claim of complete FDA-form coverage. Issues #91 and #92 separately own laboratory
-fidelity and consequential medication follow-ups.
+claim of complete FDA-form coverage. Issue #92 owns consequential medication
+follow-ups.
+
+### Laboratory observations
+
+Each relevant test has independent reviewed `testName` and `testResult` text
+facts, plus ranges and an explicitly supplied test date. Identity includes the
+stated specimen/context; result retains numeric or qualitative wording and any
+stated units. Partial observations remain representable even if identity or
+result is missing or rejected by the model boundary. No clinical vocabulary,
+unit, range or date is inferred. Unfamiliar dictated terms remain verbatim for
+source review; broad ambiguity detection is deferred, not a clinical validator.
+
+Review shows missing identity and allows direct repair using the existing fact
+controls after acceptance. It does not block partial output or create repeated
+completion questions. B6 combines reviewed identity and result, explicitly
+marking missing identity/result, with both facts' source trace retained. Other
+missing details stay blank with their existing omission reasons. Corrections
+address the same stable test ID and leave other fields and tests unchanged.
+
+Browser state v9 adds empty test identity facts to validated v7/v8 drafts,
+retaining all combined legacy result text and its history verbatim. It never
+splits that text into inferred clinical facts. New direct entries offer separate
+identity/result controls and permit partial information.
 
 ### Stable entity identity
 
@@ -251,14 +273,23 @@ enters the semantic case or Form FDA 3500. The remaining valid proposals attach
 in one atomic command, and the clinician sees the omitted target, the exact text
 the model cited, and a plain-language reason throughout the disposable tab
 session. Declarations that lose every proposal are pruned, including product
-declarations beyond the supported three-product limit; a relevant test is also
-pruned when its required test-and-result proposal is quarantined. No value is
-coerced, repaired, guessed, or retried.
+declarations beyond the supported three-product limit. No value is coerced,
+repaired, guessed, or retried.
 
-The required-result pruning rule is an invariant, not a fixture convention:
-tests must prove that a relevant-test declaration cannot survive when its
-result proposal is quarantined. Exact-citation differences in capitalization,
-punctuation, or spacing remain operator-visible quarantine failures. Record
+Issue #91's approved partial-observation support supersedes the former
+required-result pruning rule. A relevant-test declaration survives when at
+least one supported detail remains, even if identity and result are both
+missing: for example, an independently grounded test date stays attributable
+and repairable with its source. Tests must prove that the invalid proposal
+stays quarantined, surviving facts do not gain inferred identity/result, and
+B6 explicitly marks both missing details rather than silently losing the date.
+A declaration with no surviving detail is still pruned. This can consume one
+of the bounded eight test rows; the clinician can repair or withdraw it.
+Historical `incomplete-relevant-test` notices remain readable when restoring
+older preview state but are no longer emitted by current extraction.
+
+Exact-citation differences in capitalization, punctuation, or spacing remain
+operator-visible quarantine failures. Record
 such failures as evidence about the exact-location contract; do not tune the
 fixture, add normalization, or sample a live model to make them disappear.
 

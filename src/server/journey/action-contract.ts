@@ -94,11 +94,12 @@ export const journeyActionSchema = z.discriminatedUnion("action", [
     test: z.discriminatedUnion("kind", [
       z.object({
         kind: z.literal("known"),
-        testResult: z.string().trim().min(1),
+        testName: z.string().trim().min(1).optional(),
+        testResult: z.string().trim().min(1).optional(),
         lowRange: z.string().trim().optional(),
         highRange: z.string().trim().optional(),
-        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-      }).strict(),
+        date: z.iso.date().optional(),
+      }).strict().refine((test) => Boolean(test.testName || test.testResult), "A test identity or result is required"),
       z.object({ kind: z.literal("explicitly-absent") }).strict(),
       z.object({ kind: z.literal("unknown") }).strict(),
       z.object({ kind: z.literal("declined") }).strict(),

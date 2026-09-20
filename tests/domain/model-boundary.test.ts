@@ -359,7 +359,7 @@ describe("model proposal boundary", () => {
     ]);
   });
 
-  it("prunes a relevant test and its dependent details when test-and-result is quarantined", () => {
+  it("retains supported partial test details when the result is quarantined", () => {
     const text = "Patient TEST-68. Tryptase was eighteen on 2026-09-10.";
     const parsed = parseModelProposalEnvelope({
       turn: "opening",
@@ -387,11 +387,10 @@ describe("model proposal boundary", () => {
       },
     }, identities);
 
-    expect(parsed.relevantTests).toEqual([]);
-    expect(parsed.proposals).toHaveLength(1);
+    expect(parsed.relevantTests).toEqual([{ id: "test-tryptase", groupId: "group-test-group" }]);
+    expect(parsed.proposals).toHaveLength(2);
     expect(parsed.unrepresented).toEqual([
       expect.objectContaining({ field: "testResult", reason: "incompatible-value" }),
-      expect.objectContaining({ field: "date", reason: "incomplete-relevant-test" }),
     ]);
   });
 
