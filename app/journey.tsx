@@ -18,13 +18,22 @@ import {
 import styles from "./page.module.css";
 import { productCardFields } from "./product-fields";
 
+const progressMessages = {
+  opening: "Organizing your account…",
+  update: "Organizing your update…",
+  case: "Updating your case…",
+  reset: "Starting a new case…",
+  pdf: "Preparing the PDF…",
+};
+
 export default function Journey() {
   const [snapshot, setSnapshot] = useState<JourneySnapshot>();
   const [browserState, setBrowserState] = useState<BrowserJourneyState>();
   const [opening, setOpening] = useState("");
   const [reportType, setReportType] = useState<ReportType | undefined>("adverse-event");
   const [update, setUpdate] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [pendingOperation, setPendingOperation] = useState<keyof typeof progressMessages>();
+  const busy = pendingOperation !== undefined;
   const [error, setError] = useState<string>();
   const [boundaryNotice, setBoundaryNotice] = useState<string>();
   const [resetNotice, setResetNotice] = useState(false);
@@ -72,7 +81,7 @@ export default function Journey() {
         const response = await requestJourneyJson<JourneyResponse>({
           method: "POST",
           body: { operation: "resume", state: stored },
-        }, "The saved synthetic preview could not be resumed");
+        }, "This tab’s previous case could not be restored");
         acceptResponse(response);
       } catch (caught) {
         if (caught instanceof JourneyRequestError
@@ -90,7 +99,7 @@ export default function Journey() {
 
   async function act(action: JourneyAction) {
     if (!snapshot || !browserState) return;
-    setBusy(true);
+    setPendingOperation(action.action === "submit-opening" ? "opening" : action.action === "submit-update" ? "update" : "case");
     setError(undefined);
     setBoundaryNotice(undefined);
     setResetNotice(false);
@@ -101,18 +110,19 @@ export default function Journey() {
       }, "Wilson could not update the case");
       acceptResponse(response);
       if (response.snapshot.transitionNotice) setBoundaryNotice(response.snapshot.transitionNotice);
+      if (action.action === "submit-opening") setOpening("");
       if (action.action === "submit-update") setUpdate("");
     } catch (caught) {
       setError(displayError(caught, "Wilson could not update the case"));
     } finally {
-      setBusy(false);
+      setPendingOperation(undefined);
     }
   }
 
   async function resetJourney() {
     if (((snapshot?.revision ?? 0) > 0 || opening.length > 0 || update.length > 0 || reportType !== "adverse-event")
       && !window.confirm("Start a new case? This case and any unfinished text will be lost.")) return;
-    setBusy(true);
+    setPendingOperation("reset");
     setError(undefined);
     setBoundaryNotice(undefined);
     setResetNotice(false);
@@ -125,16 +135,16 @@ export default function Journey() {
       setReportType("adverse-event");
       setResetNotice(true);
     } catch (caught) {
-      setError(displayError(caught, "The synthetic case could not be started"));
+      setError(displayError(caught, "The new case could not be started"));
     } finally {
-      setBusy(false);
+      setPendingOperation(undefined);
     }
   }
 
   async function openPdf(mode: "preview" | "download") {
     if (!browserState) return;
     const previewWindow = mode === "preview" ? window.open("about:blank", "_blank") : null;
-    setBusy(true);
+    setPendingOperation("pdf");
     setError(undefined);
     try {
       const { blob, filename } = await requestJourneyPdf(browserState, mode);
@@ -163,11 +173,11 @@ export default function Journey() {
       previewWindow?.close();
       setError(displayError(caught, "The official PDF could not be generated"));
     } finally {
-      setBusy(false);
+      setPendingOperation(undefined);
     }
   }
 
-  if (!snapshot) return <main className={styles.loading}><p>{error ?? "Preparing a blank synthetic case…"}</p></main>;
+  if (!snapshot) return <main className={styles.loading}><p>{error ?? "Preparing your case…"}</p></main>;
 
   return (
     <main className={styles.appShell}>
@@ -192,13 +202,13 @@ export default function Journey() {
       {error && <div className={styles.error} role="alert">{error}</div>}
       {boundaryNotice && <div className={styles.notice} role="status">{boundaryNotice}</div>}
       {snapshot.unrepresented.length > 0 && <UnrepresentedNotice items={snapshot.unrepresented} />}
-      {busy && <div className={styles.progress} role="status">{snapshot.stage === "describe" ? "Organizing your account…" : "Updating your case…"}</div>}
+      {pendingOperation && <div className={styles.progress} role="status">{progressMessages[pendingOperation]}</div>}
       {snapshot.stage === "output" ? (
         <OutputComposition snapshot={snapshot} update={update} setUpdate={setUpdate} busy={busy} act={act} openPdf={openPdf} />
       ) : (
         <div className={snapshot.stage === "describe" ? styles.openingWorkspace : styles.workspace}>
           <section className={styles.activeTask} aria-labelledby="task-title">
-            {snapshot.stage === "describe" && <Describe key={browserState?.case.id} opening={opening} setOpening={setOpening} reportType={reportType} setReportType={setReportType} busy={busy} act={act} />}
+            {snapshot.stage === "describe" && <Describe key={browserState?.case.id} opening={opening} setOpening={setOpening} reportType={reportType} setReportType={setReportType} busy={busy} interpreting={pendingOperation === "opening"} act={act} />}
             {snapshot.stage === "understanding" && <UnderstandingTask snapshot={snapshot} busy={busy} act={act} />}
             {snapshot.stage === "clarify" && <CompletionTask key={snapshot.clarification?.key} snapshot={snapshot} busy={busy} act={act} />}
             {snapshot.stage === "review-update" && <UpdateReview snapshot={snapshot} busy={busy} act={act} />}
@@ -224,9 +234,10 @@ function CaseSummaryHeading({ attention }: { attention: ReviewAttentionItem[] })
   </div>;
 }
 
-function Describe({ opening, setOpening, reportType, setReportType, busy, act }: {
+function Describe({ opening, setOpening, reportType, setReportType, busy, interpreting, act }: {
   opening: string; setOpening: (value: string) => void; busy: boolean; act: (action: JourneyAction) => Promise<void>;
   reportType: ReportType | undefined; setReportType: (value: ReportType | undefined) => void;
+  interpreting: boolean;
 }) {
   const adverseEvent = reportType === "adverse-event" || reportType === "adverse-event-and-product-problem";
   const productProblem = reportType === "product-problem" || reportType === "adverse-event-and-product-problem";
@@ -239,7 +250,7 @@ function Describe({ opening, setOpening, reportType, setReportType, busy, act }:
       <label><input type="checkbox" checked={productProblem} onChange={(event) => setReportType(event.target.checked ? adverseEvent ? "adverse-event-and-product-problem" : "product-problem" : adverseEvent ? "adverse-event" : undefined)} /> Product problem</label>
     </fieldset>
     <button disabled={busy || !opening.trim() || !reportType} onClick={() => reportType && void act({ action: "submit-opening", text: opening, reportType })}>
-      {busy ? "Extracting case details…" : "Review Wilson’s understanding"}
+      {interpreting ? "Extracting case details…" : "Review Wilson’s understanding"}
     </button>
   </>;
 }

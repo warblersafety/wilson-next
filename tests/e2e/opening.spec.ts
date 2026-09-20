@@ -17,7 +17,18 @@ test("a blank case has no review claim, and New case protects an unsubmitted dra
 
   let dialogs = 0;
   page.on("dialog", async (dialog) => { dialogs++; await dialog.dismiss(); });
+  let releaseReset!: () => void;
+  const resetGate = new Promise<void>((resolve) => { releaseReset = resolve; });
+  await page.route("**/api/case", async (route) => {
+    await resetGate;
+    await route.continue();
+  }, { times: 1 });
   await newCase.click();
+  await expect(page.getByRole("status").filter({ hasText: "Starting a new case…" })).toBeVisible();
+  await expect(page.getByText("Organizing your account…", { exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Review Wilson’s understanding" })).toBeDisabled();
+  expect(await storedCase(page)).toEqual(blank);
+  releaseReset();
   await expect.poll(async () => (await storedCase(page)).id).not.toBe(blank.id);
   expect(dialogs).toBe(0);
   await expect(page.getByRole("status")).toHaveText("New case started");

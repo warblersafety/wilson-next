@@ -20,9 +20,24 @@ focus the new task heading; within-task acceptance does not move focus to a new
 heading. Routine restoration is quiet; incompatible stored state explains the
 loss of the previous case.
 
+The implementation review found that reset-from-opening temporarily reused the
+interpretation progress text. Progress now follows the operation (opening,
+update, case edit, reset, or PDF), and the opening submit button shows extraction
+only while interpreting. A held-request regression verifies reset progress and
+preserved state before the response. The review's bounded follow-ups are also
+closed: successful interpretation clears the submitted opening draft, remaining
+load/reset error copy uses ordinary case language, and the populated New case
+started notice is checked and captured at 390px without overlap or overflow.
+
 ## Verification
 
 On macOS with Node 24.20.0 and the existing pypdf 6.16.2 environment:
+
+The initial local verification accidentally fell back to Node 22.23.2 because
+the old temporary Node 24 directory had lost its executable. Before final
+review closure, the official Node 24.20.0 archive was restored and SHA-256
+checked, the executable version was confirmed, and all required commands and
+the browser evidence were rerun with that executable. CI also pins 24.20.0.
 
 - `npm run typecheck` passed.
 - `PYPDF_PYTHON=$PWD/.venv-pdf-evidence/bin/python npm test` passed: 21 files,
