@@ -273,14 +273,23 @@ enters the semantic case or Form FDA 3500. The remaining valid proposals attach
 in one atomic command, and the clinician sees the omitted target, the exact text
 the model cited, and a plain-language reason throughout the disposable tab
 session. Declarations that lose every proposal are pruned, including product
-declarations beyond the supported three-product limit; a relevant test is also
-pruned when its required test-and-result proposal is quarantined. No value is
-coerced, repaired, guessed, or retried.
+declarations beyond the supported three-product limit. No value is coerced,
+repaired, guessed, or retried.
 
-The required-result pruning rule is an invariant, not a fixture convention:
-tests must prove that a relevant-test declaration cannot survive when its
-result proposal is quarantined. Exact-citation differences in capitalization,
-punctuation, or spacing remain operator-visible quarantine failures. Record
+Issue #91's approved partial-observation support supersedes the former
+required-result pruning rule. A relevant-test declaration survives when at
+least one supported detail remains, even if identity and result are both
+missing: for example, an independently grounded test date stays attributable
+and repairable with its source. Tests must prove that the invalid proposal
+stays quarantined, surviving facts do not gain inferred identity/result, and
+B6 explicitly marks both missing details rather than silently losing the date.
+A declaration with no surviving detail is still pruned. This can consume one
+of the bounded eight test rows; the clinician can repair or withdraw it.
+Historical `incomplete-relevant-test` notices remain readable when restoring
+older preview state but are no longer emitted by current extraction.
+
+Exact-citation differences in capitalization, punctuation, or spacing remain
+operator-visible quarantine failures. Record
 such failures as evidence about the exact-location contract; do not tune the
 fixture, add normalization, or sample a live model to make them disappear.
 
