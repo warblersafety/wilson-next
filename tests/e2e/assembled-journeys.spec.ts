@@ -87,6 +87,12 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
     await expectNoDocumentOverflow(page);
     await retainViewportScreenshot(page, `issue78-reporter-${viewport.width}x${viewport.height}.png`);
   }
+  const localToday = await page.evaluate(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  });
+  await expect(page.getByLabel("Date of this report", { exact: true })).toHaveValue(localToday);
+  await page.getByLabel("Date of this report", { exact: true }).fill("2026-09-20");
   await fillReporter(page, { firstName: "Casey", lastName: "Reed", email: "casey.reed@example.test" });
   await expect(page.getByRole("status").filter({ hasText: "Required before adding" })).toHaveCount(0);
   const addReporter = page.getByRole("button", { name: "Add reporter details" });
@@ -144,7 +150,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   expect(repairedCase.products[0].facts.indication.resolvedValue?.value).toEqual({ kind: "known", value: "sinusitis" });
   checkpoints.push({ journey: "issue78-identity-recovery", state: "repaired-output", assertion: "Exact-evidence quarantine stayed outside accepted state; direct identity repair reopened one applicable clarification and restored aligned reviewed output and PDF without another model call." });
   await retainViewportScreenshot(page, "issue78-repaired-output-1440x900.png");
-  await downloadAndCheck(page, "issue78-identity-recovery", ["TEST-72", "amoxicillin", "500 mg", "01-SEP-2026", "Casey", "Reed"], []);
+  await downloadAndCheck(page, "issue78-identity-recovery", ["TEST-72", "amoxicillin", "500 mg", "01-SEP-2026", "Casey", "Reed"], [], { "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "20-SEP-2026" });
 
   await newCase(page);
 
@@ -764,8 +770,15 @@ async function downloadAndCheck(
   expect(bytes.byteLength).toBeGreaterThan(100_000);
   const readback = await independentReadback(path);
   expect(readback.pageCount).toBe(8);
-  for (const value of included) expect(readback.fieldValues).toContain(value);
-  for (const value of excluded) expect(readback.fieldValues).not.toContain(value);
+  const semanticValues = [...readback.fieldValues];
+  for (const [slot, pageNumber] of [[1, 4], [2, 5]]) {
+    const prefix = `topmostSubform[0].Page${pageNumber}[0].Prod${slot}[0].Prod${slot}`;
+    const dose = readback.namedFields[`${prefix}Dose[0]`];
+    const unit = readback.namedFields[`${prefix}DoseUnit[0]`];
+    if (dose && unit === "25") semanticValues.push(`${dose} mg`);
+  }
+  for (const value of included) expect(semanticValues).toContain(value);
+  for (const value of excluded) expect(semanticValues).not.toContain(value);
   expect(readback.namedFields).toMatchObject(named);
   for (const name of absentNamed) expect(readback.namedFields[name]).toBeUndefined();
   readbacks[journey] = readback;

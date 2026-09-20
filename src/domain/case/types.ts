@@ -40,6 +40,7 @@ export type ReportType = "adverse-event" | "product-problem" | "adverse-event-an
 
 export interface EventFacts {
   reportType: Fact<ReportType>;
+  reportDate: Fact<string>;
   problemDescription: Fact<string>;
   symptoms: Fact<string[]>;
   onsetDate: Fact<string>;
@@ -90,6 +91,7 @@ export interface ProductFacts {
   manufacturer: Fact<string>;
   lotNumber: Fact<string>;
   dose: Fact<string>;
+  strength: Fact<string>;
   frequency: Fact<string>;
   route: Fact<string>;
   startDate: Fact<string>;

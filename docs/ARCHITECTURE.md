@@ -108,6 +108,36 @@ other reviewed facts. Rejecting or withdrawing an earlier product does not
 renumber later products. Zero retained products is a distinct state whose
 operator action is to begin a new case, not to navigate to a nonexistent card.
 
+### Report metadata and medication quantities (Issue #90)
+
+The report date is a directly entered event fact, excluded from model targets.
+The reporter step visibly defaults it to the browser's local calendar date;
+submitting either provided or declined reporter identity also records the
+selected date through the command boundary. Clearing the date leaves it
+unsupplied. It is separately correctable, and PDF generation never updates it.
+Existing cases with no report date retain an empty fact, not an inferred date.
+
+Dose and product strength are independent reviewed text facts including their
+units. Dose describes the administered amount; strength describes the stated
+amount per dosage form or concentration. Neither is calculated from the other.
+The PDF adapter separates a simple numeric quantity and a recognized unit into
+FDA controls. Descriptive quantities, compound expressions and unsupported
+units stay intact in the text control with the unit blank; no unit conversion
+or concentration arithmetic occurs. The adapter generates the selected unit's
+appearance and retains the FDA export value in the original dropdown options.
+
+Browser state v8 adds these facts. A narrowly validated v7 upgrade supplies only
+empty report-date and strength facts, preserving every existing fact, source,
+change, revision and interaction notice. Other incompatible or malformed state
+still fails visibly. This is compatibility for the disposable preview, not a
+saved-case migration framework.
+
+The output explicitly discloses the remaining Section D subtype, purchase,
+identifier, expiration, dose-reduction/duration and withdrawal/reintroduction
+mapping gaps. Download readiness remains the supported-path condition, not a
+claim of complete FDA-form coverage. Issues #91 and #92 separately own laboratory
+fidelity and consequential medication follow-ups.
+
 ### Stable entity identity
 
 The application owns stable opaque case entity IDs. On opening input, the model

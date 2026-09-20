@@ -419,6 +419,15 @@ export async function performJourneyAction(
           type: "record-clinician-facts", commandId: commandId("answer-reporter"), expectedRevision: current.revision,
           source, answersNeed: "reporter-details", facts,
         });
+        if (action.reportDate) await applyCommand({
+          type: "record-clinician-facts", commandId: commandId("record-report-date"), expectedRevision: current.revision,
+          source: fullSource("selection", `Date of this report: ${action.reportDate}.`),
+          facts: [{
+            id: valueId("report-date"), target: { entity: "event", entityId: "event", field: "reportDate" },
+            intent: current.event.facts.reportDate.resolvedValue ? "correction" : "fact",
+            value: { kind: "known", value: action.reportDate },
+          }],
+        });
         break;
       }
       case "submit-update": {

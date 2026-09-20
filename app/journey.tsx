@@ -540,6 +540,12 @@ function ReporterTask({ snapshot, busy, act }: {
   snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
 }) {
   const [values, setValues] = useState({ firstName: "", lastName: "", address: "", city: "", state: "", postalCode: "", country: "UNITED STATES", phone: "", email: "", occupation: "Physician" });
+  const [reportDate, setReportDate] = useState(() => {
+    const existing = snapshot.understanding.event.reportDate.resolved;
+    if (existing?.kind === "known") return String(existing.value);
+    const today = new Date();
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  });
   const [healthProfessional, setHealthProfessional] = useState(true);
   const [reportedTo, setReportedTo] = useState<Array<"manufacturer" | "user-facility" | "distributor-importer" | "packer">>([]);
   const [doNotDiscloseIdentity, setDoNotDiscloseIdentity] = useState(false);
@@ -554,6 +560,8 @@ function ReporterTask({ snapshot, busy, act }: {
   return <>
     <h1 id="task-title">{snapshot.clarification?.question}</h1>
     <p>Enter this directly. Wilson never infers reporter identity from the clinical narrative. A phone number or email is enough for this bounded path; address fields are optional.</p>
+    <label>Date of this report <input aria-label="Date of this report" type="date" value={reportDate} onChange={(event) => setReportDate(event.target.value)} /></label>
+    <p>Defaults to today on your device. Change it if this report was prepared on another date. It stays the same when you reopen or download the form.</p>
     <fieldset className={`${styles.answerGroup} ${styles.reporterFields}`}>
       <legend>Reporter identity and contact</legend>
       <label>First name <input aria-label="Reporter first name" value={values.firstName} onChange={(event) => set("firstName", event.target.value)} /></label>
@@ -574,14 +582,14 @@ function ReporterTask({ snapshot, busy, act }: {
     </fieldset>
     {missing.length > 0 && <p className={styles.requirementHint} role="status">Required before adding: {joinList(missing)}.</p>}
     <div className={styles.decisionActions}>
-      <button disabled={busy || !complete} onClick={() => void act({ action: "answer-reporter", reporter: {
+      <button disabled={busy || !complete} onClick={() => void act({ action: "answer-reporter", reportDate: reportDate || undefined, reporter: {
         kind: "provided", firstName: values.firstName.trim(), lastName: values.lastName.trim(),
         phone: values.phone.trim() || undefined, email: values.email.trim() || undefined,
         address: values.address.trim() || undefined, city: values.city.trim() || undefined,
         state: values.state.trim() || undefined, postalCode: values.postalCode.trim() || undefined,
         country: values.country, occupation: values.occupation, healthProfessional, reportedTo, doNotDiscloseIdentity,
       } })}>Add reporter details</button>
-      <button disabled={busy} onClick={() => void act({ action: "answer-reporter", reporter: { kind: "declined" } })}>Prefer not to provide reporter details</button>
+      <button disabled={busy} onClick={() => void act({ action: "answer-reporter", reportDate: reportDate || undefined, reporter: { kind: "declined" } })}>Prefer not to provide reporter details</button>
     </div>
   </>;
 }
@@ -704,6 +712,7 @@ function FormPreview({ snapshot }: { snapshot: JourneySnapshot }) {
       <PreviewField label="Report type" value={B.reportType === "adverse-event" ? "Adverse event" : B.reportType === "product-problem" ? "Product problem" : B.reportType === "adverse-event-and-product-problem" ? "Adverse event and product problem" : undefined} />
       <PreviewField label="Serious outcomes" value={Object.entries(seriousOutcomeLabels).filter(([field]) => B[field as keyof typeof seriousOutcomeLabels] === true).map(([, label]) => label).join(", ") || "None recorded"} />
       <PreviewField label="Date of death" value={displayDate(B.deathDate)} />
+      <PreviewField label="Date of this report" value={displayDate(B.reportDate)} />
       <PreviewField label="Date of event" value={displayDate(B.eventDate)} />
       <PreviewField label="Relevant tests" value={B.relevantTests.map((test) => [test.testResult, test.lowRange && `low ${test.lowRange}`, test.highRange && `high ${test.highRange}`, displayDate(test.date)].filter(Boolean).join(" · ")).join("; ")
         || (omissionByTarget.get("event:event:relevantTestsAvailable") === "explicitly-absent" ? "No relevant tests" : undefined)} />
@@ -718,6 +727,7 @@ function FormPreview({ snapshot }: { snapshot: JourneySnapshot }) {
       {D.suspectProducts.map((product) => <div className={styles.previewProduct} key={product.productId}>
         <strong>{outputProductLabel(snapshot, product.productId, product.name)}</strong>
         <span>{[product.dose, product.frequency, product.route].filter(Boolean).join(" · ") || "Regimen not provided"}</span>
+        <span>Product strength: {product.strength ?? omissionText(omissionByTarget.get(`product:${product.productId}:strength`))}</span>
         <span>Started: {product.startDate ? displayDate(product.startDate) : omissionText(omissionByTarget.get(`product:${product.productId}:startDate`))}</span>
         <span>Used for: {product.indication ?? omissionText(omissionByTarget.get(`product:${product.productId}:indication`))}</span>
       </div>)}
@@ -781,7 +791,7 @@ function CaseCards({ snapshot, busy, act }: {
   if (snapshot.revision === 0) return <p className={styles.emptyCase}>Proposed case knowledge will appear here after Wilson reads the account.</p>;
   return <div className={styles.cards}>
     <CaseCard domId="case-card-patient" title="Patient" entity="patient" entityId="patient" entityState="resolved" groupId="patient" facts={understanding.patient} fields={["identifier", "ageYears", "sex", "weight"]} allowOpeningReview={openingReview && Object.values(understanding.patient).some(({ proposals }) => proposals.some(({ groupId }) => groupId === "patient"))} allowDirectEdit={directEdit} busy={busy} act={act} />
-    <CaseCard domId="case-card-event" title="Event" entity="event" entityId="event" entityState="resolved" groupId="event" facts={understanding.event} fields={["reportType", "problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate", "relevantHistory"]} allowOpeningReview={openingReview && Object.values(understanding.event).some(({ proposals }) => proposals.some(({ groupId }) => groupId === "event"))} allowDirectEdit={directEdit} busy={busy} act={act} />
+    <CaseCard domId="case-card-event" title="Event" entity="event" entityId="event" entityState="resolved" groupId="event" facts={understanding.event} fields={["reportType", "reportDate", "problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate", "relevantHistory"]} allowOpeningReview={openingReview && Object.values(understanding.event).some(({ proposals }) => proposals.some(({ groupId }) => groupId === "event"))} allowDirectEdit={directEdit} busy={busy} act={act} />
     {understanding.relevantTests.map((test, index) => <CaseCard domId={`case-card-test-${index + 1}`} key={test.id} title={`Relevant test ${index + 1}`} eyebrow="Test or laboratory result" entity="test" entityId={test.id} entityState={test.state} groupId={test.proposalGroupId} facts={test.facts} fields={["testResult", "lowRange", "highRange", "date"]} allowOpeningReview={openingReview && test.state === "proposed"} allowDirectEdit={directEdit && test.state === "resolved"} allowRemove={openingReview && test.state === "proposed"} allowWithdraw={entityWithdrawal && test.state === "resolved"} busy={busy} act={act} />)}
     {understanding.products.map((product) => {
       const name = productViewLabel(product);
@@ -849,6 +859,7 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
           setDrafts((current) => ({ ...current, [field]: editableInitialValue(value, control) }));
         }}>{value ? "Change" : "Add"}</button>}
         {editable && editing === field && draft && <div className={styles.inlineEdit}>
+          {control.help && <p>{control.help}</p>}
           <FactValueEditor label={control.label} control={control} value={draft} onChange={(next) => setDrafts((current) => ({ ...current, [field]: next }))} />
           <button disabled={busy || !validEditableValue(draft, control)} onClick={() => {
             if (allowOpeningReview && proposal) {

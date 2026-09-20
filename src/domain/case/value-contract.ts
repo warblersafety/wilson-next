@@ -40,6 +40,7 @@ export const caseValueContracts = {
       values: ["adverse-event", "product-problem", "adverse-event-and-product-problem"],
       mismatch: "reportType requires the supported report type",
     },
+    reportDate: { shape: "iso-date" },
     problemDescription: { shape: "string" },
     symptoms: { shape: "string-array" },
     onsetDate: { shape: "iso-date" },
@@ -78,6 +79,7 @@ export const caseValueContracts = {
     manufacturer: { shape: "string" },
     lotNumber: { shape: "string" },
     dose: { shape: "string" },
+    strength: { shape: "string" },
     frequency: { shape: "string" },
     route: { shape: "string" },
     startDate: { shape: "iso-date" },
@@ -136,7 +138,7 @@ export const caseValueContracts = {
 
 export const modelTargetValueContracts = {
   patient: caseValueContracts.patient,
-  event: omit(caseValueContracts.event, "reportType"),
+  event: omit(omit(caseValueContracts.event, "reportType"), "reportDate"),
   product: caseValueContracts.product,
   test: caseValueContracts.test,
 } as const;
@@ -151,6 +153,7 @@ export function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>
       return typeof actual === "string" ? undefined : `${target.field} requires a string`;
     case "iso-date":
       return typeof actual === "string" && /^\d{4}-\d{2}-\d{2}$/.test(actual)
+        && (target.field !== "reportDate" || (Number.isFinite(Date.parse(actual)) && new Date(actual).toISOString().slice(0, 10) === actual))
         ? undefined
         : `${target.field} requires an ISO calendar date`;
     case "integer":

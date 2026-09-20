@@ -1,7 +1,7 @@
 import { productDisplayLabel } from "./product-label";
 import type { Fact, ProductEntity, ProductFactKey, ReportType, SemanticCase } from "./types";
 
-const sectionDProductFields = ["name", "manufacturer", "lotNumber", "dose", "frequency", "route", "startDate", "stopDate", "indication"] as const satisfies readonly ProductFactKey[];
+const sectionDProductFields = ["name", "manufacturer", "lotNumber", "dose", "strength", "frequency", "route", "startDate", "stopDate", "indication"] as const satisfies readonly ProductFactKey[];
 const sectionEProductFields = ["name", "commonName", "procode", "manufacturer", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const satisfies readonly ProductFactKey[];
 const sectionFProductFields = ["name", "startDate", "stopDate"] as const satisfies readonly ProductFactKey[];
 const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "role", "stopped"]);
@@ -19,6 +19,7 @@ export interface Form3500Projection {
     A: { patientIdentifier?: string; ageYears?: number; sex?: "female" | "male" | "intersex"; weight?: { value: number; unit: "kg" | "lb" } };
     B: {
       reportType?: ReportType;
+      reportDate?: string;
       eventDate?: string;
       eventDescription?: string;
       hospitalized?: boolean;
@@ -68,6 +69,7 @@ export interface ProjectedProduct {
   manufacturer?: string;
   lotNumber?: string;
   dose?: string;
+  strength?: string;
   frequency?: string;
   route?: string;
   startDate?: string;
@@ -112,6 +114,8 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       "Patient date of birth and race or ethnicity",
       "Section C product pictures and additional comments",
       "Additional suspect medical devices beyond the first",
+      "Section D product subtype (brand, generic/biosimilar, OTC or compounded), expiration, purchase details and product identifiers",
+      "Section D dose-reduction date, treatment duration, improvement after stopping and recurrence after restarting",
     ],
   };
 
@@ -121,6 +125,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   assign(projection, "sections.A.weight", "patient weight", "patient:patient:weight", caseState.patient.facts.weight, projection.sections.A, "weight");
   assign(projection, "sections.B.reportType", "report type", "event:event:reportType", caseState.event.facts.reportType, projection.sections.B, "reportType");
   assign(projection, "sections.B.eventDate", "event date", "event:event:onsetDate", caseState.event.facts.onsetDate, projection.sections.B, "eventDate");
+  assign(projection, "sections.B.reportDate", "date of this report", "event:event:reportDate", caseState.event.facts.reportDate, projection.sections.B, "reportDate");
   assign(projection, "sections.B.hospitalized", "hospitalization outcome", "event:event:hospitalized", caseState.event.facts.hospitalized, projection.sections.B, "hospitalized");
   for (const field of ["death", "lifeThreatening", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious"] as const) {
     assign(projection, `sections.B.${field}`, `${field} outcome`, `event:event:${field}`, caseState.event.facts[field], projection.sections.B, field);

@@ -39,6 +39,7 @@ export function emptyPatientFacts(): PatientFacts {
 export function emptyEventFacts(): EventFacts {
   return {
     reportType: emptyFact(),
+    reportDate: emptyFact(),
     problemDescription: emptyFact(),
     symptoms: emptyFact(),
     onsetDate: emptyFact(),
@@ -86,6 +87,7 @@ export function emptyProductFacts(): ProductFacts {
     manufacturer: emptyFact(),
     lotNumber: emptyFact(),
     dose: emptyFact(),
+    strength: emptyFact(),
     frequency: emptyFact(),
     route: emptyFact(),
     startDate: emptyFact(),

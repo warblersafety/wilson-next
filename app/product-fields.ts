@@ -4,7 +4,7 @@ import type { FactView } from "../src/domain/case/views";
 export const productIdentityFields = ["name", "productType", "role"] as const satisfies readonly ProductFactKey[];
 
 export const nonDeviceProductFields = [
-  "manufacturer", "lotNumber", "dose", "frequency", "route", "startDate", "stopped", "stopDate", "indication",
+  "manufacturer", "lotNumber", "dose", "strength", "frequency", "route", "startDate", "stopped", "stopDate", "indication",
 ] as const satisfies readonly ProductFactKey[];
 
 export const deviceProductFields = [

@@ -19,6 +19,7 @@ export type FactControlShape =
 export interface FactControl {
   label: string;
   shape: FactControlShape;
+  help?: string;
   options?: ReadonlyArray<{ value: string; label: string }>;
 }
 
@@ -38,6 +39,7 @@ const event = {
     ["product-problem", "Product problem"],
     ["adverse-event-and-product-problem", "Adverse event and product problem"],
   ) },
+  reportDate: { label: "Date of this report", shape: "date" },
   problemDescription: { label: "Product problem", shape: "text" },
   symptoms: { label: "Symptoms", shape: "list" },
   onsetDate: { label: "Onset", shape: "date" },
@@ -70,7 +72,8 @@ const product = {
   role: { label: "Role", shape: "choice", options: choices(["suspect", "Suspect"], ["concomitant", "Concomitant"]) },
   manufacturer: { label: "Manufacturer", shape: "text" },
   lotNumber: { label: "Lot number", shape: "text" },
-  dose: { label: "Dose", shape: "text" },
+  dose: { label: "Dose", shape: "text", help: "Amount taken each time, including units (for example, 500 mg or two capsules)." },
+  strength: { label: "Product strength", shape: "text", help: "Amount per tablet/capsule or liquid concentration from the product label (for example, 250 mg or 250 mg/5 mL). A dose does not establish strength." },
   frequency: { label: "Frequency", shape: "text" },
   route: { label: "Route", shape: "text" },
   startDate: { label: "Started", shape: "date" },

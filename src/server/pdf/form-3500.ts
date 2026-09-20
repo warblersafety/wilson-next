@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { PDFDocument } from "@cantoo/pdf-lib";
+import { PDFDocument, PDFName } from "@cantoo/pdf-lib";
 import type {
   Form3500Projection,
   ProjectedConcomitantProduct,
@@ -12,6 +12,7 @@ export const FORM_3500_SHA256 =
   "1147d7c86bb002cba7fb9352ca8e3402524d8fa0236916b7bf7e5dcdcf88bf9c";
 
 const fields = {
+  reportDate: "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]",
   patientIdentifier:
     "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]",
   ageValue: "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]",
@@ -43,6 +44,9 @@ const fields = {
   productOneManufacturer: "topmostSubform[0].Page4[0].Prod1[0].Prod1ManuComp[0]",
   productOneLot: "topmostSubform[0].Page4[0].Prod1[0].Prod1LotNum[0]",
   productOneDose: "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]",
+  productOneDoseUnit: "topmostSubform[0].Page4[0].Prod1[0].Prod1DoseUnit[0]",
+  productOneStrength: "topmostSubform[0].Page4[0].Prod1[0].Prod1Strength[0]",
+  productOneStrengthUnit: "topmostSubform[0].Page4[0].Prod1[0].Prod1StrengthUnit[0]",
   productOneFrequency: "topmostSubform[0].Page4[0].Prod1[0].Prod1Freq[0]",
   productOneOtherFrequency: "topmostSubform[0].Page4[0].Prod1[0].Prod1FreqOther[0]",
   productOneRoute: "topmostSubform[0].Page4[0].Prod1[0].Prod1Route[0]",
@@ -53,6 +57,9 @@ const fields = {
   productTwoManufacturer: "topmostSubform[0].Page5[0].Prod2[0].Prod2ManuComp[0]",
   productTwoLot: "topmostSubform[0].Page5[0].Prod2[0].Prod2LotNum[0]",
   productTwoDose: "topmostSubform[0].Page5[0].Prod2[0].Prod2Dose[0]",
+  productTwoDoseUnit: "topmostSubform[0].Page5[0].Prod2[0].Prod2DoseUnit[0]",
+  productTwoStrength: "topmostSubform[0].Page5[0].Prod2[0].Prod2Strength[0]",
+  productTwoStrengthUnit: "topmostSubform[0].Page5[0].Prod2[0].Prod2StrengthUnit[0]",
   productTwoFrequency: "topmostSubform[0].Page5[0].Prod2[0].Prod2Freq[0]",
   productTwoOtherFrequency: "topmostSubform[0].Page5[0].Prod2[0].Prod2FreqOther[0]",
   productTwoRoute: "topmostSubform[0].Page5[0].Prod2[0].Prod2Route[0]",
@@ -245,6 +252,7 @@ export async function fillForm3500Projection(
     setChecked(form, fields[field], B[field] === true);
   }
   setText(form, fields.deathDate, B.deathDate ? formatDate(B.deathDate) : undefined);
+  setText(form, fields.reportDate, B.reportDate ? formatDate(B.reportDate) : undefined);
   setText(form, fields.eventDate, B.eventDate ? formatDate(B.eventDate) : undefined);
   setText(form, fields.eventNarrative, B.eventDescription);
   setText(form, fields.relevantHistory, B.relevantHistory);
@@ -265,7 +273,7 @@ export async function fillForm3500Projection(
       name: fields.productOneName,
       manufacturer: fields.productOneManufacturer,
       lotNumber: fields.productOneLot,
-      dose: fields.productOneDose,
+      dose: fields.productOneDose, doseUnit: fields.productOneDoseUnit, strength: fields.productOneStrength, strengthUnit: fields.productOneStrengthUnit,
       frequency: fields.productOneFrequency,
       otherFrequency: fields.productOneOtherFrequency,
       route: fields.productOneRoute,
@@ -277,7 +285,7 @@ export async function fillForm3500Projection(
       name: fields.productTwoName,
       manufacturer: fields.productTwoManufacturer,
       lotNumber: fields.productTwoLot,
-      dose: fields.productTwoDose,
+      dose: fields.productTwoDose, doseUnit: fields.productTwoDoseUnit, strength: fields.productTwoStrength, strengthUnit: fields.productTwoStrengthUnit,
       frequency: fields.productTwoFrequency,
       otherFrequency: fields.productTwoOtherFrequency,
       route: fields.productTwoRoute,
@@ -339,6 +347,16 @@ export async function fillForm3500Projection(
   setChecked(form, fields.reporterIdentityNo, reporter.doNotDiscloseIdentity === true);
 
   form.updateFieldAppearances();
+  // pdf-lib selects display labels. Preserve the generated label appearance,
+  // but store the original FDA option's export value for other PDF readers.
+  for (const name of [fields.productOneDoseUnit, fields.productOneStrengthUnit, fields.productTwoDoseUnit, fields.productTwoStrengthUnit]) {
+    const dropdown = form.getDropdown(name);
+    const selected = dropdown.getSelected()[0];
+    if (!selected) continue;
+    const option = dropdown.acroField.getOptions().find((option) => (option.display ?? option.value).decodeText() === selected || option.value.decodeText() === selected);
+    if (!option) throw new Error("Unsupported Form 3500 quantity unit");
+    dropdown.acroField.dict.set(PDFName.of("V"), option.value);
+  }
   return {
     output: await document.save(),
     readback: readProjectionForm(document, projection),
@@ -403,13 +421,14 @@ function setChecked(form: ReturnType<PDFDocument["getForm"]>, name: string, valu
 
 function writeSuspectProduct(
   form: ReturnType<PDFDocument["getForm"]>,
-  names: { name: string; manufacturer: string; lotNumber: string; dose: string; frequency: string; otherFrequency: string; route: string; startDate: string; stopDate: string; indication: string },
+  names: { name: string; manufacturer: string; lotNumber: string; dose: string; doseUnit: string; strength: string; strengthUnit: string; frequency: string; otherFrequency: string; route: string; startDate: string; stopDate: string; indication: string },
   product: ProjectedProduct,
 ): void {
   setText(form, names.name, product.name);
   setText(form, names.manufacturer, product.manufacturer);
   setText(form, names.lotNumber, product.lotNumber);
-  setText(form, names.dose, product.dose);
+  writeQuantity(form, names.dose, names.doseUnit, product.dose);
+  writeQuantity(form, names.strength, names.strengthUnit, product.strength);
   if (product.frequency) {
     const encoded = encodeFrequency(product.frequency);
     form.getDropdown(names.frequency).select(encoded.option);
@@ -427,13 +446,14 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
   const reporter = G.reporter;
   const readSuspect = (
     expected: ProjectedProduct,
-    names: { name: string; manufacturer: string; lotNumber: string; dose: string; frequency: string; otherFrequency: string; route: string; startDate: string; stopDate: string; indication: string },
+    names: { name: string; manufacturer: string; lotNumber: string; dose: string; doseUnit: string; strength: string; strengthUnit: string; frequency: string; otherFrequency: string; route: string; startDate: string; stopDate: string; indication: string },
   ): ProjectedProduct => compact({
     productId: expected.productId,
     name: form.getTextField(names.name).getText(),
     manufacturer: form.getTextField(names.manufacturer).getText(),
     lotNumber: form.getTextField(names.lotNumber).getText(),
-    dose: form.getTextField(names.dose).getText(),
+    dose: readQuantity(form, names.dose, names.doseUnit, expected.dose),
+    strength: readQuantity(form, names.strength, names.strengthUnit, expected.strength),
     frequency: decodeFrequency(
       form.getDropdown(names.frequency).getSelected()[0],
       form.getTextField(names.otherFrequency).getText(),
@@ -444,8 +464,8 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
     indication: form.getTextField(names.indication).getText(),
   });
   const suspectNames = [
-    { name: fields.productOneName, manufacturer: fields.productOneManufacturer, lotNumber: fields.productOneLot, dose: fields.productOneDose, frequency: fields.productOneFrequency, otherFrequency: fields.productOneOtherFrequency, route: fields.productOneRoute, startDate: fields.productOneStartDate, stopDate: fields.productOneStopDate, indication: fields.productOneIndication },
-    { name: fields.productTwoName, manufacturer: fields.productTwoManufacturer, lotNumber: fields.productTwoLot, dose: fields.productTwoDose, frequency: fields.productTwoFrequency, otherFrequency: fields.productTwoOtherFrequency, route: fields.productTwoRoute, startDate: fields.productTwoStartDate, stopDate: fields.productTwoStopDate, indication: fields.productTwoIndication },
+    { name: fields.productOneName, manufacturer: fields.productOneManufacturer, lotNumber: fields.productOneLot, dose: fields.productOneDose, doseUnit: fields.productOneDoseUnit, strength: fields.productOneStrength, strengthUnit: fields.productOneStrengthUnit, frequency: fields.productOneFrequency, otherFrequency: fields.productOneOtherFrequency, route: fields.productOneRoute, startDate: fields.productOneStartDate, stopDate: fields.productOneStopDate, indication: fields.productOneIndication },
+    { name: fields.productTwoName, manufacturer: fields.productTwoManufacturer, lotNumber: fields.productTwoLot, dose: fields.productTwoDose, doseUnit: fields.productTwoDoseUnit, strength: fields.productTwoStrength, strengthUnit: fields.productTwoStrengthUnit, frequency: fields.productTwoFrequency, otherFrequency: fields.productTwoOtherFrequency, route: fields.productTwoRoute, startDate: fields.productTwoStartDate, stopDate: fields.productTwoStopDate, indication: fields.productTwoIndication },
   ];
   const concomitantProducts = projection.sections.F.concomitantProducts.map((expected): ProjectedConcomitantProduct => compact({
     productId: expected.productId,
@@ -475,6 +495,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
           ? "adverse-event-and-product-problem"
           : form.getCheckBox(fields.adverseEvent).isChecked() ? "adverse-event"
             : form.getCheckBox(fields.productProblem).isChecked() ? "product-problem" : undefined,
+        reportDate: parseDate(form.getTextField(fields.reportDate).getText()),
         eventDate: parseDate(form.getTextField(fields.eventDate).getText()),
         eventDescription: form.getTextField(fields.eventNarrative).getText(),
         hospitalized: B.hospitalized === undefined ? undefined : form.getCheckBox(fields.hospitalized).isChecked(),
@@ -605,4 +626,40 @@ function decodeRoute(value: string | undefined): string | undefined {
   if (!value || value === " ") return undefined;
   if (value === "Oral") return "oral";
   throw new Error(`Unreadable Form 3500 route ${value}`);
+}
+
+// Formatting only: do not calculate doses or concentrations. Descriptive,
+// compound, or unsupported quantities stay intact in the text control.
+function quantityParts(value: string): { amount: string; unit: string } {
+  const match = value.trim().match(/^(\d+(?:\.\d+)?|\.\d+)\s*(mg|g|kg|mcg|µg|μg|ng|mL|L|IU|mg\/mL|%)$/i);
+  const units: Record<string, string> = {
+    mg: "MILLIGRAM(S) - MG", g: "GRAM(S) - GM", kg: "KILOGRAM(S) - KG",
+    mcg: "MICROGRAM(S) - UGM", "µg": "MICROGRAM(S) - UGM", "μg": "MICROGRAM(S) - UGM",
+    ng: "NANOGRAM(S) - NGM", ml: "MILLILITRE(S) - ML", l: "LITRE(S) - L",
+    iu: "INTERNATIONAL UNIT(S) - IU", "mg/ml": "MILLIGRAMS/MILLILITRES - MG/ML", "%": "PERCENT - %",
+  };
+  return match ? { amount: match[1], unit: units[match[2].toLowerCase()] } : { amount: value, unit: " " };
+}
+
+function writeQuantity(form: ReturnType<PDFDocument["getForm"]>, textName: string, unitName: string, value?: string): void {
+  if (value === undefined) return;
+  const { amount, unit } = quantityParts(value);
+  setText(form, textName, amount);
+  form.getDropdown(unitName).select(unit);
+}
+
+function readQuantity(form: ReturnType<PDFDocument["getForm"]>, textName: string, unitName: string, expected?: string): string | undefined {
+  const amount = form.getTextField(textName).getText();
+  const dropdown = form.getDropdown(unitName);
+  const selected = dropdown.getSelected()[0];
+  const option = dropdown.acroField.getOptions().find((candidate) => candidate.value.decodeText() === selected);
+  const unit = option ? (option.display ?? option.value).decodeText() : selected ?? " ";
+  if (expected === undefined) {
+    if (amount || unit.trim()) throw new Error("Unexpected Form 3500 quantity");
+    return undefined;
+  }
+  const parts = quantityParts(expected);
+  if (amount !== parts.amount || unit !== parts.unit) throw new Error("Form 3500 quantity failed readback");
+  // Preserve the reviewed spelling only after checking both actual controls.
+  return expected;
 }
