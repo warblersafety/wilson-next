@@ -219,8 +219,10 @@ function NarrativeInput({ id, label, context, rows, value, onChange }: {
 }) {
   const [helpOpen, setHelpOpen] = useState(false);
   return <div>
-    <div className={styles.narrativeLabel}>
-      <label htmlFor={id}>{label}</label>
+    <label htmlFor={id}>{label}</label>
+    <textarea id={id} rows={rows} value={value} onChange={(event) => onChange(event.target.value)} aria-describedby={`${id}-hint`} />
+    <p id={`${id}-hint`} className={styles.hint}>Check the text and correct any errors before continuing.</p>
+    <div className={styles.dictationDisclosure}>
       <button type="button" className={styles.dictationToggle} aria-expanded={helpOpen} aria-controls={`${id}-dictation`}
         onClick={() => setHelpOpen(!helpOpen)}>
         <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
@@ -232,24 +234,27 @@ function NarrativeInput({ id, label, context, rows, value, onChange }: {
           <path d="m5 3 5 5-5 5" />
         </svg>
       </button>
-    </div>
-    <textarea id={id} rows={rows} value={value} onChange={(event) => onChange(event.target.value)} aria-describedby={`${id}-hint`} />
-    <p id={`${id}-hint`} className={styles.hint}>Check the text and correct any errors before continuing.</p>
-    <div id={`${id}-dictation`} className={styles.dictationHelp} hidden={!helpOpen}>
-      <strong>Dictate into this text box</strong>
-      <ol>
-        <li>Click in the text box where you want to add text.</li>
-        <li>Start your computer’s dictation:
-          <ul>
-            <li><strong>Mac:</strong> Choose <strong>Edit → Start Dictation</strong> from the menu bar, or use your Dictation shortcut.</li>
-            <li><strong>Windows:</strong> Press <strong>Windows + H</strong>.</li>
-          </ul>
-        </li>
-        <li>Speak your {context}. When finished, stop dictation: press <strong>Esc</strong> on Mac, or click the microphone in the Windows voice-typing toolbar.</li>
-        <li>Review the text and correct errors with your keyboard, especially medication names, doses, and words like “no” or “not.”</li>
-      </ol>
-      <p>When the text is correct, select <strong>{context === "account" ? "Review Wilson’s understanding" : "Review this update"}</strong>.</p>
-      <p>Wilson receives text, not audio. Your computer’s dictation service may send audio to Apple or Microsoft.</p>
+      <div id={`${id}-dictation`} className={styles.dictationHelp} hidden={!helpOpen}>
+        <p>You can speak instead of typing in {label} using your computer’s built-in dictation. Your spoken words appear as editable text.</p>
+        <details className={styles.dictationPlatform}>
+          <summary>Mac instructions</summary>
+          <ol>
+            <li>Click in <strong>{label}</strong> where you want to add text.</li>
+            <li>Choose <strong>Edit → Start Dictation</strong> from the menu bar, or use your Dictation shortcut.</li>
+            <li>Speak your {context}. When finished, press <strong>Esc</strong> to stop dictation.</li>
+          </ol>
+        </details>
+        <details className={styles.dictationPlatform}>
+          <summary>Windows instructions</summary>
+          <ol>
+            <li>Click in <strong>{label}</strong> where you want to add text.</li>
+            <li>Press <strong>Windows + H</strong> to start voice typing.</li>
+            <li>Speak your {context}. When finished, click the microphone in the Windows voice-typing toolbar to stop dictation.</li>
+          </ol>
+        </details>
+        <p>Check the text and correct any errors, especially medication names, doses, and words like “no” or “not.” When ready, select <strong>{context === "account" ? "Review Wilson’s understanding" : "Review this update"}</strong>.</p>
+        <p>Wilson receives text, not audio. Your computer’s dictation service may send audio to Apple or Microsoft.</p>
+      </div>
     </div>
   </div>;
 }

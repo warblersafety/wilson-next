@@ -2,12 +2,12 @@
   {
     "browser": "chromium",
     "field": "opening-account",
-    "checks": "pointer/Enter/Space; expanded state; focus; preserved DOM/text/selection; editing with open help; no API/microphone calls; 44px target; no overflow at 1280/1440/480; reachable submit"
+    "checks": "outer/Mac/Windows pointer/Enter/Space; Chromium native accessibility-tree expanded state; focus; independent platform sections; panel within 6px of toggle; toggle below textarea; open platform retained across outer toggle; preserved DOM/text/selection; editing with open help; no API/microphone calls; 44px target; no overflow at 1280/1440/480; reachable submit"
   },
   {
     "browser": "chromium",
     "field": "later-update",
-    "checks": "pointer/Enter/Space; expanded state; focus; preserved DOM/text/selection; editing with open help; no API/microphone calls; 44px target; no overflow at 1280/1440/480; reachable submit"
+    "checks": "outer/Mac/Windows pointer/Enter/Space; Chromium native accessibility-tree expanded state; focus; independent platform sections; panel within 6px of toggle; toggle below textarea; open platform retained across outer toggle; preserved DOM/text/selection; editing with open help; no API/microphone calls; 44px target; no overflow at 1280/1440/480; reachable submit"
   },
   {
     "browser": "chromium",
@@ -18,12 +18,12 @@
   {
     "browser": "firefox",
     "field": "opening-account",
-    "checks": "pointer/Enter/Space; expanded state; focus; preserved DOM/text/selection; editing with open help; no API/microphone calls; 44px target; no overflow at 1280/1440/480; reachable submit"
+    "checks": "outer/Mac/Windows pointer/Enter/Space; native details.open state and keyboard behavior; focus; independent platform sections; panel within 6px of toggle; toggle below textarea; open platform retained across outer toggle; preserved DOM/text/selection; editing with open help; no API/microphone calls; 44px target; no overflow at 1280/1440/480; reachable submit"
   },
   {
     "browser": "firefox",
     "field": "later-update",
-    "checks": "pointer/Enter/Space; expanded state; focus; preserved DOM/text/selection; editing with open help; no API/microphone calls; 44px target; no overflow at 1280/1440/480; reachable submit"
+    "checks": "outer/Mac/Windows pointer/Enter/Space; native details.open state and keyboard behavior; focus; independent platform sections; panel within 6px of toggle; toggle below textarea; open platform retained across outer toggle; preserved DOM/text/selection; editing with open help; no API/microphone calls; 44px target; no overflow at 1280/1440/480; reachable submit"
   },
   {
     "browser": "firefox",

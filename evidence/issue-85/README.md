@@ -1,9 +1,16 @@
 # Issue #85 dictation-help evidence
 
-The shared narrative input uses only local disclosure state and the existing
-controlled textarea. Exact approved interaction/copy belongs to issue #85.
-No audio capture, permission request, dictation detection, automatic submission,
-case/model change, or PDF change was introduced.
+This evidence reflects Steve’s approved feedback revision in the same issue
+and PR #86: the help toggle is below the textarea and visible correction
+reminder, immediately beside its panel. Context explains native dictation
+before separate, initially collapsed Mac and Windows instructions. Steps name
+Clinical account or Clinical update explicitly. The approved copy belongs to
+issue #85; the Product clarification still describes the two review gates.
+
+The shared narrative input uses local outer disclosure state and native
+`details`/`summary` platform sections. No audio capture, permission request,
+dictation detection, automatic submission, case/model/PDF change, dependency,
+or persistent preference was introduced.
 
 ## Verification
 
@@ -12,46 +19,53 @@ On macOS with Node 24.20.0:
 - `npm run typecheck` passed.
 - `npm test` passed: 21 files, 152 tests (pypdf 6.16.2).
 - `npm run build` passed.
-- `npm run test:e2e` passed: the existing assembled deterministic journeys and
-  independent PDF assertions, 22.2 seconds. No live application-model calls.
-- Focused browser checks passed in Chromium 153.0.8010.12 and Playwright Firefox
-  155.0 on this Mac. `browser-checks.json` records the checks and browser versions.
-  Both opening and update controls were exercised through pointer, Enter, and
-  Space toggles; exposed expanded state; retained textarea DOM identity, draft
-  text, and selection; retained button focus on toggle; allowed keyboard edits
-  while open; and made zero case requests or microphone requests during help
-  use. The existing explicit submissions reached their proposal-review stages
-  using the existing repeated-product deterministic scenario.
-- Desktop geometry and trial-click checks passed at 1280×800 and 1440×900,
-  with a 480px narrow-width wrapping check. No document overflow at those sizes.
-  Both help targets are at least 44px high, and submit controls remain reachable
-  by ordinary scrolling. Code inspection confirms visible keyboard focus styles,
-  decorative SVGs hidden from assistive technology, and no audio API dependency.
+- `npm run test:e2e` passed: existing assembled deterministic journeys and
+  independent PDF assertions, 22.3 seconds. No live application-model calls.
+- Focused Chromium 153.0.8010.12 and Playwright Firefox 155.0 checks exercise
+  outer, Mac, and Windows toggles by pointer, Enter, and Space. They verify
+  initially collapsed state, independent platform sections, focus, retained
+  textarea identity/text/selection, editing while open, and no case or
+  microphone requests during help use. Closing/reopening outer help retains
+  the selected platform, without a persistent preference. Existing explicit
+  opening/update actions still reach proposal review through the repeated-
+  product deterministic scenario. Results are in `browser-checks.json`.
+- Chromium’s native accessibility tree exposes each platform disclosure’s
+  expanded state. Firefox keyboard behavior and native `details.open` state
+  are checked; no Firefox assistive-technology certification is claimed.
+- At 1280×800, 1440×900, and 480px width, geometry checks verify the toggle is
+  below the textarea and the panel begins within 6px of its toggle. Controls
+  have a 44px minimum height (0.01px geometry tolerance for Firefox rounding),
+  no document overflow occurs, and submit actions remain reachable by normal
+  scrolling. Code inspection confirms visible focus styles and decorative SVGs
+  hidden from assistive technology.
 
-Retained screenshots show collapsed/expanded opening and update help at both
-desktop sizes, with full-page expanded captures for context. Implementer visual
-inspection confirmed readable copy, neutral microphone icons, wrapped help,
-and no overlap at those desktop sizes. Expanded viewport screenshots scroll to
-show the instructions and submit action; full-page images also show the field
-label and disclosure control above them.
+Screenshots for both fields and desktop sizes cover `collapsed` outer help,
+`platforms-closed` (context and both platform choices), `expanded` (Mac only),
+and `windows` (Windows only). `full` captures give whole-page context with Mac
+open. These replace the initial implementation screenshots; Git history retains
+that version. Implementer visual inspection confirms adjacent toggle/panel,
+readable context and platform-specific steps, neutral microphone icons, and
+reachable submit actions without overlap.
 
-The focused harness initially used the full ordered fixture queue with a single
-selected scenario; that mismatch was corrected to the repeated-product pair
-before collecting passing evidence. This was a temporary harness correction,
-not a product or test-contract change. The harness is deliberately not a new
-permanent copy/markup test suite.
+The temporary focused harness uses the existing repeated-product fixture pair
+once per browser. Native expansion is inspected through Chromium’s actual
+accessibility tree because Playwright’s simplified ARIA snapshot omits the
+native disclosure role. No permanent copy/markup test suite was added.
 
-## Limits
+## Limits and delivery
 
-Native Mac/Windows dictation was not exercised. Automated Firefox-on-Mac checks
-establish layout, toggling, and editing, not the system dictation service or its
+Native Mac/Windows dictation remains untested. Automated Firefox-on-Mac checks
+establish layout, toggling, and editing, not the system dictation service or
 medical accuracy. A fictional dictation check on the intended demo machine
 remains manual. No real clinical data or live-model benchmark was used.
 
-A preliminary 390px check exposed roughly 10px of existing header overflow;
-the new field/help remained bounded. This unchanged header layout is outside
-the requested desktop-first help slice; 480px wrapping passed. No broad mobile
-redesign or accessibility certification is claimed.
+The initial implementation’s 390px check exposed roughly 10px of existing
+header overflow; the help stayed bounded. This unchanged header remains outside
+the desktop-first slice; 480px wrapping passes. No mobile redesign is claimed.
 
-The PR owns the independent review and deployment/access/retention record.
+PR #86 owns the independent review and deployment record. The first handoff’s
+original-link preservation incident remains unresolved. This revision does not
+create, revoke, replace, or redirect a share grant or change retention/protection
+settings. The existing shared exact-deployment URL serves the earlier commit;
+a later branch push produces a separate Vercel-authenticated Git preview.
 Share bearer secrets and administrator credentials are not evidence artifacts.
