@@ -3,8 +3,7 @@
 Tracker #89 and its DEMO-24 assessment identify extraction loss before review:
 hemoglobin and stool-test identity disappeared while numeric/qualitative results
 remained. The earlier tryptase failure is the other named regression. Baseline
-is PR #93 / main `626ef18`; its protected report-completeness alias remains the
-working fallback. Access-bearing URLs are not retained here.
+is PR #93 / main `626ef18`; its deployment remains the rollback target. Access-bearing URLs are not retained here.
 
 Separate identity/result facts preserve partial observations, stated units,
 ranges and dates through source review, stable-ID correction and B6 output.
@@ -70,8 +69,46 @@ checks. Ordinary URLs remain protected; project-wide bypass remains absent.
 The current hosting plan permits only one active share link. Creating the
 candidate grant automatically revoked the fallback grant; restoring fallback
 access then revoked the candidate grant and interrupted a PDF download. This
-matches the previously recorded issue-85 hosting limitation. Both deployments
-have individually passed fresh-browser checks; those checks do not establish
-simultaneous anonymous access. No deployment was replaced, protection weakened,
-or plan purchased. The user was asked which preview should own the share link.
-Final access selection and live evaluation disposition are pending.
+matches the previously recorded issue-85 hosting limitation. Steve explicitly
+resolved this on 2026-09-20: the shared preview should always follow the latest
+verified version, retaining prior deployments for rollback. Delivery now owns
+that standing instruction; another preview-selection approval is unnecessary.
+
+The shared laboratory alias now targets `060e182`, with a grant expiring
+2026-09-27 21:15:51 UTC. Fresh Chromium/Firefox access and the core no-model
+checks pass. The old PR #93 deployment remains unchanged and requires Vercel
+sign-in unless the shared preview is rolled back. No protection was weakened or
+plan purchased. Final evidence-only commits may be promoted to the same alias;
+the PR closing record pins its last verification without recursive evidence
+commits.
+
+## Live evaluation disposition
+
+All six pre-specified calls completed with no retries, at an estimated total
+cost of $0.221782 (30,836 input / 16,011 output tokens). `live-results.json`
+records the separate observations, scores and metrics. Tryptase and its
+stable-ID result correction retained identity, units, date and reference bounds.
+Both DEMO-24 openings preserved hemoglobin and the positive stool finding;
+wording differed only in whether “for occult blood” belonged with identity or
+result. The contrasting culture/platelet/biopsy case kept qualitative and partial
+information without invented units, dates or results. The unfamiliar “serum
+trip tase” wording remained verbatim; a separate unidentified negative result
+remained visibly unnamed.
+
+No selected laboratory omission, unsupported addition or wrong-test attribution
+was observed. No laboratory repair question or correction was needed in these
+live samples; existing outcomes/history/reporter questions remained. The
+contrasting case's interrupted PDF download was recovered from its already
+reviewed synthetic state, first locally and then on the protected deployment,
+without repeating extraction. All five final reports passed independent pypdf
+row checks. Deterministic browser evidence separately proves identity repair.
+
+This closes only the selected laboratory work reopened from #55/#67. It does
+not establish model reliability, broad dictation ambiguity detection or
+physician readiness. Native audio and real data were not tested. The platelet
+units-unknown qualifier is retained in semantic metadata; PDF output preserves
+the number without inventing a unit. #92 and #94 remain separate.
+
+The focused schema/UI/projection change and independent PDF geometry check
+provided direct product value. Repeated share-grant work did not; the standing
+latest-preview decision removes that avoidable blocker for subsequent slices.

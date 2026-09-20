@@ -21,5 +21,6 @@
       "liveModelCalls": 0
     }
   ],
-  "ordinaryUrlsProtected": true
+  "ordinaryUrlsProtected": true,
+  "statusAfterUserDecision": "Deployment retained unchanged for rollback; shared grant moved to latest candidate. This historical fresh-browser verification used a grant that is no longer active. Current direct access requires Vercel sign-in."
 }

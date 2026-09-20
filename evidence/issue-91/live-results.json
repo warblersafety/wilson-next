@@ -571,20 +571,377 @@
         "outputTokens": 3735,
         "latencyMs": 30033,
         "estimatedCostUsd": 0.047384
+      },
+      "independentPdfRows": [
+        {
+          "date": "",
+          "highRange": "",
+          "lowRange": "",
+          "testResult": "Urine culture: no growth"
+        },
+        {
+          "date": "",
+          "highRange": "",
+          "lowRange": "",
+          "testResult": "Platelet count: 82"
+        },
+        {
+          "date": "",
+          "highRange": "",
+          "lowRange": "",
+          "testResult": "skin biopsy: Result not recorded"
+        }
+      ],
+      "deployedPdfRecovery": {
+        "sha": "060e18202126c3bcc4449dcdab166fed2f2d1414",
+        "modelCalls": 0,
+        "reviewedCaseReused": true,
+        "downloaded": true,
+        "independentReadback": "pass"
       }
+    },
+    {
+      "id": "garbled-partial",
+      "sha": "060e18202126c3bcc4449dcdab166fed2f2d1414",
+      "deployment": "dpl_77ZUPPr9GUbC6X8Rn6UyL341YLbr",
+      "exposedAt": "2026-09-20T21:16:13.859Z",
+      "expected": [
+        {
+          "testName": "serum trip tase",
+          "testResult": "6.2"
+        },
+        {
+          "testName": null,
+          "testResult": "negative",
+          "date": null
+        }
+      ],
+      "status": 200,
+      "operationId": "df4de102-9d89-44ef-8923-ae15d927e6c0",
+      "observed": [
+        {
+          "id": "test-7c237aa0-2036-4373-9527-60b8f501e9ce",
+          "facts": {
+            "testName": [
+              {
+                "kind": "known",
+                "value": "serum trip tase"
+              }
+            ],
+            "testResult": [
+              {
+                "kind": "known",
+                "value": "6.2"
+              }
+            ],
+            "date": [
+              {
+                "kind": "unknown"
+              }
+            ]
+          }
+        },
+        {
+          "id": "test-7ca68887-b0bd-498e-98f8-88cc20b65f86",
+          "facts": {
+            "testName": [
+              {
+                "kind": "unknown"
+              }
+            ],
+            "testResult": [
+              {
+                "kind": "known",
+                "value": "negative"
+              }
+            ],
+            "date": [
+              {
+                "kind": "unknown"
+              }
+            ]
+          }
+        }
+      ],
+      "unrepresented": [],
+      "clarifications": [
+        "serious-outcomes",
+        "relevant-clinical-context",
+        "reporter-details"
+      ],
+      "reviewed": [
+        {
+          "id": "test-7c237aa0-2036-4373-9527-60b8f501e9ce",
+          "facts": {
+            "testName": {
+              "kind": "known",
+              "value": "serum trip tase"
+            },
+            "testResult": {
+              "kind": "known",
+              "value": "6.2"
+            },
+            "date": {
+              "kind": "unknown"
+            }
+          }
+        },
+        {
+          "id": "test-7ca68887-b0bd-498e-98f8-88cc20b65f86",
+          "facts": {
+            "testName": {
+              "kind": "unknown"
+            },
+            "testResult": {
+              "kind": "known",
+              "value": "negative"
+            },
+            "date": {
+              "kind": "unknown"
+            }
+          }
+        }
+      ],
+      "projection": [
+        {
+          "testId": "test-7c237aa0-2036-4373-9527-60b8f501e9ce",
+          "testResult": "serum trip tase: 6.2"
+        },
+        {
+          "testId": "test-7ca68887-b0bd-498e-98f8-88cc20b65f86",
+          "testResult": "Test identity not recorded: negative"
+        }
+      ],
+      "downloaded": true,
+      "finishedAt": "2026-09-20T21:16:44.581Z",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-laboratory-fidelity-v1",
+        "schemaRevision": "wilson-grounded-proposals-v13-simple",
+        "inputTokens": 5026,
+        "outputTokens": 3321,
+        "latencyMs": 26671,
+        "estimatedCostUsd": 0.043262
+      },
+      "assessment": {
+        "identityAndResult": "pass",
+        "omissions": [],
+        "unsupportedAdditions": [],
+        "wrongTestAttribution": [],
+        "operatorLabCorrections": 0,
+        "clarificationBurden": "No laboratory repair question; missing identity remained visible and optional to repair. Existing outcomes/history/reporter questions only.",
+        "clinicalTermHandling": "Preserved serum trip tase verbatim; did not guess tryptase, units or dates. Unidentified negative result retained with unknown identity."
+      },
+      "independentPdfRows": [
+        {
+          "date": "",
+          "highRange": "",
+          "lowRange": "",
+          "testResult": "serum trip tase: 6.2"
+        },
+        {
+          "date": "",
+          "highRange": "",
+          "lowRange": "",
+          "testResult": "Test identity not recorded: negative"
+        }
+      ]
+    },
+    {
+      "id": "demo24-repeat",
+      "sha": "060e18202126c3bcc4449dcdab166fed2f2d1414",
+      "deployment": "dpl_77ZUPPr9GUbC6X8Rn6UyL341YLbr",
+      "exposedAt": "2026-09-20T21:17:09.912Z",
+      "expected": [
+        {
+          "testName": "hemoglobin",
+          "testResult": "9.1 g/dL",
+          "lowRange": "12",
+          "highRange": "16",
+          "date": "2026-09-11"
+        },
+        {
+          "testName": "stool test",
+          "testResult": "positive for occult blood",
+          "date": "2026-09-11"
+        }
+      ],
+      "status": 200,
+      "operationId": "427d9f6a-41f8-40c9-813c-258852a6b6ff",
+      "observed": [
+        {
+          "id": "test-7851202e-567a-4961-8a8d-e5ba2f256b4b",
+          "facts": {
+            "testName": [
+              {
+                "kind": "known",
+                "value": "hemoglobin"
+              }
+            ],
+            "testResult": [
+              {
+                "kind": "known",
+                "value": "9.1 g/dL"
+              }
+            ],
+            "lowRange": [
+              {
+                "kind": "known",
+                "value": "12"
+              }
+            ],
+            "highRange": [
+              {
+                "kind": "known",
+                "value": "16"
+              }
+            ],
+            "date": [
+              {
+                "kind": "known",
+                "value": "2026-09-11"
+              }
+            ]
+          }
+        },
+        {
+          "id": "test-187f9005-c3e2-4813-bac4-7992f42f1d15",
+          "facts": {
+            "testName": [
+              {
+                "kind": "known",
+                "value": "stool test"
+              }
+            ],
+            "testResult": [
+              {
+                "kind": "known",
+                "value": "positive for occult blood"
+              }
+            ],
+            "date": [
+              {
+                "kind": "known",
+                "value": "2026-09-11"
+              }
+            ]
+          }
+        }
+      ],
+      "unrepresented": [],
+      "clarifications": [
+        "serious-outcomes",
+        "relevant-clinical-context",
+        "reporter-details"
+      ],
+      "reviewed": [
+        {
+          "id": "test-7851202e-567a-4961-8a8d-e5ba2f256b4b",
+          "facts": {
+            "testName": {
+              "kind": "known",
+              "value": "hemoglobin"
+            },
+            "testResult": {
+              "kind": "known",
+              "value": "9.1 g/dL"
+            },
+            "lowRange": {
+              "kind": "known",
+              "value": "12"
+            },
+            "highRange": {
+              "kind": "known",
+              "value": "16"
+            },
+            "date": {
+              "kind": "known",
+              "value": "2026-09-11"
+            }
+          }
+        },
+        {
+          "id": "test-187f9005-c3e2-4813-bac4-7992f42f1d15",
+          "facts": {
+            "testName": {
+              "kind": "known",
+              "value": "stool test"
+            },
+            "testResult": {
+              "kind": "known",
+              "value": "positive for occult blood"
+            },
+            "date": {
+              "kind": "known",
+              "value": "2026-09-11"
+            }
+          }
+        }
+      ],
+      "projection": [
+        {
+          "testId": "test-7851202e-567a-4961-8a8d-e5ba2f256b4b",
+          "testResult": "hemoglobin: 9.1 g/dL",
+          "lowRange": "12",
+          "highRange": "16",
+          "date": "2026-09-11"
+        },
+        {
+          "testId": "test-187f9005-c3e2-4813-bac4-7992f42f1d15",
+          "testResult": "stool test: positive for occult blood",
+          "date": "2026-09-11"
+        }
+      ],
+      "downloaded": true,
+      "finishedAt": "2026-09-20T21:17:35.853Z",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-laboratory-fidelity-v1",
+        "schemaRevision": "wilson-grounded-proposals-v13-simple",
+        "inputTokens": 5018,
+        "outputTokens": 3056,
+        "latencyMs": 21767,
+        "estimatedCostUsd": 0.040596
+      },
+      "assessment": {
+        "identityAndResult": "pass",
+        "omissions": [],
+        "unsupportedAdditions": [],
+        "wrongTestAttribution": [],
+        "operatorLabCorrections": 0,
+        "clarificationBurden": "No laboratory repair question; existing outcomes/history/reporter questions only.",
+        "repeatability": "Both DEMO-24 openings retained the two identities and results, bounds and dates; two samples do not establish a reliability rate."
+      },
+      "independentPdfRows": [
+        {
+          "date": "11-SEP-2026",
+          "highRange": "16",
+          "lowRange": "12",
+          "testResult": "hemoglobin: 9.1 g/dL"
+        },
+        {
+          "date": "11-SEP-2026",
+          "highRange": "",
+          "lowRange": "",
+          "testResult": "stool test: positive for occult blood"
+        }
+      ]
     }
   ],
   "metricsSource": "Vercel diagnostic events inspected in memory; only selected synthetic observations and metrics retained, no raw log archive.",
   "totals": {
-    "calls": 4,
-    "inputTokens": 20792,
-    "outputTokens": 9634,
-    "estimatedCostUsd": 0.137924
+    "calls": 6,
+    "inputTokens": 30836,
+    "outputTokens": 16011,
+    "estimatedCostUsd": 0.221782
   },
   "limitations": [
-    "Bounded synthetic laboratory evaluation only; no model reliability rate, native dictation or real-data claim.",
-    "Broad clinical-term ambiguity detection remains deferred; deterministic tests preserve unfamiliar terms for review.",
-    "Two planned calls remain unexposed pending the preview access choice.",
-    "The contrasted platelet unit uncertainty is retained in semantic qualifier metadata; the PDF preserves the number without inventing a unit."
-  ]
+    "Six bounded synthetic laboratory calls are not a model reliability estimate or physician-readiness decision.",
+    "Broad dictation ambiguity detection is deferred; unfamiliar terms are preserved for source review, not clinically validated.",
+    "Native dictation, real data and fidelity outside the selected laboratory observations were not evaluated.",
+    "Platelet units-unknown qualifier remains in semantic metadata; PDF retains the number without inventing a unit.",
+    "Contrasting PDF download was interrupted by share-grant revocation; the same reviewed case subsequently passed local and deployed PDF checks without another model call."
+  ],
+  "finishedAt": "2026-09-20T21:18:50.927644+00:00",
+  "sourceEquivalence": "App, server/domain source, tests and PDF tools are unchanged between reviewed 593ae34 and deployed 060e182; intervening commits contain documentation/evidence only."
 }
