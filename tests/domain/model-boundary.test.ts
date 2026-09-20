@@ -70,7 +70,7 @@ describe("model proposal boundary", () => {
     expect(() => parseModelProposalEnvelope(blank, identities)).toThrow();
   });
 
-  it("rejects the response when a proposal lacks the minimum citation required for visible quarantine", () => {
+  it("quarantines a missing reference list while retaining a valid sibling", () => {
     const malformed = candidate() as unknown as {
       output: { proposals: Array<Record<string, unknown>> };
     };
@@ -78,7 +78,7 @@ describe("model proposal boundary", () => {
     malformed.output.proposals[0].source = { id: "model-source", start: 8, end: 15 };
     malformed.output.proposals.push(companionProposal("Patient TEST-57"));
 
-    expect(() => parseModelProposalEnvelope(malformed as never, identities)).toThrow();
+    expect(parseModelProposalEnvelope(malformed as never, identities)).toMatchObject({ proposals: [expect.objectContaining({ target: { entity: "event", entityId: "event", field: "problemDescription" } })], unrepresented: [expect.objectContaining({ reason: "invalid-source-reference" })] });
   });
 
   it("shares one exact source when several proposals cite the same clause", () => {

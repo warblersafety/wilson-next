@@ -852,7 +852,7 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
       </div>
     </div>
     {entityState === "withdrawn" && <p className={styles.withdrawn}>Withdrawn from the active report; reviewed facts and source history are retained below.</p>}
-    {entity === "test" && entityState !== "withdrawn" && !knownString(activeValue(facts.testName)) && <p role="status">Test identity is not recorded as known. Check the source wording; {allowOpeningReview ? "accept the understanding, then add the identity in this test card" : "use Test identity below to add or correct it"}. You can leave it unknown and continue with a partial report.</p>}
+    {entity === "test" && entityState !== "withdrawn" && !knownString(activeValue(facts.testName)) && <p role="status">Test identity is not recorded as known. Check the source wording. You can supply its name in Clinical update or leave it unknown for a partial report.</p>}
     <dl>{fields.map((field) => {
       const fact = facts[field];
       if (!fact) return null;

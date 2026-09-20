@@ -1,3 +1,4 @@
+import { sourceReferenceOutput, sourceReferenceCorrection, recoveryOutput } from "../fixtures/source-reference-case";
 import { referenceFixture, type QuotedFixtureOutput as ModelProposalOutput } from "../fixtures/source-references.ts";
 import type { ProductFactKey } from "../../src/domain/case/types.ts";
 
@@ -603,8 +604,19 @@ const scenarioInputs: Record<keyof typeof quotedScenarios, readonly string[]> = 
   layer1Death: [layer1DeathOpening], layer1Tests: [layer1TestsOpening, layer1TestsUpdate], layer1Role: [layer1RoleOpening, layer1RoleUpdate],
   adaptiveRich: [adaptiveRichOpening], adaptiveSparse: [adaptiveSparseOpening], rich: [richOpening], sparse: [sparseOpening], repeated: [repeatedOpening, repeatedUpdate], changeRemove: [regressionOpening], experiment1: [regressionOpening, regressionUpdate],
 };
-export const predeterminedResponseScenarios = Object.fromEntries(Object.entries(quotedScenarios).map(([name, turns]) => [name, turns.map((turn, index) => ({ ...turn, output: referenceFixture(scenarioInputs[name as keyof typeof quotedScenarios][index], turn.output) }))])) as Record<keyof typeof quotedScenarios, Array<{ identityScope: string; turn: "opening" | "correction"; output: import("../../src/domain/case/model-boundary").ModelProposalOutput }>>;
+const priorScenarios = Object.fromEntries(Object.entries(quotedScenarios).map(([name, turns]) => [name, turns.map((turn, index) => ({ ...turn, output: referenceFixture(scenarioInputs[name as keyof typeof quotedScenarios][index], turn.output) }))])) as Record<keyof typeof quotedScenarios, Array<{ identityScope: string; turn: "opening" | "correction"; output: import("../../src/domain/case/model-boundary").ModelProposalOutput }>>;
 
-export const predeterminedModelResponses = Object.values(
-  predeterminedResponseScenarios,
-).flat();
+const omitted = sourceReferenceOutput();
+omitted.proposals.filter(({ target }) => target.entity === "test" && target.testReference === "t3").forEach((proposal) => { proposal.evidenceReferences = ["missing"]; });
+export const predeterminedResponseScenarios = {
+  ...priorScenarios,
+  issue96: [
+    { identityScope: "issue96", turn: "opening" as const, output: sourceReferenceOutput() },
+    { identityScope: "issue96-update", turn: "correction" as const, output: sourceReferenceCorrection("test-issue96-t0", "test-issue96-t4") },
+  ],
+  issue96Omitted: [
+    { identityScope: "issue96-omitted", turn: "opening" as const, output: omitted },
+    { identityScope: "issue96-recovery", turn: "correction" as const, output: recoveryOutput() },
+  ],
+};
+export const predeterminedModelResponses = Object.values(predeterminedResponseScenarios).flat();

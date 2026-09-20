@@ -56,7 +56,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   const identityQuarantine = page.getByRole("status").filter({ hasText: "Some details were left out" });
   await expect(identityQuarantine).toContainText("Product — Name");
   await expect(identityQuarantine).toContainText("Product — Product type");
-  await expect(identityQuarantine).toContainText("add missing identity in its reviewed product card");
+  await expect(identityQuarantine).toContainText("describe what is missing in Clinical update");
   await expect(productCard(page, "Product 1")).toContainText("500 mg");
   const quarantinedIdentityCase = await semanticCase(page);
   expect(quarantinedIdentityCase.products).toHaveLength(1);

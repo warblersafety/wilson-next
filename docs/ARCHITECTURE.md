@@ -267,8 +267,8 @@ accepted knowledge unchanged:
 
 - the provider did not complete normally;
 - returned content is not valid structured output;
-- a proposal omits the minimum response-local reference, group, target, or exact
-  reference list needed to identify and display a truthful quarantine notice;
+- a proposal omits the minimum response-local identity, group or target needed
+  to identify and display a truthful quarantine notice;
 - proposal or source identities are duplicated or internally inconsistent; or
 - every proposal is unrepresentable.
 

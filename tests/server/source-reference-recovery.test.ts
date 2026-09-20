@@ -57,6 +57,14 @@ describe("source references and conversational recovery", () => {
     expect(result.proposals.filter(({ target }) => target.entity === "test")).toHaveLength(14);
   });
 
+  it.each([undefined, [], "p3", [3]].map((references) => [references]))("keeps malformed or missing reference lists proposal-local (%j)", (references) => {
+    const output = sourceReferenceOutput();
+    (output.proposals[0] as { evidenceReferences: unknown }).evidenceReferences = references;
+    const result = parse(sourceReferenceOpening, output);
+    expect(result.relevantTests).toHaveLength(5);
+    expect(result.unrepresented).toEqual([expect.objectContaining({ reason: "invalid-source-reference" })]);
+  });
+
   it("corrects the five-test DEMO-91 from initial review, retains pending context and history, and leaves other test facts unchanged", async () => {
     const repository = new InMemoryCaseRepository();
     const caseId = "case-00000000-0000-4000-8000-000000000096";

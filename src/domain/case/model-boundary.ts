@@ -67,7 +67,7 @@ const quarantinableProposalSchema = z.object({
     testReference: z.string().min(1).optional(),
   }).passthrough(),
   value: z.unknown(),
-  evidenceReferences: z.array(z.string()).min(1),
+  evidenceReferences: z.unknown().optional(),
 }).passthrough().superRefine((proposal, context) => {
   if (!Object.hasOwn(proposal, "value")) {
     context.addIssue({ code: "custom", path: ["value"], message: "Proposal value is required" });
@@ -358,7 +358,9 @@ function rawTargetIdentity(target: QuarantinableProposal["target"]): string {
 }
 
 function quarantine(proposal: QuarantinableProposal | ModelProposal, reason: UnrepresentedProposalReason, text: string): UnrepresentedModelProposal {
-  const passages = resolveSourceReferences(text, proposal.evidenceReferences);
+  const references = proposal.evidenceReferences;
+  const passages = Array.isArray(references) && references.every((reference) => typeof reference === "string")
+    ? resolveSourceReferences(text, references) : undefined;
   return { entity: proposal.target.entity, field: proposal.target.field,
     evidenceQuote: passages?.map(({ text }) => text).join("\n") ?? "Supporting text could not be identified. Restate the missing information below.", reason };
 }
@@ -366,6 +368,7 @@ function quarantine(proposal: QuarantinableProposal | ModelProposal, reason: Unr
 function proposalSchemaReason(error: z.ZodError): UnrepresentedProposalReason {
   if (error.issues.some(({ path }) => path[0] === "target")) return "unsupported-target";
   if (error.issues.some(({ path }) => path[0] === "value")) return "incompatible-value";
+  if (error.issues.some(({ path }) => path[0] === "evidenceReferences")) return "invalid-source-reference";
   return "unsupported-proposal";
 }
 

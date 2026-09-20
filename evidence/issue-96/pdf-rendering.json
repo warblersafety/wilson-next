@@ -1,0 +1,19 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 3,
+      "rendered" : true,
+      "screenshot" : "evidence\/issue-96\/corrected-pdf-page-3.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "No password prompt, corruption, or displaced form content is visible",
+    "FDA, MedWatch, Form 3500, OMB expiry, and page identity are preserved",
+    "Sections A and B agree with the repaired reviewed patient and event",
+    "Section D contains the repaired suspect-product identity and indication",
+    "Section G agrees with the direct reporter entry"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "evidence\/issue-96\/source-reference-correction.pdf"
+}

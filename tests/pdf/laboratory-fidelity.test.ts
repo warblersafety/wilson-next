@@ -42,3 +42,25 @@ it("writes independent numeric, qualitative and partial observations to B6 witho
   for (let row = 4; row <= 8; row++) expect(fields[`${prefix}.Row8[0].TDate${row}[0]`]).toBeUndefined();
   if (process.env.WILSON_LAB_EVIDENCE_DIRECTORY) await writeFile(join(process.env.WILSON_LAB_EVIDENCE_DIRECTORY, "laboratory.pdf"), output);
 });
+
+
+it("preserves clinician Unicode including Greek and inequality symbols in downloaded PDF readback", async () => {
+  const input = new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf"));
+  const state = reviewedLaboratoryCase([{ testName: "Clinician’s test", testResult: "4 µg/L at 38 °C", lowRange: "2–6" }], "Clinician’s test was 4 µg/L at 38 °C; range 2–6.");
+  const { output } = await fillForm3500Projection(input, projectForm3500(state));
+  const directory = await mkdtemp(join(tmpdir(), "wilson-unicode-"));
+  const path = join(directory, "unicode.pdf");
+  await writeFile(path, output);
+  const { stdout } = await promisify(execFile)(process.env.PYPDF_PYTHON ?? "python3", ["tools/pdf/independent_readback.py", path, "--named"]);
+  expect(stdout).toContain("Clinician");
+  const fields = JSON.parse(stdout).namedFields;
+  expect(fields["topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TestData1[0]"]).toBe("Clinician’s test: 4 µg/L at 38 °C");
+  expect(fields["topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TLowRange1[0]"]).toBe("2–6");
+  const extended = reviewedLaboratoryCase([{ testName: "β marker", testResult: "≥ 4" }], "β marker was ≥ 4.");
+  const extendedPdf = await fillForm3500Projection(input, projectForm3500(extended));
+  const extendedPath = join(directory, "extended.pdf");
+  await writeFile(extendedPath, extendedPdf.output);
+  const extendedReadback = await promisify(execFile)(process.env.PYPDF_PYTHON ?? "python3", ["tools/pdf/independent_readback.py", extendedPath, "--named"]);
+  expect(JSON.parse(extendedReadback.stdout).namedFields["topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TestData1[0]"]).toBe("β marker: ≥ 4");
+  if (process.env.WILSON_UNICODE_PDF) await writeFile(process.env.WILSON_UNICODE_PDF, extendedPdf.output);
+});

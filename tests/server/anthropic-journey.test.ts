@@ -233,10 +233,10 @@ describe("Anthropic production model boundary", () => {
 
     const invalidSchema = response(openingOutput(), "opening");
     const decoded = responseOutput(invalidSchema);
-    delete (decoded.proposals[0] as { evidenceReferences?: string[] }).evidenceReferences;
+    delete (decoded.proposals[0] as { target?: unknown }).target;
     setResponseOutput(invalidSchema, decoded);
     expect((await modelFailure(createAnthropicJourneyModel(async () => invalidSchema).propose("opening", openingText))).diagnostic)
-      .toMatchObject({ phase: "structured-schema", issues: [{ path: "proposals.0.evidenceReferences" }] });
+      .toMatchObject({ phase: "structured-schema", issues: [{ path: "proposals.0.target" }] });
   });
 
   it("retains safe provider status metadata without provider detail", async () => {

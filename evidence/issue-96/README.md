@@ -1,0 +1,13 @@
+# Issue #96 — source references and conversational recovery
+
+Authority: [approved #96](https://github.com/warblersafety/wilson-next/issues/96), including its latest user-approved decision; [failure handoff](https://github.com/warblersafety/wilson-next/issues/91#issuecomment-5753269605) and [actual Opus review/clarification](https://github.com/warblersafety/wilson-next/issues/96#issuecomment-5753430740). Implementation/review record: PR #97.
+
+Code assigns sentence references to the original input; the model selects one or more references and code resolves exact excerpts. Stored source/history and browser v9 representation stay compatible. The model still owns semantic interpretation; a valid reference does not prove support. No value decoder or quotation-copying fallback exists in runtime. Historical deterministic fixtures use a test-only authoring helper to select references from their existing expected wording.
+
+The exact DEMO-91 regression preserves five observations and supports the original conversational correction from initial review. Update acceptance supersedes the older pending hemoglobin interpretation without first accepting it. Separate recovery coverage deliberately removes all ferritin proposals through invalid references and adds the wholly missing observation conversationally. Malformed, missing, duplicate and invented reference selections remain proposal-local; capacity failure does not discard a valid sibling. Existing #95 identity/result, partial-state and physical PDF-row mapping remain.
+
+Verification includes original curly punctuation and literal escape text without value decoding, repeated/similar passages, multi-passage shared dates/negation/corrections, rejected corrections, pending linkage context, source fidelity separately from semantic support, legacy draft/history parsing, and full browser/downloaded-PDF journeys.
+
+The Opus font concern was tested rather than assumed: current `@cantoo/pdf-lib` successfully generates and independently round-trips curly apostrophes, µ, °, en dash, β and ≥. The β/≥ appearance was also inspected with macOS PDFKit. No font change was needed; this is evidence for those characters, not universal Unicode coverage.
+
+`live-protocol.json` records the three exact synthetic inputs, expected facts, cost reservations and no-retry policy **before exposure**. Live evaluation, independent implementation review, CI and verified preview delivery remain pending until their final records are linked here. No raw provider/runtime log archive, real data, production release or expanded review. #92/#94 remain separate.
