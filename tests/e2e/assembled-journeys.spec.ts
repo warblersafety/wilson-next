@@ -50,7 +50,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   const initial = await page.goto("/");
   expect(initial?.headers()["x-robots-tag"]).toBe("noindex, nofollow");
   await expect(page.getByRole("heading", { name: "Describe what happened" })).toBeVisible();
-  await expect(page.getByLabel("Experiment boundary")).toContainText("Fictional information only");
+  await expect(page.getByLabel("Preview notice")).toContainText("Use fictional information");
 
   await submitOpening(page, identityQuarantineOpening);
   const identityQuarantine = page.getByRole("status").filter({ hasText: "Some details were left out" });
