@@ -19,8 +19,8 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-report-quantities-v1";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v12-simple";
+export const MODEL_PROMPT_REVISION = "wilson-laboratory-fidelity-v1";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v13-simple";
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
 export const MODEL_MAX_RETRIES = 0;
 
@@ -72,7 +72,8 @@ const SYSTEM_PROMPT = `You extract grounded semantic proposals from one syntheti
 Rules:
 - Propose only facts explicitly supported by the current clinician input. Do not diagnose, infer causality, classify, fill gaps, or establish truth.
 - The supported targets are the patient, event or product problem, relevant-test, medication or non-device product, and single suspect-device fields represented by the response schema. Preserve uncertainty, negation, correction, alternatives, unknown, explicitly absent, inapplicable, and declined meanings.
-- Relevant tests are stable entities. On opening input, declare each distinct relevant test or laboratory result once and attach its test/result text, optional ranges, and date to that test reference. Do not interpret or classify a result.
+- Relevant tests are stable entities. On opening input, declare each distinct observation once, keeping testName (the stated test identity, including specimen/context) separate from testResult (numeric or qualitative result, with any stated units and modifiers). Retain all tests, including partial observations with only identity or only result. Attach ranges and explicitly stated test dates to the same reference. Never infer a test name, unit, range, or test date from the result, event date, another test, or clinical conventions. Omit missing fields. Do not interpret or classify a result, expand an abbreviation, or silently repair an unfamiliar/garbled clinical term; preserve the clinician's wording for review.
+- On later input, declare no tests. Use only exact supplied stable test IDs. Correct only the stated fields of the identified observation; retain its other reviewed facts. A new measurement is not a correction of an earlier measurement unless the input says so.
 - Product dose is the amount actually taken each time; strength is the stated amount per tablet/capsule or concentration on the label. Extract them independently, retaining units and descriptive wording. Never infer strength from dose, multiply tablet counts, divide concentrations, or convert units. If only dose is stated, omit strength. Report date is entered directly by the clinician, never extracted.
 - For every declared product, propose its supported productType ("drug-or-biologic", "device", or "other") and role. For product roles, emit only "suspect" or "concomitant". A reported suspect role is clinician input, not your causality judgment. For a device, preserve explicitly stated implanted and reprocessed-single-use status so Wilson can determine whether related Section E details are applicable.
 - A medicine or other product named only as treatment administered in response to the adverse event belongs in event.treatments. Propose it as a report product only when the clinician separately describes it as suspect, concomitant, or otherwise involved in the report.

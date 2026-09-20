@@ -61,7 +61,7 @@ Case
   patient
   event
   products[]        # stable ID, product category, and suspect/concomitant role
-  relevantTests[]   # stable ID; result, ranges, and date stay together
+  relevantTests[]   # stable ID; identity, result, ranges, and date stay together
   reporter          # direct clinician entry; never model-proposed
   askedNeeds[]      # small semantic follow-up history
   sources[]         # clinician inputs and exact excerpts
@@ -135,8 +135,30 @@ saved-case migration framework.
 The output explicitly discloses the remaining Section D subtype, purchase,
 identifier, expiration, dose-reduction/duration and withdrawal/reintroduction
 mapping gaps. Download readiness remains the supported-path condition, not a
-claim of complete FDA-form coverage. Issues #91 and #92 separately own laboratory
-fidelity and consequential medication follow-ups.
+claim of complete FDA-form coverage. Issue #92 owns consequential medication
+follow-ups.
+
+### Laboratory observations
+
+Each relevant test has independent reviewed `testName` and `testResult` text
+facts, plus ranges and an explicitly supplied test date. Identity includes the
+stated specimen/context; result retains numeric or qualitative wording and any
+stated units. Partial observations remain representable even if identity or
+result is missing or rejected by the model boundary. No clinical vocabulary,
+unit, range or date is inferred. Unfamiliar dictated terms remain verbatim for
+source review; broad ambiguity detection is deferred, not a clinical validator.
+
+Review shows missing identity and allows direct repair using the existing fact
+controls after acceptance. It does not block partial output or create repeated
+completion questions. B6 combines reviewed identity and result, explicitly
+marking missing identity/result, with both facts' source trace retained. Other
+missing details stay blank with their existing omission reasons. Corrections
+address the same stable test ID and leave other fields and tests unchanged.
+
+Browser state v9 adds empty test identity facts to validated v7/v8 drafts,
+retaining all combined legacy result text and its history verbatim. It never
+splits that text into inferred clinical facts. New direct entries offer separate
+identity/result controls and permit partial information.
 
 ### Stable entity identity
 

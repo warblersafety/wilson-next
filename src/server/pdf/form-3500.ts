@@ -109,15 +109,18 @@ const fields = {
   reporterIdentityNo: "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]",
 } as const;
 
-const relevantTestFields = Array.from({ length: 8 }, (_, index) => {
-  const row = index + 1;
-  const containerRow = row === 1 ? "Row1" : row === 2 ? "Row2" : row === 3 ? "Row3" : row === 4 ? "Row4" : row === 5 ? "Row5" : row === 6 ? "Row6" : row === 7 ? "Row7" : "Row8";
-  const dateRow = row <= 2 || row === 8 ? containerRow : "Row8";
+// Visual B6 rows, verified from the source PDF widget rectangles. Native field
+// suffixes 5/8 are crossed; using the same suffix for every column misattributes
+// ranges/dates. Keep source bytes intact and map each visible row explicitly.
+const relevantTestFields = [
+  [1, 1], [2, 2], [3, 3], [4, 4], [8, 5], [5, 8], [6, 6], [7, 7],
+].map(([result, details]) => {
+  const prefix = "topmostSubform[0].Page3[0].TestDataTable[0]";
   return {
-    testResult: `topmostSubform[0].Page3[0].TestDataTable[0].${containerRow}[0].TestData${row}[0]`,
-    lowRange: `topmostSubform[0].Page3[0].TestDataTable[0].${containerRow}[0].TLowRange${row}[0]`,
-    highRange: `topmostSubform[0].Page3[0].TestDataTable[0].${row === 7 ? "Row8" : containerRow}[0].THighRange${row}[0]`,
-    date: `topmostSubform[0].Page3[0].TestDataTable[0].${dateRow}[0].TDate${row}[0]`,
+    testResult: `${prefix}.Row${result}[0].TestData${result}[0]`,
+    lowRange: `${prefix}.Row${details}[0].TLowRange${details}[0]`,
+    highRange: `${prefix}.Row${details === 7 ? 8 : details}[0].THighRange${details}[0]`,
+    date: `${prefix}.Row${details <= 2 ? details : 8}[0].TDate${details}[0]`,
   };
 });
 

@@ -349,9 +349,8 @@ export async function performJourneyAction(
             relevantTests.push({ id: testId, groupId: `group-${testId}` });
             facts.push(
               { id: valueId("tests-available"), target: { entity: "event", entityId: "event", field: "relevantTestsAvailable" }, intent: "fact", value: { kind: "known", value: true } },
-              { id: valueId("test-result"), target: { entity: "test", entityId: testId, field: "testResult" }, intent: "fact", value: { kind: "known", value: action.test.testResult } },
             );
-            for (const field of ["lowRange", "highRange", "date"] as const) {
+            for (const field of ["testName", "testResult", "lowRange", "highRange", "date"] as const) {
               const value = action.test[field];
               if (value) facts.push({ id: valueId(`test-${field}`), target: { entity: "test", entityId: testId, field }, intent: "fact", value: { kind: "known", value } });
             }
@@ -718,7 +717,7 @@ function clinicalContextSource(action: Extract<JourneyAction, { action: "answer-
   const parts: string[] = [];
   if (action.test) {
     parts.push(action.test.kind === "known"
-      ? `Relevant test: ${action.test.testResult}${action.test.lowRange ? `; low range ${action.test.lowRange}` : ""}${action.test.highRange ? `; high range ${action.test.highRange}` : ""}${action.test.date ? `; date ${action.test.date}` : ""}.`
+      ? `Relevant test: ${action.test.testName ?? "identity not provided"}; result: ${action.test.testResult ?? "not provided"}${action.test.lowRange ? `; low range ${action.test.lowRange}` : ""}${action.test.highRange ? `; high range ${action.test.highRange}` : ""}${action.test.date ? `; date ${action.test.date}` : ""}.`
       : `Relevant tests: ${action.test.kind.replaceAll("-", " ")}.`);
   }
   if (action.history) parts.push(`Relevant history: ${displayValue(action.history)}.`);

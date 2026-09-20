@@ -101,7 +101,8 @@ const product = {
 } as const satisfies Record<ProductFactKey, FactControl>;
 
 const test = {
-  testResult: { label: "Test and result", shape: "text" },
+  testName: { label: "Test identity", shape: "text", help: "Use the stated test name and specimen/context. Do not guess or expand an unfamiliar term." },
+  testResult: { label: "Result and stated units", shape: "text", help: "Retain numeric or qualitative wording. Add units only if known." },
   lowRange: { label: "Low range", shape: "text" },
   highRange: { label: "High range", shape: "text" },
   date: { label: "Date", shape: "date" },

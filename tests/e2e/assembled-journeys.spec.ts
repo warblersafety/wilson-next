@@ -363,7 +363,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   expect(deathCase.askedNeeds.map(({ key }) => key)).toEqual(["serious-outcomes", "death-date", "reporter-details"]);
   expect(deathCase.relevantTests).toHaveLength(1);
   checkpoints.push({ journey: "layer1-death", state: "output", assertion: "Accepted death stayed true; only unresolved outcomes, the conditional death date, and reporter details were asked." });
-  await downloadAndCheck(page, "layer1-death", ["TEST-63", "trimethoprim-sulfamethoxazole", "Skin biopsy: full-thickness epidermal necrosis", "07-SEP-2026", "Morgan", "Reed"], [], {
+  await downloadAndCheck(page, "layer1-death", ["TEST-63", "trimethoprim-sulfamethoxazole", "Test identity not recorded: Skin biopsy: full-thickness epidermal necrosis", "07-SEP-2026", "Morgan", "Reed"], [], {
     "topmostSubform[0].Page1[0].SecA_Patient[0].Death[0]": "/1",
     "topmostSubform[0].Page1[0].SecA_Patient[0].DeathDate[0]": "07-SEP-2026",
   });
@@ -402,7 +402,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   expect(testsAfterCorrection.relevantTests[2].facts.testResult.resolvedValue?.value).toEqual({ kind: "known", value: "Total bilirubin: 2.1 mg/dL" });
   expect(testsAfterCorrection.askedNeeds.map(({ key }) => key)).toEqual(["reporter-details"]);
   checkpoints.push({ journey: "layer1-tests", state: "corrected-output", assertion: "Three stable test entities remained distinct; the accepted ALT correction superseded only its prior value and did not reopen completion." });
-  await downloadAndCheck(page, "layer1-tests", ["TEST-51", "atorvastatin", "ALT: 123 U/L", "AST: 118 U/L", "Total bilirubin: 2.1 mg/dL", "Riley", "Patel"], ["ALT: 132 U/L"]);
+  await downloadAndCheck(page, "layer1-tests", ["TEST-51", "atorvastatin", "Test identity not recorded: ALT: 123 U/L", "Test identity not recorded: AST: 118 U/L", "Test identity not recorded: Total bilirubin: 2.1 mg/dL", "Riley", "Patel"], ["Test identity not recorded: ALT: 132 U/L"]);
   await productCard(page, "Relevant test 3").getByRole("button", { name: "Withdraw Relevant test 3" }).click();
   await expect(productCard(page, "Relevant test 3")).toContainText("Withdrawn from the active report");
   await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).not.toContainText("Total bilirubin: 2.1 mg/dL");
@@ -410,7 +410,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   expect(testsAfterWithdrawal.relevantTests[2]).toMatchObject({ state: "withdrawn" });
   expect(testsAfterWithdrawal.relevantTests[2].facts.testResult.resolvedValue?.value).toEqual({ kind: "known", value: "Total bilirubin: 2.1 mg/dL" });
   checkpoints.push({ journey: "layer1-tests", state: "withdrawn-test-output", assertion: "A reviewed relevant test became inactive without deletion; its facts and source history remained visible while projection and PDF recomputed without it." });
-  await downloadAndCheck(page, "layer1-tests-withdrawal", ["TEST-51", "atorvastatin", "ALT: 123 U/L", "AST: 118 U/L", "Riley", "Patel"], ["ALT: 132 U/L", "Total bilirubin: 2.1 mg/dL"]);
+  await downloadAndCheck(page, "layer1-tests-withdrawal", ["TEST-51", "atorvastatin", "Test identity not recorded: ALT: 123 U/L", "Test identity not recorded: AST: 118 U/L", "Riley", "Patel"], ["Test identity not recorded: ALT: 132 U/L", "Test identity not recorded: Total bilirubin: 2.1 mg/dL"]);
 
   await newCase(page);
   await submitOpening(page, layer1RoleOpening);
@@ -517,7 +517,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   expect(richCase.products[0].facts.dose.supersededValues.map(({ value }) => value)).toEqual([{ kind: "known", value: "500 mg" }]);
   checkpoints.push({ journey: "adaptive-rich", state: "directly-corrected-output", assertion: "Two typed patient corrections were accepted atomically; an omitted date, reviewed dose, report type, and reporter email were then directly updated with retained history and no additional model call." });
   await retainScreenshot(page, "adaptive-rich-output.png");
-  await downloadAndCheck(page, "adaptive-rich", ["TEST-72", "73", "65", "amoxicillin", "250 mg", "Serum tryptase: 18 ng/mL", "Penicillin allergy", "Avery", "Chen", "avery.chen.corrected@example.test"], ["500 mg", "avery.chen@example.test"], {
+  await downloadAndCheck(page, "adaptive-rich", ["TEST-72", "73", "65", "amoxicillin", "250 mg", "Test identity not recorded: Serum tryptase: 18 ng/mL", "Penicillin allergy", "Avery", "Chen", "avery.chen.corrected@example.test"], ["500 mg", "avery.chen@example.test"], {
     "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "19-SEP-2026",
     "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "73",
     "topmostSubform[0].Page1[0].SecA_Patient[0].WeightValue[0]": "65",
@@ -555,7 +555,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(page.locator("li").filter({ hasText: "Address: not present" })).toBeVisible();
   checkpoints.push({ journey: "adaptive-sparse", state: "partial-output", assertion: "Four grouped prompts captured unknown and refusal once, exposed omissions, and allowed truthful partial output." });
   await retainScreenshot(page, "adaptive-sparse-output.png");
-  await downloadAndCheck(page, "adaptive-sparse", ["TEST-26", "propranolol", "Jordan", "Lee", "202-555-0147"], ["Serum tryptase: 18 ng/mL"]);
+  await downloadAndCheck(page, "adaptive-sparse", ["TEST-26", "propranolol", "Jordan", "Lee", "202-555-0147"], ["Test identity not recorded: Serum tryptase: 18 ng/mL"]);
 
   await newCase(page);
 

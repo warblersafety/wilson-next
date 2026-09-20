@@ -176,8 +176,9 @@ describe("adaptive Form FDA 3500 projection fields", () => {
     const path = join(directory, "adaptive.pdf");
     await writeFile(path, result.output);
     const python = process.env.PYPDF_PYTHON ?? "python3";
-    const { stdout } = await execFileAsync(python, [readerPath, path, "--named"]);
-    const { namedFields } = JSON.parse(stdout) as { namedFields: Record<string, string> };
+    const { stdout } = await execFileAsync(python, [readerPath, path, "--named", "--laboratory-rows"]);
+    const { namedFields, laboratoryRows } = JSON.parse(stdout);
+    expect(laboratoryRows).toEqual(relevantTests.map(({ testResult, lowRange, highRange }, index) => ({ testResult, lowRange, highRange, date: `0${index + 1}-SEP-2026` })));
     expect(namedFields).toMatchObject({
       "topmostSubform[0].Page1[0].SecA_Patient[0].WeightValue[0]": "64",
       "topmostSubform[0].Page1[0].SecA_Patient[0].WeightKG[0]": "/1",
@@ -185,11 +186,11 @@ describe("adaptive Form FDA 3500 projection fields", () => {
       "topmostSubform[0].Page3[0].Sec6Data[0].OtherHistory[0]": "Penicillin allergy",
       "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TestData1[0]": "Serum tryptase: 18 ng/mL",
       "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TestData2[0]": "Test 2: result 2",
-      "topmostSubform[0].Page3[0].TestDataTable[0].Row7[0].TestData7[0]": "Test 7: result 7",
-      "topmostSubform[0].Page3[0].TestDataTable[0].Row8[0].THighRange7[0]": "high 7",
-      "topmostSubform[0].Page3[0].TestDataTable[0].Row8[0].TDate7[0]": "07-SEP-2026",
-      "topmostSubform[0].Page3[0].TestDataTable[0].Row8[0].TestData8[0]": "Test 8: result 8",
-      "topmostSubform[0].Page3[0].TestDataTable[0].Row8[0].TDate8[0]": "08-SEP-2026",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row7[0].TestData7[0]": "Test 8: result 8",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row8[0].THighRange7[0]": "high 8",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row8[0].TDate7[0]": "08-SEP-2026",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row8[0].TestData8[0]": "Test 5: result 5",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row8[0].TDate8[0]": "06-SEP-2026",
       "topmostSubform[0].Page7[0].SecG_Reporter[0].LastName[0]": "Chen",
       "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]": "/1",
       "topmostSubform[0].Page7[0].SecG_Reporter[0].Packer[0]": "/1",

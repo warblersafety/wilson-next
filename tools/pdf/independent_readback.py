@@ -29,6 +29,24 @@ def main() -> None:
             for name, field in fields.items()
             if field.get("/V") not in (None, "")
         }
+    if "--laboratory-rows" in sys.argv:
+        # Read visual rows from widget coordinates, independently of the app's
+        # field-name table (the FDA suffixes do not follow visible row order).
+        widgets = []
+        columns = {"TestData": "testResult", "TLowRange": "lowRange", "THighRange": "highRange", "TDate": "date"}
+        for ref in reader.pages[2].get("/Annots", []):
+            widget = ref.get_object()
+            name = str(widget.get("/T", ""))
+            column = next((value for prefix, value in columns.items() if name.startswith(prefix)), None)
+            if column:
+                rect = widget["/Rect"]
+                widgets.append((float(rect[1]), column, str(widget.get("/V", ""))))
+        rows = []
+        for y, column, value in sorted(widgets, reverse=True):
+            if not rows or abs(rows[-1][0] - y) > 1:
+                rows.append((y, {}))
+            rows[-1][1][column] = value
+        result["laboratoryRows"] = [values for _, values in rows]
     print(json.dumps(result, sort_keys=True))
 
 

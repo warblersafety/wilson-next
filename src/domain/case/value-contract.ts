@@ -110,6 +110,7 @@ export const caseValueContracts = {
     },
   },
   test: {
+    testName: { shape: "string" },
     testResult: { shape: "string" },
     lowRange: { shape: "string" },
     highRange: { shape: "string" },

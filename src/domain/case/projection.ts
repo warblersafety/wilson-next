@@ -142,7 +142,17 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   for (const test of caseState.relevantTests.filter(({ state }) => state === "resolved")) {
     const result: ProjectedRelevantTest = { testId: test.id };
     const index = projection.sections.B.relevantTests.length;
-    for (const field of ["testResult", "lowRange", "highRange", "date"] as const) {
+    const observation: { testName?: string; testResult?: string } = {};
+    for (const field of ["testName", "testResult"] as const) {
+      assign(projection, `sections.B.relevantTests.${index}.testResult`, `${field === "testName" ? "test identity" : "test result"} for ${test.id}`, `test:${test.id}:${field}`, test.facts[field], observation, field);
+    }
+    // FDA B6 has a single identity/result cell. Compose only reviewed facts and
+    // explicit missing-detail labels; never derive identity from result text.
+    result.testResult = `${observation.testName ?? "Test identity not recorded"}: ${observation.testResult ?? "Result not recorded"}`;
+    projection.sourceTrace[`sections.B.relevantTests.${index}.testResult`] = [...new Set([
+      ...(known(test.facts.testName)?.sourceIds ?? []), ...(known(test.facts.testResult)?.sourceIds ?? []),
+    ])];
+    for (const field of ["lowRange", "highRange", "date"] as const) {
       assign(projection, `sections.B.relevantTests.${index}.${field}`, `${field} for ${test.id}`, `test:${test.id}:${field}`, test.facts[field], result, field);
     }
     projection.sections.B.relevantTests.push(result);

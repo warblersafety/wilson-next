@@ -68,7 +68,7 @@ describe("fixed semantic projection to Form FDA 3500", () => {
       "topmostSubform[0].Page1[0].SecA_Patient[0].Hospital[0]": "/1",
       "topmostSubform[0].Page1[0].SecA_Patient[0].EventDate[0]": "18-AUG-2026",
       "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": projection.sections.B.eventDescription,
-      "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TestData1[0]": "Hemoglobin: 7.8 g/dL",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TestData1[0]": "Test identity not recorded: Hemoglobin: 7.8 g/dL",
       "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "apixaban",
       "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]": "5",
       "topmostSubform[0].Page4[0].Prod1[0].Prod1DoseUnit[0]": "25",

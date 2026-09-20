@@ -62,6 +62,7 @@ export interface EventFacts {
 }
 
 export interface RelevantTestFacts {
+  testName: Fact<string>;
   testResult: Fact<string>;
   lowRange: Fact<string>;
   highRange: Fact<string>;
