@@ -486,6 +486,10 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await page.getByRole("button", { name: "Add reporter details" }).click();
   await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
   const richEvent = productOrCaseCard(page, "Event");
+  const reportDate = richEvent.locator("dl > div").filter({ has: page.getByText("Date of this report", { exact: true }) });
+  await reportDate.getByRole("button", { name: "Change" }).click();
+  await page.getByLabel("New Date of this report").fill("2026-09-19");
+  await reportDate.getByRole("button", { name: "Apply correction" }).click();
   const discharge = richEvent.locator("dl > div").filter({ has: page.getByText("Discharged", { exact: true }) });
   await discharge.getByRole("button", { name: "Add" }).click();
   await page.getByLabel("New Discharged").fill("2026-09-04");
@@ -514,6 +518,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   checkpoints.push({ journey: "adaptive-rich", state: "directly-corrected-output", assertion: "Two typed patient corrections were accepted atomically; an omitted date, reviewed dose, report type, and reporter email were then directly updated with retained history and no additional model call." });
   await retainScreenshot(page, "adaptive-rich-output.png");
   await downloadAndCheck(page, "adaptive-rich", ["TEST-72", "73", "65", "amoxicillin", "250 mg", "Serum tryptase: 18 ng/mL", "Penicillin allergy", "Avery", "Chen", "avery.chen.corrected@example.test"], ["500 mg", "avery.chen@example.test"], {
+    "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "19-SEP-2026",
     "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "73",
     "topmostSubform[0].Page1[0].SecA_Patient[0].WeightValue[0]": "65",
     "topmostSubform[0].Page1[0].SecA_Patient[0].WeightKG[0]": "/1",
@@ -564,7 +569,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("diffuse hives and facial swelling");
   checkpoints.push({ journey: "rich", state: "output", assertion: "No duplicate indication question was asked; new bounded completion groups were answered without changing accepted rich facts." });
   await retainScreenshot(page, "rich-output.png");
-  await downloadAndCheck(page, "rich", ["TEST-68", "cephalexin", "500 mg", "01-AUG-2026", "04-AUG-2026"], []);
+  await downloadAndCheck(page, "rich", ["TEST-68", "cephalexin", "500 mg", "01-AUG-2026", "04-AUG-2026"], [], { "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "20-SEP-2026" });
 
   await newCase(page);
   await submitOpening(page, sparseOpening);
@@ -811,6 +816,7 @@ async function completeQuestions(page: Page) {
       continue;
     }
     if (await page.getByRole("button", { name: "Prefer not to provide reporter details" }).isVisible().catch(() => false)) {
+      await page.getByLabel("Date of this report", { exact: true }).fill("2026-09-20");
       await page.getByRole("button", { name: "Prefer not to provide reporter details" }).click();
       continue;
     }
