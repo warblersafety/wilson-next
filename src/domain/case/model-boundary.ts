@@ -5,7 +5,7 @@ import { maximumCaseProducts } from "./limits";
 
 const patientFields = ["identifier", "ageYears", "sex", "weight"] as const;
 const eventFields = ["problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "relevantHistory", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate"] as const;
-const productFields = ["name", "productType", "role", "manufacturer", "lotNumber", "dose", "frequency", "route", "startDate", "stopDate", "indication", "stopped", "commonName", "procode", "modelNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implanted", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const;
+const productFields = ["name", "productType", "role", "manufacturer", "lotNumber", "dose", "strength", "frequency", "route", "startDate", "stopDate", "indication", "stopped", "commonName", "procode", "modelNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implanted", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const;
 const relevantTestFields = ["testResult", "lowRange", "highRange", "date"] as const;
 
 const modelTargetSchema = z.discriminatedUnion("entity", [

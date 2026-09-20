@@ -161,3 +161,26 @@ function routeRequest(body: unknown) {
     body: JSON.stringify(body),
   });
 }
+
+describe("report-completeness state upgrade", () => {
+  it("upgrades v7 with empty added facts without changing accepted knowledge, sources or revision", async () => {
+    const repository = new InMemoryCaseRepository({ maxCases: 1 });
+    const snapshot = await performJourneyAction(repository, `case-${randomUUID()}`,  {
+      action: "submit-opening", text: openingAccount, reportType: "adverse-event",
+    }, fixedJourneyModel);
+    const { state } = await journeyResponse(repository, snapshot);
+    const legacy = JSON.parse(JSON.stringify(state));
+    legacy.version = "wilson-browser-state-v7";
+    delete legacy.case.event.facts.reportDate;
+    for (const product of legacy.case.products) delete product.facts.strength;
+    const upgraded = parseBrowserJourneyState(legacy);
+    expect(upgraded).toEqual(state);
+    expect(upgraded.case.revision).toBe(legacy.case.revision);
+    expect(upgraded.case.sources).toEqual(legacy.case.sources);
+    delete legacy.case.products[0].facts.dose;
+    expect(() => parseBrowserJourneyState(legacy)).toThrow(BrowserStateError);
+    const brokenCurrent = JSON.parse(JSON.stringify(state));
+    delete brokenCurrent.case.event.facts.reportDate;
+    expect(() => parseBrowserJourneyState(brokenCurrent)).toThrow(BrowserStateError);
+  });
+});

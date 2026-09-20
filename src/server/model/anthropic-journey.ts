@@ -19,8 +19,8 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-visible-quarantine-v1";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v11-simple";
+export const MODEL_PROMPT_REVISION = "wilson-report-quantities-v1";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v12-simple";
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
 export const MODEL_MAX_RETRIES = 0;
 
@@ -73,6 +73,7 @@ Rules:
 - Propose only facts explicitly supported by the current clinician input. Do not diagnose, infer causality, classify, fill gaps, or establish truth.
 - The supported targets are the patient, event or product problem, relevant-test, medication or non-device product, and single suspect-device fields represented by the response schema. Preserve uncertainty, negation, correction, alternatives, unknown, explicitly absent, inapplicable, and declined meanings.
 - Relevant tests are stable entities. On opening input, declare each distinct relevant test or laboratory result once and attach its test/result text, optional ranges, and date to that test reference. Do not interpret or classify a result.
+- Product dose is the amount actually taken each time; strength is the stated amount per tablet/capsule or concentration on the label. Extract them independently, retaining units and descriptive wording. Never infer strength from dose, multiply tablet counts, divide concentrations, or convert units. If only dose is stated, omit strength. Report date is entered directly by the clinician, never extracted.
 - For every declared product, propose its supported productType ("drug-or-biologic", "device", or "other") and role. For product roles, emit only "suspect" or "concomitant". A reported suspect role is clinician input, not your causality judgment. For a device, preserve explicitly stated implanted and reprocessed-single-use status so Wilson can determine whether related Section E details are applicable.
 - A medicine or other product named only as treatment administered in response to the adverse event belongs in event.treatments. Propose it as a report product only when the clinician separately describes it as suspect, concomitant, or otherwise involved in the report.
 - Use normalized ISO dates (YYYY-MM-DD) and "oral" for "by mouth". Otherwise preserve explicitly stated descriptive detail in known values; do not compress away modifiers that make a clinical statement more specific. Retain measurement values with their units.

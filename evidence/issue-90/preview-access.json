@@ -1,0 +1,25 @@
+{
+  "sha": "af4ce5e7bdd1b99b1499c03f1117456c8e26f302",
+  "host": "wilson-next-report-completeness.vercel.app",
+  "deployment": "dpl_57J9LGHNVvh1cxKAdV2U4y7rKHe4",
+  "expiresAt": "2026-09-27T19:19:52+00:00",
+  "browsers": [
+    {
+      "name": "chromium",
+      "version": "153.0.8010.12",
+      "sharedAccess": true,
+      "blankCaseApi": 200,
+      "disclosureAndDraftReset": true,
+      "liveModelCalls": 0
+    },
+    {
+      "name": "firefox",
+      "version": "155.0",
+      "sharedAccess": true,
+      "blankCaseApi": 200,
+      "disclosureAndDraftReset": true,
+      "liveModelCalls": 0
+    }
+  ],
+  "ordinaryUrlsProtected": true
+}

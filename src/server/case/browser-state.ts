@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { SemanticCase } from "../../domain/case/types";
+import type { Fact, SemanticCase } from "../../domain/case/types";
 import {
   maximumAskedNeeds,
   maximumCaseProducts,
@@ -8,7 +8,7 @@ import {
 import type { JourneySnapshot, JourneyStage } from "../journey/service";
 import { InMemoryCaseRepository, validateRestoredCase } from "./repository";
 
-export const browserStateVersion = "wilson-browser-state-v7";
+export const browserStateVersion = "wilson-browser-state-v8";
 
 export interface BrowserJourneyState {
   version: typeof browserStateVersion;
@@ -73,6 +73,7 @@ const patientFactsSchema = z.object({
 }).strict();
 const eventFactsSchema = z.object({
   reportType: factSchema(z.enum(["adverse-event", "product-problem", "adverse-event-and-product-problem"])),
+  reportDate: factSchema(z.iso.date()),
   problemDescription: factSchema(z.string()),
   symptoms: factSchema(z.array(z.string())),
   onsetDate: factSchema(isoDateSchema),
@@ -113,6 +114,7 @@ const productFactsSchema = z.object({
   manufacturer: factSchema(z.string()),
   lotNumber: factSchema(z.string()),
   dose: factSchema(z.string()),
+  strength: factSchema(z.string()),
   frequency: factSchema(z.string()),
   route: factSchema(z.string()),
   startDate: factSchema(isoDateSchema),
@@ -197,6 +199,11 @@ const caseSchema = z.object({
   }).strict()),
 }).strict();
 
+const legacyCaseSchema = caseSchema.extend({
+  event: caseSchema.shape.event.extend({ facts: eventFactsSchema.omit({ reportDate: true }) }),
+  products: z.array(caseSchema.shape.products.element.extend({ facts: productFactsSchema.omit({ strength: true }) })).max(maximumCaseProducts),
+});
+
 const stateSchema = z.object({
   version: z.string(),
   stage: z.enum([
@@ -229,14 +236,24 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
   if (!version.success) {
     throw new BrowserStateError("The saved synthetic preview state is malformed", "malformed-browser-state");
   }
-  if (version.data.version !== browserStateVersion) {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v7") {
     throw new BrowserStateError("The saved synthetic preview state is incompatible", "incompatible-browser-state");
   }
   const envelope = stateSchema.safeParse(input);
   if (!envelope.success) {
     throw new BrowserStateError("The saved synthetic preview state is malformed", "malformed-browser-state");
   }
-  const parsedCase = caseSchema.safeParse(envelope.data.case);
+  let candidate = envelope.data.case;
+  if (version.data.version === "wilson-browser-state-v7") {
+    const legacy = legacyCaseSchema.safeParse(candidate);
+    if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
+    candidate = {
+      ...legacy.data,
+      event: { ...legacy.data.event, facts: { ...legacy.data.event.facts, reportDate: emptyAddedFact() } },
+      products: legacy.data.products.map((product) => ({ ...product, facts: { ...product.facts, strength: emptyAddedFact() } })),
+    };
+  }
+  const parsedCase = caseSchema.safeParse(candidate);
   if (!parsedCase.success) {
     throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
   }
@@ -285,4 +302,8 @@ export function assertStoredStage(state: BrowserJourneyState, snapshot: JourneyS
   if (state.stage !== snapshot.stage || state.case.revision !== snapshot.revision) {
     throw new BrowserStateError("The saved synthetic preview stage is stale", "stale-browser-state");
   }
+}
+
+function emptyAddedFact(): Fact<string> {
+  return { state: "empty", proposedValues: [], conflictingValues: [], sourceIds: [], supersededValues: [] };
 }

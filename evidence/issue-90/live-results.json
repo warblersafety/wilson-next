@@ -1,0 +1,455 @@
+{
+  "sha": "af4ce5e7bdd1b99b1499c03f1117456c8e26f302",
+  "deployment": "dpl_57J9LGHNVvh1cxKAdV2U4y7rKHe4",
+  "startedAt": "2026-09-20T19:20:51.384Z",
+  "callBudget": 3,
+  "usdCap": 5,
+  "retries": 0,
+  "cases": [
+    {
+      "id": "dose-only",
+      "status": 200,
+      "operationId": "71fdfb9e-3246-4dad-a57d-bc76916fe486",
+      "expected": {
+        "name": "amoxicillin",
+        "dose": "500 mg",
+        "strength": null,
+        "startDate": "2026-09-01",
+        "onsetDate": "2026-09-03"
+      },
+      "stage": "understanding",
+      "observed": {
+        "patient": {
+          "identifier": [
+            {
+              "kind": "known",
+              "value": "Q1"
+            }
+          ],
+          "ageYears": [
+            {
+              "kind": "known",
+              "value": 45
+            }
+          ],
+          "sex": [
+            {
+              "kind": "known",
+              "value": "female"
+            }
+          ]
+        },
+        "event": {
+          "reportType": {
+            "kind": "known",
+            "value": "adverse-event"
+          },
+          "problemDescription": [
+            {
+              "kind": "known",
+              "value": "rash"
+            }
+          ],
+          "onsetDate": [
+            {
+              "kind": "known",
+              "value": "2026-09-03"
+            }
+          ],
+          "outcome": [
+            {
+              "kind": "known",
+              "value": "recovered"
+            }
+          ]
+        },
+        "products": [
+          {
+            "facts": {
+              "name": [
+                {
+                  "kind": "known",
+                  "value": "amoxicillin"
+                }
+              ],
+              "productType": [
+                {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                }
+              ],
+              "role": [
+                {
+                  "kind": "known",
+                  "value": "suspect"
+                }
+              ],
+              "dose": [
+                {
+                  "kind": "known",
+                  "value": "500 mg"
+                }
+              ],
+              "strength": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "frequency": [
+                {
+                  "kind": "known",
+                  "value": "twice daily"
+                }
+              ],
+              "route": [
+                {
+                  "kind": "known",
+                  "value": "oral"
+                }
+              ],
+              "startDate": [
+                {
+                  "kind": "known",
+                  "value": "2026-09-01"
+                }
+              ],
+              "indication": [
+                {
+                  "kind": "known",
+                  "value": "sinusitis"
+                }
+              ],
+              "stopped": [
+                {
+                  "kind": "known",
+                  "value": true
+                }
+              ]
+            }
+          }
+        ],
+        "unrepresented": []
+      },
+      "assessment": {
+        "quantityFidelity": "pass",
+        "omissions": [],
+        "unsupportedAdditions": [],
+        "wrongProductAttribution": [],
+        "unsupportedQuantityInference": [],
+        "presentationGap": "Clinical symptom proposed as problemDescription, displayed under Product problem; retained in PDF event narrative."
+      },
+      "downloaded": false,
+      "journeyLimitation": "The one-off browser driver stopped at the existing clinical-context question; extraction succeeded. No retry or second model call. Dose-only PDF behavior is covered independently by deterministic tests.",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-report-quantities-v1",
+        "schemaRevision": "wilson-grounded-proposals-v12-simple",
+        "inputTokens": 4765,
+        "outputTokens": 2462,
+        "latencyMs": 17505,
+        "estimatedCostUsd": 0.03415
+      }
+    },
+    {
+      "id": "distinct-strength-dose",
+      "status": 200,
+      "operationId": "ac0cf3fa-f758-43c0-92a2-9d3fb69a3520",
+      "expected": {
+        "name": "naproxen",
+        "dose": "500 mg",
+        "strength": "250 mg",
+        "startDate": "2026-09-02",
+        "onsetDate": "2026-09-04"
+      },
+      "stage": "understanding",
+      "observed": {
+        "patient": {
+          "identifier": [
+            {
+              "kind": "known",
+              "value": "Q2"
+            }
+          ],
+          "ageYears": [
+            {
+              "kind": "known",
+              "value": 52
+            }
+          ],
+          "sex": [
+            {
+              "kind": "known",
+              "value": "male"
+            }
+          ]
+        },
+        "event": {
+          "reportType": {
+            "kind": "known",
+            "value": "adverse-event"
+          },
+          "problemDescription": [
+            {
+              "kind": "known",
+              "value": "abdominal pain"
+            }
+          ],
+          "onsetDate": [
+            {
+              "kind": "known",
+              "value": "2026-09-04"
+            }
+          ]
+        },
+        "products": [
+          {
+            "facts": {
+              "name": [
+                {
+                  "kind": "known",
+                  "value": "naproxen"
+                }
+              ],
+              "productType": [
+                {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                }
+              ],
+              "role": [
+                {
+                  "kind": "known",
+                  "value": "suspect"
+                }
+              ],
+              "dose": [
+                {
+                  "kind": "known",
+                  "value": "500 mg"
+                }
+              ],
+              "strength": [
+                {
+                  "kind": "known",
+                  "value": "250 mg"
+                }
+              ],
+              "frequency": [
+                {
+                  "kind": "known",
+                  "value": "twice daily"
+                }
+              ],
+              "route": [
+                {
+                  "kind": "known",
+                  "value": "oral"
+                }
+              ],
+              "startDate": [
+                {
+                  "kind": "known",
+                  "value": "2026-09-02"
+                }
+              ],
+              "indication": [
+                {
+                  "kind": "known",
+                  "value": "back pain"
+                }
+              ]
+            }
+          }
+        ],
+        "unrepresented": []
+      },
+      "downloaded": true,
+      "reportDate": {
+        "kind": "known",
+        "value": "2026-09-20"
+      },
+      "assessment": {
+        "quantityFidelity": "pass",
+        "omissions": [
+          "Dose retained as 500 mg but the stated two-tablet count was omitted."
+        ],
+        "unsupportedAdditions": [],
+        "wrongProductAttribution": [],
+        "unsupportedQuantityInference": [],
+        "presentationGap": "Clinical symptom proposed as problemDescription, displayed under Product problem; retained in PDF event narrative."
+      },
+      "independentPdfReadback": {
+        "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "20-SEP-2026",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]": "500",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1DoseUnit[0]": "25",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Strength[0]": "250",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1StrengthUnit[0]": "25"
+      },
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-report-quantities-v1",
+        "schemaRevision": "wilson-grounded-proposals-v12-simple",
+        "inputTokens": 4767,
+        "outputTokens": 2247,
+        "latencyMs": 15624,
+        "estimatedCostUsd": 0.032004
+      }
+    },
+    {
+      "id": "liquid-concentration",
+      "status": 200,
+      "operationId": "8b869652-4292-40a4-864d-dfe8d2daed01",
+      "expected": {
+        "name": "amoxicillin",
+        "dose": "10 mL",
+        "strength": "250 mg/5 mL",
+        "startDate": "2026-09-01",
+        "onsetDate": "2026-09-03"
+      },
+      "stage": "understanding",
+      "observed": {
+        "patient": {
+          "identifier": [
+            {
+              "kind": "known",
+              "value": "Q3"
+            }
+          ],
+          "ageYears": [
+            {
+              "kind": "known",
+              "value": 36
+            }
+          ],
+          "sex": [
+            {
+              "kind": "known",
+              "value": "female"
+            }
+          ]
+        },
+        "event": {
+          "reportType": {
+            "kind": "known",
+            "value": "adverse-event"
+          },
+          "problemDescription": [
+            {
+              "kind": "known",
+              "value": "rash"
+            }
+          ],
+          "onsetDate": [
+            {
+              "kind": "known",
+              "value": "2026-09-03"
+            }
+          ]
+        },
+        "products": [
+          {
+            "facts": {
+              "name": [
+                {
+                  "kind": "known",
+                  "value": "amoxicillin"
+                }
+              ],
+              "productType": [
+                {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                }
+              ],
+              "role": [
+                {
+                  "kind": "known",
+                  "value": "suspect"
+                }
+              ],
+              "dose": [
+                {
+                  "kind": "known",
+                  "value": "10 mL"
+                }
+              ],
+              "strength": [
+                {
+                  "kind": "known",
+                  "value": "250 mg/5 mL"
+                }
+              ],
+              "frequency": [
+                {
+                  "kind": "known",
+                  "value": "twice daily"
+                }
+              ],
+              "route": [
+                {
+                  "kind": "known",
+                  "value": "oral"
+                }
+              ],
+              "startDate": [
+                {
+                  "kind": "known",
+                  "value": "2026-09-01"
+                }
+              ],
+              "indication": [
+                {
+                  "kind": "known",
+                  "value": "sinusitis"
+                }
+              ]
+            }
+          }
+        ],
+        "unrepresented": []
+      },
+      "downloaded": true,
+      "reportDate": {
+        "kind": "known",
+        "value": "2026-09-20"
+      },
+      "assessment": {
+        "quantityFidelity": "pass",
+        "omissions": [],
+        "unsupportedAdditions": [],
+        "wrongProductAttribution": [],
+        "unsupportedQuantityInference": [],
+        "presentationGap": "Clinical symptom proposed as problemDescription, displayed under Product problem; retained in PDF event narrative."
+      },
+      "independentPdfReadback": {
+        "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "20-SEP-2026",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]": "10",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1DoseUnit[0]": "30",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Strength[0]": "250 mg/5 mL",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1StrengthUnit[0]": "40"
+      },
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-report-quantities-v1",
+        "schemaRevision": "wilson-grounded-proposals-v12-simple",
+        "inputTokens": 4781,
+        "outputTokens": 2537,
+        "latencyMs": 17774,
+        "estimatedCostUsd": 0.034932
+      }
+    }
+  ],
+  "finishedAt": "2026-09-20T19:22:22.693Z",
+  "limitations": [
+    "Three synthetic samples are not a model reliability estimate.",
+    "Native dictation and real clinical data were not tested.",
+    "Remaining laboratory and medication follow-up gaps are outside this slice."
+  ],
+  "totals": {
+    "calls": 3,
+    "inputTokens": 14313,
+    "outputTokens": 7246,
+    "estimatedCostUsd": 0.101086
+  },
+  "metricsSource": "Vercel in-memory diagnostic inspection; no raw runtime log archive retained."
+}
