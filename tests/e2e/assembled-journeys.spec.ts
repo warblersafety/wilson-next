@@ -50,7 +50,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   const initial = await page.goto("/");
   expect(initial?.headers()["x-robots-tag"]).toBe("noindex, nofollow");
   await expect(page.getByRole("heading", { name: "Describe what happened" })).toBeVisible();
-  await expect(page.getByLabel("Experiment boundary")).toContainText("Fictional information only");
+  await expect(page.getByLabel("Preview notice")).toContainText("Use fictional information");
 
   await submitOpening(page, identityQuarantineOpening);
   const identityQuarantine = page.getByRole("status").filter({ hasText: "Some details were left out" });
@@ -63,9 +63,17 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   expect(quarantinedIdentityCase.products[0].facts.name.state).toBe("empty");
   expect(quarantinedIdentityCase.products[0].facts.productType.state).toBe("empty");
   expect(quarantinedIdentityCase.products[0].facts.role.resolvedValue).toBeUndefined();
+  await expect(page.getByRole("heading", { name: "Case summary", exact: true })).toBeVisible();
+  page.once("dialog", (dialog) => dialog.dismiss());
+  await page.getByRole("button", { name: "New case", exact: true }).click();
+  expect(await semanticCase(page)).toEqual(quarantinedIdentityCase);
+  await page.getByRole("button", { name: "Accept Patient", exact: true }).click();
+  await expect(productOrCaseCard(page, "Patient").getByText("Proposed", { exact: true })).toHaveCount(0);
+  await expect(productOrCaseCard(page, "Event").getByText("Proposed", { exact: true }).first()).toBeVisible();
   await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
   await page.getByRole("button", { name: "Confirm outcomes" }).click();
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
+  await expect(page.getByText("Reviewed", { exact: true })).toHaveCount(0);
   await expect(page.getByRole("status").filter({ hasText: "Required before adding" }))
     .toContainText("first name, last name, and phone or email");
 
@@ -580,12 +588,15 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await page.getByLabel("Clinical update").fill(repeatedUpdate);
   await page.getByRole("button", { name: "Review this update" }).click();
   await expect(page.getByRole("heading", { name: "Review the proposed update" })).toBeVisible();
+  await expect(page.getByText("2 proposed details to check", { exact: true })).toBeVisible();
   const doseUpdate = page.getByRole("article").filter({ hasText: "200 mg" });
   await doseUpdate.getByRole("button", { name: "Accept this update" }).click();
   await expect(page.getByText("Earlier: 400 mg", { exact: true })).toBeVisible();
+  await expect(page.getByText("1 proposed detail to check", { exact: true })).toBeVisible();
   const dateUpdate = page.getByRole("article").filter({ hasText: "2-Jul-2026" });
   await dateUpdate.getByRole("button", { name: "Accept this update" }).click();
   await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  await expect(page.getByText("1 unresolved conflict", { exact: true })).toBeVisible();
   await expect(page.getByText("acetaminophen (Tylenol) — Started has incompatible sources", { exact: false })).toBeVisible();
   await expect(page.getByRole("group", { name: "acetaminophen (Tylenol) — Started" })).toBeVisible();
   await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("Omitted — unresolved conflict");
@@ -715,9 +726,13 @@ async function submitOpening(page: Page, text: string, reportType: ReportType = 
 }
 
 async function newCase(page: Page) {
+  const previousId = (await semanticCase(page)).id;
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "New case" }).click();
   await expect(page.getByRole("heading", { name: "Describe what happened" })).toBeVisible();
+  expect((await semanticCase(page)).id).not.toBe(previousId);
+  await expect(page.getByRole("heading", { name: "Case summary", exact: true })).toHaveCount(0);
+  await expect(page.getByLabel("Clinical account", { exact: true })).toHaveValue("");
 }
 
 function productCard(page: Page, name: string) {
@@ -768,7 +783,7 @@ async function semanticCase(page: Page): Promise<BrowserJourneyState["case"]> {
 
 async function completeQuestions(page: Page) {
   for (let turn = 0; turn < 6; turn += 1) {
-    await page.getByText("Updating the reviewed case…", { exact: true }).waitFor({ state: "hidden" });
+    await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
     if (await page.getByRole("heading", { name: "The supported form is ready" }).isVisible().catch(() => false)) return;
     if (await page.getByRole("button", { name: "Confirm outcomes" }).isVisible().catch(() => false)) {
       await page.getByRole("button", { name: "Confirm outcomes" }).click();

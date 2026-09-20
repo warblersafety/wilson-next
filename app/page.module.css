@@ -17,36 +17,28 @@
   color: #fff;
   display: flex;
   justify-content: space-between;
+  gap: 16px;
   min-height: 68px;
-  padding: 0 42px;
+  padding: 12px 42px;
 }
+
+.brand { align-items: center; display: flex; flex-wrap: wrap; gap: 8px 22px; }
 
 .wordmark {
   font-family: Georgia, serif;
   font-size: 1.7rem;
   font-weight: 700;
-  margin-right: 22px;
 }
 
-.experiment {
+.purpose {
   border-left: 1px solid #779489;
   color: #d9e4df;
   font-size: .85rem;
   padding-left: 22px;
-  text-transform: uppercase;
-  letter-spacing: .08em;
 }
 
-.status {
-  background: #d7eadf;
-  border-radius: 999px;
-  color: #173d32;
-  font-size: .85rem;
-  font-weight: 700;
-  padding: 8px 13px;
-}
-
-.headerActions { align-items: center; display: flex; gap: 12px; }
+.headerActions { align-items: center; display: flex; flex-shrink: 0; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+.resetNotice { font-size: .85rem; }
 .headerActions button, .panelHeading button {
   background: transparent;
   border: 1px solid currentColor;
@@ -57,16 +49,28 @@
   font-size: .8rem;
   font-weight: 700;
   padding: 7px 10px;
+  min-height: 44px;
 }
 .headerActions button:disabled, .panelHeading button:disabled { cursor: not-allowed; opacity: .6; }
 
 .boundary {
+  align-items: baseline;
   background: #fff2c9;
   border-bottom: 1px solid #e3cf8d;
   color: #5b4711;
   font-size: .9rem;
   padding: 10px 42px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 24px;
 }
+.boundary > p { line-height: 1.5; margin: 0; }
+.previewAbout { flex: 1; min-width: min(100%, 12rem); }
+.previewAbout summary { cursor: pointer; font-weight: 700; min-height: 44px; padding: 12px 0; }
+.previewAbout[open] { flex-basis: 100%; }
+.previewAbout > div { line-height: 1.6; max-width: 70ch; padding-bottom: 4px; }
+.previewAbout p { margin: 0 0 12px; }
+.previewAbout summary:focus-visible { outline: 3px solid #2e6655; outline-offset: 2px; }
 
 .error, .notice, .progress {
   margin: 16px 42px 0;
@@ -90,6 +94,10 @@
 }
 
 .workspace { grid-template-columns: minmax(430px, .9fr) minmax(560px, 1.1fr); }
+.openingWorkspace { margin: 0 auto; max-width: 880px; padding: 24px; }
+.openingWorkspace .activeTask { border: 1px solid #d0d8d3; border-radius: 12px; padding: 24px clamp(24px, 4vw, 56px); }
+.openingWorkspace h1 { font-size: clamp(2rem, 3.3vw, 2.8rem); }
+.openingWorkspace textarea { min-height: 180px; height: 200px; }
 .outputWorkspace { grid-template-columns: minmax(430px, .85fr) minmax(640px, 1.15fr); }
 
 .activeTask, .outputSummary {
@@ -261,7 +269,7 @@ button:disabled {
 
 .outputSummary { overflow-y: auto; }
 .updateBox { border-top: 1px solid #d6ddd8; margin-top: 28px; padding-top: 22px; }
-.updateBox h2, .reviewedHeading { font-family: Georgia, serif; }
+.updateBox h2 { font-family: Georgia, serif; }
 .updateBox label { display: block; font-weight: 700; margin: 12px 0 6px; }
 .updateBox textarea { border: 1px solid #aeb9b4; border-radius: 8px; font: inherit; line-height: 1.5; padding: 12px; resize: vertical; width: 100%; }
 .updateBox button { background: #bd4d2b; border: 0; border-radius: 7px; color: white; cursor: pointer; font: inherit; font-weight: 800; margin-top: 10px; padding: 11px 15px; }
@@ -277,7 +285,10 @@ button:disabled {
 .dictationPlatform ol { margin-top: 0; padding-left: 22px; }
 .dictationHelp li + li { margin-top: 6px; }
 .dictationHelp p:last-child { margin-bottom: 0; }
-.reviewedHeading { margin-top: 32px; }
+.caseSummaryHeading { margin-bottom: 22px; }
+.caseSummaryHeading h2 { font-family: Georgia, serif; font-size: 1.8rem; margin: 5px 0 10px; }
+.caseSummaryHeading p { color: #53615b; line-height: 1.5; margin: 6px 0; }
+.outputSummary > .caseSummaryHeading { margin-top: 32px; }
 .summary { margin-top: 15px; padding: 14px 17px; }
 .summary h2 { font-size: 1rem; margin: 0 0 8px; }
 .summary ul { line-height: 1.5; margin: 0; padding-left: 20px; }
@@ -313,4 +324,13 @@ button:disabled {
   .cards { grid-template-columns: 1fr; }
   .casePanel, .previewPanel { border-left: 0; border-top: 1px solid #cfd8d2; }
   .header, .boundary { padding-left: 22px; padding-right: 22px; }
+}
+
+@media (max-width: 600px) {
+  .header { align-items: flex-start; }
+  .brand { flex-direction: column; align-items: flex-start; }
+  .purpose { border: 0; line-height: 1.4; padding: 0; }
+  .headerActions { max-width: 110px; }
+  .openingWorkspace { padding: 20px 12px; }
+  .activeTask, .casePanel { padding: 28px 22px; }
 }

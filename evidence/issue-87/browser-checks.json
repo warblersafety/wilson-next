@@ -1,0 +1,60 @@
+[
+  {
+    "browser": "chromium",
+    "version": "153.0.8010.12",
+    "states": [
+      "opening",
+      "processing",
+      "pending understanding",
+      "partial acceptance",
+      "clarification/no attention",
+      "output/no attention",
+      "proposed later update",
+      "single remaining proposal",
+      "output/conflict",
+      "failed reset",
+      "new case"
+    ],
+    "checks": [
+      "About pointer/Enter/Space and focus; no requests or draft/selection loss",
+      "dictation help retained and explicit submission",
+      "blank, draft, report-selection, pending and accepted reset; cancel preserves state; reset failure preserves work",
+      "reset has operation-specific progress; announcement appears then clears; focus on account; 390px populated notice does not overlap reset button",
+      "stage and clarification transitions focus heading",
+      "proposals distinguished from accepted facts; old dose authoritative until acceptance",
+      "singular/plural proposal counts and conflict count; no Reviewed indicator",
+      "omissions, conflict alternatives and actionable reset error visible",
+      "1280x800, 1440x900 and 390px opening/summary no horizontal overflow; centered opening textarea under 760px"
+    ],
+    "liveModelCalls": 0
+  },
+  {
+    "browser": "firefox",
+    "version": "155.0",
+    "states": [
+      "opening",
+      "processing",
+      "pending understanding",
+      "partial acceptance",
+      "clarification/no attention",
+      "output/no attention",
+      "proposed later update",
+      "single remaining proposal",
+      "output/conflict",
+      "failed reset",
+      "new case"
+    ],
+    "checks": [
+      "About pointer/Enter/Space and focus; no requests or draft/selection loss",
+      "dictation help retained and explicit submission",
+      "blank, draft, report-selection, pending and accepted reset; cancel preserves state; reset failure preserves work",
+      "reset has operation-specific progress; announcement appears then clears; focus on account; 390px populated notice does not overlap reset button",
+      "stage and clarification transitions focus heading",
+      "proposals distinguished from accepted facts; old dose authoritative until acceptance",
+      "singular/plural proposal counts and conflict count; no Reviewed indicator",
+      "omissions, conflict alternatives and actionable reset error visible",
+      "1280x800, 1440x900 and 390px opening/summary no horizontal overflow; centered opening textarea under 760px"
+    ],
+    "liveModelCalls": 0
+  }
+]

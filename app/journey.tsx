@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { productDisplayLabel } from "../src/domain/case/product-label";
 import type { CaseValue, ReportType } from "../src/domain/case/types";
 import type { FactView, ProductView, ReviewAttentionItem } from "../src/domain/case/views";
@@ -18,24 +18,48 @@ import {
 import styles from "./page.module.css";
 import { productCardFields } from "./product-fields";
 
-const stageLabels: Record<JourneySnapshot["stage"], string> = {
-  describe: "Describe",
-  understanding: "Check understanding",
-  clarify: "Clarify",
-  "review-update": "Review update",
-  output: "Inspect output",
+const progressMessages = {
+  opening: "Organizing your account…",
+  update: "Organizing your update…",
+  case: "Updating your case…",
+  reset: "Starting a new case…",
+  pdf: "Preparing the PDF…",
 };
 
 export default function Journey() {
   const [snapshot, setSnapshot] = useState<JourneySnapshot>();
   const [browserState, setBrowserState] = useState<BrowserJourneyState>();
   const [opening, setOpening] = useState("");
+  const [reportType, setReportType] = useState<ReportType | undefined>("adverse-event");
   const [update, setUpdate] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [pendingOperation, setPendingOperation] = useState<keyof typeof progressMessages>();
+  const busy = pendingOperation !== undefined;
   const [error, setError] = useState<string>();
   const [boundaryNotice, setBoundaryNotice] = useState<string>();
+  const [resetNotice, setResetNotice] = useState(false);
+  const previousTask = useRef<string | undefined>(undefined);
 
   useEffect(() => { void loadJourney(); }, []);
+
+  const task = snapshot && `${snapshot.stage}:${snapshot.clarification?.key ?? ""}`;
+  useEffect(() => {
+    if (!task) return;
+    if (previousTask.current && previousTask.current !== task) {
+      const heading = document.querySelector<HTMLElement>("main h1");
+      if (heading) {
+        heading.tabIndex = -1;
+        heading.focus();
+      }
+    }
+    previousTask.current = task;
+  }, [task]);
+
+  useEffect(() => {
+    if (!resetNotice) return;
+    document.getElementById("opening-account")?.focus();
+    const timer = window.setTimeout(() => setResetNotice(false), 5_000);
+    return () => window.clearTimeout(timer);
+  }, [resetNotice]);
 
   function acceptResponse(response: JourneyResponse) {
     storeJourneyState(response.state);
@@ -57,14 +81,13 @@ export default function Journey() {
         const response = await requestJourneyJson<JourneyResponse>({
           method: "POST",
           body: { operation: "resume", state: stored },
-        }, "The saved synthetic preview could not be resumed");
+        }, "This tab’s previous case could not be restored");
         acceptResponse(response);
-        setBoundaryNotice("Restored this tab’s disposable synthetic preview state.");
       } catch (caught) {
         if (caught instanceof JourneyRequestError
           && ["incompatible-browser-state", "malformed-browser-state", "stale-browser-state"].includes(caught.code ?? "")) {
           clearJourneySession();
-          await freshJourney("The saved preview state was invalid or incompatible, so Wilson started over safely.");
+          await freshJourney("Wilson could not restore this tab’s previous case. That work is no longer available, so a new case was started.");
           return;
         }
         throw caught;
@@ -76,9 +99,10 @@ export default function Journey() {
 
   async function act(action: JourneyAction) {
     if (!snapshot || !browserState) return;
-    setBusy(true);
+    setPendingOperation(action.action === "submit-opening" ? "opening" : action.action === "submit-update" ? "update" : "case");
     setError(undefined);
     setBoundaryNotice(undefined);
+    setResetNotice(false);
     try {
       const response = await requestJourneyJson<JourneyResponse>({
         method: "POST",
@@ -86,38 +110,41 @@ export default function Journey() {
       }, "Wilson could not update the case");
       acceptResponse(response);
       if (response.snapshot.transitionNotice) setBoundaryNotice(response.snapshot.transitionNotice);
+      if (action.action === "submit-opening") setOpening("");
       if (action.action === "submit-update") setUpdate("");
     } catch (caught) {
       setError(displayError(caught, "Wilson could not update the case"));
     } finally {
-      setBusy(false);
+      setPendingOperation(undefined);
     }
   }
 
   async function resetJourney() {
-    if (snapshot && snapshot.revision > 0
-      && !window.confirm("Start a new synthetic case? The current tab’s case will be lost.")) return;
-    setBusy(true);
+    if (((snapshot?.revision ?? 0) > 0 || opening.length > 0 || update.length > 0 || reportType !== "adverse-event")
+      && !window.confirm("Start a new case? This case and any unfinished text will be lost.")) return;
+    setPendingOperation("reset");
     setError(undefined);
     setBoundaryNotice(undefined);
-    clearJourneySession();
-    setSnapshot(undefined);
-    setBrowserState(undefined);
-    setOpening("");
-    setUpdate("");
+    setResetNotice(false);
     try {
-      await freshJourney("Started a blank disposable synthetic case.");
+      const response = await requestJourneyJson<JourneyResponse>({}, "The new case could not be started");
+      clearJourneySession();
+      acceptResponse(response);
+      setOpening("");
+      setUpdate("");
+      setReportType("adverse-event");
+      setResetNotice(true);
     } catch (caught) {
-      setError(displayError(caught, "The synthetic case could not be started"));
+      setError(displayError(caught, "The new case could not be started"));
     } finally {
-      setBusy(false);
+      setPendingOperation(undefined);
     }
   }
 
   async function openPdf(mode: "preview" | "download") {
     if (!browserState) return;
     const previewWindow = mode === "preview" ? window.open("about:blank", "_blank") : null;
-    setBusy(true);
+    setPendingOperation("pdf");
     setError(undefined);
     try {
       const { blob, filename } = await requestJourneyPdf(browserState, mode);
@@ -146,69 +173,84 @@ export default function Journey() {
       previewWindow?.close();
       setError(displayError(caught, "The official PDF could not be generated"));
     } finally {
-      setBusy(false);
+      setPendingOperation(undefined);
     }
   }
 
-  if (!snapshot) return <main className={styles.loading}><p>{error ?? "Preparing a blank synthetic case…"}</p></main>;
+  if (!snapshot) return <main className={styles.loading}><p>{error ?? "Preparing your case…"}</p></main>;
 
   return (
     <main className={styles.appShell}>
       <header className={styles.header}>
-        <div><span className={styles.wordmark}>Wilson</span><span className={styles.experiment}>Synthetic experiment</span></div>
+        <div className={styles.brand}><span className={styles.wordmark}>Wilson</span><span className={styles.purpose}>Prepare an FDA MedWatch report.</span></div>
         <div className={styles.headerActions}>
-          <span className={styles.status}>{stageLabels[snapshot.stage]}</span>
+          <span className={styles.resetNotice} role="status">{resetNotice ? "New case started" : ""}</span>
           <button disabled={busy} onClick={() => void resetJourney()}>New case</button>
         </div>
       </header>
-      <aside className={styles.boundary} aria-label="Experiment boundary">
-        <strong>Fictional information only.</strong> This disposable operator preview supports bounded adult medication, single-device adverse-event and product-problem, and non-device product-quality facts. Do not use it for a real report or as a production system. Closing this tab or starting a new case clears its saved case.
+      <aside className={styles.boundary} aria-label="Preview notice">
+        <p><strong>Demo only. Use fictional information.</strong> Do not use this preview for a real report.</p>
+        <details className={styles.previewAbout}>
+          <summary>About this preview</summary>
+          <div>
+            <p>Wilson helps you prepare a downloadable Form FDA 3500. It does not submit the report to FDA.</p>
+            <p>This preview supports a limited set of details for adult medication side effects, adverse events or product problems involving one medical device, and quality problems with other medical products. It does not cover every report or every field on the form. Details that cannot be included are shown with your case.</p>
+            <p>Your case is temporary and kept only in this browser tab. Closing the tab or starting a new case clears it. Unsubmitted text is not saved. Do not rely on reloading, reopening a tab, or using another device to recover your work.</p>
+          </div>
+        </details>
       </aside>
       {error && <div className={styles.error} role="alert">{error}</div>}
       {boundaryNotice && <div className={styles.notice} role="status">{boundaryNotice}</div>}
       {snapshot.unrepresented.length > 0 && <UnrepresentedNotice items={snapshot.unrepresented} />}
-      {busy && <div className={styles.progress} role="status">Updating the reviewed case…</div>}
+      {pendingOperation && <div className={styles.progress} role="status">{progressMessages[pendingOperation]}</div>}
       {snapshot.stage === "output" ? (
         <OutputComposition snapshot={snapshot} update={update} setUpdate={setUpdate} busy={busy} act={act} openPdf={openPdf} />
       ) : (
-        <div className={styles.workspace}>
+        <div className={snapshot.stage === "describe" ? styles.openingWorkspace : styles.workspace}>
           <section className={styles.activeTask} aria-labelledby="task-title">
-            {snapshot.stage === "describe" && <Describe opening={opening} setOpening={setOpening} busy={busy} act={act} />}
+            {snapshot.stage === "describe" && <Describe key={browserState?.case.id} opening={opening} setOpening={setOpening} reportType={reportType} setReportType={setReportType} busy={busy} interpreting={pendingOperation === "opening"} act={act} />}
             {snapshot.stage === "understanding" && <UnderstandingTask snapshot={snapshot} busy={busy} act={act} />}
             {snapshot.stage === "clarify" && <CompletionTask key={snapshot.clarification?.key} snapshot={snapshot} busy={busy} act={act} />}
             {snapshot.stage === "review-update" && <UpdateReview snapshot={snapshot} busy={busy} act={act} />}
           </section>
-          <section className={styles.casePanel} aria-labelledby="case-title">
-            <div className={styles.panelHeading}>
-              <div><p className={styles.eyebrow}>{snapshot.stage === "understanding" ? "Proposed case" : "Reviewed case"}</p><h2 id="case-title">Case so far</h2></div>
-              <span>{snapshot.review.attention.length > 0 ? `${snapshot.review.attention.length} items need review` : "Reviewed"}</span>
-            </div>
+          {snapshot.stage !== "describe" && <section className={styles.casePanel} aria-labelledby="case-title">
+            <CaseSummaryHeading attention={snapshot.review.attention} />
             <CaseCards snapshot={snapshot} busy={busy} act={act} />
-          </section>
+          </section>}
         </div>
       )}
     </main>
   );
 }
 
-function Describe({ opening, setOpening, busy, act }: {
+function CaseSummaryHeading({ attention }: { attention: ReviewAttentionItem[] }) {
+  const proposals = attention.filter(({ kind }) => kind !== "conflict").length;
+  const conflicts = attention.filter(({ kind }) => kind === "conflict").length;
+  return <div className={styles.caseSummaryHeading}>
+    <h2 id="case-title">Case summary</h2>
+    <p>Check these details against your account.</p>
+    {proposals > 0 && <p>{proposals} proposed {proposals === 1 ? "detail" : "details"} to check</p>}
+    {conflicts > 0 && <p>{conflicts} unresolved {conflicts === 1 ? "conflict" : "conflicts"}</p>}
+  </div>;
+}
+
+function Describe({ opening, setOpening, reportType, setReportType, busy, interpreting, act }: {
   opening: string; setOpening: (value: string) => void; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+  reportType: ReportType | undefined; setReportType: (value: ReportType | undefined) => void;
+  interpreting: boolean;
 }) {
-  const [adverseEvent, setAdverseEvent] = useState(true);
-  const [productProblem, setProductProblem] = useState(false);
-  const reportType: ReportType | undefined = adverseEvent && productProblem ? "adverse-event-and-product-problem"
-    : adverseEvent ? "adverse-event" : productProblem ? "product-problem" : undefined;
+  const adverseEvent = reportType === "adverse-event" || reportType === "adverse-event-and-product-problem";
+  const productProblem = reportType === "product-problem" || reportType === "adverse-event-and-product-problem";
   return <>
-    <p className={styles.eyebrow}>Describe</p>
     <h1 id="task-title">Describe what happened</h1>
-    <p>Type, paste, or dictate a fictional clinical account. Wilson will propose case knowledge for review; it will not accept those proposals as truth.</p>
+    <p>Type, paste, or dictate your account. Wilson will organize it into a summary for you to check and correct, then help you prepare a downloadable report.</p>
     <NarrativeInput id="opening-account" label="Clinical account" context="account" rows={13} value={opening} onChange={setOpening} />
     <fieldset className={styles.reportType}><legend>Report type</legend>
-      <label><input type="checkbox" checked={adverseEvent} onChange={(event) => setAdverseEvent(event.target.checked)} /> Adverse event</label>
-      <label><input type="checkbox" checked={productProblem} onChange={(event) => setProductProblem(event.target.checked)} /> Product problem</label>
+      <label><input type="checkbox" checked={adverseEvent} onChange={(event) => setReportType(event.target.checked ? productProblem ? "adverse-event-and-product-problem" : "adverse-event" : productProblem ? "product-problem" : undefined)} /> Adverse event</label>
+      <label><input type="checkbox" checked={productProblem} onChange={(event) => setReportType(event.target.checked ? adverseEvent ? "adverse-event-and-product-problem" : "product-problem" : adverseEvent ? "adverse-event" : undefined)} /> Product problem</label>
     </fieldset>
     <button disabled={busy || !opening.trim() || !reportType} onClick={() => reportType && void act({ action: "submit-opening", text: opening, reportType })}>
-      {busy ? "Extracting case details…" : "Review Wilson’s understanding"}
+      {interpreting ? "Extracting case details…" : "Review Wilson’s understanding"}
     </button>
   </>;
 }
@@ -579,7 +621,7 @@ function OutputComposition({ snapshot, update, setUpdate, busy, act, openPdf }: 
   const conflicts = snapshot.review.attention.filter(({ kind }) => kind === "conflict");
   return <div className={styles.outputWorkspace}>
     <section className={styles.outputSummary} aria-labelledby="output-title">
-      <p className={styles.eyebrow}>Reviewed case and supported output</p>
+      <p className={styles.eyebrow}>Supported output</p>
       <h1 id="output-title">{snapshot.downloadReady ? "The supported form is ready" : "The form needs more reviewed information"}</h1>
       <Summary title="Included" tone="included">
         <li>Patient {A.patientIdentifier ?? "identifier not provided"}{A.ageYears === undefined ? "" : `, age ${A.ageYears}`}{A.sex ? `, ${A.sex}` : ""}{A.weight ? `, ${A.weight.value} ${A.weight.unit}` : ""}</li>
@@ -620,7 +662,7 @@ function OutputComposition({ snapshot, update, setUpdate, busy, act, openPdf }: 
         <button disabled={busy || !update.trim()} onClick={() => void act({ action: "submit-update", text: update })}>Review this update</button>
       </section>
 
-      <h2 className={styles.reviewedHeading}>Reviewed knowledge</h2>
+      <CaseSummaryHeading attention={snapshot.review.attention} />
       <CaseCards snapshot={snapshot} busy={busy} act={act} />
     </section>
     <section className={styles.previewPanel} aria-labelledby="preview-title">
