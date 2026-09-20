@@ -89,6 +89,7 @@ function predeterminedJourneyModel(predetermined: string): JourneyModel {
           },
           existingProductIds: reviewedCase?.products.map(({ id }) => id),
           existingTestIds: reviewedCase?.relevantTests.map(({ id }) => id),
+          existingTestCount: reviewedCase?.totalTestCount,
           output: fixture.output,
         }, createIdentity),
         metrics: {

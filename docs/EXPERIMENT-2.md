@@ -343,6 +343,12 @@ able to detect loss, invention, and wrong attribution. Experiment 2 implements
 and verifies the smallest general remedy for Issue #39 before any protected
 live reliability run.
 
+**Historical Experiment 2 contract:** the quotation-copying and exact-location
+rules below describe the completed experiment. Issue #96's explicit approved
+source-reference contract in Architecture supersedes them for current runtime
+extraction. Its bounded recovery workflow also permits new test declarations
+on later input. The historical failure evidence and qualified conclusions remain.
+
 The model returns the exact verbatim supporting text, not character offsets.
 Deterministic code accepts a quotation only when it has one exact non-empty
 occurrence in the originating input and then records that occurrence's offsets.

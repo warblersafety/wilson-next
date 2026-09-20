@@ -95,8 +95,8 @@ describe("pure case views and semantic Form 3500 projection", () => {
       kind: "conflict",
     });
     expect(dateConflict?.values.map(({ evidence }) => evidence[0])).toEqual([
-      "start as 12-Aug-2026",
-      "medication administration record lists apixaban starting 13-Aug-2026",
+      "She was taking apixaban 5 mg by mouth twice daily; I recorded the start as 12-Aug-2026. ",
+      "Also, the medication administration record lists apixaban starting 13-Aug-2026, but my note says 12-Aug-2026. ",
     ]);
   });
 
@@ -154,7 +154,7 @@ describe("pure case views and semantic Form 3500 projection", () => {
       expect.stringContaining("lisinopril — Route remains in reviewed knowledge but is not included in Section F"),
     ]));
     expect(resolved.sourceTrace["sections.D.suspectProducts.0.startDate"]).toEqual(expect.arrayContaining([
-      "source-apixaban-date-alternative",
+      "source-input-correction-p2",
       "source-date-resolution",
     ]));
     expect(resolved.omissions).toContainEqual(expect.objectContaining({

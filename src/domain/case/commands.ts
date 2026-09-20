@@ -279,6 +279,15 @@ function applyAcceptedValue(
   change.sourceIds.push(...accepted.sourceIds);
   change.affectedTargets.push(targetKey(target));
 
+  // A reviewed conversational correction supersedes earlier pending interpretations
+  // of this fact without accepting them. Rejection leaves those proposals intact.
+  if (accepted.intent === "correction") {
+    const prior = fact.proposedValues.filter(({ groupId }) => groupId !== accepted.groupId);
+    fact.supersededValues.push(...prior);
+    fact.proposedValues = fact.proposedValues.filter(({ groupId }) => groupId === accepted.groupId);
+    if (prior.length) change.supersessions.push(targetKey(target));
+  }
+
   if (fact.state === "conflicted") {
     if (!fact.conflictingValues.some(({ value }) => valuesEqual(value, accepted.value))) {
       fact.conflictingValues.push(accepted);

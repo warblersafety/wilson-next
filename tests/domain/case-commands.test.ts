@@ -23,7 +23,7 @@ describe("applyCaseCommand", () => {
       ["product-naproxen", "proposed"],
       ["product-lisinopril", "proposed"],
     ]);
-    expect(proposed.patient.facts.identifier.proposedValues[0].sourceIds).toEqual(["source-patient-id"]);
+    expect(proposed.patient.facts.identifier.proposedValues[0].sourceIds).toEqual(["source-input-opening-p1"]);
     expect(() => {
       proposed.products.push(proposed.products[0]);
     }).toThrow();
@@ -95,8 +95,8 @@ describe("applyCaseCommand", () => {
     expect(resolvedDate.resolvedValue?.sourceIds).toContain("source-date-resolution");
     expect(resolvedDate.supersededValues.map(({ value }) => value)).toContainEqual({ kind: "known", value: "2026-08-12" });
     expect(resolvedDate.sourceIds).toEqual(expect.arrayContaining([
-      "source-apixaban-start",
-      "source-apixaban-date-alternative",
+      "source-input-opening-p2",
+      "source-input-correction-p2",
       "source-date-resolution",
     ]));
   });

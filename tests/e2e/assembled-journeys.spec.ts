@@ -70,7 +70,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await page.getByRole("button", { name: "Accept Patient", exact: true }).click();
   await expect(productOrCaseCard(page, "Patient").getByText("Proposed", { exact: true })).toHaveCount(0);
   await expect(productOrCaseCard(page, "Event").getByText("Proposed", { exact: true }).first()).toBeVisible();
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await page.getByRole("button", { name: "Confirm outcomes" }).click();
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   await expect(page.getByText("Reviewed", { exact: true })).toHaveCount(0);
@@ -164,7 +164,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   expect(quarantinedCase.event.facts.symptoms.state).toBe("empty");
   expect(quarantinedCase.event.facts.productAvailability.state).toBe("empty");
   expect(quarantinedCase.products).toHaveLength(1);
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   await expect(quarantine).toBeVisible();
   await fillReporter(page, { firstName: "Taylor", lastName: "Quinn", email: "taylor.quinn@example.test" });
@@ -183,7 +183,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productCard(page, "Acme ThermoPatch")).toContainText("wearable temperature monitor");
   await expect(productOrCaseCard(page, "Event")).toContainText("blistering burn on left arm");
   await expect(productOrCaseCard(page, "Event")).toContainText("Adverse event and product problem");
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer3-combined", question: "reporter block", reason: "accepted combined event, problem, outcome, context, and device facts suppress redundant questions", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Alex", lastName: "Morgan", email: "alex.morgan@example.test" });
@@ -205,7 +205,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await submitOpening(page, layer3ConditionalOpening, "product-problem");
   await expect(productCard(page, "Acme PulseLine")).toContainText("Implanted device");
   await expect(productCard(page, "Acme PulseLine")).toContainText("Reprocessed single-use device");
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await expect(page.getByRole("heading", { name: "Add the applicable device details for Acme PulseLine" })).toBeVisible();
   const implantGroup = page.getByRole("group", { name: "Implant date" });
   await implantGroup.getByLabel("Known", { exact: true }).check();
@@ -237,7 +237,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
 
   await newCase(page);
   await submitOpening(page, layer3CorrectionOpening, "product-problem");
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await fillReporter(page, { firstName: "Jamie", lastName: "Kim", email: "jamie.kim@example.test" });
   questionTrace.push({ journey: "layer3-correction", question: "reporter block", reason: "opening device facts require no conditional detail turn", answer: "structured reporter details" });
   await page.getByRole("button", { name: "Add reporter details" }).click();
@@ -277,7 +277,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await page.getByLabel("New Device operator").selectOption("health-professional");
   await operatorRow.getByRole("button", { name: "Keep draft" }).click();
   await productCard(page, "Acme FlowGuard").getByRole("button", { name: "Accept Acme FlowGuard with 1 change" }).click();
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer2-device", question: "reporter block", reason: "accepted outcomes and clinical context suppress medication-only and redundant clinical questions", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Dana", lastName: "Mills", email: "dana.mills@example.test" });
@@ -318,7 +318,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productCard(page, "Cardiovex 20 mg tablets")).toContainText("CV-442");
   await expect(productOrCaseCard(page, "Patient")).not.toContainText("TEST-");
   await expect(productOrCaseCard(page, "Event")).toContainText("Product problem");
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer2-product-quality", question: "reporter block", reason: "a product-problem-only report does not trigger indication, serious-outcome, or clinical-context interrogation", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Elliot", lastName: "Ross", phone: "202-555-0188" });
@@ -343,7 +343,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productOrCaseCard(page, "Event")).toContainText("Death");
   await expect(productOrCaseCard(page, "Relevant test 1")).toContainText("Skin biopsy: full-thickness epidermal necrosis");
   await expect(productCard(page, "trimethoprim-sulfamethoxazole")).toContainText("urinary tract infection");
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await expect(page.getByRole("heading", { name: "Which serious outcomes applied to this event?" })).toBeVisible();
   await expect(page.getByLabel("Death — already recorded")).toBeChecked();
   questionTrace.push({ journey: "layer1-death", question: "serious outcomes", reason: "preserve accepted death and resolve only the remaining outcome flags", answer: "no additional outcomes" });
@@ -373,7 +373,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productOrCaseCard(page, "Relevant test 1")).toContainText("ALT: 132 U/L");
   await expect(productOrCaseCard(page, "Relevant test 2")).toContainText("AST: 118 U/L");
   await expect(productOrCaseCard(page, "Relevant test 3")).toContainText("Total bilirubin: 2.1 mg/dL");
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer1-tests", question: "reporter block", reason: "accepted indications, outcomes, three tests, and history suppress earlier groups", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Riley", lastName: "Patel", phone: "202-555-0162" });
@@ -416,7 +416,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await submitOpening(page, layer1RoleOpening);
   await expect(productCard(page, "warfarin")).toContainText("Suspect product");
   await expect(productCard(page, "acetaminophen")).toContainText("Other product");
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer1-role", question: "reporter block", reason: "accepted opening knowledge suppresses all earlier completion groups", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Taylor", lastName: "Ng", email: "taylor.ng@example.test" });
@@ -469,7 +469,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await page.getByLabel("New Weight").fill("65");
   await richWeight.getByRole("button", { name: "Keep draft" }).click();
   await richPatient.getByRole("button", { name: "Accept Patient with 2 changes" }).click();
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await expect(page.getByRole("heading", { name: "Hospitalization is already recorded. Did any other serious outcomes apply?" })).toBeVisible();
   await expect(page.getByLabel("Hospitalization (initial or prolonged) — already recorded")).toBeChecked();
   await expect(page.getByLabel("Life-threatening — already recorded")).toBeChecked();
@@ -536,7 +536,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
 
   await newCase(page);
   await submitOpening(page, adaptiveSparseOpening);
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await page.getByRole("group", { name: "propranolol" }).getByLabel("Unknown", { exact: true }).check();
   questionTrace.push({ journey: "adaptive-sparse", question: "suspect indication", reason: "missing indication contributes directly to the report", answer: "unknown" });
   await page.getByRole("button", { name: "Add these answers" }).click();
@@ -562,7 +562,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await submitOpening(page, richOpening);
   await expect(productOrCaseCard(page, "Event")).toContainText("diffuse hives and facial swelling");
   await expect(page.getByText("What was cephalexin being used for?", { exact: true })).toHaveCount(0);
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await completeQuestions(page);
   await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
   await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("cephalexin");
@@ -573,7 +573,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
 
   await newCase(page);
   await submitOpening(page, sparseOpening);
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await expect(page.getByRole("heading", { name: "What was metformin being used for?" })).toBeVisible();
   const metforminAnswer = page.getByRole("group", { name: "metformin" });
   await expect(metforminAnswer.getByLabel("Unknown", { exact: true })).toBeVisible();
@@ -593,7 +593,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productCard(page, "acetaminophen (Tylenol)")).toBeVisible();
   await expect(productCard(page, "ibuprofen")).toBeVisible();
   await expect(page.getByText("Suspect product", { exact: true })).toHaveCount(2);
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await completeQuestions(page);
   await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
   await page.getByLabel("Clinical update").fill(repeatedUpdate);
@@ -636,7 +636,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
 
   await newCase(page);
   await submitOpening(page, regressionOpening);
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   for (const [name, value] of [["apixaban", "postoperative VTE prophylaxis after knee replacement"], ["naproxen", "postoperative pain"]] as const) {
     const group = page.getByRole("group", { name });
     await group.getByLabel("Known", { exact: true }).check();

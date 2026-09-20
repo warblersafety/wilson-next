@@ -1,4 +1,5 @@
-import { parseModelProposalEnvelope, type ModelProposalOutput } from "../../src/domain/case/model-boundary";
+import { parseQuotedFixture as parseModelProposalEnvelope } from "./source-references";
+import type { QuotedFixtureOutput as ModelProposalOutput } from "./source-references";
 import { applyCaseCommand } from "../../src/domain/case/commands";
 import { createSemanticCase } from "../../src/domain/case/create";
 const recordedAt = "2026-09-20T12:00:00.000Z";
