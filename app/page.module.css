@@ -265,6 +265,18 @@ button:disabled {
 .updateBox label { display: block; font-weight: 700; margin: 12px 0 6px; }
 .updateBox textarea { border: 1px solid #aeb9b4; border-radius: 8px; font: inherit; line-height: 1.5; padding: 12px; resize: vertical; width: 100%; }
 .updateBox button { background: #bd4d2b; border: 0; border-radius: 7px; color: white; cursor: pointer; font: inherit; font-weight: 800; margin-top: 10px; padding: 11px 15px; }
+.dictationDisclosure { margin: 12px 0; }
+.dictationDisclosure .dictationToggle { align-items: center; background: transparent; border: 1px solid transparent; border-radius: 6px; color: #2e6655; cursor: pointer; display: inline-flex; flex-wrap: wrap; font: inherit; font-size: .85rem; font-weight: 700; gap: 6px; margin: 0; min-height: 44px; padding: 8px; }
+.dictationToggle[aria-expanded="true"] { background: #e5f0ea; }
+.dictationToggle[aria-expanded="true"] .dictationArrow { transform: rotate(90deg); }
+.dictationToggle:focus-visible, .dictationPlatform summary:focus-visible { outline: 2px solid #2e6655; outline-offset: 2px; }
+.dictationHelp { background: #f2f7f4; border-left: 3px solid #779489; border-radius: 4px; font-size: .9rem; line-height: 1.6; margin-top: 4px; padding: 16px; }
+.dictationHelp > p:first-child { margin-top: 0; }
+.dictationPlatform { border-top: 1px solid #c9d3cd; }
+.dictationPlatform summary { color: #2e6655; cursor: pointer; font-weight: 700; min-height: 44px; padding: 10px 0; }
+.dictationPlatform ol { margin-top: 0; padding-left: 22px; }
+.dictationHelp li + li { margin-top: 6px; }
+.dictationHelp p:last-child { margin-bottom: 0; }
 .reviewedHeading { margin-top: 32px; }
 .summary { margin-top: 15px; padding: 14px 17px; }
 .summary h2 { font-size: 1rem; margin: 0 0 8px; }

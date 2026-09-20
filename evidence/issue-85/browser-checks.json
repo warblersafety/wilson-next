@@ -1,0 +1,34 @@
+[
+  {
+    "browser": "chromium",
+    "field": "opening-account",
+    "checks": "outer/Mac/Windows pointer/Enter/Space; Chromium native accessibility-tree expanded state; focus; independent platform sections; panel within 6px of toggle; toggle below textarea; open platform retained across outer toggle; preserved DOM/text/selection; editing with open help; no API/microphone calls; 44px target; no overflow at 1280/1440/480; reachable submit"
+  },
+  {
+    "browser": "chromium",
+    "field": "later-update",
+    "checks": "outer/Mac/Windows pointer/Enter/Space; Chromium native accessibility-tree expanded state; focus; independent platform sections; panel within 6px of toggle; toggle below textarea; open platform retained across outer toggle; preserved DOM/text/selection; editing with open help; no API/microphone calls; 44px target; no overflow at 1280/1440/480; reachable submit"
+  },
+  {
+    "browser": "chromium",
+    "version": "153.0.8010.12",
+    "explicitSubmissions": "opening and later update reached their existing proposal-review stages",
+    "nativeDictation": "not exercised"
+  },
+  {
+    "browser": "firefox",
+    "field": "opening-account",
+    "checks": "outer/Mac/Windows pointer/Enter/Space; native details.open state and keyboard behavior; focus; independent platform sections; panel within 6px of toggle; toggle below textarea; open platform retained across outer toggle; preserved DOM/text/selection; editing with open help; no API/microphone calls; 44px target; no overflow at 1280/1440/480; reachable submit"
+  },
+  {
+    "browser": "firefox",
+    "field": "later-update",
+    "checks": "outer/Mac/Windows pointer/Enter/Space; native details.open state and keyboard behavior; focus; independent platform sections; panel within 6px of toggle; toggle below textarea; open platform retained across outer toggle; preserved DOM/text/selection; editing with open help; no API/microphone calls; 44px target; no overflow at 1280/1440/480; reachable submit"
+  },
+  {
+    "browser": "firefox",
+    "version": "155.0",
+    "explicitSubmissions": "opening and later update reached their existing proposal-review stages",
+    "nativeDictation": "not exercised"
+  }
+]

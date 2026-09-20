@@ -201,18 +201,62 @@ function Describe({ opening, setOpening, busy, act }: {
   return <>
     <p className={styles.eyebrow}>Describe</p>
     <h1 id="task-title">Describe what happened</h1>
-    <p>Paste or type a fictional clinical account. Wilson will propose case knowledge for review; it will not accept those proposals as truth.</p>
-    <label htmlFor="opening-account">Clinical account</label>
-    <textarea id="opening-account" rows={13} value={opening} onChange={(event) => setOpening(event.target.value)} />
+    <p>Type, paste, or dictate a fictional clinical account. Wilson will propose case knowledge for review; it will not accept those proposals as truth.</p>
+    <NarrativeInput id="opening-account" label="Clinical account" context="account" rows={13} value={opening} onChange={setOpening} />
     <fieldset className={styles.reportType}><legend>Report type</legend>
       <label><input type="checkbox" checked={adverseEvent} onChange={(event) => setAdverseEvent(event.target.checked)} /> Adverse event</label>
       <label><input type="checkbox" checked={productProblem} onChange={(event) => setProductProblem(event.target.checked)} /> Product problem</label>
     </fieldset>
-    <p className={styles.hint}>You can also use device-native dictation. Wilson does not record audio.</p>
     <button disabled={busy || !opening.trim() || !reportType} onClick={() => reportType && void act({ action: "submit-opening", text: opening, reportType })}>
       {busy ? "Extracting case details…" : "Review Wilson’s understanding"}
     </button>
   </>;
+}
+
+function NarrativeInput({ id, label, context, rows, value, onChange }: {
+  id: string; label: string; context: "account" | "update"; rows: number;
+  value: string; onChange: (value: string) => void;
+}) {
+  const [helpOpen, setHelpOpen] = useState(false);
+  return <div>
+    <label htmlFor={id}>{label}</label>
+    <textarea id={id} rows={rows} value={value} onChange={(event) => onChange(event.target.value)} aria-describedby={`${id}-hint`} />
+    <p id={`${id}-hint`} className={styles.hint}>Check the text and correct any errors before continuing.</p>
+    <div className={styles.dictationDisclosure}>
+      <button type="button" className={styles.dictationToggle} aria-expanded={helpOpen} aria-controls={`${id}-dictation`}
+        onClick={() => setHelpOpen(!helpOpen)}>
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+          <rect x="9" y="2" width="6" height="12" rx="3" />
+          <path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8" />
+        </svg>
+        How to dictate
+        <svg aria-hidden="true" className={styles.dictationArrow} width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7">
+          <path d="m5 3 5 5-5 5" />
+        </svg>
+      </button>
+      <div id={`${id}-dictation`} className={styles.dictationHelp} hidden={!helpOpen}>
+        <p>You can speak instead of typing in {label} using your computer’s built-in dictation. Your spoken words appear as editable text.</p>
+        <details className={styles.dictationPlatform}>
+          <summary>Mac instructions</summary>
+          <ol>
+            <li>Click in <strong>{label}</strong> where you want to add text.</li>
+            <li>Choose <strong>Edit → Start Dictation</strong> from the menu bar, or use your Dictation shortcut.</li>
+            <li>Speak your {context}. When finished, press <strong>Esc</strong> to stop dictation.</li>
+          </ol>
+        </details>
+        <details className={styles.dictationPlatform}>
+          <summary>Windows instructions</summary>
+          <ol>
+            <li>Click in <strong>{label}</strong> where you want to add text.</li>
+            <li>Press <strong>Windows + H</strong> to start voice typing.</li>
+            <li>Speak your {context}. When finished, click the microphone in the Windows voice-typing toolbar to stop dictation.</li>
+          </ol>
+        </details>
+        <p>Check the text and correct any errors, especially medication names, doses, and words like “no” or “not.” When ready, select <strong>{context === "account" ? "Review Wilson’s understanding" : "Review this update"}</strong>.</p>
+        <p>Wilson receives text, not audio. Your computer’s dictation service may send audio to Apple or Microsoft.</p>
+      </div>
+    </div>
+  </div>;
 }
 
 function UnderstandingTask({ snapshot, busy, act }: {
@@ -572,8 +616,7 @@ function OutputComposition({ snapshot, update, setUpdate, busy, act, openPdf }: 
       <section className={styles.updateBox} aria-labelledby="update-title">
         <h2 id="update-title">Add a correction or later update</h2>
         <p>Wilson will propose changes against the reviewed product identities. Existing facts remain active until you accept an update.</p>
-        <label htmlFor="later-update">Clinical update</label>
-        <textarea id="later-update" rows={5} value={update} onChange={(event) => setUpdate(event.target.value)} />
+        <NarrativeInput id="later-update" label="Clinical update" context="update" rows={5} value={update} onChange={setUpdate} />
         <button disabled={busy || !update.trim()} onClick={() => void act({ action: "submit-update", text: update })}>Review this update</button>
       </section>
 
