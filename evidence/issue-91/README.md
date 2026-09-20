@@ -39,5 +39,21 @@ reliability. #92 and #94 remain separate.
 
 ## Verification
 
-Pending final deterministic, browser/PDF, live, deployment and independent
-Claude evidence. This record will be completed before merge.
+- Material implementation `189e5bd`: Node 24.20.0 production build/typecheck,
+  166 tests across 25 files and all three Playwright tests pass. Existing
+  assembled journeys remain green; their legacy combined text now carries the
+  explicit identity-unrecorded label rather than being silently split.
+- The added browser path starts from the historical DEMO-24 extraction failure,
+  visibly discloses missing identities, repairs each through the real API,
+  corrects hemoglobin alone and independently reads the downloaded PDF. Stable
+  test IDs, date, reference bounds and the other observation remain intact.
+- `laboratory.pdf` and its PDFKit page capture show eight numeric, qualitative,
+  garbled and partial observations. Independent pypdf widget-coordinate checks
+  also found and verify the narrow B6 visual-row mapping repair: native field
+  suffixes 5/8 did not line up with their reference bounds and dates.
+- PR #93 fallback alias was checked without mutation: deployment
+  `dpl_Dh1QnPGgLArPbnzXQ6myFXdapoQM`, SHA `996450f`, ready, with its existing grant
+  expiring 2026-09-27 19:19:52 UTC.
+
+Live/deployment results and independent Claude disposition will be recorded
+before merge.
