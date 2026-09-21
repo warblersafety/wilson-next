@@ -3,7 +3,7 @@ import { applyCaseCommand } from "../../src/domain/case/commands";
 import { nextCompletionQuestion } from "../../src/domain/case/completion-policy";
 import { createSemanticCase } from "../../src/domain/case/create";
 import type { CaseValue, EventFactKey, ReportType, SemanticCase, Source } from "../../src/domain/case/types";
-import { acceptOpeningCase, answerIndications } from "./fixture";
+import { acceptOpeningCase, answerIndications, answerMissingMedicationDetails } from "./fixture";
 
 describe("bounded medication completion policy", () => {
   it("uses accepted facts to order applicable groups and does not ask for recognized tests", () => {
@@ -21,9 +21,11 @@ describe("bounded medication completion policy", () => {
       target: { entity: "event", entityId: "event", field: "relevantHistory" },
       value: { kind: "declined" },
     }]);
+    expect(nextCompletionQuestion(current)?.key).toBe("medication-history");
+    current = answerMissingMedicationDetails(current);
     expect(nextCompletionQuestion(current)?.key).toBe("reporter-details");
     expect(current.askedNeeds.map(({ key }) => key)).toEqual([
-      "suspect-product-indications", "serious-outcomes", "relevant-clinical-context",
+      "suspect-product-indications", "serious-outcomes", "relevant-clinical-context", "medication-history", "medication-history",
     ]);
   });
 

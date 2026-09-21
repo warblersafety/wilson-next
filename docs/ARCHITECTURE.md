@@ -134,11 +134,44 @@ change, revision and interaction notice. Other incompatible or malformed state
 still fails visibly. This is compatibility for the disposable preview, not a
 saved-case migration framework.
 
-The output explicitly discloses the remaining Section D subtype, purchase,
-identifier, expiration, dose-reduction/duration and withdrawal/reintroduction
-mapping gaps. Download readiness remains the supported-path condition, not a
-claim of complete FDA-form coverage. Issue #92 owns consequential medication
-follow-ups.
+The output explicitly discloses remaining Section D other-category, purchase,
+identifier, expiration, ongoing-therapy, reduction-date and duration gaps.
+Download readiness remains the supported-path condition, not a claim of
+complete FDA-form coverage.
+
+### Medication history (Issue #92)
+
+Suspect drug/biologic products receive a grouped task for missing stopping or
+reduction history, with conditional stop date, improvement, restart and
+recurrence answers. Reviewed supplied facts suppress questions. Partial
+conversational answers keep newly applicable details in that same task;
+unknown/declined answers close their needs without a loop. A later prerequisite
+correction can create a newly applicable question. Other product categories
+receive no new proactive medication questions.
+
+D5 accepts explicitly supplied brand, generic/biosimilar, OTC and compounded
+flags, including combinations. Category and medication label type are distinct;
+no label type is inferred from a molecule name or asked by default. D7 requires
+explicit improvement/no improvement after known stopping or reduction; known
+neither selects Doesn't apply. D8 requires known restart and explicit
+recurrence/no recurrence; never restarted selects Doesn't apply. Unresolved,
+pending or declined applicability/outcomes leave corresponding checkboxes blank
+with disclosures. These are temporal observations, not causality judgments.
+Explicitly supplied supported facts can also project for non-device other
+products; concomitant support is unchanged.
+
+Authoritative acceptance invalidates a known outcome when its prerequisite
+becomes false/inapplicable, preserving it as superseded history. Unknown/declined
+outcomes remain. Changing the prerequisite back never resurrects old outcomes.
+Projection also checks applicability, and review surfaces an unresolved
+prerequisite for a supplied outcome. Grouped-need reconciliation uses settled
+facts (resolved with no pending proposals) across conversation and direct input.
+
+Browser state v10 adds five empty medication facts to validated v7-v9 drafts,
+preserving facts, sources, histories and revisions. Asked-need storage has 24
+entries: five ordinary groups, six medication groups, nine correction entries
+and four headroom entries. This finite storage bound is separate from the
+interaction budget; it does not authorize extra questions.
 
 ### Laboratory observations
 
@@ -339,7 +372,7 @@ The supported adult medication adverse-event path uses one bounded,
 deterministic completion policy. After opening proposals are reviewed, it asks
 in order about missing suspect-product indications, unestablished serious
 outcomes, death date only when death applies, missing relevant tests and medical
-history, and reporter details. Accepted narrative facts suppress matching
+history, medication treatment history, and reporter details. Accepted narrative facts suppress matching
 questions; related outcome and clinical-context needs are grouped; every group
 has authored wording and a plain-language reason. Unknown, declined,
 explicitly-absent, and inapplicable answers close the recorded need without a

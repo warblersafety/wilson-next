@@ -86,6 +86,11 @@ export const caseValueContracts = {
     stopDate: { shape: "iso-date" },
     indication: { shape: "string" },
     stopped: { shape: "boolean" },
+    medicationType: { shape: "enum-array", values: ["brand", "generic-biosimilar", "otc", "compounded"], mismatch: "medicationType requires supported medication labels" },
+    doseReduced: { shape: "boolean" },
+    improvedAfterChange: { shape: "boolean" },
+    restarted: { shape: "boolean" },
+    recurred: { shape: "boolean" },
     commonName: { shape: "string" },
     procode: { shape: "string" },
     modelNumber: { shape: "string" },
@@ -179,7 +184,7 @@ export function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>
     case "enum":
       return contract.values.includes(actual as string) ? undefined : contract.mismatch;
     case "enum-array":
-      return Array.isArray(actual) && actual.every((item) => contract.values.includes(String(item)))
+      return Array.isArray(actual) && (target.field !== "medicationType" || (actual.length > 0 && new Set(actual).size === actual.length)) && actual.every((item) => contract.values.includes(String(item)))
         ? undefined
         : contract.mismatch;
   }

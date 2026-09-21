@@ -15,6 +15,7 @@ import {
   requestJourneyPdf,
   storeJourneyState,
 } from "./browser-diagnostics";
+import { MedicationTask } from "./medication-task";
 import styles from "./page.module.css";
 import { productCardFields } from "./product-fields";
 
@@ -210,7 +211,7 @@ export default function Journey() {
           <section className={styles.activeTask} aria-labelledby="task-title">
             {snapshot.stage === "describe" && <Describe key={browserState?.case.id} opening={opening} setOpening={setOpening} reportType={reportType} setReportType={setReportType} busy={busy} interpreting={pendingOperation === "opening"} act={act} />}
             {snapshot.stage === "understanding" && <UnderstandingTask snapshot={snapshot} update={update} setUpdate={setUpdate} busy={busy} act={act} />}
-            {snapshot.stage === "clarify" && <><CompletionTask key={snapshot.clarification?.key} snapshot={snapshot} busy={busy} act={act} /><CorrectionInput update={update} setUpdate={setUpdate} busy={busy} act={act} /></>}
+            {snapshot.stage === "clarify" && <><CompletionTask key={`${snapshot.clarification?.key}:${snapshot.clarification?.targetIds.join(",")}`} snapshot={snapshot} busy={busy} act={act} /><CorrectionInput update={update} setUpdate={setUpdate} busy={busy} act={act} /></>}
             {snapshot.stage === "review-update" && <UpdateReview snapshot={snapshot} busy={busy} act={act} />}
           </section>
           {snapshot.stage !== "describe" && <section className={styles.casePanel} aria-labelledby="case-title">
@@ -345,6 +346,7 @@ function CompletionTask(props: { snapshot: JourneySnapshot; busy: boolean; act: 
   if (!question) return null;
   return <>
     <p className={styles.eyebrow}>Clarify · {question.reason}</p>
+    {question.kind === "medication-history" && <MedicationTask {...props} />}
     {question.kind === "indications" && <IndicationTask {...props} />}
     {question.kind === "serious-outcomes" && <SeriousOutcomesTask {...props} />}
     {question.kind === "death-date" && <DeathDateTask {...props} />}
@@ -810,7 +812,7 @@ function CaseCards({ snapshot, busy, act }: {
       const role = knownString(activeValue(product.facts.role));
       const productType = knownString(activeValue(product.facts.productType));
       const fields = productCardFields(productType, product.facts);
-      return <CaseCard domId={`case-card-product-${product.ordinal}`} key={product.id} title={name} eyebrow={product.state === "withdrawn" ? "Withdrawn product" : productType === "device" ? role === "concomitant" ? "Unsupported concomitant medical device" : "Suspect medical device" : role === "suspect" ? "Suspect product" : role === "concomitant" ? "Other product" : "Product awaiting classification"} entity="product" entityId={product.id} entityState={product.state} groupId={product.proposalGroupId} facts={product.facts} fields={fields} allowOpeningReview={openingReview && product.state === "proposed"} allowDirectEdit={directEdit && product.state === "resolved"} allowRemove={openingReview && product.state === "proposed"} allowWithdraw={entityWithdrawal && product.state === "resolved"} busy={busy} act={act} />;
+      return <div key={product.id}>{product.medicationNotice && <p role="status">{product.medicationNotice}</p>}<CaseCard domId={`case-card-product-${product.ordinal}`} key={product.id} title={name} eyebrow={product.state === "withdrawn" ? "Withdrawn product" : productType === "device" ? role === "concomitant" ? "Unsupported concomitant medical device" : "Suspect medical device" : role === "suspect" ? "Suspect product" : role === "concomitant" ? "Other product" : "Product awaiting classification"} entity="product" entityId={product.id} entityState={product.state} groupId={product.proposalGroupId} facts={product.facts} fields={fields} allowOpeningReview={openingReview && product.state === "proposed"} allowDirectEdit={directEdit && product.state === "resolved"} allowRemove={openingReview && product.state === "proposed"} allowWithdraw={entityWithdrawal && product.state === "resolved"} busy={busy} act={act} /></div>;
     })}
     {Object.values(understanding.reporter).some((fact) => activeValue(fact)) && <CaseCard domId="case-card-reporter" title="Reporter" entity="reporter" entityId="reporter" entityState="resolved" groupId="reporter" facts={understanding.reporter} fields={["firstName", "lastName", "phone", "email", "address", "city", "state", "postalCode", "country", "healthProfessional", "occupation", "reportedTo", "doNotDiscloseIdentity"]} allowOpeningReview={false} allowDirectEdit={directEdit} busy={busy} act={act} />}
   </div>;

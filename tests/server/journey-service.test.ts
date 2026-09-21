@@ -287,6 +287,9 @@ async function completeRemaining(repository: InMemoryCaseRepository, caseId: str
         test: question.askTests ? { kind: "unknown" } : undefined,
         history: question.askHistory ? { kind: "explicitly-absent" } : undefined,
       }, fixedJourneyModel);
+    } else if (question?.kind === "medication-history") {
+      snapshot = await performJourneyAction(repository, caseId, { action: "answer-medication-history", productId: question.productId,
+        answers: Object.fromEntries(question.targetIds.map((key) => [key.split(":")[2], { kind: "unknown" }])) }, fixedJourneyModel);
     } else if (question?.kind === "reporter") {
       snapshot = await performJourneyAction(repository, caseId, { action: "answer-reporter", reporter: { kind: "declined" } }, fixedJourneyModel);
     } else {

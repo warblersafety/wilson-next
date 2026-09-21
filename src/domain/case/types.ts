@@ -99,6 +99,11 @@ export interface ProductFacts {
   stopDate: Fact<string>;
   indication: Fact<string>;
   stopped: Fact<boolean>;
+  medicationType: Fact<Array<"brand" | "generic-biosimilar" | "otc" | "compounded">>;
+  doseReduced: Fact<boolean>;
+  improvedAfterChange: Fact<boolean>;
+  restarted: Fact<boolean>;
+  recurred: Fact<boolean>;
   commonName: Fact<string>;
   procode: Fact<string>;
   modelNumber: Fact<string>;
@@ -164,6 +169,7 @@ export type SemanticNeedKey =
   | "serious-outcomes"
   | "death-date"
   | "relevant-clinical-context"
+  | "medication-history"
   | "device-details"
   | "reporter-details";
 

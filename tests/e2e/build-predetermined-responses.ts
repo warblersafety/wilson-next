@@ -1,3 +1,4 @@
+import { medicationScenarios } from "../fixtures/medication-model";
 import { sourceReferenceOutput, sourceReferenceCorrection, recoveryOutput } from "../fixtures/source-reference-case";
 import { referenceFixture, type QuotedFixtureOutput as ModelProposalOutput } from "../fixtures/source-references.ts";
 import type { ProductFactKey } from "../../src/domain/case/types.ts";
@@ -610,6 +611,7 @@ const omitted = sourceReferenceOutput();
 omitted.proposals.filter(({ target }) => target.entity === "test" && target.testReference === "t3").forEach((proposal) => { proposal.evidenceReferences = ["missing"]; });
 export const predeterminedResponseScenarios = {
   ...priorScenarios,
+  ...medicationScenarios,
   issue96: [
     { identityScope: "issue96", turn: "opening" as const, output: sourceReferenceOutput() },
     { identityScope: "issue96-update", turn: "correction" as const, output: sourceReferenceCorrection("test-issue96-t0", "test-issue96-t4") },

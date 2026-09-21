@@ -171,6 +171,7 @@ describe("report-completeness state upgrade", () => {
     const { state } = await journeyResponse(repository, snapshot);
     const legacy = JSON.parse(JSON.stringify(state));
     legacy.version = "wilson-browser-state-v7";
+    removeMedicationFields(legacy);
     delete legacy.case.event.facts.reportDate;
     for (const product of legacy.case.products) delete product.facts.strength;
     for (const test of legacy.case.relevantTests) delete test.facts.testName;
@@ -194,6 +195,7 @@ describe("laboratory state upgrade", () => {
     const { state } = await journeyResponse(repository, snapshot);
     const legacy = JSON.parse(JSON.stringify(state));
     legacy.version = "wilson-browser-state-v8";
+    removeMedicationFields(legacy);
     for (const test of legacy.case.relevantTests) delete test.facts.testName;
     const upgraded = parseBrowserJourneyState(legacy);
     expect(upgraded).toEqual(state);
@@ -202,6 +204,25 @@ describe("laboratory state upgrade", () => {
     expect(upgraded.case.sources).toEqual(legacy.case.sources);
     expect(upgraded.case.changes).toEqual(legacy.case.changes);
     delete legacy.case.relevantTests[0].facts.testResult;
+    expect(() => parseBrowserJourneyState(legacy)).toThrow(BrowserStateError);
+  });
+});
+
+function removeMedicationFields(state: { case: { products: Array<{ facts: Record<string, unknown> }> } }) {
+  for (const product of state.case.products) for (const field of ["medicationType", "doseReduced", "improvedAfterChange", "restarted", "recurred"]) delete product.facts[field];
+}
+
+
+describe("medication state upgrade", () => {
+  it("upgrades v9 with empty new facts while preserving reviewed state and history", async () => {
+    const repository = new InMemoryCaseRepository();
+    const snapshot = await performJourneyAction(repository, `case-${randomUUID()}`, { action: "submit-opening", text: openingAccount, reportType: "adverse-event" }, fixedJourneyModel);
+    const { state } = await journeyResponse(repository, snapshot);
+    const legacy = JSON.parse(JSON.stringify(state));
+    legacy.version = "wilson-browser-state-v9";
+    removeMedicationFields(legacy);
+    expect(parseBrowserJourneyState(legacy)).toEqual(state);
+    delete legacy.case.products[0].facts.stopped;
     expect(() => parseBrowserJourneyState(legacy)).toThrow(BrowserStateError);
   });
 });

@@ -162,8 +162,8 @@ describe("pure case views and semantic Form 3500 projection", () => {
       reason: "empty",
     }));
     expect(resolved.omissions).toEqual(expect.arrayContaining([
-      expect.objectContaining({ target: "product:product-apixaban:stopDate", reason: "empty" }),
-      expect.objectContaining({ target: "product:product-naproxen:stopDate", reason: "empty" }),
+      expect.objectContaining({ target: "product:product-apixaban:stopDate", reason: "unknown" }),
+      expect.objectContaining({ target: "product:product-naproxen:stopDate", reason: "unknown" }),
     ]));
   });
 

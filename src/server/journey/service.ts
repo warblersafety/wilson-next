@@ -232,6 +232,7 @@ export async function performJourneyAction(
         if (fact.state === "proposed" || fact.state === "conflicted") {
           throw new Error("Resolve the pending review before editing this fact directly");
         }
+        if (expectedStage === "clarify") await ensureOpenCompletionNeed();
         const intent = fact.resolvedValue ? "correction" as const : "fact" as const;
         await applyCommand({
           type: "record-clinician-facts",
@@ -371,6 +372,23 @@ export async function performJourneyAction(
         });
         break;
       }
+      case "answer-medication-history": {
+        requireStage(expectedStage, "clarify");
+        const question = createClarificationView(current);
+        if (question?.kind !== "medication-history" || question.productId !== action.productId) throw new Error("The medication question is no longer open");
+        await ensureOpenCompletionNeed();
+        const product = current.products.find(({ id }) => id === action.productId)!;
+        const entries = Object.entries(action.answers).filter((entry) => entry[1] !== undefined) as Array<[ProductFactKey, CaseValue<unknown>]>;
+        if (entries.length === 0 || entries.some(([field]) => product.facts[field].state !== "empty")) throw new Error("Answer only the missing medication details; use a correction to change reviewed information");
+        const labels: Record<string, string> = { stopped: "stopped", doseReduced: "dose reduced", stopDate: "stop date", improvedAfterChange: "improved after stopping or reducing", restarted: "restarted", recurred: "event returned after restarting" };
+        await applyCommand({
+          type: "record-clinician-facts", commandId: commandId("answer-medication-history"), expectedRevision: current.revision,
+          source: fullSource("answer", `${knownValue(product.facts.name) ?? "Suspect medication"}: ${entries.map(([field, value]) => `${labels[field]}: ${displayValue(value)}`).join("; ")}.`),
+          answersNeed: "medication-history",
+          facts: entries.map(([field, value]) => ({ id: valueId(`medication-${field}`), target: { entity: "product" as const, entityId: action.productId, field }, intent: "fact" as const, value })),
+        });
+        break;
+      }
       case "answer-device-details": {
         requireStage(expectedStage, "clarify");
         const question = createClarificationView(current);
@@ -435,6 +453,7 @@ export async function performJourneyAction(
         requireOneOfStages(expectedStage, ["understanding", "clarify", "output"]);
         const context = createReviewedCaseModelContext(current, true);
         const update = await proposeWithDiagnostics(model, "correction", action.text, diagnostics, context);
+        if (expectedStage === "clarify") await ensureOpenCompletionNeed();
         const { unrepresented: updateUnrepresented, ...updateEnvelope } = update.envelope;
         unrepresented = [...unrepresented, ...updateUnrepresented];
         await applyCommand({

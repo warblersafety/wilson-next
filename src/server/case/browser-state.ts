@@ -8,7 +8,7 @@ import {
 import type { JourneySnapshot, JourneyStage } from "../journey/service";
 import { InMemoryCaseRepository, validateRestoredCase } from "./repository";
 
-export const browserStateVersion = "wilson-browser-state-v9";
+export const browserStateVersion = "wilson-browser-state-v10";
 
 export interface BrowserJourneyState {
   version: typeof browserStateVersion;
@@ -122,6 +122,11 @@ const productFactsSchema = z.object({
   stopDate: factSchema(isoDateSchema),
   indication: factSchema(z.string()),
   stopped: factSchema(z.boolean()),
+  medicationType: factSchema(z.array(z.enum(["brand", "generic-biosimilar", "otc", "compounded"]))),
+  doseReduced: factSchema(z.boolean()),
+  improvedAfterChange: factSchema(z.boolean()),
+  restarted: factSchema(z.boolean()),
+  recurred: factSchema(z.boolean()),
   commonName: factSchema(z.string()),
   procode: factSchema(z.string()),
   modelNumber: factSchema(z.string()),
@@ -176,7 +181,7 @@ const caseSchema = z.object({
   }).strict()).max(maximumRelevantTests),
   reporter: z.object({ id: z.literal("reporter"), facts: reporterFactsSchema }).strict(),
   askedNeeds: z.array(z.object({
-    key: z.enum(["suspect-product-indications", "serious-outcomes", "death-date", "relevant-clinical-context", "device-details", "reporter-details"]),
+    key: z.enum(["suspect-product-indications", "serious-outcomes", "death-date", "relevant-clinical-context", "device-details", "reporter-details", "medication-history"]),
     targetIds: z.array(z.string().min(1)),
     status: z.enum(["open", "answered", "declined"]),
   }).strict()).max(maximumAskedNeeds),
@@ -200,12 +205,16 @@ const caseSchema = z.object({
   }).strict()),
 }).strict();
 
-const v8CaseSchema = caseSchema.extend({
+const v9ProductFactsSchema = productFactsSchema.omit({ medicationType: true, doseReduced: true, improvedAfterChange: true, restarted: true, recurred: true });
+const v9CaseSchema = caseSchema.extend({
+  products: z.array(caseSchema.shape.products.element.extend({ facts: v9ProductFactsSchema })).max(maximumCaseProducts),
+});
+const v8CaseSchema = v9CaseSchema.extend({
   relevantTests: z.array(caseSchema.shape.relevantTests.element.extend({ facts: relevantTestFactsSchema.omit({ testName: true }) })).max(maximumRelevantTests),
 });
 const legacyCaseSchema = v8CaseSchema.extend({
   event: caseSchema.shape.event.extend({ facts: eventFactsSchema.omit({ reportDate: true }) }),
-  products: z.array(caseSchema.shape.products.element.extend({ facts: productFactsSchema.omit({ strength: true }) })).max(maximumCaseProducts),
+  products: z.array(caseSchema.shape.products.element.extend({ facts: v9ProductFactsSchema.omit({ strength: true }) })).max(maximumCaseProducts),
 });
 
 const stateSchema = z.object({
@@ -242,7 +251,7 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
   if (!version.success) {
     throw new BrowserStateError("The saved synthetic preview state is malformed", "malformed-browser-state");
   }
-  if (![browserStateVersion, "wilson-browser-state-v8", "wilson-browser-state-v7"].includes(version.data.version)) {
+  if (![browserStateVersion, "wilson-browser-state-v9", "wilson-browser-state-v8", "wilson-browser-state-v7"].includes(version.data.version)) {
     throw new BrowserStateError("The saved synthetic preview state is incompatible", "incompatible-browser-state");
   }
   const envelope = stateSchema.safeParse(input);
@@ -259,12 +268,19 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
       products: legacy.data.products.map((product) => ({ ...product, facts: { ...product.facts, strength: emptyAddedFact() } })),
     };
   }
-  if (version.data.version !== browserStateVersion) {
+  if (["wilson-browser-state-v7", "wilson-browser-state-v8"].includes(version.data.version)) {
     const legacy = v8CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     // Preserve legacy combined text verbatim; splitting it would guess clinical identity.
     candidate = { ...legacy.data, relevantTests: legacy.data.relevantTests.map((test) => ({
       ...test, facts: { ...test.facts, testName: emptyAddedFact() },
+    })) };
+  }
+  if (version.data.version !== browserStateVersion) {
+    const legacy = v9CaseSchema.safeParse(candidate);
+    if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
+    candidate = { ...legacy.data, products: legacy.data.products.map((product) => ({
+      ...product, facts: { ...product.facts, medicationType: emptyAddedFact(), doseReduced: emptyAddedFact(), improvedAfterChange: emptyAddedFact(), restarted: emptyAddedFact(), recurred: emptyAddedFact() },
     })) };
   }
   const parsedCase = caseSchema.safeParse(candidate);

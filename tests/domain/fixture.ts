@@ -1,3 +1,5 @@
+import { nextCompletionQuestion } from "../../src/domain/case/completion-policy";
+import { targetFromKey } from "../../src/domain/case/facts";
 import { applyCaseCommand } from "../../src/domain/case/commands";
 import { createSemanticCase } from "../../src/domain/case/create";
 import type {
@@ -170,6 +172,7 @@ export function completeAdaptiveDetails(caseState: SemanticCase): SemanticCase {
   current = askAndAnswer(current, "relevant-clinical-context", ["event:event:relevantHistory"], [{
     target: { entity: "event", entityId: "event", field: "relevantHistory" }, value: { kind: "explicitly-absent" },
   }]);
+  current = answerMissingMedicationDetails(current);
   const reporterFields = ["lastName", "firstName", "phone", "email", "healthProfessional", "occupation", "reportedTo", "doNotDiscloseIdentity"] as const;
   current = askAndAnswer(current, "reporter-details", reporterFields.map((field) => `reporter:reporter:${field}`), reporterFields.map((field) => ({
     target: { entity: "reporter" as const, entityId: "reporter" as const, field }, value: { kind: "declined" as const },
@@ -198,4 +201,21 @@ function askAndAnswer(
     throw new Error("Fixture expected a declined need");
   }
   return answered;
+}
+
+export function answerMissingMedicationDetails(current: SemanticCase): SemanticCase {
+  for (let count = 0; count < 3; count += 1) {
+    const question = nextCompletionQuestion(current);
+    if (question?.kind !== "medication-history") return current;
+    const stamp = String(current.revision);
+    current = applyCaseCommand(current, { type: "record-asked-need", commandId: `ask-medication-${stamp}`, expectedRevision: current.revision, key: question.key, targetIds: question.targetIds }).case;
+    const text = "The remaining medication details are unknown.";
+    current = applyCaseCommand(current, {
+      type: "record-clinician-facts", commandId: `answer-medication-${stamp}`, expectedRevision: current.revision, answersNeed: question.key,
+      source: { id: `source-medication-${stamp}`, inputId: `input-medication-${stamp}`, inputType: "answer", excerpt: text, start: 0, end: text.length, actor: "clinician", recordedAt: at },
+      facts: question.targetIds.map((key, index) => ({ id: `medication-${stamp}-${index}`, target: targetFromKey(current, key), intent: "fact", value: { kind: "unknown" } })),
+    }).case;
+  }
+  if (nextCompletionQuestion(current)?.kind === "medication-history") throw new Error("Medication fixture exceeded three product groups");
+  return current;
 }
