@@ -65,7 +65,7 @@ describe("source references and conversational recovery", () => {
     expect(result.unrepresented).toEqual([expect.objectContaining({ reason: "invalid-source-reference" })]);
   });
 
-  it("corrects the five-test DEMO-91 from initial review, retains pending context and history, and leaves other test facts unchanged", async () => {
+  it.each([false, true])("corrects DEMO-91 before acceptance, including echoed existing declarations (%s), without changing other facts", async (echoExisting) => {
     const repository = new InMemoryCaseRepository();
     const caseId = "case-00000000-0000-4000-8000-000000000096";
     let snapshot = await performJourneyAction(repository, caseId, { action: "submit-opening", reportType: "adverse-event", text: sourceReferenceOpening }, model([sourceReferenceOutput()]));
@@ -77,7 +77,9 @@ describe("source references and conversational recovery", () => {
     for (const [i, observation] of sourceReferenceObservations.entries()) for (const [field, expected] of Object.entries(observation)) {
       expect(tests[i].facts[field].proposals[0].value).toEqual(expected === null ? { kind: "unknown" } : { kind: "known", value: expected });
     }
-    const correction = model([sourceReferenceCorrection(tests[0].id, tests[4].id)]);
+    const correctionOutput = sourceReferenceCorrection(tests[0].id, tests[4].id);
+    if (echoExisting) correctionOutput.tests = [{ testReference: tests[0].id, groupReference: "hemoglobin-update" }, { testReference: tests[4].id, groupReference: "name-update" }];
+    const correction = model([correctionOutput]);
     const propose = correction.propose.bind(correction);
     correction.propose = async (turn, text, context) => {
       expect(context?.relevantTests).toHaveLength(5);

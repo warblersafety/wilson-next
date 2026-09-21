@@ -1,0 +1,616 @@
+{
+  "sha": "013979a2e762589424f999d89a3dc843df3090b1",
+  "deployment": "dpl_D5NkRZpmmnRfqk27WyP1U4kEG7Xy",
+  "protocol": "live-protocol-recheck.json",
+  "startedAt": "2026-09-21T00:06:30.528Z",
+  "cases": [
+    {
+      "id": "demo91-opening",
+      "exposedAt": "2026-09-21T00:06:32.727Z",
+      "expected": "Five distinct tests: hemoglobin 9.1 g/dL with range 12\u201316 and date 2026-09-11; stool occult blood positive on the same date; platelet count 82 without inferred units/date; ferritin with unavailable result/date; separate unnamed negative test with unavailable date. Exact original supporting excerpts; no quarantine.",
+      "status": 200,
+      "operationId": "d037baa0-e427-4208-af93-015c663fe329",
+      "observed": [
+        {
+          "id": "test-65813577-1738-4338-9864-8909324a360a",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "hemoglobin"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "9.1 g/dL"
+                }
+              ],
+              "history": []
+            },
+            "lowRange": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "12"
+                }
+              ],
+              "history": []
+            },
+            "highRange": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "16"
+                }
+              ],
+              "history": []
+            },
+            "date": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "2026-09-11"
+                }
+              ],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-6b56aa6e-e5aa-41e7-af67-bdfc2b6d6b4d",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "stool test for occult blood"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "positive"
+                }
+              ],
+              "history": []
+            },
+            "date": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "2026-09-11"
+                }
+              ],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-d6f21607-6821-4d40-83e6-62aacd3a3b0e",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "platelet count"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "82"
+                }
+              ],
+              "history": []
+            },
+            "date": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-6ede5e64-6729-4260-b083-8ddc64f92f05",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "ferritin"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            },
+            "date": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-d094f0d0-75d8-4752-8a2d-24a239551c6b",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "negative"
+                }
+              ],
+              "history": []
+            },
+            "date": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            }
+          }
+        }
+      ],
+      "unrepresented": [],
+      "sources": [
+        {
+          "inputId": "input-db625e26-3237-49a2-bed6-71f139172039",
+          "excerpt": "Patient DEMO-91 is a 54-year-old woman who took ibuprofen for back pain and developed melena on 11 September 2026. ",
+          "start": 0,
+          "end": 115
+        },
+        {
+          "inputId": "input-db625e26-3237-49a2-bed6-71f139172039",
+          "excerpt": "I suspect ibuprofen.\n",
+          "start": 115,
+          "end": 136
+        },
+        {
+          "inputId": "input-db625e26-3237-49a2-bed6-71f139172039",
+          "excerpt": "Her hemoglobin was 9.1 g/dL, reference range 12 to 16, on 11 September 2026. ",
+          "start": 136,
+          "end": 213
+        },
+        {
+          "inputId": "input-db625e26-3237-49a2-bed6-71f139172039",
+          "excerpt": "A stool test was positive for occult blood on the same date.\n",
+          "start": 213,
+          "end": 274
+        },
+        {
+          "inputId": "input-db625e26-3237-49a2-bed6-71f139172039",
+          "excerpt": "Her platelet count was 82; I don\u2019t have its units or collection date. ",
+          "start": 274,
+          "end": 344
+        },
+        {
+          "inputId": "input-db625e26-3237-49a2-bed6-71f139172039",
+          "excerpt": "Ferritin was tested, but I don\u2019t have the result or date.\n",
+          "start": 344,
+          "end": 402
+        },
+        {
+          "inputId": "input-db625e26-3237-49a2-bed6-71f139172039",
+          "excerpt": "There was also a separate negative test, but I don\u2019t have its name or date available.",
+          "start": 402,
+          "end": 487
+        }
+      ],
+      "stage": "understanding",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-source-references-recovery-v2",
+        "schemaRevision": "wilson-grounded-proposals-v14-references",
+        "inputTokens": 5572,
+        "outputTokens": 8425,
+        "latencyMs": 58825,
+        "estimatedCostUsd": 0.095394
+      },
+      "assessment": {
+        "status": "pass",
+        "detail": "Five tests; numeric/qualitative values, all explicit unknowns, dates/range and exact original-source excerpts preserved."
+      }
+    },
+    {
+      "id": "demo91-correction",
+      "exposedAt": "2026-09-21T00:07:32.167Z",
+      "expected": "From initial review, link the existing unnamed test to Helicobacter pylori stool antigen and change only hemoglobin result to 8.9 g/dL. No duplicate tests, no premature acceptance or direct edits. Other test facts, dates, range, negative result and unknowns retained. Review updates and independently read downloaded PDF.",
+      "driverFailure": "Case API returned 422 model-domain-boundary",
+      "operationId": "3e09c251-207e-42cd-a97b-2012749196e6",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-source-references-recovery-v2",
+        "schemaRevision": "wilson-grounded-proposals-v14-references",
+        "inputTokens": 6704,
+        "outputTokens": 1352,
+        "latencyMs": 12525,
+        "estimatedCostUsd": 0.026928
+      },
+      "assessment": {
+        "status": "failed closed",
+        "detail": "Model echoed exact existing stable test IDs in declarations; new-entity collision guard rejected otherwise attributable correction. State remained proposed."
+      }
+    },
+    {
+      "id": "contrasting",
+      "exposedAt": "2026-09-21T00:08:26.229Z",
+      "expected": "Serum \u03b2 marker \u2265 4 \u00b5g/L, range 2\u20136, 2026-09-12; urine culture no growth on that same date; ferritin with unavailable result/date. Do not invent a performed platelet measurement. Greek/inequality output faithful in PDF. Source support and clinical attribution assessed separately.",
+      "status": 200,
+      "operationId": "b1a5e4fc-e219-474e-9d29-41b0a937d5b3",
+      "observed": [
+        {
+          "id": "test-935b8bc8-c65c-4eef-8faf-f532a8b99e18",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "Serum \u03b2 marker"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "\u2265 4 \u00b5g/L"
+                }
+              ],
+              "history": []
+            },
+            "lowRange": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "2"
+                }
+              ],
+              "history": []
+            },
+            "highRange": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "6"
+                }
+              ],
+              "history": []
+            },
+            "date": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "2026-09-12"
+                }
+              ],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-1341dd45-0c84-4a12-8d61-314db47c716f",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "urine culture"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "no growth"
+                }
+              ],
+              "history": []
+            },
+            "date": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "2026-09-12"
+                }
+              ],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-4db2f215-f1ac-4405-98e0-16639b028925",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "Platelets"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "explicitly-absent"
+                }
+              ],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-61225e9c-8c46-4df0-938f-ada23d4432ec",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "ferritin"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            },
+            "date": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            }
+          }
+        }
+      ],
+      "unrepresented": [],
+      "sources": [
+        {
+          "inputId": "input-634bafaa-24a8-4f1c-88e2-1ad028cdcb20",
+          "excerpt": "Patient DEMO-96-C is a 63-year-old man who developed a rash while taking allopurinol for gout. ",
+          "start": 0,
+          "end": 95
+        },
+        {
+          "inputId": "input-634bafaa-24a8-4f1c-88e2-1ad028cdcb20",
+          "excerpt": "I suspect allopurinol. ",
+          "start": 95,
+          "end": 118
+        },
+        {
+          "inputId": "input-634bafaa-24a8-4f1c-88e2-1ad028cdcb20",
+          "excerpt": "Serum \u03b2 marker was \u2265 4 \u00b5g/L (reference range 2\u20136) on 12 September 2026. ",
+          "start": 118,
+          "end": 190
+        },
+        {
+          "inputId": "input-634bafaa-24a8-4f1c-88e2-1ad028cdcb20",
+          "excerpt": "The urine culture collected that same day showed no growth. ",
+          "start": 190,
+          "end": 250
+        },
+        {
+          "inputId": "input-634bafaa-24a8-4f1c-88e2-1ad028cdcb20",
+          "excerpt": "Platelets were not tested. ",
+          "start": 250,
+          "end": 277
+        },
+        {
+          "inputId": "input-634bafaa-24a8-4f1c-88e2-1ad028cdcb20",
+          "excerpt": "A ferritin test was performed, but its result and collection date aren\u2019t available.",
+          "start": 277,
+          "end": 360
+        }
+      ],
+      "stage": "understanding",
+      "reviewed": [
+        {
+          "id": "test-935b8bc8-c65c-4eef-8faf-f532a8b99e18",
+          "facts": {
+            "testName": {
+              "resolved": {
+                "kind": "known",
+                "value": "Serum \u03b2 marker"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "testResult": {
+              "resolved": {
+                "kind": "known",
+                "value": "\u2265 4 \u00b5g/L"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "lowRange": {
+              "resolved": {
+                "kind": "known",
+                "value": "2"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "highRange": {
+              "resolved": {
+                "kind": "known",
+                "value": "6"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "date": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-12"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-1341dd45-0c84-4a12-8d61-314db47c716f",
+          "facts": {
+            "testName": {
+              "resolved": {
+                "kind": "known",
+                "value": "urine culture"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "testResult": {
+              "resolved": {
+                "kind": "known",
+                "value": "no growth"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "date": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-12"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-4db2f215-f1ac-4405-98e0-16639b028925",
+          "facts": {
+            "testName": {
+              "resolved": {
+                "kind": "known",
+                "value": "Platelets"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "testResult": {
+              "resolved": {
+                "kind": "explicitly-absent"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-61225e9c-8c46-4df0-938f-ada23d4432ec",
+          "facts": {
+            "testName": {
+              "resolved": {
+                "kind": "known",
+                "value": "ferritin"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "testResult": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "date": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        }
+      ],
+      "projection": [
+        {
+          "testId": "test-935b8bc8-c65c-4eef-8faf-f532a8b99e18",
+          "testResult": "Serum \u03b2 marker: \u2265 4 \u00b5g/L",
+          "lowRange": "2",
+          "highRange": "6",
+          "date": "2026-09-12"
+        },
+        {
+          "testId": "test-1341dd45-0c84-4a12-8d61-314db47c716f",
+          "testResult": "urine culture: no growth",
+          "date": "2026-09-12"
+        },
+        {
+          "testId": "test-4db2f215-f1ac-4405-98e0-16639b028925",
+          "testResult": "Platelets: Result not recorded"
+        },
+        {
+          "testId": "test-61225e9c-8c46-4df0-938f-ada23d4432ec",
+          "testResult": "ferritin: Result not recorded"
+        }
+      ],
+      "downloaded": true,
+      "finishedAt": "2026-09-21T00:09:00.121Z",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-source-references-recovery-v2",
+        "schemaRevision": "wilson-grounded-proposals-v14-references",
+        "inputTokens": 5508,
+        "outputTokens": 3900,
+        "latencyMs": 29418,
+        "estimatedCostUsd": 0.050016
+      },
+      "assessment": {
+        "status": "partial failure",
+        "detail": "Known values, shared date, unknown ferritin details and Unicode/PDF preserved. An unperformed platelet test became an extra partial entity (explicitly-absent result), rendered Result not recorded by the synthetic accept-all driver. It needs rejection in ordinary review; this output is not accepted as a correct final report."
+      }
+    }
+  ],
+  "totals": {
+    "calls": 3,
+    "estimatedCostUsd": 0.172338
+  }
+}

@@ -171,7 +171,9 @@ reach `applyCaseCommand`. A later model input receives the relevant reviewed
 product and test IDs, including explicitly labelled pending interpretations,
 and uses those IDs for supported updates. It may declare a genuinely additional
 or wholly omitted test using a response-local reference; code assigns its stable
-ID. It must not redeclare an existing observation to correct it. Later product
+ID. An exact supplied ID echoed in the declaration list still links to the
+existing observation and never allocates another entity. It must not declare a
+new response-local identity to correct an existing observation. Later product
 declarations remain unsupported and are quarantined locally.
 Stable identity is never derived from medicine or test name, list position,
 fixture data, or a PDF row. The model proposes mention linkage; it does not own

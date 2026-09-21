@@ -148,14 +148,13 @@ export function parseModelProposalEnvelope(
 ): ParsedModelProposalEnvelope {
   const input = inputSchema.parse(candidate.input);
   const output = modelProposalEnvelopeSchema.parse(candidate.output);
-  const outputTests = output.tests ?? [];
   const existingProductIds = new Set(candidate.existingProductIds ?? []);
   const existingTestIds = new Set(candidate.existingTestIds ?? []);
+  // An exact supplied ID still identifies the existing observation, even if
+  // echoed in the declaration list. Only response-local references create tests.
+  const outputTests = (output.tests ?? []).filter(({ testReference }) => !existingTestIds.has(testReference));
   if (candidate.turn === "opening" && (existingProductIds.size > 0 || existingTestIds.size > 0)) {
     boundaryIssue(["existingProductIds"], "Opening input cannot reference existing entities");
-  }
-  if (outputTests.some(({ testReference }) => existingTestIds.has(testReference))) {
-    boundaryIssue(["tests"], "A new test reference cannot collide with an existing test ID");
   }
 
   const allocatedByKind = new Map<ModelBoundaryIdentityKind, Set<string>>();
@@ -235,7 +234,6 @@ export function parseModelProposalEnvelope(
     }
     prepared.push({ proposal, target, groupId, evidence });
   }
-
 
   if (prepared.length === 0) boundaryIssue(["proposals"], "Every proposal was unrepresentable");
 

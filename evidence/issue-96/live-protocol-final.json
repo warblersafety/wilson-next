@@ -1,0 +1,24 @@
+{
+  "recordedAt": "2026-09-21T00:13:38.452340+00:00",
+  "syntheticOnly": true,
+  "maxCalls": 2,
+  "maxCostUsd": 5,
+  "reservationPerCallUsd": 1.5,
+  "retries": 0,
+  "policy": "Reserve before each exposed call; stop and record a failure, without automatic retry or sampling to erase it. Any remediation recheck requires a new pre-execution record within Delivery limits. Three calls give existence evidence, not a reliability rate.",
+  "cases": [
+    {
+      "id": "demo91-correction",
+      "text": "I\u2019ve now located the report for the unidentified negative test. It was a Helicobacter pylori stool antigen test. Its collection date is still unavailable. Also, I misread the hemoglobin: it was 8.9 g/dL, not 9.1. The hemoglobin reference range and date were correct.",
+      "expected": "From initial review, link the existing unnamed test to Helicobacter pylori stool antigen and change only hemoglobin result to 8.9 g/dL. No duplicate tests, no premature acceptance or direct edits. Other test facts, dates, range, negative result and unknowns retained. Review updates and independently read downloaded PDF."
+    },
+    {
+      "id": "contrasting",
+      "text": "Patient DEMO-96-C is a 63-year-old man who developed a rash while taking allopurinol for gout. I suspect allopurinol. Serum \u03b2 marker was \u2265 4 \u00b5g/L (reference range 2\u20136) on 12 September 2026. The urine culture collected that same day showed no growth. Platelets were not tested. A ferritin test was performed, but its result and collection date aren\u2019t available.",
+      "expected": "Serum \u03b2 marker \u2265 4 \u00b5g/L, range 2\u20136, 2026-09-12; urine culture no growth on that same date; ferritin with unavailable result/date. Do not invent a performed platelet measurement. Greek/inequality output faithful in PDF. Source support and clinical attribution assessed separately."
+    }
+  ],
+  "promptRevision": "wilson-source-references-recovery-v3",
+  "reason": "Targeted verification after code accepts an exact existing test ID echoed in declarations without creating a duplicate. The original rejected provider response now replays locally with the correct five-test output and unknown date. Reuse the successful v2 opening state (all facts still proposed) rather than repeat extraction. The contrast also checks the clarified general instruction not to declare unperformed tests. Retain both prior batches and stop on remaining failure; no automatic retries.",
+  "retainedOpeningOperation": "d037baa0-e427-4208-af93-015c663fe329"
+}
