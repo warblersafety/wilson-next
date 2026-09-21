@@ -65,7 +65,9 @@ export function createUnderstandingView(caseState: SemanticCase): UnderstandingV
         ordinal: index + 1,
         medicationNotice: ((product.facts.recurred.resolvedValue?.value.kind === "known" && restartApplicability(product.facts) !== true)
           || (product.facts.improvedAfterChange.resolvedValue?.value.kind === "known" && withdrawalApplicability(product.facts) !== true))
-          ? "The applicability of a reviewed improvement or recurrence answer is unresolved. Check the stopping, dose-reduction and restart details; an unsupported outcome is not carried into the form." : undefined,
+          ? "The applicability of a reviewed improvement or recurrence answer is unresolved. Check the stopping, dose-reduction and restart details; an unsupported outcome is not carried into the form."
+          : [product.facts.improvedAfterChange, product.facts.recurred].some((fact) => fact.state === "empty" && fact.supersededValues.some(({ value }) => value.kind === "known"))
+            ? "An earlier improvement or recurrence answer was moved to history after the treatment details changed. It is no longer a current answer; if applicable again, provide a new answer." : undefined,
         proposalGroupId: product.proposalGroupId,
         state: product.state,
         facts: mapFacts(product.facts, sourceExcerpts),

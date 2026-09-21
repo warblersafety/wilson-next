@@ -47,6 +47,7 @@ test("medication history: conversational grouped answer and two-product correcti
   const corrected = await state(page);
   expect(corrected.products[0].facts.recurred.resolvedValue).toBeUndefined();
   expect(corrected.products[0].facts.recurred.supersededValues[0].value.value).toBe(true);
+  await expect(page.getByRole("status").filter({ hasText: "moved to history" })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("medication-correction.png"), fullPage: true });
   await update(page, medicationRestartedAgain);
   await expect(page.getByRole("heading", { name: "Treatment history for amoxicillin" })).toBeVisible();

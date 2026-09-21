@@ -1,0 +1,2451 @@
+{
+  "sha": "78216b078b138230a6047e197d8f8d200668cc69",
+  "deployment": "dpl_FZLCvRuMg2GhNvtZjL4s7maS9wqh",
+  "protocol": "live-protocol.json",
+  "startedAt": "2026-09-21T22:45:20.365Z",
+  "cases": [
+    {
+      "id": "sparse",
+      "exposedAt": "2026-09-21T22:45:22.643Z",
+      "expected": "Amoxicillin suspect medication; rash. No stop date, stopping/reduction, improvement, restart, recurrence or medication label subtype inferred. One missing-history group before reporter. Grounded proposals remain unaccepted until clinician review.",
+      "status": 200,
+      "operationId": "3a1dda75-fd90-4a1d-8473-c3a6c3294a30",
+      "observed": [
+        {
+          "id": "product-fb7936b5-2c3d-4632-b87b-0fab589ce613",
+          "facts": {
+            "name": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "amoxicillin"
+                }
+              ],
+              "history": []
+            },
+            "productType": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                }
+              ],
+              "history": []
+            },
+            "role": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "suspect"
+                }
+              ],
+              "history": []
+            },
+            "indication": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "infection"
+                }
+              ],
+              "history": []
+            }
+          }
+        }
+      ],
+      "unrepresented": [],
+      "stage": "understanding",
+      "sources": [
+        {
+          "id": "source-73dac1cf-3e81-4520-8e0a-6d24be9376c1",
+          "inputId": "input-fbfd4584-21bf-4741-ae3e-a12bad3c6d96",
+          "inputType": "narrative",
+          "excerpt": "Fictional patient MED-40 is 40 years old and developed a rash while taking amoxicillin for an infection. ",
+          "start": 0,
+          "end": 105,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:45:42.203Z"
+        },
+        {
+          "id": "source-cb1b6ad5-5511-4956-ac7d-0ec1df965ed5",
+          "inputId": "input-fbfd4584-21bf-4741-ae3e-a12bad3c6d96",
+          "inputType": "narrative",
+          "excerpt": "I suspect amoxicillin. ",
+          "start": 105,
+          "end": 128,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:45:42.203Z"
+        },
+        {
+          "id": "source-c32a9a4a-7eb2-40c1-9ed6-c37b313bda2a",
+          "inputId": "input-fbfd4584-21bf-4741-ae3e-a12bad3c6d96",
+          "inputType": "narrative",
+          "excerpt": "No serious outcomes applied, and there are no relevant tests or additional medical history.",
+          "start": 128,
+          "end": 219,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:45:42.203Z"
+        },
+        {
+          "id": "source-befede2b-436a-4e31-9253-9f3dea11982a",
+          "inputId": "input-4be74a4b-4582-42e2-9b2d-ef1f31aa35e2",
+          "inputType": "selection",
+          "excerpt": "Adverse event",
+          "start": 0,
+          "end": 13,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:45:42.217Z"
+        }
+      ],
+      "afterAcceptance": [
+        {
+          "id": "product-fb7936b5-2c3d-4632-b87b-0fab589ce613",
+          "facts": {
+            "name": {
+              "resolved": {
+                "kind": "known",
+                "value": "amoxicillin"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "productType": {
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "role": {
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "indication": {
+              "resolved": {
+                "kind": "known",
+                "value": "infection"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        }
+      ],
+      "firstQuestion": {
+        "key": "medication-history",
+        "kind": "medication-history",
+        "productId": "product-fb7936b5-2c3d-4632-b87b-0fab589ce613",
+        "status": "new",
+        "targetIds": [
+          "product:product-fb7936b5-2c3d-4632-b87b-0fab589ce613:stopped",
+          "product:product-fb7936b5-2c3d-4632-b87b-0fab589ce613:doseReduced"
+        ],
+        "question": "Treatment history for amoxicillin",
+        "reason": "Record whether treatment changed and what happened afterward. Answer only what you know; these observations do not establish causality."
+      },
+      "projectionBeforeCompletion": {
+        "suspectProducts": [
+          {
+            "productId": "product-fb7936b5-2c3d-4632-b87b-0fab589ce613",
+            "name": "amoxicillin",
+            "indication": "infection"
+          }
+        ]
+      },
+      "questions": [
+        {
+          "key": "medication-history",
+          "kind": "medication-history",
+          "productId": "product-fb7936b5-2c3d-4632-b87b-0fab589ce613",
+          "status": "new",
+          "targetIds": [
+            "product:product-fb7936b5-2c3d-4632-b87b-0fab589ce613:stopped",
+            "product:product-fb7936b5-2c3d-4632-b87b-0fab589ce613:doseReduced"
+          ],
+          "question": "Treatment history for amoxicillin",
+          "reason": "Record whether treatment changed and what happened afterward. Answer only what you know; these observations do not establish causality."
+        },
+        {
+          "kind": "reporter",
+          "targetIds": [
+            "reporter:reporter:lastName",
+            "reporter:reporter:firstName",
+            "reporter:reporter:phone",
+            "reporter:reporter:email",
+            "reporter:reporter:healthProfessional",
+            "reporter:reporter:occupation",
+            "reporter:reporter:reportedTo",
+            "reporter:reporter:doNotDiscloseIdentity"
+          ],
+          "question": "Add the reporter details for this report",
+          "reason": "Reporter information must come directly from you and cannot be inferred from the clinical account.",
+          "key": "reporter-details",
+          "status": "new"
+        }
+      ],
+      "reviewed": [
+        {
+          "id": "product-fb7936b5-2c3d-4632-b87b-0fab589ce613",
+          "facts": {
+            "name": {
+              "resolved": {
+                "kind": "known",
+                "value": "amoxicillin"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "productType": {
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "role": {
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "indication": {
+              "resolved": {
+                "kind": "known",
+                "value": "infection"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopped": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "doseReduced": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        }
+      ],
+      "askedNeeds": [
+        {
+          "key": "medication-history",
+          "targetIds": [
+            "product:product-fb7936b5-2c3d-4632-b87b-0fab589ce613:stopped",
+            "product:product-fb7936b5-2c3d-4632-b87b-0fab589ce613:doseReduced"
+          ],
+          "status": "answered"
+        },
+        {
+          "key": "reporter-details",
+          "targetIds": [
+            "reporter:reporter:lastName",
+            "reporter:reporter:firstName",
+            "reporter:reporter:phone",
+            "reporter:reporter:email",
+            "reporter:reporter:healthProfessional",
+            "reporter:reporter:occupation",
+            "reporter:reporter:reportedTo",
+            "reporter:reporter:doNotDiscloseIdentity"
+          ],
+          "status": "declined"
+        }
+      ],
+      "projection": {
+        "suspectProducts": [
+          {
+            "productId": "product-fb7936b5-2c3d-4632-b87b-0fab589ce613",
+            "name": "amoxicillin",
+            "indication": "infection"
+          }
+        ]
+      },
+      "downloaded": true,
+      "finishedAt": "2026-09-21T22:45:46.162Z",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-medication-followups-v1",
+        "schemaRevision": "wilson-grounded-proposals-v15-medication",
+        "inputTokens": 5850,
+        "outputTokens": 2456,
+        "latencyMs": 19145,
+        "estimatedCostUsd": 0.03626
+      }
+    },
+    {
+      "id": "two",
+      "exposedAt": "2026-09-21T22:46:49.010Z",
+      "expected": "Separate amoxicillin and naproxen identities. Amoxicillin generic, stopped 2026-09-17, improved after stopping, restarted with recurrence. Naproxen generic+OTC, not stopped, dose reduced without improvement, never restarted. D7 Yes/No respectively, D8 Yes/Does not apply. No missing medication questions; reporter remains.",
+      "status": 200,
+      "operationId": "bb0a0963-b466-4d36-b063-b6ee9ac01116",
+      "observed": [
+        {
+          "id": "product-8aa4656b-da54-4729-bbf1-a3c89643a34c",
+          "facts": {
+            "name": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "amoxicillin"
+                }
+              ],
+              "history": []
+            },
+            "productType": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                }
+              ],
+              "history": []
+            },
+            "role": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "suspect"
+                }
+              ],
+              "history": []
+            },
+            "stopDate": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "2026-09-17"
+                }
+              ],
+              "history": []
+            },
+            "indication": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "infection"
+                }
+              ],
+              "history": []
+            },
+            "stopped": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": true
+                }
+              ],
+              "history": []
+            },
+            "medicationType": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": [
+                    "generic-biosimilar"
+                  ]
+                }
+              ],
+              "history": []
+            },
+            "improvedAfterChange": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": true
+                }
+              ],
+              "history": []
+            },
+            "restarted": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": true
+                }
+              ],
+              "history": []
+            },
+            "recurred": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": true
+                }
+              ],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "product-5217ea78-af17-47b0-99b1-f27cb2f20f0d",
+          "facts": {
+            "name": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "naproxen"
+                }
+              ],
+              "history": []
+            },
+            "productType": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                }
+              ],
+              "history": []
+            },
+            "role": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "suspect"
+                }
+              ],
+              "history": []
+            },
+            "indication": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "joint pain"
+                }
+              ],
+              "history": []
+            },
+            "stopped": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": false
+                }
+              ],
+              "history": []
+            },
+            "medicationType": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": [
+                    "otc",
+                    "generic-biosimilar"
+                  ]
+                }
+              ],
+              "history": []
+            },
+            "doseReduced": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": true
+                }
+              ],
+              "history": []
+            },
+            "improvedAfterChange": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": false
+                }
+              ],
+              "history": []
+            },
+            "restarted": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": false
+                }
+              ],
+              "history": []
+            }
+          }
+        }
+      ],
+      "unrepresented": [],
+      "stage": "understanding",
+      "sources": [
+        {
+          "id": "source-0abb53e0-952d-4558-8354-35001fc2db5b",
+          "inputId": "input-98a18195-285f-4e04-aac4-59414c9eae7b",
+          "inputType": "narrative",
+          "excerpt": "Fictional patient MED-55 is 55 years old and developed a rash. ",
+          "start": 0,
+          "end": 63,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:39.727Z"
+        },
+        {
+          "id": "source-d22ace46-2e5f-4b90-ac35-aed93e20bc88",
+          "inputId": "input-98a18195-285f-4e04-aac4-59414c9eae7b",
+          "inputType": "narrative",
+          "excerpt": "No serious outcomes applied, and there are no relevant tests or additional medical history.",
+          "start": 424,
+          "end": 515,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:39.727Z"
+        },
+        {
+          "id": "source-58dcb811-030b-4e7a-adbb-d70d0ae16a14",
+          "inputId": "input-98a18195-285f-4e04-aac4-59414c9eae7b",
+          "inputType": "narrative",
+          "excerpt": "I suspect amoxicillin for infection and naproxen for joint pain. ",
+          "start": 63,
+          "end": 128,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:39.727Z"
+        },
+        {
+          "id": "source-9e9c21fa-4417-4a21-a6e8-b9a426f37f94",
+          "inputId": "input-98a18195-285f-4e04-aac4-59414c9eae7b",
+          "inputType": "narrative",
+          "excerpt": "The generic amoxicillin was stopped on 17 September 2026; the rash improved after stopping, and returned after amoxicillin was restarted. ",
+          "start": 128,
+          "end": 266,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:39.727Z"
+        },
+        {
+          "id": "source-ccb19cdf-1e0f-4368-93d5-7e77e836c689",
+          "inputId": "input-98a18195-285f-4e04-aac4-59414c9eae7b",
+          "inputType": "narrative",
+          "excerpt": "The over-the-counter generic naproxen was not stopped, but its dose was reduced. ",
+          "start": 266,
+          "end": 347,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:39.727Z"
+        },
+        {
+          "id": "source-e6e9bb2c-94f7-4717-87f0-be5fc98bbed8",
+          "inputId": "input-98a18195-285f-4e04-aac4-59414c9eae7b",
+          "inputType": "narrative",
+          "excerpt": "The rash did not improve after that reduction. ",
+          "start": 347,
+          "end": 394,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:39.727Z"
+        },
+        {
+          "id": "source-659f8f67-e6c3-45f6-a4f3-3fbb6f873786",
+          "inputId": "input-98a18195-285f-4e04-aac4-59414c9eae7b",
+          "inputType": "narrative",
+          "excerpt": "Naproxen was never restarted. ",
+          "start": 394,
+          "end": 424,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:39.727Z"
+        },
+        {
+          "id": "source-2fcdf220-fc0e-4bdf-98a0-fef6f9765763",
+          "inputId": "input-e10fb257-be84-40f7-a986-9047aed67839",
+          "inputType": "selection",
+          "excerpt": "Adverse event",
+          "start": 0,
+          "end": 13,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:39.737Z"
+        }
+      ],
+      "afterAcceptance": [
+        {
+          "id": "product-8aa4656b-da54-4729-bbf1-a3c89643a34c",
+          "facts": {
+            "name": {
+              "resolved": {
+                "kind": "known",
+                "value": "amoxicillin"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "productType": {
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "role": {
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-17"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "indication": {
+              "resolved": {
+                "kind": "known",
+                "value": "infection"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopped": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "medicationType": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "generic-biosimilar"
+                ]
+              },
+              "proposed": [],
+              "history": []
+            },
+            "improvedAfterChange": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "restarted": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "recurred": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "product-5217ea78-af17-47b0-99b1-f27cb2f20f0d",
+          "facts": {
+            "name": {
+              "resolved": {
+                "kind": "known",
+                "value": "naproxen"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "productType": {
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "role": {
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "indication": {
+              "resolved": {
+                "kind": "known",
+                "value": "joint pain"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopped": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": []
+            },
+            "medicationType": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "otc",
+                  "generic-biosimilar"
+                ]
+              },
+              "proposed": [],
+              "history": []
+            },
+            "doseReduced": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "improvedAfterChange": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": []
+            },
+            "restarted": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        }
+      ],
+      "firstQuestion": {
+        "kind": "reporter",
+        "targetIds": [
+          "reporter:reporter:lastName",
+          "reporter:reporter:firstName",
+          "reporter:reporter:phone",
+          "reporter:reporter:email",
+          "reporter:reporter:healthProfessional",
+          "reporter:reporter:occupation",
+          "reporter:reporter:reportedTo",
+          "reporter:reporter:doNotDiscloseIdentity"
+        ],
+        "question": "Add the reporter details for this report",
+        "reason": "Reporter information must come directly from you and cannot be inferred from the clinical account.",
+        "key": "reporter-details",
+        "status": "new"
+      },
+      "projectionBeforeCompletion": {
+        "suspectProducts": [
+          {
+            "productId": "product-8aa4656b-da54-4729-bbf1-a3c89643a34c",
+            "name": "amoxicillin",
+            "stopDate": "2026-09-17",
+            "indication": "infection",
+            "medicationType": [
+              "generic-biosimilar"
+            ],
+            "improvedAfterChange": true,
+            "recurred": true
+          },
+          {
+            "productId": "product-5217ea78-af17-47b0-99b1-f27cb2f20f0d",
+            "name": "naproxen",
+            "indication": "joint pain",
+            "medicationType": [
+              "generic-biosimilar",
+              "otc"
+            ],
+            "improvedAfterChange": false,
+            "recurred": "inapplicable"
+          }
+        ]
+      },
+      "questions": [
+        {
+          "kind": "reporter",
+          "targetIds": [
+            "reporter:reporter:lastName",
+            "reporter:reporter:firstName",
+            "reporter:reporter:phone",
+            "reporter:reporter:email",
+            "reporter:reporter:healthProfessional",
+            "reporter:reporter:occupation",
+            "reporter:reporter:reportedTo",
+            "reporter:reporter:doNotDiscloseIdentity"
+          ],
+          "question": "Add the reporter details for this report",
+          "reason": "Reporter information must come directly from you and cannot be inferred from the clinical account.",
+          "key": "reporter-details",
+          "status": "new"
+        }
+      ],
+      "reviewed": [
+        {
+          "id": "product-8aa4656b-da54-4729-bbf1-a3c89643a34c",
+          "facts": {
+            "name": {
+              "resolved": {
+                "kind": "known",
+                "value": "amoxicillin"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "productType": {
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "role": {
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-17"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "indication": {
+              "resolved": {
+                "kind": "known",
+                "value": "infection"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopped": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "medicationType": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "generic-biosimilar"
+                ]
+              },
+              "proposed": [],
+              "history": []
+            },
+            "improvedAfterChange": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "restarted": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "recurred": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "product-5217ea78-af17-47b0-99b1-f27cb2f20f0d",
+          "facts": {
+            "name": {
+              "resolved": {
+                "kind": "known",
+                "value": "naproxen"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "productType": {
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "role": {
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "indication": {
+              "resolved": {
+                "kind": "known",
+                "value": "joint pain"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopped": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": []
+            },
+            "medicationType": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "otc",
+                  "generic-biosimilar"
+                ]
+              },
+              "proposed": [],
+              "history": []
+            },
+            "doseReduced": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "improvedAfterChange": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": []
+            },
+            "restarted": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        }
+      ],
+      "askedNeeds": [
+        {
+          "key": "reporter-details",
+          "targetIds": [
+            "reporter:reporter:lastName",
+            "reporter:reporter:firstName",
+            "reporter:reporter:phone",
+            "reporter:reporter:email",
+            "reporter:reporter:healthProfessional",
+            "reporter:reporter:occupation",
+            "reporter:reporter:reportedTo",
+            "reporter:reporter:doNotDiscloseIdentity"
+          ],
+          "status": "declined"
+        }
+      ],
+      "projection": {
+        "suspectProducts": [
+          {
+            "productId": "product-8aa4656b-da54-4729-bbf1-a3c89643a34c",
+            "name": "amoxicillin",
+            "stopDate": "2026-09-17",
+            "indication": "infection",
+            "medicationType": [
+              "generic-biosimilar"
+            ],
+            "improvedAfterChange": true,
+            "recurred": true
+          },
+          {
+            "productId": "product-5217ea78-af17-47b0-99b1-f27cb2f20f0d",
+            "name": "naproxen",
+            "indication": "joint pain",
+            "medicationType": [
+              "generic-biosimilar",
+              "otc"
+            ],
+            "improvedAfterChange": false,
+            "recurred": "inapplicable"
+          }
+        ]
+      },
+      "downloaded": true,
+      "finishedAt": "2026-09-21T22:47:42.994Z",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-medication-followups-v1",
+        "schemaRevision": "wilson-grounded-proposals-v15-medication",
+        "inputTokens": 6005,
+        "outputTokens": 6466,
+        "latencyMs": 50463,
+        "estimatedCostUsd": 0.07667
+      }
+    },
+    {
+      "id": "correction",
+      "exposedAt": "2026-09-21T22:48:16.154Z",
+      "expected": "Correction targets existing amoxicillin restart only; no duplicate products or edits to naproxen. After acceptance restart false supersedes prior known recurrence, retains history/sources, D8 Does not apply. No stale recurrence or repeated medication question.",
+      "status": 200,
+      "operationId": "9c1ef5f3-4d75-459a-b6e5-c7ff6e6fe184",
+      "observed": [
+        {
+          "id": "product-8aa4656b-da54-4729-bbf1-a3c89643a34c",
+          "facts": {
+            "name": {
+              "resolved": {
+                "kind": "known",
+                "value": "amoxicillin"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "productType": {
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "role": {
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-17"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "indication": {
+              "resolved": {
+                "kind": "known",
+                "value": "infection"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopped": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "medicationType": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "generic-biosimilar"
+                ]
+              },
+              "proposed": [],
+              "history": []
+            },
+            "improvedAfterChange": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "restarted": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": false
+                }
+              ],
+              "history": []
+            },
+            "recurred": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "product-5217ea78-af17-47b0-99b1-f27cb2f20f0d",
+          "facts": {
+            "name": {
+              "resolved": {
+                "kind": "known",
+                "value": "naproxen"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "productType": {
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "role": {
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "indication": {
+              "resolved": {
+                "kind": "known",
+                "value": "joint pain"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopped": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": []
+            },
+            "medicationType": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "otc",
+                  "generic-biosimilar"
+                ]
+              },
+              "proposed": [],
+              "history": []
+            },
+            "doseReduced": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "improvedAfterChange": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": []
+            },
+            "restarted": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        }
+      ],
+      "unrepresented": [],
+      "stage": "review-update",
+      "sources": [
+        {
+          "id": "source-0abb53e0-952d-4558-8354-35001fc2db5b",
+          "inputId": "input-98a18195-285f-4e04-aac4-59414c9eae7b",
+          "inputType": "narrative",
+          "excerpt": "Fictional patient MED-55 is 55 years old and developed a rash. ",
+          "start": 0,
+          "end": 63,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:39.727Z"
+        },
+        {
+          "id": "source-d22ace46-2e5f-4b90-ac35-aed93e20bc88",
+          "inputId": "input-98a18195-285f-4e04-aac4-59414c9eae7b",
+          "inputType": "narrative",
+          "excerpt": "No serious outcomes applied, and there are no relevant tests or additional medical history.",
+          "start": 424,
+          "end": 515,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:39.727Z"
+        },
+        {
+          "id": "source-58dcb811-030b-4e7a-adbb-d70d0ae16a14",
+          "inputId": "input-98a18195-285f-4e04-aac4-59414c9eae7b",
+          "inputType": "narrative",
+          "excerpt": "I suspect amoxicillin for infection and naproxen for joint pain. ",
+          "start": 63,
+          "end": 128,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:39.727Z"
+        },
+        {
+          "id": "source-9e9c21fa-4417-4a21-a6e8-b9a426f37f94",
+          "inputId": "input-98a18195-285f-4e04-aac4-59414c9eae7b",
+          "inputType": "narrative",
+          "excerpt": "The generic amoxicillin was stopped on 17 September 2026; the rash improved after stopping, and returned after amoxicillin was restarted. ",
+          "start": 128,
+          "end": 266,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:39.727Z"
+        },
+        {
+          "id": "source-ccb19cdf-1e0f-4368-93d5-7e77e836c689",
+          "inputId": "input-98a18195-285f-4e04-aac4-59414c9eae7b",
+          "inputType": "narrative",
+          "excerpt": "The over-the-counter generic naproxen was not stopped, but its dose was reduced. ",
+          "start": 266,
+          "end": 347,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:39.727Z"
+        },
+        {
+          "id": "source-e6e9bb2c-94f7-4717-87f0-be5fc98bbed8",
+          "inputId": "input-98a18195-285f-4e04-aac4-59414c9eae7b",
+          "inputType": "narrative",
+          "excerpt": "The rash did not improve after that reduction. ",
+          "start": 347,
+          "end": 394,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:39.727Z"
+        },
+        {
+          "id": "source-659f8f67-e6c3-45f6-a4f3-3fbb6f873786",
+          "inputId": "input-98a18195-285f-4e04-aac4-59414c9eae7b",
+          "inputType": "narrative",
+          "excerpt": "Naproxen was never restarted. ",
+          "start": 394,
+          "end": 424,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:39.727Z"
+        },
+        {
+          "id": "source-2fcdf220-fc0e-4bdf-98a0-fef6f9765763",
+          "inputId": "input-e10fb257-be84-40f7-a986-9047aed67839",
+          "inputType": "selection",
+          "excerpt": "Adverse event",
+          "start": 0,
+          "end": 13,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:39.737Z"
+        },
+        {
+          "id": "source-e87c9280-d575-4a71-bead-20fb9cbc2758",
+          "inputId": "input-96a10996-6110-42b0-b208-181231fd8668",
+          "inputType": "reporter-entry",
+          "excerpt": "The clinician declined to provide reporter details.",
+          "start": 0,
+          "end": 51,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:40.434Z"
+        },
+        {
+          "id": "source-47e8ead6-9ae5-4c4c-9ca3-ac17e3f5353a",
+          "inputId": "input-9dfd335c-2ca6-4866-8402-2cb096045dfd",
+          "inputType": "selection",
+          "excerpt": "Date of this report: 2026-09-21.",
+          "start": 0,
+          "end": 32,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:47:40.439Z"
+        },
+        {
+          "id": "source-b6a430af-1c66-4b6e-aa66-0a297fa75f0b",
+          "inputId": "input-ecb02d3b-4c83-4128-bdb6-5002b28424e1",
+          "inputType": "correction",
+          "excerpt": "Correction: amoxicillin was never restarted. ",
+          "start": 0,
+          "end": 45,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:48:18.664Z"
+        },
+        {
+          "id": "source-4b3e0731-043f-4017-a1a0-e51833a31b5f",
+          "inputId": "input-ecb02d3b-4c83-4128-bdb6-5002b28424e1",
+          "inputType": "correction",
+          "excerpt": "My earlier statement about restarting it was wrong.",
+          "start": 45,
+          "end": 96,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:48:18.664Z"
+        }
+      ],
+      "afterAcceptance": [
+        {
+          "id": "product-8aa4656b-da54-4729-bbf1-a3c89643a34c",
+          "facts": {
+            "name": {
+              "resolved": {
+                "kind": "known",
+                "value": "amoxicillin"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "productType": {
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "role": {
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-17"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "indication": {
+              "resolved": {
+                "kind": "known",
+                "value": "infection"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopped": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "medicationType": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "generic-biosimilar"
+                ]
+              },
+              "proposed": [],
+              "history": []
+            },
+            "improvedAfterChange": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "restarted": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [
+                {
+                  "kind": "known",
+                  "value": true
+                }
+              ]
+            },
+            "recurred": {
+              "proposed": [],
+              "history": [
+                {
+                  "kind": "known",
+                  "value": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "product-5217ea78-af17-47b0-99b1-f27cb2f20f0d",
+          "facts": {
+            "name": {
+              "resolved": {
+                "kind": "known",
+                "value": "naproxen"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "productType": {
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "role": {
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "indication": {
+              "resolved": {
+                "kind": "known",
+                "value": "joint pain"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopped": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": []
+            },
+            "medicationType": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "otc",
+                  "generic-biosimilar"
+                ]
+              },
+              "proposed": [],
+              "history": []
+            },
+            "doseReduced": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "improvedAfterChange": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": []
+            },
+            "restarted": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        }
+      ],
+      "firstQuestion": null,
+      "projectionBeforeCompletion": {
+        "suspectProducts": [
+          {
+            "productId": "product-8aa4656b-da54-4729-bbf1-a3c89643a34c",
+            "name": "amoxicillin",
+            "stopDate": "2026-09-17",
+            "indication": "infection",
+            "medicationType": [
+              "generic-biosimilar"
+            ],
+            "improvedAfterChange": true,
+            "recurred": "inapplicable"
+          },
+          {
+            "productId": "product-5217ea78-af17-47b0-99b1-f27cb2f20f0d",
+            "name": "naproxen",
+            "indication": "joint pain",
+            "medicationType": [
+              "generic-biosimilar",
+              "otc"
+            ],
+            "improvedAfterChange": false,
+            "recurred": "inapplicable"
+          }
+        ]
+      },
+      "questions": [],
+      "reviewed": [
+        {
+          "id": "product-8aa4656b-da54-4729-bbf1-a3c89643a34c",
+          "facts": {
+            "name": {
+              "resolved": {
+                "kind": "known",
+                "value": "amoxicillin"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "productType": {
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "role": {
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-17"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "indication": {
+              "resolved": {
+                "kind": "known",
+                "value": "infection"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopped": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "medicationType": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "generic-biosimilar"
+                ]
+              },
+              "proposed": [],
+              "history": []
+            },
+            "improvedAfterChange": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "restarted": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [
+                {
+                  "kind": "known",
+                  "value": true
+                }
+              ]
+            },
+            "recurred": {
+              "proposed": [],
+              "history": [
+                {
+                  "kind": "known",
+                  "value": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "product-5217ea78-af17-47b0-99b1-f27cb2f20f0d",
+          "facts": {
+            "name": {
+              "resolved": {
+                "kind": "known",
+                "value": "naproxen"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "productType": {
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "role": {
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "indication": {
+              "resolved": {
+                "kind": "known",
+                "value": "joint pain"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopped": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": []
+            },
+            "medicationType": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "otc",
+                  "generic-biosimilar"
+                ]
+              },
+              "proposed": [],
+              "history": []
+            },
+            "doseReduced": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "improvedAfterChange": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": []
+            },
+            "restarted": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        }
+      ],
+      "askedNeeds": [
+        {
+          "key": "reporter-details",
+          "targetIds": [
+            "reporter:reporter:lastName",
+            "reporter:reporter:firstName",
+            "reporter:reporter:phone",
+            "reporter:reporter:email",
+            "reporter:reporter:healthProfessional",
+            "reporter:reporter:occupation",
+            "reporter:reporter:reportedTo",
+            "reporter:reporter:doNotDiscloseIdentity"
+          ],
+          "status": "declined"
+        }
+      ],
+      "projection": {
+        "suspectProducts": [
+          {
+            "productId": "product-8aa4656b-da54-4729-bbf1-a3c89643a34c",
+            "name": "amoxicillin",
+            "stopDate": "2026-09-17",
+            "indication": "infection",
+            "medicationType": [
+              "generic-biosimilar"
+            ],
+            "improvedAfterChange": true,
+            "recurred": "inapplicable"
+          },
+          {
+            "productId": "product-5217ea78-af17-47b0-99b1-f27cb2f20f0d",
+            "name": "naproxen",
+            "indication": "joint pain",
+            "medicationType": [
+              "generic-biosimilar",
+              "otc"
+            ],
+            "improvedAfterChange": false,
+            "recurred": "inapplicable"
+          }
+        ]
+      },
+      "downloaded": true,
+      "finishedAt": "2026-09-21T22:48:21.021Z",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-medication-followups-v1",
+        "schemaRevision": "wilson-grounded-proposals-v15-medication",
+        "inputTokens": 6878,
+        "outputTokens": 156,
+        "latencyMs": 2259,
+        "estimatedCostUsd": 0.015316
+      }
+    },
+    {
+      "id": "fresh",
+      "exposedAt": "2026-09-21T22:49:12.575Z",
+      "expected": "Two distinct suspect medication entities. Generic recovery does not establish improvedAfterChange for doxycycline. Doxycycline stopping/reduction unknown, bare name gives no medication subtype. Ibuprofen doseReduced true, improvement unknown, generic+OTC explicitly grounded. Restart unknown for both and recurrence not inferred. Doxycycline unknowns not repeated. Ibuprofen stopping remains missing (reduction does not prove no stop); one group for that fact. Both D7 and D8 blank until supplied applicable answers; no invented dates.",
+      "status": 200,
+      "operationId": "e088ebab-4cf4-41a8-add6-733599af1f29",
+      "observed": [
+        {
+          "id": "product-44f4f5d5-35e0-4ef7-9ce3-7274ae448d22",
+          "facts": {
+            "name": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "doxycycline"
+                }
+              ],
+              "history": []
+            },
+            "productType": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                }
+              ],
+              "history": []
+            },
+            "role": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "suspect"
+                }
+              ],
+              "history": []
+            },
+            "indication": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "infection"
+                }
+              ],
+              "history": []
+            },
+            "stopped": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            },
+            "doseReduced": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            },
+            "restarted": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "product-90d738b3-ffc2-4778-8f34-f41e59ab4856",
+          "facts": {
+            "name": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "ibuprofen"
+                }
+              ],
+              "history": []
+            },
+            "productType": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                }
+              ],
+              "history": []
+            },
+            "role": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "suspect"
+                }
+              ],
+              "history": []
+            },
+            "indication": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "shoulder pain"
+                }
+              ],
+              "history": []
+            },
+            "medicationType": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": [
+                    "generic-biosimilar",
+                    "otc"
+                  ]
+                }
+              ],
+              "history": []
+            },
+            "doseReduced": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": true
+                }
+              ],
+              "history": []
+            },
+            "improvedAfterChange": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            },
+            "restarted": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            }
+          }
+        }
+      ],
+      "unrepresented": [],
+      "stage": "understanding",
+      "sources": [
+        {
+          "id": "source-461133ea-427c-4756-ac64-4a2654e4cd1e",
+          "inputId": "input-63231393-8efb-4c1f-9faf-159dc2ec8e5c",
+          "inputType": "narrative",
+          "excerpt": "Fictional patient MED-92-F, age 46, developed nausea while taking doxycycline for an infection and ibuprofen for shoulder pain. ",
+          "start": 0,
+          "end": 128,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:50:05.051Z"
+        },
+        {
+          "id": "source-7c779397-1e60-40a7-b770-a81a7cbe979c",
+          "inputId": "input-63231393-8efb-4c1f-9faf-159dc2ec8e5c",
+          "inputType": "narrative",
+          "excerpt": "She is feeling better this week. ",
+          "start": 156,
+          "end": 189,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:50:05.051Z"
+        },
+        {
+          "id": "source-b334c40e-c34b-4608-a613-c6ef32e61b3a",
+          "inputId": "input-63231393-8efb-4c1f-9faf-159dc2ec8e5c",
+          "inputType": "narrative",
+          "excerpt": "There were no serious outcomes, relevant tests, or other relevant medical history.",
+          "start": 462,
+          "end": 544,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:50:05.051Z"
+        },
+        {
+          "id": "source-f55b4d01-f670-4414-a652-937e34c4ab2f",
+          "inputId": "input-63231393-8efb-4c1f-9faf-159dc2ec8e5c",
+          "inputType": "narrative",
+          "excerpt": "I suspect both medications. ",
+          "start": 128,
+          "end": 156,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:50:05.051Z"
+        },
+        {
+          "id": "source-ab72f315-c360-4f66-8ecc-7aba497e6474",
+          "inputId": "input-63231393-8efb-4c1f-9faf-159dc2ec8e5c",
+          "inputType": "narrative",
+          "excerpt": "I do not know whether doxycycline was stopped or its dose reduced. ",
+          "start": 189,
+          "end": 256,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:50:05.051Z"
+        },
+        {
+          "id": "source-85adef80-baf2-45f5-ae67-f6bdac65ca0f",
+          "inputId": "input-63231393-8efb-4c1f-9faf-159dc2ec8e5c",
+          "inputType": "narrative",
+          "excerpt": "I have no information about either medication being restarted. ",
+          "start": 399,
+          "end": 462,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:50:05.051Z"
+        },
+        {
+          "id": "source-3d07cca4-cd56-4a63-bec2-b13128e0b481",
+          "inputId": "input-63231393-8efb-4c1f-9faf-159dc2ec8e5c",
+          "inputType": "narrative",
+          "excerpt": "The ibuprofen dose was halved; I cannot say whether that helped the nausea. ",
+          "start": 256,
+          "end": 332,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:50:05.051Z"
+        },
+        {
+          "id": "source-fc4e686f-e91e-4034-b6c2-0ba82eac28d0",
+          "inputId": "input-63231393-8efb-4c1f-9faf-159dc2ec8e5c",
+          "inputType": "narrative",
+          "excerpt": "The dispensed ibuprofen was labelled generic and over-the-counter. ",
+          "start": 332,
+          "end": 399,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:50:05.051Z"
+        },
+        {
+          "id": "source-53993d4d-d3f7-4f85-900c-3dd4809b4051",
+          "inputId": "input-b9b58987-7bae-49b0-a8ae-810da6f2f40a",
+          "inputType": "selection",
+          "excerpt": "Adverse event",
+          "start": 0,
+          "end": 13,
+          "actor": "clinician",
+          "recordedAt": "2026-09-21T22:50:05.060Z"
+        }
+      ],
+      "afterAcceptance": [
+        {
+          "id": "product-44f4f5d5-35e0-4ef7-9ce3-7274ae448d22",
+          "facts": {
+            "name": {
+              "resolved": {
+                "kind": "known",
+                "value": "doxycycline"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "productType": {
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "role": {
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "indication": {
+              "resolved": {
+                "kind": "known",
+                "value": "infection"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopped": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "doseReduced": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "restarted": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "product-90d738b3-ffc2-4778-8f34-f41e59ab4856",
+          "facts": {
+            "name": {
+              "resolved": {
+                "kind": "known",
+                "value": "ibuprofen"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "productType": {
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "role": {
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "indication": {
+              "resolved": {
+                "kind": "known",
+                "value": "shoulder pain"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "medicationType": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "generic-biosimilar",
+                  "otc"
+                ]
+              },
+              "proposed": [],
+              "history": []
+            },
+            "doseReduced": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "improvedAfterChange": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "restarted": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        }
+      ],
+      "firstQuestion": {
+        "kind": "serious-outcomes",
+        "targetIds": [
+          "event:event:death",
+          "event:event:lifeThreatening",
+          "event:event:hospitalized",
+          "event:event:disability",
+          "event:event:requiredIntervention",
+          "event:event:congenitalAnomaly"
+        ],
+        "question": "Which serious outcomes applied to this event?",
+        "reason": "Serious outcomes are a concise, material summary used directly in the supported report.",
+        "key": "serious-outcomes",
+        "status": "new"
+      },
+      "projectionBeforeCompletion": {
+        "suspectProducts": [
+          {
+            "productId": "product-44f4f5d5-35e0-4ef7-9ce3-7274ae448d22",
+            "name": "doxycycline",
+            "indication": "infection"
+          },
+          {
+            "productId": "product-90d738b3-ffc2-4778-8f34-f41e59ab4856",
+            "name": "ibuprofen",
+            "indication": "shoulder pain",
+            "medicationType": [
+              "generic-biosimilar",
+              "otc"
+            ]
+          }
+        ]
+      },
+      "questions": [
+        {
+          "kind": "serious-outcomes",
+          "targetIds": [
+            "event:event:death",
+            "event:event:lifeThreatening",
+            "event:event:hospitalized",
+            "event:event:disability",
+            "event:event:requiredIntervention",
+            "event:event:congenitalAnomaly"
+          ],
+          "question": "Which serious outcomes applied to this event?",
+          "reason": "Serious outcomes are a concise, material summary used directly in the supported report.",
+          "key": "serious-outcomes",
+          "status": "new"
+        },
+        {
+          "key": "medication-history",
+          "kind": "medication-history",
+          "productId": "product-90d738b3-ffc2-4778-8f34-f41e59ab4856",
+          "status": "new",
+          "targetIds": [
+            "product:product-90d738b3-ffc2-4778-8f34-f41e59ab4856:stopped"
+          ],
+          "question": "Treatment history for ibuprofen",
+          "reason": "Record whether treatment changed and what happened afterward. Answer only what you know; these observations do not establish causality."
+        },
+        {
+          "kind": "reporter",
+          "targetIds": [
+            "reporter:reporter:lastName",
+            "reporter:reporter:firstName",
+            "reporter:reporter:phone",
+            "reporter:reporter:email",
+            "reporter:reporter:healthProfessional",
+            "reporter:reporter:occupation",
+            "reporter:reporter:reportedTo",
+            "reporter:reporter:doNotDiscloseIdentity"
+          ],
+          "question": "Add the reporter details for this report",
+          "reason": "Reporter information must come directly from you and cannot be inferred from the clinical account.",
+          "key": "reporter-details",
+          "status": "new"
+        }
+      ],
+      "driverFailure": "Unexpected clarification serious-outcomes",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-medication-followups-v1",
+        "schemaRevision": "wilson-grounded-proposals-v15-medication",
+        "inputTokens": 6026,
+        "outputTokens": 6734,
+        "latencyMs": 52231,
+        "estimatedCostUsd": 0.079392
+      },
+      "continuation": "Resumed saved provider response; zero new model calls. Preserve original driver failure and score broader extraction omissions separately.",
+      "eventObservation": {
+        "problemDescription": [
+          {
+            "kind": "known",
+            "value": "nausea"
+          }
+        ],
+        "otherSerious": [
+          {
+            "kind": "known",
+            "value": false
+          }
+        ],
+        "relevantTestsAvailable": [
+          {
+            "kind": "known",
+            "value": false
+          }
+        ],
+        "relevantHistory": [
+          {
+            "kind": "explicitly-absent"
+          }
+        ]
+      },
+      "continuationFailure": "Unexpected clarification undefined",
+      "reviewed": [
+        {
+          "id": "product-44f4f5d5-35e0-4ef7-9ce3-7274ae448d22",
+          "facts": {
+            "name": {
+              "resolved": {
+                "kind": "known",
+                "value": "doxycycline"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "productType": {
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "role": {
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "indication": {
+              "resolved": {
+                "kind": "known",
+                "value": "infection"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopped": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "doseReduced": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "restarted": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "product-90d738b3-ffc2-4778-8f34-f41e59ab4856",
+          "facts": {
+            "name": {
+              "resolved": {
+                "kind": "known",
+                "value": "ibuprofen"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "productType": {
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "role": {
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "indication": {
+              "resolved": {
+                "kind": "known",
+                "value": "shoulder pain"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "stopped": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "medicationType": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "generic-biosimilar",
+                  "otc"
+                ]
+              },
+              "proposed": [],
+              "history": []
+            },
+            "doseReduced": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": []
+            },
+            "improvedAfterChange": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "restarted": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        }
+      ],
+      "askedNeeds": [
+        {
+          "key": "serious-outcomes",
+          "targetIds": [
+            "event:event:death",
+            "event:event:lifeThreatening",
+            "event:event:hospitalized",
+            "event:event:disability",
+            "event:event:requiredIntervention",
+            "event:event:congenitalAnomaly"
+          ],
+          "status": "answered"
+        },
+        {
+          "key": "medication-history",
+          "targetIds": [
+            "product:product-90d738b3-ffc2-4778-8f34-f41e59ab4856:stopped"
+          ],
+          "status": "answered"
+        },
+        {
+          "key": "reporter-details",
+          "targetIds": [
+            "reporter:reporter:lastName",
+            "reporter:reporter:firstName",
+            "reporter:reporter:phone",
+            "reporter:reporter:email",
+            "reporter:reporter:healthProfessional",
+            "reporter:reporter:occupation",
+            "reporter:reporter:reportedTo",
+            "reporter:reporter:doNotDiscloseIdentity"
+          ],
+          "status": "declined"
+        }
+      ],
+      "projection": {
+        "suspectProducts": [
+          {
+            "productId": "product-44f4f5d5-35e0-4ef7-9ce3-7274ae448d22",
+            "name": "doxycycline",
+            "indication": "infection"
+          },
+          {
+            "productId": "product-90d738b3-ffc2-4778-8f34-f41e59ab4856",
+            "name": "ibuprofen",
+            "indication": "shoulder pain",
+            "medicationType": [
+              "generic-biosimilar",
+              "otc"
+            ]
+          }
+        ]
+      },
+      "downloaded": true,
+      "finishedAt": "2026-09-21T22:52:02.282Z"
+    }
+  ],
+  "totals": {
+    "calls": 4,
+    "estimatedCostUsd": 0.207638
+  },
+  "assessment": {
+    "medicationScope": "All four exposures support the preregistered medication expectations: no name-based subtype inference or recovery-based withdrawal inference; correct two-product attribution, unknown preservation, stop/reduction distinction and correction invalidation. Four examples do not establish a reliability rate.",
+    "broaderFailure": "Fresh wording elicited only otherSerious=false from the supplied no-serious-outcomes statement, causing one unnecessary serious-outcomes group. Nausea was placed in problemDescription rather than symptoms, matching the separate #94 symptom-placement concern. Do not score this as a clean overall journey pass.",
+    "continuation": "Completed the fresh sample from the retained response with zero extra model calls: confirmed supplied absence of serious outcomes, marked only missing ibuprofen stopping unknown, declined reporter details, downloaded PDF. A temporary continuation driver initially captured the resume response; fixed the response filter and repeated only deterministic actions. Original provider exposure and initial failure retained.",
+    "independentReadback": "Actual downloaded PDFs independently read by pypdf; D5/D7/D8 expectations checked in both slots, including all-blank outcome controls for sparse/fresh unknown applicability."
+  }
+}

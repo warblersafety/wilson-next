@@ -57,6 +57,7 @@ describe("medication history, attribution and correction", () => {
     expect(current.products[0].facts.recurred.resolvedValue).toBeUndefined();
     expect(current.products[0].facts.recurred.supersededValues[0].value).toEqual(known(true));
     expect(createUnderstandingView(current).products[0].facts.recurred.history[0].value).toEqual(known(true));
+    expect(createUnderstandingView(current).products[0].medicationNotice).toContain("moved to history");
     expect(projectForm3500(current).sections.D.suspectProducts[0].recurred).toBe("inapplicable");
     current = setMedication(current, "amoxicillin", { restarted: known(true) });
     expect(nextCompletionQuestion(current)?.targetIds).toEqual(["product:amoxicillin:recurred"]);
@@ -95,6 +96,51 @@ describe("medication history, attribution and correction", () => {
     current = setMedication(current, "amoxicillin", { recurred: unknown });
     expect(current.askedNeeds).toHaveLength(1);
     expect(current.askedNeeds[0].status).toBe("answered");
+  });
+
+  it("retains bounded correction history beyond the old ten-need storage limit", () => {
+    let current = medicationCase(true);
+    for (const id of ["amoxicillin", "naproxen"]) {
+      current = ask(current);
+      current = setMedication(current, id, { stopped: known(true), stopDate: unknown, improvedAfterChange: unknown, restarted: known(true), recurred: known(false) });
+    }
+    for (let round = 0; round < 5; round++) for (const id of ["amoxicillin", "naproxen"]) {
+      current = setMedication(current, id, { restarted: known(false) });
+      current = setMedication(current, id, { restarted: known(true) });
+      current = ask(current);
+      expect(() => ask(current)).toThrow(/already recorded/);
+      current = setMedication(current, id, { recurred: known(false) });
+    }
+    expect(current.askedNeeds).toHaveLength(12);
+    expect(current.askedNeeds.every(({ status }) => status === "answered")).toBe(true);
+    expect(nextCompletionQuestion(current)?.kind).toBe("reporter");
+  });
+
+  it("leaves a partially answered existing clinical-context group answerable", () => {
+    let current = structuredClone(medicationCase());
+    for (const field of ["relevantHistory", "relevantTestsAvailable"] as const) {
+      current.event.facts[field] = { state: "empty", proposedValues: [], conflictingValues: [], supersededValues: [], sourceIds: [] };
+    }
+    current = ask(current);
+    current = applyCaseCommand(current, { type: "record-clinician-facts", commandId: "history-partial", expectedRevision: current.revision,
+      source: medicationSource("No other history", "history-partial"), facts: [{ id: "history-answer", intent: "fact", target: { entity: "event", entityId: "event", field: "relevantHistory" }, value: { kind: "explicitly-absent" } }] }).case;
+    expect(current.askedNeeds[0].targetIds).toEqual(["event:event:relevantTestsAvailable"]);
+    expect(nextCompletionQuestion(current)).toMatchObject({ kind: "clinical-context", askTests: true, askHistory: false });
+    current = applyCaseCommand(current, { type: "record-clinician-facts", commandId: "tests-remaining", expectedRevision: current.revision,
+      source: medicationSource("Tests unknown", "tests-remaining"), answersNeed: "relevant-clinical-context", facts: [{ id: "tests-answer", intent: "fact", target: { entity: "event", entityId: "event", field: "relevantTestsAvailable" }, value: unknown }] }).case;
+    expect(current.askedNeeds[0].status).toBe("answered");
+    expect(nextCompletionQuestion(current)?.kind).toBe("medication-history");
+  });
+
+  it("rejects answers attributed to a different medication without changing the case", () => {
+    const current = ask(medicationCase(true));
+    expect(() => applyCaseCommand(current, { type: "record-clinician-facts", commandId: "wrong-product", expectedRevision: current.revision,
+      source: medicationSource("Unknown", "wrong-product"), answersNeed: "medication-history", facts: [
+        { id: "stopped-a", intent: "fact", target: { entity: "product", entityId: "amoxicillin", field: "stopped" }, value: unknown },
+        { id: "reduced-a", intent: "fact", target: { entity: "product", entityId: "amoxicillin", field: "doseReduced" }, value: unknown },
+        { id: "stopped-b", intent: "fact", target: { entity: "product", entityId: "naproxen", field: "stopped" }, value: unknown },
+      ] })).toThrow(/outside semantic need/);
+    expect(current.products.every(({ facts }) => facts.stopped.state === "empty")).toBe(true);
   });
 
   it("does not proactively question other products or infer subtype from a drug name", () => {
