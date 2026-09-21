@@ -19,6 +19,7 @@ test("medication history: conversational grouped answer and two-product correcti
   await opening(page, medicationSparseOpening);
   await expect(page.getByRole("heading", { name: "Treatment history for amoxicillin" })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("medication-question.png"), fullPage: true });
+  const sparseDraft = await page.evaluate(() => sessionStorage.getItem("wilson-journey-state-v2")!);
   await update(page, medicationSparseUpdate);
   await reporter(page);
   let fields = await pdf("medication-sparse.pdf");
@@ -58,6 +59,19 @@ test("medication history: conversational grouped answer and two-product correcti
   expect(checked(fields, `${first}ReappearYes[0]`)).toBe(false);
   expect(checked(fields, `${second}ReappearNA[0]`)).toBe(true);
   expect(checked(fields, `${second}AbatedNo[0]`)).toBe(true);
+
+  // Remaining-unknown preserves a clinician's already selected answer and
+  // answers newly revealed conditional fields in this one task (no model call).
+  await page.evaluate((draft) => sessionStorage.setItem("wilson-journey-state-v2", draft), sparseDraft);
+  await page.reload();
+  await page.getByLabel("Was this medication stopped?", { exact: true }).selectOption("true");
+  await page.getByRole("button", { name: "These remaining details are unknown", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
+  const answered = await state(page);
+  expect(answered.products[0].facts.stopped.resolvedValue.value).toEqual({ kind: "known", value: true });
+  expect(answered.products[0].facts.stopDate.resolvedValue.value).toEqual({ kind: "unknown" });
+  expect(answered.products[0].facts.improvedAfterChange.resolvedValue.value).toEqual({ kind: "unknown" });
+  expect(answered.products[0].facts.restarted.resolvedValue.value).toEqual({ kind: "unknown" });
 });
 
 async function opening(page: Page, text: string) {
