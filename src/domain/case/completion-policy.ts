@@ -242,7 +242,6 @@ export function remainingNeedTargets(caseState: SemanticCase, need: AskedNeed): 
     if (target.entity === "product") {
       const product = caseState.products.find(({ id }) => id === target.entityId);
       if (!product || product.state !== "resolved") return false;
-      if (need.key === "medication-history" && (!isMedicationTarget(product) || !medicationFieldApplies(product.facts, target.field))) return false;
       if (need.key === "suspect-product-indications" && (knownString(product.facts.role) !== "suspect" || knownString(product.facts.productType) === "device")) return false;
       if (need.key === "device-details") {
         if (knownString(product.facts.productType) !== "device" || knownString(product.facts.role) !== "suspect") return false;
