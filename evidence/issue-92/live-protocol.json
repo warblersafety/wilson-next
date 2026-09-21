@@ -1,0 +1,35 @@
+{
+  "recordedAt": "2026-09-21T22:41:30.577754+00:00",
+  "syntheticOnly": true,
+  "maxCalls": 4,
+  "maxCostUsd": 5,
+  "issueCapUsd": 20,
+  "reservationPerCallUsd": 1.5,
+  "retries": 0,
+  "policy": "Before each exposed call require accumulated actual/estimated spend plus USD1.50 reservation <= USD5. Four initial calls only; no automatic retries. Preserve failed samples. Additional targeted remediation needs a new pre-execution record within the issue cap. Existence evidence only, not a reliability estimate. Fresh case authored after initial implementation, before exposure. Capture provider metrics, grounded/reviewed facts, question counts and independent PDF fields; no real data.",
+  "promptRevision": "wilson-medication-followups-v1",
+  "schemaRevision": "wilson-grounded-proposals-v15-medication",
+  "cases": [
+    {
+      "id": "sparse",
+      "text": "Fictional patient MED-40 is 40 years old and developed a rash while taking amoxicillin for an infection. I suspect amoxicillin. No serious outcomes applied, and there are no relevant tests or additional medical history.",
+      "expected": "Amoxicillin suspect medication; rash. No stop date, stopping/reduction, improvement, restart, recurrence or medication label subtype inferred. One missing-history group before reporter. Grounded proposals remain unaccepted until clinician review."
+    },
+    {
+      "id": "two",
+      "text": "Fictional patient MED-55 is 55 years old and developed a rash. I suspect amoxicillin for infection and naproxen for joint pain. The generic amoxicillin was stopped on 17 September 2026; the rash improved after stopping, and returned after amoxicillin was restarted. The over-the-counter generic naproxen was not stopped, but its dose was reduced. The rash did not improve after that reduction. Naproxen was never restarted. No serious outcomes applied, and there are no relevant tests or additional medical history.",
+      "expected": "Separate amoxicillin and naproxen identities. Amoxicillin generic, stopped 2026-09-17, improved after stopping, restarted with recurrence. Naproxen generic+OTC, not stopped, dose reduced without improvement, never restarted. D7 Yes/No respectively, D8 Yes/Does not apply. No missing medication questions; reporter remains."
+    },
+    {
+      "id": "correction",
+      "text": "Correction: amoxicillin was never restarted. My earlier statement about restarting it was wrong.",
+      "parent": "two",
+      "expected": "Correction targets existing amoxicillin restart only; no duplicate products or edits to naproxen. After acceptance restart false supersedes prior known recurrence, retains history/sources, D8 Does not apply. No stale recurrence or repeated medication question."
+    },
+    {
+      "id": "fresh",
+      "text": "Fictional patient MED-92-F, age 46, developed nausea while taking doxycycline for an infection and ibuprofen for shoulder pain. I suspect both medications. She is feeling better this week. I do not know whether doxycycline was stopped or its dose reduced. The ibuprofen dose was halved; I cannot say whether that helped the nausea. The dispensed ibuprofen was labelled generic and over-the-counter. I have no information about either medication being restarted. There were no serious outcomes, relevant tests, or other relevant medical history.",
+      "expected": "Two distinct suspect medication entities. Generic recovery does not establish improvedAfterChange for doxycycline. Doxycycline stopping/reduction unknown, bare name gives no medication subtype. Ibuprofen doseReduced true, improvement unknown, generic+OTC explicitly grounded. Restart unknown for both and recurrence not inferred. Doxycycline unknowns not repeated. Ibuprofen stopping remains missing (reduction does not prove no stop); one group for that fact. Both D7 and D8 blank until supplied applicable answers; no invented dates."
+    }
+  ]
+}

@@ -72,6 +72,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productOrCaseCard(page, "Event").getByText("Proposed", { exact: true }).first()).toBeVisible();
   await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await page.getByRole("button", { name: "Confirm outcomes" }).click();
+  await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   await expect(page.getByText("Reviewed", { exact: true })).toHaveCount(0);
   await expect(page.getByRole("status").filter({ hasText: "Required before adding" }))
@@ -137,10 +138,11 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(addIndication).toBeEnabled();
   await addIndication.click({ trial: true });
   await addIndication.click();
+  await answerUnknownMedicationGroups(page);
   questionTrace.push({
     journey: "issue78-identity-recovery",
     question: "newly applicable suspect indication",
-    reason: "direct repair supplied the quarantined name and product type, making only the medication indication newly applicable",
+    reason: "direct repair supplied the quarantined name and product type, making medication indication and history newly applicable",
     answer: "sinusitis",
   });
   await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
@@ -165,6 +167,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   expect(quarantinedCase.event.facts.productAvailability.state).toBe("empty");
   expect(quarantinedCase.products).toHaveLength(1);
   await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   await expect(quarantine).toBeVisible();
   await fillReporter(page, { firstName: "Taylor", lastName: "Quinn", email: "taylor.quinn@example.test" });
@@ -184,6 +187,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productOrCaseCard(page, "Event")).toContainText("blistering burn on left arm");
   await expect(productOrCaseCard(page, "Event")).toContainText("Adverse event and product problem");
   await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer3-combined", question: "reporter block", reason: "accepted combined event, problem, outcome, context, and device facts suppress redundant questions", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Alex", lastName: "Morgan", email: "alex.morgan@example.test" });
@@ -217,6 +221,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await page.getByLabel("Device reprocessor").fill("ReNew Medical LLC");
   questionTrace.push({ journey: "layer3-conditional", question: "applicable device details", reason: "accepted implanted and reprocessed-single-use states make implant timing and reprocessor identity material", answer: "implant date known; explant inapplicable; reprocessor known" });
   await page.getByRole("button", { name: "Add device details" }).click();
+  await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   await fillReporter(page, { firstName: "Sam", lastName: "Ortiz", phone: "202-555-0194" });
   questionTrace.push({ journey: "layer3-conditional", question: "reporter block", reason: "reporter identity remains direct entry", answer: "structured reporter details" });
@@ -278,6 +283,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await operatorRow.getByRole("button", { name: "Keep draft" }).click();
   await productCard(page, "Acme FlowGuard").getByRole("button", { name: "Accept Acme FlowGuard with 1 change" }).click();
   await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer2-device", question: "reporter block", reason: "accepted outcomes and clinical context suppress medication-only and redundant clinical questions", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Dana", lastName: "Mills", email: "dana.mills@example.test" });
@@ -319,6 +325,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productOrCaseCard(page, "Patient")).not.toContainText("TEST-");
   await expect(productOrCaseCard(page, "Event")).toContainText("Product problem");
   await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer2-product-quality", question: "reporter block", reason: "a product-problem-only report does not trigger indication, serious-outcome, or clinical-context interrogation", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Elliot", lastName: "Ross", phone: "202-555-0188" });
@@ -352,6 +359,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   questionTrace.push({ journey: "layer1-death", question: "death date", reason: "death was accepted and its conditional date remained empty", answer: "7-Sep-2026" });
   await page.locator("#death-date").fill("2026-09-07");
   await page.getByRole("button", { name: "Add date" }).click();
+  await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer1-death", question: "reporter block", reason: "reporter identity must be entered directly", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Morgan", lastName: "Reed", email: "morgan.reed@example.test" });
@@ -360,9 +368,9 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   const deathCase = await semanticCase(page);
   expect(deathCase.event.facts.death.resolvedValue?.value).toEqual({ kind: "known", value: true });
   expect(deathCase.event.facts.deathDate.resolvedValue?.value).toEqual({ kind: "known", value: "2026-09-07" });
-  expect(deathCase.askedNeeds.map(({ key }) => key)).toEqual(["serious-outcomes", "death-date", "reporter-details"]);
+  expect(deathCase.askedNeeds.map(({ key }) => key)).toEqual(["serious-outcomes", "death-date", "medication-history", "reporter-details"]);
   expect(deathCase.relevantTests).toHaveLength(1);
-  checkpoints.push({ journey: "layer1-death", state: "output", assertion: "Accepted death stayed true; only unresolved outcomes, the conditional death date, and reporter details were asked." });
+  checkpoints.push({ journey: "layer1-death", state: "output", assertion: "Accepted death stayed true; unresolved outcomes, the conditional death date, medication history, and reporter details were asked." });
   await downloadAndCheck(page, "layer1-death", ["TEST-63", "trimethoprim-sulfamethoxazole", "Test identity not recorded: Skin biopsy: full-thickness epidermal necrosis", "07-SEP-2026", "Morgan", "Reed"], [], {
     "topmostSubform[0].Page1[0].SecA_Patient[0].Death[0]": "/1",
     "topmostSubform[0].Page1[0].SecA_Patient[0].DeathDate[0]": "07-SEP-2026",
@@ -374,6 +382,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productOrCaseCard(page, "Relevant test 2")).toContainText("AST: 118 U/L");
   await expect(productOrCaseCard(page, "Relevant test 3")).toContainText("Total bilirubin: 2.1 mg/dL");
   await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer1-tests", question: "reporter block", reason: "accepted indications, outcomes, three tests, and history suppress earlier groups", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Riley", lastName: "Patel", phone: "202-555-0162" });
@@ -400,7 +409,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   expect(testsAfterCorrection.relevantTests[0].facts.testResult.supersededValues.map(({ value }) => value)).toEqual([{ kind: "known", value: "ALT: 132 U/L" }]);
   expect(testsAfterCorrection.relevantTests[1].facts.testResult.resolvedValue?.value).toEqual({ kind: "known", value: "AST: 118 U/L" });
   expect(testsAfterCorrection.relevantTests[2].facts.testResult.resolvedValue?.value).toEqual({ kind: "known", value: "Total bilirubin: 2.1 mg/dL" });
-  expect(testsAfterCorrection.askedNeeds.map(({ key }) => key)).toEqual(["reporter-details"]);
+  expect(testsAfterCorrection.askedNeeds.map(({ key }) => key)).toEqual(["medication-history", "reporter-details"]);
   checkpoints.push({ journey: "layer1-tests", state: "corrected-output", assertion: "Three stable test entities remained distinct; the accepted ALT correction superseded only its prior value and did not reopen completion." });
   await downloadAndCheck(page, "layer1-tests", ["TEST-51", "atorvastatin", "Test identity not recorded: ALT: 123 U/L", "Test identity not recorded: AST: 118 U/L", "Test identity not recorded: Total bilirubin: 2.1 mg/dL", "Riley", "Patel"], ["Test identity not recorded: ALT: 132 U/L"]);
   await productCard(page, "Relevant test 3").getByRole("button", { name: "Withdraw Relevant test 3" }).click();
@@ -417,6 +426,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productCard(page, "warfarin")).toContainText("Suspect product");
   await expect(productCard(page, "acetaminophen")).toContainText("Other product");
   await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer1-role", question: "reporter block", reason: "accepted opening knowledge suppresses all earlier completion groups", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Taylor", lastName: "Ng", email: "taylor.ng@example.test" });
@@ -435,6 +445,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await acetaminophenAnswer.getByLabel("Known", { exact: true }).check();
   await page.getByLabel("acetaminophen indication").fill("headache");
   await page.getByRole("button", { name: "Add these answers" }).click();
+  await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
   const roleAfterCorrection = await semanticCase(page);
   expect(roleAfterCorrection.products.map(({ id }) => id)).toEqual(roleBeforeCorrection.products.map(({ id }) => id));
@@ -443,7 +454,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   ]);
   expect(roleAfterCorrection.products[1].facts.role.supersededValues.map(({ value }) => value)).toEqual([{ kind: "known", value: "concomitant" }]);
   expect(roleAfterCorrection.products[1].facts.indication.resolvedValue?.value).toEqual({ kind: "known", value: "headache" });
-  expect(roleAfterCorrection.askedNeeds.map(({ key }) => key)).toEqual(["reporter-details", "suspect-product-indications"]);
+  expect(roleAfterCorrection.askedNeeds.map(({ key }) => key)).toEqual(["medication-history", "reporter-details", "suspect-product-indications", "medication-history"]);
   checkpoints.push({ journey: "layer1-role", state: "recomputed-output", assertion: "The stable acetaminophen entity moved from concomitant to suspect, reopened only its indication, and projected with warfarin in Section D." });
   await retainScreenshot(page, "layer1-role-output.png");
   await downloadAndCheck(page, "layer1-role", ["TEST-47", "warfarin", "atrial fibrillation", "acetaminophen", "headache", "every six hours", "Taylor", "Ng"], [], {
@@ -477,6 +488,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productOrCaseCard(page, "Relevant test 1").getByRole("button", { name: "Withdraw Relevant test 1" })).toHaveCount(0);
   questionTrace.push({ journey: "adaptive-rich", question: "serious outcomes", reason: "confirm only outcomes not already accepted", answer: "no additional outcomes" });
   await page.getByRole("button", { name: "Confirm outcomes" }).click();
+  await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   await fillReporter(page, { firstName: "Avery", lastName: "Chen", email: "avery.chen@example.test", fullAddress: true });
   await page.getByLabel("Manufacturer or compounder").check();
@@ -800,9 +812,14 @@ async function semanticCase(page: Page): Promise<BrowserJourneyState["case"]> {
 }
 
 async function completeQuestions(page: Page) {
-  for (let turn = 0; turn < 6; turn += 1) {
+  // Up to five existing groups plus one medication group per supported suspect.
+  for (let turn = 0; turn < 8; turn += 1) {
     await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
     if (await page.getByRole("heading", { name: "The supported form is ready" }).isVisible().catch(() => false)) return;
+    if (await page.getByRole("button", { name: "These remaining details are unknown", exact: true }).isVisible().catch(() => false)) {
+      await page.getByRole("button", { name: "These remaining details are unknown", exact: true }).click();
+      continue;
+    }
     if (await page.getByRole("button", { name: "Confirm outcomes" }).isVisible().catch(() => false)) {
       await page.getByRole("button", { name: "Confirm outcomes" }).click();
       continue;
@@ -830,6 +847,7 @@ async function completeQuestions(page: Page) {
 }
 
 async function fillReporter(page: Page, input: { firstName: string; lastName: string; phone?: string; email?: string; fullAddress?: boolean }) {
+  await answerUnknownMedicationGroups(page);
   await page.getByLabel("Reporter first name").fill(input.firstName);
   await page.getByLabel("Reporter last name").fill(input.lastName);
   if (input.phone) await page.getByLabel("Reporter phone").fill(input.phone);
@@ -891,4 +909,14 @@ function shouldRetain(journey: string): boolean {
   if (retainIssue66Only) return ["adaptive-rich", "layer2-device", "layer1-tests-withdrawal"].includes(journey);
   if (retainIssue78Only) return journey === "issue78-identity-recovery";
   return true;
+}
+
+async function answerUnknownMedicationGroups(page: Page) {
+  await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
+  for (let count = 0; count < 3; count += 1) {
+    const button = page.getByRole("button", { name: "These remaining details are unknown", exact: true });
+    if (!await button.isVisible()) break;
+    await button.click();
+    await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
+  }
 }

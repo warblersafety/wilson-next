@@ -1,0 +1,660 @@
+[
+  {
+    "id": "sparse",
+    "products": [
+      {
+        "id": "product-fb7936b5-2c3d-4632-b87b-0fab589ce613",
+        "facts": {
+          "name": {
+            "resolved": {
+              "kind": "known",
+              "value": "amoxicillin"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "productType": {
+            "resolved": {
+              "kind": "known",
+              "value": "drug-or-biologic"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "role": {
+            "resolved": {
+              "kind": "known",
+              "value": "suspect"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "indication": {
+            "resolved": {
+              "kind": "known",
+              "value": "infection"
+            },
+            "proposed": [],
+            "history": []
+          }
+        }
+      }
+    ],
+    "questions": [
+      "medication-history",
+      "reporter-details"
+    ],
+    "pdfFields": [
+      {
+        "Name": "amoxicillin",
+        "TherapyStopDate": null,
+        "Brand": "/Off",
+        "Generic": "/Off",
+        "OTC": "/Off",
+        "Compounded": "/Off",
+        "AbatedYes": "/Off",
+        "AbatedNo": "/Off",
+        "AbatedNA": "/Off",
+        "ReappearYes": "/Off",
+        "ReappearNo": "/Off",
+        "ReappearNA": "/Off"
+      },
+      {
+        "Name": null,
+        "TherapyStopDate": null,
+        "Brand": null,
+        "Generic": null,
+        "OTC": null,
+        "Compounded": null,
+        "AbatedYes": null,
+        "AbatedNo": null,
+        "AbatedNA": null,
+        "ReappearYes": null,
+        "ReappearNo": null,
+        "ReappearNA": null
+      }
+    ]
+  },
+  {
+    "id": "two",
+    "products": [
+      {
+        "id": "product-8aa4656b-da54-4729-bbf1-a3c89643a34c",
+        "facts": {
+          "name": {
+            "resolved": {
+              "kind": "known",
+              "value": "amoxicillin"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "productType": {
+            "resolved": {
+              "kind": "known",
+              "value": "drug-or-biologic"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "role": {
+            "resolved": {
+              "kind": "known",
+              "value": "suspect"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "stopDate": {
+            "resolved": {
+              "kind": "known",
+              "value": "2026-09-17"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "indication": {
+            "resolved": {
+              "kind": "known",
+              "value": "infection"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "stopped": {
+            "resolved": {
+              "kind": "known",
+              "value": true
+            },
+            "proposed": [],
+            "history": []
+          },
+          "medicationType": {
+            "resolved": {
+              "kind": "known",
+              "value": [
+                "generic-biosimilar"
+              ]
+            },
+            "proposed": [],
+            "history": []
+          },
+          "improvedAfterChange": {
+            "resolved": {
+              "kind": "known",
+              "value": true
+            },
+            "proposed": [],
+            "history": []
+          },
+          "restarted": {
+            "resolved": {
+              "kind": "known",
+              "value": true
+            },
+            "proposed": [],
+            "history": []
+          },
+          "recurred": {
+            "resolved": {
+              "kind": "known",
+              "value": true
+            },
+            "proposed": [],
+            "history": []
+          }
+        }
+      },
+      {
+        "id": "product-5217ea78-af17-47b0-99b1-f27cb2f20f0d",
+        "facts": {
+          "name": {
+            "resolved": {
+              "kind": "known",
+              "value": "naproxen"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "productType": {
+            "resolved": {
+              "kind": "known",
+              "value": "drug-or-biologic"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "role": {
+            "resolved": {
+              "kind": "known",
+              "value": "suspect"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "indication": {
+            "resolved": {
+              "kind": "known",
+              "value": "joint pain"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "stopped": {
+            "resolved": {
+              "kind": "known",
+              "value": false
+            },
+            "proposed": [],
+            "history": []
+          },
+          "medicationType": {
+            "resolved": {
+              "kind": "known",
+              "value": [
+                "otc",
+                "generic-biosimilar"
+              ]
+            },
+            "proposed": [],
+            "history": []
+          },
+          "doseReduced": {
+            "resolved": {
+              "kind": "known",
+              "value": true
+            },
+            "proposed": [],
+            "history": []
+          },
+          "improvedAfterChange": {
+            "resolved": {
+              "kind": "known",
+              "value": false
+            },
+            "proposed": [],
+            "history": []
+          },
+          "restarted": {
+            "resolved": {
+              "kind": "known",
+              "value": false
+            },
+            "proposed": [],
+            "history": []
+          }
+        }
+      }
+    ],
+    "questions": [
+      "reporter-details"
+    ],
+    "pdfFields": [
+      {
+        "Name": "amoxicillin",
+        "TherapyStopDate": "17-SEP-2026",
+        "Brand": "/Off",
+        "Generic": "/1",
+        "OTC": "/Off",
+        "Compounded": "/Off",
+        "AbatedYes": "/1",
+        "AbatedNo": "/Off",
+        "AbatedNA": "/Off",
+        "ReappearYes": "/1",
+        "ReappearNo": "/Off",
+        "ReappearNA": "/Off"
+      },
+      {
+        "Name": "naproxen",
+        "TherapyStopDate": null,
+        "Brand": "/Off",
+        "Generic": "/1",
+        "OTC": "/1",
+        "Compounded": "/Off",
+        "AbatedYes": "/Off",
+        "AbatedNo": "/1",
+        "AbatedNA": "/Off",
+        "ReappearYes": "/Off",
+        "ReappearNo": "/Off",
+        "ReappearNA": "/1"
+      }
+    ]
+  },
+  {
+    "id": "correction",
+    "products": [
+      {
+        "id": "product-8aa4656b-da54-4729-bbf1-a3c89643a34c",
+        "facts": {
+          "name": {
+            "resolved": {
+              "kind": "known",
+              "value": "amoxicillin"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "productType": {
+            "resolved": {
+              "kind": "known",
+              "value": "drug-or-biologic"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "role": {
+            "resolved": {
+              "kind": "known",
+              "value": "suspect"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "stopDate": {
+            "resolved": {
+              "kind": "known",
+              "value": "2026-09-17"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "indication": {
+            "resolved": {
+              "kind": "known",
+              "value": "infection"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "stopped": {
+            "resolved": {
+              "kind": "known",
+              "value": true
+            },
+            "proposed": [],
+            "history": []
+          },
+          "medicationType": {
+            "resolved": {
+              "kind": "known",
+              "value": [
+                "generic-biosimilar"
+              ]
+            },
+            "proposed": [],
+            "history": []
+          },
+          "improvedAfterChange": {
+            "resolved": {
+              "kind": "known",
+              "value": true
+            },
+            "proposed": [],
+            "history": []
+          },
+          "restarted": {
+            "resolved": {
+              "kind": "known",
+              "value": false
+            },
+            "proposed": [],
+            "history": [
+              {
+                "kind": "known",
+                "value": true
+              }
+            ]
+          },
+          "recurred": {
+            "proposed": [],
+            "history": [
+              {
+                "kind": "known",
+                "value": true
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "product-5217ea78-af17-47b0-99b1-f27cb2f20f0d",
+        "facts": {
+          "name": {
+            "resolved": {
+              "kind": "known",
+              "value": "naproxen"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "productType": {
+            "resolved": {
+              "kind": "known",
+              "value": "drug-or-biologic"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "role": {
+            "resolved": {
+              "kind": "known",
+              "value": "suspect"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "indication": {
+            "resolved": {
+              "kind": "known",
+              "value": "joint pain"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "stopped": {
+            "resolved": {
+              "kind": "known",
+              "value": false
+            },
+            "proposed": [],
+            "history": []
+          },
+          "medicationType": {
+            "resolved": {
+              "kind": "known",
+              "value": [
+                "otc",
+                "generic-biosimilar"
+              ]
+            },
+            "proposed": [],
+            "history": []
+          },
+          "doseReduced": {
+            "resolved": {
+              "kind": "known",
+              "value": true
+            },
+            "proposed": [],
+            "history": []
+          },
+          "improvedAfterChange": {
+            "resolved": {
+              "kind": "known",
+              "value": false
+            },
+            "proposed": [],
+            "history": []
+          },
+          "restarted": {
+            "resolved": {
+              "kind": "known",
+              "value": false
+            },
+            "proposed": [],
+            "history": []
+          }
+        }
+      }
+    ],
+    "questions": [],
+    "pdfFields": [
+      {
+        "Name": "amoxicillin",
+        "TherapyStopDate": "17-SEP-2026",
+        "Brand": "/Off",
+        "Generic": "/1",
+        "OTC": "/Off",
+        "Compounded": "/Off",
+        "AbatedYes": "/1",
+        "AbatedNo": "/Off",
+        "AbatedNA": "/Off",
+        "ReappearYes": "/Off",
+        "ReappearNo": "/Off",
+        "ReappearNA": "/1"
+      },
+      {
+        "Name": "naproxen",
+        "TherapyStopDate": null,
+        "Brand": "/Off",
+        "Generic": "/1",
+        "OTC": "/1",
+        "Compounded": "/Off",
+        "AbatedYes": "/Off",
+        "AbatedNo": "/1",
+        "AbatedNA": "/Off",
+        "ReappearYes": "/Off",
+        "ReappearNo": "/Off",
+        "ReappearNA": "/1"
+      }
+    ]
+  },
+  {
+    "id": "fresh",
+    "products": [
+      {
+        "id": "product-44f4f5d5-35e0-4ef7-9ce3-7274ae448d22",
+        "facts": {
+          "name": {
+            "resolved": {
+              "kind": "known",
+              "value": "doxycycline"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "productType": {
+            "resolved": {
+              "kind": "known",
+              "value": "drug-or-biologic"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "role": {
+            "resolved": {
+              "kind": "known",
+              "value": "suspect"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "indication": {
+            "resolved": {
+              "kind": "known",
+              "value": "infection"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "stopped": {
+            "resolved": {
+              "kind": "unknown"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "doseReduced": {
+            "resolved": {
+              "kind": "unknown"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "restarted": {
+            "resolved": {
+              "kind": "unknown"
+            },
+            "proposed": [],
+            "history": []
+          }
+        }
+      },
+      {
+        "id": "product-90d738b3-ffc2-4778-8f34-f41e59ab4856",
+        "facts": {
+          "name": {
+            "resolved": {
+              "kind": "known",
+              "value": "ibuprofen"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "productType": {
+            "resolved": {
+              "kind": "known",
+              "value": "drug-or-biologic"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "role": {
+            "resolved": {
+              "kind": "known",
+              "value": "suspect"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "indication": {
+            "resolved": {
+              "kind": "known",
+              "value": "shoulder pain"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "medicationType": {
+            "resolved": {
+              "kind": "known",
+              "value": [
+                "generic-biosimilar",
+                "otc"
+              ]
+            },
+            "proposed": [],
+            "history": []
+          },
+          "doseReduced": {
+            "resolved": {
+              "kind": "known",
+              "value": true
+            },
+            "proposed": [],
+            "history": []
+          },
+          "improvedAfterChange": {
+            "resolved": {
+              "kind": "unknown"
+            },
+            "proposed": [],
+            "history": []
+          },
+          "restarted": {
+            "resolved": {
+              "kind": "unknown"
+            },
+            "proposed": [],
+            "history": []
+          }
+        }
+      }
+    ],
+    "questions": [
+      "serious-outcomes",
+      "medication-history",
+      "reporter-details"
+    ],
+    "pdfFields": [
+      {
+        "Name": "doxycycline",
+        "TherapyStopDate": null,
+        "Brand": "/Off",
+        "Generic": "/Off",
+        "OTC": "/Off",
+        "Compounded": "/Off",
+        "AbatedYes": "/Off",
+        "AbatedNo": "/Off",
+        "AbatedNA": "/Off",
+        "ReappearYes": "/Off",
+        "ReappearNo": "/Off",
+        "ReappearNA": "/Off"
+      },
+      {
+        "Name": "ibuprofen",
+        "TherapyStopDate": null,
+        "Brand": "/Off",
+        "Generic": "/1",
+        "OTC": "/1",
+        "Compounded": "/Off",
+        "AbatedYes": "/Off",
+        "AbatedNo": "/Off",
+        "AbatedNA": "/Off",
+        "ReappearYes": "/Off",
+        "ReappearNo": "/Off",
+        "ReappearNA": "/Off"
+      }
+    ]
+  }
+]

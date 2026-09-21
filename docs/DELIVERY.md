@@ -185,6 +185,29 @@ step. If Claude is unavailable, record the limitation and stop rather than
 silently substituting another reviewer. Claude cannot edit, post to GitHub, or
 merge.
 
+### Standing host approval on Steve’s workstation
+
+Steve reconfirmed routine external-review authorization on 2026-09-21 and
+explicitly requested the persistent Codex rule. The installed user-level
+`~/.codex/rules/wilson-review.rules` allows only the fixed
+`~/.local/libexec/wilson-review` command's `review`, `recheck` and `check`
+operations. Run `~/.local/libexec/wilson-review review --issue NUMBER` for a
+standard review; the command prints a run ID for a later targeted
+`recheck --run RUN_ID`. `check` verifies local repository/subscription preflight
+without a model call. Invoke the absolute executable directly so the rule can
+match, rather than wrapping it in a shell or Python invocation.
+
+The runner accepts the fixed Wilson repository, committed tracked files,
+read-only issue context and subscription Claude Sonnet high. It excludes
+credential/config paths and symlinks, removes inherited write credentials,
+and scopes the reviewer's only tool (`Read`) to the copied payload. It provides
+no arbitrary prompt, provider, model or repository override. Expanded review
+continues to require its existing separate authorization. This host-local rule
+supplements the standing process authority; it does not change general sandbox
+or approval settings. Codex loads user rules at startup, so restart/reload is
+needed for new rules in an already-running app. Keep the runner's local
+configuration outside the application repository.
+
 ### Standard review
 
 Use the current Claude Sonnet model at `high` effort after implementation and

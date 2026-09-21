@@ -1,4 +1,6 @@
-import type { Fact, ProductEntity, SemanticCase, SemanticNeedKey } from "./types";
+import { getFact, targetFromKey } from "./facts";
+import { isSettled, medicationAnswerFields, medicationFieldApplies, missingMedicationFields } from "./medication";
+import type { AskedNeed, Fact, ProductEntity, SemanticCase, SemanticNeedKey } from "./types";
 import { productDisplayLabel } from "./product-label";
 
 export type CompletionQuestion =
@@ -6,6 +8,7 @@ export type CompletionQuestion =
   | BaseQuestion<"serious-outcomes"> & { kind: "serious-outcomes" }
   | BaseQuestion<"death-date"> & { kind: "death-date" }
   | BaseQuestion<"relevant-clinical-context"> & { kind: "clinical-context"; askTests: boolean; askHistory: boolean }
+  | BaseQuestion<"medication-history"> & { kind: "medication-history"; productId: string }
   | BaseQuestion<"device-details"> & {
       kind: "device-details";
       deviceId: string;
@@ -100,6 +103,9 @@ export function nextCompletionQuestion(caseState: SemanticCase): CompletionQuest
     };
     });
     if (context) return context;
+
+    const medication = medicationQuestion(caseState);
+    if (medication) return medication;
   }
 
   const deviceDetails = ordinaryQuestion(caseState, "device-details", () => {
@@ -139,15 +145,8 @@ export function nextCompletionQuestion(caseState: SemanticCase): CompletionQuest
 }
 
 function indicationQuestion(caseState: SemanticCase): CompletionQuestion | null {
-  const indicationNeeds = caseState.askedNeeds.filter(({ key }) => key === "suspect-product-indications");
-  const existing = [...indicationNeeds].reverse().find(({ status }) => status === "open");
-  const coveredTargets = new Set(
-    indicationNeeds.filter(({ status }) => status !== "open").flatMap(({ targetIds }) => targetIds),
-  );
-  const products = existing
-    ? existing.targetIds.map((target) => target.split(":")[1]).map((id) => caseState.products.find((product) => product.id === id)).filter(isProduct)
-    : caseState.products.filter((product) => isResolvedSuspectWithEmptyIndication(product)
-      && !coveredTargets.has(`product:${product.id}:indication`));
+  const existing = [...caseState.askedNeeds].reverse().find(({ key, status }) => key === "suspect-product-indications" && status === "open");
+  const products = caseState.products.filter(isResolvedSuspectWithEmptyIndication);
   if (products.length === 0) return null;
   const names = products.map((product) => displayLabel(caseState, product));
   return {
@@ -168,11 +167,11 @@ function ordinaryQuestion<K extends Exclude<SemanticNeedKey, "suspect-product-in
   key: K,
   create: () => Omit<Extract<CompletionQuestion, { key: K }>, "key" | "status"> | null,
 ): CompletionQuestion | null {
-  const existing = caseState.askedNeeds.find((need) => need.key === key);
+  const existing = [...caseState.askedNeeds].reverse().find((need) => need.key === key);
   if (existing && existing.status !== "open") return null;
   const value = create();
   if (!value) return null;
-  return { ...value, key, status: existing ? "open" : "new" } as CompletionQuestion;
+  return { ...value, key, status: existing?.status === "open" ? "open" : "new" } as CompletionQuestion;
 }
 
 function isResolvedSuspectWithEmptyIndication(product: ProductEntity): boolean {
@@ -204,3 +203,55 @@ function isProduct(value: ProductEntity | undefined): value is ProductEntity {
 }
 
 export { reporterCompletionFields, seriousOutcomeFields };
+
+function medicationQuestion(caseState: SemanticCase): CompletionQuestion | null {
+  for (const product of caseState.products) {
+    if (!isMedicationTarget(product)) continue;
+    const fields = missingMedicationFields(product.facts);
+    if (fields.length === 0) continue;
+    const existing = caseState.askedNeeds.find((need) => need.key === "medication-history" && need.status === "open"
+      && need.targetIds.some((target) => target.startsWith(`product:${product.id}:`)));
+    return {
+      key: "medication-history", kind: "medication-history", productId: product.id,
+      status: existing ? "open" : "new", targetIds: fields.map((field) => `product:${product.id}:${field}`),
+      question: `Treatment history for ${displayLabel(caseState, product)}`,
+      reason: "Record whether treatment changed and what happened afterward. Answer only what you know; these observations do not establish causality.",
+    };
+  }
+  return null;
+}
+
+function isMedicationTarget(product: ProductEntity): boolean {
+  return product.state === "resolved" && knownString(product.facts.productType) === "drug-or-biologic"
+    && knownString(product.facts.role) === "suspect";
+}
+
+/** Keep recorded needs and displayed questions aligned after any accepted input path. */
+export function remainingNeedTargets(caseState: SemanticCase, need: AskedNeed): string[] {
+  if (need.key === "medication-history") {
+    const productId = need.targetIds[0]?.split(":")[1];
+    const product = caseState.products.find(({ id }) => id === productId);
+    if (!product || !isMedicationTarget(product)) return [];
+    // Newly applicable details stay in the same grouped task after a partial
+    // conversational answer; an unanswered prerequisite never becomes a No.
+    return medicationAnswerFields.filter((field) => medicationFieldApplies(product.facts, field)
+      && !isSettled(product.facts[field])).map((field) => `product:${product.id}:${field}`);
+  }
+  return need.targetIds.filter((key) => {
+    const target = targetFromKey(caseState, key);
+    if (target.entity === "product") {
+      const product = caseState.products.find(({ id }) => id === target.entityId);
+      if (!product || product.state !== "resolved") return false;
+      if (need.key === "suspect-product-indications" && (knownString(product.facts.role) !== "suspect" || knownString(product.facts.productType) === "device")) return false;
+      if (need.key === "device-details") {
+        if (knownString(product.facts.productType) !== "device" || knownString(product.facts.role) !== "suspect") return false;
+        if (["implantDate", "explantDate"].includes(target.field) && knownBoolean(product.facts.implanted) !== true) return false;
+        if (target.field === "reprocessor" && knownBoolean(product.facts.reprocessedSingleUse) !== true) return false;
+      }
+    }
+    if (need.key === "death-date" && knownBoolean(caseState.event.facts.death) !== true) return false;
+    if (target.entity === "event" && target.field === "relevantTestsAvailable"
+      && caseState.relevantTests.some(({ state }) => state === "resolved")) return false;
+    return !isSettled(getFact(caseState, target));
+  });
+}

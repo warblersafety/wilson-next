@@ -297,7 +297,19 @@ export async function fillForm3500Projection(
       indication: fields.productTwoIndication,
     },
   ];
-  D.suspectProducts.forEach((product, index) => writeSuspectProduct(form, suspectFields[index], product));
+  D.suspectProducts.forEach((product, index) => {
+    writeSuspectProduct(form, suspectFields[index], product);
+    const ordinal = index + 1;
+    const prefix = `topmostSubform[0].Page${index + 4}[0].Prod${ordinal}[0].Prod${ordinal}`;
+    for (const [label, suffix] of [["brand", "Brand"], ["generic-biosimilar", "Generic"], ["otc", "OTC"], ["compounded", "Compounded"]] as const) {
+      setChecked(form, `${prefix}${suffix}[0]`, product.medicationType?.includes(label) === true);
+    }
+    for (const [value, suffix] of [[product.improvedAfterChange, "Abated"], [product.recurred, "Reappear"]] as const) {
+      setChecked(form, `${prefix}${suffix}Yes[0]`, value === true);
+      setChecked(form, `${prefix}${suffix}No[0]`, value === false);
+      setChecked(form, `${prefix}${suffix}NA[0]`, value === "inapplicable");
+    }
+  });
 
   const device = E.suspectDevice;
   if (device) {
@@ -447,8 +459,21 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
   const form = document.getForm();
   const { A, B, G } = projection.sections;
   const reporter = G.reporter;
+  const readMedicationControls = (index: number): Pick<ProjectedProduct, "medicationType" | "improvedAfterChange" | "recurred"> => {
+    const prefix = `topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].Prod${index + 1}`;
+    const medicationType = ([["brand", "Brand"], ["generic-biosimilar", "Generic"], ["otc", "OTC"], ["compounded", "Compounded"]] as const)
+      .filter(([, suffix]) => form.getCheckBox(`${prefix}${suffix}[0]`).isChecked()).map(([label]) => label);
+    const outcome = (suffix: string): boolean | "inapplicable" | undefined => {
+      const selected = ["Yes", "No", "NA"].filter((answer) => form.getCheckBox(`${prefix}${suffix}${answer}[0]`).isChecked());
+      if (selected.length > 1) throw new Error("Form 3500 medication outcome has contradictory selections");
+      return selected[0] === "Yes" ? true : selected[0] === "No" ? false : selected[0] === "NA" ? "inapplicable" : undefined;
+    };
+    return { medicationType: medicationType.length ? medicationType : undefined,
+      improvedAfterChange: outcome("Abated"), recurred: outcome("Reappear") };
+  };
   const readSuspect = (
     expected: ProjectedProduct,
+    index: number,
     names: { name: string; manufacturer: string; lotNumber: string; dose: string; doseUnit: string; strength: string; strengthUnit: string; frequency: string; otherFrequency: string; route: string; startDate: string; stopDate: string; indication: string },
   ): ProjectedProduct => compact({
     productId: expected.productId,
@@ -465,6 +490,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
     startDate: parseDate(form.getTextField(names.startDate).getText()),
     stopDate: parseDate(form.getTextField(names.stopDate).getText()),
     indication: form.getTextField(names.indication).getText(),
+    ...readMedicationControls(index),
   });
   const suspectNames = [
     { name: fields.productOneName, manufacturer: fields.productOneManufacturer, lotNumber: fields.productOneLot, dose: fields.productOneDose, doseUnit: fields.productOneDoseUnit, strength: fields.productOneStrength, strengthUnit: fields.productOneStrengthUnit, frequency: fields.productOneFrequency, otherFrequency: fields.productOneOtherFrequency, route: fields.productOneRoute, startDate: fields.productOneStartDate, stopDate: fields.productOneStopDate, indication: fields.productOneIndication },
@@ -525,7 +551,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
         productReturnDate: parseDate(form.getTextField(fields.productReturnDate).getText()),
       }),
       D: {
-        suspectProducts: projection.sections.D.suspectProducts.map((product, index) => readSuspect(product, suspectNames[index])),
+        suspectProducts: projection.sections.D.suspectProducts.map((product, index) => readSuspect(product, index, suspectNames[index])),
       },
       E: { suspectDevice: projection.sections.E.suspectDevice ? compact({
         productId: projection.sections.E.suspectDevice.productId,

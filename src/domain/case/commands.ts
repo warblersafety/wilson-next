@@ -24,7 +24,8 @@ import type {
   SemanticCase,
   Source,
 } from "./types";
-import { nextCompletionQuestion } from "./completion-policy";
+import { nextCompletionQuestion, remainingNeedTargets } from "./completion-policy";
+import { isSettled, medicationAnswerFields, restartApplicability, withdrawalApplicability } from "./medication";
 import {
   assertCaseValueMatchesTarget as assertValueMatchesTarget,
 } from "./value-contract";
@@ -92,8 +93,7 @@ export function applyCaseCommand(
         if (!need || need.status !== "open") {
           throw new Error(`No open semantic need ${command.answersNeed}`);
         }
-        const answeredTargets = new Set(command.facts.map(({ target }) => targetKey(target)));
-        if (need.targetIds.some((target) => !answeredTargets.has(target))) {
+        if (remainingNeedTargets(next, need).length > 0) {
           throw new Error(`Answer must address every target in semantic need ${command.answersNeed}`);
         }
         assertNeedAnswerTargets(command.answersNeed, command.facts.map(({ target }) => targetKey(target)), (command.relevantTests ?? []).map(({ id }) => id), need.targetIds);
@@ -118,6 +118,21 @@ export function applyCaseCommand(
       throw new Error(`Unsupported case command ${String((command as { type?: unknown }).type)}`);
   }
 
+  if (["record-clinician-facts", "review-proposal-groups", "resolve-conflict"].includes(command.type)) {
+    invalidateMedicationOutcomes(current, next, change);
+  }
+  if (command.type !== "attach-grounded-proposals" && command.type !== "record-asked-need") {
+    for (const need of next.askedNeeds.filter(({ status }) => status === "open")) {
+      const remaining = remainingNeedTargets(next, need);
+      if (remaining.length === 0) {
+        need.status = need.targetIds.every((key) => getFact(next, targetFromKey(next, key)).resolvedValue?.value.kind === "declined") ? "declined" : "answered";
+        change.affectedTargets.push(`need:${need.key}`);
+      } else if (remaining.join("\n") !== need.targetIds.join("\n")) {
+        need.targetIds = remaining;
+        change.affectedTargets.push(`need:${need.key}`);
+      }
+    }
+  }
   next.revision += 1;
   change.affectedTargets = unique(change.affectedTargets);
   change.sourceIds = unique(change.sourceIds);
@@ -335,7 +350,7 @@ function recordAskedNeed(
   }
   const uniqueTargets = unique(targetIds);
   if (uniqueTargets.length === 0) throw new Error("A semantic need requires targets");
-  if (caseState.askedNeeds.some((need) => need.key === key
+  if (caseState.askedNeeds.some((need) => need.key === key && need.status === "open"
     && need.targetIds.length === uniqueTargets.length
     && need.targetIds.every((target, index) => target === uniqueTargets[index]))) {
     throw new Error(`Semantic need ${key} was already recorded for these targets`);
@@ -363,6 +378,11 @@ function assertNeedAnswerTargets(key: import("./types").SemanticNeedKey, targets
     throw new Error(`Answer contains a target outside semantic need ${key}`);
   }
   const allowed = (target: string) => {
+    if (key === "medication-history") {
+      const [entity, id, field] = target.split(":");
+      return entity === "product" && requiredTargets.every((required) => required.startsWith(`product:${id}:`))
+        && medicationAnswerFields.includes(field as typeof medicationAnswerFields[number]);
+    }
     if (key === "relevant-clinical-context") {
       return target === "event:event:relevantTestsAvailable" || target === "event:event:relevantHistory"
         || createdTestIds.some((id) => target.startsWith(`test:${id}:`));
@@ -374,6 +394,26 @@ function assertNeedAnswerTargets(key: import("./types").SemanticNeedKey, targets
     return target === "event:event:deathDate";
   };
   if (targets.some((target) => !allowed(target))) throw new Error(`Answer contains a target outside semantic need ${key}`);
+}
+
+function invalidateMedicationOutcomes(before: SemanticCase, after: SemanticCase, change: Change): void {
+  for (const product of after.products) {
+    const prior = before.products.find(({ id }) => id === product.id);
+    if (!prior) continue;
+    for (const [field, applies] of [
+      ["recurred", restartApplicability], ["improvedAfterChange", withdrawalApplicability],
+    ] as const) {
+      const outcome = product.facts[field];
+      if (applies(product.facts) !== false || applies(prior.facts) === false
+        || !isSettled(outcome) || outcome.resolvedValue?.value.kind !== "known") continue;
+      outcome.supersededValues.push(outcome.resolvedValue);
+      outcome.resolvedValue = undefined;
+      refreshFactState(outcome);
+      const target = `product:${product.id}:${field}`;
+      change.affectedTargets.push(target);
+      change.supersessions.push(target);
+    }
+  }
 }
 
 function addRelevantTests(

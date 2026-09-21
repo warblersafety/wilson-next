@@ -1,7 +1,8 @@
+import { isSettled, restartApplicability, withdrawalApplicability } from "./medication";
 import { productDisplayLabel } from "./product-label";
 import type { Fact, ProductEntity, ProductFactKey, ReportType, SemanticCase } from "./types";
 
-const sectionDProductFields = ["name", "manufacturer", "lotNumber", "dose", "strength", "frequency", "route", "startDate", "stopDate", "indication"] as const satisfies readonly ProductFactKey[];
+const sectionDProductFields = ["name", "manufacturer", "lotNumber", "dose", "strength", "frequency", "route", "startDate", "stopDate", "indication", "medicationType"] as const satisfies readonly ProductFactKey[];
 const sectionEProductFields = ["name", "commonName", "procode", "manufacturer", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const satisfies readonly ProductFactKey[];
 const sectionFProductFields = ["name", "startDate", "stopDate"] as const satisfies readonly ProductFactKey[];
 const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "role", "stopped"]);
@@ -75,6 +76,9 @@ export interface ProjectedProduct {
   startDate?: string;
   stopDate?: string;
   indication?: string;
+  medicationType?: Array<"brand" | "generic-biosimilar" | "otc" | "compounded">;
+  improvedAfterChange?: boolean | "inapplicable";
+  recurred?: boolean | "inapplicable";
 }
 
 export interface ProjectedDevice {
@@ -114,8 +118,8 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       "Patient date of birth and race or ethnicity",
       "Section C product pictures and additional comments",
       "Additional suspect medical devices beyond the first",
-      "Section D product subtype (brand, generic/biosimilar, OTC or compounded), expiration, purchase details and product identifiers",
-      "Section D dose-reduction date, treatment duration, improvement after stopping and recurrence after restarting",
+      "Section D other product-type categories, expiration, purchase details and product identifiers",
+      "Section D ongoing-therapy control, dose-reduction date and treatment duration",
     ],
   };
 
@@ -209,7 +213,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       } else {
         const target = projection.sections.D.suspectProducts;
         target.push(projectProduct(product, projection, target.length));
-        recordNonCarriedProductFacts(caseState, product, sectionDProductFields, "Section D", projection);
+        recordNonCarriedProductFacts(caseState, product, [...sectionDProductFields, "doseReduced", "restarted", "improvedAfterChange", "recurred"], "Section D", projection);
       }
     } else {
       if (productType.value === "device") {
@@ -238,7 +242,27 @@ function projectProduct(
   const result: ProjectedProduct = { productId: product.id };
   const prefix = `sections.D.suspectProducts.${index}`;
   for (const field of sectionDProductFields) {
-    assign(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field], result, field);
+    assign<unknown>(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field] as Fact<unknown>, result, field, (value) => field === "medicationType" ? ["brand", "generic-biosimilar", "otc", "compounded"].filter((label) => (value as string[]).includes(label)) : value);
+  }
+  for (const [field, applies, prerequisites] of [
+    ["improvedAfterChange", withdrawalApplicability(product.facts), [product.facts.stopped, product.facts.doseReduced]],
+    ["recurred", restartApplicability(product.facts), [product.facts.restarted]],
+  ] as const) {
+    const outcome = product.facts[field];
+    const path = `${prefix}.${field}`;
+    const sources = [...new Set([...prerequisites.flatMap((fact) => fact.resolvedValue?.sourceIds ?? []), ...(outcome.resolvedValue?.sourceIds ?? [])])];
+    if (applies === false) {
+      result[field] = "inapplicable";
+      projection.sourceTrace[path] = sources;
+    } else if (applies === true && isSettled(outcome) && outcome.resolvedValue?.value.kind === "known") {
+      result[field] = outcome.resolvedValue.value.value;
+      projection.sourceTrace[path] = sources;
+    } else {
+      const unresolved = prerequisites.find((fact) => !isSettled(fact) || fact.resolvedValue?.value.kind !== "known");
+      projection.omissions.push({ concept: `${field === "recurred" ? "Event recurrence after restart" : "Improvement after stopping or reducing"} for ${product.id}`,
+        target: `product:${product.id}:${field}`, reason: omissionReason(applies === undefined && unresolved ? unresolved : outcome), sourceIds: sources });
+      if (outcome.resolvedValue?.value.kind === "known") projection.notIncluded.push(`${product.id}: the reviewed ${field === "recurred" ? "recurrence" : "improvement"} answer is not included because its applicability is unresolved.`);
+    }
   }
   return result;
 }

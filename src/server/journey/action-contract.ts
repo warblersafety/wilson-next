@@ -50,6 +50,17 @@ const deviceAnswerStringSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("declined") }).strict(),
 ]);
 
+const medicationBooleanSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("known"), value: z.boolean() }).strict(),
+  z.object({ kind: z.literal("unknown") }).strict(),
+  z.object({ kind: z.literal("declined") }).strict(),
+]);
+const medicationDateSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("known"), value: z.iso.date() }).strict(),
+  z.object({ kind: z.literal("unknown") }).strict(),
+  z.object({ kind: z.literal("declined") }).strict(),
+]);
+
 export const journeyActionSchema = z.discriminatedUnion("action", [
   z.object({
     action: z.literal("submit-opening"),
@@ -105,6 +116,15 @@ export const journeyActionSchema = z.discriminatedUnion("action", [
       z.object({ kind: z.literal("declined") }).strict(),
     ]).optional(),
     history: answerStringSchema.optional(),
+  }).strict(),
+  z.object({
+    action: z.literal("answer-medication-history"),
+    productId: z.string().min(1),
+    answers: z.object({
+      stopped: medicationBooleanSchema.optional(), doseReduced: medicationBooleanSchema.optional(),
+      stopDate: medicationDateSchema.optional(), improvedAfterChange: medicationBooleanSchema.optional(),
+      restarted: medicationBooleanSchema.optional(), recurred: medicationBooleanSchema.optional(),
+    }).strict(),
   }).strict(),
   z.object({
     action: z.literal("answer-device-details"),

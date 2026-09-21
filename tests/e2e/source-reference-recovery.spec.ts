@@ -67,6 +67,7 @@ async function complete(page: Page) {
   await page.getByRole("button", { name: "Confirm outcomes" }).click();
   await page.getByLabel("No relevant history to add", { exact: true }).check();
   await page.getByRole("button", { name: "Add this context" }).click();
+  await page.getByRole("button", { name: "These remaining details are unknown", exact: true }).click();
   await page.getByLabel("Date of this report", { exact: true }).fill("2026-09-20");
   await page.getByRole("button", { name: "Prefer not to provide reporter details" }).click();
   await expect(page.getByRole("button", { name: "Download official PDF", exact: true })).toBeEnabled();
