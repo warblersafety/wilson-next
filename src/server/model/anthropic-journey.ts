@@ -1,3 +1,4 @@
+import { sourcePassages } from "../../domain/case/source-passages";
 import { randomUUID } from "node:crypto";
 import Anthropic, { APIError } from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
@@ -19,8 +20,8 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-laboratory-fidelity-v1";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v13-simple";
+export const MODEL_PROMPT_REVISION = "wilson-source-references-recovery-v3";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v14-references";
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
 export const MODEL_MAX_RETRIES = 0;
 
@@ -72,17 +73,18 @@ const SYSTEM_PROMPT = `You extract grounded semantic proposals from one syntheti
 Rules:
 - Propose only facts explicitly supported by the current clinician input. Do not diagnose, infer causality, classify, fill gaps, or establish truth.
 - The supported targets are the patient, event or product problem, relevant-test, medication or non-device product, and single suspect-device fields represented by the response schema. Preserve uncertainty, negation, correction, alternatives, unknown, explicitly absent, inapplicable, and declined meanings.
-- Relevant tests are stable entities. On opening input, declare each distinct observation once, keeping testName (the stated test identity, including specimen/context) separate from testResult (numeric or qualitative result, with any stated units and modifiers). Retain all tests, including partial observations with only identity or only result. Attach ranges and explicitly stated test dates to the same reference. Never infer a test name, unit, range, or test date from the result, event date, another test, or clinical conventions. Omit missing fields. Do not interpret or classify a result, expand an abbreviation, or silently repair an unfamiliar/garbled clinical term; preserve the clinician's wording for review.
-- On later input, declare no tests. Use only exact supplied stable test IDs. Correct only the stated fields of the identified observation; retain its other reviewed facts. A new measurement is not a correction of an earlier measurement unless the input says so.
+- Distinguish not mentioned from explicitly unavailable: omit a field only when the input does not address it. When the clinician says a test name, result, unit, range or collection date is unknown, unavailable, not known or not at hand, preserve that uncertainty. Use kind unknown for an unavailable name, result, range or date; a missing date is not explicitly absent. Use explicitly-absent only for a stated absence of the thing itself, never for lack of knowledge about it. Keep a known numeric result without units when units are unavailable; do not invent a unit. Do not declare a test entity for a test explicitly stated not to have been performed; do not turn that statement into a partial observation with an absent result.
+- Relevant tests are stable entities. On opening input, declare each distinct observation once, keeping testName (the stated test identity, including specimen/context) separate from testResult (numeric or qualitative result, with any stated units and modifiers). Retain all tests, including partial observations with only identity or only result. Attach ranges and explicitly stated test dates to the same reference. Never infer a test name, unit, range, or test date from the result, event date, another test, or clinical conventions. Omit unmentioned fields; explicitly unavailable fields use unknown as described above. Do not interpret or classify a result, expand an abbreviation, or silently repair an unfamiliar/garbled clinical term; preserve the clinician's wording for review.
+- On later input, use the supplied stable IDs to correct or complete an existing test, including a pending unnamed test. Declare a new test with response-local references only for a genuinely additional or entirely omitted observation. Never duplicate a supplied test just to correct it. Correct only stated fields; preserve its other facts. A new measurement is not a correction unless the input says so. Mark corrections to pending as well as accepted facts with intent correction.
 - Product dose is the amount actually taken each time; strength is the stated amount per tablet/capsule or concentration on the label. Extract them independently, retaining units and descriptive wording. Never infer strength from dose, multiply tablet counts, divide concentrations, or convert units. If only dose is stated, omit strength. Report date is entered directly by the clinician, never extracted.
 - For every declared product, propose its supported productType ("drug-or-biologic", "device", or "other") and role. For product roles, emit only "suspect" or "concomitant". A reported suspect role is clinician input, not your causality judgment. For a device, preserve explicitly stated implanted and reprocessed-single-use status so Wilson can determine whether related Section E details are applicable.
 - A medicine or other product named only as treatment administered in response to the adverse event belongs in event.treatments. Propose it as a report product only when the clinician separately describes it as suspect, concomitant, or otherwise involved in the report.
 - Use normalized ISO dates (YYYY-MM-DD) and "oral" for "by mouth". Otherwise preserve explicitly stated descriptive detail in known values; do not compress away modifiers that make a clinical statement more specific. Retain measurement values with their units.
 - On opening input, declare each mentioned product once using arbitrary response-local productReference and groupReference values. Use those references for its proposals. Wilson—not you—assigns stable case identity.
 - On later input, declare no products. Refer to an existing product only by an exact application-supplied product ID from the reviewed-case context. A repeated name or alias does not create identity.
-- proposalReference and groupReference are response-local linkage values, not case IDs. Keep a group within one case entity.
-- Every proposal must include an exact, contiguous, self-contained evidenceQuote from the current clinician input that lets a reviewer identify both the subject and the complete claim without relying on target metadata. Include all wording needed to support negation, correction, alternatives, or unresolved uncertainty. Completeness outranks brevity; only then choose the shortest sufficient quotation. Return the quotation itself, never character offsets or a source ID.
-- Reviewed-case context is supplied only to link later mentions and distinguish accepted knowledge from corrections or alternatives. Never cite context as clinician evidence.
+- proposalReference and groupReference are response-local linkage values, not case IDs. Every declared test and product requires its own distinct groupReference; never reuse one group for different tests or products. All proposals for that entity use its declared groupReference. Keep later update groups within one existing case entity as well.
+- Every proposal must select evidenceReferences from the code-labelled current input passages. Return their reference IDs, never copied quotations, offsets, or invented IDs. Include multiple passages when a subject, shared date, negation, correction or uncertainty spans passages. Select enough context to support the complete claim, not merely a matching number. References establish source existence, not semantic support: you must still interpret attribution carefully.
+- Case context includes accepted and explicitly marked pending proposals only to link mentions and distinguish corrections or alternatives. Pending values are not accepted knowledge. Never cite context as current clinician evidence.
 - Omit unsupported facts. Every proposal remains unaccepted until ordinary human review.`;
 
 export function createAnthropicRequest(
@@ -101,7 +103,7 @@ export function createAnthropicRequest(
     system: SYSTEM_PROMPT,
     messages: [{
       role: "user",
-      content: `${turnInstruction}${context}\n\nClinician input:\n<input>\n${text}\n</input>`,
+      content: `${turnInstruction}${context}\n\nClinician input:\n<input>\n${JSON.stringify(sourcePassages(text).map(({ reference, text }) => ({ reference, text })))}\n</input>`,
     }],
     output_config: { format: providerOutputFormat() },
   };
@@ -216,6 +218,7 @@ export function createAnthropicJourneyModel(
           },
           existingProductIds: reviewedCase?.products.map(({ id }) => id),
           existingTestIds: reviewedCase?.relevantTests.map(({ id }) => id),
+          existingTestCount: reviewedCase?.totalTestCount,
           output: structured.data,
         }, createIdentity);
         return { envelope, metrics, responseArtifact, diagnosticResponse: response };

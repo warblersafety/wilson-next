@@ -4,11 +4,13 @@ import type { CaseValue } from "../../domain/case/types";
 export type ModelTurn = "opening" | "correction";
 
 export interface ReviewedFactContext {
+  status?: "proposed";
   field: string;
   value: CaseValue<unknown>;
 }
 
 export interface ReviewedCaseModelContext {
+  totalTestCount?: number;
   patient: ReviewedFactContext[];
   event: ReviewedFactContext[];
   products: Array<{

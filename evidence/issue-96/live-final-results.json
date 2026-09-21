@@ -1,0 +1,766 @@
+{
+  "sha": "d26eaff03760737464760ec7cf1596decb17461c",
+  "deployment": "dpl_3cygE7hpbPSNzqygcWKAMBKeYEcC",
+  "protocol": "live-protocol-final.json",
+  "startedAt": "2026-09-21T00:15:29.521Z",
+  "cases": [
+    {
+      "id": "demo91-correction",
+      "exposedAt": "2026-09-21T00:15:31.840Z",
+      "expected": "From initial review, link the existing unnamed test to Helicobacter pylori stool antigen and change only hemoglobin result to 8.9 g/dL. No duplicate tests, no premature acceptance or direct edits. Other test facts, dates, range, negative result and unknowns retained. Review updates and independently read downloaded PDF.",
+      "status": 200,
+      "operationId": "f25c426f-a212-443d-9af4-3f6676d4a7d8",
+      "observed": [
+        {
+          "id": "test-65813577-1738-4338-9864-8909324a360a",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "hemoglobin"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "9.1 g/dL"
+                },
+                {
+                  "kind": "known",
+                  "value": "8.9 g/dL"
+                }
+              ],
+              "history": []
+            },
+            "lowRange": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "12"
+                }
+              ],
+              "history": []
+            },
+            "highRange": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "16"
+                }
+              ],
+              "history": []
+            },
+            "date": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "2026-09-11"
+                }
+              ],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-6b56aa6e-e5aa-41e7-af67-bdfc2b6d6b4d",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "stool test for occult blood"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "positive"
+                }
+              ],
+              "history": []
+            },
+            "date": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "2026-09-11"
+                }
+              ],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-d6f21607-6821-4d40-83e6-62aacd3a3b0e",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "platelet count"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "82"
+                }
+              ],
+              "history": []
+            },
+            "date": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-6ede5e64-6729-4260-b083-8ddc64f92f05",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "ferritin"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            },
+            "date": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-d094f0d0-75d8-4752-8a2d-24a239551c6b",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                },
+                {
+                  "kind": "known",
+                  "value": "Helicobacter pylori stool antigen test"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "negative"
+                }
+              ],
+              "history": []
+            },
+            "date": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            }
+          }
+        }
+      ],
+      "unrepresented": [],
+      "sources": [
+        {
+          "inputId": "input-db625e26-3237-49a2-bed6-71f139172039",
+          "excerpt": "Patient DEMO-91 is a 54-year-old woman who took ibuprofen for back pain and developed melena on 11 September 2026. ",
+          "start": 0,
+          "end": 115
+        },
+        {
+          "inputId": "input-db625e26-3237-49a2-bed6-71f139172039",
+          "excerpt": "I suspect ibuprofen.\n",
+          "start": 115,
+          "end": 136
+        },
+        {
+          "inputId": "input-db625e26-3237-49a2-bed6-71f139172039",
+          "excerpt": "Her hemoglobin was 9.1 g/dL, reference range 12 to 16, on 11 September 2026. ",
+          "start": 136,
+          "end": 213
+        },
+        {
+          "inputId": "input-db625e26-3237-49a2-bed6-71f139172039",
+          "excerpt": "A stool test was positive for occult blood on the same date.\n",
+          "start": 213,
+          "end": 274
+        },
+        {
+          "inputId": "input-db625e26-3237-49a2-bed6-71f139172039",
+          "excerpt": "Her platelet count was 82; I don\u2019t have its units or collection date. ",
+          "start": 274,
+          "end": 344
+        },
+        {
+          "inputId": "input-db625e26-3237-49a2-bed6-71f139172039",
+          "excerpt": "Ferritin was tested, but I don\u2019t have the result or date.\n",
+          "start": 344,
+          "end": 402
+        },
+        {
+          "inputId": "input-db625e26-3237-49a2-bed6-71f139172039",
+          "excerpt": "There was also a separate negative test, but I don\u2019t have its name or date available.",
+          "start": 402,
+          "end": 487
+        },
+        {
+          "inputId": "input-8dca208b-843f-4551-bf26-66291fdc9910",
+          "excerpt": "I\u2019ve now located the report for the unidentified negative test. ",
+          "start": 0,
+          "end": 64
+        },
+        {
+          "inputId": "input-8dca208b-843f-4551-bf26-66291fdc9910",
+          "excerpt": "It was a Helicobacter pylori stool antigen test. ",
+          "start": 64,
+          "end": 113
+        },
+        {
+          "inputId": "input-8dca208b-843f-4551-bf26-66291fdc9910",
+          "excerpt": "Also, I misread the hemoglobin: it was 8.9 g/dL, not 9.1. ",
+          "start": 155,
+          "end": 213
+        }
+      ],
+      "stage": "review-update",
+      "reviewed": [
+        {
+          "id": "test-65813577-1738-4338-9864-8909324a360a",
+          "facts": {
+            "testName": {
+              "resolved": {
+                "kind": "known",
+                "value": "hemoglobin"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "testResult": {
+              "resolved": {
+                "kind": "known",
+                "value": "8.9 g/dL"
+              },
+              "proposed": [],
+              "history": [
+                {
+                  "kind": "known",
+                  "value": "9.1 g/dL"
+                }
+              ]
+            },
+            "lowRange": {
+              "resolved": {
+                "kind": "known",
+                "value": "12"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "highRange": {
+              "resolved": {
+                "kind": "known",
+                "value": "16"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "date": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-11"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-6b56aa6e-e5aa-41e7-af67-bdfc2b6d6b4d",
+          "facts": {
+            "testName": {
+              "resolved": {
+                "kind": "known",
+                "value": "stool test for occult blood"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "testResult": {
+              "resolved": {
+                "kind": "known",
+                "value": "positive"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "date": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-11"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-d6f21607-6821-4d40-83e6-62aacd3a3b0e",
+          "facts": {
+            "testName": {
+              "resolved": {
+                "kind": "known",
+                "value": "platelet count"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "testResult": {
+              "resolved": {
+                "kind": "known",
+                "value": "82"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "date": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-6ede5e64-6729-4260-b083-8ddc64f92f05",
+          "facts": {
+            "testName": {
+              "resolved": {
+                "kind": "known",
+                "value": "ferritin"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "testResult": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "date": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-d094f0d0-75d8-4752-8a2d-24a239551c6b",
+          "facts": {
+            "testName": {
+              "resolved": {
+                "kind": "known",
+                "value": "Helicobacter pylori stool antigen test"
+              },
+              "proposed": [],
+              "history": [
+                {
+                  "kind": "unknown"
+                }
+              ]
+            },
+            "testResult": {
+              "resolved": {
+                "kind": "known",
+                "value": "negative"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "date": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        }
+      ],
+      "projection": [
+        {
+          "testId": "test-65813577-1738-4338-9864-8909324a360a",
+          "testResult": "hemoglobin: 8.9 g/dL",
+          "lowRange": "12",
+          "highRange": "16",
+          "date": "2026-09-11"
+        },
+        {
+          "testId": "test-6b56aa6e-e5aa-41e7-af67-bdfc2b6d6b4d",
+          "testResult": "stool test for occult blood: positive",
+          "date": "2026-09-11"
+        },
+        {
+          "testId": "test-d6f21607-6821-4d40-83e6-62aacd3a3b0e",
+          "testResult": "platelet count: 82"
+        },
+        {
+          "testId": "test-6ede5e64-6729-4260-b083-8ddc64f92f05",
+          "testResult": "ferritin: Result not recorded"
+        },
+        {
+          "testId": "test-d094f0d0-75d8-4752-8a2d-24a239551c6b",
+          "testResult": "Helicobacter pylori stool antigen test: negative"
+        }
+      ],
+      "downloaded": true,
+      "finishedAt": "2026-09-21T00:16:00.506Z",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-source-references-recovery-v3",
+        "schemaRevision": "wilson-grounded-proposals-v14-references",
+        "inputTokens": 6730,
+        "outputTokens": 2358,
+        "latencyMs": 23033,
+        "estimatedCostUsd": 0.03704
+      },
+      "assessment": {
+        "status": "pass",
+        "detail": "Before opening acceptance, correction links existing unnamed negative test and replaces hemoglobin result only. Five stable IDs, prior 9.1 retained superseded, ranges/dates and explicit unknowns retained. Downloaded PDF independently checked by physical row."
+      }
+    },
+    {
+      "id": "contrasting",
+      "exposedAt": "2026-09-21T00:16:40.583Z",
+      "expected": "Serum \u03b2 marker \u2265 4 \u00b5g/L, range 2\u20136, 2026-09-12; urine culture no growth on that same date; ferritin with unavailable result/date. Do not invent a performed platelet measurement. Greek/inequality output faithful in PDF. Source support and clinical attribution assessed separately.",
+      "status": 200,
+      "operationId": "968c8a33-fcd1-4c9c-a58e-438c5a5c3347",
+      "observed": [
+        {
+          "id": "test-a3e319dd-2483-497d-a9cc-369ddeba1047",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "Serum \u03b2 marker"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "\u2265 4 \u00b5g/L"
+                }
+              ],
+              "history": []
+            },
+            "lowRange": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "2"
+                }
+              ],
+              "history": []
+            },
+            "highRange": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "6"
+                }
+              ],
+              "history": []
+            },
+            "date": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "2026-09-12"
+                }
+              ],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-78aba044-af3c-4c7c-9451-e336fbe7ba18",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "urine culture"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "no growth"
+                }
+              ],
+              "history": []
+            },
+            "date": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "2026-09-12"
+                }
+              ],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-c05e5855-6fff-4e5c-a843-90a060dc0d0d",
+          "facts": {
+            "testName": {
+              "proposed": [
+                {
+                  "kind": "known",
+                  "value": "ferritin test"
+                }
+              ],
+              "history": []
+            },
+            "testResult": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            },
+            "date": {
+              "proposed": [
+                {
+                  "kind": "unknown"
+                }
+              ],
+              "history": []
+            }
+          }
+        }
+      ],
+      "unrepresented": [],
+      "sources": [
+        {
+          "inputId": "input-8bde76b1-362e-41e5-902d-24e07a33cad9",
+          "excerpt": "Patient DEMO-96-C is a 63-year-old man who developed a rash while taking allopurinol for gout. ",
+          "start": 0,
+          "end": 95
+        },
+        {
+          "inputId": "input-8bde76b1-362e-41e5-902d-24e07a33cad9",
+          "excerpt": "I suspect allopurinol. ",
+          "start": 95,
+          "end": 118
+        },
+        {
+          "inputId": "input-8bde76b1-362e-41e5-902d-24e07a33cad9",
+          "excerpt": "Serum \u03b2 marker was \u2265 4 \u00b5g/L (reference range 2\u20136) on 12 September 2026. ",
+          "start": 118,
+          "end": 190
+        },
+        {
+          "inputId": "input-8bde76b1-362e-41e5-902d-24e07a33cad9",
+          "excerpt": "The urine culture collected that same day showed no growth. ",
+          "start": 190,
+          "end": 250
+        },
+        {
+          "inputId": "input-8bde76b1-362e-41e5-902d-24e07a33cad9",
+          "excerpt": "A ferritin test was performed, but its result and collection date aren\u2019t available.",
+          "start": 277,
+          "end": 360
+        }
+      ],
+      "stage": "understanding",
+      "reviewed": [
+        {
+          "id": "test-a3e319dd-2483-497d-a9cc-369ddeba1047",
+          "facts": {
+            "testName": {
+              "resolved": {
+                "kind": "known",
+                "value": "Serum \u03b2 marker"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "testResult": {
+              "resolved": {
+                "kind": "known",
+                "value": "\u2265 4 \u00b5g/L"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "lowRange": {
+              "resolved": {
+                "kind": "known",
+                "value": "2"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "highRange": {
+              "resolved": {
+                "kind": "known",
+                "value": "6"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "date": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-12"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-78aba044-af3c-4c7c-9451-e336fbe7ba18",
+          "facts": {
+            "testName": {
+              "resolved": {
+                "kind": "known",
+                "value": "urine culture"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "testResult": {
+              "resolved": {
+                "kind": "known",
+                "value": "no growth"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "date": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-12"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        },
+        {
+          "id": "test-c05e5855-6fff-4e5c-a843-90a060dc0d0d",
+          "facts": {
+            "testName": {
+              "resolved": {
+                "kind": "known",
+                "value": "ferritin test"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "testResult": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            },
+            "date": {
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposed": [],
+              "history": []
+            }
+          }
+        }
+      ],
+      "projection": [
+        {
+          "testId": "test-a3e319dd-2483-497d-a9cc-369ddeba1047",
+          "testResult": "Serum \u03b2 marker: \u2265 4 \u00b5g/L",
+          "lowRange": "2",
+          "highRange": "6",
+          "date": "2026-09-12"
+        },
+        {
+          "testId": "test-78aba044-af3c-4c7c-9451-e336fbe7ba18",
+          "testResult": "urine culture: no growth",
+          "date": "2026-09-12"
+        },
+        {
+          "testId": "test-c05e5855-6fff-4e5c-a843-90a060dc0d0d",
+          "testResult": "ferritin test: Result not recorded"
+        }
+      ],
+      "downloaded": true,
+      "finishedAt": "2026-09-21T00:17:08.350Z",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-source-references-recovery-v3",
+        "schemaRevision": "wilson-grounded-proposals-v14-references",
+        "inputTokens": 5534,
+        "outputTokens": 3143,
+        "latencyMs": 23504,
+        "estimatedCostUsd": 0.042498
+      },
+      "assessment": {
+        "status": "pass",
+        "detail": "Three performed tests; no platelet entity. Exact Unicode quantity/range, shared date, no-growth result and unknown ferritin details retained. Independent pypdf readback agrees by physical row with normal FDA date formatting; source fidelity and semantic attribution assessed separately."
+      }
+    }
+  ],
+  "totals": {
+    "calls": 2,
+    "estimatedCostUsd": 0.079538
+  }
+}

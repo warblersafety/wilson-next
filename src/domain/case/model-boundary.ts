@@ -1,7 +1,8 @@
 import { z } from "zod";
 import type { FactTarget, GroundedProposal, ProposedProduct, ProposedRelevantTest, Source } from "./types";
 import { knownValueMismatch, modelKnownValueGuidance } from "./value-contract";
-import { maximumCaseProducts } from "./limits";
+import { resolveSourceReferences, type SourcePassage } from "./source-passages";
+import { maximumCaseProducts, maximumRelevantTests } from "./limits";
 
 const patientFields = ["identifier", "ageYears", "sex", "weight"] as const;
 const eventFields = ["problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "relevantHistory", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate"] as const;
@@ -44,8 +45,8 @@ const modelProposalSchema = z.object({
   intent: z.enum(["fact", "correction", "alternative"]),
   target: modelTargetSchema,
   value: caseValueSchema,
-  evidenceQuote: z.string().min(1).describe(
-    "An exact contiguous quotation that independently identifies the subject and complete claim. Completeness outranks brevity, including wording needed for negation, correction, alternatives, or unresolved uncertainty.",
+  evidenceReferences: z.array(z.string().min(1)).min(1).describe(
+    "Select code-supplied passage references from the current input. Include every passage needed for subject, shared dates, negation, correction, alternatives and uncertainty. Never return copied quotations or invent references.",
   ),
 }).strict();
 
@@ -66,13 +67,10 @@ const quarantinableProposalSchema = z.object({
     testReference: z.string().min(1).optional(),
   }).passthrough(),
   value: z.unknown(),
-  evidenceQuote: z.string().min(1),
+  evidenceReferences: z.unknown().optional(),
 }).passthrough().superRefine((proposal, context) => {
   if (!Object.hasOwn(proposal, "value")) {
     context.addIssue({ code: "custom", path: ["value"], message: "Proposal value is required" });
-  }
-  if (!proposal.evidenceQuote.trim()) {
-    context.addIssue({ code: "custom", path: ["evidenceQuote"], message: "Evidence quotation must not be blank" });
   }
 });
 
@@ -99,6 +97,8 @@ export type UnrepresentedProposalReason =
   | "unsupported-proposal"
   | "unsupported-target"
   | "product-limit"
+  | "test-limit"
+  | "invalid-source-reference"
   | "incompatible-value"
   | "unresolved-entity"
   | "evidence-not-found"
@@ -117,6 +117,7 @@ export interface ParseModelProposalEnvelopeInput {
   input: z.infer<typeof inputSchema>;
   existingProductIds?: readonly string[];
   existingTestIds?: readonly string[];
+  existingTestCount?: number;
   output: unknown;
 }
 
@@ -138,7 +139,7 @@ interface PreparedProposal {
   proposal: ModelProposal;
   target: FactTarget;
   groupId: string;
-  evidenceStart: number;
+  evidence: SourcePassage[];
 }
 
 export function parseModelProposalEnvelope(
@@ -147,14 +148,13 @@ export function parseModelProposalEnvelope(
 ): ParsedModelProposalEnvelope {
   const input = inputSchema.parse(candidate.input);
   const output = modelProposalEnvelopeSchema.parse(candidate.output);
-  const outputTests = output.tests ?? [];
   const existingProductIds = new Set(candidate.existingProductIds ?? []);
   const existingTestIds = new Set(candidate.existingTestIds ?? []);
+  // An exact supplied ID still identifies the existing observation, even if
+  // echoed in the declaration list. Only response-local references create tests.
+  const outputTests = (output.tests ?? []).filter(({ testReference }) => !existingTestIds.has(testReference));
   if (candidate.turn === "opening" && (existingProductIds.size > 0 || existingTestIds.size > 0)) {
     boundaryIssue(["existingProductIds"], "Opening input cannot reference existing entities");
-  }
-  if (candidate.turn === "correction" && (output.products.length > 0 || outputTests.length > 0)) {
-    boundaryIssue(["products"], "Later input cannot declare new entities in this experiment");
   }
 
   const allocatedByKind = new Map<ModelBoundaryIdentityKind, Set<string>>();
@@ -175,7 +175,7 @@ export function parseModelProposalEnvelope(
     output.products.slice(maximumCaseProducts).map(({ productReference }) => productReference),
   );
   const groupByReference = new Map<string, string>();
-  for (const product of output.products.slice(0, maximumCaseProducts)) {
+  for (const product of (candidate.turn === "opening" ? output.products.slice(0, maximumCaseProducts) : [])) {
     const groupId = allocate("group", product.groupReference);
     groupByReference.set(product.groupReference, groupId);
     productByReference.set(product.productReference, {
@@ -183,7 +183,8 @@ export function parseModelProposalEnvelope(
     });
   }
   const testByReference = new Map<string, DeclaredEntity>();
-  for (const test of outputTests) {
+  const excessTestReferences = new Set(outputTests.slice(Math.max(0, maximumRelevantTests - (candidate.existingTestCount ?? existingTestIds.size))).map(({ testReference }) => testReference));
+  for (const test of outputTests.filter(({ testReference }) => !excessTestReferences.has(testReference))) {
     const groupId = allocate("group", test.groupReference);
     groupByReference.set(test.groupReference, groupId);
     testByReference.set(test.testReference, {
@@ -195,22 +196,27 @@ export function parseModelProposalEnvelope(
 
   const unrepresented: UnrepresentedModelProposal[] = [];
   const prepared: PreparedProposal[] = [];
+  const quarantineProposal = (proposal: QuarantinableProposal | ModelProposal, reason: UnrepresentedProposalReason) => quarantine(proposal, reason, input.text);
   for (const [index, rawProposal] of output.proposals.entries()) {
     const parsed = modelProposalSchema.safeParse(rawProposal);
     if (!parsed.success) {
-      unrepresented.push(quarantine(rawProposal, proposalSchemaReason(parsed.error)));
+      unrepresented.push(quarantineProposal(rawProposal, proposalSchemaReason(parsed.error)));
       continue;
     }
     const proposal = parsed.data;
     if (proposal.target.entity === "product" && excessProductReferences.has(proposal.target.productReference)) {
-      unrepresented.push(quarantine(rawProposal, "product-limit"));
+      unrepresented.push(quarantineProposal(rawProposal, "product-limit"));
+      continue;
+    }
+    if (proposal.target.entity === "test" && excessTestReferences.has(proposal.target.testReference)) {
+      unrepresented.push(quarantineProposal(rawProposal, "test-limit"));
       continue;
     }
     const target = resolveTarget(
       candidate.turn, proposal.target, productByReference, existingProductIds, testByReference, existingTestIds,
     );
     if (!target) {
-      unrepresented.push(quarantine(rawProposal, "unresolved-entity"));
+      unrepresented.push(quarantineProposal(rawProposal, "unresolved-entity"));
       continue;
     }
     const groupId = resolveGroupId(
@@ -218,50 +224,38 @@ export function parseModelProposalEnvelope(
       groupByReference, allocate, ["proposals", index],
     );
     if (knownValueMismatch(target, proposal.value)) {
-      unrepresented.push(quarantine(rawProposal, "incompatible-value"));
+      unrepresented.push(quarantineProposal(rawProposal, "incompatible-value"));
       continue;
     }
-    const evidence = locateEvidence(input.text, proposal.evidenceQuote);
-    if (evidence === "not-found") {
-      unrepresented.push(quarantine(rawProposal, "evidence-not-found"));
+    const evidence = resolveSourceReferences(input.text, proposal.evidenceReferences);
+    if (!evidence) {
+      unrepresented.push(quarantineProposal(rawProposal, "invalid-source-reference"));
       continue;
     }
-    if (evidence === "ambiguous") {
-      unrepresented.push(quarantine(rawProposal, "evidence-ambiguous"));
-      continue;
-    }
-    prepared.push({ proposal, target, groupId, evidenceStart: evidence });
-  }
-
-  for (const reference of testByReference.keys()) {
-    if (!output.proposals.some(({ target }) => target.entity === "test" && target.testReference === reference)) {
-      boundaryIssue(["tests"], `Declared relevant test ${reference} has no proposals`);
-    }
-  }
-  for (const { productReference: reference } of output.products) {
-    if (!output.proposals.some(({ target }) => target.entity === "product" && target.productReference === reference)) {
-      boundaryIssue(["products"], `Declared product ${reference} has no proposals`);
-    }
+    prepared.push({ proposal, target, groupId, evidence });
   }
 
   if (prepared.length === 0) boundaryIssue(["proposals"], "Every proposal was unrepresentable");
 
-  const sourceByQuote = new Map<string, Source>();
-  const proposals: GroundedProposal[] = prepared.map(({ proposal, target, groupId, evidenceStart }) => {
-    const source = sourceByQuote.get(proposal.evidenceQuote) ?? {
-      id: allocate("source", proposal.proposalReference),
-      inputId: input.id,
-      inputType: input.type,
-      excerpt: proposal.evidenceQuote,
-      start: evidenceStart,
-      end: evidenceStart + proposal.evidenceQuote.length,
-      actor: "clinician" as const,
-      recordedAt: input.recordedAt,
-    };
-    sourceByQuote.set(proposal.evidenceQuote, source);
+  const sourceByReference = new Map<string, Source>();
+  const proposals: GroundedProposal[] = prepared.map(({ proposal, target, groupId, evidence }) => {
+    const sources = evidence.map((passage) => {
+      const source = sourceByReference.get(passage.reference) ?? {
+        id: allocate("source", `${input.id}-${passage.reference}`),
+        inputId: input.id,
+        inputType: input.type,
+        excerpt: input.text.slice(passage.start, passage.end),
+        start: passage.start,
+        end: passage.end,
+        actor: "clinician" as const,
+        recordedAt: input.recordedAt,
+      };
+      sourceByReference.set(passage.reference, source);
+      return source;
+    });
     return {
       proposalId: allocate("proposal", proposal.proposalReference), groupId, intent: proposal.intent,
-      target, value: proposal.value, sourceIds: [source.id],
+      target, value: proposal.value, sourceIds: sources.map(({ id }) => id),
     };
   });
 
@@ -271,7 +265,7 @@ export function parseModelProposalEnvelope(
   return {
     products: [...productByReference.values()].filter(({ id }) => retainedProductIds.has(id)).map(({ id, groupId }) => ({ id, groupId })),
     relevantTests: [...testByReference.values()].filter(({ id }) => retainedTestIds.has(id)).map(({ id, groupId }) => ({ id, groupId })),
-    sources: [...sourceByQuote.values()],
+    sources: [...sourceByReference.values()],
     proposals,
     unrepresented,
   };
@@ -288,10 +282,8 @@ function resolveTarget(
   if (target.entity === "patient") return { entity: "patient", entityId: "patient", field: target.field };
   if (target.entity === "event") return { entity: "event", entityId: "event", field: target.field };
   if (target.entity === "test") {
-    if (turn === "opening") {
-      const test = proposedTests.get(target.testReference);
-      return test ? { entity: "test", entityId: test.id, field: target.field } : undefined;
-    }
+    const test = proposedTests.get(target.testReference);
+    if (test) return { entity: "test", entityId: test.id, field: target.field };
     return existingTestIds.has(target.testReference) ? { entity: "test", entityId: target.testReference, field: target.field } : undefined;
   }
   if (turn === "opening") {
@@ -311,6 +303,7 @@ function resolveGroupId(
   allocate: (kind: ModelBoundaryIdentityKind, reference: string) => string,
   path: Array<string | number>,
 ): string {
+  if (proposal.target.entity === "test" && proposedTests.has(proposal.target.testReference)) return proposedTests.get(proposal.target.testReference)!.groupId;
   if (turn === "opening" && target.entity !== "product" && target.entity !== "test") return target.entity;
   if (turn === "opening") {
     const declared = proposal.target.entity === "product"
@@ -362,19 +355,18 @@ function rawTargetIdentity(target: QuarantinableProposal["target"]): string {
   return target.entity;
 }
 
-function locateEvidence(text: string, quote: string): number | "not-found" | "ambiguous" {
-  const start = text.indexOf(quote);
-  if (start === -1) return "not-found";
-  return text.indexOf(quote, start + 1) === -1 ? start : "ambiguous";
-}
-
-function quarantine(proposal: QuarantinableProposal | ModelProposal, reason: UnrepresentedProposalReason): UnrepresentedModelProposal {
-  return { entity: proposal.target.entity, field: proposal.target.field, evidenceQuote: proposal.evidenceQuote, reason };
+function quarantine(proposal: QuarantinableProposal | ModelProposal, reason: UnrepresentedProposalReason, text: string): UnrepresentedModelProposal {
+  const references = proposal.evidenceReferences;
+  const passages = Array.isArray(references) && references.every((reference) => typeof reference === "string")
+    ? resolveSourceReferences(text, references) : undefined;
+  return { entity: proposal.target.entity, field: proposal.target.field,
+    evidenceQuote: passages?.map(({ text }) => text).join("\n") ?? "Supporting text could not be identified. Restate the missing information below.", reason };
 }
 
 function proposalSchemaReason(error: z.ZodError): UnrepresentedProposalReason {
   if (error.issues.some(({ path }) => path[0] === "target")) return "unsupported-target";
   if (error.issues.some(({ path }) => path[0] === "value")) return "incompatible-value";
+  if (error.issues.some(({ path }) => path[0] === "evidenceReferences")) return "invalid-source-reference";
   return "unsupported-proposal";
 }
 

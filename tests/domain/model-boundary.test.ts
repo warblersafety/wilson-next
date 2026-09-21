@@ -1,7 +1,7 @@
+import { parseQuotedFixture as parseModelProposalEnvelope, referenceFixture } from "../fixtures/source-references";
 import { describe, expect, it, vi } from "vitest";
 import {
   modelProposalOutputSchema,
-  parseModelProposalEnvelope,
   type ModelBoundaryIdentityFactory,
 } from "../../src/domain/case/model-boundary";
 import { modelTargetValueContracts, type KnownValueContract } from "../../src/domain/case/value-contract";
@@ -33,11 +33,11 @@ describe("model proposal boundary", () => {
     const parsed = parseModelProposalEnvelope(candidate(), identities);
 
     expect(parsed.sources).toEqual([{
-      id: "source-patient-identifier",
+      id: "source-input-1-p1",
       inputId: "input-1",
       inputType: "narrative",
-      excerpt: "TEST-57",
-      start: 8,
+      excerpt: "Patient TEST-57",
+      start: 0,
       end: 15,
       actor: "clinician",
       recordedAt,
@@ -45,7 +45,7 @@ describe("model proposal boundary", () => {
     expect(parsed.proposals).toEqual([expect.objectContaining({
       proposalId: "proposal-patient-identifier",
       groupId: "patient",
-      sourceIds: ["source-patient-identifier"],
+      sourceIds: ["source-input-1-p1"],
     })]);
   });
 
@@ -55,22 +55,22 @@ describe("model proposal boundary", () => {
     absent.output.proposals.push(companionProposal("Patient TEST-57") as never);
     expect(parseModelProposalEnvelope(absent, identities)).toMatchObject({
       proposals: [expect.objectContaining({ target: { entity: "event", entityId: "event", field: "problemDescription" } })],
-      unrepresented: [{ entity: "patient", field: "identifier", evidenceQuote: "missing", reason: "evidence-not-found" }],
+      unrepresented: [{ entity: "patient", field: "identifier", evidenceQuote: "Supporting text could not be identified. Restate the missing information below.", reason: "invalid-source-reference" }],
     });
 
     const ambiguous = candidate("rash then rash");
     ambiguous.output.proposals[0].evidenceQuote = "rash";
     ambiguous.output.proposals.push(companionProposal("rash then rash") as never);
     expect(parseModelProposalEnvelope(ambiguous, identities).unrepresented).toEqual([
-      { entity: "patient", field: "identifier", evidenceQuote: "rash", reason: "evidence-ambiguous" },
+      { entity: "patient", field: "identifier", evidenceQuote: "Supporting text could not be identified. Restate the missing information below.", reason: "invalid-source-reference" },
     ]);
 
     const blank = candidate();
     blank.output.proposals[0].evidenceQuote = " ";
-    expect(() => parseModelProposalEnvelope(blank, identities)).toThrow("must not be blank");
+    expect(() => parseModelProposalEnvelope(blank, identities)).toThrow();
   });
 
-  it("rejects the response when a proposal lacks the minimum citation required for visible quarantine", () => {
+  it("quarantines a missing reference list while retaining a valid sibling", () => {
     const malformed = candidate() as unknown as {
       output: { proposals: Array<Record<string, unknown>> };
     };
@@ -78,7 +78,7 @@ describe("model proposal boundary", () => {
     malformed.output.proposals[0].source = { id: "model-source", start: 8, end: 15 };
     malformed.output.proposals.push(companionProposal("Patient TEST-57"));
 
-    expect(() => parseModelProposalEnvelope(malformed as never, identities)).toThrow();
+    expect(parseModelProposalEnvelope(malformed as never, identities)).toMatchObject({ proposals: [expect.objectContaining({ target: { entity: "event", entityId: "event", field: "problemDescription" } })], unrepresented: [expect.objectContaining({ reason: "invalid-source-reference" })] });
   });
 
   it("shares one exact source when several proposals cite the same clause", () => {
@@ -95,8 +95,8 @@ describe("model proposal boundary", () => {
     const parsed = parseModelProposalEnvelope(shared, identities);
     expect(parsed.sources).toHaveLength(1);
     expect(parsed.proposals.map(({ sourceIds }) => sourceIds)).toEqual([
-      ["source-patient-identifier"],
-      ["source-patient-identifier"],
+      ["source-input-1-p1"],
+      ["source-input-1-p1"],
     ]);
   });
 
@@ -171,11 +171,11 @@ describe("model proposal boundary", () => {
 
     expect(parsed.products).toHaveLength(3);
     expect(parsed.proposals).toHaveLength(3);
-    expect(parsed.sources.map(({ excerpt }) => excerpt)).toEqual(["Drug A", "Drug B", "Drug C"]);
+    expect(parsed.sources.map(({ excerpt }) => excerpt)).toEqual(["Drug A, Drug B, Drug C, Drug D"]);
     expect(parsed.unrepresented).toEqual([{
       entity: "product",
       field: "name",
-      evidenceQuote: "Drug D",
+      evidenceQuote: "Drug A, Drug B, Drug C, Drug D",
       reason: "product-limit",
     }]);
     expect(createIdentity).not.toHaveBeenCalledWith("product", "product-4");
@@ -251,7 +251,7 @@ describe("model proposal boundary", () => {
     malformed.output.proposals.push(companionProposal("Patient TEST-57") as never);
     expect(parseModelProposalEnvelope(malformed, identities)).toMatchObject({
       proposals: [expect.objectContaining({ target: { entity: "event", entityId: "event", field: "problemDescription" } })],
-      unrepresented: [{ entity: "patient", field: "identifier", evidenceQuote: "TEST-57", reason: "incompatible-value" }],
+      unrepresented: [{ entity: "patient", field: "identifier", evidenceQuote: "Patient TEST-57", reason: "incompatible-value" }],
     });
   });
 
@@ -265,7 +265,7 @@ describe("model proposal boundary", () => {
       unrepresented: [{
         entity: "patient",
         field: "unsupportedClinicalCode",
-        evidenceQuote: "TEST-57",
+        evidenceQuote: "Patient TEST-57",
         reason: "unsupported-target",
       }],
     });
@@ -351,11 +351,11 @@ describe("model proposal boundary", () => {
       expect.objectContaining({ target: { entity: "patient", entityId: "patient", field: "identifier" } }),
     ]);
     expect(parsed.sources).toEqual([
-      expect.objectContaining({ excerpt: "TEST-68", start: 8, end: 15 }),
+      expect.objectContaining({ excerpt: "Patient TEST-68 developed hives. ", start: 0, end: 33 }),
     ]);
     expect(parsed.unrepresented).toEqual([
-      { entity: "event", field: "symptoms", evidenceQuote: "developed hives", reason: "incompatible-value" },
-      { entity: "event", field: "productAvailability", evidenceQuote: "The device is available for evaluation", reason: "incompatible-value" },
+      { entity: "event", field: "symptoms", evidenceQuote: "Patient TEST-68 developed hives. ", reason: "incompatible-value" },
+      { entity: "event", field: "productAvailability", evidenceQuote: "The device is available for evaluation.", reason: "incompatible-value" },
     ]);
   });
 
@@ -408,7 +408,7 @@ describe("model proposal boundary", () => {
             target, value: { kind: "known", value: validKnownValue(contract) }, evidenceQuote: "synthetic evidence",
           }],
         };
-        expect(modelProposalOutputSchema.safeParse(output).success, `${entity}.${field}`).toBe(true);
+        expect(modelProposalOutputSchema.safeParse(referenceFixture("Evidence", output)).success, `${entity}.${field}`).toBe(true);
       }
     }
   });

@@ -226,6 +226,8 @@ const stateSchema = z.object({
       "unsupported-proposal",
       "unsupported-target",
       "product-limit",
+      "test-limit",
+      "invalid-source-reference",
       "incompatible-value",
       "unresolved-entity",
       "evidence-not-found",

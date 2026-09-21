@@ -209,8 +209,8 @@ export default function Journey() {
         <div className={snapshot.stage === "describe" ? styles.openingWorkspace : styles.workspace}>
           <section className={styles.activeTask} aria-labelledby="task-title">
             {snapshot.stage === "describe" && <Describe key={browserState?.case.id} opening={opening} setOpening={setOpening} reportType={reportType} setReportType={setReportType} busy={busy} interpreting={pendingOperation === "opening"} act={act} />}
-            {snapshot.stage === "understanding" && <UnderstandingTask snapshot={snapshot} busy={busy} act={act} />}
-            {snapshot.stage === "clarify" && <CompletionTask key={snapshot.clarification?.key} snapshot={snapshot} busy={busy} act={act} />}
+            {snapshot.stage === "understanding" && <UnderstandingTask snapshot={snapshot} update={update} setUpdate={setUpdate} busy={busy} act={act} />}
+            {snapshot.stage === "clarify" && <><CompletionTask key={snapshot.clarification?.key} snapshot={snapshot} busy={busy} act={act} /><CorrectionInput update={update} setUpdate={setUpdate} busy={busy} act={act} /></>}
             {snapshot.stage === "review-update" && <UpdateReview snapshot={snapshot} busy={busy} act={act} />}
           </section>
           {snapshot.stage !== "describe" && <section className={styles.casePanel} aria-labelledby="case-title">
@@ -301,26 +301,40 @@ function NarrativeInput({ id, label, context, rows, value, onChange }: {
   </div>;
 }
 
-function UnderstandingTask({ snapshot, busy, act }: {
-  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+function CorrectionInput({ update, setUpdate, busy, act }: {
+  update: string; setUpdate: (value: string) => void; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+}) {
+  return <section className={styles.updateBox} aria-labelledby="update-title">
+    <h2 id="update-title">Add or correct information</h2>
+    <p>Describe the correction or missing detail, including which test or product it concerns.</p>
+    <NarrativeInput id="later-update" label="Clinical update" context="update" rows={5} value={update} onChange={setUpdate} />
+    <button disabled={busy || !update.trim()} onClick={() => void act({ action: "submit-update", text: update })}>Review this update</button>
+  </section>;
+}
+
+function UnderstandingTask({ snapshot, update, setUpdate, busy, act }: {
+  snapshot: JourneySnapshot; update: string; setUpdate: (value: string) => void; busy: boolean; act: (action: JourneyAction) => Promise<void>;
 }) {
   return <>
     <p className={styles.eyebrow}>Check understanding</p>
     <h1 id="task-title">Check Wilson’s understanding</h1>
-    <p>Review the proposed groups and their source evidence. You can draft several typed changes in one group and accept them together, or remove an incorrect product or test.</p>
-    <button disabled={busy} onClick={() => void act({ action: "accept-understanding" })}>Accept the remaining understanding</button>
+    <p>Check the case summary and supporting text. If anything is wrong or missing, tell Wilson below. You’ll review the proposed changes before accepting them.</p>
+    <CorrectionInput update={update} setUpdate={setUpdate} busy={busy} act={act} />
+    <p>When the remaining proposed information is correct, accept it to continue.</p>
+    <button disabled={busy} onClick={() => void act({ action: "accept-understanding" })}>Accept all remaining proposals and continue</button>
   </>;
 }
 
 function UnrepresentedNotice({ items }: { items: JourneySnapshot["unrepresented"] }) {
   return <section className={styles.quarantine} role="status" aria-labelledby="unrepresented-title">
     <h2 id="unrepresented-title">Some details were left out</h2>
-    <p>Wilson could not safely represent these suggestions, so they were not added to the case or Form FDA 3500. If a product was retained, add missing identity in its reviewed product card; required gaps will also be named before PDF output.</p>
-    <ul>{items.map((item, index) => <li key={`${item.entity}-${item.field}-${item.evidenceQuote}-${index}`}>
+    <p>Some suggested details could not be added. Check the summary, then describe what is missing in Clinical update. You can recover a missing test there.</p>
+    <details><summary>View {items.length} omitted details and supporting text</summary>
+    <ul>{items.map((item, index) => <li key={`${item.entity}-${item.field}-${index}`}>
       <strong>{unrepresentedTargetLabel(item.entity, item.field)}</strong>
       <span>{unrepresentedReason(item.reason)}</span>
-      <blockquote>Text Wilson cited: “{item.evidenceQuote}”</blockquote>
-    </li>)}</ul>
+      <blockquote>{item.evidenceQuote}</blockquote>
+    </li>)}</ul></details>
   </section>;
 }
 
@@ -600,11 +614,11 @@ function ReporterTask({ snapshot, busy, act }: {
 function UpdateReview({ snapshot, busy, act }: {
   snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
 }) {
-  const groups = groupAttention(snapshot.review.attention.filter(({ kind }) => kind !== "conflict"));
+  const groups = groupAttention(snapshot.review.attention.filter(({ kind, groupId }) => kind !== "conflict" && !snapshot.openingGroups.includes(groupId ?? "")));
   return <>
     <p className={styles.eyebrow}>Review update</p>
     <h1 id="task-title">Review the proposed update</h1>
-    <p>Accepted knowledge stays active until you accept a correction. An accepted incompatible alternative remains visibly unresolved and is omitted from the form.</p>
+    <p>Review each proposed change before continuing. Earlier information stays unchanged until you accept a correction. An accepted incompatible alternative remains visibly unresolved and is omitted from the form.</p>
     {groups.map(({ groupId, items }) => <article className={styles.attentionCard} key={groupId}>
       <span className={styles.attentionLabel}>{items.some(({ kind }) => kind === "correction") ? "Proposed correction" : "Proposed information"}</span>
       {items.map((item) => <div key={item.target}>
@@ -666,12 +680,7 @@ function OutputComposition({ snapshot, update, setUpdate, busy, act, openPdf }: 
         <button className={styles.download} disabled={busy || !snapshot.downloadReady} onClick={() => void openPdf("download")}>Download official PDF</button>
       </div>
 
-      <section className={styles.updateBox} aria-labelledby="update-title">
-        <h2 id="update-title">Add a correction or later update</h2>
-        <p>Wilson will propose changes against the reviewed product identities. Existing facts remain active until you accept an update.</p>
-        <NarrativeInput id="later-update" label="Clinical update" context="update" rows={5} value={update} onChange={setUpdate} />
-        <button disabled={busy || !update.trim()} onClick={() => void act({ action: "submit-update", text: update })}>Review this update</button>
-      </section>
+      <CorrectionInput update={update} setUpdate={setUpdate} busy={busy} act={act} />
 
       <CaseSummaryHeading attention={snapshot.review.attention} />
       <CaseCards snapshot={snapshot} busy={busy} act={act} />
@@ -843,7 +852,7 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
       </div>
     </div>
     {entityState === "withdrawn" && <p className={styles.withdrawn}>Withdrawn from the active report; reviewed facts and source history are retained below.</p>}
-    {entity === "test" && entityState !== "withdrawn" && !knownString(activeValue(facts.testName)) && <p role="status">Test identity is not recorded as known. Check the source wording; {allowOpeningReview ? "accept the understanding, then add the identity in this test card" : "use Test identity below to add or correct it"}. You can leave it unknown and continue with a partial report.</p>}
+    {entity === "test" && entityState !== "withdrawn" && !knownString(activeValue(facts.testName)) && <p role="status">Test identity is not recorded as known. Check the source wording. You can supply its name in Clinical update or leave it unknown for a partial report.</p>}
     <dl>{fields.map((field) => {
       const fact = facts[field];
       if (!fact) return null;
@@ -1005,6 +1014,8 @@ function unrepresentedReason(reason: JourneySnapshot["unrepresented"][number]["r
   return {
     "unsupported-proposal": "The suggestion did not use Wilson’s supported proposal format.",
     "unsupported-target": "Wilson does not support that case field in this path.",
+    "invalid-source-reference": "Wilson could not identify the supporting text. Restate this detail in Clinical update.",
+    "test-limit": "This preview supports up to eight relevant tests.",
     "product-limit": "The suggestion was for a product beyond Wilson’s supported three-product limit.",
     "incompatible-value": "The suggested value did not match the supported format for this field.",
     "unresolved-entity": "The suggestion could not be linked to a reviewed product or relevant test.",

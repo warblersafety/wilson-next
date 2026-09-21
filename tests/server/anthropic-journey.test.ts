@@ -1,6 +1,7 @@
 import { APIError } from "@anthropic-ai/sdk";
+import { referenceFixture, type QuotedFixtureOutput as ModelProposalOutput } from "../fixtures/source-references";
 import { describe, expect, it, vi } from "vitest";
-import type { ModelBoundaryIdentityFactory, ModelProposalOutput } from "../../src/domain/case/model-boundary";
+import type { ModelBoundaryIdentityFactory } from "../../src/domain/case/model-boundary";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { performJourneyAction } from "../../src/server/journey/service";
 import {
@@ -45,7 +46,7 @@ const identities: ModelBoundaryIdentityFactory = (kind, reference) => (
 );
 
 describe("Anthropic production model boundary", () => {
-  it("builds a case-agnostic structured request with quotations rather than offsets", () => {
+  it("builds a case-agnostic structured request with code-labelled references rather than copied quotations or offsets", () => {
     const request = createAnthropicRequest("opening", openingText);
     const requestText = `${request.system}\n${request.messages[0].content}`;
     const schema = JSON.stringify(request.output_config.format.schema);
@@ -59,13 +60,13 @@ describe("Anthropic production model boundary", () => {
     expect(request).not.toHaveProperty("tools");
     expect(requestText).toContain("response-local productReference");
     expect(requestText).toContain("Wilson—not you—assigns stable case identity");
-    expect(requestText).toContain("evidenceQuote");
-    expect(requestText).toContain("Completeness outranks brevity");
+    expect(requestText).toContain("evidenceReferences");
+    expect(requestText).toContain("negation");
     expect(requestText).toContain("preserve explicitly stated descriptive detail");
     expect(requestText).toContain("named only as treatment administered in response");
     expect(requestText).not.toMatch(/apixaban|naproxen|lisinopril/i);
-    expect(schema).toContain("evidenceQuote");
-    expect(schema).toContain("Completeness outranks brevity");
+    expect(schema).toContain("evidenceReferences");
+    expect(schema).toContain("negation");
     expect(schema).toContain("Preserve explicitly stated descriptive detail");
     expect(schema).toContain("Known values must match their target");
     expect(schema).toContain("event.symptoms");
@@ -146,7 +147,7 @@ describe("Anthropic production model boundary", () => {
       () => recordedAt,
     ).propose("opening", openingText);
     expect(absentResult.envelope.unrepresented).toEqual([
-      expect.objectContaining({ evidenceQuote: "not present", reason: "evidence-not-found" }),
+      expect.objectContaining({ reason: "invalid-source-reference" }),
     ]);
 
     const ambiguousText = "rash improved, then rash returned";
@@ -164,14 +165,14 @@ describe("Anthropic production model boundary", () => {
       },
     ];
     const ambiguousResult = await createAnthropicJourneyModel(
-      async () => response(ambiguous, "opening"),
+      async () => response(ambiguous, "opening", ambiguousText),
       Date.now,
       undefined,
       identities,
       () => recordedAt,
     ).propose("opening", ambiguousText);
     expect(ambiguousResult.envelope.unrepresented).toEqual([
-      expect.objectContaining({ evidenceQuote: "rash", reason: "evidence-ambiguous" }),
+      expect.objectContaining({ reason: "invalid-source-reference" }),
     ]);
   });
 
@@ -195,10 +196,11 @@ describe("Anthropic production model boundary", () => {
 
     const declared = correctionOutput();
     declared.products = [{ productReference: "new-product", groupReference: "new-group" }];
-    const declarationFailure = await modelFailure(createAnthropicJourneyModel(
+    const declarationResult = await createAnthropicJourneyModel(
       async () => response(declared, "correction"), Date.now, undefined, identities, () => recordedAt,
-    ).propose("correction", correctionText, reviewedCase));
-    expect(declarationFailure.diagnostic.issues?.[0].message).toContain("cannot declare new entities");
+    ).propose("correction", correctionText, reviewedCase);
+    expect(declarationResult.envelope.proposals).toHaveLength(1);
+    expect(declarationResult.envelope.products).toEqual([]);
   });
 
   it("quarantines a noncanonical product role without a medicine-specific rule", async () => {
@@ -231,10 +233,10 @@ describe("Anthropic production model boundary", () => {
 
     const invalidSchema = response(openingOutput(), "opening");
     const decoded = responseOutput(invalidSchema);
-    delete (decoded.proposals[0] as Partial<ModelProposalOutput["proposals"][number]>).evidenceQuote;
+    delete (decoded.proposals[0] as { target?: unknown }).target;
     setResponseOutput(invalidSchema, decoded);
     expect((await modelFailure(createAnthropicJourneyModel(async () => invalidSchema).propose("opening", openingText))).diagnostic)
-      .toMatchObject({ phase: "structured-schema", issues: [{ path: "proposals.0.evidenceQuote" }] });
+      .toMatchObject({ phase: "structured-schema", issues: [{ path: "proposals.0.target" }] });
   });
 
   it("retains safe provider status metadata without provider detail", async () => {
@@ -298,7 +300,7 @@ describe("Anthropic production model boundary", () => {
     expect(snapshot).toMatchObject({ stage: "understanding", revision: 2 });
     expect(snapshot.understanding.patient.identifier.proposals[0]).toMatchObject({
       value: { kind: "known", value: "UNEXPECTED" },
-      evidence: ["SYN-1"],
+      evidence: ["Patient SYN-1 reported rash after taking Product A 10 mg. "],
     });
   });
 });
@@ -363,12 +365,12 @@ function productProposal(
   };
 }
 
-function response(output: ModelProposalOutput, turn: "opening" | "correction"): AnthropicModelResponse {
+function response(output: ModelProposalOutput, turn: "opening" | "correction", text = turn === "opening" ? openingText : correctionText): AnthropicModelResponse {
   return {
     id: `message-${turn}`,
     model: ANTHROPIC_MODEL_ID,
     stop_reason: "end_turn",
-    content: [{ type: "text", text: JSON.stringify(output) }],
+    content: [{ type: "text", text: JSON.stringify(referenceFixture(text, output)) }],
     usage: {
       input_tokens: 100,
       cache_creation_input_tokens: 10,

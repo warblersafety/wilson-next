@@ -83,7 +83,7 @@ const predeterminedResponses = JSON.stringify([{
       intent: "fact",
       target: { entity: "patient", field: "identifier" },
       value: { kind: "known", value: "TEST-1" },
-      evidenceQuote: "Patient TEST-1",
+      evidenceReferences: ["p1"],
     }],
   },
 }]);

@@ -1,5 +1,5 @@
+import { parseQuotedFixture as parseModelProposalEnvelope } from "./source-references";
 import {
-  parseModelProposalEnvelope,
   type ModelBoundaryIdentityFactory,
 } from "../../src/domain/case/model-boundary";
 import type { CaseValue, FactTarget } from "../../src/domain/case/types";

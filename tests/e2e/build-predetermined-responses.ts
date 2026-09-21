@@ -1,4 +1,5 @@
-import type { ModelProposalOutput } from "../../src/domain/case/model-boundary.ts";
+import { sourceReferenceOutput, sourceReferenceCorrection, recoveryOutput } from "../fixtures/source-reference-case";
+import { referenceFixture, type QuotedFixtureOutput as ModelProposalOutput } from "../fixtures/source-references.ts";
 import type { ProductFactKey } from "../../src/domain/case/types.ts";
 
 export const richOpening = "Patient TEST-68 is a 68-year-old man. He began cephalexin 500 mg by mouth twice daily on 01-Aug-2026 for cellulitis. On 04-Aug-2026 he developed diffuse hives and facial swelling and was hospitalized. Cephalexin was stopped, he was treated with epinephrine and diphenhydramine, and he recovered and was discharged on 05-Aug-2026. I suspect cephalexin.";
@@ -537,7 +538,7 @@ interface PredeterminedModelResponse {
   output: ModelProposalOutput;
 }
 
-export const predeterminedResponseScenarios = {
+const quotedScenarios = {
   issue78IdentityQuarantine: [
     { identityScope: "issue78-identity-quarantine", turn: "opening", output: identityQuarantineResponse() },
   ],
@@ -596,6 +597,26 @@ export const predeterminedResponseScenarios = {
   ],
 } as const satisfies Record<string, readonly PredeterminedModelResponse[]>;
 
-export const predeterminedModelResponses: PredeterminedModelResponse[] = Object.values(
-  predeterminedResponseScenarios,
-).flat();
+const scenarioInputs: Record<keyof typeof quotedScenarios, readonly string[]> = {
+  issue78IdentityQuarantine: [identityQuarantineOpening], issue67Quarantine: [quarantineOpening],
+  layer3Combined: [layer3CombinedOpening], layer3Conditional: [layer3ConditionalOpening], layer3Correction: [layer3CorrectionOpening, layer3CorrectionUpdate],
+  layer2Device: [layer2DeviceOpening], layer2ProductQuality: [layer2ProductQualityOpening],
+  layer1Death: [layer1DeathOpening], layer1Tests: [layer1TestsOpening, layer1TestsUpdate], layer1Role: [layer1RoleOpening, layer1RoleUpdate],
+  adaptiveRich: [adaptiveRichOpening], adaptiveSparse: [adaptiveSparseOpening], rich: [richOpening], sparse: [sparseOpening], repeated: [repeatedOpening, repeatedUpdate], changeRemove: [regressionOpening], experiment1: [regressionOpening, regressionUpdate],
+};
+const priorScenarios = Object.fromEntries(Object.entries(quotedScenarios).map(([name, turns]) => [name, turns.map((turn, index) => ({ ...turn, output: referenceFixture(scenarioInputs[name as keyof typeof quotedScenarios][index], turn.output) }))])) as Record<keyof typeof quotedScenarios, Array<{ identityScope: string; turn: "opening" | "correction"; output: import("../../src/domain/case/model-boundary").ModelProposalOutput }>>;
+
+const omitted = sourceReferenceOutput();
+omitted.proposals.filter(({ target }) => target.entity === "test" && target.testReference === "t3").forEach((proposal) => { proposal.evidenceReferences = ["missing"]; });
+export const predeterminedResponseScenarios = {
+  ...priorScenarios,
+  issue96: [
+    { identityScope: "issue96", turn: "opening" as const, output: sourceReferenceOutput() },
+    { identityScope: "issue96-update", turn: "correction" as const, output: sourceReferenceCorrection("test-issue96-t0", "test-issue96-t4") },
+  ],
+  issue96Omitted: [
+    { identityScope: "issue96-omitted", turn: "opening" as const, output: omitted },
+    { identityScope: "issue96-recovery", turn: "correction" as const, output: recoveryOutput() },
+  ],
+};
+export const predeterminedModelResponses = Object.values(predeterminedResponseScenarios).flat();

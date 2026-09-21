@@ -1,0 +1,13 @@
+{
+  "capturedPages": [
+    {
+      "page": 3,
+      "rendered": true,
+      "screenshot": "evidence/issue-96/corrected-pdf-page-3.png"
+    }
+  ],
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "evidence/issue-96/source-reference-correction.pdf",
+  "inspection": "Five corrected B6 rows align identity/result, range and date; unknown details remain blank. \u03b2/\u2265 separately render in unicode-pdf-page-3.png."
+}

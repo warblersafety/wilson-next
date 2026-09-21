@@ -1,0 +1,28 @@
+{
+  "recordedAt": "2026-09-21T00:04:35.040248+00:00",
+  "syntheticOnly": true,
+  "maxCalls": 3,
+  "maxCostUsd": 5,
+  "reservationPerCallUsd": 1.5,
+  "retries": 0,
+  "policy": "Reserve before each exposed call; stop and record a failure, without automatic retry or sampling to erase it. Any remediation recheck requires a new pre-execution record within Delivery limits. Three calls give existence evidence, not a reliability rate.",
+  "cases": [
+    {
+      "id": "demo91-opening",
+      "text": "Patient DEMO-91 is a 54-year-old woman who took ibuprofen for back pain and developed melena on 11 September 2026. I suspect ibuprofen.\nHer hemoglobin was 9.1 g/dL, reference range 12 to 16, on 11 September 2026. A stool test was positive for occult blood on the same date.\nHer platelet count was 82; I don\u2019t have its units or collection date. Ferritin was tested, but I don\u2019t have the result or date.\nThere was also a separate negative test, but I don\u2019t have its name or date available.",
+      "expected": "Five distinct tests: hemoglobin 9.1 g/dL with range 12\u201316 and date 2026-09-11; stool occult blood positive on the same date; platelet count 82 without inferred units/date; ferritin with unavailable result/date; separate unnamed negative test with unavailable date. Exact original supporting excerpts; no quarantine."
+    },
+    {
+      "id": "demo91-correction",
+      "text": "I\u2019ve now located the report for the unidentified negative test. It was a Helicobacter pylori stool antigen test. Its collection date is still unavailable. Also, I misread the hemoglobin: it was 8.9 g/dL, not 9.1. The hemoglobin reference range and date were correct.",
+      "expected": "From initial review, link the existing unnamed test to Helicobacter pylori stool antigen and change only hemoglobin result to 8.9 g/dL. No duplicate tests, no premature acceptance or direct edits. Other test facts, dates, range, negative result and unknowns retained. Review updates and independently read downloaded PDF."
+    },
+    {
+      "id": "contrasting",
+      "text": "Patient DEMO-96-C is a 63-year-old man who developed a rash while taking allopurinol for gout. I suspect allopurinol. Serum \u03b2 marker was \u2265 4 \u00b5g/L (reference range 2\u20136) on 12 September 2026. The urine culture collected that same day showed no growth. Platelets were not tested. A ferritin test was performed, but its result and collection date aren\u2019t available.",
+      "expected": "Serum \u03b2 marker \u2265 4 \u00b5g/L, range 2\u20136, 2026-09-12; urine culture no growth on that same date; ferritin with unavailable result/date. Do not invent a performed platelet measurement. Greek/inequality output faithful in PDF. Source support and clinical attribution assessed separately."
+    }
+  ],
+  "reason": "One bounded recheck after general prompt clarification: v1 omitted explicit laboratory unknowns and used explicitly-absent for an unavailable date; the contrast failed closed on duplicate test group references. No fixtures, source-reference validation or values are repaired. Recheck the same exact three inputs; preserve both initial failures; no automatic retries.",
+  "promptRevision": "wilson-source-references-recovery-v2"
+}

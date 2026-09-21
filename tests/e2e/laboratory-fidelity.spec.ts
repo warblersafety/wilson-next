@@ -26,9 +26,9 @@ test("repairs missing laboratory identity, corrects one result, and downloads fa
   const first = page.locator("#case-card-test-2");
   const second = page.locator("#case-card-test-3");
   await expect(first.getByRole("status")).toContainText("Test identity is not recorded as known");
-  await expect(second.getByRole("status")).toContainText("accept the understanding");
+  await expect(second.getByRole("status")).toContainText("supply its name in Clinical update");
   await expect(first).toContainText("Her hemoglobin was 9.1 g/dL");
-  await page.getByRole("button", { name: "Accept the remaining understanding" }).click();
+  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
   await expect(page.getByRole("button", { name: "Download official PDF" })).toBeEnabled();
   await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("Test identity not recorded: 9.1 g/dL");
   for (const [card, name] of [[first, "hemoglobin"], [second, "stool test"]] as const) {

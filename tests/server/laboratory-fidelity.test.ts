@@ -1,5 +1,6 @@
+import { parseQuotedFixture as parseModelProposalEnvelope } from "../fixtures/source-references";
 import { describe, expect, it } from "vitest";
-import { parseModelProposalEnvelope } from "../../src/domain/case/model-boundary";
+
 import { applyCaseCommand } from "../../src/domain/case/commands";
 import { createSemanticCase } from "../../src/domain/case/create";
 import { projectForm3500 } from "../../src/domain/case/projection";
@@ -31,7 +32,7 @@ describe("laboratory identity and result fidelity", () => {
       for (const [field, expected] of Object.entries(observation)) {
         const fact = state.relevantTests[index].facts[field as keyof typeof state.relevantTests[number]["facts"]];
         expect(fact.resolvedValue?.value).toEqual(expected === null ? { kind: "unknown" } : { kind: "known", value: expected });
-        expect(createUnderstandingView(state).relevantTests[index].facts[field].evidence).toContain(scenario.text);
+        expect(createUnderstandingView(state).relevantTests[index].facts[field].evidence.join("")).toBe(scenario.text);
       }
       if (!("date" in observation)) expect(state.relevantTests[index].facts.date.state).toBe("empty");
       expect(projection.sections.B.relevantTests[index].testResult).toContain(observation.testResult ?? "Result not recorded");

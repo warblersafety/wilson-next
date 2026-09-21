@@ -44,6 +44,7 @@ export interface JourneySnapshot {
   outputIssues: OutputReadinessIssue[];
   transitionNotice?: string;
   unrepresented: UnrepresentedModelProposal[];
+  openingGroups: string[];
 }
 
 export type OutputReadinessIssueCode =
@@ -90,6 +91,7 @@ export async function getJourneySnapshot(
     downloadReady: outputIssues.length === 0,
     outputIssues,
     unrepresented,
+    openingGroups: pendingOpeningGroups(caseState),
   };
 }
 
@@ -430,8 +432,8 @@ export async function performJourneyAction(
         break;
       }
       case "submit-update": {
-        requireStage(expectedStage, "output");
-        const context = createReviewedCaseModelContext(current);
+        requireOneOfStages(expectedStage, ["understanding", "clarify", "output"]);
+        const context = createReviewedCaseModelContext(current, true);
         const update = await proposeWithDiagnostics(model, "correction", action.text, diagnostics, context);
         const { unrepresented: updateUnrepresented, ...updateEnvelope } = update.envelope;
         unrepresented = [...unrepresented, ...updateUnrepresented];
@@ -544,6 +546,8 @@ async function proposeWithDiagnostics(
 
 export function stageFor(caseState: SemanticCase): JourneyStage {
   if (caseState.revision === 0) return "describe";
+  const openingGroups = new Set(pendingOpeningGroups(caseState));
+  if (allFacts(caseState).some(({ fact }) => fact.proposedValues.some(({ groupId }) => !openingGroups.has(groupId)))) return "review-update";
   if (caseState.patient.state === "proposed"
     || caseState.event.state === "proposed"
     || caseState.products.some(({ state }) => state === "proposed")

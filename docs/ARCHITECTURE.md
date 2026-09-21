@@ -15,7 +15,9 @@ products or tests as inactive history; Issue #78 retains incomplete reviewed
 products for direct repair, adds explicit output-readiness policy, and makes
 branch-dependent product facts and responsive operator controls truthful;
 Issue #83 adds one expiring, exact-deployment Shareable Link for a designated
-synthetic-only cofounder walkthrough without creating a production release
+synthetic-only cofounder walkthrough without creating a production release;
+Issue #96 replaces model-copied quotations with code-owned source references
+and permits conversational correction and test recovery before initial acceptance
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification
@@ -148,8 +150,8 @@ result is missing or rejected by the model boundary. No clinical vocabulary,
 unit, range or date is inferred. Unfamiliar dictated terms remain verbatim for
 source review; broad ambiguity detection is deferred, not a clinical validator.
 
-Review shows missing identity and allows direct repair using the existing fact
-controls after acceptance. It does not block partial output or create repeated
+Review shows missing identity and permits conversational correction or addition
+before initial acceptance; existing direct fact controls remain a fallback. It does not block partial output or create repeated
 completion questions. B6 combines reviewed identity and result, explicitly
 marking missing identity/result, with both facts' source trace retained. Other
 missing details stay blank with their existing omission reasons. Corrections
@@ -166,7 +168,13 @@ The application owns stable opaque case entity IDs. On opening input, the model
 may group mentions under response-local product or relevant-test references;
 the model boundary validates those groups and assigns case IDs before proposals
 reach `applyCaseCommand`. A later model input receives the relevant reviewed
-product and test IDs and may reference only those IDs for supported updates.
+product and test IDs, including explicitly labelled pending interpretations,
+and uses those IDs for supported updates. It may declare a genuinely additional
+or wholly omitted test using a response-local reference; code assigns its stable
+ID. An exact supplied ID echoed in the declaration list still links to the
+existing observation and never allocates another entity. It must not declare a
+new response-local identity to correct an existing observation. Later product
+declarations remain unsupported and are quarantined locally.
 Stable identity is never derived from medicine or test name, list position,
 fixture data, or a PDF row. The model proposes mention linkage; it does not own
 case identity.
@@ -231,8 +239,8 @@ framework is required.
 ## Model responsibility
 
 The model may propose typed patient, event, product, and relevant-test facts,
-mention grouping or links to application-supplied entities, qualifiers, exact
-verbatim supporting text, and the presence of a correction or unresolved
+mention grouping or links to application-supplied entities, qualifiers,
+supporting passage references, and the presence of a correction or unresolved
 alternative. It may not propose reporter identity or contact facts. It may not:
 
 - confirm, overwrite, or resolve case knowledge;
@@ -261,18 +269,21 @@ accepted knowledge unchanged:
 
 - the provider did not complete normally;
 - returned content is not valid structured output;
-- a proposal omits the minimum response-local reference, group, target, or exact
-  citation needed to identify and display a truthful quarantine notice;
+- a proposal omits the minimum response-local identity, group or target needed
+  to identify and display a truthful quarantine notice;
 - proposal or source identities are duplicated or internally inconsistent; or
 - every proposal is unrepresentable.
 
 A response that preserves that minimum may contain a proposal-local
-representation, target, resolved-identity, or exact-evidence fault. That
+representation, target, resolved-identity, or source-reference fault. That
 proposal is quarantined before source or proposal identity is created and never
 enters the semantic case or Form FDA 3500. The remaining valid proposals attach
 in one atomic command, and the clinician sees the omitted target, the exact text
-the model cited, and a plain-language reason throughout the disposable tab
-session. Declarations that lose every proposal are pruned, including product
+resolved from its selected references (or a notice that supporting text could
+not be identified), and a plain-language reason in a concise expandable
+disclosure throughout the disposable tab session. Restating missing information
+through Clinical update is available during understanding, clarification and
+output; a wholly omitted test can be recovered without restarting. Declarations that lose every proposal are pruned, including product
 declarations beyond the supported three-product limit. No value is coerced,
 repaired, guessed, or retried.
 
@@ -288,19 +299,34 @@ of the bounded eight test rows; the clinician can repair or withdraw it.
 Historical `incomplete-relevant-test` notices remain readable when restoring
 older preview state but are no longer emitted by current extraction.
 
-Exact-citation differences in capitalization, punctuation, or spacing remain
-operator-visible quarantine failures. Record
-such failures as evidence about the exact-location contract; do not tune the
-fixture, add normalization, or sample a live model to make them disappear.
+### Code-owned source references and initial-review recovery (Issue #96)
 
-These checks are finite application-input validation, not a hallucination
-guard. The model returns a self-contained exact quotation rather than character
-offsets. Deterministic code locates its single exact occurrence, assigns source
-identity, and records the resulting offsets. A successful match proves only
-where the clinician's words appear; deterministic code does not establish that
-the excerpt semantically supports the proposal. An absent or ambiguous match
-quarantines that proposal as described above. Do not add fuzzy matching, broad
-normalization, or fixture-specific source repair without a new approved premise.
+The application preserves the original input and segments it into sentence
+passages with code-assigned references and offsets. The model receives the
+ordered passage text and returns one or more references per proposal. Code
+resolves them against that same original input and builds the existing Source
+records with exact slices and offsets. Repeated wording has distinct references;
+missing, duplicate or invented references quarantine only the affected proposal.
+Multiple passages preserve subjects, shared dates, negation and corrections that
+span sentences. A sentence may contain several claims; reference selection and
+clinical attribution still need clinician review.
+
+These are finite input checks, not a hallucination guard. A valid reference
+proves source existence, not semantic support. Values are never unconditionally
+decoded, normalized or clinically repaired. The model no longer reproduces
+supporting quotations or computes offsets. Source-reference tables are transient
+extraction inputs; stored excerpts, sources, review history and PDF machinery
+retain their existing representation. Valid legacy drafts remain readable.
+
+During initial understanding review, conversational updates receive stable IDs
+and explicitly labelled pending values as linkage context, never as current
+input evidence or accepted truth. Review update groups before the remaining
+opening groups. Accepting a correction supersedes the older pending interpretation
+of that fact without accepting it, retaining its value and source history.
+Rejecting the update leaves the original proposal available. Other facts on the
+same entity remain unchanged. A new test retains the normal proposed-entity
+review and eight-test capacity bound; excess additions do not discard valid
+siblings. Source references do not establish overall extraction reliability.
 
 The runtime boundary must not compare live proposals with an experiment's
 expected proposal set, values, or source clauses. A structurally valid but
