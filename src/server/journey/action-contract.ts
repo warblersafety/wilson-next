@@ -134,7 +134,7 @@ export const journeyActionSchema = z.discriminatedUnion("action", [
   }).strict(),
   z.object({
     action: z.literal("answer-reporter"),
-    reportDate: z.iso.date().optional(),
+    reportDate: z.iso.date().nullable().optional(),
     reporter: z.discriminatedUnion("kind", [
       z.object({ kind: z.literal("declined") }).strict(),
       z.object({

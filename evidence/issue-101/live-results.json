@@ -1,0 +1,3445 @@
+{
+  "sha": "98ad1a78aee3b036e2096f78e4489b25d5d8a31d",
+  "deployment": "dpl_7spHNVQGeFHmXa7FTkR52fpThUiR",
+  "protocol": "live-protocol.json",
+  "startedAt": "2026-09-22T19:33:49.140Z",
+  "calls": [
+    {
+      "id": "opening",
+      "input": "Fictional case DRAFT4-54: a 54-year-old woman took ibuprofen 400 mg by mouth three times daily for back pain, starting 8 September 2026. I suspect ibuprofen. On 11 September she developed melena and dizziness and was hospitalized. She received intravenous fluids, recovered, and was discharged on 13 September. There was no death, life-threatening event, disability, congenital anomaly, required intervention to prevent permanent impairment, or other serious outcome. I will add the laboratory results and treatment history next.",
+      "expected": [
+        "One suspect ibuprofen product with dose 400 mg and indication back pain",
+        "Patient age 54 and female",
+        "Melena and dizziness without invented symptoms",
+        "Onset September 11, hospitalization, discharge September 13",
+        "Laboratory results and medication history remain missing until supplied"
+      ],
+      "exposedAt": "2026-09-22T19:33:51.255Z",
+      "elapsedMs": 22632,
+      "operationId": "f6fe6e39-931a-4c40-8a60-5de7d084d4aa",
+      "observed": {
+        "stage": "understanding",
+        "ready": false,
+        "needs": [],
+        "unrepresented": [],
+        "patient": {
+          "id": "patient",
+          "state": "proposed",
+          "facts": {
+            "ageYears": {
+              "proposed": [
+                {
+                  "id": "proposal-5bf6b0b2-19fe-425c-802c-7bd537bff44b",
+                  "group": "patient",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": 54
+                  }
+                }
+              ],
+              "history": [],
+              "conflicts": []
+            },
+            "sex": {
+              "proposed": [
+                {
+                  "id": "proposal-fa2ccdf5-73e8-448b-bf79-172bf72301fc",
+                  "group": "patient",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "female"
+                  }
+                }
+              ],
+              "history": [],
+              "conflicts": []
+            }
+          }
+        },
+        "event": {
+          "id": "event",
+          "state": "proposed",
+          "facts": {
+            "reportType": {
+              "resolved": {
+                "kind": "known",
+                "value": "adverse-event"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "symptoms": {
+              "proposed": [
+                {
+                  "id": "proposal-50b63bed-6b33-4f3a-bc30-d5c931a22f01",
+                  "group": "event",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": [
+                      "melena",
+                      "dizziness"
+                    ]
+                  }
+                }
+              ],
+              "history": [],
+              "conflicts": []
+            },
+            "onsetDate": {
+              "proposed": [
+                {
+                  "id": "proposal-87d66e8e-7cc3-4aed-8d96-6e3b31280db6",
+                  "group": "event",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "2026-09-11"
+                  }
+                }
+              ],
+              "history": [],
+              "conflicts": []
+            },
+            "death": {
+              "proposed": [
+                {
+                  "id": "proposal-ea500058-a3e8-463d-b16f-4914c828f7f9",
+                  "group": "event",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": false
+                  }
+                }
+              ],
+              "history": [],
+              "conflicts": []
+            },
+            "lifeThreatening": {
+              "proposed": [
+                {
+                  "id": "proposal-f3c94f12-eddb-446d-ae83-27706597284d",
+                  "group": "event",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": false
+                  }
+                }
+              ],
+              "history": [],
+              "conflicts": []
+            },
+            "hospitalized": {
+              "proposed": [
+                {
+                  "id": "proposal-9b27522e-b702-4fef-8bf3-c1d5ee91b863",
+                  "group": "event",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": true
+                  }
+                }
+              ],
+              "history": [],
+              "conflicts": []
+            },
+            "disability": {
+              "proposed": [
+                {
+                  "id": "proposal-c334ec11-aca3-4094-a8f4-19f4c540af07",
+                  "group": "event",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": false
+                  }
+                }
+              ],
+              "history": [],
+              "conflicts": []
+            },
+            "requiredIntervention": {
+              "proposed": [
+                {
+                  "id": "proposal-8c31a4df-2e02-494b-ae74-dad6a2ae9ed3",
+                  "group": "event",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": false
+                  }
+                }
+              ],
+              "history": [],
+              "conflicts": []
+            },
+            "congenitalAnomaly": {
+              "proposed": [
+                {
+                  "id": "proposal-1b8cdc40-cf9d-4817-bf74-31ce0d15931e",
+                  "group": "event",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": false
+                  }
+                }
+              ],
+              "history": [],
+              "conflicts": []
+            },
+            "otherSerious": {
+              "proposed": [
+                {
+                  "id": "proposal-6337ab35-8580-434f-95c9-6b2a38c8fa4b",
+                  "group": "event",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": false
+                  }
+                }
+              ],
+              "history": [],
+              "conflicts": []
+            },
+            "treatments": {
+              "proposed": [
+                {
+                  "id": "proposal-93a8f83e-f58b-4285-8305-65e7c2340f0f",
+                  "group": "event",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": [
+                      "intravenous fluids"
+                    ]
+                  }
+                }
+              ],
+              "history": [],
+              "conflicts": []
+            },
+            "outcome": {
+              "proposed": [
+                {
+                  "id": "proposal-5cff6fdb-eaac-47aa-87cd-88b0c65b45e2",
+                  "group": "event",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "recovered"
+                  }
+                }
+              ],
+              "history": [],
+              "conflicts": []
+            },
+            "dischargeDate": {
+              "proposed": [
+                {
+                  "id": "proposal-b81d3def-a44e-46b0-a838-877274f949c7",
+                  "group": "event",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "2026-09-13"
+                  }
+                }
+              ],
+              "history": [],
+              "conflicts": []
+            }
+          }
+        },
+        "products": [
+          {
+            "id": "product-264c478b-fbd4-4e44-815b-c1f63be6c28a",
+            "state": "proposed",
+            "facts": {
+              "name": {
+                "proposed": [
+                  {
+                    "id": "proposal-df8a9dd9-da30-45c8-b6f4-4a0eb19bc429",
+                    "group": "group-18a3f403-4918-4f22-9d04-ee3b276049e5",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "ibuprofen"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "productType": {
+                "proposed": [
+                  {
+                    "id": "proposal-d3556979-e551-4484-b646-51520c09d8dd",
+                    "group": "group-18a3f403-4918-4f22-9d04-ee3b276049e5",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "drug-or-biologic"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "role": {
+                "proposed": [
+                  {
+                    "id": "proposal-a999bbd7-30fa-48fa-8122-b3767cbcb16d",
+                    "group": "group-18a3f403-4918-4f22-9d04-ee3b276049e5",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "suspect"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "dose": {
+                "proposed": [
+                  {
+                    "id": "proposal-553c26a2-052a-4748-b265-c8de44a2881d",
+                    "group": "group-18a3f403-4918-4f22-9d04-ee3b276049e5",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "400 mg"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "frequency": {
+                "proposed": [
+                  {
+                    "id": "proposal-c1024d21-88d9-4562-b64d-cb549947b3fa",
+                    "group": "group-18a3f403-4918-4f22-9d04-ee3b276049e5",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "three times daily"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "route": {
+                "proposed": [
+                  {
+                    "id": "proposal-9647b014-2965-46a5-b63c-3fed7be26ad7",
+                    "group": "group-18a3f403-4918-4f22-9d04-ee3b276049e5",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "oral"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "startDate": {
+                "proposed": [
+                  {
+                    "id": "proposal-cd9742f0-3e1a-4b8b-9451-0262125cfbdd",
+                    "group": "group-18a3f403-4918-4f22-9d04-ee3b276049e5",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "2026-09-08"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "indication": {
+                "proposed": [
+                  {
+                    "id": "proposal-0d20041f-d62c-4f06-bc61-3cfaa6b195fb",
+                    "group": "group-18a3f403-4918-4f22-9d04-ee3b276049e5",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "back pain"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              }
+            }
+          }
+        ],
+        "tests": [],
+        "reporter": {
+          "id": "reporter",
+          "facts": {}
+        }
+      },
+      "accepted": {
+        "stage": "clarify",
+        "ready": false,
+        "needs": [
+          {
+            "kind": "clinical-context",
+            "targetIds": [
+              "event:event:relevantTestsAvailable",
+              "event:event:relevantHistory"
+            ],
+            "askTests": true,
+            "askHistory": true,
+            "question": "Are there relevant tests or medical history to add?",
+            "reason": "Relevant tests and history can make the event understandable without asking for unrelated clinical detail.",
+            "key": "relevant-clinical-context",
+            "status": "new"
+          },
+          {
+            "key": "medication-history",
+            "kind": "medication-history",
+            "productId": "product-264c478b-fbd4-4e44-815b-c1f63be6c28a",
+            "status": "new",
+            "targetIds": [
+              "product:product-264c478b-fbd4-4e44-815b-c1f63be6c28a:stopped",
+              "product:product-264c478b-fbd4-4e44-815b-c1f63be6c28a:doseReduced"
+            ],
+            "question": "Treatment history for ibuprofen",
+            "reason": "Record whether treatment changed and what happened afterward. Answer only what you know; these observations do not establish causality."
+          }
+        ],
+        "unrepresented": [],
+        "patient": {
+          "id": "patient",
+          "state": "resolved",
+          "facts": {
+            "ageYears": {
+              "resolved": {
+                "kind": "known",
+                "value": 54
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "sex": {
+              "resolved": {
+                "kind": "known",
+                "value": "female"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            }
+          }
+        },
+        "event": {
+          "id": "event",
+          "state": "resolved",
+          "facts": {
+            "reportType": {
+              "resolved": {
+                "kind": "known",
+                "value": "adverse-event"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "symptoms": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "melena",
+                  "dizziness"
+                ]
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "onsetDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-11"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "death": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "lifeThreatening": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "hospitalized": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "disability": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "requiredIntervention": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "congenitalAnomaly": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "otherSerious": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "treatments": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "intravenous fluids"
+                ]
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "outcome": {
+              "resolved": {
+                "kind": "known",
+                "value": "recovered"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "dischargeDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-13"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            }
+          }
+        },
+        "products": [
+          {
+            "id": "product-264c478b-fbd4-4e44-815b-c1f63be6c28a",
+            "state": "resolved",
+            "facts": {
+              "name": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "ibuprofen"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "productType": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "role": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "suspect"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "dose": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "400 mg"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "frequency": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "three times daily"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "route": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "oral"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "startDate": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "2026-09-08"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "indication": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "back pain"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              }
+            }
+          }
+        ],
+        "tests": [],
+        "reporter": {
+          "id": "reporter",
+          "facts": {}
+        }
+      },
+      "projection": {
+        "A": {
+          "ageYears": 54,
+          "sex": "female"
+        },
+        "B": {
+          "relevantTests": [],
+          "reportType": "adverse-event",
+          "eventDate": "2026-09-11",
+          "hospitalized": true,
+          "death": false,
+          "lifeThreatening": false,
+          "disability": false,
+          "requiredIntervention": false,
+          "congenitalAnomaly": false,
+          "otherSerious": false,
+          "eventDescription": "Symptoms: melena and dizziness. Treatment: intravenous fluids. Outcome: recovered. Discharged 13-Sep-2026."
+        },
+        "C": {},
+        "D": {
+          "suspectProducts": [
+            {
+              "productId": "product-264c478b-fbd4-4e44-815b-c1f63be6c28a",
+              "name": "ibuprofen",
+              "dose": "400 mg",
+              "frequency": "three times daily",
+              "route": "oral",
+              "startDate": "2026-09-08",
+              "indication": "back pain"
+            }
+          ]
+        },
+        "E": {},
+        "F": {
+          "concomitantProducts": []
+        },
+        "G": {
+          "reporter": {}
+        }
+      },
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-medication-followups-v1",
+        "schemaRevision": "wilson-grounded-proposals-v15-medication",
+        "inputTokens": 5997,
+        "outputTokens": 2992,
+        "latencyMs": 22211,
+        "estimatedCostUsd": 0.041914
+      },
+      "externalAssessment": {
+        "assessor": "Codex implementer against prewritten synthetic input; no model self-score",
+        "beforeAcceptance": true,
+        "result": "Pass: patient age/sex, one suspect product and all stated medication details, melena/dizziness, onset, hospitalization, explicit negative serious outcomes, treatment, recovery and discharge matched the prewritten input. No unsupported proposal; tests/history remained missing."
+      }
+    },
+    {
+      "id": "addition",
+      "input": "For ibuprofen: it was stopped on 11 September 2026. The melena and dizziness improved after stopping it, and ibuprofen was never restarted. Hemoglobin was 8.9 g/dL on 11 September 2026 and 9.4 g/dL on 12 September 2026; the laboratory reference range for both results was 12 to 16 g/dL. There is no additional relevant medical history.",
+      "expected": [
+        "Ibuprofen stopped September 11, improved after stopping, never restarted",
+        "Two separate hemoglobin results: 8.9 on September 11 and 9.4 on September 12",
+        "Reference range 12\u201316 for both, no fabricated results",
+        "Accepted answers settle corresponding needs; pending proposals do not"
+      ],
+      "exposedAt": "2026-09-22T19:34:25.429Z",
+      "elapsedMs": 16968,
+      "operationId": "76cd9747-3b35-4fbf-8b6b-7e91dce52f1a",
+      "observed": {
+        "stage": "review-update",
+        "ready": false,
+        "needs": [
+          {
+            "kind": "clinical-context",
+            "targetIds": [
+              "event:event:relevantTestsAvailable",
+              "event:event:relevantHistory"
+            ],
+            "askTests": true,
+            "askHistory": true,
+            "question": "Are there relevant tests or medical history to add?",
+            "reason": "Relevant tests and history can make the event understandable without asking for unrelated clinical detail.",
+            "key": "relevant-clinical-context",
+            "status": "open"
+          },
+          {
+            "key": "medication-history",
+            "kind": "medication-history",
+            "productId": "product-264c478b-fbd4-4e44-815b-c1f63be6c28a",
+            "status": "new",
+            "targetIds": [
+              "product:product-264c478b-fbd4-4e44-815b-c1f63be6c28a:stopped",
+              "product:product-264c478b-fbd4-4e44-815b-c1f63be6c28a:doseReduced"
+            ],
+            "question": "Treatment history for ibuprofen",
+            "reason": "Record whether treatment changed and what happened afterward. Answer only what you know; these observations do not establish causality."
+          }
+        ],
+        "unrepresented": [],
+        "patient": {
+          "id": "patient",
+          "state": "resolved",
+          "facts": {
+            "ageYears": {
+              "resolved": {
+                "kind": "known",
+                "value": 54
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "sex": {
+              "resolved": {
+                "kind": "known",
+                "value": "female"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            }
+          }
+        },
+        "event": {
+          "id": "event",
+          "state": "resolved",
+          "facts": {
+            "reportType": {
+              "resolved": {
+                "kind": "known",
+                "value": "adverse-event"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "symptoms": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "melena",
+                  "dizziness"
+                ]
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "onsetDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-11"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "death": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "lifeThreatening": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "hospitalized": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "disability": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "requiredIntervention": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "congenitalAnomaly": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "otherSerious": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "relevantHistory": {
+              "proposed": [
+                {
+                  "id": "proposal-21804ab0-b2a9-44ce-a7b8-b62871508a62",
+                  "group": "group-961f70a6-d234-447e-9823-b0fecd26a6d9",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "explicitly-absent"
+                  }
+                }
+              ],
+              "history": [],
+              "conflicts": []
+            },
+            "treatments": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "intravenous fluids"
+                ]
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "outcome": {
+              "resolved": {
+                "kind": "known",
+                "value": "recovered"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "dischargeDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-13"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            }
+          }
+        },
+        "products": [
+          {
+            "id": "product-264c478b-fbd4-4e44-815b-c1f63be6c28a",
+            "state": "resolved",
+            "facts": {
+              "name": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "ibuprofen"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "productType": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "role": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "suspect"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "dose": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "400 mg"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "frequency": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "three times daily"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "route": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "oral"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "startDate": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "2026-09-08"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "stopDate": {
+                "proposed": [
+                  {
+                    "id": "proposal-927a6269-0f49-4e86-9fad-c654c0c0a4ec",
+                    "group": "group-2d522b9f-1306-47c7-97ae-cdcc2b188a1b",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "2026-09-11"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "indication": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "back pain"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "stopped": {
+                "proposed": [
+                  {
+                    "id": "proposal-6609f972-792d-4270-a832-3f19546e68cf",
+                    "group": "group-2d522b9f-1306-47c7-97ae-cdcc2b188a1b",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": true
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "improvedAfterChange": {
+                "proposed": [
+                  {
+                    "id": "proposal-deb492be-5efe-45f6-a81f-86bf67cdad97",
+                    "group": "group-2d522b9f-1306-47c7-97ae-cdcc2b188a1b",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": true
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "restarted": {
+                "proposed": [
+                  {
+                    "id": "proposal-6b4c71c2-42a2-42b3-a087-e89cb0568944",
+                    "group": "group-2d522b9f-1306-47c7-97ae-cdcc2b188a1b",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": false
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              }
+            }
+          }
+        ],
+        "tests": [
+          {
+            "id": "test-7594c462-0a9f-4870-98b5-bfccd16f9782",
+            "state": "proposed",
+            "facts": {
+              "testName": {
+                "proposed": [
+                  {
+                    "id": "proposal-d5fbf9ba-db2b-41bc-a70b-77aa5349b090",
+                    "group": "group-07ae0544-7bc1-4ca6-b925-5ab357a35366",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "Hemoglobin"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "testResult": {
+                "proposed": [
+                  {
+                    "id": "proposal-95345dba-ed5d-46dd-8200-5f9e42790095",
+                    "group": "group-07ae0544-7bc1-4ca6-b925-5ab357a35366",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "8.9 g/dL"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "lowRange": {
+                "proposed": [
+                  {
+                    "id": "proposal-5bd68b5c-f656-48a4-b2b3-f2247cb43158",
+                    "group": "group-07ae0544-7bc1-4ca6-b925-5ab357a35366",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "12 g/dL"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "highRange": {
+                "proposed": [
+                  {
+                    "id": "proposal-af7622f7-b430-4433-8738-b4af7b39b477",
+                    "group": "group-07ae0544-7bc1-4ca6-b925-5ab357a35366",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "16 g/dL"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "date": {
+                "proposed": [
+                  {
+                    "id": "proposal-6bc621cf-0c46-40e9-82df-c1cfdaa9eae9",
+                    "group": "group-07ae0544-7bc1-4ca6-b925-5ab357a35366",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "2026-09-11"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              }
+            }
+          },
+          {
+            "id": "test-21ac9859-2d06-41ff-bd95-0d3aaa135484",
+            "state": "proposed",
+            "facts": {
+              "testName": {
+                "proposed": [
+                  {
+                    "id": "proposal-eb1849cd-aff0-4ea7-927e-97a57ab07346",
+                    "group": "group-34714c64-d96d-4a0b-97f3-cc317a09b34b",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "Hemoglobin"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "testResult": {
+                "proposed": [
+                  {
+                    "id": "proposal-dddb799f-cb8a-461c-9733-6cea23dba1a7",
+                    "group": "group-34714c64-d96d-4a0b-97f3-cc317a09b34b",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "9.4 g/dL"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "lowRange": {
+                "proposed": [
+                  {
+                    "id": "proposal-b831f6d5-d035-4cee-86cd-3d3bc212ed1c",
+                    "group": "group-34714c64-d96d-4a0b-97f3-cc317a09b34b",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "12 g/dL"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "highRange": {
+                "proposed": [
+                  {
+                    "id": "proposal-dc1fa16b-3afe-4d97-870a-805a5e545eca",
+                    "group": "group-34714c64-d96d-4a0b-97f3-cc317a09b34b",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "16 g/dL"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "date": {
+                "proposed": [
+                  {
+                    "id": "proposal-8108ceaf-4bbd-4818-91f2-766250aaa3d8",
+                    "group": "group-34714c64-d96d-4a0b-97f3-cc317a09b34b",
+                    "intent": "fact",
+                    "value": {
+                      "kind": "known",
+                      "value": "2026-09-12"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              }
+            }
+          }
+        ],
+        "reporter": {
+          "id": "reporter",
+          "facts": {}
+        }
+      },
+      "accepted": {
+        "stage": "clarify",
+        "ready": false,
+        "needs": [],
+        "unrepresented": [],
+        "patient": {
+          "id": "patient",
+          "state": "resolved",
+          "facts": {
+            "ageYears": {
+              "resolved": {
+                "kind": "known",
+                "value": 54
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "sex": {
+              "resolved": {
+                "kind": "known",
+                "value": "female"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            }
+          }
+        },
+        "event": {
+          "id": "event",
+          "state": "resolved",
+          "facts": {
+            "reportType": {
+              "resolved": {
+                "kind": "known",
+                "value": "adverse-event"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "symptoms": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "melena",
+                  "dizziness"
+                ]
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "onsetDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-11"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "death": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "lifeThreatening": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "hospitalized": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "disability": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "requiredIntervention": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "congenitalAnomaly": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "otherSerious": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "relevantHistory": {
+              "resolved": {
+                "kind": "explicitly-absent"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "treatments": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "intravenous fluids"
+                ]
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "outcome": {
+              "resolved": {
+                "kind": "known",
+                "value": "recovered"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "dischargeDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-13"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            }
+          }
+        },
+        "products": [
+          {
+            "id": "product-264c478b-fbd4-4e44-815b-c1f63be6c28a",
+            "state": "resolved",
+            "facts": {
+              "name": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "ibuprofen"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "productType": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "role": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "suspect"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "dose": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "400 mg"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "frequency": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "three times daily"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "route": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "oral"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "startDate": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "2026-09-08"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "stopDate": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "2026-09-11"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "indication": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "back pain"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "stopped": {
+                "resolved": {
+                  "kind": "known",
+                  "value": true
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "improvedAfterChange": {
+                "resolved": {
+                  "kind": "known",
+                  "value": true
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "restarted": {
+                "resolved": {
+                  "kind": "known",
+                  "value": false
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              }
+            }
+          }
+        ],
+        "tests": [
+          {
+            "id": "test-7594c462-0a9f-4870-98b5-bfccd16f9782",
+            "state": "resolved",
+            "facts": {
+              "testName": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "Hemoglobin"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "testResult": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "8.9 g/dL"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "lowRange": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "12 g/dL"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "highRange": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "16 g/dL"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "date": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "2026-09-11"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              }
+            }
+          },
+          {
+            "id": "test-21ac9859-2d06-41ff-bd95-0d3aaa135484",
+            "state": "resolved",
+            "facts": {
+              "testName": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "Hemoglobin"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "testResult": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "9.4 g/dL"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "lowRange": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "12 g/dL"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "highRange": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "16 g/dL"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "date": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "2026-09-12"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              }
+            }
+          }
+        ],
+        "reporter": {
+          "id": "reporter",
+          "facts": {}
+        }
+      },
+      "projection": {
+        "A": {
+          "ageYears": 54,
+          "sex": "female"
+        },
+        "B": {
+          "relevantTests": [
+            {
+              "testId": "test-7594c462-0a9f-4870-98b5-bfccd16f9782",
+              "testResult": "Hemoglobin: 8.9 g/dL",
+              "lowRange": "12 g/dL",
+              "highRange": "16 g/dL",
+              "date": "2026-09-11"
+            },
+            {
+              "testId": "test-21ac9859-2d06-41ff-bd95-0d3aaa135484",
+              "testResult": "Hemoglobin: 9.4 g/dL",
+              "lowRange": "12 g/dL",
+              "highRange": "16 g/dL",
+              "date": "2026-09-12"
+            }
+          ],
+          "reportType": "adverse-event",
+          "eventDate": "2026-09-11",
+          "hospitalized": true,
+          "death": false,
+          "lifeThreatening": false,
+          "disability": false,
+          "requiredIntervention": false,
+          "congenitalAnomaly": false,
+          "otherSerious": false,
+          "eventDescription": "Symptoms: melena and dizziness. Treatment: intravenous fluids. Outcome: recovered. Discharged 13-Sep-2026. Products stopped: ibuprofen."
+        },
+        "C": {},
+        "D": {
+          "suspectProducts": [
+            {
+              "productId": "product-264c478b-fbd4-4e44-815b-c1f63be6c28a",
+              "name": "ibuprofen",
+              "dose": "400 mg",
+              "frequency": "three times daily",
+              "route": "oral",
+              "startDate": "2026-09-08",
+              "stopDate": "2026-09-11",
+              "indication": "back pain",
+              "improvedAfterChange": true,
+              "recurred": "inapplicable"
+            }
+          ]
+        },
+        "E": {},
+        "F": {
+          "concomitantProducts": []
+        },
+        "G": {
+          "reporter": {}
+        }
+      },
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-medication-followups-v1",
+        "schemaRevision": "wilson-grounded-proposals-v15-medication",
+        "inputTokens": 6685,
+        "outputTokens": 2296,
+        "latencyMs": 16624,
+        "estimatedCostUsd": 0.03633
+      },
+      "externalAssessment": {
+        "assessor": "Codex implementer against prewritten synthetic input; no model self-score",
+        "beforeAcceptance": true,
+        "result": "Pass: stopped September 11, improved, never restarted; two distinct Hemoglobin entities retained 8.9 and 9.4 g/dL on their respective dates with both 12\u201316 g/dL ranges. Explicitly absent additional history. Both clinical invitations remained while proposals were pending and settled after acceptance."
+      }
+    },
+    {
+      "id": "correction",
+      "input": "Correction to the hemoglobin result dated 12 September 2026: it was 9.6 g/dL, not 9.4 g/dL. The hemoglobin result on 11 September remains 8.9 g/dL. The dates and reference ranges are unchanged.",
+      "expected": [
+        "Correct only the September 12 result to 9.6",
+        "Retain separate test identity, dates, ranges and September 11 value",
+        "Earlier 9.4 remains history, not active output",
+        "Previously generated PDF remains accurately labelled until correction review and updated generation"
+      ],
+      "exposedAt": "2026-09-22T19:35:09.466Z",
+      "elapsedMs": 3120,
+      "operationId": "0227b2d4-0cfe-4818-8e6c-3e0cfd863073",
+      "observed": {
+        "stage": "review-update",
+        "ready": false,
+        "needs": [],
+        "unrepresented": [],
+        "patient": {
+          "id": "patient",
+          "state": "resolved",
+          "facts": {
+            "ageYears": {
+              "resolved": {
+                "kind": "known",
+                "value": 54
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "sex": {
+              "resolved": {
+                "kind": "known",
+                "value": "female"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            }
+          }
+        },
+        "event": {
+          "id": "event",
+          "state": "resolved",
+          "facts": {
+            "reportType": {
+              "resolved": {
+                "kind": "known",
+                "value": "adverse-event"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "reportDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-22"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "symptoms": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "melena",
+                  "dizziness"
+                ]
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "onsetDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-11"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "death": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "lifeThreatening": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "hospitalized": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "disability": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "requiredIntervention": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "congenitalAnomaly": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "otherSerious": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "relevantHistory": {
+              "resolved": {
+                "kind": "explicitly-absent"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "treatments": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "intravenous fluids"
+                ]
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "outcome": {
+              "resolved": {
+                "kind": "known",
+                "value": "recovered"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "dischargeDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-13"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            }
+          }
+        },
+        "products": [
+          {
+            "id": "product-264c478b-fbd4-4e44-815b-c1f63be6c28a",
+            "state": "resolved",
+            "facts": {
+              "name": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "ibuprofen"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "productType": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "role": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "suspect"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "dose": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "400 mg"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "frequency": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "three times daily"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "route": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "oral"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "startDate": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "2026-09-08"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "stopDate": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "2026-09-11"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "indication": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "back pain"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "stopped": {
+                "resolved": {
+                  "kind": "known",
+                  "value": true
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "improvedAfterChange": {
+                "resolved": {
+                  "kind": "known",
+                  "value": true
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "restarted": {
+                "resolved": {
+                  "kind": "known",
+                  "value": false
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              }
+            }
+          }
+        ],
+        "tests": [
+          {
+            "id": "test-7594c462-0a9f-4870-98b5-bfccd16f9782",
+            "state": "resolved",
+            "facts": {
+              "testName": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "Hemoglobin"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "testResult": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "8.9 g/dL"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "lowRange": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "12 g/dL"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "highRange": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "16 g/dL"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "date": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "2026-09-11"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              }
+            }
+          },
+          {
+            "id": "test-21ac9859-2d06-41ff-bd95-0d3aaa135484",
+            "state": "resolved",
+            "facts": {
+              "testName": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "Hemoglobin"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "testResult": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "9.4 g/dL"
+                },
+                "proposed": [
+                  {
+                    "id": "proposal-f423400a-15d5-4a6b-8c59-2c3e7fe0c673",
+                    "group": "group-3a124a40-5fea-4077-91af-3123a504ceed",
+                    "intent": "correction",
+                    "value": {
+                      "kind": "known",
+                      "value": "9.6 g/dL"
+                    }
+                  }
+                ],
+                "history": [],
+                "conflicts": []
+              },
+              "lowRange": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "12 g/dL"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "highRange": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "16 g/dL"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "date": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "2026-09-12"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              }
+            }
+          }
+        ],
+        "reporter": {
+          "id": "reporter",
+          "facts": {
+            "lastName": {
+              "resolved": {
+                "kind": "known",
+                "value": "Reed"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "firstName": {
+              "resolved": {
+                "kind": "known",
+                "value": "Casey"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "address": {
+              "resolved": {
+                "kind": "explicitly-absent"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "city": {
+              "resolved": {
+                "kind": "explicitly-absent"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "state": {
+              "resolved": {
+                "kind": "explicitly-absent"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "postalCode": {
+              "resolved": {
+                "kind": "explicitly-absent"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "country": {
+              "resolved": {
+                "kind": "known",
+                "value": "UNITED STATES"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "phone": {
+              "resolved": {
+                "kind": "explicitly-absent"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "email": {
+              "resolved": {
+                "kind": "known",
+                "value": "casey.reed@example.test"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "healthProfessional": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "occupation": {
+              "resolved": {
+                "kind": "known",
+                "value": "Physician"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "reportedTo": {
+              "resolved": {
+                "kind": "known",
+                "value": []
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "doNotDiscloseIdentity": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            }
+          }
+        }
+      },
+      "accepted": {
+        "stage": "output",
+        "ready": true,
+        "needs": [],
+        "unrepresented": [],
+        "patient": {
+          "id": "patient",
+          "state": "resolved",
+          "facts": {
+            "ageYears": {
+              "resolved": {
+                "kind": "known",
+                "value": 54
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "sex": {
+              "resolved": {
+                "kind": "known",
+                "value": "female"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            }
+          }
+        },
+        "event": {
+          "id": "event",
+          "state": "resolved",
+          "facts": {
+            "reportType": {
+              "resolved": {
+                "kind": "known",
+                "value": "adverse-event"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "reportDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-22"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "symptoms": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "melena",
+                  "dizziness"
+                ]
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "onsetDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-11"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "death": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "lifeThreatening": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "hospitalized": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "disability": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "requiredIntervention": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "congenitalAnomaly": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "otherSerious": {
+              "resolved": {
+                "kind": "known",
+                "value": false
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "relevantHistory": {
+              "resolved": {
+                "kind": "explicitly-absent"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "treatments": {
+              "resolved": {
+                "kind": "known",
+                "value": [
+                  "intravenous fluids"
+                ]
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "outcome": {
+              "resolved": {
+                "kind": "known",
+                "value": "recovered"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "dischargeDate": {
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-13"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            }
+          }
+        },
+        "products": [
+          {
+            "id": "product-264c478b-fbd4-4e44-815b-c1f63be6c28a",
+            "state": "resolved",
+            "facts": {
+              "name": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "ibuprofen"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "productType": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "role": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "suspect"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "dose": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "400 mg"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "frequency": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "three times daily"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "route": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "oral"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "startDate": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "2026-09-08"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "stopDate": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "2026-09-11"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "indication": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "back pain"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "stopped": {
+                "resolved": {
+                  "kind": "known",
+                  "value": true
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "improvedAfterChange": {
+                "resolved": {
+                  "kind": "known",
+                  "value": true
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "restarted": {
+                "resolved": {
+                  "kind": "known",
+                  "value": false
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              }
+            }
+          }
+        ],
+        "tests": [
+          {
+            "id": "test-7594c462-0a9f-4870-98b5-bfccd16f9782",
+            "state": "resolved",
+            "facts": {
+              "testName": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "Hemoglobin"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "testResult": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "8.9 g/dL"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "lowRange": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "12 g/dL"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "highRange": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "16 g/dL"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "date": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "2026-09-11"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              }
+            }
+          },
+          {
+            "id": "test-21ac9859-2d06-41ff-bd95-0d3aaa135484",
+            "state": "resolved",
+            "facts": {
+              "testName": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "Hemoglobin"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "testResult": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "9.6 g/dL"
+                },
+                "proposed": [],
+                "history": [
+                  {
+                    "kind": "known",
+                    "value": "9.4 g/dL"
+                  }
+                ],
+                "conflicts": []
+              },
+              "lowRange": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "12 g/dL"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "highRange": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "16 g/dL"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              },
+              "date": {
+                "resolved": {
+                  "kind": "known",
+                  "value": "2026-09-12"
+                },
+                "proposed": [],
+                "history": [],
+                "conflicts": []
+              }
+            }
+          }
+        ],
+        "reporter": {
+          "id": "reporter",
+          "facts": {
+            "lastName": {
+              "resolved": {
+                "kind": "known",
+                "value": "Reed"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "firstName": {
+              "resolved": {
+                "kind": "known",
+                "value": "Casey"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "address": {
+              "resolved": {
+                "kind": "explicitly-absent"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "city": {
+              "resolved": {
+                "kind": "explicitly-absent"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "state": {
+              "resolved": {
+                "kind": "explicitly-absent"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "postalCode": {
+              "resolved": {
+                "kind": "explicitly-absent"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "country": {
+              "resolved": {
+                "kind": "known",
+                "value": "UNITED STATES"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "phone": {
+              "resolved": {
+                "kind": "explicitly-absent"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "email": {
+              "resolved": {
+                "kind": "known",
+                "value": "casey.reed@example.test"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "healthProfessional": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "occupation": {
+              "resolved": {
+                "kind": "known",
+                "value": "Physician"
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "reportedTo": {
+              "resolved": {
+                "kind": "known",
+                "value": []
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            },
+            "doNotDiscloseIdentity": {
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposed": [],
+              "history": [],
+              "conflicts": []
+            }
+          }
+        }
+      },
+      "projection": {
+        "A": {
+          "ageYears": 54,
+          "sex": "female"
+        },
+        "B": {
+          "relevantTests": [
+            {
+              "testId": "test-7594c462-0a9f-4870-98b5-bfccd16f9782",
+              "testResult": "Hemoglobin: 8.9 g/dL",
+              "lowRange": "12 g/dL",
+              "highRange": "16 g/dL",
+              "date": "2026-09-11"
+            },
+            {
+              "testId": "test-21ac9859-2d06-41ff-bd95-0d3aaa135484",
+              "testResult": "Hemoglobin: 9.6 g/dL",
+              "lowRange": "12 g/dL",
+              "highRange": "16 g/dL",
+              "date": "2026-09-12"
+            }
+          ],
+          "reportType": "adverse-event",
+          "eventDate": "2026-09-11",
+          "reportDate": "2026-09-22",
+          "hospitalized": true,
+          "death": false,
+          "lifeThreatening": false,
+          "disability": false,
+          "requiredIntervention": false,
+          "congenitalAnomaly": false,
+          "otherSerious": false,
+          "eventDescription": "Symptoms: melena and dizziness. Treatment: intravenous fluids. Outcome: recovered. Discharged 13-Sep-2026. Products stopped: ibuprofen."
+        },
+        "C": {},
+        "D": {
+          "suspectProducts": [
+            {
+              "productId": "product-264c478b-fbd4-4e44-815b-c1f63be6c28a",
+              "name": "ibuprofen",
+              "dose": "400 mg",
+              "frequency": "three times daily",
+              "route": "oral",
+              "startDate": "2026-09-08",
+              "stopDate": "2026-09-11",
+              "indication": "back pain",
+              "improvedAfterChange": true,
+              "recurred": "inapplicable"
+            }
+          ]
+        },
+        "E": {},
+        "F": {
+          "concomitantProducts": []
+        },
+        "G": {
+          "reporter": {
+            "lastName": "Reed",
+            "firstName": "Casey",
+            "country": "UNITED STATES",
+            "email": "casey.reed@example.test",
+            "healthProfessional": true,
+            "occupation": "Physician",
+            "reportedTo": [],
+            "doNotDiscloseIdentity": true
+          }
+        }
+      },
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-medication-followups-v1",
+        "schemaRevision": "wilson-grounded-proposals-v15-medication",
+        "inputTokens": 7186,
+        "outputTokens": 168,
+        "latencyMs": 2808,
+        "estimatedCostUsd": 0.016052
+      },
+      "externalAssessment": {
+        "assessor": "Codex implementer against prewritten synthetic input; no model self-score",
+        "beforeAcceptance": true,
+        "result": "Pass: exactly one correction proposed to the existing September 12 test result, 9.4 to 9.6 g/dL. September 11 result, test identities, dates and ranges remained unchanged; acceptance retained 9.4 in history and excluded it from active output."
+      }
+    }
+  ],
+  "checks": [
+    "Protected shared link loaded intended Draft 4 application in a fresh anonymous browser.",
+    "Clinical text and reporter drafts retained across Describe/Review/Reporter navigation.",
+    "Unchanged reporter return/save retained identical artifact URL and case revision, with no PDF request.",
+    "Previously generated PDF remained viewable and labelled earlier while clinical correction was pending; no current Save PDF action.",
+    "Accepted clinical and reporter corrections produced updated PDF without repeating clinical questions.",
+    "Desktop and mobile surfaces exercised; actual generated event wording inspected.",
+    "Full Chromium (channel chromium) resumed the accepted case without model calls and rendered the real blob PDF in its native PDF viewer; inspected live-inline-chromium.png."
+  ],
+  "final": {
+    "stage": "output",
+    "ready": true,
+    "needs": [],
+    "unrepresented": [],
+    "patient": {
+      "id": "patient",
+      "state": "resolved",
+      "facts": {
+        "ageYears": {
+          "resolved": {
+            "kind": "known",
+            "value": 54
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "sex": {
+          "resolved": {
+            "kind": "known",
+            "value": "female"
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        }
+      }
+    },
+    "event": {
+      "id": "event",
+      "state": "resolved",
+      "facts": {
+        "reportType": {
+          "resolved": {
+            "kind": "known",
+            "value": "adverse-event"
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "reportDate": {
+          "resolved": {
+            "kind": "known",
+            "value": "2026-09-22"
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "symptoms": {
+          "resolved": {
+            "kind": "known",
+            "value": [
+              "melena",
+              "dizziness"
+            ]
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "onsetDate": {
+          "resolved": {
+            "kind": "known",
+            "value": "2026-09-11"
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "death": {
+          "resolved": {
+            "kind": "known",
+            "value": false
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "lifeThreatening": {
+          "resolved": {
+            "kind": "known",
+            "value": false
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "hospitalized": {
+          "resolved": {
+            "kind": "known",
+            "value": true
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "disability": {
+          "resolved": {
+            "kind": "known",
+            "value": false
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "requiredIntervention": {
+          "resolved": {
+            "kind": "known",
+            "value": false
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "congenitalAnomaly": {
+          "resolved": {
+            "kind": "known",
+            "value": false
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "otherSerious": {
+          "resolved": {
+            "kind": "known",
+            "value": false
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "relevantHistory": {
+          "resolved": {
+            "kind": "explicitly-absent"
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "treatments": {
+          "resolved": {
+            "kind": "known",
+            "value": [
+              "intravenous fluids"
+            ]
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "outcome": {
+          "resolved": {
+            "kind": "known",
+            "value": "recovered"
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "dischargeDate": {
+          "resolved": {
+            "kind": "known",
+            "value": "2026-09-13"
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        }
+      }
+    },
+    "products": [
+      {
+        "id": "product-264c478b-fbd4-4e44-815b-c1f63be6c28a",
+        "state": "resolved",
+        "facts": {
+          "name": {
+            "resolved": {
+              "kind": "known",
+              "value": "ibuprofen"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "productType": {
+            "resolved": {
+              "kind": "known",
+              "value": "drug-or-biologic"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "role": {
+            "resolved": {
+              "kind": "known",
+              "value": "suspect"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "dose": {
+            "resolved": {
+              "kind": "known",
+              "value": "400 mg"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "frequency": {
+            "resolved": {
+              "kind": "known",
+              "value": "three times daily"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "route": {
+            "resolved": {
+              "kind": "known",
+              "value": "oral"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "startDate": {
+            "resolved": {
+              "kind": "known",
+              "value": "2026-09-08"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "stopDate": {
+            "resolved": {
+              "kind": "known",
+              "value": "2026-09-11"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "indication": {
+            "resolved": {
+              "kind": "known",
+              "value": "back pain"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "stopped": {
+            "resolved": {
+              "kind": "known",
+              "value": true
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "improvedAfterChange": {
+            "resolved": {
+              "kind": "known",
+              "value": true
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "restarted": {
+            "resolved": {
+              "kind": "known",
+              "value": false
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          }
+        }
+      }
+    ],
+    "tests": [
+      {
+        "id": "test-7594c462-0a9f-4870-98b5-bfccd16f9782",
+        "state": "resolved",
+        "facts": {
+          "testName": {
+            "resolved": {
+              "kind": "known",
+              "value": "Hemoglobin"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "testResult": {
+            "resolved": {
+              "kind": "known",
+              "value": "8.9 g/dL"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "lowRange": {
+            "resolved": {
+              "kind": "known",
+              "value": "12 g/dL"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "highRange": {
+            "resolved": {
+              "kind": "known",
+              "value": "16 g/dL"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "date": {
+            "resolved": {
+              "kind": "known",
+              "value": "2026-09-11"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          }
+        }
+      },
+      {
+        "id": "test-21ac9859-2d06-41ff-bd95-0d3aaa135484",
+        "state": "resolved",
+        "facts": {
+          "testName": {
+            "resolved": {
+              "kind": "known",
+              "value": "Hemoglobin"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "testResult": {
+            "resolved": {
+              "kind": "known",
+              "value": "9.6 g/dL"
+            },
+            "proposed": [],
+            "history": [
+              {
+                "kind": "known",
+                "value": "9.4 g/dL"
+              }
+            ],
+            "conflicts": []
+          },
+          "lowRange": {
+            "resolved": {
+              "kind": "known",
+              "value": "12 g/dL"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "highRange": {
+            "resolved": {
+              "kind": "known",
+              "value": "16 g/dL"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          },
+          "date": {
+            "resolved": {
+              "kind": "known",
+              "value": "2026-09-12"
+            },
+            "proposed": [],
+            "history": [],
+            "conflicts": []
+          }
+        }
+      }
+    ],
+    "reporter": {
+      "id": "reporter",
+      "facts": {
+        "lastName": {
+          "resolved": {
+            "kind": "known",
+            "value": "Reed"
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "firstName": {
+          "resolved": {
+            "kind": "known",
+            "value": "Casey"
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "address": {
+          "resolved": {
+            "kind": "explicitly-absent"
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "city": {
+          "resolved": {
+            "kind": "explicitly-absent"
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "state": {
+          "resolved": {
+            "kind": "explicitly-absent"
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "postalCode": {
+          "resolved": {
+            "kind": "explicitly-absent"
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "country": {
+          "resolved": {
+            "kind": "known",
+            "value": "UNITED STATES"
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "phone": {
+          "resolved": {
+            "kind": "explicitly-absent"
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "email": {
+          "resolved": {
+            "kind": "known",
+            "value": "casey.updated@example.test"
+          },
+          "proposed": [],
+          "history": [
+            {
+              "kind": "known",
+              "value": "casey.reed@example.test"
+            }
+          ],
+          "conflicts": []
+        },
+        "healthProfessional": {
+          "resolved": {
+            "kind": "known",
+            "value": true
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "occupation": {
+          "resolved": {
+            "kind": "known",
+            "value": "Physician"
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "reportedTo": {
+          "resolved": {
+            "kind": "known",
+            "value": []
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        },
+        "doNotDiscloseIdentity": {
+          "resolved": {
+            "kind": "known",
+            "value": true
+          },
+          "proposed": [],
+          "history": [],
+          "conflicts": []
+        }
+      }
+    }
+  },
+  "finalProjection": {
+    "A": {
+      "ageYears": 54,
+      "sex": "female"
+    },
+    "B": {
+      "relevantTests": [
+        {
+          "testId": "test-7594c462-0a9f-4870-98b5-bfccd16f9782",
+          "testResult": "Hemoglobin: 8.9 g/dL",
+          "lowRange": "12 g/dL",
+          "highRange": "16 g/dL",
+          "date": "2026-09-11"
+        },
+        {
+          "testId": "test-21ac9859-2d06-41ff-bd95-0d3aaa135484",
+          "testResult": "Hemoglobin: 9.6 g/dL",
+          "lowRange": "12 g/dL",
+          "highRange": "16 g/dL",
+          "date": "2026-09-12"
+        }
+      ],
+      "reportType": "adverse-event",
+      "eventDate": "2026-09-11",
+      "reportDate": "2026-09-22",
+      "hospitalized": true,
+      "death": false,
+      "lifeThreatening": false,
+      "disability": false,
+      "requiredIntervention": false,
+      "congenitalAnomaly": false,
+      "otherSerious": false,
+      "eventDescription": "Symptoms: melena and dizziness. Treatment: intravenous fluids. Outcome: recovered. Discharged 13-Sep-2026. Products stopped: ibuprofen."
+    },
+    "C": {},
+    "D": {
+      "suspectProducts": [
+        {
+          "productId": "product-264c478b-fbd4-4e44-815b-c1f63be6c28a",
+          "name": "ibuprofen",
+          "dose": "400 mg",
+          "frequency": "three times daily",
+          "route": "oral",
+          "startDate": "2026-09-08",
+          "stopDate": "2026-09-11",
+          "indication": "back pain",
+          "improvedAfterChange": true,
+          "recurred": "inapplicable"
+        }
+      ]
+    },
+    "E": {},
+    "F": {
+      "concomitantProducts": []
+    },
+    "G": {
+      "reporter": {
+        "lastName": "Reed",
+        "firstName": "Casey",
+        "country": "UNITED STATES",
+        "email": "casey.updated@example.test",
+        "healthProfessional": true,
+        "occupation": "Physician",
+        "reportedTo": [],
+        "doNotDiscloseIdentity": true
+      }
+    }
+  },
+  "pdfRequests": 3,
+  "finishedAt": "2026-09-22T19:35:35.598Z",
+  "totals": {
+    "calls": 3,
+    "estimatedCostUsd": 0.094296
+  },
+  "limitations": [
+    "One deliberately bounded synthetic path does not establish broad language reliability.",
+    "No new model prompts or richer narrative composition; #94 and #99 remain deferred.",
+    "Default headless-shell screenshots show layout and iframe presence only. Full Chromium native PDF viewer separately rendered the actual inline form. A headed-browser capture could not establish layout visibility on this host; full Chromium headless rendering succeeded."
+  ]
+}

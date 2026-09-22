@@ -1,7 +1,10 @@
 import { defineConfig } from "@playwright/test";
-import { predeterminedModelResponses } from "./tests/e2e/build-predetermined-responses";
+import { predeterminedModelResponses, predeterminedResponseScenarios } from "./tests/e2e/build-predetermined-responses";
 
-const predeterminedResponses = JSON.stringify(predeterminedModelResponses);
+const selectedScenarios = process.env.WILSON_E2E_SCENARIOS?.split(",") as Array<keyof typeof predeterminedResponseScenarios> | undefined;
+const predeterminedResponses = JSON.stringify(selectedScenarios
+  ? selectedScenarios.flatMap((key) => { if (!predeterminedResponseScenarios[key]) throw new Error(`Unknown browser scenario: ${key}`); return predeterminedResponseScenarios[key]; })
+  : predeterminedModelResponses);
 
 export default defineConfig({
   testDir: "tests/e2e",

@@ -1,3 +1,4 @@
+import { acceptOpeningGroups, directAnswers, goTo, projectedText, savePdf, serverAction, showActiveTask, storedState } from "./draft4-helpers";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { expect, test, type Page } from "@playwright/test";
@@ -7,32 +8,31 @@ test("corrects DEMO-91 conversationally before initial acceptance, downloads fiv
   await page.goto("/");
   await page.getByLabel("Clinical account", { exact: true }).fill(sourceReferenceOpening);
   await page.getByRole("button", { name: "Review Wilson’s understanding", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Check Wilson’s understanding" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Review the case details" })).toBeVisible();
   await expect(page.locator('[id^="case-card-test-"]')).toHaveCount(5);
   await expect(page.getByText("Some details were left out")).toHaveCount(0);
   await expect(page.locator("#case-card-test-3")).toContainText("don’t have its units");
   await page.screenshot({ path: testInfo.outputPath("initial-review.png"), fullPage: true });
   await page.getByLabel("Clinical update", { exact: true }).fill(sourceReferenceUpdate);
-  await page.getByRole("button", { name: "Review this update", exact: true }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Review this update", exact: true }).click());
   await expect(page.getByRole("heading", { name: "Review the proposed update" })).toBeVisible();
   const pending = await state(page);
   expect(pending.relevantTests).toHaveLength(5);
   expect(pending.relevantTests[0].facts.testResult.resolvedValue).toBeUndefined();
   await expect(page.getByRole("button", { name: "Accept this update", exact: true })).toHaveCount(2);
   await page.screenshot({ path: testInfo.outputPath("conversational-review.png"), fullPage: true });
-  await page.getByRole("button", { name: "Accept this update", exact: true }).first().click();
+  await serverAction(page, () => page.getByRole("button", { name: "Accept this update", exact: true }).first().click());
   await expect(page.getByRole("button", { name: "Accept this update", exact: true })).toHaveCount(1);
-  await page.getByRole("button", { name: "Accept this update", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Check Wilson’s understanding" })).toBeVisible();
+  await serverAction(page, () => page.getByRole("button", { name: "Accept this update", exact: true }).click());
+  await expect(page.getByRole("heading", { name: "Review the case details" })).toBeVisible();
   await expect(page.locator("#case-card-test-1")).toContainText("Earlier: 9.1 g/dL");
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await acceptOpeningGroups(page);
   await complete(page);
   const reviewed = await state(page);
   expect(reviewed.relevantTests.map((test: { id: string }) => test.id)).toEqual(pending.relevantTests.map((test: { id: string }) => test.id));
   expect(reviewed.relevantTests[4].facts.testName.resolvedValue.value.value).toBe("Helicobacter pylori stool antigen");
   expect(reviewed.relevantTests[4].facts.testResult.resolvedValue.value.value).toBe("negative");
-  const downloaded = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Download official PDF", exact: true }).click();
+  const downloaded = savePdf(page);
   const path = testInfo.outputPath("source-reference-correction.pdf");
   await (await downloaded).saveAs(path);
   const { stdout } = await promisify(execFile)(process.env.PYPDF_PYTHON ?? "python3", ["tools/pdf/independent_readback.py", path, "--named"]);
@@ -54,21 +54,22 @@ test("corrects DEMO-91 conversationally before initial acceptance, downloads fiv
   await expect(page.locator('[id^="case-card-test-"]')).toHaveCount(4);
   await expect(page.getByText("Some details were left out")).toBeVisible();
   await page.getByLabel("Clinical update", { exact: true }).fill(omittedTestRecovery);
-  await page.getByRole("button", { name: "Review this update", exact: true }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Review this update", exact: true }).click());
   await expect(page.locator('[id^="case-card-test-"]')).toHaveCount(5);
   await expect(page.locator("#case-card-test-5")).toContainText("ferritin");
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await acceptOpeningGroups(page);
   await complete(page);
-  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("ferritin: Result not recorded");
+  expect(await projectedText(page)).toContain("ferritin: Result not recorded");
 });
 
 async function state(page: Page) { return page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-journey-state-v2")!).case); }
 async function complete(page: Page) {
-  await page.getByRole("button", { name: "Confirm outcomes" }).click();
+  await directAnswers(page);
+  await serverAction(page, () => page.getByRole("button", { name: "Confirm outcomes" }).click());
   await page.getByLabel("No relevant history to add", { exact: true }).check();
-  await page.getByRole("button", { name: "Add this context" }).click();
-  await page.getByRole("button", { name: "These remaining details are unknown", exact: true }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Add this context" }).click());
+  await serverAction(page, () => page.getByRole("button", { name: "These remaining details are unknown", exact: true }).click());
   await page.getByLabel("Date of this report", { exact: true }).fill("2026-09-20");
-  await page.getByRole("button", { name: "Prefer not to provide reporter details" }).click();
-  await expect(page.getByRole("button", { name: "Download official PDF", exact: true })).toBeEnabled();
+  await serverAction(page, () => page.getByRole("button", { name: "Prefer not to provide reporter details" }).click());
+  expect((await storedState(page)).stage).toBe("output");
 }

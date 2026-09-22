@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { UnrepresentedModelProposal } from "../../domain/case/model-boundary";
+import { completionQuestions } from "../../domain/case/completion-policy";
 import { createSemanticCase } from "../../domain/case/create";
 import { allFacts, getFact, targetFromKey, targetKey } from "../../domain/case/facts";
 import { productDisplayLabel } from "../../domain/case/product-label";
@@ -41,6 +42,8 @@ export interface JourneySnapshot {
   clarification: ReturnType<typeof createClarificationView>;
   projection: ReturnType<typeof projectForm3500>;
   downloadReady: boolean;
+  clinicalNeeds: ReturnType<typeof completionQuestions>;
+  reportContentKey: string;
   outputIssues: OutputReadinessIssue[];
   transitionNotice?: string;
   unrepresented: UnrepresentedModelProposal[];
@@ -89,6 +92,10 @@ export async function getJourneySnapshot(
     clarification: createClarificationView(caseState),
     projection,
     downloadReady: outputIssues.length === 0,
+    clinicalNeeds: completionQuestions(caseState).filter(({ kind }) => kind !== "reporter"),
+    reportContentKey: createHash("sha256").update(JSON.stringify(projection.sections, (key, value) =>
+      ["productId", "testId"].includes(key) ? undefined
+        : ["reportedTo", "medicationType"].includes(key) && Array.isArray(value) ? [...value].sort() : value)).digest("hex"),
     outputIssues,
     unrepresented,
     openingGroups: pendingOpeningGroups(caseState),
@@ -429,22 +436,29 @@ export async function performJourneyAction(
         break;
       }
       case "answer-reporter": {
-        requireStage(expectedStage, "clarify");
-        if (createClarificationView(current)?.key !== "reporter-details") throw new Error("The reporter question is no longer open");
-        await ensureOpenCompletionNeed();
+        requireOneOfStages(expectedStage, ["clarify", "output"]);
+        const reporterNeed = createClarificationView(current)?.key === "reporter-details";
+        const previouslyAnswered = current.askedNeeds.some(({ key, status }) => key === "reporter-details" && status !== "open");
+        if (!reporterNeed && !previouslyAnswered) throw new Error("Complete the clinical questions before adding reporter details");
+        if (reporterNeed) await ensureOpenCompletionNeed();
         const source = fullSource("reporter-entry", reporterSource(action.reporter));
-        const facts = reporterFacts(action.reporter);
-        await applyCommand({
-          type: "record-clinician-facts", commandId: commandId("answer-reporter"), expectedRevision: current.revision,
-          source, answersNeed: "reporter-details", facts,
+        const facts = reporterFacts(action.reporter).flatMap((entry) => {
+          const fact = getFact(current, entry.target);
+          if (fact.state === "conflicted" || fact.proposedValues.length > 0) throw new Error("Resolve reporter changes before saving details");
+          if (JSON.stringify(fact.resolvedValue?.value) === JSON.stringify(entry.value)) return [];
+          return [{ ...entry, intent: fact.resolvedValue ? "correction" as const : "fact" as const }];
         });
-        if (action.reportDate) await applyCommand({
+        if (facts.length > 0) await applyCommand({
+          type: "record-clinician-facts", commandId: commandId("answer-reporter"), expectedRevision: current.revision,
+          source, ...(reporterNeed ? { answersNeed: "reporter-details" as const } : {}), facts,
+        });
+        if (action.reportDate !== undefined && JSON.stringify(current.event.facts.reportDate.resolvedValue?.value) !== JSON.stringify(action.reportDate === null ? { kind: "explicitly-absent" } : { kind: "known", value: action.reportDate })) await applyCommand({
           type: "record-clinician-facts", commandId: commandId("record-report-date"), expectedRevision: current.revision,
-          source: fullSource("selection", `Date of this report: ${action.reportDate}.`),
+          source: fullSource("selection", action.reportDate === null ? "Date of this report not provided." : `Date of this report: ${action.reportDate}.`),
           facts: [{
             id: valueId("report-date"), target: { entity: "event", entityId: "event", field: "reportDate" },
             intent: current.event.facts.reportDate.resolvedValue ? "correction" : "fact",
-            value: { kind: "known", value: action.reportDate },
+            value: action.reportDate === null ? { kind: "explicitly-absent" } : { kind: "known", value: action.reportDate },
           }],
         });
         break;

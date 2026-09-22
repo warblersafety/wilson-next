@@ -5,16 +5,19 @@ import {
 } from "../e2e/build-predetermined-responses";
 
 describe("predetermined E2E scenario ownership", () => {
-  it("assembles the exact attributable 31-call queue from one authored source", () => {
+  it("assembles the exact attributable 36-call queue from one authored source", () => {
     const scenarios = Object.values(predeterminedResponseScenarios) as ReadonlyArray<
       ReadonlyArray<{ identityScope: string }>
     >;
     const assembled = scenarios.flat();
 
-    expect(scenarios).toHaveLength(21);
+    expect(scenarios).toHaveLength(23);
     expect(scenarios.every((responses) => responses.length > 0)).toBe(true);
-    expect(assembled).toHaveLength(31);
+    expect(assembled).toHaveLength(36);
     expect(predeterminedModelResponses).toEqual(assembled);
+    // Draft 4 deliberately reuses the two medication fixtures in separate browser cases.
+    expect(predeterminedResponseScenarios.draft4Navigation).toBe(predeterminedResponseScenarios.issue92Sparse);
+    expect(predeterminedResponseScenarios.draft4Correction).toBe(predeterminedResponseScenarios.issue92Two);
     expect(new Set(assembled.map(({ identityScope }) => identityScope)).size).toBe(31);
   });
 });

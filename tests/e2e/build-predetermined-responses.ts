@@ -620,5 +620,7 @@ export const predeterminedResponseScenarios = {
     { identityScope: "issue96-omitted", turn: "opening" as const, output: omitted },
     { identityScope: "issue96-recovery", turn: "correction" as const, output: recoveryOutput() },
   ],
+  draft4Navigation: medicationScenarios.issue92Sparse,
+  draft4Correction: medicationScenarios.issue92Two,
 };
 export const predeterminedModelResponses = Object.values(predeterminedResponseScenarios).flat();
