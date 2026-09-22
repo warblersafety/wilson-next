@@ -57,6 +57,8 @@ test("Draft 4 retains drafts and proposals across screens, revisits reporter det
   await expect(page.getByRole("button", { name: "Accept this update", exact: true })).toBeVisible();
   const pending = await storedState(page);
   await expect(page.getByLabel("Useful clinical details")).toContainText("Treatment history for amoxicillin");
+  await expect(page.getByLabel("Useful clinical details")).toContainText("You do not need to repeat information already proposed above.");
+  await expect(page.getByRole("button", { name: "Review this update", exact: true })).toBeDisabled();
   await goTo(page, "Reporter details");
   await expect(page.getByLabel("Reporter email", { exact: true })).toHaveValue("casey@example.test");
   await goTo(page, "Review & save");
@@ -65,6 +67,7 @@ test("Draft 4 retains drafts and proposals across screens, revisits reporter det
   expect(await storedState(page)).toEqual(pending);
   await page.getByRole("button", { name: "Accept this update", exact: true }).click();
   await expect(page.getByLabel("Useful clinical details")).not.toContainText("Treatment history for amoxicillin");
+  await expect(page.getByRole("heading", { name: "Anything to add or correct?", exact: true })).toBeVisible();
   await goTo(page, "Reporter details");
   await expect(page.getByLabel("Reporter email", { exact: true })).toHaveValue("casey@example.test");
   await page.getByLabel("Date of this report", { exact: true }).fill("2026-09-22");

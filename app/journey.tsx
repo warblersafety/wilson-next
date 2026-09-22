@@ -222,9 +222,10 @@ export default function Journey() {
           <CaseSummaryHeading attention={snapshot.review.attention} />
           <CaseCards key={browserState?.case.id} snapshot={snapshot} busy={busy} act={act} />
           <section className={styles.invitation} aria-label="Useful clinical details">
-            <h2>Anything to add or correct?</h2>
-            {snapshot.clinicalNeeds.length > 0 && <div className={styles.caseGuidance}><p>These details would help complete this report:</p><ul>{snapshot.clinicalNeeds.map((need) => <li key={`${need.key}:${need.targetIds.join()}`}>{need.question}</li>)}</ul></div>}
-            <p>Answer several things together, or add another detail. Say which product or test it concerns. Proposed answers remain here until you accept them.</p>
+            <h2>{snapshot.stage === "review-update" ? "Review the proposed changes first" : "Anything to add or correct?"}</h2>
+            {snapshot.stage === "review-update" && <p>You do not need to repeat information already proposed above. Review those changes before adding more.</p>}
+            {snapshot.clinicalNeeds.length > 0 && <div className={styles.caseGuidance}><p>{snapshot.stage === "review-update" ? "These clinical needs remain open until the relevant answers are accepted:" : "These details would help complete this report:"}</p><ul>{snapshot.clinicalNeeds.map((need) => <li key={`${need.key}:${need.targetIds.join()}`}>{need.question}</li>)}</ul></div>}
+            {snapshot.stage !== "review-update" && <p>Answer several things together, or add another detail. Say which product or test it concerns. Proposed answers remain here until you accept them.</p>}
             <CorrectionInput update={update} setUpdate={setUpdate} busy={busy || snapshot.stage === "review-update" || snapshot.stage === "describe"} act={act} />
             {snapshot.clarification && snapshot.clarification.kind !== "reporter" && <details className={styles.directQuestions}><summary>Use direct answers for the next question</summary><CompletionTask key={clinicalDraftKey(snapshot)} snapshot={snapshot} busy={busy || snapshot.stage !== "clarify"} act={act} /></details>}
           </section>

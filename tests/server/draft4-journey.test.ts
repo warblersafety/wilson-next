@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { applyCaseCommand } from "../../src/domain/case/commands";
-import { completionQuestions } from "../../src/domain/case/completion-policy";
+import { completionQuestions, nextCompletionQuestion } from "../../src/domain/case/completion-policy";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { getJourneySnapshot, performJourneyAction, type JourneyAction } from "../../src/server/journey/service";
 import { acceptOpeningCase, completeResolvedCase } from "../domain/fixture";
@@ -31,6 +31,34 @@ function pendingAnswer(state: SemanticCase) {
 }
 
 describe("Draft 4 accepted knowledge and output lifecycle", () => {
+  it("keeps the test need open during a new-test proposal, settles it on acceptance, and retains it on rejection", () => {
+    const opening = acceptOpeningCase();
+    const source = { id: "source-new-test", inputId: "input-new-test", inputType: "correction" as const, excerpt: "Hemoglobin was 8.9 g/dL.", start: 0, end: "Hemoglobin was 8.9 g/dL.".length, actor: "clinician" as const, recordedAt: "2026-09-22T00:00:00Z" };
+    const prior = applyCaseCommand(opening, {
+      type: "withdraw-case-entity", commandId: "withdraw-old-test", expectedRevision: opening.revision,
+      target: { entity: "test", entityId: "test-hemoglobin" },
+      source: { ...source, id: "source-withdraw-test", excerpt: "Withdraw the earlier test.", end: "Withdraw the earlier test.".length },
+    }).case;
+    const pending = applyCaseCommand(prior, {
+      type: "attach-grounded-proposals", commandId: "propose-new-test", expectedRevision: prior.revision,
+      products: [], relevantTests: [{ id: "test-new", groupId: "new-test" }], sources: [source],
+      proposals: [{ proposalId: "new-result", groupId: "new-test", intent: "fact", target: { entity: "test", entityId: "test-new", field: "testResult" }, value: { kind: "known", value: "8.9 g/dL" }, sourceIds: [source.id] }],
+    }).case;
+    const testNeed = (state: SemanticCase) => completionQuestions(state).find(({ kind }) => kind === "clinical-context")?.targetIds.includes("event:event:relevantTestsAvailable") ?? false;
+    const untouched = structuredClone(pending);
+    expect(testNeed(prior)).toBe(true);
+    expect(testNeed(pending)).toBe(true);
+    expect(nextCompletionQuestion(pending)).toBeNull(); // Review proposals before recording another question.
+    expect(pending).toEqual(untouched);
+    for (const decision of ["accept", "reject"] as const) {
+      const reviewed = applyCaseCommand(pending, {
+        type: "review-proposal-groups", commandId: `review-new-test-${decision}`, expectedRevision: pending.revision,
+        decisions: [{ groupId: "new-test", action: decision }],
+      }).case;
+      expect(testNeed(reviewed)).toBe(decision === "reject");
+    }
+  });
+
   it("shows multiple applicable clinical needs without recording questions or settling proposed answers", async () => {
     const state = acceptOpeningCase();
     const before = structuredClone(state);

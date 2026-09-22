@@ -71,3 +71,15 @@ path does not establish broad language reliability; richer prose/ambiguous
 corrections, bulk acceptance, partial reporter completion, new fields/capacity and
 mid-case medicines are deferred. #94 and #99 are unchanged. The UI and independent
 PDF checks preserve the existing medication, device and product-problem paths.
+
+
+Independent review identified possible confusion from clinical invitations while
+answers awaited proposal review. The pending-update invitation now says to review
+the proposed changes first, explicitly says not to repeat information already
+proposed, and labels the listed needs as open until acceptance. Submission remains
+disabled during review. This resolves the presentation concern for tests and
+medications without suppressing an unmet accepted-state need. The frozen brief
+explicitly requires pending proposals not to settle needs; a new service regression
+checks a proposed test remains unmet, acceptance settles it, and rejection leaves
+it open, while the action scheduler records no new question during review. The
+independent review and disposition are recorded verbatim on PR #102.
