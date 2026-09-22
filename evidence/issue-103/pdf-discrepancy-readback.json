@@ -1,0 +1,50 @@
+{
+  "reader": "pypdf 6.16.2",
+  "files": [
+    {
+      "file": "evidence/ui-draft4-walkthrough-2026-09-22/flattened-viewer-copy.pdf",
+      "sha256": "95bff917c0c00aefa3a90e6b7d7709c6601cf7a27327f5eb8c1626f7e5800ec0",
+      "pages": 8,
+      "acroFormFieldCount": 0,
+      "metadata": {
+        "/ModDate": "D:20260922230725Z00'00'",
+        "/Producer": "macOS Version 26.6.2 (Build 25G83) Quartz PDFContext",
+        "/Creator": "Firefox",
+        "/Title": "FORM FDA 3500 - wilson-form-fda-3500-12.pdf",
+        "/CreationDate": "D:20260922230725Z00'00'"
+      },
+      "recurrenceFields": {},
+      "narrative": "Symptoms: melena (black, tarry stools) and dizziness. Treatment: intravenous fluids. Outcome: recovered. Discharged 13-Sep-2026. Product stopped: ibuprofen.",
+      "D8VisualInspection": "Does not apply marked; Yes/No unmarked"
+    },
+    {
+      "file": "evidence/ui-draft4-walkthrough-2026-09-22/wilson-direct-download.pdf",
+      "sha256": "ba1b73c64ca1e1042dab3b54e5975cb34085a336cac14d83e01fd7af4e334a89",
+      "pages": 8,
+      "acroFormFieldCount": 282,
+      "metadata": {},
+      "recurrenceFields": {
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearYes[0]": "/Off",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearNo[0]": "/Off",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearNA[0]": "/1"
+      },
+      "narrative": "Symptoms: melena (black, tarry stools) and dizziness. Treatment: intravenous fluids. Outcome: recovered. Discharged 13-Sep-2026. Products stopped: ibuprofen.",
+      "D8VisualInspection": "Does not apply marked; Yes/No unmarked"
+    },
+    {
+      "file": "evidence/issue-103/identical-input-quartz-flattened.pdf",
+      "sha256": "b21d7a2f0943bcf2e72eb65b034dc5aea31b897ad1e37a6b6ae9615502c90609",
+      "pages": 8,
+      "acroFormFieldCount": 0,
+      "metadata": {
+        "/CreationDate": "D:20260922232716Z00'00'",
+        "/Producer": "macOS Version 26.5.2 (Build 25F84) Quartz PDFContext",
+        "/ModDate": "D:20260922232716Z00'00'"
+      },
+      "recurrenceFields": {},
+      "narrative": "Symptoms: melena (black, tarry stools) and dizziness. Treatment: intravenous fluids. Outcome: recovered. Discharged 13- Sep-2026. Products stopped: ibuprofen.",
+      "D8VisualInspection": "Does not apply marked; Yes/No unmarked"
+    }
+  ],
+  "conclusion": "No recurrence discrepancy demonstrated. Wording difference retained; cause unresolved. PDFKit/Quartz same-input flattening did not reproduce the wording change."
+}

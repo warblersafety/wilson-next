@@ -45,7 +45,7 @@ export default function Journey() {
   const [boundaryNotice, setBoundaryNotice] = useState<string>();
   const [resetNotice, setResetNotice] = useState(false);
   const previousTask = useRef<string | undefined>(undefined);
-  const updateReviewFocus = useRef(false);
+  const updateReviewFocus = useRef<string[] | undefined>(undefined);
 
   useEffect(() => { void loadJourney(); }, []);
 
@@ -64,11 +64,15 @@ export default function Journey() {
   }, [task]);
 
   useEffect(() => {
-    if (!updateReviewFocus.current || !snapshot) return;
-    updateReviewFocus.current = false;
-    const heading = document.getElementById(snapshot.stage === "review-update" ? "update-review-title" : "case-title");
-    heading?.focus({ preventScroll: true });
-    heading?.scrollIntoView({ block: "start" });
+    const newGroups = updateReviewFocus.current;
+    if (!newGroups || !snapshot) return;
+    updateReviewFocus.current = undefined;
+    const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-proposal-review]"));
+    const card = cards.find((item) => newGroups.includes(item.dataset.proposalReview!)) ?? cards[0];
+    const target = snapshot.stage === "review-update" ? document.getElementById("update-review-title")
+      : card?.querySelector<HTMLElement>("h3") ?? document.querySelector<HTMLElement>("[data-conflict-review]") ?? document.getElementById("case-title");
+    target?.focus({ preventScroll: true });
+    target?.scrollIntoView({ block: "start" });
   }, [snapshot]);
 
   useEffect(() => {
@@ -126,7 +130,10 @@ export default function Journey() {
         method: "POST",
         body: { operation: "act", state: browserState, expectedRevision: snapshot.revision, action },
       }, "Wilson could not update the case");
-      updateReviewFocus.current = action.action === "submit-update" || action.action === "review-update-group";
+      if (["submit-update", "review-update-group", "review-opening-group", "reject-group"].includes(action.action)) {
+        const previousGroups = new Set(snapshot.review.attention.map(({ groupId }) => groupId));
+        updateReviewFocus.current = response.snapshot.review.attention.flatMap(({ groupId }) => groupId && !previousGroups.has(groupId) ? [groupId] : []);
+      }
       acceptResponse(response);
       if (response.snapshot.transitionNotice) setBoundaryNotice(response.snapshot.transitionNotice);
       if (action.action === "submit-opening") setScreen("details");
@@ -714,7 +721,7 @@ function ReportCoverage({ snapshot }: { snapshot: JourneySnapshot }) {
 function ConflictCard({ snapshot, item, busy, act }: {
   snapshot: JourneySnapshot; item: ReviewAttentionItem; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
-  return <fieldset className={styles.conflictChoice}>
+  return <fieldset className={styles.conflictChoice} data-conflict-review tabIndex={-1}>
     <legend>{targetLabel(snapshot, item.target)}</legend>
     {item.values.map((value) => <div className={styles.conflictOption} key={value.id}>
       <strong>{formatFact(value.value, controlForTarget(item.target))}</strong>
@@ -797,9 +804,9 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
     const proposal = facts[field]?.proposals.find(({ groupId: proposalGroup }) => proposalGroup === groupId);
     return proposal ? [{ proposalId: proposal.id, value }] : [];
   });
-  return <article id={domId} className={styles.caseCard}>
+  return <article id={domId} className={styles.caseCard} data-proposal-review={allowOpeningReview ? groupId : undefined}>
     <div className={styles.cardTitle}>
-      <div>{eyebrow && <span>{eyebrow}</span>}<h3>{title}</h3></div>
+      <div>{eyebrow && <span>{eyebrow}</span>}<h3 tabIndex={-1}>{title}</h3></div>
       <div className={styles.cardActions}>
         {allowRemove && <button disabled={busy} onClick={() => void act({ action: "reject-group", groupId })}>Remove {title}</button>}
         {allowWithdraw && <button disabled={busy} onClick={() => void act({ action: "withdraw-entity", entity: entity as "product" | "test", entityId })}>Withdraw {title}</button>}

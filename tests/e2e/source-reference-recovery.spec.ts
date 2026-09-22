@@ -54,9 +54,11 @@ test("corrects DEMO-91 conversationally before initial acceptance, downloads fiv
   await expect(page.locator('[id^="case-card-test-"]')).toHaveCount(4);
   await expect(page.getByText("Some details were left out")).toBeVisible();
   await page.getByLabel("Clinical update", { exact: true }).fill(omittedTestRecovery);
-  await serverAction(page, () => page.getByRole("button", { name: "Review this update", exact: true }).click());
+  await page.getByRole("button", { name: "Review this update", exact: true }).click();
   await expect(page.locator('[id^="case-card-test-"]')).toHaveCount(5);
   await expect(page.locator("#case-card-test-5")).toContainText("ferritin");
+  await expect(page.locator("#case-card-test-5").getByRole("heading")).toBeFocused();
+  await expect(page.locator("#case-card-test-5").getByRole("heading")).toBeInViewport();
   await acceptOpeningGroups(page);
   await complete(page);
   expect(await projectedText(page)).toContain("ferritin: Result not recorded");

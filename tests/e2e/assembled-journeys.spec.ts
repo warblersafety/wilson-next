@@ -621,11 +621,13 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await expect(page.getByText("Earlier: 400 mg", { exact: true })).toBeVisible();
   await expect(page.getByText("1 proposed detail to check", { exact: true })).toBeVisible();
   const dateUpdate = page.getByRole("article").filter({ hasText: "2-Jul-2026" });
-  await serverAction(page, () => dateUpdate.getByRole("button", { name: "Accept this update" }).click());
+  await dateUpdate.getByRole("button", { name: "Accept this update" }).click();
+  await expect(page.getByRole("group", { name: "acetaminophen (Tylenol) — Started" })).toBeFocused();
   expect((await storedState(page)).stage).toBe("output");
   await expect(page.getByText("1 unresolved conflict", { exact: true })).toBeVisible();
   await expect(page.getByText("Neither alternative will be put in the form.", { exact: false })).toBeVisible();
   await expect(page.getByRole("group", { name: "acetaminophen (Tylenol) — Started" })).toBeVisible();
+  await expect(page.getByRole("group", { name: "acetaminophen (Tylenol) — Started" })).toBeInViewport();
   expect(await projectedText(page)).toContain("conflicted");
   expect((await storedState(page)).stage).toBe("output");
   checkpoints.push({ journey: "repeated", state: "unresolved-partial-output", assertion: "Alias identity stayed singular, dose correction superseded history, and both dates remain visible while neither projects." });

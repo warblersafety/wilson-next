@@ -9,7 +9,6 @@
 .resetNotice { font-size: 13px; color: #5c6678; }
 .appShell button, .primaryLink { border: 1px solid #c6ccd8; border-radius: 8px; min-height: 44px; padding: 11px 17px; background: white; color: #141b2e; font-weight: 600; text-decoration: none; }
 .appShell button:hover:not(:disabled) { background: #eef1f5; color: #141b2e; border-color: #aeb6c6; }
-.appShell button:disabled { background: #eef1f5; color: #5c6678; border-color: #e5e8ee; box-shadow: none; }
 .headerActions button { font-size: 14px; border: 0; color: #5c6678; }
 .boundary { background: #141b2e; color: #e0e4ed; padding: 7px 38px; display: flex; align-items: baseline; gap: 0 24px; flex-wrap: wrap; font-size: 12px; }
 .boundary > p { margin: 0; }
@@ -37,6 +36,7 @@
 .describeScreen > p { color: #5c6678; }
 .describeScreen > button, .updateBox > button, .screen .groupReview, .decisionActions button:first-child, .pdfToolbar button, .primaryLink, .screenActions button:last-child { background: #0f8a86; color: white; border-color: #0f8a86; box-shadow: 0 3px 0 #096b68; }
 .describeScreen > button { margin-top: 22px; }
+.appShell button:disabled { background: #eef1f5; color: #5c6678; border-color: #e5e8ee; box-shadow: none; }
 .originalAccount, .reportDescription p { white-space: pre-wrap; overflow-wrap: anywhere; }
 .reportType { border: 0; margin: 20px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 14px; }
 .reportType legend { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
@@ -44,7 +44,7 @@
 .hint { color: #5c6678; font-size: 13px; margin: 10px 0; }
 .caseSummaryHeading { margin: 18px 0; }
 .caseSummaryHeading h2 { margin-bottom: 8px; }
-.caseSummaryHeading h2, .updateReviewTitle { scroll-margin-top: 24px; }
+.caseSummaryHeading h2, .updateReviewTitle, .cardTitle h3, .conflictChoice { scroll-margin-top: 24px; }
 .caseSummaryHeading p { color: #5c6678; font-size: 14px; margin: 4px 0; }
 .cards { display: grid; gap: 18px; }
 .caseCard, .attentionCard, .conflictChoice { background: white; border: 1px solid #dfe5ea; border-radius: 16px; padding: 23px 25px; box-shadow: 0 3px 14px #141b2e04; min-width: 0; }
