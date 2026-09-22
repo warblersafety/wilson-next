@@ -8,8 +8,8 @@
 .headerActions { display: flex; align-items: center; gap: 10px; }
 .resetNotice { font-size: 13px; color: #5c6678; }
 .appShell button, .primaryLink { border: 1px solid #c6ccd8; border-radius: 8px; min-height: 44px; padding: 11px 17px; background: white; color: #141b2e; font-weight: 600; text-decoration: none; }
-.appShell button:hover:not(:disabled) { background: #eef1f5; border-color: #aeb6c6; }
-.appShell button:disabled { background: #eef1f5; color: #5c6678; border-color: #e5e8ee; }
+.appShell button:hover:not(:disabled) { background: #eef1f5; color: #141b2e; border-color: #aeb6c6; }
+.appShell button:disabled { background: #eef1f5; color: #5c6678; border-color: #e5e8ee; box-shadow: none; }
 .headerActions button { font-size: 14px; border: 0; color: #5c6678; }
 .boundary { background: #141b2e; color: #e0e4ed; padding: 7px 38px; display: flex; align-items: baseline; gap: 0 24px; flex-wrap: wrap; font-size: 12px; }
 .boundary > p { margin: 0; }
@@ -44,6 +44,7 @@
 .hint { color: #5c6678; font-size: 13px; margin: 10px 0; }
 .caseSummaryHeading { margin: 18px 0; }
 .caseSummaryHeading h2 { margin-bottom: 8px; }
+.caseSummaryHeading h2, .updateReviewTitle { scroll-margin-top: 24px; }
 .caseSummaryHeading p { color: #5c6678; font-size: 14px; margin: 4px 0; }
 .cards { display: grid; gap: 18px; }
 .caseCard, .attentionCard, .conflictChoice { background: white; border: 1px solid #dfe5ea; border-radius: 16px; padding: 23px 25px; box-shadow: 0 3px 14px #141b2e04; min-width: 0; }
@@ -67,9 +68,12 @@
 .withdrawn { color: #5c6678; font-size: 14px; border-left: 3px solid #c6ccd8; padding: 10px; }
 .evidence { color: #3d4658; font-size: 14px; }
 .evidence blockquote { border-left: 3px solid #f4b400; padding-left: 15px; margin: 8px 0; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
+blockquote.evidence { border-left: 3px solid #f4b400; padding-left: 15px; margin: 12px 0 20px; line-height: 1.65; overflow-wrap: anywhere; }
+blockquote.evidence > span { display: block; white-space: pre-wrap; }
+blockquote.evidence > span:first-child { font-size: 12px; font-weight: 600; margin-bottom: 6px; }
 .evidencePair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .attentionCard { border-left: 4px solid #f4b400; margin-bottom: 18px; }
-.attentionCard h2 { font-size: 17px; }
+.attentionCard h3 { font-size: 17px; }
 .decisionActions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
 .invitation { background: #fff8df; border: 1px solid #eddfa9; border-top: 4px solid #f4b400; border-radius: 12px; padding: 23px 25px; margin-top: 24px; }
 .invitation h2 { margin: 0 0 12px; }
@@ -94,6 +98,10 @@
 .reporterFields { grid-template-columns: 1fr 1fr; }
 .reporterFields label { display: block; }
 .privacyPanel { display: block; background: #eef5f5; border-color: #c7dfdc; }
+.privacyPanel label { display: grid; grid-template-columns: 18px minmax(0, 1fr); align-items: start; }
+.privacyPanel input { margin: 2px 0 0; }
+.coverage h3 { font-size: 16px; margin: 24px 0 8px; }
+.coverage p { color: #5c6678; font-size: 14px; }
 .requirementHint { font-size: 14px; color: #5c6678; margin-top: 18px; }
 .screenActions, .pdfToolbar, .returnBanner { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; margin: 28px 0; }
 .screenActions p { font-size: 14px; color: #5c6678; max-width: 45ch; margin: 0; }

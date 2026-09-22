@@ -55,6 +55,10 @@ test("Draft 4 retains drafts and proposals across screens, revisits reporter det
   await expect(page.getByLabel("Stop date", { exact: true })).toHaveValue("2026-09-18");
   await page.getByRole("button", { name: "Review this update", exact: true }).click();
   await expect(page.getByRole("button", { name: "Accept this update", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Review the proposed update", exact: true })).toBeFocused();
+  await expect(page.getByRole("heading", { name: "Review the proposed update", exact: true })).toBeInViewport();
+  await expect(page.locator("article").filter({ has: page.getByRole("button", { name: "Accept this update", exact: true }) }).first().getByRole("heading").first()).toBeInViewport();
+  await page.screenshot({ path: info.outputPath("update-focused.png") });
   const pending = await storedState(page);
   await expect(page.getByLabel("Useful clinical details")).toContainText("Treatment history for amoxicillin");
   await expect(page.getByLabel("Useful clinical details")).toContainText("You do not need to repeat information already proposed above.");
@@ -66,6 +70,7 @@ test("Draft 4 retains drafts and proposals across screens, revisits reporter det
   await goTo(page, "Review details");
   expect(await storedState(page)).toEqual(pending);
   await page.getByRole("button", { name: "Accept this update", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Case summary", exact: true })).toBeFocused();
   await expect(page.getByLabel("Useful clinical details")).not.toContainText("Treatment history for amoxicillin");
   await expect(page.getByRole("heading", { name: "Anything to add or correct?", exact: true })).toBeVisible();
   await goTo(page, "Reporter details");
@@ -79,6 +84,12 @@ test("Draft 4 retains drafts and proposals across screens, revisits reporter det
   expect(originalUrl).toMatch(/^blob:/);
   expect(pdfRequests).toBe(1);
   const completed = await storedState(page);
+  await page.getByText("Report coverage and omitted information", { exact: true }).click();
+  const coverage = page.locator("details").filter({ has: page.getByText("Report coverage and omitted information", { exact: true }) });
+  await expect(coverage).toContainText("Relevant history: explicitly reported as absent");
+  await expect(coverage).toContainText("Address: not supplied");
+  await expect(coverage).not.toContainText("not present");
+  await expect(coverage.getByRole("heading", { name: "Fields this preview does not support" })).toBeVisible();
   await page.screenshot({ path: info.outputPath("pdf-desktop.png"), fullPage: true });
   await goTo(page, "Reporter details");
   await expect(page.getByLabel("Reporter email", { exact: true })).toHaveValue("casey@example.test");
@@ -116,7 +127,8 @@ test("Draft 4 retains drafts and proposals across screens, revisits reporter det
   }
 });
 
-test("a retained PDF is labelled earlier during pending clinical correction and obsolete medication drafts cannot return", async ({ page }) => {
+test("a retained PDF is labelled earlier during pending clinical correction and obsolete medication drafts cannot return", async ({ page }, info) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await page.getByLabel("Clinical account", { exact: true }).fill(medicationTwoOpening);
   await page.getByRole("button", { name: "Review Wilson’s understanding", exact: true }).click();
@@ -134,6 +146,10 @@ test("a retained PDF is labelled earlier during pending clinical correction and 
   await page.getByLabel("Clinical update", { exact: true }).fill(medicationNeverRestarted);
   await page.getByRole("button", { name: "Review this update", exact: true }).click();
   await expect(page.getByRole("button", { name: "Accept this update", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Review the proposed update", exact: true })).toBeFocused();
+  await expect(page.getByRole("heading", { name: "Review the proposed update", exact: true })).toBeInViewport();
+  await expect(page.locator("article").filter({ has: page.getByRole("button", { name: "Accept this update", exact: true }) }).first().getByRole("heading").first()).toBeInViewport();
+  await page.screenshot({ path: info.outputPath("update-focused.png") });
   await goTo(page, "Review & save");
   await expect(page.getByTitle("Earlier generated Form FDA 3500", { exact: true })).toHaveAttribute("src", url!);
   await expect(page.getByText("Earlier PDF —", { exact: false })).toBeVisible();
@@ -141,10 +157,12 @@ test("a retained PDF is labelled earlier during pending clinical correction and 
   await expect(page.getByRole("button", { name: "Generate updated PDF", exact: true })).toBeDisabled();
   await goTo(page, "Review details");
   await page.getByRole("button", { name: "Accept this update", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Case summary", exact: true })).toBeFocused();
   await expect(recurrence.getByLabel("New Event returned after restarting", { exact: true })).toHaveCount(0);
   await page.getByLabel("Clinical update", { exact: true }).fill(medicationRestartedAgain);
   await page.getByRole("button", { name: "Review this update", exact: true }).click();
   await page.getByRole("button", { name: "Accept this update", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Case summary", exact: true })).toBeFocused();
   await directAnswers(page);
   await expect(page.getByLabel("Did the event return after restarting it?", { exact: true })).toHaveValue("");
   expect((await storedState(page)).case.products[0].facts.recurred.resolvedValue).toBeUndefined();

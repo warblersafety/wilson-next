@@ -45,6 +45,7 @@ export default function Journey() {
   const [boundaryNotice, setBoundaryNotice] = useState<string>();
   const [resetNotice, setResetNotice] = useState(false);
   const previousTask = useRef<string | undefined>(undefined);
+  const updateReviewFocus = useRef(false);
 
   useEffect(() => { void loadJourney(); }, []);
 
@@ -61,6 +62,14 @@ export default function Journey() {
     }
     previousTask.current = task;
   }, [task]);
+
+  useEffect(() => {
+    if (!updateReviewFocus.current || !snapshot) return;
+    updateReviewFocus.current = false;
+    const heading = document.getElementById(snapshot.stage === "review-update" ? "update-review-title" : "case-title");
+    heading?.focus({ preventScroll: true });
+    heading?.scrollIntoView({ block: "start" });
+  }, [snapshot]);
 
   useEffect(() => {
     if (!resetNotice) return;
@@ -117,6 +126,7 @@ export default function Journey() {
         method: "POST",
         body: { operation: "act", state: browserState, expectedRevision: snapshot.revision, action },
       }, "Wilson could not update the case");
+      updateReviewFocus.current = action.action === "submit-update" || action.action === "review-update-group";
       acceptResponse(response);
       if (response.snapshot.transitionNotice) setBoundaryNotice(response.snapshot.transitionNotice);
       if (action.action === "submit-opening") setScreen("details");
@@ -256,7 +266,7 @@ function CaseSummaryHeading({ attention }: { attention: ReviewAttentionItem[] })
   const proposals = attention.filter(({ kind }) => kind !== "conflict").length;
   const conflicts = attention.filter(({ kind }) => kind === "conflict").length;
   return <div className={styles.caseSummaryHeading}>
-    <h2 id="case-title">Case summary</h2>
+    <h2 id="case-title" tabIndex={-1}>Case summary</h2>
     <p>Check these details against your account.</p>
     {proposals > 0 && <p>{proposals} proposed {proposals === 1 ? "detail" : "details"} to check</p>}
     {conflicts > 0 && <p>{conflicts} unresolved {conflicts === 1 ? "conflict" : "conflicts"}</p>}
@@ -647,12 +657,12 @@ function UpdateReview({ snapshot, busy, act }: {
   const groups = groupAttention(snapshot.review.attention.filter(({ kind, groupId }) => kind !== "conflict" && !snapshot.openingGroups.includes(groupId ?? "")));
   return <>
     <p className={styles.eyebrow}>Review update</p>
-    <h1 id="task-title">Review the proposed update</h1>
+    <h2 id="update-review-title" tabIndex={-1} className={styles.updateReviewTitle}>Review the proposed update</h2>
     <p>Review each proposed change before continuing. Earlier information stays unchanged until you accept a correction. An accepted incompatible alternative remains visibly unresolved and is omitted from the form.</p>
     {groups.map(({ groupId, items }) => <article className={styles.attentionCard} key={groupId}>
       <span className={styles.attentionLabel}>{items.some(({ kind }) => kind === "correction") ? "Proposed correction" : "Proposed information"}</span>
       {items.map((item) => <div key={item.target}>
-        <h2>{targetLabel(snapshot, item.target)}</h2>
+        <h3>{targetLabel(snapshot, item.target)}</h3>
         <p><strong>{formatFact(item.values[0]?.value, controlForTarget(item.target))}</strong></p>
         <Evidence excerpt={item.values[0]?.evidence} expanded />
       </div>)}
@@ -682,9 +692,23 @@ function OutputComposition({ snapshot, pdf, caseId, busy, generatePdf, navigate,
     </div>
     {artifact && <><iframe className={styles.pdfFrame} src={artifact.url} title={current ? "Generated Form FDA 3500" : "Earlier generated Form FDA 3500"} /><p><a href={artifact.url} target="_blank" rel="noreferrer">Open {current ? "PDF" : "earlier PDF"} in a separate tab</a></p></>}
     <details className={styles.reportDescription}><summary>Report event description</summary><p>{snapshot.projection.sections.B.eventDescription ?? "No accepted description yet."}</p><p className={styles.hint}>This is the wording generated from currently accepted information{current ? " and included in the PDF" : "; an earlier PDF may contain earlier wording"}.</p></details>
-    <details><summary>Report coverage and omitted information</summary><p>This preview supports a limited set of Form FDA 3500 fields.</p><ul>{snapshot.projection.omissions.filter(({ reason }) => reason !== "empty").map((item, index) => <li key={index}>{humanOmission(snapshot, item.target, item.concept)}: {omissionLabel(item.reason)}</li>)}{snapshot.projection.notIncluded.map((item) => <li key={item}>{item}</li>)}</ul></details>
+    <ReportCoverage snapshot={snapshot} />
     <div className={styles.screenActions}><button onClick={() => navigate("details")}>Edit case details</button><button onClick={() => navigate("reporter")}>Edit reporter details</button></div>
   </>;
+}
+
+function ReportCoverage({ snapshot }: { snapshot: JourneySnapshot }) {
+  const omissions = snapshot.projection.omissions.filter(({ reason }) => reason !== "empty");
+  const clinical = omissions.filter(({ target }) => !target.startsWith("reporter:"));
+  const reporter = omissions.filter(({ target }) => target.startsWith("reporter:"));
+  const list = (items: typeof omissions) => <ul>{items.map((item, index) => <li key={index}>{humanOmission(snapshot, item.target, item.concept)}: {omissionLabel(item.reason, item.target)}</li>)}</ul>;
+  return <details className={styles.coverage}>
+    <summary>Report coverage and omitted information</summary>
+    <p>Based on currently accepted information. Unsent drafts and unaccepted proposals are not included in the report.</p>
+    {clinical.length > 0 && <><h3>Clinical information omitted from form fields</h3><p>These are recorded answers, including facts explicitly reported as absent. Other blank fields may simply have no supplied information.</p>{list(clinical)}</>}
+    {reporter.length > 0 && <><h3>Reporter information not included</h3><p>Blank contact or address details mean they were not supplied, not that they do not exist.</p>{list(reporter)}</>}
+    {snapshot.projection.notIncluded.length > 0 && <><h3>Fields this preview does not support</h3><p>These limits apply to the preview, whether or not your account mentions these details.</p><ul>{snapshot.projection.notIncluded.map((item) => <li key={item}>{item}</li>)}</ul></>}
+  </details>;
 }
 
 function ConflictCard({ snapshot, item, busy, act }: {
@@ -982,11 +1006,11 @@ function controlForTarget(target: string): FactControl | undefined {
   return factControl(entity as "patient" | "event" | "product" | "test" | "reporter", field);
 }
 
-function omissionLabel(reason: string): string {
+function omissionLabel(reason: string, target: string): string {
   return {
     empty: "not provided",
     unknown: "unknown",
-    "explicitly-absent": "not present",
+    "explicitly-absent": target.startsWith("reporter:") ? "not supplied" : "explicitly reported as absent",
     inapplicable: "not applicable",
     declined: "prefer not to answer",
     conflicted: "unresolved conflict",

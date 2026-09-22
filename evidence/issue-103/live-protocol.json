@@ -1,0 +1,51 @@
+{
+  "authorizedIssue": 103,
+  "syntheticOnly": true,
+  "maxCalls": 3,
+  "maxBatchUsd": 5,
+  "maxIssueUsd": 20,
+  "reservationPerCallUsd": 1.6,
+  "reservationBasis": "Configured maximum output 128000 tokens at the adapter's estimated $10/million reserves $1.28; $0.32 covers up to 160000 input tokens at estimated $2/million. These three short synthetic calls and bounded context are below that input allowance. No provider limit or prompt change.",
+  "retryPolicy": "No automatic model retries. Score returned proposals before acceptance. Retain and report fidelity failures; fix ordinary UI defects with deterministic evidence. A materially invalid synthetic path cannot count as success.",
+  "cases": [
+    {
+      "id": "opening",
+      "text": "A 54-year-old woman started ibuprofen 400 mg by mouth three times daily on 8 September 2026 for back pain. On 11 September she developed melena (black, tarry stools) and dizziness and was hospitalized. I suspect ibuprofen was related to the event. She received intravenous fluids, recovered, and was discharged on 13 September. There was no death, life-threatening event, disability, congenital anomaly, intervention to prevent permanent impairment, or other serious outcome.",
+      "expected": [
+        "One suspect ibuprofen product with dose 400 mg and indication back pain",
+        "Patient age 54 and female",
+        "Melena and dizziness without invented symptoms",
+        "Onset September 11, hospitalization, discharge September 13",
+        "Laboratory results and medication history remain missing until supplied"
+      ]
+    },
+    {
+      "id": "addition",
+      "text": "Ibuprofen was stopped on 11 September 2026. The melena and dizziness improved after stopping it, and it was never restarted. Hemoglobin was 8.9 g/dL on 11 September and 9.4 g/dL on 12 September 2026. The laboratory reference range for both results was 12 to 16 g/dL. There is no additional relevant medical history.",
+      "expected": [
+        "Ibuprofen stopped September 11, improved after stopping, never restarted",
+        "Two separate hemoglobin results: 8.9 on September 11 and 9.4 on September 12",
+        "Reference range 12\u201316 for both, no fabricated results",
+        "Accepted answers settle corresponding needs; pending proposals do not"
+      ]
+    },
+    {
+      "id": "correction",
+      "text": "Correction: the hemoglobin result on 12 September 2026 was 9.6 g/dL, not 9.4 g/dL. The 11 September result remains 8.9 g/dL. Both dates and reference ranges are unchanged.",
+      "expected": [
+        "Correct only the September 12 result to 9.6",
+        "Retain separate test identity, dates, ranges and September 11 value",
+        "Earlier 9.4 remains history, not active output",
+        "Previously generated PDF remains accurately labelled until correction review and updated generation"
+      ]
+    }
+  ],
+  "reporter": {
+    "firstName": "Casey",
+    "lastName": "Reed",
+    "email": "casey.reed@example.test",
+    "correctedEmail": "casey.updated@example.test",
+    "reportDate": "2026-09-22"
+  },
+  "evidence": "Record candidate commit/deployment, synthetic inputs, proposal and accepted snapshots, exposed model usage/latency/cost, desktop/mobile screenshots and independent downloaded-PDF readback. Keep share credentials and raw runtime streams outside Git."
+}
