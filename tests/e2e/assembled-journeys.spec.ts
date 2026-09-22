@@ -621,11 +621,13 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await expect(page.getByText("Earlier: 400 mg", { exact: true })).toBeVisible();
   await expect(page.getByText("1 proposed detail to check", { exact: true })).toBeVisible();
   const dateUpdate = page.getByRole("article").filter({ hasText: "2-Jul-2026" });
-  await serverAction(page, () => dateUpdate.getByRole("button", { name: "Accept this update" }).click());
+  await dateUpdate.getByRole("button", { name: "Accept this update" }).click();
+  await expect(page.getByRole("group", { name: "acetaminophen (Tylenol) — Started" })).toBeFocused();
   expect((await storedState(page)).stage).toBe("output");
   await expect(page.getByText("1 unresolved conflict", { exact: true })).toBeVisible();
   await expect(page.getByText("Neither alternative will be put in the form.", { exact: false })).toBeVisible();
   await expect(page.getByRole("group", { name: "acetaminophen (Tylenol) — Started" })).toBeVisible();
+  await expect(page.getByRole("group", { name: "acetaminophen (Tylenol) — Started" })).toBeInViewport();
   expect(await projectedText(page)).toContain("conflicted");
   expect((await storedState(page)).stage).toBe("output");
   checkpoints.push({ journey: "repeated", state: "unresolved-partial-output", assertion: "Alias identity stayed singular, dose correction superseded history, and both dates remain visible while neither projects." });
@@ -663,7 +665,9 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await serverAction(page, () => page.getByRole("article").filter({ hasText: "250 mg" }).getByRole("button", { name: "Accept this update" }).click());
   await serverAction(page, () => page.getByRole("article").filter({ hasText: "13-Aug-2026" }).getByRole("button", { name: "Accept this update" }).click());
   await expect(page.getByText("Earlier: 500 mg", { exact: true })).toBeVisible();
-  await serverAction(page, () => page.getByRole("button", { name: "Use 13-Aug-2026" }).click());
+  await page.getByRole("button", { name: "Use 13-Aug-2026" }).click();
+  await expect(page.getByRole("heading", { name: "Case summary", exact: true })).toBeFocused();
+  await expect(page.getByRole("heading", { name: "Case summary", exact: true })).toBeInViewport();
   expect(await projectedText(page)).toContain("2026-08-13");
   checkpoints.push({ journey: "experiment-1-regression", state: "resolved-output", assertion: "Original identity, correction, conflict resolution, projection, and PDF path remain aligned." });
   await retainScreenshot(page, "experiment-1-regression-output.png");

@@ -21,8 +21,10 @@ test("corrects DEMO-91 conversationally before initial acceptance, downloads fiv
   expect(pending.relevantTests[0].facts.testResult.resolvedValue).toBeUndefined();
   await expect(page.getByRole("button", { name: "Accept this update", exact: true })).toHaveCount(2);
   await page.screenshot({ path: testInfo.outputPath("conversational-review.png"), fullPage: true });
-  await serverAction(page, () => page.getByRole("button", { name: "Accept this update", exact: true }).first().click());
+  await page.getByRole("button", { name: "Accept this update", exact: true }).first().click();
   await expect(page.getByRole("button", { name: "Accept this update", exact: true })).toHaveCount(1);
+  await expect(page.getByRole("heading", { name: "Review the proposed update", exact: true })).toBeFocused();
+  await expect(page.getByRole("heading", { name: "Review the proposed update", exact: true })).toBeInViewport();
   await serverAction(page, () => page.getByRole("button", { name: "Accept this update", exact: true }).click());
   await expect(page.getByRole("heading", { name: "Review the case details" })).toBeVisible();
   await expect(page.locator("#case-card-test-1")).toContainText("Earlier: 9.1 g/dL");
@@ -54,9 +56,11 @@ test("corrects DEMO-91 conversationally before initial acceptance, downloads fiv
   await expect(page.locator('[id^="case-card-test-"]')).toHaveCount(4);
   await expect(page.getByText("Some details were left out")).toBeVisible();
   await page.getByLabel("Clinical update", { exact: true }).fill(omittedTestRecovery);
-  await serverAction(page, () => page.getByRole("button", { name: "Review this update", exact: true }).click());
+  await page.getByRole("button", { name: "Review this update", exact: true }).click();
   await expect(page.locator('[id^="case-card-test-"]')).toHaveCount(5);
   await expect(page.locator("#case-card-test-5")).toContainText("ferritin");
+  await expect(page.locator("#case-card-test-5").getByRole("heading")).toBeFocused();
+  await expect(page.locator("#case-card-test-5").getByRole("heading")).toBeInViewport();
   await acceptOpeningGroups(page);
   await complete(page);
   expect(await projectedText(page)).toContain("ferritin: Result not recorded");
