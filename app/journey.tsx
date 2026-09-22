@@ -5,7 +5,7 @@ import { productDisplayLabel } from "../src/domain/case/product-label";
 import type { CaseValue, ReportType } from "../src/domain/case/types";
 import type { FactView, ProductView, ReviewAttentionItem } from "../src/domain/case/views";
 import type { BrowserJourneyState, JourneyResponse } from "../src/server/case/browser-state";
-import type { JourneyAction, JourneySnapshot, OutputReadinessIssue } from "../src/server/journey/service";
+import type { JourneyAction, JourneySnapshot } from "../src/server/journey/service";
 import { factControl, knownOptionLabel, type FactControl, type FactControlEntity } from "./fact-controls";
 import {
   clearJourneySession,
@@ -27,7 +27,12 @@ const progressMessages = {
   pdf: "Preparing the PDF…",
 };
 
+type Screen = "describe" | "details" | "reporter" | "save";
+type PdfArtifact = { url: string; filename: string; caseId: string; contentKey: string };
+
 export default function Journey() {
+  const [screen, setScreen] = useState<Screen>("describe");
+  const [pdf, setPdf] = useState<PdfArtifact>();
   const [snapshot, setSnapshot] = useState<JourneySnapshot>();
   const [browserState, setBrowserState] = useState<BrowserJourneyState>();
   const [opening, setOpening] = useState("");
@@ -42,7 +47,8 @@ export default function Journey() {
 
   useEffect(() => { void loadJourney(); }, []);
 
-  const task = snapshot && `${snapshot.stage}:${snapshot.clarification?.key ?? ""}`;
+  const task = screen;
+  useEffect(() => () => { if (pdf) URL.revokeObjectURL(pdf.url); }, [pdf]);
   useEffect(() => {
     if (!task) return;
     if (previousTask.current && previousTask.current !== task) {
@@ -84,6 +90,7 @@ export default function Journey() {
           body: { operation: "resume", state: stored },
         }, "This tab’s previous case could not be restored");
         acceptResponse(response);
+        setScreen(response.snapshot.stage === "describe" ? "describe" : "details");
       } catch (caught) {
         if (caught instanceof JourneyRequestError
           && ["incompatible-browser-state", "malformed-browser-state", "stale-browser-state"].includes(caught.code ?? "")) {
@@ -111,7 +118,9 @@ export default function Journey() {
       }, "Wilson could not update the case");
       acceptResponse(response);
       if (response.snapshot.transitionNotice) setBoundaryNotice(response.snapshot.transitionNotice);
-      if (action.action === "submit-opening") setOpening("");
+      if (action.action === "submit-opening") setScreen("details");
+      if (action.action === "answer-reporter") setScreen("save");
+      if (action.action === "submit-update") setScreen("details");
       if (action.action === "submit-update") setUpdate("");
     } catch (caught) {
       setError(displayError(caught, "Wilson could not update the case"));
@@ -133,6 +142,8 @@ export default function Journey() {
       acceptResponse(response);
       setOpening("");
       setUpdate("");
+      setPdf(undefined);
+      setScreen("describe");
       setReportType("adverse-event");
       setResetNotice(true);
     } catch (caught) {
@@ -142,41 +153,25 @@ export default function Journey() {
     }
   }
 
-  async function openPdf(mode: "preview" | "download") {
-    if (!browserState) return;
-    const previewWindow = mode === "preview" ? window.open("about:blank", "_blank") : null;
+  async function generatePdf() {
+    if (!browserState || !snapshot?.downloadReady) return;
     setPendingOperation("pdf");
     setError(undefined);
     try {
-      const { blob, filename } = await requestJourneyPdf(browserState, mode);
-      const url = URL.createObjectURL(blob);
-      if (mode === "preview") {
-        if (!previewWindow) throw new Error("The browser blocked the PDF preview window");
-        previewWindow.document.title = "Wilson Form FDA 3500 preview";
-        previewWindow.document.body.style.margin = "0";
-        const embed = previewWindow.document.createElement("embed");
-        embed.src = url;
-        embed.type = "application/pdf";
-        embed.style.width = "100vw";
-        embed.style.height = "100vh";
-        previewWindow.document.body.replaceChildren(embed);
-        window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
-      } else {
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
-      }
+      const { blob, filename } = await requestJourneyPdf(browserState, "preview");
+      setPdf({ url: URL.createObjectURL(blob), filename, caseId: browserState.case.id, contentKey: snapshot.reportContentKey });
     } catch (caught) {
-      previewWindow?.close();
       setError(displayError(caught, "The official PDF could not be generated"));
     } finally {
       setPendingOperation(undefined);
     }
   }
+
+  useEffect(() => {
+    if (screen === "save" && snapshot?.downloadReady && pdf?.contentKey !== snapshot.reportContentKey) void generatePdf();
+  // Generate once on entering this screen or changing accepted contents/readiness. Errors expose an explicit retry.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [screen, snapshot?.reportContentKey, snapshot?.downloadReady]);
 
   if (!snapshot) return <main className={styles.loading}><p>{error ?? "Preparing your case…"}</p></main>;
 
@@ -204,24 +199,53 @@ export default function Journey() {
       {boundaryNotice && <div className={styles.notice} role="status">{boundaryNotice}</div>}
       {snapshot.unrepresented.length > 0 && <UnrepresentedNotice items={snapshot.unrepresented} />}
       {pendingOperation && <div className={styles.progress} role="status">{progressMessages[pendingOperation]}</div>}
-      {snapshot.stage === "output" ? (
-        <OutputComposition snapshot={snapshot} update={update} setUpdate={setUpdate} busy={busy} act={act} openPdf={openPdf} />
-      ) : (
-        <div className={snapshot.stage === "describe" ? styles.openingWorkspace : styles.workspace}>
-          <section className={styles.activeTask} aria-labelledby="task-title">
-            {snapshot.stage === "describe" && <Describe key={browserState?.case.id} opening={opening} setOpening={setOpening} reportType={reportType} setReportType={setReportType} busy={busy} interpreting={pendingOperation === "opening"} act={act} />}
-            {snapshot.stage === "understanding" && <UnderstandingTask snapshot={snapshot} update={update} setUpdate={setUpdate} busy={busy} act={act} />}
-            {snapshot.stage === "clarify" && <><CompletionTask key={`${snapshot.clarification?.key}:${snapshot.clarification?.targetIds.join(",")}`} snapshot={snapshot} busy={busy} act={act} /><CorrectionInput update={update} setUpdate={setUpdate} busy={busy} act={act} /></>}
-            {snapshot.stage === "review-update" && <UpdateReview snapshot={snapshot} busy={busy} act={act} />}
+      <nav className={styles.stepper} aria-label="Report steps">
+        {([["describe", "Describe"], ["details", "Review details"], ["reporter", "Reporter details"], ["save", "Review & save"]] as const).map(([value, label], index) =>
+          <button key={value} aria-current={screen === value ? "step" : undefined} disabled={busy || (value !== "describe" && snapshot.revision === 0)} onClick={() => setScreen(value)}><span>{index + 1}</span><span>{label}</span></button>)}
+      </nav>
+      <div className={styles.screen}>
+        <section hidden={screen !== "describe"} className={styles.describeScreen}>
+          {snapshot.revision === 0
+            ? <Describe key={browserState?.case.id} opening={opening} setOpening={setOpening} reportType={reportType} setReportType={setReportType} busy={busy} interpreting={pendingOperation === "opening"} act={act} />
+            : <><p className={styles.eyebrow}>Your starting account</p><h1>Describe what happened</h1><div className={styles.caseCard}><p className={styles.originalAccount}>{opening || browserState?.case.sources.find(({ inputType }) => inputType === "narrative")?.excerpt || "Your submitted account is retained with the source evidence in Review details."}</p></div><p>The account has been interpreted. Add new information or corrections in Review details.</p><button onClick={() => setScreen("details")}>Return to review details</button></>}
+        </section>
+        <section hidden={screen !== "details"}>
+          <p className={styles.eyebrow}>Your case, taking shape</p>
+          <h1>Review the case details</h1>
+          <p className={styles.lead}>Check what Wilson captured. Accept each group when it is correct, or change what needs correcting.</p>
+          {pdf && <div className={styles.returnBanner}><div><strong>A PDF has been generated for this case</strong><p>{snapshot.downloadReady && pdf.contentKey === snapshot.reportContentKey ? "Accepted report contents are unchanged." : "New work needs review before a current PDF is ready."}</p></div><button onClick={() => setScreen("save")}>Return to PDF</button></div>}
+          {snapshot.stage === "review-update" && <UpdateReview snapshot={snapshot} busy={busy} act={act} />}
+          {snapshot.review.attention.filter(({ kind }) => kind === "conflict").map((item) => <ConflictCard key={item.target} snapshot={snapshot} item={item} busy={busy || snapshot.stage !== "output"} act={act} />)}
+          <CaseSummaryHeading attention={snapshot.review.attention} />
+          <CaseCards key={browserState?.case.id} snapshot={snapshot} busy={busy} act={act} />
+          <section className={styles.invitation} aria-label="Useful clinical details">
+            <h2>Anything to add or correct?</h2>
+            {snapshot.clinicalNeeds.length > 0 && <div className={styles.caseGuidance}><p>These details would help complete this report:</p><ul>{snapshot.clinicalNeeds.map((need) => <li key={`${need.key}:${need.targetIds.join()}`}>{need.question}</li>)}</ul></div>}
+            <p>Answer several things together, or add another detail. Say which product or test it concerns. Proposed answers remain here until you accept them.</p>
+            <CorrectionInput update={update} setUpdate={setUpdate} busy={busy || snapshot.stage === "review-update" || snapshot.stage === "describe"} act={act} />
+            {snapshot.clarification && snapshot.clarification.kind !== "reporter" && <details className={styles.directQuestions}><summary>Use direct answers for the next question</summary><CompletionTask key={clinicalDraftKey(snapshot)} snapshot={snapshot} busy={busy || snapshot.stage !== "clarify"} act={act} /></details>}
           </section>
-          {snapshot.stage !== "describe" && <section className={styles.casePanel} aria-labelledby="case-title">
-            <CaseSummaryHeading attention={snapshot.review.attention} />
-            <CaseCards snapshot={snapshot} busy={busy} act={act} />
-          </section>}
-        </div>
-      )}
+          <div className={styles.screenActions}><p>{snapshot.clinicalNeeds.length > 0 ? "Complete the applicable clinical details to prepare the PDF. You can view reporter details at any time." : "Your accepted details will be used in the report."}</p><button disabled={busy} onClick={() => setScreen("reporter")}>Continue to reporter details</button></div>
+        </section>
+        <section hidden={screen !== "reporter"}>
+          <ReporterTask key={`${browserState?.case.id}:${JSON.stringify(snapshot.understanding.reporter)}:${JSON.stringify(snapshot.understanding.event.reportDate.resolved)}`} snapshot={snapshot} busy={busy} act={act} />
+          <div className={styles.screenActions}><button onClick={() => setScreen("details")}>Back to review details</button><button onClick={() => setScreen("save")}>Return to review & save</button></div>
+        </section>
+        <section hidden={screen !== "save"}>
+          <OutputComposition snapshot={snapshot} pdf={pdf} caseId={browserState?.case.id} busy={busy} generatePdf={generatePdf} navigate={setScreen} hasDraft={Boolean(update.trim())} />
+        </section>
+      </div>
+      <footer className={styles.footer}>Wilson prepares Form FDA 3500 for your review. Nothing is submitted to FDA.</footer>
     </main>
   );
+}
+
+function clinicalDraftKey(snapshot: JourneySnapshot): string {
+  const q = snapshot.clarification;
+  if (!q) return "none";
+  const product = q.kind === "medication-history" ? snapshot.understanding.products.find(({ id }) => id === q.productId)
+    : q.kind === "device-details" ? snapshot.understanding.products.find(({ id }) => id === q.deviceId) : undefined;
+  return JSON.stringify([q.key, q.targetIds, product && [product.state, ...["name", "role", "productType", "stopped", "doseReduced", "restarted", "implanted", "reprocessedSingleUse"].map((field) => product.facts[field].resolved)]]);
 }
 
 function CaseSummaryHeading({ attention }: { attention: ReviewAttentionItem[] }) {
@@ -306,24 +330,10 @@ function CorrectionInput({ update, setUpdate, busy, act }: {
   update: string; setUpdate: (value: string) => void; busy: boolean; act: (action: JourneyAction) => Promise<void>;
 }) {
   return <section className={styles.updateBox} aria-labelledby="update-title">
-    <h2 id="update-title">Add or correct information</h2>
-    <p>Describe the correction or missing detail, including which test or product it concerns.</p>
+    <h3 id="update-title">Add or correct information</h3>
     <NarrativeInput id="later-update" label="Clinical update" context="update" rows={5} value={update} onChange={setUpdate} />
     <button disabled={busy || !update.trim()} onClick={() => void act({ action: "submit-update", text: update })}>Review this update</button>
   </section>;
-}
-
-function UnderstandingTask({ snapshot, update, setUpdate, busy, act }: {
-  snapshot: JourneySnapshot; update: string; setUpdate: (value: string) => void; busy: boolean; act: (action: JourneyAction) => Promise<void>;
-}) {
-  return <>
-    <p className={styles.eyebrow}>Check understanding</p>
-    <h1 id="task-title">Check Wilson’s understanding</h1>
-    <p>Check the case summary and supporting text. If anything is wrong or missing, tell Wilson below. You’ll review the proposed changes before accepting them.</p>
-    <CorrectionInput update={update} setUpdate={setUpdate} busy={busy} act={act} />
-    <p>When the remaining proposed information is correct, accept it to continue.</p>
-    <button disabled={busy} onClick={() => void act({ action: "accept-understanding" })}>Accept all remaining proposals and continue</button>
-  </>;
 }
 
 function UnrepresentedNotice({ items }: { items: JourneySnapshot["unrepresented"] }) {
@@ -558,16 +568,21 @@ function DeviceDetailsTask({ snapshot, busy, act }: {
 function ReporterTask({ snapshot, busy, act }: {
   snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
 }) {
-  const [values, setValues] = useState({ firstName: "", lastName: "", address: "", city: "", state: "", postalCode: "", country: "UNITED STATES", phone: "", email: "", occupation: "Physician" });
+  const accepted = snapshot.understanding.reporter;
+  const saved = (field: string) => accepted[field]?.resolved;
+  const text = (field: string, fallback = "") => knownString(saved(field)) ?? fallback;
+  const [values, setValues] = useState(() => ({ firstName: text("firstName"), lastName: text("lastName"), address: text("address"), city: text("city"), state: text("state"), postalCode: text("postalCode"), country: text("country", "UNITED STATES"), phone: text("phone"), email: text("email"), occupation: text("occupation", "Physician") }));
   const [reportDate, setReportDate] = useState(() => {
     const existing = snapshot.understanding.event.reportDate.resolved;
     if (existing?.kind === "known") return String(existing.value);
     const today = new Date();
     return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   });
-  const [healthProfessional, setHealthProfessional] = useState(true);
-  const [reportedTo, setReportedTo] = useState<Array<"manufacturer" | "user-facility" | "distributor-importer" | "packer">>([]);
-  const [doNotDiscloseIdentity, setDoNotDiscloseIdentity] = useState(false);
+  const [healthProfessional, setHealthProfessional] = useState(() => saved("healthProfessional")?.kind === "known" ? Boolean((saved("healthProfessional") as { value: unknown }).value) : true);
+  const [reportedTo, setReportedTo] = useState<Array<"manufacturer" | "user-facility" | "distributor-importer" | "packer">>(() => saved("reportedTo")?.kind === "known" ? (saved("reportedTo") as { value: Array<"manufacturer" | "user-facility" | "distributor-importer" | "packer"> }).value : []);
+  const [doNotDiscloseIdentity, setDoNotDiscloseIdentity] = useState(() => saved("doNotDiscloseIdentity")?.kind === "known" && Boolean((saved("doNotDiscloseIdentity") as { value: unknown }).value));
+  const previouslySaved = Object.values(accepted).some(({ resolved }) => resolved);
+  const canSave = (snapshot.stage === "clarify" && (snapshot.clarification?.kind === "reporter" || previouslySaved)) || snapshot.stage === "output";
   const set = (field: keyof typeof values, value: string) => setValues((current) => ({ ...current, [field]: value }));
   const complete = values.firstName.trim() && values.lastName.trim() && values.occupation && (values.phone.trim() || values.email.trim());
   const missing = [
@@ -577,8 +592,8 @@ function ReporterTask({ snapshot, busy, act }: {
     ...(!values.phone.trim() && !values.email.trim() ? ["phone or email"] : []),
   ];
   return <>
-    <h1 id="task-title">{snapshot.clarification?.question}</h1>
-    <p>Enter this directly. Wilson never infers reporter identity from the clinical narrative. A phone number or email is enough for this bounded path; address fields are optional.</p>
+    <p className={styles.eyebrow}>About the reporter</p><h1>Add the reporter details for this report</h1>
+    <p className={styles.lead}>Tell us who is making this report. A name, occupation, and phone or email are required; address details are optional.</p>{!canSave && <p className={styles.notice}>You can draft these details now. Complete the clinical review before saving them.</p>}{saved("firstName")?.kind === "declined" && <p className={styles.notice}>Reporter details were previously declined. You can supply them here to replace that choice.</p>}
     <label>Date of this report <input aria-label="Date of this report" type="date" value={reportDate} onChange={(event) => setReportDate(event.target.value)} /></label>
     <p>Defaults to today on your device. Change it if this report was prepared on another date. It stays the same when you reopen or download the form.</p>
     <fieldset className={`${styles.answerGroup} ${styles.reporterFields}`}>
@@ -592,23 +607,28 @@ function ReporterTask({ snapshot, busy, act }: {
       <label>State (optional) <input aria-label="Reporter state" value={values.state} onChange={(event) => set("state", event.target.value)} /></label>
       <label>ZIP/postal code (optional) <input aria-label="Reporter postal code" value={values.postalCode} onChange={(event) => set("postalCode", event.target.value)} /></label>
       <label>Country <select aria-label="Reporter country" value={values.country} onChange={(event) => set("country", event.target.value)}><option>UNITED STATES</option><option>CANADA</option></select></label>
+    </fieldset>
+    <fieldset className={`${styles.answerGroup} ${styles.reporterChoices}`}><legend>Professional details</legend>
+      <label>Are you a health professional? <select aria-label="Health professional" value={String(healthProfessional)} onChange={(event) => setHealthProfessional(event.target.value === "true")}><option value="true">Yes</option><option value="false">No</option></select></label>
       <label>Occupation <select aria-label="Reporter occupation" value={values.occupation} onChange={(event) => set("occupation", event.target.value)}>{["Physician", "Nurse", "Nurse Practitioner", "Pharmacist", "Physician Assistant", "Other Health Professional", "Non-Health Professional"].map((value) => <option key={value}>{value}</option>)}</select></label>
     </fieldset>
-    <fieldset className={`${styles.answerGroup} ${styles.reporterChoices}`}><legend>Reporter selections</legend>
-      <label><input type="checkbox" checked={healthProfessional} onChange={(event) => setHealthProfessional(event.target.checked)} /> Health professional</label>
+    <fieldset className={`${styles.answerGroup} ${styles.reporterChoices}`}><legend>Have you also reported this to anyone below?</legend><p>Select any that apply. Leave unchecked if none.</p>
       {[["manufacturer", "Manufacturer or compounder"], ["user-facility", "User facility"], ["distributor-importer", "Distributor or importer"], ["packer", "Packer"]] .map(([value, label]) => <label key={value}><input type="checkbox" checked={reportedTo.includes(value as typeof reportedTo[number])} onChange={(event) => setReportedTo(event.target.checked ? [...reportedTo, value as typeof reportedTo[number]] : reportedTo.filter((item) => item !== value))} /> {label}</label>)}
+    </fieldset>
+    <fieldset className={`${styles.answerGroup} ${styles.privacyPanel}`}><legend>Your privacy</legend>
       <label><input type="checkbox" checked={doNotDiscloseIdentity} onChange={(event) => setDoNotDiscloseIdentity(event.target.checked)} /> Do not disclose my identity to the manufacturer</label>
     </fieldset>
+    <p className={styles.hint}>This choice is recorded in the report. Wilson does not submit it or contact the manufacturer.</p>
     {missing.length > 0 && <p className={styles.requirementHint} role="status">Required before adding: {joinList(missing)}.</p>}
     <div className={styles.decisionActions}>
-      <button disabled={busy || !complete} onClick={() => void act({ action: "answer-reporter", reportDate: reportDate || undefined, reporter: {
+      <button disabled={busy || !canSave || !complete} onClick={() => void act({ action: "answer-reporter", reportDate: reportDate || undefined, reporter: {
         kind: "provided", firstName: values.firstName.trim(), lastName: values.lastName.trim(),
         phone: values.phone.trim() || undefined, email: values.email.trim() || undefined,
         address: values.address.trim() || undefined, city: values.city.trim() || undefined,
         state: values.state.trim() || undefined, postalCode: values.postalCode.trim() || undefined,
         country: values.country, occupation: values.occupation, healthProfessional, reportedTo, doNotDiscloseIdentity,
-      } })}>Add reporter details</button>
-      <button disabled={busy} onClick={() => void act({ action: "answer-reporter", reportDate: reportDate || undefined, reporter: { kind: "declined" } })}>Prefer not to provide reporter details</button>
+      } })}>{previouslySaved ? "Save reporter details" : "Add reporter details"}</button>
+      <button disabled={busy || !canSave} onClick={() => void act({ action: "answer-reporter", reportDate: reportDate || undefined, reporter: { kind: "declined" } })}>Prefer not to provide reporter details</button>
     </div>
   </>;
 }
@@ -636,62 +656,26 @@ function UpdateReview({ snapshot, busy, act }: {
   </>;
 }
 
-function OutputComposition({ snapshot, update, setUpdate, busy, act, openPdf }: {
-  snapshot: JourneySnapshot;
-  update: string;
-  setUpdate: (value: string) => void;
-  busy: boolean;
-  act: (action: JourneyAction) => Promise<void>;
-  openPdf: (mode: "preview" | "download") => Promise<void>;
+function OutputComposition({ snapshot, pdf, caseId, busy, generatePdf, navigate, hasDraft }: {
+  snapshot: JourneySnapshot; pdf?: PdfArtifact; caseId?: string; busy: boolean;
+  generatePdf: () => Promise<void>; navigate: (screen: Screen) => void; hasDraft: boolean;
 }) {
-  const { A, B, C, D, E, F, G } = snapshot.projection.sections;
-  const conflicts = snapshot.review.attention.filter(({ kind }) => kind === "conflict");
-  return <div className={styles.outputWorkspace}>
-    <section className={styles.outputSummary} aria-labelledby="output-title">
-      <p className={styles.eyebrow}>Supported output</p>
-      <h1 id="output-title">{snapshot.downloadReady ? "The supported form is ready" : "The form needs more reviewed information"}</h1>
-      <Summary title="Included" tone="included">
-        <li>Patient {A.patientIdentifier ?? "identifier not provided"}{A.ageYears === undefined ? "" : `, age ${A.ageYears}`}{A.sex ? `, ${A.sex}` : ""}{A.weight ? `, ${A.weight.value} ${A.weight.unit}` : ""}</li>
-        {B.eventDescription && <li>{B.eventDescription}</li>}
-        {B.relevantTests.map((test) => <li key={test.testId}>{test.testResult}{test.date ? ` on ${displayDate(test.date)}` : ""}</li>)}
-        {B.relevantHistory && <li>Relevant history: {B.relevantHistory}</li>}
-        {C.productAvailability && <li>Product availability: {C.productAvailability.replaceAll("-", " ")}</li>}
-        {D.suspectProducts.map((product) => <li key={product.productId}>{outputProductLabel(snapshot, product.productId, product.name)} as a suspect product{product.dose ? `, ${product.dose}` : ""}</li>)}
-        {E.suspectDevice && <li>{outputProductLabel(snapshot, E.suspectDevice.productId, E.suspectDevice.brandName)} as the suspect medical device{E.suspectDevice.modelNumber ? `, model ${E.suspectDevice.modelNumber}` : ""}</li>}
-        {F.concomitantProducts.map((product) => <li key={product.productId}>{outputProductLabel(snapshot, product.productId, product.name)} as another medical product</li>)}
-        {G.reporter.firstName && G.reporter.lastName && <li>Reporter: {G.reporter.firstName} {G.reporter.lastName}</li>}
-      </Summary>
-
-      <Summary title="Needs attention" tone={conflicts.length > 0 ? "attention" : "quiet"}>
-        {conflicts.length === 0 ? <li>No unresolved conflicts.</li> : conflicts.map((conflict) => (
-          <li key={conflict.target}>{targetLabel(snapshot, conflict.target)} has incompatible sources and is omitted unless you resolve it.</li>
-        ))}
-      </Summary>
-      {conflicts.map((conflict) => <ConflictCard key={conflict.target} snapshot={snapshot} item={conflict} busy={busy} act={act} />)}
-
-      <Summary title="Omitted or unsupported" tone="quiet">
-        {snapshot.projection.omissions.map((item, index) => <li key={`${item.target}-${index}`}>{humanOmission(snapshot, item.target, item.concept)}: {omissionLabel(item.reason)}</li>)}
-        {snapshot.projection.notIncluded.map((item) => <li key={item}>{item}</li>)}
-      </Summary>
-      {snapshot.outputIssues.length > 0 && <Summary title="Required before output" tone="attention">
-        {snapshot.outputIssues.map((issue, index) => <ReadinessItem key={`${issue.code}-${issue.entityIds.join("-")}-${index}`} snapshot={snapshot} issue={issue} />)}
-      </Summary>}
-
-      <div className={styles.decisionActions}>
-        <button disabled={busy || !snapshot.downloadReady} onClick={() => void openPdf("preview")}>Open PDF preview</button>
-        <button className={styles.download} disabled={busy || !snapshot.downloadReady} onClick={() => void openPdf("download")}>Download official PDF</button>
-      </div>
-
-      <CorrectionInput update={update} setUpdate={setUpdate} busy={busy} act={act} />
-
-      <CaseSummaryHeading attention={snapshot.review.attention} />
-      <CaseCards snapshot={snapshot} busy={busy} act={act} />
-    </section>
-    <section className={styles.previewPanel} aria-labelledby="preview-title">
-      <div className={styles.panelHeading}><div><p className={styles.eyebrow}>Same case revision</p><h2 id="preview-title">Form FDA 3500 preview</h2></div></div>
-      <FormPreview snapshot={snapshot} />
-    </section>
-  </div>;
+  const artifact = pdf?.caseId === caseId ? pdf : undefined;
+  const current = Boolean(artifact && artifact.contentKey === snapshot.reportContentKey && snapshot.downloadReady);
+  return <>
+    <p className={styles.eyebrow}>Review & save</p>
+    <h1>Your FDA MedWatch report</h1>
+    <p className={styles.lead}>Inspect the actual generated form, then save a copy. Wilson does not submit it.</p>
+    {hasDraft && <p className={styles.notice}>You have an unsent clinical draft in Review details. It is not included in the PDF.</p>}
+    {snapshot.outputIssues.length > 0 && <section className={styles.invitation}><h2>The form needs more reviewed information</h2><ul>{snapshot.outputIssues.map((issue, index) => <li key={index}>{issue.message}</li>)}</ul><button onClick={() => navigate(snapshot.clarification?.kind === "reporter" ? "reporter" : "details")}>Continue completing the report</button></section>}
+    <div className={styles.pdfToolbar}><div><h2>Form FDA 3500</h2><p role="status">{current ? "The PDF reflects the accepted report contents." : artifact ? "Earlier PDF — it does not include changes awaiting review or generation." : "Generate the PDF after completing review and reporter details."}</p></div>
+      {current ? <a className={styles.primaryLink} href={artifact!.url} download={artifact!.filename}>Save PDF</a> : <button disabled={busy || !snapshot.downloadReady} onClick={() => void generatePdf()}>{artifact ? "Generate updated PDF" : "Generate PDF"}</button>}
+    </div>
+    {artifact && <><iframe className={styles.pdfFrame} src={artifact.url} title={current ? "Generated Form FDA 3500" : "Earlier generated Form FDA 3500"} /><p><a href={artifact.url} target="_blank" rel="noreferrer">Open {current ? "PDF" : "earlier PDF"} in a separate tab</a></p></>}
+    <details className={styles.reportDescription}><summary>Report event description</summary><p>{snapshot.projection.sections.B.eventDescription ?? "No accepted description yet."}</p><p className={styles.hint}>This is the wording generated from currently accepted information{current ? " and included in the PDF" : "; an earlier PDF may contain earlier wording"}.</p></details>
+    <details><summary>Report coverage and omitted information</summary><p>This preview supports a limited set of Form FDA 3500 fields.</p><ul>{snapshot.projection.omissions.filter(({ reason }) => reason !== "empty").map((item, index) => <li key={index}>{humanOmission(snapshot, item.target, item.concept)}: {omissionLabel(item.reason)}</li>)}{snapshot.projection.notIncluded.map((item) => <li key={item}>{item}</li>)}</ul></details>
+    <div className={styles.screenActions}><button onClick={() => navigate("details")}>Edit case details</button><button onClick={() => navigate("reporter")}>Edit reporter details</button></div>
+  </>;
 }
 
 function ConflictCard({ snapshot, item, busy, act }: {
@@ -706,93 +690,6 @@ function ConflictCard({ snapshot, item, busy, act }: {
     </div>)}
     <p className={styles.hint}>You may leave this unresolved. Neither alternative will be put in the form.</p>
   </fieldset>;
-}
-
-function FormPreview({ snapshot }: { snapshot: JourneySnapshot }) {
-  const { A, B, C, D, E, F, G } = snapshot.projection.sections;
-  const omissionByTarget = new Map(snapshot.projection.omissions.map((item) => [item.target, item.reason]));
-  return <div className={styles.formPreview} aria-label="Form FDA 3500 preview">
-    <header className={styles.formHeader}>
-      <div><strong>MedWatch</strong><span>The FDA Safety Information and Adverse Event Reporting Program</span></div>
-      <div><strong>Form FDA 3500</strong><span>Voluntary Reporting</span></div>
-    </header>
-    <PreviewSection letter="A" title="Patient information">
-      <PreviewField label="Patient identifier" value={A.patientIdentifier} />
-      <PreviewField label="Age" value={A.ageYears === undefined ? undefined : `${A.ageYears} years`} />
-      <PreviewField label="Sex" value={A.sex} />
-      <PreviewField label="Weight" value={A.weight ? `${A.weight.value} ${A.weight.unit}` : undefined} />
-    </PreviewSection>
-    <PreviewSection letter="B" title="Adverse event or product problem">
-      <PreviewField label="Report type" value={B.reportType === "adverse-event" ? "Adverse event" : B.reportType === "product-problem" ? "Product problem" : B.reportType === "adverse-event-and-product-problem" ? "Adverse event and product problem" : undefined} />
-      <PreviewField label="Serious outcomes" value={Object.entries(seriousOutcomeLabels).filter(([field]) => B[field as keyof typeof seriousOutcomeLabels] === true).map(([, label]) => label).join(", ") || "None recorded"} />
-      <PreviewField label="Date of death" value={displayDate(B.deathDate)} />
-      <PreviewField label="Date of this report" value={displayDate(B.reportDate)} />
-      <PreviewField label="Date of event" value={displayDate(B.eventDate)} />
-      <PreviewField label="Relevant tests" value={B.relevantTests.map((test) => [test.testResult, test.lowRange && `low ${test.lowRange}`, test.highRange && `high ${test.highRange}`, displayDate(test.date)].filter(Boolean).join(" · ")).join("; ")
-        || (omissionByTarget.get("event:event:relevantTestsAvailable") === "explicitly-absent" ? "No relevant tests" : undefined)} />
-      <PreviewField wide label="Relevant history" value={B.relevantHistory} />
-      <PreviewField wide label="Describe event" value={B.eventDescription} />
-    </PreviewSection>
-    <PreviewSection letter="C" title="Product availability">
-      <PreviewField label="Available for evaluation" value={C.productAvailability?.replaceAll("-", " ")} />
-      <PreviewField label="Returned on" value={displayDate(C.productReturnDate)} />
-    </PreviewSection>
-    <PreviewSection letter="D" title="Suspect products">
-      {D.suspectProducts.map((product) => <div className={styles.previewProduct} key={product.productId}>
-        <strong>{outputProductLabel(snapshot, product.productId, product.name)}</strong>
-        <span>{[product.dose, product.frequency, product.route].filter(Boolean).join(" · ") || "Regimen not provided"}</span>
-        <span>Product strength: {product.strength ?? omissionText(omissionByTarget.get(`product:${product.productId}:strength`))}</span>
-        <span>Started: {product.startDate ? displayDate(product.startDate) : omissionText(omissionByTarget.get(`product:${product.productId}:startDate`))}</span>
-        <span>Used for: {product.indication ?? omissionText(omissionByTarget.get(`product:${product.productId}:indication`))}</span>
-      </div>)}
-    </PreviewSection>
-    <PreviewSection letter="E" title="Suspect medical device">
-      <PreviewField label="Brand and common name" value={E.suspectDevice ? [E.suspectDevice.brandName, E.suspectDevice.commonName].filter(Boolean).join(" · ") : undefined} />
-      <PreviewField label="Manufacturer" value={E.suspectDevice?.manufacturer} />
-      <PreviewField label="Model / lot / serial" value={E.suspectDevice ? [E.suspectDevice.modelNumber, E.suspectDevice.lotNumber, E.suspectDevice.serialNumber].filter(Boolean).join(" · ") : undefined} />
-      <PreviewField wide label="UDI" value={E.suspectDevice?.udi} />
-    </PreviewSection>
-    <PreviewSection letter="F" title="Other medical products">
-      {F.concomitantProducts.length === 0 ? <PreviewField label="Product" /> : F.concomitantProducts.map((product) => <PreviewField key={product.productId} label="Product" value={product.name} />)}
-    </PreviewSection>
-    <PreviewSection letter="G" title="Reporter">
-      <PreviewField label="Name" value={G.reporter.firstName && G.reporter.lastName ? `${G.reporter.firstName} ${G.reporter.lastName}` : undefined} />
-      <PreviewField label="Contact" value={G.reporter.email ?? G.reporter.phone} />
-      <PreviewField label="Occupation" value={G.reporter.occupation} />
-      <PreviewField label="Identity disclosure" value={G.reporter.doNotDiscloseIdentity === undefined ? undefined : G.reporter.doNotDiscloseIdentity ? "Do not disclose" : "Disclosure permitted"} />
-    </PreviewSection>
-    <footer>FORM FDA 3500 (09/2025) · Supported fields preview</footer>
-  </div>;
-}
-
-function PreviewSection({ letter, title, children }: { letter: string; title: string; children: ReactNode }) {
-  return <section className={styles.previewSection}><h3><span>{letter}</span>{title}</h3><div>{children}</div></section>;
-}
-
-function PreviewField({ label, value, wide = false }: { label: string; value?: string; wide?: boolean }) {
-  return <div className={wide ? styles.previewWide : undefined}><span>{label}</span><strong>{value ?? "Not provided"}</strong></div>;
-}
-
-function Summary({ title, tone, children }: { title: string; tone: "included" | "attention" | "quiet"; children: ReactNode }) {
-  return <section className={`${styles.summary} ${styles[tone]}`}><h2>{title}</h2><ul>{children}</ul></section>;
-}
-
-function ReadinessItem({ snapshot, issue }: { snapshot: JourneySnapshot; issue: OutputReadinessIssue }) {
-  const destination = readinessDestination(snapshot, issue);
-  return <li><span>{issue.message}</span>{destination && <button className={styles.readinessLink} onClick={() => {
-    document.getElementById(destination.id)?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }}>{destination.label}</button>}</li>;
-}
-
-function readinessDestination(snapshot: JourneySnapshot, issue: OutputReadinessIssue): { id: string; label: string } | undefined {
-  const product = issue.entityIds
-    .map((id) => snapshot.understanding.products.find((candidate) => candidate.id === id))
-    .find((candidate): candidate is ProductView => candidate !== undefined);
-  if (product) return { id: `case-card-product-${product.ordinal}`, label: `Review ${productViewLabel(product)}` };
-  if (issue.targets.some((target) => target.startsWith("event:"))) return { id: "case-card-event", label: "Review Event" };
-  if (issue.targets.some((target) => target.startsWith("patient:"))) return { id: "case-card-patient", label: "Review Patient" };
-  if (issue.targets.some((target) => target.startsWith("reporter:"))) return { id: "case-card-reporter", label: "Review Reporter" };
-  return undefined;
 }
 
 function CaseCards({ snapshot, busy, act }: {
@@ -814,7 +711,7 @@ function CaseCards({ snapshot, busy, act }: {
       const fields = productCardFields(productType, product.facts);
       return <div key={product.id}>{product.medicationNotice && <p role="status">{product.medicationNotice}</p>}<CaseCard domId={`case-card-product-${product.ordinal}`} key={product.id} title={name} eyebrow={product.state === "withdrawn" ? "Withdrawn product" : productType === "device" ? role === "concomitant" ? "Unsupported concomitant medical device" : "Suspect medical device" : role === "suspect" ? "Suspect product" : role === "concomitant" ? "Other product" : "Product awaiting classification"} entity="product" entityId={product.id} entityState={product.state} groupId={product.proposalGroupId} facts={product.facts} fields={fields} allowOpeningReview={openingReview && product.state === "proposed"} allowDirectEdit={directEdit && product.state === "resolved"} allowRemove={openingReview && product.state === "proposed"} allowWithdraw={entityWithdrawal && product.state === "resolved"} busy={busy} act={act} /></div>;
     })}
-    {Object.values(understanding.reporter).some((fact) => activeValue(fact)) && <CaseCard domId="case-card-reporter" title="Reporter" entity="reporter" entityId="reporter" entityState="resolved" groupId="reporter" facts={understanding.reporter} fields={["firstName", "lastName", "phone", "email", "address", "city", "state", "postalCode", "country", "healthProfessional", "occupation", "reportedTo", "doNotDiscloseIdentity"]} allowOpeningReview={false} allowDirectEdit={directEdit} busy={busy} act={act} />}
+
   </div>;
 }
 
@@ -838,8 +735,24 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
   busy: boolean;
   act: (action: JourneyAction) => Promise<void>;
 }) {
+  const [showMore, setShowMore] = useState(false);
   const [editing, setEditing] = useState<string>();
   const [drafts, setDrafts] = useState<Record<string, EditableCaseValue>>({});
+  const previousFacts = useRef(facts);
+  useEffect(() => {
+    const changed = Object.keys(facts).filter((field) => JSON.stringify([facts[field].resolved, facts[field].history, facts[field].conflicts]) !== JSON.stringify([previousFacts.current[field]?.resolved, previousFacts.current[field]?.history, previousFacts.current[field]?.conflicts]));
+    previousFacts.current = facts;
+    if (changed.length === 0) return;
+    const invalid = new Set(changed);
+    if (entity === "product" && changed.some((field) => ["name", "productType", "role", "stopped", "doseReduced", "restarted"].includes(field))) {
+      for (const field of ["stopped", "doseReduced", "stopDate", "improvedAfterChange", "restarted", "recurred"]) invalid.add(field);
+    }
+    if (entity === "product" && changed.some((field) => ["productType", "role", "implanted", "reprocessedSingleUse"].includes(field))) {
+      for (const field of ["implantDate", "explantDate", "reprocessor"]) invalid.add(field);
+    }
+    setDrafts((current) => Object.fromEntries(Object.entries(current).filter(([field]) => !invalid.has(field))));
+    setEditing((current) => current && invalid.has(current) ? undefined : current);
+  }, [facts, entity]);
   const evidence = [...new Set([...fields, ...evidenceFields].flatMap((field) => facts[field]?.evidence ?? []))];
   const groupCorrections = Object.entries(drafts).flatMap(([field, value]) => {
     const proposal = facts[field]?.proposals.find(({ groupId: proposalGroup }) => proposalGroup === groupId);
@@ -859,6 +772,7 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
       const fact = facts[field];
       if (!fact) return null;
       const value = activeValue(fact);
+      if (!showMore && !value && fact.history.length === 0 && fact.conflicts.length === 0) return null;
       const proposal = fact.proposals.find(({ groupId: proposalGroup }) => proposalGroup === groupId);
       const editable = Boolean((allowOpeningReview && proposal) || allowDirectEdit);
       if (!value && fact.history.length === 0 && fact.conflicts.length === 0 && !editable && !(entity === "test" && (field === "testName" || field === "testResult"))) return null;
@@ -888,9 +802,11 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
         </div>}
       </div>;
     })}</dl>
+    {allowDirectEdit && <button className={styles.inlineAction} aria-expanded={showMore} onClick={() => setShowMore(!showMore)}>{showMore ? "Show fewer fields" : "Show more fields"}</button>}
     {allowOpeningReview && <button className={styles.groupReview} disabled={busy || Object.entries(drafts).some(([field, value]) => !validEditableValue(value, factControl(entity, field)!))} onClick={() => void act({ action: "review-opening-group", groupId, corrections: groupCorrections })}>
       Accept {title}{groupCorrections.length > 0 ? ` with ${groupCorrections.length} ${groupCorrections.length === 1 ? "change" : "changes"}` : ""}
     </button>}
+    {allowOpeningReview && !allowRemove && <button disabled={busy} onClick={() => void act({ action: "reject-group", groupId })}>Reject {title}</button>}
     {evidence.length > 0 && <Evidence excerpt={evidence} />}
   </article>;
 }

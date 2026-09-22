@@ -1,4 +1,4 @@
-import { getFact, targetFromKey } from "./facts";
+import { allFacts, getFact, targetFromKey } from "./facts";
 import { isSettled, medicationAnswerFields, medicationFieldApplies, missingMedicationFields } from "./medication";
 import type { AskedNeed, Fact, ProductEntity, SemanticCase, SemanticNeedKey } from "./types";
 import { productDisplayLabel } from "./product-label";
@@ -48,13 +48,26 @@ const reporterCompletionFields = [
 ] as const;
 
 export function nextCompletionQuestion(caseState: SemanticCase): CompletionQuestion | null {
-  if (caseState.revision === 0 || caseState.patient.state !== "resolved" || caseState.event.state !== "resolved"
-    || caseState.products.some(({ state }) => state === "proposed")
+  if (caseState.products.some(({ state }) => state === "proposed")
     || caseState.relevantTests.some(({ state }) => state === "proposed")) return null;
+  return completionQuestions(caseState)[0] ?? null;
+}
+
+/** Read-only invitations use accepted knowledge; a proposal never answers a need. */
+export function completionQuestions(caseState: SemanticCase): CompletionQuestion[] {
+  // Work on a read-only accepted view. Pending additions are still missing;
+  // pending corrections leave the previously accepted answer in force.
+  caseState = structuredClone(caseState);
+  for (const { fact } of allFacts(caseState)) {
+    fact.proposedValues = [];
+    if (fact.state === "proposed") fact.state = fact.resolvedValue ? "resolved" : "empty";
+  }
+  const questions: CompletionQuestion[] = [];
+  if (caseState.revision === 0 || caseState.patient.state !== "resolved" || caseState.event.state !== "resolved") return [];
   const reportType = knownString(caseState.event.facts.reportType);
   if (reportType === "adverse-event" || reportType === "adverse-event-and-product-problem") {
     const indications = indicationQuestion(caseState);
-    if (indications) return indications;
+    if (indications) questions.push(indications);
 
     const outcomes = ordinaryQuestion(caseState, "serious-outcomes", () => {
     const targetIds = seriousOutcomeFields
@@ -69,7 +82,7 @@ export function nextCompletionQuestion(caseState: SemanticCase): CompletionQuest
       reason: "Serious outcomes are a concise, material summary used directly in the supported report.",
     };
     });
-    if (outcomes) return outcomes;
+    if (outcomes) questions.push(outcomes);
 
     const deathDate = ordinaryQuestion(caseState, "death-date", () => {
     if (knownBoolean(caseState.event.facts.death) !== true || caseState.event.facts.deathDate.state !== "empty") return null;
@@ -80,10 +93,10 @@ export function nextCompletionQuestion(caseState: SemanticCase): CompletionQuest
       reason: "The form asks for a date only when death is an applicable outcome.",
     };
     });
-    if (deathDate) return deathDate;
+    if (deathDate) questions.push(deathDate);
 
     const context = ordinaryQuestion(caseState, "relevant-clinical-context", () => {
-    const askTests = caseState.relevantTests.every(({ state }) => state === "rejected" || state === "withdrawn")
+    const askTests = !caseState.relevantTests.some(({ state }) => state === "resolved")
       && caseState.event.facts.relevantTestsAvailable.state === "empty";
     const askHistory = caseState.event.facts.relevantHistory.state === "empty";
     const targetIds = [
@@ -102,10 +115,9 @@ export function nextCompletionQuestion(caseState: SemanticCase): CompletionQuest
       reason: "Relevant tests and history can make the event understandable without asking for unrelated clinical detail.",
     };
     });
-    if (context) return context;
+    if (context) questions.push(context);
 
-    const medication = medicationQuestion(caseState);
-    if (medication) return medication;
+    questions.push(...medicationQuestions(caseState));
   }
 
   const deviceDetails = ordinaryQuestion(caseState, "device-details", () => {
@@ -134,14 +146,16 @@ export function nextCompletionQuestion(caseState: SemanticCase): CompletionQuest
       reason: "Implant timing and reprocessor identity are asked only when accepted device facts make them applicable to Section E.",
     };
   });
-  if (deviceDetails) return deviceDetails;
+  if (deviceDetails) questions.push(deviceDetails);
 
-  return ordinaryQuestion(caseState, "reporter-details", () => ({
+  const reporter = ordinaryQuestion(caseState, "reporter-details", () => ({
     kind: "reporter" as const,
     targetIds: reporterCompletionFields.map((field) => `reporter:reporter:${field}`),
     question: "Add the reporter details for this report",
     reason: "Reporter information must come directly from you and cannot be inferred from the clinical account.",
   }));
+  if (reporter) questions.push(reporter);
+  return questions;
 }
 
 function indicationQuestion(caseState: SemanticCase): CompletionQuestion | null {
@@ -204,21 +218,22 @@ function isProduct(value: ProductEntity | undefined): value is ProductEntity {
 
 export { reporterCompletionFields, seriousOutcomeFields };
 
-function medicationQuestion(caseState: SemanticCase): CompletionQuestion | null {
+function medicationQuestions(caseState: SemanticCase): CompletionQuestion[] {
+  const questions: CompletionQuestion[] = [];
   for (const product of caseState.products) {
     if (!isMedicationTarget(product)) continue;
     const fields = missingMedicationFields(product.facts);
     if (fields.length === 0) continue;
     const existing = caseState.askedNeeds.find((need) => need.key === "medication-history" && need.status === "open"
       && need.targetIds.some((target) => target.startsWith(`product:${product.id}:`)));
-    return {
+    questions.push({
       key: "medication-history", kind: "medication-history", productId: product.id,
       status: existing ? "open" : "new", targetIds: fields.map((field) => `product:${product.id}:${field}`),
       question: `Treatment history for ${displayLabel(caseState, product)}`,
       reason: "Record whether treatment changed and what happened afterward. Answer only what you know; these observations do not establish causality.",
-    };
+    });
   }
-  return null;
+  return questions;
 }
 
 function isMedicationTarget(product: ProductEntity): boolean {
