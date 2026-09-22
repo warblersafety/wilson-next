@@ -16,7 +16,28 @@ identity and a hash of projected report sections, excluding entity IDs and sourc
 revision metadata. Readiness gates remain in the PDF route. Older bytes can be
 viewed with an earlier-output label while review is pending.
 
-First implementation checkpoint: typecheck, production build, existing 195 tests
-and five focused Draft 4 service tests pass. PDF tests use the existing
-`.venv-pdf-evidence/bin/python`. Browser regression migration, live deployed
-verification and independent implementation review are still outstanding.
+Local verification: 201 deterministic tests, typecheck and production build pass.
+The five existing browser tests pass, preserving the original independent downloaded-
+PDF readbacks across medication, laboratory, device and product-quality paths.
+Two new Draft 4 browser tests pass (7.1 seconds), covering navigation and draft
+retention, pending proposals, unchanged reporter saves, corrected reporter/PDF
+contents, current versus retained earlier output, and local/accepted medication
+prerequisite changes. The final 17 focused service tests also pass. The complete
+seven-test suite will run in CI against the post-PR candidate.
+
+The legacy 20-case assembled browser test now uses explicit per-group acceptance,
+navigation and the real PDF. Assertions against the removed HTML form imitation
+use the accepted projection alongside the retained independent PDF-byte checks.
+Its measured local runtime is 41.2 seconds; its timeout is 120 seconds for CI.
+No application-model behavior or tests were relaxed to make the redesign pass.
+
+Retained screenshots cover desktop and 390-pixel mobile surfaces. Reporter PDF
+readback verifies corrected email, opted-out manufacturer identity disclosure,
+and corrected age. The actual generated narrative remains labelled “Report event
+description.” Blank fields remain optional; fully known serious outcomes are
+grouped, with their individual controls available on request. Optional report date
+clearing uses an explicit absence; an omitted action field preserves the old date.
+
+Live synthetic protocol is `live-protocol.json`: three calls, $1.60 reserved per
+call, $4.80 total under the $5 batch allowance, no automatic retry. Deployed
+verification, required independent review and final delivery disposition follow.

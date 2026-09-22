@@ -94,7 +94,8 @@ export async function getJourneySnapshot(
     downloadReady: outputIssues.length === 0,
     clinicalNeeds: completionQuestions(caseState).filter(({ kind }) => kind !== "reporter"),
     reportContentKey: createHash("sha256").update(JSON.stringify(projection.sections, (key, value) =>
-      ["productId", "testId"].includes(key) ? undefined : value)).digest("hex"),
+      ["productId", "testId"].includes(key) ? undefined
+        : ["reportedTo", "medicationType"].includes(key) && Array.isArray(value) ? [...value].sort() : value)).digest("hex"),
     outputIssues,
     unrepresented,
     openingGroups: pendingOpeningGroups(caseState),
@@ -451,13 +452,13 @@ export async function performJourneyAction(
           type: "record-clinician-facts", commandId: commandId("answer-reporter"), expectedRevision: current.revision,
           source, ...(reporterNeed ? { answersNeed: "reporter-details" as const } : {}), facts,
         });
-        if (action.reportDate && knownValue(current.event.facts.reportDate) !== action.reportDate) await applyCommand({
+        if (action.reportDate !== undefined && JSON.stringify(current.event.facts.reportDate.resolvedValue?.value) !== JSON.stringify(action.reportDate === null ? { kind: "explicitly-absent" } : { kind: "known", value: action.reportDate })) await applyCommand({
           type: "record-clinician-facts", commandId: commandId("record-report-date"), expectedRevision: current.revision,
-          source: fullSource("selection", `Date of this report: ${action.reportDate}.`),
+          source: fullSource("selection", action.reportDate === null ? "Date of this report not provided." : `Date of this report: ${action.reportDate}.`),
           facts: [{
             id: valueId("report-date"), target: { entity: "event", entityId: "event", field: "reportDate" },
             intent: current.event.facts.reportDate.resolvedValue ? "correction" : "fact",
-            value: { kind: "known", value: action.reportDate },
+            value: action.reportDate === null ? { kind: "explicitly-absent" } : { kind: "known", value: action.reportDate },
           }],
         });
         break;

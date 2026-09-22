@@ -145,3 +145,11 @@
   .screenActions button { flex: 1; }
   .pdfFrame { height: 520px; }
 }
+
+@media (max-width: 520px) {
+  .caseCard dl > div { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr) auto; align-items: start; gap: 6px; }
+  .caseCard dt { padding-top: 8px; text-transform: none; }
+  .caseCard dd { margin-top: 7px; }
+  .caseCard dl > div > .inlineAction { padding: 6px 2px; font-size: 12px; }
+  .caseCard dl > div > .history, .caseCard dl > div > .hint, .caseCard dl > div > .inlineEdit { grid-column: 1 / -1; }
+}

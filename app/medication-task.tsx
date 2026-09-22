@@ -15,7 +15,7 @@ const labels: Record<MedicationAnswerField, string> = {
 type Answers = Extract<JourneyAction, { action: "answer-medication-history" }>["answers"];
 
 export function MedicationTask({ snapshot, busy, act }: {
-  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
   const [answers, setAnswers] = useState<Answers>({});
   const question = snapshot.clarification;
@@ -47,7 +47,13 @@ export function MedicationTask({ snapshot, busy, act }: {
           const selected = event.target.value;
           const next = selected === "" ? undefined : selected === "unknown" || selected === "declined"
             ? { kind: selected } : { kind: "known", value: field === "stopDate" ? "" : selected === "true" };
-          setAnswers({ ...answers, [field]: next });
+          const updated = { ...answers, [field]: next } as Answers;
+          // A changed prerequisite invalidates its unsaved dependent answers too.
+          // Toggling back must require a fresh observation, just like accepted corrections.
+          const dependents = field === "stopped" ? ["stopDate", "improvedAfterChange", "restarted", "recurred"]
+            : field === "doseReduced" ? ["improvedAfterChange"] : field === "restarted" ? ["recurred"] : [];
+          for (const dependent of dependents) delete updated[dependent as keyof Answers];
+          setAnswers(updated);
         }}>
           <option value="">Select an answer</option>
           {field === "stopDate" ? <option value="known">Known date</option> : <><option value="true">Yes</option><option value="false">No</option></>}

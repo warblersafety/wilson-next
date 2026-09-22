@@ -1,3 +1,4 @@
+import { acceptOpeningGroups, directAnswers, goTo, projectedText, savePdf, serverAction, showActiveTask, storedState } from "./draft4-helpers";
 import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
@@ -44,7 +45,8 @@ const checkpoints: Array<{ journey: string; state: string; assertion: string }> 
 const pdfs: Array<{ journey: string; bytes: number; sha256: string }> = [];
 const questionTrace: Array<{ journey: string; question: string; reason: string; answer: string }> = [];
 
-test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 quarantine, and all prior deterministic regressions through one assembled desktop path", async ({ page, browser }, testInfo) => {
+test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 quarantine, and all prior deterministic regressions through one assembled desktop path", async ({ page, browser }, testInfo) => {
+  test.setTimeout(120_000); // Twenty assembled case/PDF paths with explicit per-group navigation.
   if (retainEvidence) await mkdir(evidenceDirectory, { recursive: true });
 
   const initial = await page.goto("/");
@@ -67,11 +69,11 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   page.once("dialog", (dialog) => dialog.dismiss());
   await page.getByRole("button", { name: "New case", exact: true }).click();
   expect(await semanticCase(page)).toEqual(quarantinedIdentityCase);
-  await page.getByRole("button", { name: "Accept Patient", exact: true }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Accept Patient", exact: true }).click());
   await expect(productOrCaseCard(page, "Patient").getByText("Proposed", { exact: true })).toHaveCount(0);
   await expect(productOrCaseCard(page, "Event").getByText("Proposed", { exact: true }).first()).toBeVisible();
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
-  await page.getByRole("button", { name: "Confirm outcomes" }).click();
+  await acceptOpeningGroups(page);
+  await serverAction(page, () => page.getByRole("button", { name: "Confirm outcomes" }).click());
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   await expect(page.getByText("Reviewed", { exact: true })).toHaveCount(0);
@@ -99,23 +101,25 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   const addReporter = page.getByRole("button", { name: "Add reporter details" });
   await expect(addReporter).toBeEnabled();
   await addReporter.click({ trial: true });
-  await addReporter.click();
+  await serverAction(page, () => addReporter.click());
 
+  await goTo(page, "Review & save");
   await expect(page.getByRole("heading", { name: "The form needs more reviewed information" })).toBeVisible();
   await expect(page.getByText("Product 1 needs Name and Product type", { exact: false })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Download official PDF" })).toBeDisabled();
-  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).not.toContainText("amoxicillin");
+  await expect(page.getByRole("button", { name: "Generate PDF", exact: true })).toBeDisabled();
+  expect(await projectedText(page)).not.toContain("amoxicillin");
   await retainViewportScreenshot(page, "issue78-blocked-output-1280x800.png");
-  await page.getByRole("button", { name: "Review Product 1" }).click();
+  await goTo(page, "Review details");
+  await productCard(page, "Product 1").getByRole("button", { name: "Show more fields" }).click();
 
   const nameRow = productCard(page, "Product 1").locator("dl > div").filter({ has: page.getByText("Name", { exact: true }) });
   await nameRow.getByRole("button", { name: "Add" }).click();
   await page.getByLabel("New Name").fill("amoxicillin");
-  await nameRow.getByRole("button", { name: "Add fact" }).click();
+  await serverAction(page, () => nameRow.getByRole("button", { name: "Add fact" }).click());
   const typeRow = productCard(page, "amoxicillin").locator("dl > div").filter({ has: page.getByText("Product type", { exact: true }) });
   await typeRow.getByRole("button", { name: "Add" }).click();
   await page.getByLabel("New Product type").selectOption("drug-or-biologic");
-  await typeRow.getByRole("button", { name: "Add fact" }).click();
+  await serverAction(page, () => typeRow.getByRole("button", { name: "Add fact" }).click());
 
   await expect(page.getByRole("heading", { name: "What was amoxicillin being used for?" })).toBeVisible();
   await expect(page.getByRole("status").filter({ hasText: "another report detail applicable" })).toBeVisible();
@@ -137,7 +141,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   const addIndication = page.getByRole("button", { name: "Add these answers" });
   await expect(addIndication).toBeEnabled();
   await addIndication.click({ trial: true });
-  await addIndication.click();
+  await serverAction(page, () => addIndication.click());
   await answerUnknownMedicationGroups(page);
   questionTrace.push({
     journey: "issue78-identity-recovery",
@@ -145,7 +149,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
     reason: "direct repair supplied the quarantined name and product type, making medication indication and history newly applicable",
     answer: "sinusitis",
   });
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  expect((await storedState(page)).stage).toBe("output");
   const repairedCase = await semanticCase(page);
   expect(repairedCase.products[0].facts.name.resolvedValue?.value).toEqual({ kind: "known", value: "amoxicillin" });
   expect(repairedCase.products[0].facts.productType.resolvedValue?.value).toEqual({ kind: "known", value: "drug-or-biologic" });
@@ -166,13 +170,13 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   expect(quarantinedCase.event.facts.symptoms.state).toBe("empty");
   expect(quarantinedCase.event.facts.productAvailability.state).toBe("empty");
   expect(quarantinedCase.products).toHaveLength(1);
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await acceptOpeningGroups(page);
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   await expect(quarantine).toBeVisible();
   await fillReporter(page, { firstName: "Taylor", lastName: "Quinn", email: "taylor.quinn@example.test" });
-  await page.getByRole("button", { name: "Add reporter details" }).click();
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  await serverAction(page, () => page.getByRole("button", { name: "Add reporter details" }).click());
+  expect((await storedState(page)).stage).toBe("output");
   await expect(quarantine).toBeVisible();
   await downloadAndCheck(page, "issue67-quarantine", ["TEST-74", "Acme FlowGuard", "Taylor", "Quinn"], ["hypotension"], {
     "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
@@ -186,13 +190,13 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productCard(page, "Acme ThermoPatch")).toContainText("wearable temperature monitor");
   await expect(productOrCaseCard(page, "Event")).toContainText("blistering burn on left arm");
   await expect(productOrCaseCard(page, "Event")).toContainText("Adverse event and product problem");
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await acceptOpeningGroups(page);
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer3-combined", question: "reporter block", reason: "accepted combined event, problem, outcome, context, and device facts suppress redundant questions", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Alex", lastName: "Morgan", email: "alex.morgan@example.test" });
-  await page.getByRole("button", { name: "Add reporter details" }).click();
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  await serverAction(page, () => page.getByRole("button", { name: "Add reporter details" }).click());
+  expect((await storedState(page)).stage).toBe("output");
   const combinedCase = await semanticCase(page);
   expect(combinedCase.event.facts.reportType.resolvedValue?.value).toEqual({ kind: "known", value: "adverse-event-and-product-problem" });
   expect(combinedCase.products).toHaveLength(1);
@@ -209,7 +213,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await submitOpening(page, layer3ConditionalOpening, "product-problem");
   await expect(productCard(page, "Acme PulseLine")).toContainText("Implanted device");
   await expect(productCard(page, "Acme PulseLine")).toContainText("Reprocessed single-use device");
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await acceptOpeningGroups(page);
   await expect(page.getByRole("heading", { name: "Add the applicable device details for Acme PulseLine" })).toBeVisible();
   const implantGroup = page.getByRole("group", { name: "Implant date" });
   await implantGroup.getByLabel("Known", { exact: true }).check();
@@ -220,13 +224,13 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await reprocessorGroup.getByLabel("Known", { exact: true }).check();
   await page.getByLabel("Device reprocessor").fill("ReNew Medical LLC");
   questionTrace.push({ journey: "layer3-conditional", question: "applicable device details", reason: "accepted implanted and reprocessed-single-use states make implant timing and reprocessor identity material", answer: "implant date known; explant inapplicable; reprocessor known" });
-  await page.getByRole("button", { name: "Add device details" }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Add device details" }).click());
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   await fillReporter(page, { firstName: "Sam", lastName: "Ortiz", phone: "202-555-0194" });
   questionTrace.push({ journey: "layer3-conditional", question: "reporter block", reason: "reporter identity remains direct entry", answer: "structured reporter details" });
-  await page.getByRole("button", { name: "Add reporter details" }).click();
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  await serverAction(page, () => page.getByRole("button", { name: "Add reporter details" }).click());
+  expect((await storedState(page)).stage).toBe("output");
   const conditionalCase = await semanticCase(page);
   expect(conditionalCase.products[0].facts.implantDate.resolvedValue?.value).toEqual({ kind: "known", value: "2026-08-12" });
   expect(conditionalCase.products[0].facts.explantDate.resolvedValue?.value).toEqual({ kind: "inapplicable" });
@@ -242,19 +246,19 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
 
   await newCase(page);
   await submitOpening(page, layer3CorrectionOpening, "product-problem");
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await acceptOpeningGroups(page);
   await fillReporter(page, { firstName: "Jamie", lastName: "Kim", email: "jamie.kim@example.test" });
   questionTrace.push({ journey: "layer3-correction", question: "reporter block", reason: "opening device facts require no conditional detail turn", answer: "structured reporter details" });
-  await page.getByRole("button", { name: "Add reporter details" }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Add reporter details" }).click());
   await page.getByLabel("Clinical update").fill(layer3CorrectionUpdate);
-  await page.getByRole("button", { name: "Review this update" }).click();
-  await page.getByRole("article").filter({ hasText: "SN-1002" }).getByRole("button", { name: "Accept this update" }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Review this update" }).click());
+  await serverAction(page, () => page.getByRole("article").filter({ hasText: "SN-1002" }).getByRole("button", { name: "Accept this update" }).click());
   await expect(page.getByText("Earlier: SN-1001", { exact: true })).toBeVisible();
-  await page.getByRole("article").filter({ hasText: "NS-8" }).getByRole("button", { name: "Accept this update" }).click();
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
-  await expect(page.getByText("Acme NeuroSense — Model number has incompatible sources", { exact: false })).toBeVisible();
-  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("SN-1002");
-  await expect(page.getByRole("button", { name: "Download official PDF" })).toBeEnabled();
+  await serverAction(page, () => page.getByRole("article").filter({ hasText: "NS-8" }).getByRole("button", { name: "Accept this update" }).click());
+  expect((await storedState(page)).stage).toBe("output");
+  await expect(page.getByRole("group", { name: "Acme NeuroSense — Model number", exact: true })).toBeVisible();
+  expect(await projectedText(page)).toContain("SN-1002");
+  expect((await storedState(page)).stage).toBe("output");
   const correctedDeviceCase = await semanticCase(page);
   expect(correctedDeviceCase.products).toHaveLength(1);
   expect(correctedDeviceCase.products[0].id).toBe("product-layer3-correction-device");
@@ -276,24 +280,24 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productCard(page, "Acme FlowGuard")).toContainText("Patient or consumer");
   await expect(page.getByText("health-professional", { exact: true })).toHaveCount(0);
   await expect(productOrCaseCard(page, "Event")).toContainText("available");
-  await productCard(page, "Relevant test 1").getByRole("button", { name: "Remove Relevant test 1" }).click();
+  await serverAction(page, () => productCard(page, "Relevant test 1").getByRole("button", { name: "Remove Relevant test 1" }).click());
   const operatorRow = productCard(page, "Acme FlowGuard").locator("dl > div").filter({ has: page.getByText("Device operator", { exact: true }) });
   await operatorRow.getByRole("button", { name: "Change" }).click();
   await page.getByLabel("New Device operator").selectOption("health-professional");
   await operatorRow.getByRole("button", { name: "Keep draft" }).click();
-  await productCard(page, "Acme FlowGuard").getByRole("button", { name: "Accept Acme FlowGuard with 1 change" }).click();
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await serverAction(page, () => productCard(page, "Acme FlowGuard").getByRole("button", { name: "Accept Acme FlowGuard with 1 change" }).click());
+  await acceptOpeningGroups(page);
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer2-device", question: "reporter block", reason: "accepted outcomes and clinical context suppress medication-only and redundant clinical questions", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Dana", lastName: "Mills", email: "dana.mills@example.test" });
-  await page.getByRole("button", { name: "Add reporter details" }).click();
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
-  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("No relevant tests");
+  await serverAction(page, () => page.getByRole("button", { name: "Add reporter details" }).click());
+  expect((await storedState(page)).stage).toBe("output");
+  expect((await semanticCase(page)).event.facts.relevantTestsAvailable.resolvedValue?.value).toEqual({ kind: "known", value: false });
   const modelRow = productCard(page, "Acme FlowGuard").locator("dl > div").filter({ has: page.getByText("Model number", { exact: true }) });
   await modelRow.getByRole("button", { name: "Change" }).click();
   await page.getByLabel("New Model number").fill("FG-201");
-  await modelRow.getByRole("button", { name: "Apply correction" }).click();
+  await serverAction(page, () => modelRow.getByRole("button", { name: "Apply correction" }).click());
   await expect(page.getByText("Earlier: FG-200", { exact: true })).toBeVisible();
   const deviceCase = await semanticCase(page);
   expect(deviceCase.products).toHaveLength(1);
@@ -306,7 +310,7 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   expect(deviceCase.products[0].facts.implantDate.resolvedValue?.value).toEqual({ kind: "inapplicable" });
   expect(deviceCase.relevantTests[0]).toMatchObject({ state: "rejected" });
   expect(deviceCase.askedNeeds.map(({ key }) => key)).toEqual(["reporter-details"]);
-  expect(await page.locator('[aria-label="Form FDA 3500 preview"]').textContent()).toContain("Acme Medical, Reno, Nevada");
+  expect(await projectedText(page)).toContain("Acme Medical, Reno, Nevada");
   checkpoints.push({ journey: "layer2-device", state: "directly-corrected-output", assertion: "The operator rejected an erroneous test, atomically corrected a typed opening value, then directly corrected the reviewed stable device; explicit no-tests and stopped status remained visible without another model call." });
   await retainScreenshot(page, "layer2-device-output.png");
   await downloadAndCheck(page, "layer2-device", ["TEST-74", "Acme FlowGuard", "infusion pump", "Acme Medical, Reno, Nevada", "FG-201", "L-904", "SN-7721", "(01)00812345000017(21)SN7721", "Dana", "Mills"], ["FG-200"], {
@@ -324,13 +328,13 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productCard(page, "Cardiovex 20 mg tablets")).toContainText("CV-442");
   await expect(productOrCaseCard(page, "Patient")).not.toContainText("TEST-");
   await expect(productOrCaseCard(page, "Event")).toContainText("Product problem");
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await acceptOpeningGroups(page);
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer2-product-quality", question: "reporter block", reason: "a product-problem-only report does not trigger indication, serious-outcome, or clinical-context interrogation", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Elliot", lastName: "Ross", phone: "202-555-0188" });
-  await page.getByRole("button", { name: "Add reporter details" }).click();
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  await serverAction(page, () => page.getByRole("button", { name: "Add reporter details" }).click());
+  expect((await storedState(page)).stage).toBe("output");
   const qualityCase = await semanticCase(page);
   expect(qualityCase.patient.facts.identifier.state).toBe("empty");
   expect(qualityCase.event.facts.reportType.resolvedValue?.value).toEqual({ kind: "known", value: "product-problem" });
@@ -350,21 +354,21 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productOrCaseCard(page, "Event")).toContainText("Death");
   await expect(productOrCaseCard(page, "Relevant test 1")).toContainText("Skin biopsy: full-thickness epidermal necrosis");
   await expect(productCard(page, "trimethoprim-sulfamethoxazole")).toContainText("urinary tract infection");
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await acceptOpeningGroups(page);
   await expect(page.getByRole("heading", { name: "Which serious outcomes applied to this event?" })).toBeVisible();
   await expect(page.getByLabel("Death — already recorded")).toBeChecked();
   questionTrace.push({ journey: "layer1-death", question: "serious outcomes", reason: "preserve accepted death and resolve only the remaining outcome flags", answer: "no additional outcomes" });
-  await page.getByRole("button", { name: "Confirm outcomes" }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Confirm outcomes" }).click());
   await expect(page.getByRole("heading", { name: "What was the date of death?" })).toBeVisible();
   questionTrace.push({ journey: "layer1-death", question: "death date", reason: "death was accepted and its conditional date remained empty", answer: "7-Sep-2026" });
   await page.locator("#death-date").fill("2026-09-07");
-  await page.getByRole("button", { name: "Add date" }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Add date" }).click());
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer1-death", question: "reporter block", reason: "reporter identity must be entered directly", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Morgan", lastName: "Reed", email: "morgan.reed@example.test" });
-  await page.getByRole("button", { name: "Add reporter details" }).click();
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  await serverAction(page, () => page.getByRole("button", { name: "Add reporter details" }).click());
+  expect((await storedState(page)).stage).toBe("output");
   const deathCase = await semanticCase(page);
   expect(deathCase.event.facts.death.resolvedValue?.value).toEqual({ kind: "known", value: true });
   expect(deathCase.event.facts.deathDate.resolvedValue?.value).toEqual({ kind: "known", value: "2026-09-07" });
@@ -381,26 +385,26 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productOrCaseCard(page, "Relevant test 1")).toContainText("ALT: 132 U/L");
   await expect(productOrCaseCard(page, "Relevant test 2")).toContainText("AST: 118 U/L");
   await expect(productOrCaseCard(page, "Relevant test 3")).toContainText("Total bilirubin: 2.1 mg/dL");
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await acceptOpeningGroups(page);
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer1-tests", question: "reporter block", reason: "accepted indications, outcomes, three tests, and history suppress earlier groups", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Riley", lastName: "Patel", phone: "202-555-0162" });
-  await page.getByRole("button", { name: "Add reporter details" }).click();
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  await serverAction(page, () => page.getByRole("button", { name: "Add reporter details" }).click());
+  expect((await storedState(page)).stage).toBe("output");
   const testsBeforeCorrection = await semanticCase(page);
   expect(testsBeforeCorrection.relevantTests.map(({ id }) => id)).toEqual([
     "test-layer1-tests-alt", "test-layer1-tests-ast", "test-layer1-tests-bilirubin",
   ]);
   await page.getByLabel("Clinical update").fill(layer1TestsUpdate);
-  await page.getByRole("button", { name: "Review this update" }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Review this update" }).click());
   await expect(page.getByRole("heading", { name: "Review the proposed update" })).toBeVisible();
   const proposedTestCorrection = await semanticCase(page);
   expect(proposedTestCorrection.relevantTests).toHaveLength(3);
   expect(proposedTestCorrection.relevantTests[0].facts.testResult.resolvedValue?.value).toEqual({ kind: "known", value: "ALT: 132 U/L" });
   expect(proposedTestCorrection.relevantTests[0].facts.testResult.proposedValues[0]?.value).toEqual({ kind: "known", value: "ALT: 123 U/L" });
-  await page.getByRole("article").filter({ hasText: "ALT: 123 U/L" }).getByRole("button", { name: "Accept this update" }).click();
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  await serverAction(page, () => page.getByRole("article").filter({ hasText: "ALT: 123 U/L" }).getByRole("button", { name: "Accept this update" }).click());
+  expect((await storedState(page)).stage).toBe("output");
   await expect(page.getByText("Earlier: ALT: 132 U/L", { exact: true })).toBeVisible();
   const testsAfterCorrection = await semanticCase(page);
   expect(testsAfterCorrection.relevantTests.map(({ id }) => id)).toEqual(testsBeforeCorrection.relevantTests.map(({ id }) => id));
@@ -412,9 +416,9 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   expect(testsAfterCorrection.askedNeeds.map(({ key }) => key)).toEqual(["medication-history", "reporter-details"]);
   checkpoints.push({ journey: "layer1-tests", state: "corrected-output", assertion: "Three stable test entities remained distinct; the accepted ALT correction superseded only its prior value and did not reopen completion." });
   await downloadAndCheck(page, "layer1-tests", ["TEST-51", "atorvastatin", "Test identity not recorded: ALT: 123 U/L", "Test identity not recorded: AST: 118 U/L", "Test identity not recorded: Total bilirubin: 2.1 mg/dL", "Riley", "Patel"], ["Test identity not recorded: ALT: 132 U/L"]);
-  await productCard(page, "Relevant test 3").getByRole("button", { name: "Withdraw Relevant test 3" }).click();
+  await serverAction(page, () => productCard(page, "Relevant test 3").getByRole("button", { name: "Withdraw Relevant test 3" }).click());
   await expect(productCard(page, "Relevant test 3")).toContainText("Withdrawn from the active report");
-  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).not.toContainText("Total bilirubin: 2.1 mg/dL");
+  expect(await projectedText(page)).not.toContain("Total bilirubin: 2.1 mg/dL");
   const testsAfterWithdrawal = await semanticCase(page);
   expect(testsAfterWithdrawal.relevantTests[2]).toMatchObject({ state: "withdrawn" });
   expect(testsAfterWithdrawal.relevantTests[2].facts.testResult.resolvedValue?.value).toEqual({ kind: "known", value: "Total bilirubin: 2.1 mg/dL" });
@@ -425,28 +429,28 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await submitOpening(page, layer1RoleOpening);
   await expect(productCard(page, "warfarin")).toContainText("Suspect product");
   await expect(productCard(page, "acetaminophen")).toContainText("Other product");
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await acceptOpeningGroups(page);
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer1-role", question: "reporter block", reason: "accepted opening knowledge suppresses all earlier completion groups", answer: "structured reporter details" });
   await fillReporter(page, { firstName: "Taylor", lastName: "Ng", email: "taylor.ng@example.test" });
-  await page.getByRole("button", { name: "Add reporter details" }).click();
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  await serverAction(page, () => page.getByRole("button", { name: "Add reporter details" }).click());
+  expect((await storedState(page)).stage).toBe("output");
   const roleBeforeCorrection = await semanticCase(page);
   expect(roleBeforeCorrection.products.map(({ id }) => id)).toEqual([
     "product-layer1-role-warfarin", "product-layer1-role-acetaminophen",
   ]);
   await page.getByLabel("Clinical update").fill(layer1RoleUpdate);
-  await page.getByRole("button", { name: "Review this update" }).click();
-  await page.getByRole("article").filter({ hasText: "Suspect product" }).getByRole("button", { name: "Accept this update" }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Review this update" }).click());
+  await serverAction(page, () => page.getByRole("article").filter({ hasText: "Suspect product" }).getByRole("button", { name: "Accept this update" }).click());
   await expect(page.getByRole("heading", { name: "What was acetaminophen being used for?" })).toBeVisible();
   questionTrace.push({ journey: "layer1-role", question: "newly applicable suspect indication", reason: "accepted role correction made only acetaminophen indication newly applicable", answer: "headache" });
   const acetaminophenAnswer = page.getByRole("group", { name: "acetaminophen" });
   await acetaminophenAnswer.getByLabel("Known", { exact: true }).check();
   await page.getByLabel("acetaminophen indication").fill("headache");
-  await page.getByRole("button", { name: "Add these answers" }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Add these answers" }).click());
   await answerUnknownMedicationGroups(page);
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  expect((await storedState(page)).stage).toBe("output");
   const roleAfterCorrection = await semanticCase(page);
   expect(roleAfterCorrection.products.map(({ id }) => id)).toEqual(roleBeforeCorrection.products.map(({ id }) => id));
   expect(roleAfterCorrection.products.map(({ facts }) => facts.role.resolvedValue?.value)).toEqual([
@@ -479,15 +483,15 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await richWeight.getByRole("button", { name: "Change" }).click();
   await page.getByLabel("New Weight").fill("65");
   await richWeight.getByRole("button", { name: "Keep draft" }).click();
-  await richPatient.getByRole("button", { name: "Accept Patient with 2 changes" }).click();
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await serverAction(page, () => richPatient.getByRole("button", { name: "Accept Patient with 2 changes" }).click());
+  await acceptOpeningGroups(page);
   await expect(page.getByRole("heading", { name: "Hospitalization is already recorded. Did any other serious outcomes apply?" })).toBeVisible();
   await expect(page.getByLabel("Hospitalization (initial or prolonged) — already recorded")).toBeChecked();
   await expect(page.getByLabel("Life-threatening — already recorded")).toBeChecked();
   await expect(productOrCaseCard(page, "amoxicillin").getByRole("button", { name: "Withdraw amoxicillin" })).toHaveCount(0);
   await expect(productOrCaseCard(page, "Relevant test 1").getByRole("button", { name: "Withdraw Relevant test 1" })).toHaveCount(0);
   questionTrace.push({ journey: "adaptive-rich", question: "serious outcomes", reason: "confirm only outcomes not already accepted", answer: "no additional outcomes" });
-  await page.getByRole("button", { name: "Confirm outcomes" }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Confirm outcomes" }).click());
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   await fillReporter(page, { firstName: "Avery", lastName: "Chen", email: "avery.chen@example.test", fullAddress: true });
@@ -495,32 +499,32 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await page.getByLabel("Packer", { exact: true }).check();
   await page.getByLabel("Do not disclose my identity to the manufacturer").check();
   questionTrace.push({ journey: "adaptive-rich", question: "reporter block", reason: "reporter identity must be entered directly", answer: "structured reporter details" });
-  await page.getByRole("button", { name: "Add reporter details" }).click();
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  await serverAction(page, () => page.getByRole("button", { name: "Add reporter details" }).click());
+  expect((await storedState(page)).stage).toBe("output");
   const richEvent = productOrCaseCard(page, "Event");
   const reportDate = richEvent.locator("dl > div").filter({ has: page.getByText("Date of this report", { exact: true }) });
   await reportDate.getByRole("button", { name: "Change" }).click();
   await page.getByLabel("New Date of this report").fill("2026-09-19");
-  await reportDate.getByRole("button", { name: "Apply correction" }).click();
+  await serverAction(page, () => reportDate.getByRole("button", { name: "Apply correction" }).click());
+  await productOrCaseCard(page, "Event").getByRole("button", { name: "Show more fields" }).click();
   const discharge = richEvent.locator("dl > div").filter({ has: page.getByText("Discharged", { exact: true }) });
   await discharge.getByRole("button", { name: "Add" }).click();
   await page.getByLabel("New Discharged").fill("2026-09-04");
-  await discharge.getByRole("button", { name: "Add fact" }).click();
+  await serverAction(page, () => discharge.getByRole("button", { name: "Add fact" }).click());
   const reportType = productOrCaseCard(page, "Event").locator("dl > div").filter({ has: page.getByText("Report type", { exact: true }) });
   await reportType.getByRole("button", { name: "Change" }).click();
   await page.getByLabel("New Report type").selectOption("adverse-event-and-product-problem");
-  await reportType.getByRole("button", { name: "Apply correction" }).click();
+  await serverAction(page, () => reportType.getByRole("button", { name: "Apply correction" }).click());
   const dose = productCard(page, "amoxicillin").locator("dl > div").filter({ has: page.getByText("Dose", { exact: true }) });
   await dose.getByRole("button", { name: "Change" }).click();
   await page.getByLabel("New Dose").fill("250 mg");
-  await dose.getByRole("button", { name: "Apply correction" }).click();
-  const reporterEmail = productOrCaseCard(page, "Reporter").locator("dl > div").filter({ has: page.getByText("Email", { exact: true }) });
-  await reporterEmail.getByRole("button", { name: "Change" }).click();
-  await page.getByLabel("New Email").fill("avery.chen.corrected@example.test");
-  await reporterEmail.getByRole("button", { name: "Apply correction" }).click();
+  await serverAction(page, () => dose.getByRole("button", { name: "Apply correction" }).click());
+  await goTo(page, "Reporter details");
+  await page.getByLabel("Reporter email").fill("avery.chen.corrected@example.test");
+  await serverAction(page, () => page.getByRole("button", { name: "Save reporter details", exact: true }).click());
   await expect(page.getByText("Earlier: 500 mg", { exact: true })).toBeVisible();
-  await expect(page.getByText("Earlier: avery.chen@example.test", { exact: true })).toBeVisible();
-  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("Serum tryptase: 18 ng/mL");
+  expect((await semanticCase(page)).reporter.facts.email.supersededValues[0].value).toEqual({ kind: "known", value: "avery.chen@example.test" });
+  expect(await projectedText(page)).toContain("Serum tryptase: 18 ng/mL");
   const richCase = await semanticCase(page);
   expect(richCase.patient.facts.ageYears.resolvedValue?.value).toEqual({ kind: "known", value: 73 });
   expect(richCase.patient.facts.weight.resolvedValue?.value).toEqual({ kind: "known", value: { value: 65, unit: "kg" } });
@@ -548,23 +552,23 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
 
   await newCase(page);
   await submitOpening(page, adaptiveSparseOpening);
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await acceptOpeningGroups(page);
   await page.getByRole("group", { name: "propranolol" }).getByLabel("Unknown", { exact: true }).check();
   questionTrace.push({ journey: "adaptive-sparse", question: "suspect indication", reason: "missing indication contributes directly to the report", answer: "unknown" });
-  await page.getByRole("button", { name: "Add these answers" }).click();
-  await page.getByRole("button", { name: "Confirm outcomes" }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Add these answers" }).click());
+  await serverAction(page, () => page.getByRole("button", { name: "Confirm outcomes" }).click());
   questionTrace.push({ journey: "adaptive-sparse", question: "serious outcomes", reason: "no outcome was accepted from the narrative", answer: "none" });
   await page.getByLabel("Unknown", { exact: true }).first().check();
   await page.getByLabel("Prefer not to answer", { exact: true }).last().check();
   questionTrace.push({ journey: "adaptive-sparse", question: "tests and history", reason: "both relevant context categories were still unresolved", answer: "tests unknown; history declined" });
-  await page.getByRole("button", { name: "Add this context" }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Add this context" }).click());
   await fillReporter(page, { firstName: "Jordan", lastName: "Lee", phone: "202-555-0147" });
   questionTrace.push({ journey: "adaptive-sparse", question: "reporter block", reason: "reporter identity must be entered directly", answer: "minimal contact details" });
-  await page.getByRole("button", { name: "Add reporter details" }).click();
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
-  await expect(page.locator("li").filter({ hasText: "Relevant tests: unknown" })).toBeVisible();
-  await expect(page.locator("li").filter({ hasText: "Relevant history: prefer not to answer" })).toBeVisible();
-  await expect(page.locator("li").filter({ hasText: "Address: not present" })).toBeVisible();
+  await serverAction(page, () => page.getByRole("button", { name: "Add reporter details" }).click());
+  expect((await storedState(page)).stage).toBe("output");
+  expect(await projectedText(page)).toContain("unknown");
+  expect(await projectedText(page)).toContain("declined");
+  expect(await projectedText(page)).toContain("explicitly-absent");
   checkpoints.push({ journey: "adaptive-sparse", state: "partial-output", assertion: "Four grouped prompts captured unknown and refusal once, exposed omissions, and allowed truthful partial output." });
   await retainScreenshot(page, "adaptive-sparse-output.png");
   await downloadAndCheck(page, "adaptive-sparse", ["TEST-26", "propranolol", "Jordan", "Lee", "202-555-0147"], ["Test identity not recorded: Serum tryptase: 18 ng/mL"]);
@@ -574,28 +578,28 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await submitOpening(page, richOpening);
   await expect(productOrCaseCard(page, "Event")).toContainText("diffuse hives and facial swelling");
   await expect(page.getByText("What was cephalexin being used for?", { exact: true })).toHaveCount(0);
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await acceptOpeningGroups(page);
   await completeQuestions(page);
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
-  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("cephalexin");
-  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("diffuse hives and facial swelling");
+  expect((await storedState(page)).stage).toBe("output");
+  expect(await projectedText(page)).toContain("cephalexin");
+  expect(await projectedText(page)).toContain("diffuse hives and facial swelling");
   checkpoints.push({ journey: "rich", state: "output", assertion: "No duplicate indication question was asked; new bounded completion groups were answered without changing accepted rich facts." });
   await retainScreenshot(page, "rich-output.png");
   await downloadAndCheck(page, "rich", ["TEST-68", "cephalexin", "500 mg", "01-AUG-2026", "04-AUG-2026"], [], { "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "20-SEP-2026" });
 
   await newCase(page);
   await submitOpening(page, sparseOpening);
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await acceptOpeningGroups(page);
   await expect(page.getByRole("heading", { name: "What was metformin being used for?" })).toBeVisible();
   const metforminAnswer = page.getByRole("group", { name: "metformin" });
   await expect(metforminAnswer.getByLabel("Unknown", { exact: true })).toBeVisible();
   await expect(metforminAnswer.getByLabel("Prefer not to answer", { exact: true })).toBeVisible();
   await metforminAnswer.getByLabel("Unknown", { exact: true }).check();
-  await page.getByRole("button", { name: "Add these answers" }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Add these answers" }).click());
   await completeQuestions(page);
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
-  await expect(productCard(page, "metformin")).toContainText("unknown");
-  await expect(page.getByText("metformin — Used for: unknown", { exact: false })).toBeVisible();
+  expect((await storedState(page)).stage).toBe("output");
+  await expect(productCard(page, "metformin")).toContainText("Unknown");
+  expect(await projectedText(page)).toContain("unknown");
   checkpoints.push({ journey: "sparse", state: "partial-output", assertion: "One attributed question recorded unknown once; optional empty and unknown values remain visible omissions." });
   await retainScreenshot(page, "sparse-output.png");
   await downloadAndCheck(page, "sparse", ["TEST-31", "metformin"], ["01-AUG-2026"]);
@@ -605,32 +609,30 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await expect(productCard(page, "acetaminophen (Tylenol)")).toBeVisible();
   await expect(productCard(page, "ibuprofen")).toBeVisible();
   await expect(page.getByText("Suspect product", { exact: true })).toHaveCount(2);
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await acceptOpeningGroups(page);
   await completeQuestions(page);
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  expect((await storedState(page)).stage).toBe("output");
   await page.getByLabel("Clinical update").fill(repeatedUpdate);
-  await page.getByRole("button", { name: "Review this update" }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Review this update" }).click());
   await expect(page.getByRole("heading", { name: "Review the proposed update" })).toBeVisible();
   await expect(page.getByText("2 proposed details to check", { exact: true })).toBeVisible();
   const doseUpdate = page.getByRole("article").filter({ hasText: "200 mg" });
-  await doseUpdate.getByRole("button", { name: "Accept this update" }).click();
+  await serverAction(page, () => doseUpdate.getByRole("button", { name: "Accept this update" }).click());
   await expect(page.getByText("Earlier: 400 mg", { exact: true })).toBeVisible();
   await expect(page.getByText("1 proposed detail to check", { exact: true })).toBeVisible();
   const dateUpdate = page.getByRole("article").filter({ hasText: "2-Jul-2026" });
-  await dateUpdate.getByRole("button", { name: "Accept this update" }).click();
-  await expect(page.getByRole("heading", { name: "The supported form is ready" })).toBeVisible();
+  await serverAction(page, () => dateUpdate.getByRole("button", { name: "Accept this update" }).click());
+  expect((await storedState(page)).stage).toBe("output");
   await expect(page.getByText("1 unresolved conflict", { exact: true })).toBeVisible();
-  await expect(page.getByText("acetaminophen (Tylenol) — Started has incompatible sources", { exact: false })).toBeVisible();
+  await expect(page.getByText("Neither alternative will be put in the form.", { exact: false })).toBeVisible();
   await expect(page.getByRole("group", { name: "acetaminophen (Tylenol) — Started" })).toBeVisible();
-  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("Omitted — unresolved conflict");
-  await expect(page.getByRole("button", { name: "Download official PDF" })).toBeEnabled();
+  expect(await projectedText(page)).toContain("conflicted");
+  expect((await storedState(page)).stage).toBe("output");
   checkpoints.push({ journey: "repeated", state: "unresolved-partial-output", assertion: "Alias identity stayed singular, dose correction superseded history, and both dates remain visible while neither projects." });
   await retainScreenshot(page, "repeated-unresolved-output.png");
-  const popupPromise = page.waitForEvent("popup");
-  await page.getByRole("button", { name: "Open PDF preview" }).click();
-  const popup = await popupPromise;
-  await expect(popup.locator('embed[type="application/pdf"]')).toHaveAttribute("src", /^blob:/);
-  await popup.close();
+  await goTo(page, "Review & save");
+  await expect(page.getByRole("link", { name: "Save PDF", exact: true })).toBeVisible();
+  await expect(page.getByTitle("Generated Form FDA 3500", { exact: true })).toHaveAttribute("src", /^blob:/);
   await downloadAndCheck(page, "repeated", ["TEST-44", "acetaminophen (Tylenol)", "ibuprofen", "200 mg", "05-JUL-2026"], ["01-JUL-2026", "02-JUL-2026"]);
 
   await newCase(page);
@@ -640,29 +642,29 @@ test("runs Issue 78 recovery and layout, Issue 66 direct correction, Issue 67 qu
   await ageRow.getByRole("button", { name: "Change" }).click();
   await page.getByLabel("New Age").fill("58");
   await ageRow.getByRole("button", { name: "Keep draft" }).click();
-  await patient.getByRole("button", { name: "Accept Patient with 1 change" }).click();
+  await serverAction(page, () => patient.getByRole("button", { name: "Accept Patient with 1 change" }).click());
   await expect(patient).toContainText("58");
-  await productCard(page, "lisinopril").getByRole("button", { name: "Remove lisinopril" }).click();
+  await serverAction(page, () => productCard(page, "lisinopril").getByRole("button", { name: "Remove lisinopril" }).click());
   await expect(productCard(page, "lisinopril")).toHaveCount(0);
   checkpoints.push({ journey: "shared-controls", state: "understanding", assertion: "Generic Change and Remove controls updated the server-returned case rather than browser state." });
 
   await newCase(page);
   await submitOpening(page, regressionOpening);
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await acceptOpeningGroups(page);
   for (const [name, value] of [["apixaban", "postoperative VTE prophylaxis after knee replacement"], ["naproxen", "postoperative pain"]] as const) {
     const group = page.getByRole("group", { name });
     await group.getByLabel("Known", { exact: true }).check();
     await page.getByLabel(`${name} indication`).fill(value);
   }
-  await page.getByRole("button", { name: "Add these answers" }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Add these answers" }).click());
   await completeQuestions(page);
   await page.getByLabel("Clinical update").fill(regressionUpdate);
-  await page.getByRole("button", { name: "Review this update" }).click();
-  await page.getByRole("article").filter({ hasText: "250 mg" }).getByRole("button", { name: "Accept this update" }).click();
-  await page.getByRole("article").filter({ hasText: "13-Aug-2026" }).getByRole("button", { name: "Accept this update" }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Review this update" }).click());
+  await serverAction(page, () => page.getByRole("article").filter({ hasText: "250 mg" }).getByRole("button", { name: "Accept this update" }).click());
+  await serverAction(page, () => page.getByRole("article").filter({ hasText: "13-Aug-2026" }).getByRole("button", { name: "Accept this update" }).click());
   await expect(page.getByText("Earlier: 500 mg", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Use 13-Aug-2026" }).click();
-  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("Started: 13-Aug-2026");
+  await serverAction(page, () => page.getByRole("button", { name: "Use 13-Aug-2026" }).click());
+  expect(await projectedText(page)).toContain("2026-08-13");
   checkpoints.push({ journey: "experiment-1-regression", state: "resolved-output", assertion: "Original identity, correction, conflict resolution, projection, and PDF path remain aligned." });
   await retainScreenshot(page, "experiment-1-regression-output.png");
   await downloadAndCheck(page, "experiment-1-regression", ["TEST-57", "apixaban", "naproxen", "lisinopril", "250 mg", "13-AUG-2026"], ["500 mg"]);
@@ -745,7 +747,7 @@ async function submitOpening(page: Page, text: string, reportType: ReportType = 
     await problem.check();
   }
   await page.getByRole("button", { name: "Review Wilson’s understanding" }).click();
-  await expect(page.getByRole("heading", { name: "Check Wilson’s understanding" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Review the case details" })).toBeVisible();
 }
 
 async function newCase(page: Page) {
@@ -774,9 +776,8 @@ async function downloadAndCheck(
   named: Record<string, string> = {},
   absentNamed: string[] = [],
 ) {
-  const downloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Download official PDF" }).click();
-  const download = await downloadPromise;
+  const download = await savePdf(page);
+  await showActiveTask(page);
   const path = await download.path();
   if (!path) throw new Error("Downloaded PDF had no local path");
   const bytes = await download.createReadStream().then(async (stream) => {
@@ -815,13 +816,13 @@ async function completeQuestions(page: Page) {
   // Up to five existing groups plus one medication group per supported suspect.
   for (let turn = 0; turn < 8; turn += 1) {
     await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
-    if (await page.getByRole("heading", { name: "The supported form is ready" }).isVisible().catch(() => false)) return;
+    if ((await storedState(page)).stage === "output") return;
     if (await page.getByRole("button", { name: "These remaining details are unknown", exact: true }).isVisible().catch(() => false)) {
-      await page.getByRole("button", { name: "These remaining details are unknown", exact: true }).click();
+      await serverAction(page, () => page.getByRole("button", { name: "These remaining details are unknown", exact: true }).click());
       continue;
     }
     if (await page.getByRole("button", { name: "Confirm outcomes" }).isVisible().catch(() => false)) {
-      await page.getByRole("button", { name: "Confirm outcomes" }).click();
+      await serverAction(page, () => page.getByRole("button", { name: "Confirm outcomes" }).click());
       continue;
     }
     if (await page.getByRole("button", { name: "Add this context" }).isVisible().catch(() => false)) {
@@ -829,16 +830,16 @@ async function completeQuestions(page: Page) {
       if (await noTests.isVisible().catch(() => false)) await noTests.check();
       const noHistory = page.getByLabel("No relevant history to add");
       if (await noHistory.isVisible().catch(() => false)) await noHistory.check();
-      await page.getByRole("button", { name: "Add this context" }).click();
+      await serverAction(page, () => page.getByRole("button", { name: "Add this context" }).click());
       continue;
     }
     if (await page.getByRole("button", { name: "Prefer not to provide reporter details" }).isVisible().catch(() => false)) {
       await page.getByLabel("Date of this report", { exact: true }).fill("2026-09-20");
-      await page.getByRole("button", { name: "Prefer not to provide reporter details" }).click();
+      await serverAction(page, () => page.getByRole("button", { name: "Prefer not to provide reporter details" }).click());
       continue;
     }
     if (await page.getByRole("button", { name: "Unknown" }).isVisible().catch(() => false)) {
-      await page.getByRole("button", { name: "Unknown" }).click();
+      await serverAction(page, () => page.getByRole("button", { name: "Unknown" }).click());
       continue;
     }
     throw new Error("Unexpected adaptive completion state");
@@ -885,7 +886,7 @@ async function retainViewportScreenshot(page: Page, name: string) {
 }
 
 async function assertTaskControlsOperable(page: Page, controls: Locator[]) {
-  const task = page.locator("section").filter({ has: page.locator("#task-title") }).first();
+  const task = page.locator("main");
   for (const control of controls) {
     await control.scrollIntoViewIfNeeded();
     const [taskBox, controlBox] = await Promise.all([task.boundingBox(), control.boundingBox()]);
@@ -916,7 +917,7 @@ async function answerUnknownMedicationGroups(page: Page) {
   for (let count = 0; count < 3; count += 1) {
     const button = page.getByRole("button", { name: "These remaining details are unknown", exact: true });
     if (!await button.isVisible()) break;
-    await button.click();
+    await serverAction(page, () => button.click());
     await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
   }
 }

@@ -1,3 +1,4 @@
+import { acceptOpeningGroups, directAnswers, goTo, projectedText, savePdf, serverAction, showActiveTask, storedState } from "./draft4-helpers";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { expect, test, type Page } from "@playwright/test";
@@ -8,11 +9,11 @@ test("medication history: conversational grouped answer and two-product correcti
   const second = "topmostSubform[0].Page5[0].Prod2[0].Prod2";
   const checked = (fields: Record<string, string>, key: string) => Boolean(fields[key] && fields[key] !== "/Off");
   const pdf = async (name: string) => {
-    const download = page.waitForEvent("download");
-    await page.getByRole("button", { name: "Download official PDF", exact: true }).click();
+    const download = savePdf(page);
     const path = testInfo.outputPath(name);
     await (await download).saveAs(path);
     const { stdout } = await promisify(execFile)(process.env.PYPDF_PYTHON ?? "python3", ["tools/pdf/independent_readback.py", path, "--named"]);
+    await showActiveTask(page);
     return JSON.parse(stdout).namedFields as Record<string, string>;
   };
   await page.goto("/");
@@ -54,7 +55,7 @@ test("medication history: conversational grouped answer and two-product correcti
   await expect(page.getByLabel("Did the event return after restarting it?", { exact: true })).toBeVisible();
   expect((await state(page)).products[0].facts.recurred.resolvedValue).toBeUndefined();
   await page.getByLabel("Did the event return after restarting it?", { exact: true }).selectOption("false");
-  await page.getByRole("button", { name: "Add medication answers", exact: true }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Add medication answers", exact: true }).click());
   fields = await pdf("medication-two-final.pdf");
   expect(checked(fields, `${first}ReappearNo[0]`)).toBe(true);
   expect(checked(fields, `${first}ReappearYes[0]`)).toBe(false);
@@ -65,8 +66,9 @@ test("medication history: conversational grouped answer and two-product correcti
   // answers newly revealed conditional fields in this one task (no model call).
   await page.evaluate((draft) => sessionStorage.setItem("wilson-journey-state-v2", draft), sparseDraft);
   await page.reload();
+  await directAnswers(page);
   await page.getByLabel("Was this medication stopped?", { exact: true }).selectOption("true");
-  await page.getByRole("button", { name: "These remaining details are unknown", exact: true }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "These remaining details are unknown", exact: true }).click());
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   const answered = await state(page);
   expect(answered.products[0].facts.stopped.resolvedValue.value).toEqual({ kind: "known", value: true });
@@ -78,15 +80,17 @@ test("medication history: conversational grouped answer and two-product correcti
 async function opening(page: Page, text: string) {
   await page.getByLabel("Clinical account", { exact: true }).fill(text);
   await page.getByRole("button", { name: "Review Wilson’s understanding", exact: true }).click();
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
+  await acceptOpeningGroups(page);
 }
 async function update(page: Page, text: string) {
+  await goTo(page, "Review details");
   await page.getByLabel("Clinical update", { exact: true }).fill(text);
-  await page.getByRole("button", { name: "Review this update", exact: true }).click();
-  await page.getByRole("button", { name: "Accept this update", exact: true }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Review this update", exact: true }).click());
+  await serverAction(page, () => page.getByRole("button", { name: "Accept this update", exact: true }).click());
 }
 async function reporter(page: Page) {
+  await goTo(page, "Reporter details");
   await page.getByLabel("Date of this report", { exact: true }).fill("2026-09-21");
-  await page.getByRole("button", { name: "Prefer not to provide reporter details" }).click();
+  await serverAction(page, () => page.getByRole("button", { name: "Prefer not to provide reporter details" }).click());
 }
 async function state(page: Page) { return page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-journey-state-v2")!).case); }

@@ -77,6 +77,17 @@ describe("Draft 4 accepted knowledge and output lifecycle", () => {
     expect(refusedAgain.understanding.reporter.firstName.history).toContainEqual(expect.objectContaining({ value: { kind: "known", value: "Casey" } }));
   });
 
+  it("clears an optional report date without retaining its earlier accepted value", async () => {
+    const { act } = setup();
+    const before = await act(reporter);
+    const cleared = await act({ ...reporter, reportDate: null });
+    expect(cleared.projection.sections.B.reportDate).toBeUndefined();
+    expect(cleared.reportContentKey).not.toBe(before.reportContentKey);
+    expect(cleared.understanding.event.reportDate.history).toContainEqual(expect.objectContaining({ value: { kind: "known", value: "2026-09-22" } }));
+    const unchanged = await act({ ...reporter, reportDate: null });
+    expect(unchanged.revision).toBe(cleared.revision);
+  });
+
   it("does not permit incomplete reporter details or prematurely complete clinical work", async () => {
     const { act } = setup(acceptOpeningCase());
     await expect(act(reporter)).rejects.toThrow("Complete the clinical questions");

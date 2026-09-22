@@ -1,3 +1,4 @@
+import { acceptOpeningGroups, directAnswers, goTo, projectedText, savePdf, serverAction, showActiveTask, storedState } from "./draft4-helpers";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { expect, test } from "@playwright/test";
@@ -28,28 +29,28 @@ test("repairs missing laboratory identity, corrects one result, and downloads fa
   await expect(first.getByRole("status")).toContainText("Test identity is not recorded as known");
   await expect(second.getByRole("status")).toContainText("supply its name in Clinical update");
   await expect(first).toContainText("Her hemoglobin was 9.1 g/dL");
-  await page.getByRole("button", { name: "Accept all remaining proposals and continue" }).click();
-  await expect(page.getByRole("button", { name: "Download official PDF" })).toBeEnabled();
-  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("Test identity not recorded: 9.1 g/dL");
+  await acceptOpeningGroups(page);
+  expect((await storedState(page)).stage).toBe("output");
+  expect(await projectedText(page)).toContain("Test identity not recorded: 9.1 g/dL");
   for (const [card, name] of [[first, "hemoglobin"], [second, "stool test"]] as const) {
+    await card.getByRole("button", { name: "Show more fields" }).click();
     const row = card.locator("dl > div").filter({ has: page.getByText("Test identity", { exact: true }) });
     await row.getByRole("button", { name: "Add", exact: true }).click();
     await row.getByLabel("New Test identity", { exact: true }).fill(name);
-    await row.getByRole("button", { name: "Add fact", exact: true }).click();
+    await serverAction(page, () => row.getByRole("button", { name: "Add fact", exact: true }).click());
     await expect(card.getByRole("status")).toHaveCount(0);
   }
   const resultRow = first.locator("dl > div").filter({ has: page.getByText("Result and stated units", { exact: true }) });
   await resultRow.getByRole("button", { name: "Change", exact: true }).click();
   await resultRow.getByLabel("New Result and stated units", { exact: true }).fill("8.9 g/dL");
-  await resultRow.getByRole("button", { name: "Apply correction", exact: true }).click();
+  await serverAction(page, () => resultRow.getByRole("button", { name: "Apply correction", exact: true }).click());
   await expect(first).toContainText("Earlier: 9.1 g/dL");
-  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("hemoglobin: 8.9 g/dL");
-  await expect(page.locator('[aria-label="Form FDA 3500 preview"]')).toContainText("stool test: positive for occult blood");
+  expect(await projectedText(page)).toContain("hemoglobin: 8.9 g/dL");
+  expect(await projectedText(page)).toContain("stool test: positive for occult blood");
   const accepted = await page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-journey-state-v2")!).case);
   expect(accepted.relevantTests.slice(1).map((test: { id: string }) => test.id)).toEqual(["test-t0", "test-t1"]);
   expect(accepted.relevantTests[1].facts.date.resolvedValue.value).toEqual({ kind: "known", value: "2026-09-11" });
-  const downloaded = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Download official PDF" }).click();
+  const downloaded = savePdf(page);
   const path = testInfo.outputPath("laboratory-correction.pdf");
   await (await downloaded).saveAs(path);
   const { stdout } = await promisify(execFile)(process.env.PYPDF_PYTHON ?? "python3", ["tools/pdf/independent_readback.py", path, "--named"]);

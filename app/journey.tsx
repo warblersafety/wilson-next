@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { productDisplayLabel } from "../src/domain/case/product-label";
 import type { CaseValue, ReportType } from "../src/domain/case/types";
 import type { FactView, ProductView, ReviewAttentionItem } from "../src/domain/case/views";
@@ -31,6 +31,7 @@ type Screen = "describe" | "details" | "reporter" | "save";
 type PdfArtifact = { url: string; filename: string; caseId: string; contentKey: string };
 
 export default function Journey() {
+  const [reporterDirty, setReporterDirty] = useState(false);
   const [screen, setScreen] = useState<Screen>("describe");
   const [pdf, setPdf] = useState<PdfArtifact>();
   const [snapshot, setSnapshot] = useState<JourneySnapshot>();
@@ -52,7 +53,7 @@ export default function Journey() {
   useEffect(() => {
     if (!task) return;
     if (previousTask.current && previousTask.current !== task) {
-      const heading = document.querySelector<HTMLElement>("main h1");
+      const heading = document.querySelector<HTMLElement>(`[data-screen="${screen}"] h1`);
       if (heading) {
         heading.tabIndex = -1;
         heading.focus();
@@ -106,7 +107,7 @@ export default function Journey() {
   }
 
   async function act(action: JourneyAction) {
-    if (!snapshot || !browserState) return;
+    if (!snapshot || !browserState) return false;
     setPendingOperation(action.action === "submit-opening" ? "opening" : action.action === "submit-update" ? "update" : "case");
     setError(undefined);
     setBoundaryNotice(undefined);
@@ -121,9 +122,11 @@ export default function Journey() {
       if (action.action === "submit-opening") setScreen("details");
       if (action.action === "answer-reporter") setScreen("save");
       if (action.action === "submit-update") setScreen("details");
-      if (action.action === "submit-update") setUpdate("");
+      if (action.action === "submit-update") setUpdate((current) => current === action.text ? "" : current);
+      return true;
     } catch (caught) {
       setError(displayError(caught, "Wilson could not update the case"));
+      return false;
     } finally {
       setPendingOperation(undefined);
     }
@@ -190,7 +193,7 @@ export default function Journey() {
           <summary>About this preview</summary>
           <div>
             <p>Wilson helps you prepare a downloadable Form FDA 3500. It does not submit the report to FDA.</p>
-            <p>This preview supports a limited set of details for adult medication side effects, adverse events or product problems involving one medical device, and quality problems with other medical products. It does not cover every report or every field on the form. Details that cannot be included are shown with your case.</p>
+            <p>This preview supports a limited set of details for adult medication side effects, adverse events or product problems involving one medical device, and quality problems with other medical products. It does not cover every report or every field on the form. Details that cannot be included are shown with your case. Tests can be added during review; another medicine must be included in the starting account of a new case.</p>
             <p>Your case is temporary and kept only in this browser tab. Closing the tab or starting a new case clears it. Unsubmitted text is not saved. Do not rely on reloading, reopening a tab, or using another device to recover your work.</p>
           </div>
         </details>
@@ -204,12 +207,12 @@ export default function Journey() {
           <button key={value} aria-current={screen === value ? "step" : undefined} disabled={busy || (value !== "describe" && snapshot.revision === 0)} onClick={() => setScreen(value)}><span>{index + 1}</span><span>{label}</span></button>)}
       </nav>
       <div className={styles.screen}>
-        <section hidden={screen !== "describe"} className={styles.describeScreen}>
+        <section data-screen="describe" hidden={screen !== "describe"} className={styles.describeScreen}>
           {snapshot.revision === 0
             ? <Describe key={browserState?.case.id} opening={opening} setOpening={setOpening} reportType={reportType} setReportType={setReportType} busy={busy} interpreting={pendingOperation === "opening"} act={act} />
             : <><p className={styles.eyebrow}>Your starting account</p><h1>Describe what happened</h1><div className={styles.caseCard}><p className={styles.originalAccount}>{opening || browserState?.case.sources.find(({ inputType }) => inputType === "narrative")?.excerpt || "Your submitted account is retained with the source evidence in Review details."}</p></div><p>The account has been interpreted. Add new information or corrections in Review details.</p><button onClick={() => setScreen("details")}>Return to review details</button></>}
         </section>
-        <section hidden={screen !== "details"}>
+        <section data-screen="details" hidden={screen !== "details"}>
           <p className={styles.eyebrow}>Your case, taking shape</p>
           <h1>Review the case details</h1>
           <p className={styles.lead}>Check what Wilson captured. Accept each group when it is correct, or change what needs correcting.</p>
@@ -227,12 +230,12 @@ export default function Journey() {
           </section>
           <div className={styles.screenActions}><p>{snapshot.clinicalNeeds.length > 0 ? "Complete the applicable clinical details to prepare the PDF. You can view reporter details at any time." : "Your accepted details will be used in the report."}</p><button disabled={busy} onClick={() => setScreen("reporter")}>Continue to reporter details</button></div>
         </section>
-        <section hidden={screen !== "reporter"}>
-          <ReporterTask key={`${browserState?.case.id}:${JSON.stringify(snapshot.understanding.reporter)}:${JSON.stringify(snapshot.understanding.event.reportDate.resolved)}`} snapshot={snapshot} busy={busy} act={act} />
+        <section data-screen="reporter" hidden={screen !== "reporter"}>
+          <ReporterTask onDirtyChange={setReporterDirty} key={`${browserState?.case.id}:${JSON.stringify(snapshot.understanding.reporter)}:${JSON.stringify(snapshot.understanding.event.reportDate.resolved)}`} snapshot={snapshot} busy={busy} act={act} />
           <div className={styles.screenActions}><button onClick={() => setScreen("details")}>Back to review details</button><button onClick={() => setScreen("save")}>Return to review & save</button></div>
         </section>
-        <section hidden={screen !== "save"}>
-          <OutputComposition snapshot={snapshot} pdf={pdf} caseId={browserState?.case.id} busy={busy} generatePdf={generatePdf} navigate={setScreen} hasDraft={Boolean(update.trim())} />
+        <section data-screen="save" hidden={screen !== "save"}>
+          <OutputComposition snapshot={snapshot} pdf={pdf} caseId={browserState?.case.id} busy={busy} generatePdf={generatePdf} navigate={setScreen} hasDraft={Boolean(update.trim())} reporterDirty={reporterDirty} />
         </section>
       </div>
       <footer className={styles.footer}>Wilson prepares Form FDA 3500 for your review. Nothing is submitted to FDA.</footer>
@@ -260,7 +263,7 @@ function CaseSummaryHeading({ attention }: { attention: ReviewAttentionItem[] })
 }
 
 function Describe({ opening, setOpening, reportType, setReportType, busy, interpreting, act }: {
-  opening: string; setOpening: (value: string) => void; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+  opening: string; setOpening: (value: string) => void; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
   reportType: ReportType | undefined; setReportType: (value: ReportType | undefined) => void;
   interpreting: boolean;
 }) {
@@ -269,7 +272,7 @@ function Describe({ opening, setOpening, reportType, setReportType, busy, interp
   return <>
     <h1 id="task-title">Describe what happened</h1>
     <p>Type, paste, or dictate your account. Wilson will organize it into a summary for you to check and correct, then help you prepare a downloadable report.</p>
-    <NarrativeInput id="opening-account" label="Clinical account" context="account" rows={13} value={opening} onChange={setOpening} />
+    <NarrativeInput id="opening-account" label="Clinical account" context="account" rows={8} disabled={busy} value={opening} onChange={setOpening} />
     <fieldset className={styles.reportType}><legend>Report type</legend>
       <label><input type="checkbox" checked={adverseEvent} onChange={(event) => setReportType(event.target.checked ? productProblem ? "adverse-event-and-product-problem" : "adverse-event" : productProblem ? "product-problem" : undefined)} /> Adverse event</label>
       <label><input type="checkbox" checked={productProblem} onChange={(event) => setReportType(event.target.checked ? adverseEvent ? "adverse-event-and-product-problem" : "product-problem" : adverseEvent ? "adverse-event" : undefined)} /> Product problem</label>
@@ -280,14 +283,14 @@ function Describe({ opening, setOpening, reportType, setReportType, busy, interp
   </>;
 }
 
-function NarrativeInput({ id, label, context, rows, value, onChange }: {
+function NarrativeInput({ id, label, context, rows, value, onChange, disabled = false }: {
   id: string; label: string; context: "account" | "update"; rows: number;
-  value: string; onChange: (value: string) => void;
+  value: string; onChange: (value: string) => void; disabled?: boolean;
 }) {
   const [helpOpen, setHelpOpen] = useState(false);
   return <div>
     <label htmlFor={id}>{label}</label>
-    <textarea id={id} rows={rows} value={value} onChange={(event) => onChange(event.target.value)} aria-describedby={`${id}-hint`} />
+    <textarea disabled={disabled} id={id} rows={rows} value={value} onChange={(event) => onChange(event.target.value)} aria-describedby={`${id}-hint`} />
     <p id={`${id}-hint`} className={styles.hint}>Check the text and correct any errors before continuing.</p>
     <div className={styles.dictationDisclosure}>
       <button type="button" className={styles.dictationToggle} aria-expanded={helpOpen} aria-controls={`${id}-dictation`}
@@ -327,7 +330,7 @@ function NarrativeInput({ id, label, context, rows, value, onChange }: {
 }
 
 function CorrectionInput({ update, setUpdate, busy, act }: {
-  update: string; setUpdate: (value: string) => void; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+  update: string; setUpdate: (value: string) => void; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
   return <section className={styles.updateBox} aria-labelledby="update-title">
     <h3 id="update-title">Add or correct information</h3>
@@ -351,7 +354,7 @@ function UnrepresentedNotice({ items }: { items: JourneySnapshot["unrepresented"
 
 type IndicationChoice = "known" | "unknown" | "declined";
 
-function CompletionTask(props: { snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void> }) {
+function CompletionTask(props: { snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean> }) {
   const question = props.snapshot.clarification;
   if (!question) return null;
   return <>
@@ -367,7 +370,7 @@ function CompletionTask(props: { snapshot: JourneySnapshot; busy: boolean; act: 
 }
 
 function IndicationTask({ snapshot, busy, act }: {
-  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
   const productIds = snapshot.clarification?.kind === "indications" ? snapshot.clarification.productIds : [];
   const [choices, setChoices] = useState<Record<string, IndicationChoice>>({});
@@ -414,7 +417,7 @@ const seriousOutcomeLabels = {
 type SeriousOutcomeKey = keyof typeof seriousOutcomeLabels;
 
 function SeriousOutcomesTask({ snapshot, busy, act }: {
-  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
   const question = snapshot.clarification;
   const missing = question?.kind === "serious-outcomes" ? new Set(question.targetIds.map((target) => target.split(":")[2])) : new Set<string>();
@@ -441,7 +444,7 @@ function SeriousOutcomesTask({ snapshot, busy, act }: {
 }
 
 function DeathDateTask({ snapshot, busy, act }: {
-  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
   const [date, setDate] = useState("");
   return <>
@@ -461,7 +464,7 @@ type ContextChoice = "known" | "explicitly-absent" | "unknown" | "declined";
 type ClinicalHistoryValue = Extract<JourneyAction, { action: "answer-clinical-context" }>["history"];
 
 function ClinicalContextTask({ snapshot, busy, act }: {
-  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
   const question = snapshot.clarification?.kind === "clinical-context" ? snapshot.clarification : undefined;
   const [testChoice, setTestChoice] = useState<ContextChoice>();
@@ -515,7 +518,7 @@ type DeviceDetailChoice = "known" | "unknown" | "inapplicable" | "declined";
 type DeviceDetailValue = Extract<JourneyAction, { action: "answer-device-details" }>["implantDate"];
 
 function DeviceDetailsTask({ snapshot, busy, act }: {
-  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
   const question = snapshot.clarification?.kind === "device-details" ? snapshot.clarification : undefined;
   const [implantChoice, setImplantChoice] = useState<DeviceDetailChoice>();
@@ -565,22 +568,26 @@ function DeviceDetailsTask({ snapshot, busy, act }: {
   </>;
 }
 
-function ReporterTask({ snapshot, busy, act }: {
-  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+function ReporterTask({ snapshot, busy, act, onDirtyChange }: {
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>; onDirtyChange?: (dirty: boolean) => void;
 }) {
   const accepted = snapshot.understanding.reporter;
   const saved = (field: string) => accepted[field]?.resolved;
-  const text = (field: string, fallback = "") => knownString(saved(field)) ?? fallback;
+  const text = (field: string, fallback = "") => knownString(saved(field)) ?? (saved(field) ? "" : fallback);
   const [values, setValues] = useState(() => ({ firstName: text("firstName"), lastName: text("lastName"), address: text("address"), city: text("city"), state: text("state"), postalCode: text("postalCode"), country: text("country", "UNITED STATES"), phone: text("phone"), email: text("email"), occupation: text("occupation", "Physician") }));
   const [reportDate, setReportDate] = useState(() => {
     const existing = snapshot.understanding.event.reportDate.resolved;
-    if (existing?.kind === "known") return String(existing.value);
+    if (existing) return existing.kind === "known" ? String(existing.value) : "";
     const today = new Date();
     return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   });
   const [healthProfessional, setHealthProfessional] = useState(() => saved("healthProfessional")?.kind === "known" ? Boolean((saved("healthProfessional") as { value: unknown }).value) : true);
   const [reportedTo, setReportedTo] = useState<Array<"manufacturer" | "user-facility" | "distributor-importer" | "packer">>(() => saved("reportedTo")?.kind === "known" ? (saved("reportedTo") as { value: Array<"manufacturer" | "user-facility" | "distributor-importer" | "packer"> }).value : []);
   const [doNotDiscloseIdentity, setDoNotDiscloseIdentity] = useState(() => saved("doNotDiscloseIdentity")?.kind === "known" && Boolean((saved("doNotDiscloseIdentity") as { value: unknown }).value));
+  const initialDraft = useRef(JSON.stringify([values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity]));
+  useEffect(() => {
+    onDirtyChange?.(JSON.stringify([values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity]) !== initialDraft.current);
+  }, [values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity, onDirtyChange]);
   const previouslySaved = Object.values(accepted).some(({ resolved }) => resolved);
   const canSave = (snapshot.stage === "clarify" && (snapshot.clarification?.kind === "reporter" || previouslySaved)) || snapshot.stage === "output";
   const set = (field: keyof typeof values, value: string) => setValues((current) => ({ ...current, [field]: value }));
@@ -594,9 +601,9 @@ function ReporterTask({ snapshot, busy, act }: {
   return <>
     <p className={styles.eyebrow}>About the reporter</p><h1>Add the reporter details for this report</h1>
     <p className={styles.lead}>Tell us who is making this report. A name, occupation, and phone or email are required; address details are optional.</p>{!canSave && <p className={styles.notice}>You can draft these details now. Complete the clinical review before saving them.</p>}{saved("firstName")?.kind === "declined" && <p className={styles.notice}>Reporter details were previously declined. You can supply them here to replace that choice.</p>}
-    <label>Date of this report <input aria-label="Date of this report" type="date" value={reportDate} onChange={(event) => setReportDate(event.target.value)} /></label>
+    <label>Date of this report <input disabled={busy} aria-label="Date of this report" type="date" value={reportDate} onChange={(event) => setReportDate(event.target.value)} /></label>
     <p>Defaults to today on your device. Change it if this report was prepared on another date. It stays the same when you reopen or download the form.</p>
-    <fieldset className={`${styles.answerGroup} ${styles.reporterFields}`}>
+    <fieldset disabled={busy} className={`${styles.answerGroup} ${styles.reporterFields}`}>
       <legend>Reporter identity and contact</legend>
       <label>First name <input aria-label="Reporter first name" value={values.firstName} onChange={(event) => set("firstName", event.target.value)} /></label>
       <label>Last name <input aria-label="Reporter last name" value={values.lastName} onChange={(event) => set("lastName", event.target.value)} /></label>
@@ -606,35 +613,35 @@ function ReporterTask({ snapshot, busy, act }: {
       <label>City (optional) <input aria-label="Reporter city" value={values.city} onChange={(event) => set("city", event.target.value)} /></label>
       <label>State (optional) <input aria-label="Reporter state" value={values.state} onChange={(event) => set("state", event.target.value)} /></label>
       <label>ZIP/postal code (optional) <input aria-label="Reporter postal code" value={values.postalCode} onChange={(event) => set("postalCode", event.target.value)} /></label>
-      <label>Country <select aria-label="Reporter country" value={values.country} onChange={(event) => set("country", event.target.value)}><option>UNITED STATES</option><option>CANADA</option></select></label>
+      <label>Country <select aria-label="Reporter country" value={values.country} onChange={(event) => set("country", event.target.value)}><option value="">Not provided</option><option>UNITED STATES</option><option>CANADA</option></select></label>
     </fieldset>
-    <fieldset className={`${styles.answerGroup} ${styles.reporterChoices}`}><legend>Professional details</legend>
+    <fieldset disabled={busy} className={`${styles.answerGroup} ${styles.reporterChoices}`}><legend>Professional details</legend>
       <label>Are you a health professional? <select aria-label="Health professional" value={String(healthProfessional)} onChange={(event) => setHealthProfessional(event.target.value === "true")}><option value="true">Yes</option><option value="false">No</option></select></label>
-      <label>Occupation <select aria-label="Reporter occupation" value={values.occupation} onChange={(event) => set("occupation", event.target.value)}>{["Physician", "Nurse", "Nurse Practitioner", "Pharmacist", "Physician Assistant", "Other Health Professional", "Non-Health Professional"].map((value) => <option key={value}>{value}</option>)}</select></label>
+      <label>Occupation <select aria-label="Reporter occupation" value={values.occupation} onChange={(event) => set("occupation", event.target.value)}><option value="">Select occupation</option>{["Physician", "Nurse", "Nurse Practitioner", "Pharmacist", "Physician Assistant", "Other Health Professional", "Non-Health Professional"].map((value) => <option key={value}>{value}</option>)}</select></label>
     </fieldset>
-    <fieldset className={`${styles.answerGroup} ${styles.reporterChoices}`}><legend>Have you also reported this to anyone below?</legend><p>Select any that apply. Leave unchecked if none.</p>
+    <fieldset disabled={busy} className={`${styles.answerGroup} ${styles.reporterChoices}`}><legend>Have you also reported this to anyone below?</legend><p>Select any that apply. Leave unchecked if none.</p>
       {[["manufacturer", "Manufacturer or compounder"], ["user-facility", "User facility"], ["distributor-importer", "Distributor or importer"], ["packer", "Packer"]] .map(([value, label]) => <label key={value}><input type="checkbox" checked={reportedTo.includes(value as typeof reportedTo[number])} onChange={(event) => setReportedTo(event.target.checked ? [...reportedTo, value as typeof reportedTo[number]] : reportedTo.filter((item) => item !== value))} /> {label}</label>)}
     </fieldset>
-    <fieldset className={`${styles.answerGroup} ${styles.privacyPanel}`}><legend>Your privacy</legend>
+    <fieldset disabled={busy} className={`${styles.answerGroup} ${styles.privacyPanel}`}><legend>Your privacy</legend>
       <label><input type="checkbox" checked={doNotDiscloseIdentity} onChange={(event) => setDoNotDiscloseIdentity(event.target.checked)} /> Do not disclose my identity to the manufacturer</label>
     </fieldset>
     <p className={styles.hint}>This choice is recorded in the report. Wilson does not submit it or contact the manufacturer.</p>
     {missing.length > 0 && <p className={styles.requirementHint} role="status">Required before adding: {joinList(missing)}.</p>}
     <div className={styles.decisionActions}>
-      <button disabled={busy || !canSave || !complete} onClick={() => void act({ action: "answer-reporter", reportDate: reportDate || undefined, reporter: {
+      <button disabled={busy || !canSave || !complete} onClick={() => void act({ action: "answer-reporter", reportDate: reportDate || null, reporter: {
         kind: "provided", firstName: values.firstName.trim(), lastName: values.lastName.trim(),
         phone: values.phone.trim() || undefined, email: values.email.trim() || undefined,
         address: values.address.trim() || undefined, city: values.city.trim() || undefined,
         state: values.state.trim() || undefined, postalCode: values.postalCode.trim() || undefined,
         country: values.country, occupation: values.occupation, healthProfessional, reportedTo, doNotDiscloseIdentity,
       } })}>{previouslySaved ? "Save reporter details" : "Add reporter details"}</button>
-      <button disabled={busy || !canSave} onClick={() => void act({ action: "answer-reporter", reportDate: reportDate || undefined, reporter: { kind: "declined" } })}>Prefer not to provide reporter details</button>
+      <button disabled={busy || !canSave} onClick={() => void act({ action: "answer-reporter", reportDate: reportDate || null, reporter: { kind: "declined" } })}>Prefer not to provide reporter details</button>
     </div>
   </>;
 }
 
 function UpdateReview({ snapshot, busy, act }: {
-  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
   const groups = groupAttention(snapshot.review.attention.filter(({ kind, groupId }) => kind !== "conflict" && !snapshot.openingGroups.includes(groupId ?? "")));
   return <>
@@ -656,9 +663,9 @@ function UpdateReview({ snapshot, busy, act }: {
   </>;
 }
 
-function OutputComposition({ snapshot, pdf, caseId, busy, generatePdf, navigate, hasDraft }: {
+function OutputComposition({ snapshot, pdf, caseId, busy, generatePdf, navigate, hasDraft, reporterDirty }: {
   snapshot: JourneySnapshot; pdf?: PdfArtifact; caseId?: string; busy: boolean;
-  generatePdf: () => Promise<void>; navigate: (screen: Screen) => void; hasDraft: boolean;
+  generatePdf: () => Promise<void>; navigate: (screen: Screen) => void; hasDraft: boolean; reporterDirty: boolean;
 }) {
   const artifact = pdf?.caseId === caseId ? pdf : undefined;
   const current = Boolean(artifact && artifact.contentKey === snapshot.reportContentKey && snapshot.downloadReady);
@@ -667,6 +674,7 @@ function OutputComposition({ snapshot, pdf, caseId, busy, generatePdf, navigate,
     <h1>Your FDA MedWatch report</h1>
     <p className={styles.lead}>Inspect the actual generated form, then save a copy. Wilson does not submit it.</p>
     {hasDraft && <p className={styles.notice}>You have an unsent clinical draft in Review details. It is not included in the PDF.</p>}
+    {reporterDirty && <p className={styles.notice}>You have unsaved reporter details. The PDF contains the previously accepted reporter information until you save those changes.</p>}
     {snapshot.outputIssues.length > 0 && <section className={styles.invitation}><h2>The form needs more reviewed information</h2><ul>{snapshot.outputIssues.map((issue, index) => <li key={index}>{issue.message}</li>)}</ul><button onClick={() => navigate(snapshot.clarification?.kind === "reporter" ? "reporter" : "details")}>Continue completing the report</button></section>}
     <div className={styles.pdfToolbar}><div><h2>Form FDA 3500</h2><p role="status">{current ? "The PDF reflects the accepted report contents." : artifact ? "Earlier PDF — it does not include changes awaiting review or generation." : "Generate the PDF after completing review and reporter details."}</p></div>
       {current ? <a className={styles.primaryLink} href={artifact!.url} download={artifact!.filename}>Save PDF</a> : <button disabled={busy || !snapshot.downloadReady} onClick={() => void generatePdf()}>{artifact ? "Generate updated PDF" : "Generate PDF"}</button>}
@@ -679,7 +687,7 @@ function OutputComposition({ snapshot, pdf, caseId, busy, generatePdf, navigate,
 }
 
 function ConflictCard({ snapshot, item, busy, act }: {
-  snapshot: JourneySnapshot; item: ReviewAttentionItem; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+  snapshot: JourneySnapshot; item: ReviewAttentionItem; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
   return <fieldset className={styles.conflictChoice}>
     <legend>{targetLabel(snapshot, item.target)}</legend>
@@ -693,7 +701,7 @@ function ConflictCard({ snapshot, item, busy, act }: {
 }
 
 function CaseCards({ snapshot, busy, act }: {
-  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<void>;
+  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
   const understanding = snapshot.understanding;
   const openingReview = snapshot.stage === "understanding";
@@ -701,8 +709,8 @@ function CaseCards({ snapshot, busy, act }: {
   const entityWithdrawal = snapshot.stage === "output";
   if (snapshot.revision === 0) return <p className={styles.emptyCase}>Proposed case knowledge will appear here after Wilson reads the account.</p>;
   return <div className={styles.cards}>
-    <CaseCard domId="case-card-patient" title="Patient" entity="patient" entityId="patient" entityState="resolved" groupId="patient" facts={understanding.patient} fields={["identifier", "ageYears", "sex", "weight"]} allowOpeningReview={openingReview && Object.values(understanding.patient).some(({ proposals }) => proposals.some(({ groupId }) => groupId === "patient"))} allowDirectEdit={directEdit} busy={busy} act={act} />
-    <CaseCard domId="case-card-event" title="Event" entity="event" entityId="event" entityState="resolved" groupId="event" facts={understanding.event} fields={["reportType", "reportDate", "problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate", "relevantHistory"]} allowOpeningReview={openingReview && Object.values(understanding.event).some(({ proposals }) => proposals.some(({ groupId }) => groupId === "event"))} allowDirectEdit={directEdit} busy={busy} act={act} />
+    <CaseCard domId="case-card-patient" title="Patient" entity="patient" entityId="patient" entityState="resolved" groupId="patient" facts={understanding.patient} fields={["identifier", "ageYears", "sex", "weight"]} allowOpeningReview={openingReview && snapshot.openingGroups.includes("patient")} allowDirectEdit={directEdit} busy={busy} act={act} />
+    <CaseCard domId="case-card-event" title="Event" entity="event" entityId="event" entityState="resolved" groupId="event" facts={understanding.event} fields={["reportType", "reportDate", "problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate", "relevantHistory"]} allowOpeningReview={openingReview && snapshot.openingGroups.includes("event")} allowDirectEdit={directEdit} busy={busy} act={act} />
     {understanding.relevantTests.map((test, index) => <CaseCard domId={`case-card-test-${index + 1}`} key={test.id} title={`Relevant test ${index + 1}`} eyebrow="Test or laboratory result" entity="test" entityId={test.id} entityState={test.state} groupId={test.proposalGroupId} facts={test.facts} fields={["testName", "testResult", "lowRange", "highRange", "date"]} allowOpeningReview={openingReview && test.state === "proposed"} allowDirectEdit={directEdit && test.state === "resolved"} allowRemove={openingReview && test.state === "proposed"} allowWithdraw={entityWithdrawal && test.state === "resolved"} busy={busy} act={act} />)}
     {understanding.products.map((product) => {
       const name = productViewLabel(product);
@@ -733,7 +741,7 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
   allowRemove?: boolean;
   allowWithdraw?: boolean;
   busy: boolean;
-  act: (action: JourneyAction) => Promise<void>;
+  act: (action: JourneyAction) => Promise<boolean>;
 }) {
   const [showMore, setShowMore] = useState(false);
   const [editing, setEditing] = useState<string>();
@@ -754,6 +762,12 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
     setEditing((current) => current && invalid.has(current) ? undefined : current);
   }, [facts, entity]);
   const evidence = [...new Set([...fields, ...evidenceFields].flatMap((field) => facts[field]?.evidence ?? []))];
+  const outcomeFields = ["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious"];
+  const groupedOutcomes = entity === "event" && outcomeFields.every((field) => {
+    const fact = facts[field];
+    const value = activeValue(fact);
+    return value?.kind === "known" && typeof value.value === "boolean" && fact.conflicts.length === 0 && fact.history.length === 0;
+  });
   const groupCorrections = Object.entries(drafts).flatMap(([field, value]) => {
     const proposal = facts[field]?.proposals.find(({ groupId: proposalGroup }) => proposalGroup === groupId);
     return proposal ? [{ proposalId: proposal.id, value }] : [];
@@ -766,11 +780,16 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
         {allowWithdraw && <button disabled={busy} onClick={() => void act({ action: "withdraw-entity", entity: entity as "product" | "test", entityId })}>Withdraw {title}</button>}
       </div>
     </div>
+    {fields.every((field) => !activeValue(facts[field]) && !facts[field]?.history.length && !facts[field]?.conflicts.length) && <p className={styles.hint}>No details were captured for this group. It can be left blank.</p>}
     {entityState === "withdrawn" && <p className={styles.withdrawn}>Withdrawn from the active report; reviewed facts and source history are retained below.</p>}
     {entity === "test" && entityState !== "withdrawn" && !knownString(activeValue(facts.testName)) && <p role="status">Test identity is not recorded as known. Check the source wording. You can supply its name in Clinical update or leave it unknown for a partial report.</p>}
-    <dl>{fields.map((field) => {
+    <dl>{groupedOutcomes && !showMore && <div>
+      <dt>Serious outcomes</dt>
+      <dd>{outcomeFields.filter((field) => (activeValue(facts[field]) as { value: boolean }).value).map((field) => factControl("event", field)!.label).join(", ") || "None reported"}{outcomeFields.some((field) => facts[field].proposals.length > 0) && <span className={styles.proposed}>Proposed</span>}</dd>
+      <button className={styles.inlineAction} onClick={() => setShowMore(true)}>Review outcomes</button>
+    </div>}{fields.map((field) => {
       const fact = facts[field];
-      if (!fact) return null;
+      if (!fact || (groupedOutcomes && !showMore && outcomeFields.includes(field))) return null;
       const value = activeValue(fact);
       if (!showMore && !value && fact.history.length === 0 && fact.conflicts.length === 0) return null;
       const proposal = fact.proposals.find(({ groupId: proposalGroup }) => proposalGroup === groupId);
@@ -782,6 +801,7 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
       return <div key={field}>
         <dt>{control.label}</dt>
         <dd>{fact.state === "conflicted" ? "Unresolved conflict" : formatFact(value, control)}{fact.state === "proposed" && <span className={styles.proposed}>Proposed</span>}</dd>
+        {draft && editing !== field && <dd className={styles.hint}>Unsaved edit: {formatFact(draft, control)}</dd>}
         {fact.history.map((history, index) => <dd key={index} className={styles.history}>Earlier: {formatFact(history.value, control)}</dd>)}
         {editable && editing !== field && fact.state !== "conflicted" && <button className={styles.inlineAction} disabled={busy} onClick={() => {
           setEditing(field);
@@ -790,12 +810,12 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
         {editable && editing === field && draft && <div className={styles.inlineEdit}>
           {control.help && <p>{control.help}</p>}
           <FactValueEditor label={control.label} control={control} value={draft} onChange={(next) => setDrafts((current) => ({ ...current, [field]: next }))} />
-          <button disabled={busy || !validEditableValue(draft, control)} onClick={() => {
+          <button disabled={busy || !validEditableValue(draft, control)} onClick={async () => {
             if (allowOpeningReview && proposal) {
               setEditing(undefined);
               return;
             }
-            void act({ action: "set-fact", target: `${entity}:${entityId}:${field}`, value: draft });
+            if (!await act({ action: "set-fact", target: `${entity}:${entityId}:${field}`, value: draft })) return;
             setEditing(undefined);
             setDrafts((current) => Object.fromEntries(Object.entries(current).filter(([key]) => key !== field)));
           }}>{allowOpeningReview && proposal ? "Keep draft" : value ? "Apply correction" : "Add fact"}</button>
@@ -875,10 +895,6 @@ function productViewLabel(product: ProductView): string {
   return productDisplayLabel(knownString(activeValue(product.facts.name)), product.ordinal);
 }
 
-function outputProductLabel(snapshot: JourneySnapshot, productId: string, projectedName: string | undefined): string {
-  const product = snapshot.understanding.products.find(({ id }) => id === productId);
-  return productDisplayLabel(projectedName, product?.ordinal ?? 1);
-}
 
 function joinList(values: string[]): string {
   if (values.length <= 1) return values[0] ?? "the required details";
@@ -976,9 +992,6 @@ function omissionLabel(reason: string): string {
   }[reason] ?? reason.replaceAll("-", " ");
 }
 
-function omissionText(reason: string | undefined): string {
-  return reason === "conflicted" ? "Omitted — unresolved conflict" : reason ? omissionLabel(reason) : "Not provided";
-}
 
 export function humanOmission(snapshot: JourneySnapshot, target: string, fallback: string): string {
   const [entity, , field] = target.split(":");
