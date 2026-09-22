@@ -665,7 +665,9 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await serverAction(page, () => page.getByRole("article").filter({ hasText: "250 mg" }).getByRole("button", { name: "Accept this update" }).click());
   await serverAction(page, () => page.getByRole("article").filter({ hasText: "13-Aug-2026" }).getByRole("button", { name: "Accept this update" }).click());
   await expect(page.getByText("Earlier: 500 mg", { exact: true })).toBeVisible();
-  await serverAction(page, () => page.getByRole("button", { name: "Use 13-Aug-2026" }).click());
+  await page.getByRole("button", { name: "Use 13-Aug-2026" }).click();
+  await expect(page.getByRole("heading", { name: "Case summary", exact: true })).toBeFocused();
+  await expect(page.getByRole("heading", { name: "Case summary", exact: true })).toBeInViewport();
   expect(await projectedText(page)).toContain("2026-08-13");
   checkpoints.push({ journey: "experiment-1-regression", state: "resolved-output", assertion: "Original identity, correction, conflict resolution, projection, and PDF path remain aligned." });
   await retainScreenshot(page, "experiment-1-regression-output.png");

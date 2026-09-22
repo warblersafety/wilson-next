@@ -95,3 +95,8 @@ Independent review and final disposition belong on PR #104. Active work began
 23:22 UTC, with a three-hour checkpoint if incomplete. Codex task-token measurements
 are unavailable. Routine browser/model verification added useful UI and PDF evidence;
 the extra navigation in the old test helper caused one avoidable rerun.
+
+The originating Sonnet review and full findings are on PR #104. Its bounded
+remediation adds resolve-conflict to the same focus mechanism and assertions for
+conflict resolution and a multi-group update. Typecheck, build and all seven browser
+journeys pass again. The PR maps every finding and records proportional closure.

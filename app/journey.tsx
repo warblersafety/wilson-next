@@ -130,7 +130,7 @@ export default function Journey() {
         method: "POST",
         body: { operation: "act", state: browserState, expectedRevision: snapshot.revision, action },
       }, "Wilson could not update the case");
-      if (["submit-update", "review-update-group", "review-opening-group", "reject-group"].includes(action.action)) {
+      if (["submit-update", "review-update-group", "review-opening-group", "reject-group", "resolve-conflict"].includes(action.action)) {
         const previousGroups = new Set(snapshot.review.attention.map(({ groupId }) => groupId));
         updateReviewFocus.current = response.snapshot.review.attention.flatMap(({ groupId }) => groupId && !previousGroups.has(groupId) ? [groupId] : []);
       }
