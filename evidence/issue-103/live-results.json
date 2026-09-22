@@ -732,7 +732,8 @@
         "outputTokens": 3453,
         "latencyMs": 24449,
         "estimatedCostUsd": 0.04646
-      }
+      },
+      "assessment": "Fails unassisted symptom placement: duplicates symptoms as Product problem. Other prewritten opening facts match. Manually corrected that proposal to explicitly absent before acceptance; #94 remains deferred."
     },
     {
       "id": "addition",
@@ -1724,7 +1725,8 @@
         "outputTokens": 4082,
         "latencyMs": 35243,
         "estimatedCostUsd": 0.054272
-      }
+      },
+      "assessment": "Matches prewritten medication history, two dated serial hemoglobin results and shared ranges. Proposal focus/viewport passed; needs settled only after acceptance."
     },
     {
       "id": "correction",
@@ -2287,7 +2289,8 @@
         "outputTokens": 186,
         "latencyMs": 2924,
         "estimatedCostUsd": 0.016294
-      }
+      },
+      "assessment": "FAIL: new unnamed test with 9.6 instead of correction against September 12 existing test. No acceptance/retry. Separate deferred issue #105. Direct correction subsequently verified, without claiming conversational success."
     }
   ],
   "checks": [
@@ -2299,10 +2302,91 @@
   ],
   "failure": {
     "phase": "correction",
-    "name": "Error"
+    "name": "Error",
+    "detail": "Conversational correction proposed a new unnamed test and returned understanding; the harness expected the update-review heading and stopped before acceptance."
   },
   "totals": {
     "calls": 3,
     "estimatedCostUsd": 0.117026
+  },
+  "continuation": {
+    "startedAt": "2026-09-22T23:41:49.836Z",
+    "sha": "1e0a6501a167b10814c0b0a015dc1d5594b496fd",
+    "modelCalls": 0,
+    "checks": [
+      "Restored exact stopped synthetic browser state; rejected the erroneous third test through its existing Remove control. No model retry.",
+      "Existing direct correction changed only September 12 to 9.6; draft survived navigation, dates/ranges and September 11 remained intact.",
+      "Reporter email edited after clinical correction; privacy choice retained; new current PDF downloaded."
+    ],
+    "finishedAt": "2026-09-22T23:42:03.721Z",
+    "completed": true
+  },
+  "finalProjection": {
+    "A": {
+      "ageYears": 54,
+      "sex": "female"
+    },
+    "B": {
+      "relevantTests": [
+        {
+          "testId": "test-cf00f882-8b83-4ed8-8023-f0f67377f5fb",
+          "testResult": "Hemoglobin: 8.9 g/dL",
+          "lowRange": "12 g/dL",
+          "highRange": "16 g/dL",
+          "date": "2026-09-11"
+        },
+        {
+          "testId": "test-83bbb4f5-90b9-420c-9fe0-70676059408d",
+          "testResult": "Hemoglobin: 9.6 g/dL",
+          "lowRange": "12 g/dL",
+          "highRange": "16 g/dL",
+          "date": "2026-09-12"
+        }
+      ],
+      "reportType": "adverse-event",
+      "eventDate": "2026-09-11",
+      "reportDate": "2026-09-22",
+      "hospitalized": true,
+      "death": false,
+      "lifeThreatening": false,
+      "disability": false,
+      "requiredIntervention": false,
+      "congenitalAnomaly": false,
+      "otherSerious": false,
+      "eventDescription": "Symptoms: melena (black, tarry stools) and dizziness. Treatment: intravenous fluids. Outcome: recovered. Discharged 13-Sep-2026. Products stopped: ibuprofen."
+    },
+    "C": {},
+    "D": {
+      "suspectProducts": [
+        {
+          "productId": "product-9d95e753-62d8-41f0-bffa-53b7c364f92a",
+          "name": "ibuprofen",
+          "dose": "400 mg",
+          "frequency": "three times daily",
+          "route": "oral",
+          "startDate": "2026-09-08",
+          "stopDate": "2026-09-11",
+          "indication": "back pain",
+          "improvedAfterChange": true,
+          "recurred": "inapplicable"
+        }
+      ]
+    },
+    "E": {},
+    "F": {
+      "concomitantProducts": []
+    },
+    "G": {
+      "reporter": {
+        "lastName": "Reed",
+        "firstName": "Casey",
+        "country": "UNITED STATES",
+        "email": "casey.updated@example.test",
+        "healthProfessional": true,
+        "occupation": "Physician",
+        "reportedTo": [],
+        "doNotDiscloseIdentity": true
+      }
+    }
   }
 }

@@ -71,5 +71,27 @@ The failed path is retained in live-results.json/live-stopped.png and deferred i
 That response also exposed a UI focus gap for newly introduced cards, now repaired
 and checked deterministically. The browser harness stopped on its expected update
 panel assertion, before accepting the incorrect proposal. A model-free continuation
-will reject that new test and verify the existing direct correction and reporter
-edit paths. Independent review and final disposition belong on the PR.
+on final material candidate `1e0a650` / `dpl_BAoiK4E9UkM3t112Tvf96Ht7oFRy` restored
+the exact stopped synthetic browser state, rejected that new test, and verified
+the existing direct correction and reporter edit paths. No extra model calls ran.
+The deployed new-card attribute and focus after removal confirmed the final UI.
+
+`verify-downloads.py` uses independent pypdf 6.16.2 readback of all four downloaded
+PDFs. Rejected extra test leaves PDF fields identical; direct correction changes
+only the September 12 result from 9.4 to 9.6; reporter editing changes only email.
+September 11 remains 8.9, both dates/ranges remain aligned, recurrence is Doesn't
+apply, and manufacturer identity nondisclosure remains checked. Results are in
+`download-readback.json`. Final PDF pages 3, 4 and 7 were rendered with PDFKit and
+visually inspected. Full Chromium rendered the real inline PDF; desktop/mobile
+screenshots show the new coverage wording and no horizontal overflow.
+
+The live conversational correction failed; direct editing passed. Earlier-PDF
+label/readiness behavior during pending correction is covered by deterministic
+browser checks, not this stopped live run. #94 and #105 remain interpretation
+limits; #99 and all existing scope deferrals remain unchanged. No broad language
+reliability or physician-feedback readiness is claimed.
+
+Independent review and final disposition belong on PR #104. Active work began
+23:22 UTC, with a three-hour checkpoint if incomplete. Codex task-token measurements
+are unavailable. Routine browser/model verification added useful UI and PDF evidence;
+the extra navigation in the old test helper caused one avoidable rerun.
