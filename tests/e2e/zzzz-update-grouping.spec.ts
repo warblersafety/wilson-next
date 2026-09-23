@@ -32,7 +32,11 @@ test("one unchanged cross-entity response creates separately accepted history, m
   expect(medicationAccepted.case.products[0].facts.stopped.resolvedValue?.value).toEqual({ kind: "known", value: true });
   expect(medicationAccepted.case.event.facts.relevantHistory.resolvedValue).toBeUndefined();
   await accepts.click();
-  for (const n of [1, 2]) await page.getByRole("button", { name: `Accept Relevant test ${n}`, exact: true }).click();
+  for (const n of [1, 2]) {
+    const button = page.getByRole("button", { name: `Accept Relevant test ${n}`, exact: true });
+    await button.click();
+    await expect(button).toHaveCount(0);
+  }
   const reviewed = await storedState(page);
   expect(reviewed.case.event.facts.relevantHistory.resolvedValue?.value).toEqual({ kind: "explicitly-absent" });
   expect(reviewed.case.relevantTests.every(test => test.state === "resolved")).toBe(true);

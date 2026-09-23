@@ -55,8 +55,15 @@ separate groups: ibuprofen, event history, and two independent tests.
 - Existing tests now obtain application-assigned group IDs from proposals instead
   of assuming a raw model label is the ID. Clinical assertions are unchanged.
 
-Final suite, independent review, CI and deployed verification are recorded below
-and in the PR when completed. No comprehensive user walkthrough is requested.
+214 deterministic tests, typecheck and production build pass. All eight existing
+browser journeys passed; the new grouping journey passed separately after its
+final click was made to wait for server-confirmed acceptance.
+`local-separate-groups.png` shows the separate history and medication review cards
+and still-pending tests. The first browser attempt omitted PYPDF_PYTHON and lost
+fixture-queue alignment after its PDF readback failed; it was stopped and rerun
+with the existing interpreter. These are harness/setup failures, not model calls.
+Independent review, required CI and protected-preview verification are recorded
+in the PR and below when complete. No comprehensive user walkthrough is requested.
 
 ## Scope and limits
 
