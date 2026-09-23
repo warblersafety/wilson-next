@@ -8,7 +8,7 @@ test("Draft 4 retains drafts and proposals across screens, revisits reporter det
   let pdfRequests = 0;
   page.on("request", (r) => { if (r.url().endsWith("/api/case/pdf")) pdfRequests++; });
   await page.goto("/");
-  await page.getByLabel("Clinical account", { exact: true }).fill(medicationSparseOpening);
+  await page.getByLabel("Case description", { exact: true }).fill(medicationSparseOpening);
   await page.screenshot({ path: info.outputPath("describe-desktop.png"), fullPage: true });
   await page.getByRole("button", { name: "Review Wilson’s understanding", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Review the case details" })).toBeVisible();
@@ -42,7 +42,8 @@ test("Draft 4 retains drafts and proposals across screens, revisits reporter det
   await page.getByLabel("Reporter first name", { exact: true }).fill("Casey");
   await page.getByLabel("Reporter last name", { exact: true }).fill("Reed");
   await page.getByLabel("Reporter email", { exact: true }).fill("casey@example.test");
-  await expect(page.getByRole("button", { name: "Add reporter details", exact: true })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Add reporter details", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Continue clinical review", exact: true })).toBeVisible();
   const duringDraft = await storedState(page);
   await goTo(page, "Review & save");
   await expect(page.getByText("You have unsaved reporter details.", { exact: false })).toBeVisible();
@@ -130,7 +131,7 @@ test("Draft 4 retains drafts and proposals across screens, revisits reporter det
 test("a retained PDF is labelled earlier during pending clinical correction and obsolete medication drafts cannot return", async ({ page }, info) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.getByLabel("Clinical account", { exact: true }).fill(medicationTwoOpening);
+  await page.getByLabel("Case description", { exact: true }).fill(medicationTwoOpening);
   await page.getByRole("button", { name: "Review Wilson’s understanding", exact: true }).click();
   await acceptOpeningGroups(page);
   await goTo(page, "Reporter details");

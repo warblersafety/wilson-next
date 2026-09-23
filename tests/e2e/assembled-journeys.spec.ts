@@ -77,7 +77,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   await expect(page.getByText("Reviewed", { exact: true })).toHaveCount(0);
-  await expect(page.getByRole("status").filter({ hasText: "Required before adding" }))
+  await expect(page.getByRole("status").filter({ hasText: "Required to provide reporter details" }))
     .toContainText("first name, last name, and phone or email");
 
   const reporterControls = [
@@ -97,7 +97,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await expect(page.getByLabel("Date of this report", { exact: true })).toHaveValue(localToday);
   await page.getByLabel("Date of this report", { exact: true }).fill("2026-09-20");
   await fillReporter(page, { firstName: "Casey", lastName: "Reed", email: "casey.reed@example.test" });
-  await expect(page.getByRole("status").filter({ hasText: "Required before adding" })).toHaveCount(0);
+  await expect(page.getByRole("status").filter({ hasText: "Required to provide reporter details" })).toHaveCount(0);
   const addReporter = page.getByRole("button", { name: "Add reporter details" });
   await expect(addReporter).toBeEnabled();
   await addReporter.click({ trial: true });
@@ -737,7 +737,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
 });
 
 async function submitOpening(page: Page, text: string, reportType: ReportType = "adverse-event") {
-  await page.getByLabel("Clinical account").fill(text);
+  await page.getByLabel("Case description").fill(text);
   const adverse = page.getByLabel("Adverse event", { exact: true });
   const problem = page.getByLabel("Product problem", { exact: true });
   if (reportType === "adverse-event") {
@@ -761,7 +761,7 @@ async function newCase(page: Page) {
   await expect(page.getByRole("heading", { name: "Describe what happened" })).toBeVisible();
   expect((await semanticCase(page)).id).not.toBe(previousId);
   await expect(page.getByRole("heading", { name: "Case summary", exact: true })).toHaveCount(0);
-  await expect(page.getByLabel("Clinical account", { exact: true })).toHaveValue("");
+  await expect(page.getByLabel("Case description", { exact: true })).toHaveValue("");
 }
 
 function productCard(page: Page, name: string) {
