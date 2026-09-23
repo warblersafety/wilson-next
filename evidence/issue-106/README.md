@@ -75,6 +75,27 @@ run stopped at an old reporter-copy expectation and desynchronized the global
 fixture queue for later tests. Updating that expectation and rerunning the complete
 suite passed. These were verification/setup failures, not live model results.
 
-Protected deployed verification is recorded below after the post-PR candidate. The PR owns the actual independent review and merge
+The PR owns the actual independent review and merge
 disposition. Existing local documents, walkthroughs and mockup archives are not
 staged with this evidence; private backup hashes preserve their initial contents.
+
+## Protected preview verification
+
+Candidate `654a034c8d7ef67c2f15ed3c2319babdec0913f1`, deployment
+`dpl_Zt16w2c74SedfDvjy6k72YM3HdWk`, was created after PR #107. The shared
+`wilson-next-laboratory-fidelity.vercel.app` alias now serves this candidate,
+retaining the existing protection and share expiry of September 27 at 21:15:51
+UTC. Prior working `dpl_GaEW3U7XxKNfZKjyJfQH8FjLNtfg` is retained for rollback.
+The private access-bearing URL is not stored in this repository.
+
+`check-preview.mjs` resumed the prior issue-103 accepted fictional ibuprofen case
+and explicitly blocked any interpretation request. It verified unsigned access
+is still protected (302), anonymous share access succeeds, demo autofill changes
+only draft fields until explicit saving, and the actual native PDF viewer renders.
+All form values were compared using pypdf: saving demo details changed only email;
+the next direct correction changed only the second hemoglobin result from 9.6 to
+9.7 g/dL (58 other populated fields unchanged). These are independent synthetic
+verification actions, not changes to Steve's walkthrough state. Both desktop and
+mobile checks passed without horizontal overflow. `preview-results.json` retains
+the exact deployment and checks; the three PDFs and screenshots retain results.
+There were zero application-model requests or spend in this revision.

@@ -1,0 +1,20 @@
+{
+  "verifiedAt": "2026-09-23T01:20:03.640Z",
+  "sha": "654a034c8d7ef67c2f15ed3c2319babdec0913f1",
+  "deployment": "dpl_Zt16w2c74SedfDvjy6k72YM3HdWk",
+  "unsignedStatus": 302,
+  "shareAccess": "passed",
+  "modelRequests": 0,
+  "method": "Resumed previously accepted synthetic issue-103 case. Real deployed actions and PDFs; no interpretation call.",
+  "demoDraftOnly": true,
+  "privacyRetained": true,
+  "reporterOnlyChanged": [
+    "topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]"
+  ],
+  "clinicalOnlyChanged": [
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TestData2[0]"
+  ],
+  "unchangedFieldCount": 58,
+  "desktopAndMobileOverflow": false,
+  "nativePdfViewer": true
+}
