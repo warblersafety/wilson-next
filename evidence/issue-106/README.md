@@ -73,7 +73,11 @@ The initial unit-test invocation omitted the existing PYPDF_PYTHON setting; usin
 the existing interpreter passed without dependency changes. The first full browser
 run stopped at an old reporter-copy expectation and desynchronized the global
 fixture queue for later tests. Updating that expectation and rerunning the complete
-suite passed. These were verification/setup failures, not live model results.
+suite passed. CI then caught the fixture-inventory unit test still expecting the
+old 23 scenarios/36 responses; the new usability scenario makes 24/38. Its exact
+counts and the final two attributed scopes are now asserted, without relaxing
+the inventory check. The complete deterministic suite passed again. These were
+verification/setup failures, not live model results.
 
 The PR owns the actual independent review and merge
 disposition. Existing local documents, walkthroughs and mockup archives are not
