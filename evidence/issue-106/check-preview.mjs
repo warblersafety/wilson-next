@@ -52,7 +52,7 @@ try {
   await page.getByRole('button', { name: 'Save reporter details', exact: true }).click();
   const demo = await download('preview-demo-reporter');
   const email = 'topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]';
-  expect(Object.keys(before).filter((key) => before[key] !== demo[key])).toEqual([email]);
+  expect([...new Set([...Object.keys(before), ...Object.keys(demo)])].filter((key) => before[key] !== demo[key])).toEqual([email]);
   expect(demo[email]).toBe('casey.reed@example.test');
   await go('Review details');
   const result = page.locator('#case-card-test-2 dl > div').filter({ has: page.getByText('Result and stated units', { exact: true }) });
@@ -61,7 +61,7 @@ try {
   await result.getByRole('button', { name: 'Apply correction', exact: true }).click();
   await expect(result).toContainText('9.7 g/dL');
   const corrected = await download('preview-clinical-corrected');
-  const delta = Object.keys(demo).filter((key) => demo[key] !== corrected[key]);
+  const delta = [...new Set([...Object.keys(demo), ...Object.keys(corrected)])].filter((key) => demo[key] !== corrected[key]);
   expect(delta).toHaveLength(1);
   expect(corrected[delta[0]]).toMatch(/Hemoglobin.*9\.7 g\/dL/);
   await expect(page.getByRole('status').filter({ hasText: 'PDF ready' })).toBeVisible();

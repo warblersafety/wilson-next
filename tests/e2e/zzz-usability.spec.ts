@@ -134,14 +134,14 @@ test("focused usability: truthful activity, draft demo reporter, review dependen
   expect(await storedState(page)).toEqual(corrected);
   await page.getByRole("button", { name: "Generate updated PDF", exact: true }).click();
   const second = await readPdf("clinical-corrected.pdf");
-  const changed = Object.keys(first).filter((key) => first[key] !== second[key]);
+  const changed = [...new Set([...Object.keys(first), ...Object.keys(second)])].filter((key) => first[key] !== second[key]);
   expect(changed).toHaveLength(1);
   expect(second[changed[0]]).toBe("Hemoglobin: 9.6 g/dL");
   await goTo(page, "Reporter details");
   await page.getByLabel("Reporter email", { exact: true }).fill("casey.updated@example.test");
   await page.getByRole("button", { name: "Save reporter details", exact: true }).click();
   const third = await readPdf("reporter-corrected.pdf");
-  expect(Object.keys(second).filter((key) => second[key] !== third[key])).toEqual(["topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]"]);
+  expect([...new Set([...Object.keys(second), ...Object.keys(third)])].filter((key) => second[key] !== third[key])).toEqual(["topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]"]);
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     for (const screen of ["Review details", "Reporter details", "Review & save"] as const) {
