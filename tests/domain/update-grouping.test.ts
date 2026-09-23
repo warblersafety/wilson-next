@@ -86,6 +86,9 @@ describe("entity-scoped update review groups", () => {
     const label = JSON.stringify(["update", "product", ibuprofenId, output.proposals[0].groupReference]);
     output.tests[0].groupReference = label;
     for (const proposal of output.proposals) if (proposal.target.testReference === "test-1") proposal.groupReference = label;
+    // A reference-echoing test factory collides here and must fail safely.
+    expect(() => parse({ ...candidate(), output })).toThrow("invalid or duplicate group ID");
+    // Production assigns opaque UUIDs independently of response labels.
     let id = 0;
     const parsed = parseModelProposalEnvelope({ ...candidate(), output }, kind => `${kind}-${++id}`);
     expect(new Set(parsed.proposals.map(p => p.groupId)).size).toBe(4);

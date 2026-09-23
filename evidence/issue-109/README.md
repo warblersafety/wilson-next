@@ -98,3 +98,23 @@ and the acceptance/readback results. `preview-separate-groups.png` shows the
 pending deployed state; `preview-accepted.pdf` retains the resulting document.
 This verifies deployment/access and downstream actions; exact boundary replay is
 covered locally and in CI, not by a fresh live model call.
+
+## Independent review disposition
+
+Standard subscription Claude Sonnet 5 high review (CLI 2.1.241) inspected the
+complete material diff at `2bc8385c6641f662f97ddd344410d120716941f3` and reported
+no blocking findings. Its two non-blocking observations are resolved: protected
+preview evidence was completed in `b039a14`, and the crafted-label test now also
+asserts safe rejection when a reference-echoing test identity factory produces
+duplicate IDs. The latter adds a test assertion only; application behavior is
+unchanged. Its eight focused boundary tests pass. Under DELIVERY.md proportional
+closure, this bounded test/evidence remediation needs no repeat model review.
+The PR retains Claude's actual result, complete limitations and metadata.
+
+Review elapsed 275.761 seconds; Sonnet usage exposed 26 input, 155,596 cache-write,
+1,205,617 cache-read and 25,736 output tokens. The CLI reported USD 1.1222014 total
+usage-equivalent cost (including USD 0.001282 of incidental CLI Haiku usage), not
+an additional application-model charge. One standard review, no recheck or extra
+reviewer. Codex token counts remain unavailable. Durable value is the bounded
+code repair and recurrence evidence; the first browser run's environment/setup
+failure added no product value.
