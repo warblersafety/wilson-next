@@ -1,0 +1,24 @@
+{
+  "verifiedAt": "2026-09-23T23:35:54.668Z",
+  "deployment": "dpl_Cy2KEQyJukPSavLBrxy1f2vnCPFW",
+  "sha": "68bcac493d2aabe76d284f8a84ee1605ccdbedcb",
+  "unsignedStatus": 302,
+  "anonymousShareAccess": true,
+  "expiresAt": "2026-09-27T21:15:51+00:00",
+  "priorDeployment": "dpl_BAwHki1chu9VEaBnWii3jMn6vvid",
+  "rollbackDeployment": "dpl_BAwHki1chu9VEaBnWii3jMn6vvid",
+  "focusedBrowserJourney": "passed",
+  "durationSeconds": 10.5,
+  "interpretationRequests": 0,
+  "namedPdfFieldsMatched": 59,
+  "sourceAttributionChecked": true,
+  "separateAcceptanceChecked": true,
+  "clinicalQuestionRouteAndFocusChecked": true,
+  "reporterClinicalAndDirectAnswerDraftRetentionChecked": true,
+  "reporterAndPdfGatesChecked": true,
+  "viewports": [
+    1440,
+    390
+  ],
+  "method": "Same tests/e2e/zzzzzz-flow-alignment.spec.ts against protected deployment, with authenticated storageState from fresh share access and no local webServer. Interpretation requests abort; all actions use real case/PDF routes."
+}

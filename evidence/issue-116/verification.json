@@ -1,0 +1,183 @@
+{
+  "applicationCommit": "8e494f5fd84bffd734fd3891f406786993787e96",
+  "typecheck": "pass",
+  "build": "pass",
+  "deterministicTests": 232,
+  "focusedFlow": "pass, including mobile reporter/output and PDF readback",
+  "isolatedUsabilityAndGrouping": "2 passed",
+  "localFullRuns": [
+    {
+      "passed": 9,
+      "failed": 2,
+      "failure": "Existing simulated opening-error alert timed out; following global fixture sequence then mismatched."
+    },
+    {
+      "passed": 9,
+      "failed": 2,
+      "failure": "Existing simulated update-error alert timed out; following global fixture sequence then mismatched. Trace records completed HTTP 422 and a pending diagnostics request."
+    }
+  ],
+  "requiredCI": {
+    "run": "https://github.com/warblersafety/wilson-next/actions/runs/35933793718",
+    "result": "pass, including all 11 browser journeys",
+    "postPrCandidateRun": "https://github.com/warblersafety/wilson-next/actions/runs/35934304531",
+    "postPrCandidateResult": "pass on 68bcac493d2aabe76d284f8a84ee1605ccdbedcb"
+  },
+  "interpretationCalls": 0,
+  "pdfNamedFieldsMatched": 59,
+  "localFailureNetworkEvidence": [
+    {
+      "url": "http://127.0.0.1:3100/api/diagnostics/browser",
+      "method": "POST",
+      "start": "2026-09-23T23:32:01.103Z",
+      "status": 204,
+      "timeMs": 1.182
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/case",
+      "method": "GET",
+      "start": "2026-09-23T23:32:01.104Z",
+      "status": 200,
+      "timeMs": 1.565
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/diagnostics/browser",
+      "method": "POST",
+      "start": "2026-09-23T23:32:01.106Z",
+      "status": 204,
+      "timeMs": 0.946
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/diagnostics/browser",
+      "method": "POST",
+      "start": "2026-09-23T23:32:01.179Z",
+      "status": 204,
+      "timeMs": 1.23
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/case",
+      "method": "POST",
+      "start": "2026-09-23T23:32:01.198Z",
+      "status": 422,
+      "timeMs": 67.011
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/diagnostics/browser",
+      "method": "POST",
+      "start": "2026-09-23T23:32:01.264Z",
+      "status": 204,
+      "timeMs": 1.213
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/diagnostics/browser",
+      "method": "POST",
+      "start": "2026-09-23T23:32:01.311Z",
+      "status": 204,
+      "timeMs": 1.541
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/case",
+      "method": "POST",
+      "start": "2026-09-23T23:32:01.327Z",
+      "status": 200,
+      "timeMs": 6.6370000000000005
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/diagnostics/browser",
+      "method": "POST",
+      "start": "2026-09-23T23:32:01.847Z",
+      "status": 204,
+      "timeMs": 1.24
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/case",
+      "method": "POST",
+      "start": "2026-09-23T23:32:01.858Z",
+      "status": 200,
+      "timeMs": 6.868
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/diagnostics/browser",
+      "method": "POST",
+      "start": "2026-09-23T23:32:01.946Z",
+      "status": 204,
+      "timeMs": 1.374
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/case",
+      "method": "POST",
+      "start": "2026-09-23T23:32:01.960Z",
+      "status": 200,
+      "timeMs": 5.748
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/diagnostics/browser",
+      "method": "POST",
+      "start": "2026-09-23T23:32:02.047Z",
+      "status": 204,
+      "timeMs": 1.369
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/case",
+      "method": "POST",
+      "start": "2026-09-23T23:32:02.060Z",
+      "status": 200,
+      "timeMs": 6.944999999999999
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/diagnostics/browser",
+      "method": "POST",
+      "start": "2026-09-23T23:32:02.331Z",
+      "status": 204,
+      "timeMs": 1.255
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/case",
+      "method": "POST",
+      "start": "2026-09-23T23:32:02.343Z",
+      "status": 422,
+      "timeMs": 3.721
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/diagnostics/browser",
+      "method": "POST",
+      "start": "2026-09-23T23:32:01.334Z",
+      "status": -1,
+      "timeMs": -1
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/diagnostics/browser",
+      "method": "POST",
+      "start": "2026-09-23T23:32:01.866Z",
+      "status": -1,
+      "timeMs": -1
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/diagnostics/browser",
+      "method": "POST",
+      "start": "2026-09-23T23:32:01.966Z",
+      "status": -1,
+      "timeMs": -1
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/diagnostics/browser",
+      "method": "POST",
+      "start": "2026-09-23T23:32:02.067Z",
+      "status": -1,
+      "timeMs": -1
+    },
+    {
+      "url": "http://127.0.0.1:3100/api/diagnostics/browser",
+      "method": "POST",
+      "start": "2026-09-23T23:32:02.346Z",
+      "status": -1,
+      "timeMs": -1
+    }
+  ],
+  "limitations": [
+    "Diagnostics request/response code is unchanged in this slice. No application or test expectation was changed to hide the local failures.",
+    "Original fixture-construction/selector/wait mistakes were corrected before the new focused journey passed; no live model retries.",
+    "No screen-reader or general model-reliability claim."
+  ],
+  "diagnosticsFollowup": "https://github.com/warblersafety/wilson-next/issues/118"
+}

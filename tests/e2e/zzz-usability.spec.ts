@@ -42,6 +42,9 @@ test("focused usability: truthful activity, draft demo reporter, review dependen
   await page.getByRole("button", { name: "Review Wilson’s understanding", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Review the case details", exact: true })).toBeFocused();
   const event = page.locator("#case-card-event");
+  const acceptBox = await event.getByRole("button", { name: "Accept Event", exact: true }).boundingBox();
+  const rejectBox = await event.getByRole("button", { name: "Reject Event", exact: true }).boundingBox();
+  expect(rejectBox!.x - acceptBox!.x - acceptBox!.width).toBeGreaterThanOrEqual(8);
   await event.getByRole("button", { name: "Show all outcomes", exact: true }).click();
   await expect(event.getByText("Hospitalized", { exact: true })).toBeVisible();
   await expect(event.getByText("Report date", { exact: true })).toHaveCount(0);
