@@ -11,9 +11,13 @@ const relevantTestFields = ["testName", "testResult", "lowRange", "highRange", "
 
 const modelTargetSchema = z.discriminatedUnion("entity", [
   z.object({ entity: z.literal("patient"), field: z.enum(patientFields) }).strict(),
-  z.object({ entity: z.literal("event"), field: z.enum(eventFields) }).strict(),
+  z.object({ entity: z.literal("event"), field: z.enum(eventFields).describe(
+    "symptoms: reported patient signs, symptoms and stated clinical events/diagnoses, with uncertainty preserved. problemDescription: actual product-quality complaint, defect or malfunction; not patient manifestations or a general adverse-event narrative. Use both only when both meanings are supplied.",
+  ) }).strict(),
   z.object({ entity: z.literal("test"), testReference: z.string().min(1), field: z.enum(relevantTestFields) }).strict(),
-  z.object({ entity: z.literal("product"), productReference: z.string().min(1), field: z.enum(productFields) }).strict(),
+  z.object({ entity: z.literal("product"), productReference: z.string().min(1), field: z.enum(productFields).describe(
+    "dose: explicitly stated amount taken each time, retaining count/volume, dosage-form wording and any supplied total together. strength: independently stated amount per dosage unit or label concentration. Preserve product attribution and uncertainty; never calculate one quantity from the other.",
+  ) }).strict(),
 ]);
 
 const caseValueSchema = z.discriminatedUnion("kind", [
@@ -341,11 +345,17 @@ function assertResponseLevelProposalConsistency(
   const groupTargets = new Map<string, string>();
   proposals.forEach((proposal, index) => {
     const identity = rawTargetIdentity(proposal.target);
-    const prior = groupTargets.get(proposal.groupReference);
-    if (turn === "opening" && prior && prior !== identity) {
-      boundaryIssue(["proposals", index, "groupReference"], "A proposal group cannot span different case entities");
+    // Opening patient/event review groups are already assigned by code, not
+    // model labels. A reused label cannot change their identity or acceptance.
+    // Keep raw-label consistency for declared entities; validate the assembled
+    // groups again after target resolution and proposal-local quarantine.
+    if (proposal.target.entity !== "patient" && proposal.target.entity !== "event") {
+      const prior = groupTargets.get(proposal.groupReference);
+      if (turn === "opening" && prior && prior !== identity) {
+        boundaryIssue(["proposals", index, "groupReference"], "A proposal group cannot span different case entities");
+      }
+      groupTargets.set(proposal.groupReference, identity);
     }
-    groupTargets.set(proposal.groupReference, identity);
     if (proposal.target.entity === "product" && proposal.target.productReference) {
       const declared = proposedProducts.get(proposal.target.productReference);
       if (declared && declared.groupReference !== proposal.groupReference) {

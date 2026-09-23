@@ -1,0 +1,246 @@
+{
+  "products": [
+    {
+      "productReference": "prod1",
+      "groupReference": "grp1"
+    }
+  ],
+  "tests": [],
+  "proposals": [
+    {
+      "proposalReference": "prop1",
+      "groupReference": "patientGrp",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "identifier"
+      },
+      "value": {
+        "kind": "known",
+        "value": "Q3"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop2",
+      "groupReference": "patientGrp",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "ageYears"
+      },
+      "value": {
+        "kind": "known",
+        "value": 36
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop3",
+      "groupReference": "patientGrp",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "sex"
+      },
+      "value": {
+        "kind": "known",
+        "value": "female"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop4",
+      "groupReference": "grp1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "name"
+      },
+      "value": {
+        "kind": "known",
+        "value": "amoxicillin"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "prop5",
+      "groupReference": "grp1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "productType"
+      },
+      "value": {
+        "kind": "known",
+        "value": "drug-or-biologic"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "prop6",
+      "groupReference": "grp1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "role"
+      },
+      "value": {
+        "kind": "known",
+        "value": "suspect"
+      },
+      "evidenceReferences": [
+        "p5"
+      ]
+    },
+    {
+      "proposalReference": "prop7",
+      "groupReference": "grp1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "strength"
+      },
+      "value": {
+        "kind": "known",
+        "value": "250 mg/5 mL"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "prop8",
+      "groupReference": "grp1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "dose"
+      },
+      "value": {
+        "kind": "known",
+        "value": "10 mL"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop9",
+      "groupReference": "grp1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "frequency"
+      },
+      "value": {
+        "kind": "known",
+        "value": "twice daily"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop10",
+      "groupReference": "grp1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "route"
+      },
+      "value": {
+        "kind": "known",
+        "value": "oral"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop11",
+      "groupReference": "grp1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "startDate"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-09-01"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop12",
+      "groupReference": "grp1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "indication"
+      },
+      "value": {
+        "kind": "known",
+        "value": "sinusitis"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop13",
+      "groupReference": "eventGrp",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "symptoms"
+      },
+      "value": {
+        "kind": "known",
+        "value": [
+          "rash"
+        ]
+      },
+      "evidenceReferences": [
+        "p4"
+      ]
+    },
+    {
+      "proposalReference": "prop14",
+      "groupReference": "eventGrp",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "onsetDate"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-09-03"
+      },
+      "evidenceReferences": [
+        "p4"
+      ]
+    }
+  ]
+}

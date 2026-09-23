@@ -1,0 +1,197 @@
+{
+  "products": [
+    {
+      "productReference": "prod1",
+      "groupReference": "grp1"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalReference": "prop1",
+      "groupReference": "grpPatient",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "identifier"
+      },
+      "value": {
+        "kind": "known",
+        "value": "M94"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop2",
+      "groupReference": "grpPatient",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "ageYears"
+      },
+      "value": {
+        "kind": "known",
+        "value": 38
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop3",
+      "groupReference": "grpPatient",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "sex"
+      },
+      "value": {
+        "kind": "known",
+        "value": "female"
+      },
+      "evidenceReferences": [
+        "p4"
+      ]
+    },
+    {
+      "proposalReference": "prop4",
+      "groupReference": "grp1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "name"
+      },
+      "value": {
+        "kind": "known",
+        "value": "minocycline"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop5",
+      "groupReference": "grp1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "productType"
+      },
+      "value": {
+        "kind": "known",
+        "value": "drug-or-biologic"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop6",
+      "groupReference": "grp1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "role"
+      },
+      "value": {
+        "kind": "known",
+        "value": "suspect"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop7",
+      "groupReference": "grp1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "dose"
+      },
+      "value": {
+        "kind": "known",
+        "value": "one capsule, a stated total of 100 mg"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop8",
+      "groupReference": "grp1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "strength"
+      },
+      "value": {
+        "kind": "known",
+        "value": "100 mg per capsule"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "prop9",
+      "groupReference": "grp1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "indication"
+      },
+      "value": {
+        "kind": "known",
+        "value": "acne"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop10",
+      "groupReference": "grpPatient",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "problemDescription"
+      },
+      "value": {
+        "kind": "known",
+        "value": "Several capsules in the pack had cracked shells with powder escaping."
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop11",
+      "groupReference": "grpPatient",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "symptoms"
+      },
+      "value": {
+        "kind": "known",
+        "value": [
+          "burning sensation in her throat",
+          "felt unsteady",
+          "denied trouble breathing"
+        ]
+      },
+      "evidenceReferences": [
+        "p4",
+        "p5"
+      ]
+    }
+  ]
+}

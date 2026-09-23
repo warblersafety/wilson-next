@@ -1,0 +1,77 @@
+{
+  "syntheticOnly": true,
+  "maxCalls": 10,
+  "maxCostUsd": 5,
+  "issueCapUsd": 20,
+  "reservationPerCallUsd": 1.5,
+  "retries": 0,
+  "policy": "One exposure per case. Persist exposure before sending. Before each call require actual spend plus USD1.50 reservation <= USD5; unmeasured calls retain the reservation until metrics are recovered. Maximum provider output is 128000 tokens (USD1.28 at the configured estimate); input allowance fits within the reservation. No automatic retry. Retain every failure. Do not tune on these outputs or count a repeat as a fix. Independent source-based expectations below are authored before exposure; runtime does not import this file. Samples establish bounded behavior, not a reliability rate.",
+  "promptRevision": "wilson-symptom-dose-fidelity-v1",
+  "schemaRevision": "wilson-grounded-proposals-v16-field-meaning",
+  "cases": [
+    {
+      "id": "retained-dose-only",
+      "provenance": "Exact issue-90 dose-only input",
+      "text": "Fictional patient Q1 is a 45-year-old woman. She took amoxicillin 500 mg by mouth twice daily for sinusitis starting September 1, 2026. A rash began September 3, 2026. Amoxicillin was stopped and she recovered. I suspect amoxicillin. The product strength is not known.",
+      "reportType": "adverse-event",
+      "expected": "rash in symptoms only; no product complaint/absence invented. Amoxicillin dose 500 mg, strength unknown; no invented count. Dates/route/frequency/indication retained."
+    },
+    {
+      "id": "retained-tablets",
+      "provenance": "Exact issue-90 distinct-strength-dose input",
+      "text": "Fictional patient Q2 is a 52-year-old man. His naproxen tablets are 250 mg each. He took two tablets, a total dose of 500 mg, by mouth twice daily for back pain. He started on September 2, 2026 and developed abdominal pain on September 4, 2026. Naproxen is the suspected product.",
+      "reportType": "adverse-event",
+      "expected": "abdominal pain in symptoms only. Naproxen dose retains two tablets AND stated total 500 mg; strength independently 250 mg. No arithmetic, product complaint or absence invented."
+    },
+    {
+      "id": "retained-liquid",
+      "provenance": "Exact issue-90 liquid-concentration input",
+      "text": "Fictional patient Q3 is a 36-year-old woman. The amoxicillin liquid label states 250 mg/5 mL. She took 10 mL by mouth twice daily for sinusitis starting September 1, 2026. She developed a rash on September 3, 2026. I suspect amoxicillin. No tablet strength or calculated dose in milligrams was provided.",
+      "reportType": "adverse-event",
+      "expected": "rash in symptoms only. Dose 10 mL, label strength 250 mg/5 mL. No computed 500 mg or tablet dose."
+    },
+    {
+      "id": "walkthrough-manifestation",
+      "provenance": "Reconstructed fictional wording around September 23 gastrointestinal bleeding observation; original request not available",
+      "text": "Fictional patient W94 is 54 years old. Gastrointestinal bleeding with melena and dizziness began on September 11, 2026 while she was taking ibuprofen 400 mg for back pain. I suspect ibuprofen. She was hospitalized and discharged September 13, 2026. There is no complaint about the quality or packaging of the medicine.",
+      "reportType": "adverse-event",
+      "expected": "Gastrointestinal bleeding, melena and dizziness remain patient manifestations, not Product problem. Product problem explicitly absent based on the final sentence. Ibuprofen dose 400 mg; hospitalization/dates retained."
+    },
+    {
+      "id": "quality-only",
+      "text": "The seal on an unopened bottle of fictional Cardiovex 20 mg tablets was split and gritty blue flecks were visible inside. Lot Q94. I am reporting Cardiovex as the suspect product. Nobody took the tablets; no patient symptoms or adverse event occurred. The bottle is available for evaluation.",
+      "reportType": "product-problem",
+      "expected": "Split seal and gritty blue flecks in problemDescription; symptoms explicitly absent. No patient, administered dose, adverse event or treatment invented. Strength 20 mg if extracted; product name/lot/availability retained."
+    },
+    {
+      "id": "mixed-complaint",
+      "text": "Fictional patient M94, age 38, took one capsule, a stated total of 100 mg, of suspect minocycline for acne. The label says 100 mg per capsule. Several capsules in the pack had cracked shells with powder escaping. She then reported a burning sensation in her throat and felt unsteady. She specifically denied trouble breathing. I do not know whether the damaged capsules explain her symptoms.",
+      "reportType": "adverse-event-and-product-problem",
+      "expected": "Cracked shells/powder escape only in problemDescription; burning throat/unsteadiness in symptoms, breathing negation preserved rather than positive dyspnea. No causal conclusion. Dose one capsule plus 100 mg, strength 100 mg independently."
+    },
+    {
+      "id": "two-products",
+      "text": "Fictional patient A94 is 61 years old and reports pins-and-needles in both feet. Suspect gabapentin was taken as three capsules, an explicitly documented 900 mg per dose; each capsule is labelled 300 mg. Also suspect baclofen was taken as half a tablet, explicitly documented as 5 mg per dose; the tablets are 10 mg each. The gabapentin was for neuralgia and the baclofen for spasm. The patient cannot say which medicine, if either, is related to the new sensation.",
+      "reportType": "adverse-event",
+      "expected": "Pins-and-needles in both feet in symptoms with no product complaint or causal attribution. Separate gabapentin dose three capsules/900 mg and strength 300 mg; baclofen half tablet/5 mg and strength 10 mg. Preserve laterality and uncertainty."
+    },
+    {
+      "id": "count-without-total",
+      "text": "Fictional patient C94, age 44, says her skin felt prickly after suspect cetirizine for allergies. The box says 10 mg per tablet. She took two tablets each time; no total amount in milligrams was recorded. She is unsure whether the prickly feeling was a reaction to the medicine. There was no rash.",
+      "reportType": "adverse-event",
+      "expected": "Prickly skin retained as reported uncertain manifestation, not a product complaint; no positive rash or confirmed causal reaction. Dose two tablets only, strength 10 mg; never computed 20 mg."
+    },
+    {
+      "id": "wording-correction",
+      "parent": "two-products",
+      "text": "Correction to baclofen only: she took a quarter of a tablet, a documented dose of 2.5 mg, rather than half a tablet/5 mg. The 10 mg tablet strength is unchanged. The gabapentin entry is correct. The feet still have pins-and-needles; no product-quality complaint has been made.",
+      "expected": "Existing baclofen ID dose corrected to quarter tablet plus 2.5 mg, strength 10 mg unchanged; gabapentin ID/dose/strength retained. Symptoms retained, product problem explicitly absent. No new products or computed dose. Accepted case unchanged until separate review."
+    },
+    {
+      "id": "ambiguous-dose",
+      "text": "Fictional patient U94, age 57, reported queasiness while taking suspect doxycycline for infection and suspect ibuprofen for joint pain. The note says 'two tablets, total 400 mg', but I cannot tell which of those medicines that refers to. Their label strengths are not known. She says there may have been a packaging problem but cannot describe it. She denies vomiting.",
+      "reportType": "adverse-event-and-product-problem",
+      "expected": "Queasiness in symptoms, denied vomiting not positive. Packaging concern remains uncertain/unknown without invented defect. Neither medication assigned ambiguous two tablets/400 mg; both strengths unknown. Do not infer causality or choose an entity."
+    }
+  ]
+}

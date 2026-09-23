@@ -1,0 +1,51 @@
+{
+  "syntheticOnly": true,
+  "maxCalls": 6,
+  "maxCostUsd": 5,
+  "issueCapUsd": 20,
+  "reservationPerCallUsd": 1.5,
+  "retries": 0,
+  "policy": "One bounded remediation batch after the frozen v1 batch. Six calls maximum, USD5 batch and USD20 issue total. USD1.50 reserved before each call; unknown spend retains reservation. No automatic retries. Two named original-input rechecks follow a material field-level negation contract change; neither counts as independent reliability evidence. Four previously unexposed contrasts test generalization. All first-pass v1 failures remain retained. Preserve exact response and source/proposal/accepted/PDF evidence.",
+  "promptRevision": "wilson-symptom-dose-fidelity-v2",
+  "schemaRevision": "wilson-grounded-proposals-v16-field-meaning",
+  "cases": [
+    {
+      "id": "recheck-mixed-complaint",
+      "text": "Fictional patient M94, age 38, took one capsule, a stated total of 100 mg, of suspect minocycline for acne. The label says 100 mg per capsule. Several capsules in the pack had cracked shells with powder escaping. She then reported a burning sensation in her throat and felt unsteady. She specifically denied trouble breathing. I do not know whether the damaged capsules explain her symptoms.",
+      "reportType": "adverse-event-and-product-problem",
+      "expected": "Cracked shells/powder escape only in problemDescription; burning throat/unsteadiness in symptoms, breathing negation preserved rather than positive dyspnea. No causal conclusion. Dose one capsule plus 100 mg, strength 100 mg independently.",
+      "provenance": "Material-remediation recheck of v1 failure; not independent reliability evidence"
+    },
+    {
+      "id": "recheck-ambiguous-dose",
+      "text": "Fictional patient U94, age 57, reported queasiness while taking suspect doxycycline for infection and suspect ibuprofen for joint pain. The note says 'two tablets, total 400 mg', but I cannot tell which of those medicines that refers to. Their label strengths are not known. She says there may have been a packaging problem but cannot describe it. She denies vomiting.",
+      "reportType": "adverse-event-and-product-problem",
+      "expected": "Queasiness in symptoms, denied vomiting not positive. Packaging concern remains uncertain/unknown without invented defect. Neither medication assigned ambiguous two tablets/400 mg; both strengths unknown. Do not infer causality or choose an entity.",
+      "provenance": "Material-remediation recheck of v1 failure; not independent reliability evidence"
+    },
+    {
+      "id": "fresh-defect-and-denial",
+      "text": "Fictional patient N94, age 43, took suspect clarithromycin for an infection: one and a half tablets, an explicitly recorded total of 750 mg each time. The label strength is 500 mg per tablet. The tablets had damp, crumbling edges. Afterwards her mouth felt numb and her tongue tingled. She denied any wheezing and did not faint. She cannot say whether the medicine caused these sensations.",
+      "reportType": "adverse-event-and-product-problem",
+      "expected": "Damp/crumbling tablets in product complaint; numb mouth and tingling tongue plus explicit denied wheezing/fainting preserved together as patient manifestations with correct polarity. No false whole-list absence or internal conflict. Dose one and a half tablets plus 750 mg; strength 500 mg independently. No causality established."
+    },
+    {
+      "id": "fresh-uncertain-manifestation",
+      "text": "Fictional patient N95, age 66, may have had a brief episode of muffled hearing after suspect furosemide for edema; the patient is not sure it occurred. The dose was reportedly one tablet, total 40 mg, but the medication diary is uncertain. Tablet strength was not available. No defect of the tablets or their packaging was observed.",
+      "reportType": "adverse-event",
+      "expected": "Possible/uncertain muffled-hearing episode remains uncertain in review and B5, never confirmed hearing loss. Product complaint explicitly absent. Reportedly one tablet/40 mg retains dose uncertainty in review and D6. Strength unknown, not inferred. No arithmetic or invented causality."
+    },
+    {
+      "id": "fresh-quality-negative",
+      "text": "An unopened vial of fictional Optivex solution had a loose cap and a visible thread floating in it. The label says 5 mg/mL. I am reporting the vial as suspect. It was never administered and no patient was affected. There were no symptoms. The vial remains available for evaluation.",
+      "reportType": "product-problem",
+      "expected": "Loose cap/thread in problemDescription; symptoms explicitly absent; no patient or administered dose invented. Label concentration 5 mg/mL retained independently. No adverse event invented."
+    },
+    {
+      "id": "fresh-count-attribution",
+      "text": "Fictional patient N96, age 49, noticed intermittent buzzing in the left ear without ear pain. Suspect aspirin for joint pain was taken as two caplets per dose; each caplet is labelled 325 mg, and no total milligram dose was supplied. Suspect famotidine for heartburn was one tablet per dose, expressly stated as 20 mg in total; its label strength is unknown. No product-quality issue was reported.",
+      "reportType": "adverse-event",
+      "expected": "Intermittent left-ear buzzing and no ear pain retained in symptoms, no inferred diagnosis. Product complaint explicitly absent. Aspirin dose two caplets only, strength 325 mg, never computed 650 mg. Famotidine one tablet/20 mg dose, strength unknown. No cross-product quantity assignment."
+    }
+  ]
+}

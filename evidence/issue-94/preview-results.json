@@ -1,0 +1,19 @@
+{
+  "verifiedAt": "2026-09-23T20:58:29.794Z",
+  "sha": "c99921ee9bca5aee91782e11b3832c2b05f22824",
+  "deployment": "dpl_BAwHki1chu9VEaBnWii3jMn6vvid",
+  "unsignedStatus": 302,
+  "anonymousShareAccess": true,
+  "interpretationRequests": 0,
+  "separateSymptomMedicationAcceptance": true,
+  "pendingPdfBlocked": true,
+  "reporterReadinessRetained": true,
+  "replayPdfMatchesAllIndependentLocalFields": true,
+  "matchedFieldCount": 52,
+  "symptomAndDoseEditsPreserveQualifiers": true,
+  "qualifierRemovalExplicit": true,
+  "qualifierReplacementControlStable": true,
+  "removalChangesOnlyNarrativePdfField": true,
+  "supersededQualifierRetained": true,
+  "method": "Resumed retained synthetic states; actual deployed UI actions and PDF. Exact raw provider-boundary replay covered by deterministic tests; no live model retry."
+}

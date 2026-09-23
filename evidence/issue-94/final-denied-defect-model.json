@@ -1,0 +1,181 @@
+{
+  "products": [
+    {
+      "productReference": "pr1",
+      "groupReference": "g1"
+    }
+  ],
+  "tests": [],
+  "proposals": [
+    {
+      "proposalReference": "prop1",
+      "groupReference": "patient",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "identifier"
+      },
+      "value": {
+        "kind": "known",
+        "value": "P94"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop2",
+      "groupReference": "patient",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "ageYears"
+      },
+      "value": {
+        "kind": "known",
+        "value": 34
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop3",
+      "groupReference": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "symptoms"
+      },
+      "value": {
+        "kind": "known",
+        "value": [
+          "flushing",
+          "felt shaky",
+          "no chest pain"
+        ]
+      },
+      "evidenceReferences": [
+        "p1",
+        "p4"
+      ]
+    },
+    {
+      "proposalReference": "prop4",
+      "groupReference": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "problemDescription"
+      },
+      "value": {
+        "kind": "explicitly-absent"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop5",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "pr1",
+        "field": "name"
+      },
+      "value": {
+        "kind": "known",
+        "value": "prednisone"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop6",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "pr1",
+        "field": "productType"
+      },
+      "value": {
+        "kind": "known",
+        "value": "drug-or-biologic"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop7",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "pr1",
+        "field": "role"
+      },
+      "value": {
+        "kind": "known",
+        "value": "suspect"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop8",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "pr1",
+        "field": "indication"
+      },
+      "value": {
+        "kind": "known",
+        "value": "arthritis"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop9",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "pr1",
+        "field": "dose"
+      },
+      "value": {
+        "kind": "known",
+        "value": "three tablets, an explicitly stated total dose of 15 mg"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "prop10",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "pr1",
+        "field": "strength"
+      },
+      "value": {
+        "kind": "known",
+        "value": "5 mg per tablet"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    }
+  ]
+}

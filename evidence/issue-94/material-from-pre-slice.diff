@@ -1,0 +1,519 @@
+diff --git a/app/journey.tsx b/app/journey.tsx
+index 863aa70..ec7514c 100644
+--- a/app/journey.tsx
++++ b/app/journey.tsx
+@@ -896,8 +896,11 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
+   </article>;
+ }
+ 
+-function FactValueEditor({ label, control, value, onChange }: { label: string; control: FactControl; value: EditableCaseValue; onChange: (value: EditableCaseValue) => void }) {
++function FactValueEditor({ label, control, value, onChange: emitChange }: { label: string; control: FactControl; value: EditableCaseValue; onChange: (value: EditableCaseValue) => void }) {
+   const known = value.kind === "known" ? value.value : undefined;
++  // Editing the value alone must not silently discard its reviewed uncertainty.
++  const onChange = (next: EditableCaseValue) => emitChange(next.kind === "known" && value.kind === "known" && value.qualifier
++    ? { ...next, qualifier: value.qualifier } : next);
+   return <div className={styles.factEditor}>
+     <label>{label} status<select aria-label={`${label} status`} value={value.kind} onChange={(event) => onChange(event.target.value === "known" ? editableInitialValue(undefined, control) : { kind: event.target.value as Exclude<EditableCaseValue["kind"], "known"> })}>
+       <option value="known">Known</option><option value="unknown">Unknown</option><option value="explicitly-absent">Not present</option><option value="inapplicable">Not applicable</option><option value="declined">Prefer not to answer</option>
+@@ -913,6 +916,7 @@ function FactValueEditor({ label, control, value, onChange }: { label: string; c
+     </div>}
+     {value.kind === "known" && control.shape === "choice" && <select aria-label={`New ${label}`} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })}>{control.options?.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select>}
+     {value.kind === "known" && control.shape === "choices" && <fieldset><legend>New {label}</legend>{control.options?.map((option) => <label key={option.value}><input type="checkbox" checked={Array.isArray(known) && known.includes(option.value)} onChange={(event) => onChange({ kind: "known", value: event.target.checked ? [...(Array.isArray(known) ? known : []), option.value] : (Array.isArray(known) ? known : []).filter((item) => item !== option.value) })} /> {option.label}</label>)}</fieldset>}
++    {value.kind === "known" && value.qualifier !== undefined && <label>Uncertainty or context<input aria-label={`Uncertainty or context for ${label}`} value={value.qualifier} onChange={(event) => emitChange({ kind: "known", value: value.value, ...(event.target.value.trim() ? { qualifier: event.target.value } : {}) })} /></label>}
+   </div>;
+ }
+ 
+@@ -968,6 +972,11 @@ function joinList(values: string[]): string {
+ }
+ 
+ function formatFact(value: CaseValue<unknown> | undefined, control?: FactControl): string {
++  const text = formatFactValue(value, control);
++  return value?.kind === "known" && value.qualifier ? `${text} (${value.qualifier})` : text;
++}
++
++function formatFactValue(value: CaseValue<unknown> | undefined, control?: FactControl): string {
+   if (!value) return "Not provided";
+   if (value.kind !== "known") return {
+     unknown: "Unknown",
+diff --git a/src/domain/case/model-boundary.ts b/src/domain/case/model-boundary.ts
+index 69ef7a1..72d4aab 100644
+--- a/src/domain/case/model-boundary.ts
++++ b/src/domain/case/model-boundary.ts
+@@ -11,9 +11,13 @@ const relevantTestFields = ["testName", "testResult", "lowRange", "highRange", "
+ 
+ const modelTargetSchema = z.discriminatedUnion("entity", [
+   z.object({ entity: z.literal("patient"), field: z.enum(patientFields) }).strict(),
+-  z.object({ entity: z.literal("event"), field: z.enum(eventFields) }).strict(),
++  z.object({ entity: z.literal("event"), field: z.enum(eventFields).describe(
++    "symptoms: reported patient signs, symptoms and stated clinical events/diagnoses, with uncertainty preserved. problemDescription: actual product-quality complaint, defect or malfunction; not patient manifestations or a general adverse-event narrative. Use both only when both meanings are supplied.",
++  ) }).strict(),
+   z.object({ entity: z.literal("test"), testReference: z.string().min(1), field: z.enum(relevantTestFields) }).strict(),
+-  z.object({ entity: z.literal("product"), productReference: z.string().min(1), field: z.enum(productFields) }).strict(),
++  z.object({ entity: z.literal("product"), productReference: z.string().min(1), field: z.enum(productFields).describe(
++    "dose: explicitly stated amount taken each time, retaining count/volume, dosage-form wording and any supplied total together. strength: independently stated amount per dosage unit or label concentration. Preserve product attribution and uncertainty; never calculate one quantity from the other.",
++  ) }).strict(),
+ ]);
+ 
+ const caseValueSchema = z.discriminatedUnion("kind", [
+@@ -341,11 +345,17 @@ function assertResponseLevelProposalConsistency(
+   const groupTargets = new Map<string, string>();
+   proposals.forEach((proposal, index) => {
+     const identity = rawTargetIdentity(proposal.target);
+-    const prior = groupTargets.get(proposal.groupReference);
+-    if (turn === "opening" && prior && prior !== identity) {
+-      boundaryIssue(["proposals", index, "groupReference"], "A proposal group cannot span different case entities");
++    // Opening patient/event review groups are already assigned by code, not
++    // model labels. A reused label cannot change their identity or acceptance.
++    // Keep raw-label consistency for declared entities; validate the assembled
++    // groups again after target resolution and proposal-local quarantine.
++    if (proposal.target.entity !== "patient" && proposal.target.entity !== "event") {
++      const prior = groupTargets.get(proposal.groupReference);
++      if (turn === "opening" && prior && prior !== identity) {
++        boundaryIssue(["proposals", index, "groupReference"], "A proposal group cannot span different case entities");
++      }
++      groupTargets.set(proposal.groupReference, identity);
+     }
+-    groupTargets.set(proposal.groupReference, identity);
+     if (proposal.target.entity === "product" && proposal.target.productReference) {
+       const declared = proposedProducts.get(proposal.target.productReference);
+       if (declared && declared.groupReference !== proposal.groupReference) {
+diff --git a/src/domain/case/projection.ts b/src/domain/case/projection.ts
+index 991bbc4..b0d182b 100644
+--- a/src/domain/case/projection.ts
++++ b/src/domain/case/projection.ts
+@@ -242,7 +242,9 @@ function projectProduct(
+   const result: ProjectedProduct = { productId: product.id };
+   const prefix = `sections.D.suspectProducts.${index}`;
+   for (const field of sectionDProductFields) {
+-    assign<unknown>(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field] as Fact<unknown>, result, field, (value) => field === "medicationType" ? ["brand", "generic-biosimilar", "otc", "compounded"].filter((label) => (value as string[]).includes(label)) : value);
++    assign<unknown>(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field] as Fact<unknown>, result, field, (value) => field === "medicationType" ? ["brand", "generic-biosimilar", "otc", "compounded"].filter((label) => (value as string[]).includes(label))
++      : field === "dose" || field === "strength" ? qualifiedText(String(value), known(product.facts[field])?.qualifier)
++        : value);
+   }
+   for (const [field, applies, prerequisites] of [
+     ["improvedAfterChange", withdrawalApplicability(product.facts), [product.facts.stopped, product.facts.doseReduced]],
+@@ -349,12 +351,16 @@ function assign<T>(
+   projection.omissions.push({ concept, target, reason: omissionReason(fact), sourceIds: fact.sourceIds });
+ }
+ 
+-function known<T>(fact: Fact<T>): { value: T; sourceIds: string[] } | undefined {
++function known<T>(fact: Fact<T>): { value: T; qualifier?: string; sourceIds: string[] } | undefined {
+   return fact.state === "resolved" && fact.resolvedValue?.value.kind === "known"
+-    ? { value: fact.resolvedValue.value.value, sourceIds: fact.resolvedValue.sourceIds }
++    ? { value: fact.resolvedValue.value.value, qualifier: fact.resolvedValue.value.qualifier, sourceIds: fact.resolvedValue.sourceIds }
+     : undefined;
+ }
+ 
++function qualifiedText(text: string, qualifier?: string): string {
++  return qualifier ? `${text} (${qualifier})` : text;
++}
++
+ function omissionReason(fact: Fact<unknown>): ProjectionOmission["reason"] {
+   if (fact.state === "conflicted") return "conflicted";
+   if (!fact.resolvedValue) return "empty";
+@@ -371,8 +377,8 @@ function buildEventDescription(caseState: SemanticCase): { value?: string; sourc
+       sourceIds.push(...value.sourceIds);
+     }
+   };
+-  append(caseState.event.facts.problemDescription, (value) => `Problem detail: ${value}.`);
+-  append(caseState.event.facts.symptoms, (value) => `Symptoms: ${value.join(" and ")}.`);
++  append(caseState.event.facts.problemDescription, (value) => `Problem detail: ${qualifiedText(value, known(caseState.event.facts.problemDescription)?.qualifier)}.`);
++  append(caseState.event.facts.symptoms, (value) => `Symptoms: ${qualifiedText(value.join(" and "), known(caseState.event.facts.symptoms)?.qualifier)}.`);
+   append(caseState.event.facts.treatments, (value) => `Treatment: ${value.join("; ")}.`);
+   append(caseState.event.facts.outcome, (value) => `Outcome: ${value}.`);
+   append(caseState.event.facts.dischargeDate, (value) => `Discharged ${displayDate(value)}.`);
+diff --git a/src/server/model/anthropic-journey.ts b/src/server/model/anthropic-journey.ts
+index 8e31349..77be2f3 100644
+--- a/src/server/model/anthropic-journey.ts
++++ b/src/server/model/anthropic-journey.ts
+@@ -20,8 +20,8 @@ import type {
+ } from "./journey-model";
+ 
+ export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
+-export const MODEL_PROMPT_REVISION = "wilson-medication-followups-v1";
+-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v15-medication";
++export const MODEL_PROMPT_REVISION = "wilson-symptom-dose-fidelity-v3";
++export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v16-field-meaning";
+ export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
+ export const MODEL_MAX_RETRIES = 0;
+ 
+@@ -73,10 +73,12 @@ const SYSTEM_PROMPT = `You extract grounded semantic proposals from one syntheti
+ Rules:
+ - Propose only facts explicitly supported by the current clinician input. Do not diagnose, infer causality, classify, fill gaps, or establish truth.
+ - The supported targets are the patient, event or product problem, relevant-test, medication or non-device product, and single suspect-device fields represented by the response schema. Preserve uncertainty, negation, correction, alternatives, unknown, explicitly absent, inapplicable, and declined meanings.
++- event.symptoms holds the reported patient manifestations, including signs, symptoms and stated clinical events or diagnoses. event.problemDescription holds an actual product-quality complaint, defect or malfunction, not a general account of the adverse event. An adverse reaction while using a suspect product does not itself establish a product defect. If both are reported, keep the product complaint in problemDescription and the patient manifestations in symptoms; do not duplicate the manifestations into problemDescription. Omit only unmentioned product complaints. If the clinician explicitly denies a product-quality complaint or states that none was reported, preserve problemDescription as explicitly-absent, including when patient symptoms are present. If the existence of a product problem is explicitly unknown, preserve unknown; an uncertain described concern remains qualified, not confirmed or absent. Preserve stated uncertainty and negation; never invent a diagnosis or convert uncertain manifestations to confirmed ones.
++- A symptoms value describes the whole reported list. Combine compatible positive manifestations and specific denials in one array, keeping each denial or uncertainty in the wording of its own item. Denial of one manifestation does not mean all symptoms are explicitly absent. Do not emit separate competing symptoms facts for compatible items or turn a specific denial into field-wide absence. Use explicitly-absent for symptoms only when the input explicitly says there were no patient manifestations at all. Genuine incompatible accounts remain alternatives for review, never silently combined or resolved.
+ - Distinguish not mentioned from explicitly unavailable: omit a field only when the input does not address it. When the clinician says a test name, result, unit, range or collection date is unknown, unavailable, not known or not at hand, preserve that uncertainty. Use kind unknown for an unavailable name, result, range or date; a missing date is not explicitly absent. Use explicitly-absent only for a stated absence of the thing itself, never for lack of knowledge about it. Keep a known numeric result without units when units are unavailable; do not invent a unit. Do not declare a test entity for a test explicitly stated not to have been performed; do not turn that statement into a partial observation with an absent result.
+ - Relevant tests are stable entities. On opening input, declare each distinct observation once, keeping testName (the stated test identity, including specimen/context) separate from testResult (numeric or qualitative result, with any stated units and modifiers). Retain all tests, including partial observations with only identity or only result. Attach ranges and explicitly stated test dates to the same reference. Never infer a test name, unit, range, or test date from the result, event date, another test, or clinical conventions. Omit unmentioned fields; explicitly unavailable fields use unknown as described above. Do not interpret or classify a result, expand an abbreviation, or silently repair an unfamiliar/garbled clinical term; preserve the clinician's wording for review.
+ - On later input, use the supplied stable IDs to correct or complete an existing test, including a pending unnamed test. Declare a new test with response-local references only for a genuinely additional or entirely omitted observation. Never duplicate a supplied test just to correct it. Correct only stated fields; preserve its other facts. A new measurement is not a correction unless the input says so. Mark corrections to pending as well as accepted facts with intent correction.
+-- Product dose is the amount actually taken each time; strength is the stated amount per tablet/capsule or concentration on the label. Extract them independently, retaining units and descriptive wording. Never infer strength from dose, multiply tablet counts, divide concentrations, or convert units. If only dose is stated, omit strength. Report date is entered directly by the clinician, never extracted.
++- Product dose is the amount actually taken each time; strength is the stated amount per tablet/capsule or concentration on the label. Extract them independently, retaining units and descriptive wording. In dose, preserve the explicitly supplied count or volume and dosage-form wording together with any explicitly supplied total amount, even when the total alone seems equivalent. If only a count is supplied, retain the count without calculating a total from strength. Keep each product's quantities and qualifiers with that product; do not assign an ambiguously attributed dose to either product. Never infer strength from dose, multiply tablet counts, divide concentrations, or convert units. If only dose is stated, omit strength. Report date is entered directly by the clinician, never extracted.
+ - For every declared product, propose its supported productType ("drug-or-biologic", "device", or "other") and role. For product roles, emit only "suspect" or "concomitant". A reported suspect role is clinician input, not your causality judgment. For a device, preserve explicitly stated implanted and reprocessed-single-use status so Wilson can determine whether related Section E details are applicable.
+ - For each product, preserve explicit stopping, dose reduction, improvement after either change, restart and recurrence after restart as separate stopped, doseReduced, improvedAfterChange, restarted and recurred facts. These are temporal observations, never a causality assessment. Generic recovery does not establish improvedAfterChange; no mention of restarting does not establish restarted false or recurred false. Never restarted means restarted false, not recurred false. A dose reduction does not imply stopped false; an explicit statement that neither happened can establish both false. Retain a supplied stopDate without inferring it from onset. On correction use intent correction for every explicitly corrected fact, preserving other product facts and identity.
+ - medicationType contains only explicitly supplied brand, generic-biosimilar, otc or compounded labels; preserve combinations. A generic molecule name alone does not establish generic-biosimilar or brand. Never infer product-label subtype from the product category.
+diff --git a/tests/domain/model-boundary.test.ts b/tests/domain/model-boundary.test.ts
+index 97877bd..4d8d733 100644
+--- a/tests/domain/model-boundary.test.ts
++++ b/tests/domain/model-boundary.test.ts
+@@ -301,7 +301,7 @@ describe("model proposal boundary", () => {
+     expect(() => parseModelProposalEnvelope(malformed, identities)).toThrow("Every proposal was unrepresentable");
+   });
+ 
+-  it("still rejects duplicate identities and groups that span case entities", () => {
++  it("rejects duplicate identities and keeps code-owned opening patient/event groups separate", () => {
+     const duplicate = candidate();
+     duplicate.output.proposals.push({ ...duplicate.output.proposals[0] });
+     expect(() => parseModelProposalEnvelope(duplicate, identities)).toThrow("Duplicate proposalReference");
+@@ -316,7 +316,8 @@ describe("model proposal boundary", () => {
+       value: { kind: "known", value: ["rash"] },
+       evidenceQuote: "reported a rash",
+     } as never);
+-    expect(() => parseModelProposalEnvelope(spanning, identities)).toThrow("cannot span different case entities");
++    const parsed = parseModelProposalEnvelope(spanning, identities);
++    expect(parsed.proposals.map(p => p.groupId)).toEqual(["patient", "event"]);
+   });
+ 
+   it("keeps valid facts and exact evidence while quarantining both recorded target/value failures", () => {
+diff --git a/tests/domain/opening-fidelity.test.ts b/tests/domain/opening-fidelity.test.ts
+new file mode 100644
+index 0000000..7fd643d
+--- /dev/null
++++ b/tests/domain/opening-fidelity.test.ts
+@@ -0,0 +1,59 @@
++import { describe, expect, it } from "vitest";
++import { parseModelProposalEnvelope } from "../../src/domain/case/model-boundary";
++import protocol from "../../evidence/issue-94/live-protocol.json";
++import doseOnly from "../../evidence/issue-94/retained-dose-only-model.json";
++import tablets from "../../evidence/issue-94/retained-tablets-model.json";
++
++const parse = (output: unknown, text = protocol.cases[0].text) => {
++  let group = 0;
++  return parseModelProposalEnvelope({
++  turn: "opening", input: { id: "fidelity-input", type: "narrative", text, recordedAt: "2026-09-23T20:06:44.000Z" }, output,
++}, (kind, ref) => kind === "group" ? `group-${group++}-${ref}` : `${kind}-${ref}`);
++};
++
++describe("first-pass opening fidelity responses", () => {
++  it.each([[doseOnly, 0], [tablets, 1]] as const)("replays retained response %# unchanged into separate patient, event and product review", (output, index) => {
++    const text = protocol.cases[index].text;
++    const result = parse(output, text);
++    expect(result.unrepresented).toEqual([]);
++    expect(result.proposals).toHaveLength(output.proposals.length);
++    expect(new Set(result.proposals.map(p => p.groupId)).size).toBe(3);
++    for (const [i, p] of result.proposals.entries()) {
++      expect(p.value).toEqual(output.proposals[i].value);
++      expect(p.intent).toBe(output.proposals[i].intent);
++      expect(p.target.field).toBe(output.proposals[i].target.field);
++      expect(p.target.entity).toBe(output.proposals[i].target.entity);
++      expect(p.sourceIds).toEqual(output.proposals[i].evidenceReferences.map(ref => `source-fidelity-input-${ref}`));
++    }
++    for (const s of result.sources) expect(s.excerpt).toBe(text.slice(s.start, s.end));
++    expect(result.proposals.find(p => p.target.field === "symptoms")?.value).toEqual({ kind: "known", value: [index ? "abdominal pain" : "rash"] });
++    expect(result.proposals.some(p => p.target.field === "problemDescription")).toBe(false);
++    expect(result.proposals.find(p => p.target.field === "dose")?.value).toEqual({ kind: "known", value: index ? "two tablets, a total dose of 500 mg" : "500 mg" });
++  });
++
++  it("does not assign an unresolved product by its shared label, and retains invalid-source/value quarantine", () => {
++    const output = structuredClone(doseOnly);
++    const product = output.proposals.find(p => p.target.field === "dose")!;
++    product.target.productReference = "not-declared";
++    expect(() => parse(output)).toThrow("cannot span different case entities");
++    product.groupReference = "unresolved";
++    output.proposals.find(p => p.target.field === "onsetDate")!.evidenceReferences = ["not-a-passage"];
++    output.proposals.find(p => p.target.field === "symptoms")!.value = { kind: "known", value: "rash" } as never;
++    const result = parse(output);
++    expect(result.unrepresented.map(p => p.reason).sort()).toEqual(["incompatible-value", "invalid-source-reference", "unresolved-entity"]);
++    expect(result.proposals.some(p => ["dose", "onsetDate", "symptoms"].includes(p.target.field))).toBe(false);
++  });
++
++  it("still rejects mismatched declarations, shared declared product/test labels and duplicate identities", () => {
++    const mismatch = structuredClone(doseOnly);
++    mismatch.proposals.find(p => p.target.entity === "product")!.groupReference = "wrong";
++    expect(() => parse(mismatch)).toThrow("must use their declared group");
++    const spanning = structuredClone(doseOnly);
++    spanning.tests.push({ testReference: "new-test", groupReference: "g1" } as never);
++    spanning.proposals.push({ proposalReference: "new", groupReference: "g1", intent: "fact", target: { entity: "test", testReference: "new-test", field: "testName" }, value: { kind: "unknown" }, evidenceReferences: ["p1"] } as never);
++    expect(() => parse(spanning)).toThrow("cannot span different case entities");
++    const duplicate = structuredClone(doseOnly);
++    duplicate.proposals.push(duplicate.proposals[0]);
++    expect(() => parse(duplicate)).toThrow("Duplicate proposalReference");
++  });
++});
+diff --git a/tests/e2e/zzzzz-fidelity.spec.ts b/tests/e2e/zzzzz-fidelity.spec.ts
+new file mode 100644
+index 0000000..5d2d49b
+--- /dev/null
++++ b/tests/e2e/zzzzz-fidelity.spec.ts
+@@ -0,0 +1,66 @@
++import { expect, test } from "@playwright/test";
++import { createAnthropicJourneyModel } from "../../src/server/model/anthropic-journey";
++import { InMemoryCaseRepository } from "../../src/server/case/repository";
++import { browserStateVersion } from "../../src/server/case/browser-state";
++import { performJourneyAction } from "../../src/server/journey/service";
++import protocol from "../../evidence/issue-94/live-protocol.json" with { type: "json" };
++import tablets from "../../evidence/issue-94/retained-tablets-model.json" with { type: "json" };
++import count from "../../evidence/issue-94/count-without-total-model.json" with { type: "json" };
++import { acceptOpeningGroups, goTo, storedState } from "./draft4-helpers";
++
++async function pending(output: unknown, id: string) {
++  const repository = new InMemoryCaseRepository();
++  const caseId = "case-11111111-1111-4111-8111-111111111194";
++  const model = createAnthropicJourneyModel(async () => ({ id: "retained-first-pass", model: "deterministic-replay", stop_reason: "end_turn", content: [{ type: "text", text: JSON.stringify(output) }], usage: { input_tokens: 0, output_tokens: 0, cache_creation_input_tokens: null, cache_read_input_tokens: null } }));
++  const snapshot = await performJourneyAction(repository, caseId, { action: "submit-opening", text: protocol.cases.find(c => c.id === id)!.text, reportType: "adverse-event" }, model);
++  return { version: browserStateVersion, stage: snapshot.stage, case: (await repository.load(caseId))!, unrepresented: snapshot.unrepresented };
++}
++
++test("retained symptom/dose proposals have separate acceptance and visible uncertainty", async ({ page }, info) => {
++  let interpretationRequests = 0;
++  await page.route("**/api/case", async route => {
++    if (route.request().method() === "POST" && ["submit-opening", "submit-update"].includes(route.request().postDataJSON()?.action?.action)) {
++      interpretationRequests++; await route.abort();
++    } else await route.continue();
++  });
++  await page.goto("/");
++  await expect(page.getByLabel("Case description", { exact: true })).toBeVisible();
++  await page.evaluate(state => sessionStorage.setItem("wilson-journey-state-v2", JSON.stringify(state)), await pending(tablets, "retained-tablets"));
++  await page.reload(); await goTo(page, "Review details");
++  await expect(page.locator("dd").filter({ hasText: "two tablets, a total dose of 500 mg" })).toBeVisible();
++  await expect(page.locator("dd").filter({ hasText: /^abdominal pain/ })).toBeVisible();
++  await expect(page.locator("dt").filter({ hasText: /^Product problem$/ })).toHaveCount(0);
++  const eventButton = page.getByRole("button", { name: "Accept Event", exact: true });
++  await eventButton.click(); await expect(eventButton).toHaveCount(0);
++  const eventAccepted = await storedState(page);
++  expect(eventAccepted.case.event.facts.symptoms.resolvedValue?.value).toEqual({ kind: "known", value: ["abdominal pain"] });
++  expect(eventAccepted.case.products[0].facts.dose.resolvedValue).toBeUndefined();
++  expect(eventAccepted.case.products[0].facts.dose.proposedValues).toHaveLength(1);
++  await goTo(page, "Review & save");
++  await expect(page.getByRole("button", { name: "Generate PDF", exact: true })).toBeDisabled();
++
++  await page.evaluate(state => sessionStorage.setItem("wilson-journey-state-v2", JSON.stringify(state)), await pending(count, "count-without-total"));
++  await page.reload(); await goTo(page, "Review details");
++  const qualified = "prickly skin and no rash (patient is unsure whether the prickly feeling was a reaction to the medicine)";
++  await expect(page.locator("dd").filter({ hasText: qualified })).toBeVisible();
++  await page.screenshot({ path: info.outputPath("visible-symptom-uncertainty.png"), fullPage: true });
++  await page.getByRole("button", { name: "Accept Event", exact: true }).click();
++  await expect(page.getByRole("button", { name: "Accept Event", exact: true })).toHaveCount(0);
++  await expect(page.locator("dd").filter({ hasText: qualified })).toBeVisible();
++  expect((await storedState(page)).case.event.facts.symptoms.resolvedValue?.value).toEqual({ kind: "known", value: ["prickly skin", "no rash"], qualifier: "patient is unsure whether the prickly feeling was a reaction to the medicine" });
++  await acceptOpeningGroups(page);
++  // A value-only correction preserves uncertainty; removing it is explicit.
++  const symptomRow = page.locator("dt").filter({ hasText: /^Symptoms$/ }).locator("..");
++  await symptomRow.getByRole("button", { name: "Change", exact: true }).click();
++  await page.getByLabel("New Symptoms", { exact: true }).fill("prickly forearm skin\nno rash");
++  await expect(page.getByLabel("Uncertainty or context for Symptoms", { exact: true })).toHaveValue("patient is unsure whether the prickly feeling was a reaction to the medicine");
++  await page.getByRole("button", { name: "Apply correction", exact: true }).click();
++  await expect(symptomRow.locator("dd").first()).toContainText("prickly forearm skin and no rash (patient is unsure");
++  await symptomRow.getByRole("button", { name: "Change", exact: true }).click();
++  await page.getByLabel("Uncertainty or context for Symptoms", { exact: true }).fill("");
++  await page.getByRole("button", { name: "Apply correction", exact: true }).click();
++  await expect(symptomRow.locator("dd").first()).not.toContainText("patient is unsure");
++  expect((await storedState(page)).case.event.facts.symptoms.resolvedValue?.value).toEqual({ kind: "known", value: ["prickly forearm skin", "no rash"] });
++  expect((await storedState(page)).case.event.facts.symptoms.supersededValues.some(v => v.value.kind === "known" && v.value.qualifier)).toBe(true);
++  expect(interpretationRequests).toBe(0);
++});
+diff --git a/tests/pdf/fidelity-qualifiers.test.ts b/tests/pdf/fidelity-qualifiers.test.ts
+new file mode 100644
+index 0000000..e1a13c4
+--- /dev/null
++++ b/tests/pdf/fidelity-qualifiers.test.ts
+@@ -0,0 +1,71 @@
++import { execFile } from "node:child_process";
++import { mkdtemp, readFile, writeFile } from "node:fs/promises";
++import { tmpdir } from "node:os";
++import { join } from "node:path";
++import { promisify } from "node:util";
++import { expect, it } from "vitest";
++import { applyCaseCommand } from "../../src/domain/case/commands";
++import { createSemanticCase } from "../../src/domain/case/create";
++import { parseModelProposalEnvelope } from "../../src/domain/case/model-boundary";
++import { createReviewView } from "../../src/domain/case/views";
++import { projectForm3500 } from "../../src/domain/case/projection";
++import { fillForm3500Projection } from "../../src/server/pdf/form-3500";
++import { medicationCase, setMedication } from "../fixtures/medication-case";
++import protocol from "../../evidence/issue-94/live-protocol.json";
++import count from "../../evidence/issue-94/count-without-total-model.json";
++import ambiguous from "../../evidence/issue-94/ambiguous-dose-model.json";
++
++function replay(output: unknown, id: string) {
++  const text = protocol.cases.find(c => c.id === id)!.text;
++  const envelope = parseModelProposalEnvelope({ turn: "opening", input: { id: "qualifier-source", type: "narrative", text, recordedAt: "2026-09-23T20:00:00.000Z" }, output }, (kind, ref) => `${kind}-${ref}`);
++  let state = applyCaseCommand(createSemanticCase("case-qualifiers"), { type: "attach-grounded-proposals", commandId: "attach", expectedRevision: 0, ...envelope }).case;
++  state = applyCaseCommand(state, { type: "review-proposal-groups", commandId: "review", expectedRevision: state.revision, decisions: [...new Set(envelope.proposals.map(p => p.groupId))].map(groupId => ({ groupId, action: "accept" })) }).case;
++  return state;
++}
++async function independentFields(projection: ReturnType<typeof projectForm3500>) {
++  const { output } = await fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), projection);
++  const directory = await mkdtemp(join(tmpdir(), "wilson-qualifiers-")); const file = join(directory, "qualified.pdf"); await writeFile(file, output);
++  const { stdout } = await promisify(execFile)(process.env.PYPDF_PYTHON ?? "python3", ["tools/pdf/independent_readback.py", file, "--named"]);
++  return JSON.parse(stdout).namedFields;
++}
++const narrative = "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]";
++
++it("preserves the retained symptom uncertainty and denied symptom through actual PDF without changing the accepted fact", async () => {
++  const state = replay(count, "count-without-total"); const before = structuredClone(state);
++  const projection = projectForm3500(state);
++  const text = "Symptoms: prickly skin and no rash (patient is unsure whether the prickly feeling was a reaction to the medicine).";
++  expect(projection.sections.B.eventDescription).toBe(text);
++  expect(projection.sourceTrace["sections.B.eventDescription"]).toEqual(state.event.facts.symptoms.resolvedValue!.sourceIds);
++  expect((await independentFields(projection))[narrative]).toBe(text);
++  expect(state).toEqual(before);
++});
++
++it("keeps an uncertain product complaint qualified and genuine conflicting symptom proposals unresolved", async () => {
++  const state = replay(ambiguous, "ambiguous-dose");
++  expect(state.event.facts.symptoms.state).toBe("conflicted");
++  expect(state.event.facts.symptoms.resolvedValue).toBeUndefined();
++  const projection = projectForm3500(state);
++  expect(projection.sections.B.eventDescription).toBe("Problem detail: packaging problem (possible, undescribed).");
++  expect(createReviewView(state).attention).toContainEqual(expect.objectContaining({ target: "event:event:symptoms", kind: "conflict" }));
++  expect((await independentFields(projection))[narrative]).toBe(projection.sections.B.eventDescription);
++});
++
++it("retains dose/strength qualifiers in their own suspect-product PDF slots without arithmetic or cross-attribution", async () => {
++  let state = setMedication(medicationCase(true), "amoxicillin", { dose: { kind: "known", value: "two capsules, 500 mg", qualifier: "reported; diary uncertain" }, strength: { kind: "known", value: "250 mg per capsule", qualifier: "label difficult to read" } });
++  state = setMedication(state, "naproxen", { dose: { kind: "known", value: "half a tablet", qualifier: "approximately" }, strength: { kind: "unknown" } });
++  const projection = projectForm3500(state);
++  expect(projection.sections.D.suspectProducts[0].dose).toBe("two capsules, 500 mg (reported; diary uncertain)");
++  expect(projection.sections.D.suspectProducts[1].dose).toBe("half a tablet (approximately)");
++  expect(projection.sections.D.suspectProducts[1].strength).toBeUndefined();
++  const fields = await independentFields(projection);
++  for (const [n, page] of [[1, 4], [2, 5]]) {
++    const prefix = `topmostSubform[0].Page${page}[0].Prod${n}[0].Prod${n}`;
++    expect(fields[`${prefix}Dose[0]`]).toBe(projection.sections.D.suspectProducts[n - 1].dose);
++  }
++  expect(fields["topmostSubform[0].Page4[0].Prod1[0].Prod1Strength[0]"]).toBe("250 mg per capsule (label difficult to read)");
++  // A subsequent explicit correction replaces the qualifier; it must not be
++  // resurrected from a superseded assertion in a regenerated PDF.
++  state = setMedication(state, "amoxicillin", { dose: { kind: "known", value: "one capsule, 250 mg" } });
++  expect(projectForm3500(state).sections.D.suspectProducts[0].dose).toBe("one capsule, 250 mg");
++  expect(state.products[0].facts.dose.supersededValues[0].value).toEqual({ kind: "known", value: "two capsules, 500 mg", qualifier: "reported; diary uncertain" });
++});
+diff --git a/tests/server/anthropic-journey.test.ts b/tests/server/anthropic-journey.test.ts
+index f74a91a..6d601b4 100644
+--- a/tests/server/anthropic-journey.test.ts
++++ b/tests/server/anthropic-journey.test.ts
+@@ -71,6 +71,11 @@ describe("Anthropic production model boundary", () => {
+     expect(schema).toContain("Known values must match their target");
+     expect(schema).toContain("event.symptoms");
+     expect(schema).toContain("event.productAvailability");
++    expect(schema).toContain("actual product-quality complaint, defect or malfunction");
++    expect(schema).toContain("retaining count/volume, dosage-form wording and any supplied total together");
++    expect(requestText).toContain("do not duplicate the manifestations into problemDescription");
++    expect(requestText).toContain("Omit only unmentioned product complaints");
++    expect(requestText).toContain("do not assign an ambiguously attributed dose");
+     expect(schema).toContain("productReference");
+     expect(schema).not.toContain('"start"');
+     expect(schema).not.toContain('"end"');
+diff --git a/tests/server/opening-fidelity.test.ts b/tests/server/opening-fidelity.test.ts
+new file mode 100644
+index 0000000..647550a
+--- /dev/null
++++ b/tests/server/opening-fidelity.test.ts
+@@ -0,0 +1,107 @@
++import { execFile } from "node:child_process";
++import { mkdtemp, readFile, writeFile } from "node:fs/promises";
++import { tmpdir } from "node:os";
++import { join } from "node:path";
++import { promisify } from "node:util";
++import { describe, expect, it, vi } from "vitest";
++import { InMemoryCaseRepository } from "../../src/server/case/repository";
++import { browserStateVersion } from "../../src/server/case/browser-state";
++import { getJourneySnapshot, performJourneyAction, type JourneyAction } from "../../src/server/journey/service";
++import { createAnthropicJourneyModel, type AnthropicRequester } from "../../src/server/model/anthropic-journey";
++import { fillForm3500Projection } from "../../src/server/pdf/form-3500";
++import protocol from "../../evidence/issue-94/live-protocol.json";
++import tablets from "../../evidence/issue-94/retained-tablets-model.json";
++import doseOnly from "../../evidence/issue-94/retained-dose-only-model.json";
++
++function setup(output: unknown) {
++  const repository = new InMemoryCaseRepository();
++  const id = "case-11111111-1111-4111-8111-111111111194";
++  const requester = vi.fn<AnthropicRequester>(async () => ({ id: "first-pass-replay", model: "deterministic-replay", stop_reason: "end_turn", content: [{ type: "text", text: JSON.stringify(output) }], usage: { input_tokens: 0, output_tokens: 0, cache_creation_input_tokens: null, cache_read_input_tokens: null } }));
++  const model = createAnthropicJourneyModel(requester);
++  const act = (action: JourneyAction) => performJourneyAction(repository, id, action, model);
++  const load = async () => (await repository.load(id))!;
++  return { repository, id, requester, act, load };
++}
++const reporter: JourneyAction = { action: "answer-reporter", reportDate: "2026-09-23", reporter: { kind: "provided", firstName: "Casey", lastName: "Reed", email: "casey.reed@example.test", healthProfessional: true, occupation: "Physician", reportedTo: [], doNotDiscloseIdentity: true } };
++
++describe("first-pass symptom/dose fidelity through explicit review and PDF", () => {
++  it.each([[doseOnly, 0], [tablets, 1]] as const)("retains actual response %# without a retry and requires separate review before faithful PDF", async (output, index) => {
++    const { act, load, requester } = setup(output);
++    const spec = protocol.cases[index];
++    let snapshot = await act({ action: "submit-opening", text: spec.text, reportType: "adverse-event" });
++    expect(snapshot).toMatchObject({ stage: "understanding", downloadReady: false, unrepresented: [] });
++    expect(snapshot.openingGroups).toHaveLength(3);
++    const pending = await load();
++    const product = pending.products[0];
++    expect(pending.event.facts.symptoms.resolvedValue).toBeUndefined();
++    expect(product.facts.dose.resolvedValue).toBeUndefined();
++    await expect(act(reporter)).rejects.toThrow();
++    snapshot = await act({ action: "review-opening-group", groupId: "event", corrections: [] });
++    expect((await load()).products[0].facts.dose.resolvedValue).toBeUndefined();
++    expect((await load()).event.facts.symptoms.resolvedValue?.value).toEqual({ kind: "known", value: [index ? "abdominal pain" : "rash"] });
++    expect((await load()).event.facts.problemDescription.state).toBe("empty");
++    for (const groupId of snapshot.openingGroups) snapshot = await act({ action: "review-opening-group", groupId, corrections: [] });
++    const clinical = await load();
++    expect(clinical.products[0].facts.dose.resolvedValue?.value).toEqual({ kind: "known", value: index ? "two tablets, a total dose of 500 mg" : "500 mg" });
++    expect(clinical.products[0].facts.strength.resolvedValue?.value).toEqual(index ? { kind: "known", value: "250 mg" } : { kind: "unknown" });
++    // Complete only missing fields with explicit fictional unknown answers.
++    for (let n = 0; n < 10 && snapshot.clarification?.kind !== "reporter"; n++) {
++      const q = snapshot.clarification;
++      if (q?.kind === "serious-outcomes") snapshot = await act({ action: "answer-serious-outcomes", selected: [], disposition: "unknown" });
++      else if (q?.kind === "clinical-context") snapshot = await act({ action: "answer-clinical-context", ...(q.askTests ? { test: { kind: "unknown" } as const } : {}), ...(q.askHistory ? { history: { kind: "unknown" } as const } : {}) });
++      else if (q?.kind === "medication-history") snapshot = await act({ action: "answer-medication-history", productId: q.productId, answers: Object.fromEntries(q.targetIds.map(t => [t.split(":")[2], { kind: "unknown" }])) });
++      else throw Error(`Unexpected question ${q?.kind}`);
++    }
++    expect(snapshot.downloadReady).toBe(false);
++    expect(snapshot.clarification?.kind).toBe("reporter");
++    snapshot = await act(reporter);
++    expect(snapshot.downloadReady).toBe(true);
++    expect(requester).toHaveBeenCalledOnce();
++    const { output: pdf } = await fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), snapshot.projection);
++    const directory = await mkdtemp(join(tmpdir(), "wilson-fidelity-"));
++    const file = join(directory, "accepted.pdf"); await writeFile(file, pdf);
++    const { stdout } = await promisify(execFile)(process.env.PYPDF_PYTHON ?? "python3", ["tools/pdf/independent_readback.py", file, "--named"]);
++    const fields = JSON.parse(stdout).namedFields;
++    const narrative = Object.entries(fields).find(([key]) => key.includes("DescEvent"))?.[1];
++    expect(narrative).toContain(`Symptoms: ${index ? "abdominal pain" : "rash"}.`);
++    expect(narrative).not.toContain("Problem detail:");
++    const prefix = "topmostSubform[0].Page4[0].Prod1[0].Prod1";
++    expect(fields[`${prefix}Dose[0]`]).toBe(index ? "two tablets, a total dose of 500 mg" : "500");
++    if (index) {
++      expect(fields[`${prefix}Strength[0]`]).toBe("250");
++      expect(fields[`${prefix}StrengthUnit[0]`]).toBe("25");
++      expect(fields[`${prefix}DoseUnit[0]`]).toBe("40"); // FDA export value for blank unit.
++    } else expect(fields[`${prefix}Strength[0]`]).toBeUndefined();
++    if (process.env.WILSON_FIDELITY_EVIDENCE) {
++      const base = join(process.env.WILSON_FIDELITY_EVIDENCE, spec.id + "-replay");
++      await writeFile(base + ".pdf", pdf); await writeFile(base + "-readback.json", stdout);
++      await writeFile(base + "-pending.json", JSON.stringify({ version: browserStateVersion, stage: "understanding", case: pending, unrepresented: [] }));
++      await writeFile(base + "-accepted.json", JSON.stringify({ version: browserStateVersion, stage: snapshot.stage, case: await load(), unrepresented: [] }));
++    }
++  });
++
++  it("rejects only the chosen symptom group and leaves medication pending", async () => {
++    const { act, load } = setup(tablets);
++    await act({ action: "submit-opening", text: protocol.cases[1].text, reportType: "adverse-event" });
++    const snapshot = await act({ action: "reject-group", groupId: "event" });
++    expect((await load()).event.facts.symptoms.resolvedValue).toBeUndefined();
++    expect((await load()).event.facts.symptoms.proposedValues).toEqual([]);
++    expect((await load()).products[0].facts.dose.proposedValues).toHaveLength(1);
++    expect(snapshot.downloadReady).toBe(false);
++  });
++
++  it("leaves an accepted case intact on invalid later response without retry", async () => {
++    const output = structuredClone(tablets);
++    const { repository, id, act, load, requester } = setup(output);
++    await act({ action: "submit-opening", text: protocol.cases[1].text, reportType: "adverse-event" });
++    await act({ action: "accept-understanding" });
++    const before = await load(); const snapshot = await getJourneySnapshot(repository, id);
++    // Duplicate response identity is an actual envelope failure, distinct from
++    // proposal-local quarantine. No accepted fact may change.
++    output.proposals.push(output.proposals[0]);
++    await expect(act({ action: "submit-update", text: "The previously supplied details remain correct." })).rejects.toThrow();
++    expect(await load()).toEqual(before);
++    expect(await getJourneySnapshot(repository, id)).toEqual(snapshot);
++    expect(requester).toHaveBeenCalledTimes(2);
++  });
++});

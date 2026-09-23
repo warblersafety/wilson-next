@@ -1,0 +1,210 @@
+{
+  "products": [
+    {
+      "productReference": "prod1",
+      "groupReference": "g1"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalReference": "pr1",
+      "groupReference": "patient",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "identifier"
+      },
+      "value": {
+        "kind": "known",
+        "value": "M94"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "pr2",
+      "groupReference": "patient",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "ageYears"
+      },
+      "value": {
+        "kind": "known",
+        "value": 38
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "pr3",
+      "groupReference": "patient",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "sex"
+      },
+      "value": {
+        "kind": "known",
+        "value": "female"
+      },
+      "evidenceReferences": [
+        "p4"
+      ]
+    },
+    {
+      "proposalReference": "pr4",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "name"
+      },
+      "value": {
+        "kind": "known",
+        "value": "minocycline"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "pr5",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "productType"
+      },
+      "value": {
+        "kind": "known",
+        "value": "drug-or-biologic"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "pr6",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "role"
+      },
+      "value": {
+        "kind": "known",
+        "value": "suspect"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "pr7",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "dose"
+      },
+      "value": {
+        "kind": "known",
+        "value": "one capsule, a stated total of 100 mg"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "pr8",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "strength"
+      },
+      "value": {
+        "kind": "known",
+        "value": "100 mg per capsule"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "pr9",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "indication"
+      },
+      "value": {
+        "kind": "known",
+        "value": "acne"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "pr10",
+      "groupReference": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "problemDescription"
+      },
+      "value": {
+        "kind": "known",
+        "value": "Several capsules in the pack had cracked shells with powder escaping"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "pr11",
+      "groupReference": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "symptoms"
+      },
+      "value": {
+        "kind": "known",
+        "value": [
+          "burning sensation in her throat",
+          "felt unsteady"
+        ]
+      },
+      "evidenceReferences": [
+        "p4"
+      ]
+    },
+    {
+      "proposalReference": "pr12",
+      "groupReference": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "symptoms"
+      },
+      "value": {
+        "kind": "explicitly-absent"
+      },
+      "evidenceReferences": [
+        "p5"
+      ]
+    }
+  ]
+}

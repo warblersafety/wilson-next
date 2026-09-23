@@ -123,7 +123,7 @@ Dose and product strength are independent reviewed text facts including their
 units. Dose describes the administered amount; strength describes the stated
 amount per dosage form or concentration. Neither is calculated from the other.
 The PDF adapter separates a simple numeric quantity and a recognized unit into
-FDA controls. Descriptive quantities, compound expressions and unsupported
+FDA controls. Descriptive quantities, qualified quantities, compound expressions and unsupported
 units stay intact in the text control with the unit blank; no unit conversion
 or concentration arithmetic occurs. The adapter generates the selected unit's
 appearance and retains the FDA export value in the original dropdown options.
@@ -301,11 +301,29 @@ target entity kind and stable ID. Reusing one label for event history and a
 medication therefore creates separate review groups; different labels within
 one entity remain separate. This is mechanical group assembly, not clinical
 reinterpretation: targets, values, qualifiers, intents and evidence are unchanged.
-New-test declaration linkage and opening-group validation remain required, and
+Opening patient/event groups are code-owned and do not use model group labels;
+reused labels cannot merge those review units. Product/test declaration linkage
+and distinct declared-entity groups remain required, and
 the assembled groups are checked again to contain only one entity. Every group
 still requires explicit acceptance; an unresolved target is quarantined rather
 than assigned an entity from its group label. This bounded repair does not solve
-incorrect model attribution, symptom placement or conversational test identity.
+incorrect model attribution or conversational test identity.
+
+The interpretation contract distinguishes patient manifestations (symptoms) from
+actual product-quality complaints (problemDescription), including reports with
+both. Compatible manifestations and specific denials form one symptoms list;
+a specific denial is not whole-list absence. Supplied medication count/form
+wording and stated total are retained together in dose, independently of strength,
+without arithmetic. These instructions guide extraction, not runtime clinical
+normalization. Known-value qualifiers remain visible during review, and B5
+symptom/product-complaint and D6 dose/strength output carries their accepted
+qualifiers. Existing accepted facts are not silently reinterpreted or repaired.
+Non-carried symptoms and product-complaint facts are individually disclosed in
+output omissions, including absent, unknown, unmentioned and conflicted states;
+they are not invented as positive B5 narrative. The contract guidance has bounded
+synthetic evidence, not an established reliability rate; clinician review remains
+necessary. Qualifier output for other field families and individual omissions for
+other non-known B5 narrative fields remain follow-up #115.
 
 The runtime model boundary classifies mechanically decidable contract faults
 before review. Response-level faults reject the complete response and leave

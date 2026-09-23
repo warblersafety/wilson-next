@@ -1,0 +1,4628 @@
+{
+  "sha": "d51e9e22c8f56e945e391c87f4d3308732e9c796",
+  "deployment": "dpl_BKvRh746YCeQcjHTnz4Ze6XT6eWy",
+  "startedAt": "2026-09-23T20:25:08.301Z",
+  "cases": [
+    {
+      "id": "recheck-mixed-complaint",
+      "sha": "d51e9e22c8f56e945e391c87f4d3308732e9c796",
+      "deployment": "dpl_BKvRh746YCeQcjHTnz4Ze6XT6eWy",
+      "exposedAt": "2026-09-23T20:25:10.893Z",
+      "expected": "Cracked shells/powder escape only in problemDescription; burning throat/unsteadiness in symptoms, breathing negation preserved rather than positive dyspnea. No causal conclusion. Dose one capsule plus 100 mg, strength 100 mg independently.",
+      "unsignedStatus": 302,
+      "anonymousShareAccess": true,
+      "operationId": "bbfa5c94-01df-4ce8-b28e-4b2579fc93ff",
+      "stage": "understanding",
+      "unrepresented": [],
+      "pendingDownloadReady": false,
+      "pendingPdfBlocked": true,
+      "acceptanceActions": [
+        {
+          "action": "review-opening-group",
+          "groupId": "patient",
+          "corrections": []
+        },
+        {
+          "action": "review-opening-group",
+          "groupId": "event",
+          "corrections": []
+        },
+        {
+          "action": "review-opening-group",
+          "groupId": "group-49b0e9e9-0d9e-4df9-9d43-369205f501cb",
+          "corrections": []
+        }
+      ],
+      "completionActions": [
+        {
+          "action": "answer-serious-outcomes",
+          "selected": [],
+          "disposition": "unknown"
+        },
+        {
+          "action": "answer-clinical-context",
+          "test": {
+            "kind": "unknown"
+          },
+          "history": {
+            "kind": "unknown"
+          }
+        },
+        {
+          "action": "answer-medication-history",
+          "productId": "product-dd72f098-97f5-4e55-b016-5b1a12803d73",
+          "answers": {
+            "stopped": {
+              "kind": "unknown"
+            },
+            "doseReduced": {
+              "kind": "unknown"
+            }
+          }
+        },
+        {
+          "action": "answer-reporter",
+          "reportDate": "2026-09-23",
+          "reporter": {
+            "kind": "provided",
+            "firstName": "Casey",
+            "lastName": "Reed",
+            "healthProfessional": true,
+            "occupation": "Physician",
+            "reportedTo": [],
+            "doNotDiscloseIdentity": true,
+            "email": "casey.reed@example.test"
+          }
+        }
+      ],
+      "downloaded": true,
+      "finishedAt": "2026-09-23T20:25:33.885Z",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-symptom-dose-fidelity-v2",
+        "schemaRevision": "wilson-grounded-proposals-v16-field-meaning",
+        "inputTokens": 6667,
+        "outputTokens": 2079,
+        "latencyMs": 18572,
+        "estimatedCostUsd": 0.034124
+      },
+      "proposedFacts": [
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "identifier",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "M94"
+              },
+              "sourceIds": [
+                "source-2b8bbece-c98c-4a46-bc2a-264ecb546b4b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "ageYears",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": 38
+              },
+              "sourceIds": [
+                "source-2b8bbece-c98c-4a46-bc2a-264ecb546b4b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "sex",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "female"
+              },
+              "sourceIds": [
+                "source-e0d0a68e-9d32-4978-a7be-1cbca30d47c6"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "problemDescription",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "Several capsules in the pack had cracked shells with powder escaping."
+              },
+              "sourceIds": [
+                "source-bda97117-3357-4e17-86b6-504efc55661e"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "symptoms",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": [
+                  "burning sensation in her throat",
+                  "felt unsteady",
+                  "denied trouble breathing"
+                ]
+              },
+              "sourceIds": [
+                "source-e0d0a68e-9d32-4978-a7be-1cbca30d47c6",
+                "source-09dd8fde-518f-4908-97da-d79dedf1d368"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-dd72f098-97f5-4e55-b016-5b1a12803d73",
+          "field": "name",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "minocycline"
+              },
+              "sourceIds": [
+                "source-2b8bbece-c98c-4a46-bc2a-264ecb546b4b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-dd72f098-97f5-4e55-b016-5b1a12803d73",
+          "field": "productType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "sourceIds": [
+                "source-2b8bbece-c98c-4a46-bc2a-264ecb546b4b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-dd72f098-97f5-4e55-b016-5b1a12803d73",
+          "field": "role",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "sourceIds": [
+                "source-2b8bbece-c98c-4a46-bc2a-264ecb546b4b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-dd72f098-97f5-4e55-b016-5b1a12803d73",
+          "field": "dose",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "one capsule, a stated total of 100 mg"
+              },
+              "sourceIds": [
+                "source-2b8bbece-c98c-4a46-bc2a-264ecb546b4b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-dd72f098-97f5-4e55-b016-5b1a12803d73",
+          "field": "strength",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "100 mg per capsule"
+              },
+              "sourceIds": [
+                "source-aabdd977-2260-4764-8445-04d7d6456ae9"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-dd72f098-97f5-4e55-b016-5b1a12803d73",
+          "field": "indication",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "acne"
+              },
+              "sourceIds": [
+                "source-2b8bbece-c98c-4a46-bc2a-264ecb546b4b"
+              ]
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "source-2b8bbece-c98c-4a46-bc2a-264ecb546b4b",
+          "inputId": "input-82cae11e-919c-471d-80cc-92c5d0bc1b94",
+          "inputType": "narrative",
+          "excerpt": "Fictional patient M94, age 38, took one capsule, a stated total of 100 mg, of suspect minocycline for acne. ",
+          "start": 0,
+          "end": 108,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:25:29.604Z"
+        },
+        {
+          "id": "source-e0d0a68e-9d32-4978-a7be-1cbca30d47c6",
+          "inputId": "input-82cae11e-919c-471d-80cc-92c5d0bc1b94",
+          "inputType": "narrative",
+          "excerpt": "She then reported a burning sensation in her throat and felt unsteady. ",
+          "start": 213,
+          "end": 284,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:25:29.604Z"
+        },
+        {
+          "id": "source-aabdd977-2260-4764-8445-04d7d6456ae9",
+          "inputId": "input-82cae11e-919c-471d-80cc-92c5d0bc1b94",
+          "inputType": "narrative",
+          "excerpt": "The label says 100 mg per capsule. ",
+          "start": 108,
+          "end": 143,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:25:29.604Z"
+        },
+        {
+          "id": "source-bda97117-3357-4e17-86b6-504efc55661e",
+          "inputId": "input-82cae11e-919c-471d-80cc-92c5d0bc1b94",
+          "inputType": "narrative",
+          "excerpt": "Several capsules in the pack had cracked shells with powder escaping. ",
+          "start": 143,
+          "end": 213,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:25:29.604Z"
+        },
+        {
+          "id": "source-09dd8fde-518f-4908-97da-d79dedf1d368",
+          "inputId": "input-82cae11e-919c-471d-80cc-92c5d0bc1b94",
+          "inputType": "narrative",
+          "excerpt": "She specifically denied trouble breathing. ",
+          "start": 284,
+          "end": 327,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:25:29.604Z"
+        },
+        {
+          "id": "source-1f1b6d19-fe47-48d8-b4ea-785579a16afb",
+          "inputId": "input-b20f5463-16e6-40e6-9568-a564a95a987f",
+          "inputType": "selection",
+          "excerpt": "Adverse event and product problem",
+          "start": 0,
+          "end": 33,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:25:29.616Z"
+        },
+        {
+          "id": "source-f8652179-92ae-4341-9c20-4a57de153cb5",
+          "inputId": "input-c3c89393-525a-4f7e-b1ee-53752fe91047",
+          "inputType": "answer",
+          "excerpt": "Additional serious outcomes are unknown.",
+          "start": 0,
+          "end": 40,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:25:30.729Z"
+        },
+        {
+          "id": "source-c567eadd-e0dd-43b7-ac73-13eba90d0322",
+          "inputId": "input-4d4316cf-3366-4e3c-8425-0411c52e5c64",
+          "inputType": "answer",
+          "excerpt": "Relevant tests: unknown. Relevant history: unknown.",
+          "start": 0,
+          "end": 51,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:25:30.919Z"
+        },
+        {
+          "id": "source-05d13f4f-077d-4d19-9098-8c4e521d7d10",
+          "inputId": "input-fc1f9b57-50d5-4119-aaa9-aec01e085560",
+          "inputType": "answer",
+          "excerpt": "minocycline: stopped: unknown; dose reduced: unknown.",
+          "start": 0,
+          "end": 53,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:25:31.107Z"
+        },
+        {
+          "id": "source-ceccafc8-7ab4-42d2-a473-7f61d0296d6d",
+          "inputId": "input-d9c8d434-393b-4eb3-bce1-1f360490730c",
+          "inputType": "reporter-entry",
+          "excerpt": "Reporter: Casey Reed. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: casey.reed@example.test. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes.",
+          "start": 0,
+          "end": 296,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:25:31.309Z"
+        },
+        {
+          "id": "source-974ea76a-da29-4868-ace5-aeb54d77d230",
+          "inputId": "input-1c7de8ec-cb03-417e-8917-abe8fb414363",
+          "inputType": "selection",
+          "excerpt": "Date of this report: 2026-09-23.",
+          "start": 0,
+          "end": 32,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:25:31.314Z"
+        }
+      ],
+      "acceptedFacts": [
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "identifier",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "M94"
+              },
+              "sourceIds": [
+                "source-2b8bbece-c98c-4a46-bc2a-264ecb546b4b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "ageYears",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": 38
+              },
+              "sourceIds": [
+                "source-2b8bbece-c98c-4a46-bc2a-264ecb546b4b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "sex",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "female"
+              },
+              "sourceIds": [
+                "source-e0d0a68e-9d32-4978-a7be-1cbca30d47c6"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "reportType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "adverse-event-and-product-problem"
+              },
+              "sourceIds": [
+                "source-1f1b6d19-fe47-48d8-b4ea-785579a16afb"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "reportDate",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "2026-09-23"
+              },
+              "sourceIds": [
+                "source-974ea76a-da29-4868-ace5-aeb54d77d230"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "problemDescription",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "Several capsules in the pack had cracked shells with powder escaping."
+              },
+              "sourceIds": [
+                "source-bda97117-3357-4e17-86b6-504efc55661e"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "symptoms",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": [
+                  "burning sensation in her throat",
+                  "felt unsteady",
+                  "denied trouble breathing"
+                ]
+              },
+              "sourceIds": [
+                "source-e0d0a68e-9d32-4978-a7be-1cbca30d47c6",
+                "source-09dd8fde-518f-4908-97da-d79dedf1d368"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "death",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-f8652179-92ae-4341-9c20-4a57de153cb5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "lifeThreatening",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-f8652179-92ae-4341-9c20-4a57de153cb5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "hospitalized",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-f8652179-92ae-4341-9c20-4a57de153cb5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "disability",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-f8652179-92ae-4341-9c20-4a57de153cb5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "requiredIntervention",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-f8652179-92ae-4341-9c20-4a57de153cb5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "congenitalAnomaly",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-f8652179-92ae-4341-9c20-4a57de153cb5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "otherSerious",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-f8652179-92ae-4341-9c20-4a57de153cb5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "relevantTestsAvailable",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-c567eadd-e0dd-43b7-ac73-13eba90d0322"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "relevantHistory",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-c567eadd-e0dd-43b7-ac73-13eba90d0322"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-dd72f098-97f5-4e55-b016-5b1a12803d73",
+          "field": "name",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "minocycline"
+              },
+              "sourceIds": [
+                "source-2b8bbece-c98c-4a46-bc2a-264ecb546b4b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-dd72f098-97f5-4e55-b016-5b1a12803d73",
+          "field": "productType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "sourceIds": [
+                "source-2b8bbece-c98c-4a46-bc2a-264ecb546b4b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-dd72f098-97f5-4e55-b016-5b1a12803d73",
+          "field": "role",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "sourceIds": [
+                "source-2b8bbece-c98c-4a46-bc2a-264ecb546b4b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-dd72f098-97f5-4e55-b016-5b1a12803d73",
+          "field": "dose",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "one capsule, a stated total of 100 mg"
+              },
+              "sourceIds": [
+                "source-2b8bbece-c98c-4a46-bc2a-264ecb546b4b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-dd72f098-97f5-4e55-b016-5b1a12803d73",
+          "field": "strength",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "100 mg per capsule"
+              },
+              "sourceIds": [
+                "source-aabdd977-2260-4764-8445-04d7d6456ae9"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-dd72f098-97f5-4e55-b016-5b1a12803d73",
+          "field": "indication",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "acne"
+              },
+              "sourceIds": [
+                "source-2b8bbece-c98c-4a46-bc2a-264ecb546b4b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-dd72f098-97f5-4e55-b016-5b1a12803d73",
+          "field": "stopped",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-05d13f4f-077d-4d19-9098-8c4e521d7d10"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-dd72f098-97f5-4e55-b016-5b1a12803d73",
+          "field": "doseReduced",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-05d13f4f-077d-4d19-9098-8c4e521d7d10"
+              ]
+            }
+          ]
+        }
+      ],
+      "independentPdfFields": {
+        "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]": "M94",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "38",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "23-SEP-2026",
+        "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Problem detail: Several capsules in the pack had cracked shells with powder escaping.. Symptoms: burning sensation in her throat and felt unsteady and denied trouble breathing.",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "minocycline",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Strength[0]": "100 mg per capsule",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1StrengthUnit[0]": "40",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]": "one capsule, a stated total of 100 mg",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1DoseUnit[0]": "40",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Diagnosis[0]": "acne",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].LastName[0]": "Reed",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].FirstName[0]": "Casey",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]": "casey.reed@example.test",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].ProYes[0]": "/1",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].Occupation[0]": "Physician",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]": "/1"
+      },
+      "sourceOffsetsChecked": true,
+      "pdfSha256": "202d1d099fc9b4449fbf68607d6da91fb0547d63d26a00271dc7445aa38f6798",
+      "acceptedConflicts": [],
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 5
+    },
+    {
+      "id": "recheck-ambiguous-dose",
+      "sha": "d51e9e22c8f56e945e391c87f4d3308732e9c796",
+      "deployment": "dpl_BKvRh746YCeQcjHTnz4Ze6XT6eWy",
+      "exposedAt": "2026-09-23T20:25:37.366Z",
+      "expected": "Queasiness in symptoms, denied vomiting not positive. Packaging concern remains uncertain/unknown without invented defect. Neither medication assigned ambiguous two tablets/400 mg; both strengths unknown. Do not infer causality or choose an entity.",
+      "unsignedStatus": 302,
+      "anonymousShareAccess": true,
+      "operationId": "00d03635-6a75-4f89-a4c1-ac6dca213e5c",
+      "stage": "understanding",
+      "unrepresented": [],
+      "pendingDownloadReady": false,
+      "pendingPdfBlocked": true,
+      "acceptanceActions": [
+        {
+          "action": "review-opening-group",
+          "groupId": "patient",
+          "corrections": []
+        },
+        {
+          "action": "review-opening-group",
+          "groupId": "event",
+          "corrections": []
+        },
+        {
+          "action": "review-opening-group",
+          "groupId": "group-43fcb0b5-62a7-494a-81b6-b1563ce663b4",
+          "corrections": []
+        },
+        {
+          "action": "review-opening-group",
+          "groupId": "group-4accda89-572a-4561-a65f-ec2159520039",
+          "corrections": []
+        }
+      ],
+      "completionActions": [
+        {
+          "action": "answer-serious-outcomes",
+          "selected": [],
+          "disposition": "unknown"
+        },
+        {
+          "action": "answer-clinical-context",
+          "test": {
+            "kind": "unknown"
+          },
+          "history": {
+            "kind": "unknown"
+          }
+        },
+        {
+          "action": "answer-medication-history",
+          "productId": "product-6927cbf5-823c-49d9-942b-30ef0c112b04",
+          "answers": {
+            "stopped": {
+              "kind": "unknown"
+            },
+            "doseReduced": {
+              "kind": "unknown"
+            }
+          }
+        },
+        {
+          "action": "answer-medication-history",
+          "productId": "product-33b1e7b6-a786-444f-97a7-4e072206558e",
+          "answers": {
+            "stopped": {
+              "kind": "unknown"
+            },
+            "doseReduced": {
+              "kind": "unknown"
+            }
+          }
+        },
+        {
+          "action": "answer-reporter",
+          "reportDate": "2026-09-23",
+          "reporter": {
+            "kind": "provided",
+            "firstName": "Casey",
+            "lastName": "Reed",
+            "healthProfessional": true,
+            "occupation": "Physician",
+            "reportedTo": [],
+            "doNotDiscloseIdentity": true,
+            "email": "casey.reed@example.test"
+          }
+        }
+      ],
+      "downloaded": true,
+      "finishedAt": "2026-09-23T20:26:05.167Z",
+      "proposedFacts": [
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "identifier",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "U94"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "ageYears",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": 57
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "sex",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "female"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be",
+                "source-550cb76b-875e-4d43-a742-4ece6043febe",
+                "source-891c1f79-6fb1-42f7-9f4f-c473aad3b58e"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "problemDescription",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "possible packaging problem, unable to describe",
+                "qualifier": "stated as possibly present, not confirmed and not described"
+              },
+              "sourceIds": [
+                "source-550cb76b-875e-4d43-a742-4ece6043febe"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "symptoms",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": [
+                  "queasiness",
+                  "denies vomiting"
+                ]
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be",
+                "source-891c1f79-6fb1-42f7-9f4f-c473aad3b58e"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-6927cbf5-823c-49d9-942b-30ef0c112b04",
+          "field": "name",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "doxycycline"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-6927cbf5-823c-49d9-942b-30ef0c112b04",
+          "field": "productType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-6927cbf5-823c-49d9-942b-30ef0c112b04",
+          "field": "role",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-6927cbf5-823c-49d9-942b-30ef0c112b04",
+          "field": "strength",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-9287fc85-3736-4cd5-9efe-9d4133d1bb51"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-6927cbf5-823c-49d9-942b-30ef0c112b04",
+          "field": "indication",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "infection"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-33b1e7b6-a786-444f-97a7-4e072206558e",
+          "field": "name",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "ibuprofen"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-33b1e7b6-a786-444f-97a7-4e072206558e",
+          "field": "productType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-33b1e7b6-a786-444f-97a7-4e072206558e",
+          "field": "role",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-33b1e7b6-a786-444f-97a7-4e072206558e",
+          "field": "strength",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-9287fc85-3736-4cd5-9efe-9d4133d1bb51"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-33b1e7b6-a786-444f-97a7-4e072206558e",
+          "field": "indication",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "joint pain"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "source-dc831708-9afe-4183-848b-8e02bafa44be",
+          "inputId": "input-1b46db80-d07e-4cd0-85af-0d8b7a9ceae1",
+          "inputType": "narrative",
+          "excerpt": "Fictional patient U94, age 57, reported queasiness while taking suspect doxycycline for infection and suspect ibuprofen for joint pain. ",
+          "start": 0,
+          "end": 136,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:00.938Z"
+        },
+        {
+          "id": "source-550cb76b-875e-4d43-a742-4ece6043febe",
+          "inputId": "input-1b46db80-d07e-4cd0-85af-0d8b7a9ceae1",
+          "inputType": "narrative",
+          "excerpt": "She says there may have been a packaging problem but cannot describe it. ",
+          "start": 275,
+          "end": 348,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:00.938Z"
+        },
+        {
+          "id": "source-891c1f79-6fb1-42f7-9f4f-c473aad3b58e",
+          "inputId": "input-1b46db80-d07e-4cd0-85af-0d8b7a9ceae1",
+          "inputType": "narrative",
+          "excerpt": "She denies vomiting.",
+          "start": 348,
+          "end": 368,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:00.938Z"
+        },
+        {
+          "id": "source-9287fc85-3736-4cd5-9efe-9d4133d1bb51",
+          "inputId": "input-1b46db80-d07e-4cd0-85af-0d8b7a9ceae1",
+          "inputType": "narrative",
+          "excerpt": "Their label strengths are not known. ",
+          "start": 238,
+          "end": 275,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:00.938Z"
+        },
+        {
+          "id": "source-0dc57b33-4625-4fa3-b3c0-6eaca49a620e",
+          "inputId": "input-4da7d4d3-e2ac-4057-8842-5e258fd5a817",
+          "inputType": "selection",
+          "excerpt": "Adverse event and product problem",
+          "start": 0,
+          "end": 33,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:00.944Z"
+        },
+        {
+          "id": "source-4a09cda5-4483-4ded-b463-97bf4bb7f9e5",
+          "inputId": "input-ee9b8929-b9d2-41b8-8c33-d1a7d01b5f71",
+          "inputType": "answer",
+          "excerpt": "Additional serious outcomes are unknown.",
+          "start": 0,
+          "end": 40,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:02.038Z"
+        },
+        {
+          "id": "source-a50e82f3-4ea2-4707-b51f-ef949de92e6e",
+          "inputId": "input-d6cf63a9-8cff-4842-831f-2b0f3cba423d",
+          "inputType": "answer",
+          "excerpt": "Relevant tests: unknown. Relevant history: unknown.",
+          "start": 0,
+          "end": 51,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:02.241Z"
+        },
+        {
+          "id": "source-b681f415-5d4b-4492-9cec-63e0b7b7c2e5",
+          "inputId": "input-c2939a80-9562-468b-abad-f75f5608b690",
+          "inputType": "answer",
+          "excerpt": "doxycycline: stopped: unknown; dose reduced: unknown.",
+          "start": 0,
+          "end": 53,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:02.447Z"
+        },
+        {
+          "id": "source-fb710e8c-ba32-4dad-b406-a4c4b8e12d76",
+          "inputId": "input-fb0d20ed-1894-4014-bcad-530a0bed4f15",
+          "inputType": "answer",
+          "excerpt": "ibuprofen: stopped: unknown; dose reduced: unknown.",
+          "start": 0,
+          "end": 51,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:02.591Z"
+        },
+        {
+          "id": "source-7ed2e7a0-dad9-467b-9370-96f7faad3455",
+          "inputId": "input-c5531eef-dec2-47e5-9f2a-ce2e6d68684a",
+          "inputType": "reporter-entry",
+          "excerpt": "Reporter: Casey Reed. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: casey.reed@example.test. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes.",
+          "start": 0,
+          "end": 296,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:02.736Z"
+        },
+        {
+          "id": "source-932c7a63-474e-463f-a4aa-66298d5242ad",
+          "inputId": "input-d1e6c345-3b16-452e-a13a-664b947c6508",
+          "inputType": "selection",
+          "excerpt": "Date of this report: 2026-09-23.",
+          "start": 0,
+          "end": 32,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:02.749Z"
+        }
+      ],
+      "acceptedFacts": [
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "identifier",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "U94"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "ageYears",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": 57
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "sex",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "female"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be",
+                "source-550cb76b-875e-4d43-a742-4ece6043febe",
+                "source-891c1f79-6fb1-42f7-9f4f-c473aad3b58e"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "reportType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "adverse-event-and-product-problem"
+              },
+              "sourceIds": [
+                "source-0dc57b33-4625-4fa3-b3c0-6eaca49a620e"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "reportDate",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "2026-09-23"
+              },
+              "sourceIds": [
+                "source-932c7a63-474e-463f-a4aa-66298d5242ad"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "problemDescription",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "possible packaging problem, unable to describe",
+                "qualifier": "stated as possibly present, not confirmed and not described"
+              },
+              "sourceIds": [
+                "source-550cb76b-875e-4d43-a742-4ece6043febe"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "symptoms",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": [
+                  "queasiness",
+                  "denies vomiting"
+                ]
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be",
+                "source-891c1f79-6fb1-42f7-9f4f-c473aad3b58e"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "death",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-4a09cda5-4483-4ded-b463-97bf4bb7f9e5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "lifeThreatening",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-4a09cda5-4483-4ded-b463-97bf4bb7f9e5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "hospitalized",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-4a09cda5-4483-4ded-b463-97bf4bb7f9e5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "disability",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-4a09cda5-4483-4ded-b463-97bf4bb7f9e5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "requiredIntervention",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-4a09cda5-4483-4ded-b463-97bf4bb7f9e5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "congenitalAnomaly",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-4a09cda5-4483-4ded-b463-97bf4bb7f9e5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "otherSerious",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-4a09cda5-4483-4ded-b463-97bf4bb7f9e5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "relevantTestsAvailable",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-a50e82f3-4ea2-4707-b51f-ef949de92e6e"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "relevantHistory",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-a50e82f3-4ea2-4707-b51f-ef949de92e6e"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-6927cbf5-823c-49d9-942b-30ef0c112b04",
+          "field": "name",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "doxycycline"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-6927cbf5-823c-49d9-942b-30ef0c112b04",
+          "field": "productType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-6927cbf5-823c-49d9-942b-30ef0c112b04",
+          "field": "role",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-6927cbf5-823c-49d9-942b-30ef0c112b04",
+          "field": "strength",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-9287fc85-3736-4cd5-9efe-9d4133d1bb51"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-6927cbf5-823c-49d9-942b-30ef0c112b04",
+          "field": "indication",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "infection"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-6927cbf5-823c-49d9-942b-30ef0c112b04",
+          "field": "stopped",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-b681f415-5d4b-4492-9cec-63e0b7b7c2e5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-6927cbf5-823c-49d9-942b-30ef0c112b04",
+          "field": "doseReduced",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-b681f415-5d4b-4492-9cec-63e0b7b7c2e5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-33b1e7b6-a786-444f-97a7-4e072206558e",
+          "field": "name",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "ibuprofen"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-33b1e7b6-a786-444f-97a7-4e072206558e",
+          "field": "productType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-33b1e7b6-a786-444f-97a7-4e072206558e",
+          "field": "role",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-33b1e7b6-a786-444f-97a7-4e072206558e",
+          "field": "strength",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-9287fc85-3736-4cd5-9efe-9d4133d1bb51"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-33b1e7b6-a786-444f-97a7-4e072206558e",
+          "field": "indication",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "joint pain"
+              },
+              "sourceIds": [
+                "source-dc831708-9afe-4183-848b-8e02bafa44be"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-33b1e7b6-a786-444f-97a7-4e072206558e",
+          "field": "stopped",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-fb710e8c-ba32-4dad-b406-a4c4b8e12d76"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-33b1e7b6-a786-444f-97a7-4e072206558e",
+          "field": "doseReduced",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-fb710e8c-ba32-4dad-b406-a4c4b8e12d76"
+              ]
+            }
+          ]
+        }
+      ],
+      "independentPdfFields": {
+        "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]": "U94",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "57",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "23-SEP-2026",
+        "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Problem detail: possible packaging problem, unable to describe (stated as possibly present, not confirmed and not described). Symptoms: queasiness and denies vomiting.",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "doxycycline",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Diagnosis[0]": "infection",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2Name[0]": "ibuprofen",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2Diagnosis[0]": "joint pain",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].LastName[0]": "Reed",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].FirstName[0]": "Casey",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]": "casey.reed@example.test",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].ProYes[0]": "/1",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].Occupation[0]": "Physician",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]": "/1"
+      },
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-symptom-dose-fidelity-v2",
+        "schemaRevision": "wilson-grounded-proposals-v16-field-meaning",
+        "inputTokens": 6642,
+        "outputTokens": 2879,
+        "latencyMs": 23492,
+        "estimatedCostUsd": 0.042074
+      },
+      "sourceOffsetsChecked": true,
+      "pdfSha256": "a67d3e3898b5c706dc50f19b9104e594fd2b2867f0784d887dad4fb8356e3163",
+      "acceptedConflicts": [],
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 4
+    },
+    {
+      "id": "fresh-defect-and-denial",
+      "sha": "d51e9e22c8f56e945e391c87f4d3308732e9c796",
+      "deployment": "dpl_BKvRh746YCeQcjHTnz4Ze6XT6eWy",
+      "exposedAt": "2026-09-23T20:26:07.887Z",
+      "expected": "Damp/crumbling tablets in product complaint; numb mouth and tingling tongue plus explicit denied wheezing/fainting preserved together as patient manifestations with correct polarity. No false whole-list absence or internal conflict. Dose one and a half tablets plus 750 mg; strength 500 mg independently. No causality established.",
+      "unsignedStatus": 302,
+      "anonymousShareAccess": true,
+      "operationId": "dc2dad6d-1550-4ec4-8f16-79eebbf24d7e",
+      "stage": "understanding",
+      "unrepresented": [],
+      "pendingDownloadReady": false,
+      "pendingPdfBlocked": true,
+      "acceptanceActions": [
+        {
+          "action": "review-opening-group",
+          "groupId": "patient",
+          "corrections": []
+        },
+        {
+          "action": "review-opening-group",
+          "groupId": "event",
+          "corrections": []
+        },
+        {
+          "action": "review-opening-group",
+          "groupId": "group-2221bc70-8afd-48f9-bdc2-a878a204d700",
+          "corrections": []
+        }
+      ],
+      "completionActions": [
+        {
+          "action": "answer-indications",
+          "answers": [
+            {
+              "productId": "product-c8ae39be-c2ba-4dec-8f99-ceeb175c7b6d",
+              "value": {
+                "kind": "unknown"
+              }
+            }
+          ]
+        },
+        {
+          "action": "answer-serious-outcomes",
+          "selected": [],
+          "disposition": "unknown"
+        },
+        {
+          "action": "answer-clinical-context",
+          "test": {
+            "kind": "unknown"
+          },
+          "history": {
+            "kind": "unknown"
+          }
+        },
+        {
+          "action": "answer-medication-history",
+          "productId": "product-c8ae39be-c2ba-4dec-8f99-ceeb175c7b6d",
+          "answers": {
+            "stopped": {
+              "kind": "unknown"
+            },
+            "doseReduced": {
+              "kind": "unknown"
+            }
+          }
+        },
+        {
+          "action": "answer-reporter",
+          "reportDate": "2026-09-23",
+          "reporter": {
+            "kind": "provided",
+            "firstName": "Casey",
+            "lastName": "Reed",
+            "healthProfessional": true,
+            "occupation": "Physician",
+            "reportedTo": [],
+            "doNotDiscloseIdentity": true,
+            "email": "casey.reed@example.test"
+          }
+        }
+      ],
+      "downloaded": true,
+      "finishedAt": "2026-09-23T20:26:22.721Z",
+      "proposedFacts": [
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "identifier",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "N94"
+              },
+              "sourceIds": [
+                "source-3a35fc5c-8a75-4e7e-b01f-677a69a9735d"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "ageYears",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": 43
+              },
+              "sourceIds": [
+                "source-3a35fc5c-8a75-4e7e-b01f-677a69a9735d"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "problemDescription",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "The tablets had damp, crumbling edges"
+              },
+              "sourceIds": [
+                "source-a5dd8b3f-1407-4f16-896a-454b70018ed5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "symptoms",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": [
+                  "mouth felt numb",
+                  "tongue tingled",
+                  "denied any wheezing",
+                  "did not faint"
+                ]
+              },
+              "sourceIds": [
+                "source-1f5e0930-fad2-4b3b-9da6-3c3aca68faf3",
+                "source-fe53e5d9-d04a-4b98-b856-54b04f4b3f72"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c8ae39be-c2ba-4dec-8f99-ceeb175c7b6d",
+          "field": "name",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "clarithromycin"
+              },
+              "sourceIds": [
+                "source-3a35fc5c-8a75-4e7e-b01f-677a69a9735d"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c8ae39be-c2ba-4dec-8f99-ceeb175c7b6d",
+          "field": "productType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "sourceIds": [
+                "source-3a35fc5c-8a75-4e7e-b01f-677a69a9735d"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c8ae39be-c2ba-4dec-8f99-ceeb175c7b6d",
+          "field": "role",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "sourceIds": [
+                "source-3a35fc5c-8a75-4e7e-b01f-677a69a9735d"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c8ae39be-c2ba-4dec-8f99-ceeb175c7b6d",
+          "field": "dose",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "one and a half tablets, an explicitly recorded total of 750 mg each time"
+              },
+              "sourceIds": [
+                "source-3a35fc5c-8a75-4e7e-b01f-677a69a9735d"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c8ae39be-c2ba-4dec-8f99-ceeb175c7b6d",
+          "field": "strength",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "500 mg per tablet"
+              },
+              "sourceIds": [
+                "source-f9ef730c-8346-47b8-a56a-1983a0942634"
+              ]
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "source-3a35fc5c-8a75-4e7e-b01f-677a69a9735d",
+          "inputId": "input-e3f265c1-f81f-45aa-bbf0-b2ead09579b4",
+          "inputType": "narrative",
+          "excerpt": "Fictional patient N94, age 43, took suspect clarithromycin for an infection: one and a half tablets, an explicitly recorded total of 750 mg each time. ",
+          "start": 0,
+          "end": 151,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:19.267Z"
+        },
+        {
+          "id": "source-f9ef730c-8346-47b8-a56a-1983a0942634",
+          "inputId": "input-e3f265c1-f81f-45aa-bbf0-b2ead09579b4",
+          "inputType": "narrative",
+          "excerpt": "The label strength is 500 mg per tablet. ",
+          "start": 151,
+          "end": 192,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:19.267Z"
+        },
+        {
+          "id": "source-a5dd8b3f-1407-4f16-896a-454b70018ed5",
+          "inputId": "input-e3f265c1-f81f-45aa-bbf0-b2ead09579b4",
+          "inputType": "narrative",
+          "excerpt": "The tablets had damp, crumbling edges. ",
+          "start": 192,
+          "end": 231,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:19.267Z"
+        },
+        {
+          "id": "source-1f5e0930-fad2-4b3b-9da6-3c3aca68faf3",
+          "inputId": "input-e3f265c1-f81f-45aa-bbf0-b2ead09579b4",
+          "inputType": "narrative",
+          "excerpt": "Afterwards her mouth felt numb and her tongue tingled. ",
+          "start": 231,
+          "end": 286,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:19.267Z"
+        },
+        {
+          "id": "source-fe53e5d9-d04a-4b98-b856-54b04f4b3f72",
+          "inputId": "input-e3f265c1-f81f-45aa-bbf0-b2ead09579b4",
+          "inputType": "narrative",
+          "excerpt": "She denied any wheezing and did not faint. ",
+          "start": 286,
+          "end": 329,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:19.267Z"
+        },
+        {
+          "id": "source-880fbeeb-fc02-4fe3-8f76-22cfafe54063",
+          "inputId": "input-6858b15e-6846-48ee-bf9c-4defe7685823",
+          "inputType": "selection",
+          "excerpt": "Adverse event and product problem",
+          "start": 0,
+          "end": 33,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:19.269Z"
+        },
+        {
+          "id": "source-97aa3c4c-d526-4c6a-bf86-b26d27b2d211",
+          "inputId": "input-d3e61852-f561-4bc7-8580-6b2ba17cdf12",
+          "inputType": "answer",
+          "excerpt": "clarithromycin indication: unknown.",
+          "start": 0,
+          "end": 35,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:20.107Z"
+        },
+        {
+          "id": "source-cd0f7d34-f9c4-4816-9676-a5b7e07b4ef1",
+          "inputId": "input-da2855a4-be74-4620-83cd-bb4e56fe6011",
+          "inputType": "answer",
+          "excerpt": "Additional serious outcomes are unknown.",
+          "start": 0,
+          "end": 40,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:20.286Z"
+        },
+        {
+          "id": "source-297ec7fa-7a8d-47ec-9a9e-aa33d58fa255",
+          "inputId": "input-de0db3af-298f-4f9f-8c37-9c3bec5e6a9e",
+          "inputType": "answer",
+          "excerpt": "Relevant tests: unknown. Relevant history: unknown.",
+          "start": 0,
+          "end": 51,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:20.465Z"
+        },
+        {
+          "id": "source-c2ecafbd-8ea6-4f8b-b675-bfdb3f081049",
+          "inputId": "input-b76663db-0d9f-4e94-babb-918f0c84edf5",
+          "inputType": "answer",
+          "excerpt": "clarithromycin: stopped: unknown; dose reduced: unknown.",
+          "start": 0,
+          "end": 56,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:20.673Z"
+        },
+        {
+          "id": "source-3a7ea62d-46f8-44a7-a95d-771f01b3da81",
+          "inputId": "input-97c40e80-c59f-4a9c-a97a-f880a71b04ab",
+          "inputType": "reporter-entry",
+          "excerpt": "Reporter: Casey Reed. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: casey.reed@example.test. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes.",
+          "start": 0,
+          "end": 296,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:20.884Z"
+        },
+        {
+          "id": "source-b33dc373-8bab-4c36-af4f-df3dfd16f384",
+          "inputId": "input-e0d53c3d-ea80-4662-86e8-0fe8f322539e",
+          "inputType": "selection",
+          "excerpt": "Date of this report: 2026-09-23.",
+          "start": 0,
+          "end": 32,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:20.887Z"
+        }
+      ],
+      "acceptedFacts": [
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "identifier",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "N94"
+              },
+              "sourceIds": [
+                "source-3a35fc5c-8a75-4e7e-b01f-677a69a9735d"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "ageYears",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": 43
+              },
+              "sourceIds": [
+                "source-3a35fc5c-8a75-4e7e-b01f-677a69a9735d"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "reportType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "adverse-event-and-product-problem"
+              },
+              "sourceIds": [
+                "source-880fbeeb-fc02-4fe3-8f76-22cfafe54063"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "reportDate",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "2026-09-23"
+              },
+              "sourceIds": [
+                "source-b33dc373-8bab-4c36-af4f-df3dfd16f384"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "problemDescription",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "The tablets had damp, crumbling edges"
+              },
+              "sourceIds": [
+                "source-a5dd8b3f-1407-4f16-896a-454b70018ed5"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "symptoms",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": [
+                  "mouth felt numb",
+                  "tongue tingled",
+                  "denied any wheezing",
+                  "did not faint"
+                ]
+              },
+              "sourceIds": [
+                "source-1f5e0930-fad2-4b3b-9da6-3c3aca68faf3",
+                "source-fe53e5d9-d04a-4b98-b856-54b04f4b3f72"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "death",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-cd0f7d34-f9c4-4816-9676-a5b7e07b4ef1"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "lifeThreatening",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-cd0f7d34-f9c4-4816-9676-a5b7e07b4ef1"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "hospitalized",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-cd0f7d34-f9c4-4816-9676-a5b7e07b4ef1"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "disability",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-cd0f7d34-f9c4-4816-9676-a5b7e07b4ef1"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "requiredIntervention",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-cd0f7d34-f9c4-4816-9676-a5b7e07b4ef1"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "congenitalAnomaly",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-cd0f7d34-f9c4-4816-9676-a5b7e07b4ef1"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "otherSerious",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-cd0f7d34-f9c4-4816-9676-a5b7e07b4ef1"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "relevantTestsAvailable",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-297ec7fa-7a8d-47ec-9a9e-aa33d58fa255"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "relevantHistory",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-297ec7fa-7a8d-47ec-9a9e-aa33d58fa255"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c8ae39be-c2ba-4dec-8f99-ceeb175c7b6d",
+          "field": "name",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "clarithromycin"
+              },
+              "sourceIds": [
+                "source-3a35fc5c-8a75-4e7e-b01f-677a69a9735d"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c8ae39be-c2ba-4dec-8f99-ceeb175c7b6d",
+          "field": "productType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "sourceIds": [
+                "source-3a35fc5c-8a75-4e7e-b01f-677a69a9735d"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c8ae39be-c2ba-4dec-8f99-ceeb175c7b6d",
+          "field": "role",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "sourceIds": [
+                "source-3a35fc5c-8a75-4e7e-b01f-677a69a9735d"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c8ae39be-c2ba-4dec-8f99-ceeb175c7b6d",
+          "field": "dose",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "one and a half tablets, an explicitly recorded total of 750 mg each time"
+              },
+              "sourceIds": [
+                "source-3a35fc5c-8a75-4e7e-b01f-677a69a9735d"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c8ae39be-c2ba-4dec-8f99-ceeb175c7b6d",
+          "field": "strength",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "500 mg per tablet"
+              },
+              "sourceIds": [
+                "source-f9ef730c-8346-47b8-a56a-1983a0942634"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c8ae39be-c2ba-4dec-8f99-ceeb175c7b6d",
+          "field": "indication",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-97aa3c4c-d526-4c6a-bf86-b26d27b2d211"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c8ae39be-c2ba-4dec-8f99-ceeb175c7b6d",
+          "field": "stopped",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-c2ecafbd-8ea6-4f8b-b675-bfdb3f081049"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c8ae39be-c2ba-4dec-8f99-ceeb175c7b6d",
+          "field": "doseReduced",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-c2ecafbd-8ea6-4f8b-b675-bfdb3f081049"
+              ]
+            }
+          ]
+        }
+      ],
+      "independentPdfFields": {
+        "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]": "N94",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "43",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "23-SEP-2026",
+        "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Problem detail: The tablets had damp, crumbling edges. Symptoms: mouth felt numb and tongue tingled and denied any wheezing and did not faint.",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "clarithromycin",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Strength[0]": "500 mg per tablet",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1StrengthUnit[0]": "40",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]": "one and a half tablets, an explicitly recorded total of 750 mg each time",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1DoseUnit[0]": "40",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].LastName[0]": "Reed",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].FirstName[0]": "Casey",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]": "casey.reed@example.test",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].ProYes[0]": "/1",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].Occupation[0]": "Physician",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]": "/1"
+      },
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-symptom-dose-fidelity-v2",
+        "schemaRevision": "wilson-grounded-proposals-v16-field-meaning",
+        "inputTokens": 6672,
+        "outputTokens": 1451,
+        "latencyMs": 11298,
+        "estimatedCostUsd": 0.027854
+      },
+      "sourceOffsetsChecked": true,
+      "pdfSha256": "37fe0dae47839527023db81750e50634061b13245bc1a6021602d237f67e8296",
+      "acceptedConflicts": [],
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 5
+    },
+    {
+      "id": "fresh-uncertain-manifestation",
+      "sha": "d51e9e22c8f56e945e391c87f4d3308732e9c796",
+      "deployment": "dpl_BKvRh746YCeQcjHTnz4Ze6XT6eWy",
+      "exposedAt": "2026-09-23T20:26:26.700Z",
+      "expected": "Possible/uncertain muffled-hearing episode remains uncertain in review and B5, never confirmed hearing loss. Product complaint explicitly absent. Reportedly one tablet/40 mg retains dose uncertainty in review and D6. Strength unknown, not inferred. No arithmetic or invented causality.",
+      "unsignedStatus": 302,
+      "anonymousShareAccess": true,
+      "operationId": "1c845b1f-6610-40cd-a6c4-529f076db21a",
+      "stage": "understanding",
+      "unrepresented": [],
+      "pendingDownloadReady": false,
+      "pendingPdfBlocked": true,
+      "acceptanceActions": [
+        {
+          "action": "review-opening-group",
+          "groupId": "patient",
+          "corrections": []
+        },
+        {
+          "action": "review-opening-group",
+          "groupId": "event",
+          "corrections": []
+        },
+        {
+          "action": "review-opening-group",
+          "groupId": "group-0e5489e3-5555-45a5-9500-1f9fcfb17c67",
+          "corrections": []
+        }
+      ],
+      "completionActions": [
+        {
+          "action": "answer-serious-outcomes",
+          "selected": [],
+          "disposition": "unknown"
+        },
+        {
+          "action": "answer-clinical-context",
+          "test": {
+            "kind": "unknown"
+          },
+          "history": {
+            "kind": "unknown"
+          }
+        },
+        {
+          "action": "answer-medication-history",
+          "productId": "product-c68173c6-3cd7-478e-9aaf-27611f8f2744",
+          "answers": {
+            "stopped": {
+              "kind": "unknown"
+            },
+            "doseReduced": {
+              "kind": "unknown"
+            }
+          }
+        },
+        {
+          "action": "answer-reporter",
+          "reportDate": "2026-09-23",
+          "reporter": {
+            "kind": "provided",
+            "firstName": "Casey",
+            "lastName": "Reed",
+            "healthProfessional": true,
+            "occupation": "Physician",
+            "reportedTo": [],
+            "doNotDiscloseIdentity": true,
+            "email": "casey.reed@example.test"
+          }
+        }
+      ],
+      "downloaded": true,
+      "finishedAt": "2026-09-23T20:26:43.766Z",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-symptom-dose-fidelity-v2",
+        "schemaRevision": "wilson-grounded-proposals-v16-field-meaning",
+        "inputTokens": 6617,
+        "outputTokens": 1768,
+        "latencyMs": 13990,
+        "estimatedCostUsd": 0.030914
+      },
+      "proposedFacts": [
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "identifier",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "N95"
+              },
+              "sourceIds": [
+                "source-6b371239-045f-466a-baec-ddeca4cac917"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "ageYears",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": 66
+              },
+              "sourceIds": [
+                "source-6b371239-045f-466a-baec-ddeca4cac917"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "problemDescription",
+          "values": [
+            {
+              "value": {
+                "kind": "explicitly-absent"
+              },
+              "sourceIds": [
+                "source-fcb57cd3-e0ed-43d7-84bb-d8101d924f19"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "symptoms",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": [
+                  "brief episode of muffled hearing"
+                ],
+                "qualifier": "patient is not sure it occurred"
+              },
+              "sourceIds": [
+                "source-6b371239-045f-466a-baec-ddeca4cac917"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c68173c6-3cd7-478e-9aaf-27611f8f2744",
+          "field": "name",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "furosemide"
+              },
+              "sourceIds": [
+                "source-6b371239-045f-466a-baec-ddeca4cac917"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c68173c6-3cd7-478e-9aaf-27611f8f2744",
+          "field": "productType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "sourceIds": [
+                "source-6b371239-045f-466a-baec-ddeca4cac917"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c68173c6-3cd7-478e-9aaf-27611f8f2744",
+          "field": "role",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "sourceIds": [
+                "source-6b371239-045f-466a-baec-ddeca4cac917"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c68173c6-3cd7-478e-9aaf-27611f8f2744",
+          "field": "dose",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "one tablet, total 40 mg",
+                "qualifier": "reported dose, but medication diary is uncertain"
+              },
+              "sourceIds": [
+                "source-915db108-6ee0-4cb0-bdbb-d1d37cc4b441"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c68173c6-3cd7-478e-9aaf-27611f8f2744",
+          "field": "strength",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-73d085ce-1f8e-41d4-bc3f-bca238633ee2"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c68173c6-3cd7-478e-9aaf-27611f8f2744",
+          "field": "indication",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "edema"
+              },
+              "sourceIds": [
+                "source-6b371239-045f-466a-baec-ddeca4cac917"
+              ]
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "source-6b371239-045f-466a-baec-ddeca4cac917",
+          "inputId": "input-e757057d-3f6b-43ee-92ea-73d923c59a97",
+          "inputType": "narrative",
+          "excerpt": "Fictional patient N95, age 66, may have had a brief episode of muffled hearing after suspect furosemide for edema; the patient is not sure it occurred. ",
+          "start": 0,
+          "end": 152,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:40.838Z"
+        },
+        {
+          "id": "source-915db108-6ee0-4cb0-bdbb-d1d37cc4b441",
+          "inputId": "input-e757057d-3f6b-43ee-92ea-73d923c59a97",
+          "inputType": "narrative",
+          "excerpt": "The dose was reportedly one tablet, total 40 mg, but the medication diary is uncertain. ",
+          "start": 152,
+          "end": 240,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:40.838Z"
+        },
+        {
+          "id": "source-73d085ce-1f8e-41d4-bc3f-bca238633ee2",
+          "inputId": "input-e757057d-3f6b-43ee-92ea-73d923c59a97",
+          "inputType": "narrative",
+          "excerpt": "Tablet strength was not available. ",
+          "start": 240,
+          "end": 275,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:40.838Z"
+        },
+        {
+          "id": "source-fcb57cd3-e0ed-43d7-84bb-d8101d924f19",
+          "inputId": "input-e757057d-3f6b-43ee-92ea-73d923c59a97",
+          "inputType": "narrative",
+          "excerpt": "No defect of the tablets or their packaging was observed.",
+          "start": 275,
+          "end": 332,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:40.838Z"
+        },
+        {
+          "id": "source-a991070f-7897-450f-925e-679cf1c51662",
+          "inputId": "input-4eb2458d-41e4-4de8-b7b5-0e0e39532852",
+          "inputType": "selection",
+          "excerpt": "Adverse event",
+          "start": 0,
+          "end": 13,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:40.841Z"
+        },
+        {
+          "id": "source-a65106d7-4aa5-48e6-b8b8-c30bade1223b",
+          "inputId": "input-741d0a64-5422-4018-97ea-e1fd0258f778",
+          "inputType": "answer",
+          "excerpt": "Additional serious outcomes are unknown.",
+          "start": 0,
+          "end": 40,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:41.653Z"
+        },
+        {
+          "id": "source-2d2db2ee-cab3-4c8c-8b98-0c5dd6733428",
+          "inputId": "input-9e97e010-0f30-4bc3-ade7-9b40f434c300",
+          "inputType": "answer",
+          "excerpt": "Relevant tests: unknown. Relevant history: unknown.",
+          "start": 0,
+          "end": 51,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:41.839Z"
+        },
+        {
+          "id": "source-3eb64c38-0f80-44b7-a1f1-044435b3b638",
+          "inputId": "input-dbda23ba-b9ca-4e49-9a67-38644f5bd20d",
+          "inputType": "answer",
+          "excerpt": "furosemide: stopped: unknown; dose reduced: unknown.",
+          "start": 0,
+          "end": 52,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:42.033Z"
+        },
+        {
+          "id": "source-02671ae0-5bc8-4728-8d26-0308ee35ed35",
+          "inputId": "input-7cf4f3f4-82a3-48f5-be35-b80c8c78cd40",
+          "inputType": "reporter-entry",
+          "excerpt": "Reporter: Casey Reed. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: casey.reed@example.test. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes.",
+          "start": 0,
+          "end": 296,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:42.155Z"
+        },
+        {
+          "id": "source-25b4c1a3-2cb3-4476-91d0-02cfaf4e0e92",
+          "inputId": "input-f73e68d7-207e-4e42-9acd-4386b258183b",
+          "inputType": "selection",
+          "excerpt": "Date of this report: 2026-09-23.",
+          "start": 0,
+          "end": 32,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:26:42.159Z"
+        }
+      ],
+      "acceptedFacts": [
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "identifier",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "N95"
+              },
+              "sourceIds": [
+                "source-6b371239-045f-466a-baec-ddeca4cac917"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "ageYears",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": 66
+              },
+              "sourceIds": [
+                "source-6b371239-045f-466a-baec-ddeca4cac917"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "reportType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "adverse-event"
+              },
+              "sourceIds": [
+                "source-a991070f-7897-450f-925e-679cf1c51662"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "reportDate",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "2026-09-23"
+              },
+              "sourceIds": [
+                "source-25b4c1a3-2cb3-4476-91d0-02cfaf4e0e92"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "problemDescription",
+          "values": [
+            {
+              "value": {
+                "kind": "explicitly-absent"
+              },
+              "sourceIds": [
+                "source-fcb57cd3-e0ed-43d7-84bb-d8101d924f19"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "symptoms",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": [
+                  "brief episode of muffled hearing"
+                ],
+                "qualifier": "patient is not sure it occurred"
+              },
+              "sourceIds": [
+                "source-6b371239-045f-466a-baec-ddeca4cac917"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "death",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-a65106d7-4aa5-48e6-b8b8-c30bade1223b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "lifeThreatening",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-a65106d7-4aa5-48e6-b8b8-c30bade1223b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "hospitalized",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-a65106d7-4aa5-48e6-b8b8-c30bade1223b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "disability",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-a65106d7-4aa5-48e6-b8b8-c30bade1223b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "requiredIntervention",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-a65106d7-4aa5-48e6-b8b8-c30bade1223b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "congenitalAnomaly",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-a65106d7-4aa5-48e6-b8b8-c30bade1223b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "otherSerious",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-a65106d7-4aa5-48e6-b8b8-c30bade1223b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "relevantTestsAvailable",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-2d2db2ee-cab3-4c8c-8b98-0c5dd6733428"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "relevantHistory",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-2d2db2ee-cab3-4c8c-8b98-0c5dd6733428"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c68173c6-3cd7-478e-9aaf-27611f8f2744",
+          "field": "name",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "furosemide"
+              },
+              "sourceIds": [
+                "source-6b371239-045f-466a-baec-ddeca4cac917"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c68173c6-3cd7-478e-9aaf-27611f8f2744",
+          "field": "productType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "sourceIds": [
+                "source-6b371239-045f-466a-baec-ddeca4cac917"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c68173c6-3cd7-478e-9aaf-27611f8f2744",
+          "field": "role",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "sourceIds": [
+                "source-6b371239-045f-466a-baec-ddeca4cac917"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c68173c6-3cd7-478e-9aaf-27611f8f2744",
+          "field": "dose",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "one tablet, total 40 mg",
+                "qualifier": "reported dose, but medication diary is uncertain"
+              },
+              "sourceIds": [
+                "source-915db108-6ee0-4cb0-bdbb-d1d37cc4b441"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c68173c6-3cd7-478e-9aaf-27611f8f2744",
+          "field": "strength",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-73d085ce-1f8e-41d4-bc3f-bca238633ee2"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c68173c6-3cd7-478e-9aaf-27611f8f2744",
+          "field": "indication",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "edema"
+              },
+              "sourceIds": [
+                "source-6b371239-045f-466a-baec-ddeca4cac917"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c68173c6-3cd7-478e-9aaf-27611f8f2744",
+          "field": "stopped",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-3eb64c38-0f80-44b7-a1f1-044435b3b638"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-c68173c6-3cd7-478e-9aaf-27611f8f2744",
+          "field": "doseReduced",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-3eb64c38-0f80-44b7-a1f1-044435b3b638"
+              ]
+            }
+          ]
+        }
+      ],
+      "independentPdfFields": {
+        "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]": "N95",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "66",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "23-SEP-2026",
+        "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Symptoms: brief episode of muffled hearing (patient is not sure it occurred).",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "furosemide",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]": "one tablet, total 40 mg (reported dose, but medication diary is uncertain)",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1DoseUnit[0]": "40",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Diagnosis[0]": "edema",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].LastName[0]": "Reed",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].FirstName[0]": "Casey",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]": "casey.reed@example.test",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].ProYes[0]": "/1",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].Occupation[0]": "Physician",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]": "/1"
+      },
+      "sourceOffsetsChecked": true,
+      "pdfSha256": "b74fdb77bf4105e06ae754b7514bc4a204a8e4a37da8d9c0308dcce071bc9f36",
+      "acceptedConflicts": [],
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 4
+    },
+    {
+      "id": "fresh-quality-negative",
+      "sha": "d51e9e22c8f56e945e391c87f4d3308732e9c796",
+      "deployment": "dpl_BKvRh746YCeQcjHTnz4Ze6XT6eWy",
+      "exposedAt": "2026-09-23T20:26:58.822Z",
+      "expected": "Loose cap/thread in problemDescription; symptoms explicitly absent; no patient or administered dose invented. Label concentration 5 mg/mL retained independently. No adverse event invented.",
+      "unsignedStatus": 302,
+      "anonymousShareAccess": true,
+      "operationId": "6c876541-0612-4c8b-9d03-51ab108b2512",
+      "stage": "understanding",
+      "unrepresented": [],
+      "pendingDownloadReady": false,
+      "pendingPdfBlocked": true,
+      "acceptanceActions": [
+        {
+          "action": "review-opening-group",
+          "groupId": "patient",
+          "corrections": []
+        },
+        {
+          "action": "review-opening-group",
+          "groupId": "event",
+          "corrections": []
+        },
+        {
+          "action": "review-opening-group",
+          "groupId": "group-c2b4d4b4-a3bc-4f25-a372-ec13ae004cbc",
+          "corrections": []
+        }
+      ],
+      "completionActions": [
+        {
+          "action": "answer-reporter",
+          "reportDate": "2026-09-23",
+          "reporter": {
+            "kind": "provided",
+            "firstName": "Casey",
+            "lastName": "Reed",
+            "healthProfessional": true,
+            "occupation": "Physician",
+            "reportedTo": [],
+            "doNotDiscloseIdentity": true,
+            "email": "casey.reed@example.test"
+          }
+        }
+      ],
+      "downloaded": true,
+      "finishedAt": "2026-09-23T20:27:18.646Z",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-symptom-dose-fidelity-v2",
+        "schemaRevision": "wilson-grounded-proposals-v16-field-meaning",
+        "inputTokens": 6625,
+        "outputTokens": 1744,
+        "latencyMs": 17266,
+        "estimatedCostUsd": 0.03069
+      },
+      "proposedFacts": [
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "problemDescription",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "loose cap and a visible thread floating in it"
+              },
+              "sourceIds": [
+                "source-8978a9ee-6ac8-4261-9a3c-967f07133050"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "symptoms",
+          "values": [
+            {
+              "value": {
+                "kind": "explicitly-absent"
+              },
+              "sourceIds": [
+                "source-7b776000-4396-4823-9fa1-f35515a627b0",
+                "source-351e9b29-d3dd-44db-8302-afed6f9ae4a4"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "productAvailability",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "available"
+              },
+              "sourceIds": [
+                "source-bf693c8b-9621-4154-b92b-708553f475e0"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-f6ed5a4e-f6a4-475e-8c5c-a2d41b1841b8",
+          "field": "name",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "Optivex solution"
+              },
+              "sourceIds": [
+                "source-8978a9ee-6ac8-4261-9a3c-967f07133050"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-f6ed5a4e-f6a4-475e-8c5c-a2d41b1841b8",
+          "field": "productType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "sourceIds": [
+                "source-8978a9ee-6ac8-4261-9a3c-967f07133050",
+                "source-009ac874-279f-4551-8f44-7735546ab51b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-f6ed5a4e-f6a4-475e-8c5c-a2d41b1841b8",
+          "field": "role",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "sourceIds": [
+                "source-d1192e9d-3c0a-4a9b-8f7f-8e57588bace2"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-f6ed5a4e-f6a4-475e-8c5c-a2d41b1841b8",
+          "field": "strength",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "5 mg/mL"
+              },
+              "sourceIds": [
+                "source-009ac874-279f-4551-8f44-7735546ab51b"
+              ]
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "source-8978a9ee-6ac8-4261-9a3c-967f07133050",
+          "inputId": "input-352f71d6-d613-4941-8a38-098531e8e6a2",
+          "inputType": "narrative",
+          "excerpt": "An unopened vial of fictional Optivex solution had a loose cap and a visible thread floating in it. ",
+          "start": 0,
+          "end": 100,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:16.166Z"
+        },
+        {
+          "id": "source-009ac874-279f-4551-8f44-7735546ab51b",
+          "inputId": "input-352f71d6-d613-4941-8a38-098531e8e6a2",
+          "inputType": "narrative",
+          "excerpt": "The label says 5 mg/mL. ",
+          "start": 100,
+          "end": 124,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:16.166Z"
+        },
+        {
+          "id": "source-d1192e9d-3c0a-4a9b-8f7f-8e57588bace2",
+          "inputId": "input-352f71d6-d613-4941-8a38-098531e8e6a2",
+          "inputType": "narrative",
+          "excerpt": "I am reporting the vial as suspect. ",
+          "start": 124,
+          "end": 160,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:16.166Z"
+        },
+        {
+          "id": "source-7b776000-4396-4823-9fa1-f35515a627b0",
+          "inputId": "input-352f71d6-d613-4941-8a38-098531e8e6a2",
+          "inputType": "narrative",
+          "excerpt": "It was never administered and no patient was affected. ",
+          "start": 160,
+          "end": 215,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:16.166Z"
+        },
+        {
+          "id": "source-351e9b29-d3dd-44db-8302-afed6f9ae4a4",
+          "inputId": "input-352f71d6-d613-4941-8a38-098531e8e6a2",
+          "inputType": "narrative",
+          "excerpt": "There were no symptoms. ",
+          "start": 215,
+          "end": 239,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:16.166Z"
+        },
+        {
+          "id": "source-bf693c8b-9621-4154-b92b-708553f475e0",
+          "inputId": "input-352f71d6-d613-4941-8a38-098531e8e6a2",
+          "inputType": "narrative",
+          "excerpt": "The vial remains available for evaluation.",
+          "start": 239,
+          "end": 281,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:16.166Z"
+        },
+        {
+          "id": "source-d16b0f16-6d05-4868-843b-9a80c1bb2a1e",
+          "inputId": "input-ea9936b3-8d33-496b-8584-072e1b59b8a4",
+          "inputType": "selection",
+          "excerpt": "Product problem",
+          "start": 0,
+          "end": 15,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:16.169Z"
+        },
+        {
+          "id": "source-9f8780b7-1866-4a21-92c1-d8cfe4a2e2b2",
+          "inputId": "input-ae56b0c0-a390-479a-9bb8-84aa45c164ce",
+          "inputType": "reporter-entry",
+          "excerpt": "Reporter: Casey Reed. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: casey.reed@example.test. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes.",
+          "start": 0,
+          "end": 296,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:17.068Z"
+        },
+        {
+          "id": "source-217b2439-9295-460f-9a67-42987eb03330",
+          "inputId": "input-9446665c-3971-4e7d-b007-589612c73701",
+          "inputType": "selection",
+          "excerpt": "Date of this report: 2026-09-23.",
+          "start": 0,
+          "end": 32,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:17.072Z"
+        }
+      ],
+      "acceptedFacts": [
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "reportType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "product-problem"
+              },
+              "sourceIds": [
+                "source-d16b0f16-6d05-4868-843b-9a80c1bb2a1e"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "reportDate",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "2026-09-23"
+              },
+              "sourceIds": [
+                "source-217b2439-9295-460f-9a67-42987eb03330"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "problemDescription",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "loose cap and a visible thread floating in it"
+              },
+              "sourceIds": [
+                "source-8978a9ee-6ac8-4261-9a3c-967f07133050"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "symptoms",
+          "values": [
+            {
+              "value": {
+                "kind": "explicitly-absent"
+              },
+              "sourceIds": [
+                "source-7b776000-4396-4823-9fa1-f35515a627b0",
+                "source-351e9b29-d3dd-44db-8302-afed6f9ae4a4"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "productAvailability",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "available"
+              },
+              "sourceIds": [
+                "source-bf693c8b-9621-4154-b92b-708553f475e0"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-f6ed5a4e-f6a4-475e-8c5c-a2d41b1841b8",
+          "field": "name",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "Optivex solution"
+              },
+              "sourceIds": [
+                "source-8978a9ee-6ac8-4261-9a3c-967f07133050"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-f6ed5a4e-f6a4-475e-8c5c-a2d41b1841b8",
+          "field": "productType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "sourceIds": [
+                "source-8978a9ee-6ac8-4261-9a3c-967f07133050",
+                "source-009ac874-279f-4551-8f44-7735546ab51b"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-f6ed5a4e-f6a4-475e-8c5c-a2d41b1841b8",
+          "field": "role",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "sourceIds": [
+                "source-d1192e9d-3c0a-4a9b-8f7f-8e57588bace2"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-f6ed5a4e-f6a4-475e-8c5c-a2d41b1841b8",
+          "field": "strength",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "5 mg/mL"
+              },
+              "sourceIds": [
+                "source-009ac874-279f-4551-8f44-7735546ab51b"
+              ]
+            }
+          ]
+        }
+      ],
+      "independentPdfFields": {
+        "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "23-SEP-2026",
+        "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Problem detail: loose cap and a visible thread floating in it.",
+        "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/1",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "Optivex solution",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Strength[0]": "5",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1StrengthUnit[0]": "29",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].LastName[0]": "Reed",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].FirstName[0]": "Casey",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]": "casey.reed@example.test",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].ProYes[0]": "/1",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].Occupation[0]": "Physician",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]": "/1"
+      },
+      "sourceOffsetsChecked": true,
+      "pdfSha256": "1d2cc171732f3aaa7e31e02fa8016e11059c541a0bfbe2325ea80bea20ff1fef",
+      "acceptedConflicts": [],
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 6
+    },
+    {
+      "id": "fresh-count-attribution",
+      "sha": "d51e9e22c8f56e945e391c87f4d3308732e9c796",
+      "deployment": "dpl_BKvRh746YCeQcjHTnz4Ze6XT6eWy",
+      "exposedAt": "2026-09-23T20:27:31.747Z",
+      "expected": "Intermittent left-ear buzzing and no ear pain retained in symptoms, no inferred diagnosis. Product complaint explicitly absent. Aspirin dose two caplets only, strength 325 mg, never computed 650 mg. Famotidine one tablet/20 mg dose, strength unknown. No cross-product quantity assignment.",
+      "unsignedStatus": 302,
+      "anonymousShareAccess": true,
+      "operationId": "15f4c25a-770a-4c4f-8f16-4885b5664cfd",
+      "stage": "understanding",
+      "unrepresented": [],
+      "pendingDownloadReady": false,
+      "pendingPdfBlocked": true,
+      "acceptanceActions": [
+        {
+          "action": "review-opening-group",
+          "groupId": "patient",
+          "corrections": []
+        },
+        {
+          "action": "review-opening-group",
+          "groupId": "event",
+          "corrections": []
+        },
+        {
+          "action": "review-opening-group",
+          "groupId": "group-8dd05833-60cd-44b6-a70b-b53e8ff7c188",
+          "corrections": []
+        },
+        {
+          "action": "review-opening-group",
+          "groupId": "group-0fa8a362-72b6-4d61-ba5f-e6b71c8a468d",
+          "corrections": []
+        }
+      ],
+      "completionActions": [
+        {
+          "action": "answer-serious-outcomes",
+          "selected": [],
+          "disposition": "unknown"
+        },
+        {
+          "action": "answer-clinical-context",
+          "test": {
+            "kind": "unknown"
+          },
+          "history": {
+            "kind": "unknown"
+          }
+        },
+        {
+          "action": "answer-medication-history",
+          "productId": "product-50bc1e71-40a1-41d4-a4af-595931890c07",
+          "answers": {
+            "stopped": {
+              "kind": "unknown"
+            },
+            "doseReduced": {
+              "kind": "unknown"
+            }
+          }
+        },
+        {
+          "action": "answer-medication-history",
+          "productId": "product-086e44c3-f7b5-4d42-9dc4-9d39bbeacf40",
+          "answers": {
+            "stopped": {
+              "kind": "unknown"
+            },
+            "doseReduced": {
+              "kind": "unknown"
+            }
+          }
+        },
+        {
+          "action": "answer-reporter",
+          "reportDate": "2026-09-23",
+          "reporter": {
+            "kind": "provided",
+            "firstName": "Casey",
+            "lastName": "Reed",
+            "healthProfessional": true,
+            "occupation": "Physician",
+            "reportedTo": [],
+            "doNotDiscloseIdentity": true,
+            "email": "casey.reed@example.test"
+          }
+        }
+      ],
+      "downloaded": true,
+      "finishedAt": "2026-09-23T20:27:56.024Z",
+      "proposedFacts": [
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "identifier",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "N96"
+              },
+              "sourceIds": [
+                "source-07b78a22-9235-4d4b-b815-26cdcf0d90ad"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "ageYears",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": 49
+              },
+              "sourceIds": [
+                "source-07b78a22-9235-4d4b-b815-26cdcf0d90ad"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "symptoms",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": [
+                  "intermittent buzzing in the left ear",
+                  "no ear pain"
+                ]
+              },
+              "sourceIds": [
+                "source-07b78a22-9235-4d4b-b815-26cdcf0d90ad"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-50bc1e71-40a1-41d4-a4af-595931890c07",
+          "field": "name",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "aspirin"
+              },
+              "sourceIds": [
+                "source-64e24db9-02ae-4a77-9798-4823933ef5fb"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-50bc1e71-40a1-41d4-a4af-595931890c07",
+          "field": "productType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "sourceIds": [
+                "source-64e24db9-02ae-4a77-9798-4823933ef5fb"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-50bc1e71-40a1-41d4-a4af-595931890c07",
+          "field": "role",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "sourceIds": [
+                "source-64e24db9-02ae-4a77-9798-4823933ef5fb"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-50bc1e71-40a1-41d4-a4af-595931890c07",
+          "field": "dose",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "two caplets per dose"
+              },
+              "sourceIds": [
+                "source-64e24db9-02ae-4a77-9798-4823933ef5fb"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-50bc1e71-40a1-41d4-a4af-595931890c07",
+          "field": "strength",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "325 mg"
+              },
+              "sourceIds": [
+                "source-64e24db9-02ae-4a77-9798-4823933ef5fb"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-50bc1e71-40a1-41d4-a4af-595931890c07",
+          "field": "indication",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "joint pain"
+              },
+              "sourceIds": [
+                "source-64e24db9-02ae-4a77-9798-4823933ef5fb"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-086e44c3-f7b5-4d42-9dc4-9d39bbeacf40",
+          "field": "name",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "famotidine"
+              },
+              "sourceIds": [
+                "source-19a54b6f-ce9d-46a7-bc20-bf32d7dba0fd"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-086e44c3-f7b5-4d42-9dc4-9d39bbeacf40",
+          "field": "productType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "sourceIds": [
+                "source-19a54b6f-ce9d-46a7-bc20-bf32d7dba0fd"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-086e44c3-f7b5-4d42-9dc4-9d39bbeacf40",
+          "field": "role",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "sourceIds": [
+                "source-19a54b6f-ce9d-46a7-bc20-bf32d7dba0fd"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-086e44c3-f7b5-4d42-9dc4-9d39bbeacf40",
+          "field": "dose",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "one tablet per dose, 20 mg total"
+              },
+              "sourceIds": [
+                "source-19a54b6f-ce9d-46a7-bc20-bf32d7dba0fd"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-086e44c3-f7b5-4d42-9dc4-9d39bbeacf40",
+          "field": "strength",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-19a54b6f-ce9d-46a7-bc20-bf32d7dba0fd"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-086e44c3-f7b5-4d42-9dc4-9d39bbeacf40",
+          "field": "indication",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "heartburn"
+              },
+              "sourceIds": [
+                "source-19a54b6f-ce9d-46a7-bc20-bf32d7dba0fd"
+              ]
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "source-07b78a22-9235-4d4b-b815-26cdcf0d90ad",
+          "inputId": "input-28e55a35-ff24-484a-a45d-edf82a5d7b08",
+          "inputType": "narrative",
+          "excerpt": "Fictional patient N96, age 49, noticed intermittent buzzing in the left ear without ear pain. ",
+          "start": 0,
+          "end": 94,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:52.590Z"
+        },
+        {
+          "id": "source-64e24db9-02ae-4a77-9798-4823933ef5fb",
+          "inputId": "input-28e55a35-ff24-484a-a45d-edf82a5d7b08",
+          "inputType": "narrative",
+          "excerpt": "Suspect aspirin for joint pain was taken as two caplets per dose; each caplet is labelled 325 mg, and no total milligram dose was supplied. ",
+          "start": 94,
+          "end": 234,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:52.590Z"
+        },
+        {
+          "id": "source-19a54b6f-ce9d-46a7-bc20-bf32d7dba0fd",
+          "inputId": "input-28e55a35-ff24-484a-a45d-edf82a5d7b08",
+          "inputType": "narrative",
+          "excerpt": "Suspect famotidine for heartburn was one tablet per dose, expressly stated as 20 mg in total; its label strength is unknown. ",
+          "start": 234,
+          "end": 359,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:52.590Z"
+        },
+        {
+          "id": "source-530faaba-1a06-44a8-b167-9f4826b903c2",
+          "inputId": "input-7e53031a-2bbb-4e44-abf4-284576349901",
+          "inputType": "selection",
+          "excerpt": "Adverse event",
+          "start": 0,
+          "end": 13,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:52.594Z"
+        },
+        {
+          "id": "source-48ec049b-2db0-4410-b5ba-efbb3220aa68",
+          "inputId": "input-c236f3b6-f112-4797-9ed4-118c6f37983c",
+          "inputType": "answer",
+          "excerpt": "Additional serious outcomes are unknown.",
+          "start": 0,
+          "end": 40,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:53.494Z"
+        },
+        {
+          "id": "source-fe8805fe-a805-43f5-a90c-3ec58ac3ee3c",
+          "inputId": "input-9f0b8651-0e60-4aaa-90bb-aa0c0db9c668",
+          "inputType": "answer",
+          "excerpt": "Relevant tests: unknown. Relevant history: unknown.",
+          "start": 0,
+          "end": 51,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:53.635Z"
+        },
+        {
+          "id": "source-01ee983b-b28a-4aae-b4fc-7294a865ee45",
+          "inputId": "input-fa23f0d5-46d0-4185-bb22-2921ca169f1f",
+          "inputType": "answer",
+          "excerpt": "aspirin: stopped: unknown; dose reduced: unknown.",
+          "start": 0,
+          "end": 49,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:53.842Z"
+        },
+        {
+          "id": "source-d6bc5933-6a73-4d29-b005-9a8d10e2b28c",
+          "inputId": "input-f6b96748-d06f-439c-b77c-8f85ac028810",
+          "inputType": "answer",
+          "excerpt": "famotidine: stopped: unknown; dose reduced: unknown.",
+          "start": 0,
+          "end": 52,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:54.090Z"
+        },
+        {
+          "id": "source-8a38c227-ca9d-43f6-9ef6-b93671e991f8",
+          "inputId": "input-469f5bcd-69c4-47a3-8606-811651df68ac",
+          "inputType": "reporter-entry",
+          "excerpt": "Reporter: Casey Reed. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: casey.reed@example.test. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes.",
+          "start": 0,
+          "end": 296,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:54.335Z"
+        },
+        {
+          "id": "source-1b2d6a5d-08f0-42e0-be11-ef24347c95ea",
+          "inputId": "input-d49adae0-929f-43f3-a126-b668ab263c18",
+          "inputType": "selection",
+          "excerpt": "Date of this report: 2026-09-23.",
+          "start": 0,
+          "end": 32,
+          "actor": "clinician",
+          "recordedAt": "2026-09-23T20:27:54.348Z"
+        }
+      ],
+      "acceptedFacts": [
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "identifier",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "N96"
+              },
+              "sourceIds": [
+                "source-07b78a22-9235-4d4b-b815-26cdcf0d90ad"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "patient",
+          "entityId": "patient",
+          "field": "ageYears",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": 49
+              },
+              "sourceIds": [
+                "source-07b78a22-9235-4d4b-b815-26cdcf0d90ad"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "reportType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "adverse-event"
+              },
+              "sourceIds": [
+                "source-530faaba-1a06-44a8-b167-9f4826b903c2"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "reportDate",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "2026-09-23"
+              },
+              "sourceIds": [
+                "source-1b2d6a5d-08f0-42e0-be11-ef24347c95ea"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "symptoms",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": [
+                  "intermittent buzzing in the left ear",
+                  "no ear pain"
+                ]
+              },
+              "sourceIds": [
+                "source-07b78a22-9235-4d4b-b815-26cdcf0d90ad"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "death",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-48ec049b-2db0-4410-b5ba-efbb3220aa68"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "lifeThreatening",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-48ec049b-2db0-4410-b5ba-efbb3220aa68"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "hospitalized",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-48ec049b-2db0-4410-b5ba-efbb3220aa68"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "disability",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-48ec049b-2db0-4410-b5ba-efbb3220aa68"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "requiredIntervention",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-48ec049b-2db0-4410-b5ba-efbb3220aa68"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "congenitalAnomaly",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-48ec049b-2db0-4410-b5ba-efbb3220aa68"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "otherSerious",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-48ec049b-2db0-4410-b5ba-efbb3220aa68"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "relevantTestsAvailable",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-fe8805fe-a805-43f5-a90c-3ec58ac3ee3c"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "event",
+          "entityId": "event",
+          "field": "relevantHistory",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-fe8805fe-a805-43f5-a90c-3ec58ac3ee3c"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-50bc1e71-40a1-41d4-a4af-595931890c07",
+          "field": "name",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "aspirin"
+              },
+              "sourceIds": [
+                "source-64e24db9-02ae-4a77-9798-4823933ef5fb"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-50bc1e71-40a1-41d4-a4af-595931890c07",
+          "field": "productType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "sourceIds": [
+                "source-64e24db9-02ae-4a77-9798-4823933ef5fb"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-50bc1e71-40a1-41d4-a4af-595931890c07",
+          "field": "role",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "sourceIds": [
+                "source-64e24db9-02ae-4a77-9798-4823933ef5fb"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-50bc1e71-40a1-41d4-a4af-595931890c07",
+          "field": "dose",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "two caplets per dose"
+              },
+              "sourceIds": [
+                "source-64e24db9-02ae-4a77-9798-4823933ef5fb"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-50bc1e71-40a1-41d4-a4af-595931890c07",
+          "field": "strength",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "325 mg"
+              },
+              "sourceIds": [
+                "source-64e24db9-02ae-4a77-9798-4823933ef5fb"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-50bc1e71-40a1-41d4-a4af-595931890c07",
+          "field": "indication",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "joint pain"
+              },
+              "sourceIds": [
+                "source-64e24db9-02ae-4a77-9798-4823933ef5fb"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-50bc1e71-40a1-41d4-a4af-595931890c07",
+          "field": "stopped",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-01ee983b-b28a-4aae-b4fc-7294a865ee45"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-50bc1e71-40a1-41d4-a4af-595931890c07",
+          "field": "doseReduced",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-01ee983b-b28a-4aae-b4fc-7294a865ee45"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-086e44c3-f7b5-4d42-9dc4-9d39bbeacf40",
+          "field": "name",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "famotidine"
+              },
+              "sourceIds": [
+                "source-19a54b6f-ce9d-46a7-bc20-bf32d7dba0fd"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-086e44c3-f7b5-4d42-9dc4-9d39bbeacf40",
+          "field": "productType",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "sourceIds": [
+                "source-19a54b6f-ce9d-46a7-bc20-bf32d7dba0fd"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-086e44c3-f7b5-4d42-9dc4-9d39bbeacf40",
+          "field": "role",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "sourceIds": [
+                "source-19a54b6f-ce9d-46a7-bc20-bf32d7dba0fd"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-086e44c3-f7b5-4d42-9dc4-9d39bbeacf40",
+          "field": "dose",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "one tablet per dose, 20 mg total"
+              },
+              "sourceIds": [
+                "source-19a54b6f-ce9d-46a7-bc20-bf32d7dba0fd"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-086e44c3-f7b5-4d42-9dc4-9d39bbeacf40",
+          "field": "strength",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-19a54b6f-ce9d-46a7-bc20-bf32d7dba0fd"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-086e44c3-f7b5-4d42-9dc4-9d39bbeacf40",
+          "field": "indication",
+          "values": [
+            {
+              "value": {
+                "kind": "known",
+                "value": "heartburn"
+              },
+              "sourceIds": [
+                "source-19a54b6f-ce9d-46a7-bc20-bf32d7dba0fd"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-086e44c3-f7b5-4d42-9dc4-9d39bbeacf40",
+          "field": "stopped",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-d6bc5933-6a73-4d29-b005-9a8d10e2b28c"
+              ]
+            }
+          ]
+        },
+        {
+          "entity": "product",
+          "entityId": "product-086e44c3-f7b5-4d42-9dc4-9d39bbeacf40",
+          "field": "doseReduced",
+          "values": [
+            {
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "source-d6bc5933-6a73-4d29-b005-9a8d10e2b28c"
+              ]
+            }
+          ]
+        }
+      ],
+      "independentPdfFields": {
+        "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]": "N96",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "49",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+        "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "23-SEP-2026",
+        "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Symptoms: intermittent buzzing in the left ear and no ear pain.",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "aspirin",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Strength[0]": "325",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1StrengthUnit[0]": "25",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]": "two caplets per dose",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1DoseUnit[0]": "40",
+        "topmostSubform[0].Page4[0].Prod1[0].Prod1Diagnosis[0]": "joint pain",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2Name[0]": "famotidine",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2Dose[0]": "one tablet per dose, 20 mg total",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2DoseUnit[0]": "40",
+        "topmostSubform[0].Page5[0].Prod2[0].Prod2Diagnosis[0]": "heartburn",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].LastName[0]": "Reed",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].FirstName[0]": "Casey",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]": "casey.reed@example.test",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].ProYes[0]": "/1",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].Occupation[0]": "Physician",
+        "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]": "/1"
+      },
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-symptom-dose-fidelity-v2",
+        "schemaRevision": "wilson-grounded-proposals-v16-field-meaning",
+        "inputTokens": 6649,
+        "outputTokens": 2729,
+        "latencyMs": 20763,
+        "estimatedCostUsd": 0.040588
+      },
+      "sourceOffsetsChecked": true,
+      "pdfSha256": "a5b7c98d9361191be7a145e12ee682c4d165b40b3dc52c2e02289232728a1231",
+      "acceptedConflicts": [],
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 3
+    }
+  ],
+  "totals": {
+    "calls": 6,
+    "measuredCalls": 6,
+    "estimatedCostUsd": 0.206244
+  }
+}

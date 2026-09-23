@@ -1,0 +1,269 @@
+{
+  "products": [
+    {
+      "productReference": "prod-aspirin",
+      "groupReference": "g-aspirin"
+    },
+    {
+      "productReference": "prod-famotidine",
+      "groupReference": "g-famotidine"
+    }
+  ],
+  "tests": [],
+  "proposals": [
+    {
+      "proposalReference": "prop1",
+      "groupReference": "g-patient",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "identifier"
+      },
+      "value": {
+        "kind": "known",
+        "value": "N96"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop2",
+      "groupReference": "g-patient",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "ageYears"
+      },
+      "value": {
+        "kind": "known",
+        "value": 49
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop3",
+      "groupReference": "g-event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "symptoms"
+      },
+      "value": {
+        "kind": "known",
+        "value": [
+          "intermittent buzzing in the left ear",
+          "no ear pain"
+        ]
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop4",
+      "groupReference": "g-aspirin",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod-aspirin",
+        "field": "name"
+      },
+      "value": {
+        "kind": "known",
+        "value": "aspirin"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "prop5",
+      "groupReference": "g-aspirin",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod-aspirin",
+        "field": "productType"
+      },
+      "value": {
+        "kind": "known",
+        "value": "drug-or-biologic"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "prop6",
+      "groupReference": "g-aspirin",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod-aspirin",
+        "field": "role"
+      },
+      "value": {
+        "kind": "known",
+        "value": "suspect"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "prop7",
+      "groupReference": "g-aspirin",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod-aspirin",
+        "field": "dose"
+      },
+      "value": {
+        "kind": "known",
+        "value": "two caplets per dose"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "prop8",
+      "groupReference": "g-aspirin",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod-aspirin",
+        "field": "strength"
+      },
+      "value": {
+        "kind": "known",
+        "value": "325 mg"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "prop9",
+      "groupReference": "g-aspirin",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod-aspirin",
+        "field": "indication"
+      },
+      "value": {
+        "kind": "known",
+        "value": "joint pain"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "prop10",
+      "groupReference": "g-famotidine",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod-famotidine",
+        "field": "name"
+      },
+      "value": {
+        "kind": "known",
+        "value": "famotidine"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop11",
+      "groupReference": "g-famotidine",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod-famotidine",
+        "field": "productType"
+      },
+      "value": {
+        "kind": "known",
+        "value": "drug-or-biologic"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop12",
+      "groupReference": "g-famotidine",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod-famotidine",
+        "field": "role"
+      },
+      "value": {
+        "kind": "known",
+        "value": "suspect"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop13",
+      "groupReference": "g-famotidine",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod-famotidine",
+        "field": "dose"
+      },
+      "value": {
+        "kind": "known",
+        "value": "one tablet per dose, 20 mg total"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop14",
+      "groupReference": "g-famotidine",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod-famotidine",
+        "field": "strength"
+      },
+      "value": {
+        "kind": "unknown"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop15",
+      "groupReference": "g-famotidine",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod-famotidine",
+        "field": "indication"
+      },
+      "value": {
+        "kind": "known",
+        "value": "heartburn"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    }
+  ]
+}

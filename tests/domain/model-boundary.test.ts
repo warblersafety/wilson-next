@@ -301,7 +301,7 @@ describe("model proposal boundary", () => {
     expect(() => parseModelProposalEnvelope(malformed, identities)).toThrow("Every proposal was unrepresentable");
   });
 
-  it("still rejects duplicate identities and groups that span case entities", () => {
+  it("rejects duplicate identities and keeps code-owned opening patient/event groups separate", () => {
     const duplicate = candidate();
     duplicate.output.proposals.push({ ...duplicate.output.proposals[0] });
     expect(() => parseModelProposalEnvelope(duplicate, identities)).toThrow("Duplicate proposalReference");
@@ -316,7 +316,8 @@ describe("model proposal boundary", () => {
       value: { kind: "known", value: ["rash"] },
       evidenceQuote: "reported a rash",
     } as never);
-    expect(() => parseModelProposalEnvelope(spanning, identities)).toThrow("cannot span different case entities");
+    const parsed = parseModelProposalEnvelope(spanning, identities);
+    expect(parsed.proposals.map(p => p.groupId)).toEqual(["patient", "event"]);
   });
 
   it("keeps valid facts and exact evidence while quarantining both recorded target/value failures", () => {

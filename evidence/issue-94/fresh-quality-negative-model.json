@@ -1,0 +1,128 @@
+{
+  "products": [
+    {
+      "productReference": "prod1",
+      "groupReference": "g1"
+    }
+  ],
+  "tests": [],
+  "proposals": [
+    {
+      "proposalReference": "prop1",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "name"
+      },
+      "value": {
+        "kind": "known",
+        "value": "Optivex solution"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop2",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "productType"
+      },
+      "value": {
+        "kind": "known",
+        "value": "drug-or-biologic"
+      },
+      "evidenceReferences": [
+        "p1",
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "prop3",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "role"
+      },
+      "value": {
+        "kind": "known",
+        "value": "suspect"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop4",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "strength"
+      },
+      "value": {
+        "kind": "known",
+        "value": "5 mg/mL"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "prop5",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "problemDescription"
+      },
+      "value": {
+        "kind": "known",
+        "value": "loose cap and a visible thread floating in it"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop6",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "symptoms"
+      },
+      "value": {
+        "kind": "explicitly-absent"
+      },
+      "evidenceReferences": [
+        "p4",
+        "p5"
+      ]
+    },
+    {
+      "proposalReference": "prop7",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "productAvailability"
+      },
+      "value": {
+        "kind": "known",
+        "value": "available"
+      },
+      "evidenceReferences": [
+        "p6"
+      ]
+    }
+  ]
+}

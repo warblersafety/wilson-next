@@ -1,0 +1,24 @@
+{
+  "assessments": [
+    {
+      "id": "final-count-attribution",
+      "result": "pass",
+      "scope": "Source-defined targeted placement, negation/uncertainty, independent product quantities, explicit acceptance and PDF fields. Not a general clinical or reliability score."
+    },
+    {
+      "id": "final-denied-defect",
+      "result": "pass",
+      "scope": "Source-defined targeted placement, negation/uncertainty, independent product quantities, explicit acceptance and PDF fields. Not a general clinical or reliability score."
+    },
+    {
+      "id": "final-unmentioned-defect",
+      "result": "pass",
+      "scope": "Source-defined targeted placement, negation/uncertainty, independent product quantities, explicit acceptance and PDF fields. Not a general clinical or reliability score."
+    },
+    {
+      "id": "final-unknown-defect",
+      "result": "pass",
+      "scope": "Source-defined targeted placement, negation/uncertainty, independent product quantities, explicit acceptance and PDF fields. Not a general clinical or reliability score."
+    }
+  ]
+}

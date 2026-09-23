@@ -1,0 +1,11 @@
+{
+  "calls": 20,
+  "inputTokens": 132335,
+  "outputTokens": 45925,
+  "latencyMs": 387301,
+  "estimatedCostUsd": 0.72392,
+  "automaticRetries": 0,
+  "batches": 3,
+  "rechecksAfterMaterialChange": 3,
+  "freshFinalCases": 3
+}
