@@ -174,10 +174,9 @@ export function parseModelProposalEnvelope(
   const excessProductReferences = new Set(
     output.products.slice(maximumCaseProducts).map(({ productReference }) => productReference),
   );
-  const groupByReference = new Map<string, string>();
+  const updateGroupByReference = new Map<string, string>();
   for (const product of (candidate.turn === "opening" ? output.products.slice(0, maximumCaseProducts) : [])) {
     const groupId = allocate("group", product.groupReference);
-    groupByReference.set(product.groupReference, groupId);
     productByReference.set(product.productReference, {
       id: allocate("product", product.productReference), groupId, groupReference: product.groupReference,
     });
@@ -186,13 +185,12 @@ export function parseModelProposalEnvelope(
   const excessTestReferences = new Set(outputTests.slice(Math.max(0, maximumRelevantTests - (candidate.existingTestCount ?? existingTestIds.size))).map(({ testReference }) => testReference));
   for (const test of outputTests.filter(({ testReference }) => !excessTestReferences.has(testReference))) {
     const groupId = allocate("group", test.groupReference);
-    groupByReference.set(test.groupReference, groupId);
     testByReference.set(test.testReference, {
       id: allocate("test", test.testReference), groupId, groupReference: test.groupReference,
     });
   }
 
-  assertResponseLevelProposalConsistency(output.proposals, declaredProductByReference, testByReference);
+  assertResponseLevelProposalConsistency(candidate.turn, output.proposals, declaredProductByReference, testByReference);
 
   const unrepresented: UnrepresentedModelProposal[] = [];
   const prepared: PreparedProposal[] = [];
@@ -221,7 +219,7 @@ export function parseModelProposalEnvelope(
     }
     const groupId = resolveGroupId(
       candidate.turn, proposal, target, productByReference, testByReference,
-      groupByReference, allocate, ["proposals", index],
+      updateGroupByReference, allocate, ["proposals", index],
     );
     if (knownValueMismatch(target, proposal.value)) {
       unrepresented.push(quarantineProposal(rawProposal, "incompatible-value"));
@@ -236,6 +234,15 @@ export function parseModelProposalEnvelope(
   }
 
   if (prepared.length === 0) boundaryIssue(["proposals"], "Every proposal was unrepresentable");
+  // Validate the assembled review units, not an advisory update label supplied
+  // by the model. No accepted group may cross a resolved entity boundary.
+  const groupTargets = new Map<string, string>();
+  for (const { groupId, target } of prepared) {
+    const identity = JSON.stringify([target.entity, target.entityId]);
+    const prior = groupTargets.get(groupId);
+    if (prior && prior !== identity) boundaryIssue(["proposals"], "A proposal group cannot span different case entities");
+    groupTargets.set(groupId, identity);
+  }
 
   const sourceByReference = new Map<string, Source>();
   const proposals: GroundedProposal[] = prepared.map(({ proposal, target, groupId, evidence }) => {
@@ -299,7 +306,7 @@ function resolveGroupId(
   target: FactTarget,
   proposedProducts: Map<string, DeclaredEntity>,
   proposedTests: Map<string, DeclaredEntity>,
-  groupByReference: Map<string, string>,
+  updateGroupByReference: Map<string, string>,
   allocate: (kind: ModelBoundaryIdentityKind, reference: string) => string,
   path: Array<string | number>,
 ): string {
@@ -316,12 +323,17 @@ function resolveGroupId(
     }
     return declared.groupId;
   }
-  const groupId = groupByReference.get(proposal.groupReference) ?? allocate("group", proposal.groupReference);
-  groupByReference.set(proposal.groupReference, groupId);
+  // A response-local label can accidentally span existing entities. Preserve
+  // its within-entity distinctions while separating by validated target identity.
+  // The namespace also keeps updates apart from newly declared test groups.
+  const reference = JSON.stringify(["update", target.entity, target.entityId, proposal.groupReference]);
+  const groupId = updateGroupByReference.get(reference) ?? allocate("group", reference);
+  updateGroupByReference.set(reference, groupId);
   return groupId;
 }
 
 function assertResponseLevelProposalConsistency(
+  turn: "opening" | "correction",
   proposals: QuarantinableProposal[],
   proposedProducts: Map<string, { groupReference: string }>,
   proposedTests: Map<string, DeclaredEntity>,
@@ -330,7 +342,7 @@ function assertResponseLevelProposalConsistency(
   proposals.forEach((proposal, index) => {
     const identity = rawTargetIdentity(proposal.target);
     const prior = groupTargets.get(proposal.groupReference);
-    if (prior && prior !== identity) {
+    if (turn === "opening" && prior && prior !== identity) {
       boundaryIssue(["proposals", index, "groupReference"], "A proposal group cannot span different case entities");
     }
     groupTargets.set(proposal.groupReference, identity);

@@ -296,6 +296,17 @@ belongs in the event treatment fact. It is proposed as a report product only
 when the clinician separately describes it as suspect, concomitant, or
 otherwise involved in the report.
 
+For later inputs, the model's review-group label is scoped to each validated
+target entity kind and stable ID. Reusing one label for event history and a
+medication therefore creates separate review groups; different labels within
+one entity remain separate. This is mechanical group assembly, not clinical
+reinterpretation: targets, values, qualifiers, intents and evidence are unchanged.
+New-test declaration linkage and opening-group validation remain required, and
+the assembled groups are checked again to contain only one entity. Every group
+still requires explicit acceptance; an unresolved target is quarantined rather
+than assigned an entity from its group label. This bounded repair does not solve
+incorrect model attribution, symptom placement or conversational test identity.
+
 The runtime model boundary classifies mechanically decidable contract faults
 before review. Response-level faults reject the complete response and leave
 accepted knowledge unchanged:

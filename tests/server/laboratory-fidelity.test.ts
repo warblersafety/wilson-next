@@ -57,7 +57,7 @@ describe("laboratory identity and result fidelity", () => {
     const correction = parseModelProposalEnvelope({ turn: "correction", existingTestIds: prior.relevantTests.map(({ id }) => id), input: { id: "update", type: "correction", text, recordedAt }, output: { products: [], proposals: [{ proposalReference: "new-result", groupReference: "update", intent: "correction", target: { entity: "test", testReference: "test-t0", field: "testResult" }, value: { kind: "known", value: "8.9 g/dL" }, evidenceQuote: text }] } }, identities);
     let state = applyCaseCommand(prior, { type: "attach-grounded-proposals", commandId: "update", expectedRevision: prior.revision, ...correction }).case;
     expect(projectForm3500(state).sections.B.relevantTests[0].testResult).toBe("hemoglobin: 9.1 g/dL");
-    state = applyCaseCommand(state, { type: "review-proposal-groups", commandId: "accept-update", expectedRevision: state.revision, decisions: [{ groupId: "group-update", action: "accept" }] }).case;
+    state = applyCaseCommand(state, { type: "review-proposal-groups", commandId: "accept-update", expectedRevision: state.revision, decisions: [{ groupId: correction.proposals[0].groupId, action: "accept" }] }).case;
     expect(state.relevantTests[1]).toEqual(prior.relevantTests[1]);
     expect(state.relevantTests[0].facts.testName).toEqual(prior.relevantTests[0].facts.testName);
     expect(state.relevantTests[0].facts.date).toEqual(prior.relevantTests[0].facts.date);
