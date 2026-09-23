@@ -19,7 +19,9 @@
   ],
   "requiredCI": {
     "run": "https://github.com/warblersafety/wilson-next/actions/runs/35933793718",
-    "result": "pass, including all 11 browser journeys"
+    "result": "pass, including all 11 browser journeys",
+    "postPrCandidateRun": "https://github.com/warblersafety/wilson-next/actions/runs/35934304531",
+    "postPrCandidateResult": "pass on 68bcac493d2aabe76d284f8a84ee1605ccdbedcb"
   },
   "interpretationCalls": 0,
   "pdfNamedFieldsMatched": 59,
@@ -176,5 +178,6 @@
     "Diagnostics request/response code is unchanged in this slice. No application or test expectation was changed to hide the local failures.",
     "Original fixture-construction/selector/wait mistakes were corrected before the new focused journey passed; no live model retries.",
     "No screen-reader or general model-reliability claim."
-  ]
+  ],
+  "diagnosticsFollowup": "https://github.com/warblersafety/wilson-next/issues/118"
 }

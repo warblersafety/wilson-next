@@ -48,10 +48,32 @@ runs and minimal network timing evidence. The complete local trace remains at
 Screenshots retain the inspected Draft 4 baseline, original misleading Output,
 compact attributed update, newly available test review, and desktop/mobile
 clinical blockers. `accepted.pdf` and `pdf-readback.json` retain actual output.
-Normal independent Opus-high review is pending on PR #117, the canonical review
-record. The final required check will run on the post-PR evidence commit too.
+PR #117 is the canonical record for normal independent Opus-high review, its
+actual findings/dispositions and final required checks. The reviewed material
+candidate is `68bcac493d2aabe76d284f8a84ee1605ccdbedcb`; this later evidence
+closeout adds deployed verification without changing application or test code.
 
 No policy, source, semantic case, prompt, projection or PDF adapter changed.
 The fixture is not the unavailable original September 23 raw state. These checks
 establish bounded interaction/content behavior, not model reliability, unassisted
 usability, screen-reader parity or full form coverage.
+
+
+## Protected deployed check
+
+The same focused browser spec passed against post-PR deployment
+`dpl_Cy2KEQyJukPSavLBrxy1f2vnCPFW`, commit
+`68bcac493d2aabe76d284f8a84ee1605ccdbedcb`. It uses a temporary Playwright config
+with the protected origin as baseURL, authenticated storageState obtained from
+fresh anonymous share access, no local webServer, and the same assertions as the
+local spec. Both interpretation actions are blocked by the browser route guard.
+All case actions, navigation and PDF requests hit the actual deployment.
+
+`preview-results.json` records protection, exact candidate, expiry and outcomes;
+`preview-accepted.pdf` / `preview-readback.json` retain the actual downloaded
+output, matching all 59 named baseline fields. No new model calls. Ordinary
+unsigned access returns HTTP 302. The existing share grant remains unchanged and
+expires September 27 at 21:15:51 UTC. Its access-bearing URL and browser cookies
+stay outside the repository. Prior #94 deployment remains available for rollback.
+
+The existing diagnostics-wait limitation is recorded separately in [#118](https://github.com/warblersafety/wilson-next/issues/118). No diagnostics fix or broader progress work was added to #116.
