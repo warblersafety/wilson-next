@@ -103,3 +103,22 @@ verification actions, not changes to Steve's walkthrough state. Both desktop and
 mobile checks passed without horizontal overflow. `preview-results.json` retains
 the exact deployment and checks; the three PDFs and screenshots retain results.
 There were zero application-model requests or spend in this revision.
+
+## Independent review disposition
+
+The standard subscription Sonnet high review of `4ce47df` found no blockers and
+three non-blocking follow-ups. PR #107 retains its complete attributed result.
+The bounded remediation adds guidance above all case cards while update review
+is pending, covering patient/event editing as well as new tests. Card guidance
+now explicitly says **all** proposed updates: the dependency is global, so the
+link correctly targets the whole update-review section rather than an entity's
+individual group. A real assistive-technology spot-check is tracked in #108;
+Chromium's accessible names passed, but screen-reader parity is not claimed.
+No case action, gating, clinical or PDF semantics changed in this remediation.
+
+The post-review fixture-inventory correction and stronger union-of-fields PDF
+comparisons tighten acceptance evidence. They do not relax a product rule or
+introduce a new premise. Complete deterministic checks, build and browser checks
+pass on the final work; required CI and final deployment identity are recorded on
+the PR. This bounded closure relies on the originating review under DELIVERY.md,
+without a recursive model run.

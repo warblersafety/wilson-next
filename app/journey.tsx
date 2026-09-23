@@ -241,6 +241,7 @@ export default function Journey() {
           {snapshot.stage === "review-update" && <UpdateReview snapshot={snapshot} busy={busy} act={act} />}
           {snapshot.review.attention.filter(({ kind }) => kind === "conflict").map((item) => <ConflictCard key={item.target} snapshot={snapshot} item={item} busy={busy || snapshot.stage !== "output"} act={act} />)}
           <CaseSummaryHeading attention={snapshot.review.attention} />
+          {snapshot.stage === "review-update" && <p className={styles.reviewDependency}>Review all proposed updates above before editing these case details. New tests are reviewed next.</p>}
           <CaseCards key={browserState?.case.id} snapshot={snapshot} busy={busy} act={act} />
           <section className={styles.invitation} aria-label="Useful clinical details">
             <h2>{snapshot.stage === "review-update" ? "Review the proposed changes first" : "Anything to add or correct?"}</h2>
@@ -846,7 +847,7 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
     {fields.every((field) => !activeValue(facts[field]) && !facts[field]?.history.length && !facts[field]?.conflicts.length) && <p className={styles.hint}>No details were captured for this group. It can be left blank.</p>}
     {entityState === "withdrawn" && <p className={styles.withdrawn}>Withdrawn from the active report; reviewed facts and source history are retained below.</p>}
     {entity === "test" && entityState !== "withdrawn" && !knownString(activeValue(facts.testName)) && <p role="status">Test identity is not recorded as known. Check the source wording. You can supply its name in Clinical update or leave it unknown for a partial report.</p>}
-    {reviewBlocked && <p className={styles.reviewDependency}>Review the proposed updates above first. Then you can change, accept, or remove this {entity === "test" ? "test" : "product"}. <a href="#update-review-title" onClick={() => document.getElementById("update-review-title")?.focus()}>Go to proposed updates</a></p>}
+    {reviewBlocked && <p className={styles.reviewDependency}>Review all proposed updates above first. Then you can change, accept, or remove this {entity === "test" ? "test" : "product"}. <a href="#update-review-title" onClick={() => document.getElementById("update-review-title")?.focus()}>Go to proposed updates</a></p>}
     <dl>{groupedOutcomes && <div>
       <dt>Serious outcomes</dt>
       <dd>{outcomeFields.filter((field) => (activeValue(facts[field]) as { value: boolean }).value).map((field) => factControl("event", field)!.label).join(", ") || "None reported"}{outcomeFields.some((field) => facts[field].proposals.length > 0) && <span className={styles.proposed}>Proposed</span>}</dd>

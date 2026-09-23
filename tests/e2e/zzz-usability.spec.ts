@@ -88,14 +88,16 @@ test("focused usability: truthful activity, draft demo reporter, review dependen
   await expect(page.getByLabel("Clinical update", { exact: true })).toHaveValue(usabilityUpdate);
   await page.getByRole("button", { name: "Review this update", exact: true }).click();
   const test1 = page.locator("#case-card-test-1"), test2 = page.locator("#case-card-test-2");
-  await expect(test2).toContainText("Review the proposed updates above first");
+  await expect(page.getByText("Review all proposed updates above before editing these case details. New tests are reviewed next.", { exact: true })).toBeVisible();
+  await expect(page.locator("#case-card-patient").getByRole("button", { name: "Change", exact: true })).toHaveCount(0);
+  await expect(test2).toContainText("Review all proposed updates above first");
   await expect(test2.getByRole("button", { name: "Accept Relevant test 2", exact: true })).toHaveCount(0);
   await test2.getByRole("link", { name: "Go to proposed updates" }).click();
   await expect(page.getByRole("heading", { name: "Review the proposed update", exact: true })).toBeFocused();
   await page.screenshot({ path: info.outputPath("update-dependencies-desktop.png"), fullPage: true });
   await page.getByRole("button", { name: "Accept this update", exact: true }).click();
   await expect(test1.getByRole("heading")).toBeFocused();
-  await expect(test2).not.toContainText("Review the proposed updates above first");
+  await expect(test2).not.toContainText("Review all proposed updates above first");
   await acceptOpeningGroups(page);
   await goTo(page, "Reporter details");
   await expect(page.getByLabel("Reporter email", { exact: true })).toHaveValue("casey.reed@example.test");
