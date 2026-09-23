@@ -786,7 +786,8 @@
       "sourceOffsetsChecked": true,
       "pdfSha256": "202d1d099fc9b4449fbf68607d6da91fb0547d63d26a00271dc7445aa38f6798",
       "acceptedConflicts": [],
-      "finalDownloadReady": true
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 5
     },
     {
       "id": "recheck-ambiguous-dose",
@@ -1744,7 +1745,8 @@
       "sourceOffsetsChecked": true,
       "pdfSha256": "a67d3e3898b5c706dc50f19b9104e594fd2b2867f0784d887dad4fb8356e3163",
       "acceptedConflicts": [],
-      "finalDownloadReady": true
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 4
     },
     {
       "id": "fresh-defect-and-denial",
@@ -2501,7 +2503,8 @@
       "sourceOffsetsChecked": true,
       "pdfSha256": "37fe0dae47839527023db81750e50634061b13245bc1a6021602d237f67e8296",
       "acceptedConflicts": [],
-      "finalDownloadReady": true
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 5
     },
     {
       "id": "fresh-uncertain-manifestation",
@@ -3234,7 +3237,8 @@
       "sourceOffsetsChecked": true,
       "pdfSha256": "b74fdb77bf4105e06ae754b7514bc4a204a8e4a37da8d9c0308dcce071bc9f36",
       "acceptedConflicts": [],
-      "finalDownloadReady": true
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 4
     },
     {
       "id": "fresh-quality-negative",
@@ -3665,7 +3669,8 @@
       "sourceOffsetsChecked": true,
       "pdfSha256": "1d2cc171732f3aaa7e31e02fa8016e11059c541a0bfbe2325ea80bea20ff1fef",
       "acceptedConflicts": [],
-      "finalDownloadReady": true
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 6
     },
     {
       "id": "fresh-count-attribution",
@@ -4611,7 +4616,8 @@
       "sourceOffsetsChecked": true,
       "pdfSha256": "a5b7c98d9361191be7a145e12ee682c4d165b40b3dc52c2e02289232728a1231",
       "acceptedConflicts": [],
-      "finalDownloadReady": true
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 3
     }
   ],
   "totals": {

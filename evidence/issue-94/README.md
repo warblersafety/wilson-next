@@ -169,3 +169,32 @@ Python environment without pypdf; initial new tests used an incorrect PDF field
 name/blank-unit export assumption and an opening group before the direct-edit
 stage; the browser module needed JSON import attributes. These were corrected
 without weakening runtime acceptance or changing the preserved model results.
+
+## Protected deployed verification
+
+Candidate `576163df3eb6ba9a5cf1faba0167b84963282686`, deployment
+`dpl_8B7P1ZbvLfxG3WQ8WDsq4UwCmSGA`, passed the final protected-browser check.
+The existing shared alias and share grant are retained, expiring September 27 at
+21:15:51 UTC. Access-bearing URL remains private at
+`/private/tmp/wilson94-share-handoff.json`. Fresh anonymous share access succeeds;
+unsigned access is HTTP 302. Original working rollback is
+`dpl_zSpFAhE3mGn819gSa8A2NowjRs5T`. No production or paid-plan change.
+
+`check-preview.mjs` resumes retained synthetic states and blocks interpretation.
+Real deployed UI actions require separate symptom/medication acceptance and keep
+pending-PDF/reporter gates. All **52** populated fields in the tablet replay PDF
+match the local independent readback. Symptom and dose edits keep qualifiers;
+explicit symptom-qualifier removal changes only B5 in the regenerated PDF and
+retains superseded history. Three deployed PDFs, screenshots and independent
+readbacks are retained; `preview-results.json` records zero interpretation calls.
+No user walkthrough was requested.
+
+The policy task subsequently restored the application baseline in PR #114
+(`1ea1702`), retaining its Opus-high policy. Reconciling that corrective main
+into #112 at `6ac2c72` resolves its CI-blocking conflicts while retaining the
+**identical committed tree** of reviewed/deployed `576163d`:
+`5d8261b140417dc54725102d65bdcd71082a9ded`. The current main...HEAD diff now contains
+all #94 changes normally. The independent reviewer also received the complete
+pre-slice source diff, so no accidentally merged lines evade review. The exact
+reviewed/deployed candidate remains on the shared alias; later evidence-only
+closeout does not require another deployment or application-model run.

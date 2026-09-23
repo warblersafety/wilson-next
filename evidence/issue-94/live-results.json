@@ -923,7 +923,8 @@
       "sourceOffsetsChecked": true,
       "pdfSha256": "e5c2e8b741ac95232dbd5688cb8c0ef2526301db33bfbcc2056652c03d1600ac",
       "acceptedConflicts": [],
-      "finalDownloadReady": true
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 5
     },
     {
       "id": "walkthrough-manifestation",
@@ -1719,7 +1720,8 @@
       "sourceOffsetsChecked": true,
       "pdfSha256": "23978790fc1a4cbf51c19ff8ca6731b871bf42fddec45696533441a8f86254c2",
       "acceptedConflicts": [],
-      "finalDownloadReady": true
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 5
     },
     {
       "id": "quality-only",
@@ -2173,7 +2175,8 @@
       "sourceOffsetsChecked": true,
       "pdfSha256": "1573ee3d9f3d28248610596abf199ecc7286a0dad2d87baf1940d3728b6b3fd4",
       "acceptedConflicts": [],
-      "finalDownloadReady": true
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 5
     },
     {
       "id": "mixed-complaint",
@@ -2977,7 +2980,8 @@
           ]
         }
       ],
-      "finalDownloadReady": true
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 5
     },
     {
       "id": "two-products",
@@ -3935,7 +3939,8 @@
       "sourceOffsetsChecked": true,
       "pdfSha256": "92f651802a86b1f509739be5dc1f0643ac993dd044ed83275b15fef5a1504b82",
       "acceptedConflicts": [],
-      "finalDownloadReady": true
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 4
     },
     {
       "id": "count-without-total",
@@ -4689,7 +4694,8 @@
       "sourceOffsetsChecked": true,
       "pdfSha256": "d2fa54d8139a7af583d9acc1117bc905c5c82dc5e2b5b573d20b8adf167d6892",
       "acceptedConflicts": [],
-      "finalDownloadReady": true
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 5
     },
     {
       "id": "wording-correction",
@@ -5364,7 +5370,8 @@
       "sourceOffsetsChecked": true,
       "pdfSha256": "301f64eb18fecc39b49a7f6aafa91ae56699c266b5664890bb764b1d5646112d",
       "acceptedConflicts": [],
-      "finalDownloadReady": true
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 1
     },
     {
       "id": "ambiguous-dose",
@@ -6340,7 +6347,8 @@
           ]
         }
       ],
-      "finalDownloadReady": true
+      "finalDownloadReady": true,
+      "currentInputSourceCount": 4
     }
   ],
   "totals": {
