@@ -34,9 +34,22 @@ both dated test rows and privacy. Selected 1440px/390px layouts are inspected.
 
 Three focused deterministic tests distinguish pending versus missing answers,
 rejection returning a need to missing, and conditional medication recalculation
-only after acceptance. The existing 229 deterministic tests passed before these
-additions. Final full verification, screenshots and normal independent Opus-high
-review are pending. The PR is the canonical review record.
+only after acceptance. All 232 deterministic tests, typecheck and build pass. Required GitHub CI on
+application commit `8e494f5` passes all 11 browser journeys. Two local full-suite
+runs each passed nine journeys and timed out in the existing simulated-error
+usability check, which then displaced the next test's global response fixtures.
+An isolated run of those two tests passes. The retained trace records a completed
+HTTP 422 and a pending browser-diagnostics request while the UI remained busy;
+that request/response code is unchanged. No test expectation or application
+behavior was changed to conceal the limitation. `verification.json` records the
+runs and minimal network timing evidence. The complete local trace remains at
+`/private/tmp/wilson116-failure-trace/trace.zip`.
+
+Screenshots retain the inspected Draft 4 baseline, original misleading Output,
+compact attributed update, newly available test review, and desktop/mobile
+clinical blockers. `accepted.pdf` and `pdf-readback.json` retain actual output.
+Normal independent Opus-high review is pending on PR #117, the canonical review
+record. The final required check will run on the post-PR evidence commit too.
 
 No policy, source, semantic case, prompt, projection or PDF adapter changed.
 The fixture is not the unavailable original September 23 raw state. These checks

@@ -39,6 +39,11 @@ test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery an
   await page.getByLabel("Do not disclose my identity to the manufacturer", { exact: true }).check();
   await expect(page.getByRole("button", { name: "Add reporter details", exact: true })).toHaveCount(0);
   await expect(page.getByRole("region", { name: "Before saving reporter details" })).toContainText("Other serious event");
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.screenshot({ path: info.outputPath(`reporter-blocked-${width}.png`), fullPage: true });
+  }
   expect(await storedState(page)).toEqual(pending);
   await page.getByRole("button", { name: "Continue clinical review", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Review the proposed update", exact: true })).toBeFocused();
