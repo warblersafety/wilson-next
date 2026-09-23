@@ -77,7 +77,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   await expect(page.getByText("Reviewed", { exact: true })).toHaveCount(0);
-  await expect(page.getByRole("status").filter({ hasText: "Required before adding" }))
+  await expect(page.getByRole("status").filter({ hasText: "Required to provide reporter details" }))
     .toContainText("first name, last name, and phone or email");
 
   const reporterControls = [
@@ -97,7 +97,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await expect(page.getByLabel("Date of this report", { exact: true })).toHaveValue(localToday);
   await page.getByLabel("Date of this report", { exact: true }).fill("2026-09-20");
   await fillReporter(page, { firstName: "Casey", lastName: "Reed", email: "casey.reed@example.test" });
-  await expect(page.getByRole("status").filter({ hasText: "Required before adding" })).toHaveCount(0);
+  await expect(page.getByRole("status").filter({ hasText: "Required to provide reporter details" })).toHaveCount(0);
   const addReporter = page.getByRole("button", { name: "Add reporter details" });
   await expect(addReporter).toBeEnabled();
   await addReporter.click({ trial: true });
