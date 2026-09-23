@@ -105,3 +105,14 @@ USD1.50 reservation per call, zero automatic retries): two explicitly labelled
 material-change rechecks and four new contrasts. Rechecks do not establish
 independent reliability; their purpose is verifying the changed contract on the
 retained failure. The fresh cases assess generalization separately.
+
+The six-call v2 batch cost USD 0.206244. Both labelled rechecks and three of four
+new cases met all predeclared expectations. The remaining new case correctly
+retained both medications, counts, units, laterality and specific denial, but
+omitted the explicitly stated absence of a product-quality complaint. That is
+retained as a failed expectation in `remediation-assessment.json`, not relabelled
+a pass. V3 clarifies absent, unknown and unmentioned product complaints without
+changing runtime values or inference. `final-protocol.json` declares one
+material-change recheck plus three new contrasts, max four calls and USD5, zero
+automatic retries; earlier failures and expectations remain unchanged. This is
+the final bounded evaluation batch, not an open-ended search for passing retries.

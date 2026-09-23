@@ -1,0 +1,38 @@
+{
+  "syntheticOnly": true,
+  "maxCalls": 4,
+  "maxCostUsd": 5,
+  "issueCapUsd": 20,
+  "reservationPerCallUsd": 1.5,
+  "retries": 0,
+  "policy": "Final bounded batch after a material absent-versus-unmentioned contract clarification. Four calls maximum; USD5 batch, USD20 issue cap, USD1.50 reservation per call. No automatic retries. One original-input recheck is not independent reliability evidence; three new cases separately test denial, unmentioned and unknown product concerns with symptom/dose preservation. Retain all earlier failures and do not weaken their expectations. No further iterative evaluation for reassurance.",
+  "promptRevision": "wilson-symptom-dose-fidelity-v3",
+  "schemaRevision": "wilson-grounded-proposals-v16-field-meaning",
+  "cases": [
+    {
+      "id": "final-count-attribution",
+      "text": "Fictional patient N96, age 49, noticed intermittent buzzing in the left ear without ear pain. Suspect aspirin for joint pain was taken as two caplets per dose; each caplet is labelled 325 mg, and no total milligram dose was supplied. Suspect famotidine for heartburn was one tablet per dose, expressly stated as 20 mg in total; its label strength is unknown. No product-quality issue was reported.",
+      "reportType": "adverse-event",
+      "expected": "Intermittent left-ear buzzing and no ear pain retained in symptoms, no inferred diagnosis. Product complaint explicitly absent. Aspirin dose two caplets only, strength 325 mg, never computed 650 mg. Famotidine one tablet/20 mg dose, strength unknown. No cross-product quantity assignment.",
+      "provenance": "Material-change recheck of the v2 explicit-absence omission; not independent reliability evidence."
+    },
+    {
+      "id": "final-denied-defect",
+      "text": "Fictional patient P94, age 34, developed flushing and felt shaky after suspect prednisone for arthritis. She took three tablets, an explicitly stated total dose of 15 mg; the label reads 5 mg per tablet. There were no concerns about the quality of the tablets or their container. She had no chest pain.",
+      "reportType": "adverse-event",
+      "expected": "Flushing/shakiness and no chest pain in one symptoms array; product complaint explicitly absent. Prednisone three tablets plus 15 mg dose, separate strength 5 mg. No invented defect, no arithmetic."
+    },
+    {
+      "id": "final-unmentioned-defect",
+      "text": "Fictional patient P95, age 58, reports that suspect losartan for hypertension was followed by a dry tickling cough. The dose was one tablet each morning, documented as 25 mg per dose. The label strength is unknown. She denies fever.",
+      "reportType": "adverse-event",
+      "expected": "Dry tickling cough and denied fever together in symptoms. Product complaint remains unmentioned/empty, never falsely absent. One tablet/25 mg dose; strength unknown without inference."
+    },
+    {
+      "id": "final-unknown-defect",
+      "text": "Fictional patient P96, age 62, had itchy spots on both forearms while taking suspect fluconazole for a fungal infection. The patient is not certain these spots were new. He took one capsule, recorded as 50 mg, but is unsure of that recorded dose. The capsule strength is not available. I do not know whether there was a product-quality problem; nobody has assessed the capsules or packaging. He specifically denied facial swelling.",
+      "reportType": "adverse-event-and-product-problem",
+      "expected": "Itchy spots on both forearms with uncertainty about new onset and denied facial swelling retained in review/B5. Product complaint unknown, not explicitly absent or a fabricated defect. One capsule/50 mg dose with uncertainty in review/D6; strength unknown. No arithmetic."
+    }
+  ]
+}
