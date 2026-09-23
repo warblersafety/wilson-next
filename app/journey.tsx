@@ -898,6 +898,9 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
 
 function FactValueEditor({ label, control, value, onChange: emitChange }: { label: string; control: FactControl; value: EditableCaseValue; onChange: (value: EditableCaseValue) => void }) {
   const known = value.kind === "known" ? value.value : undefined;
+  // Keep the existing qualifier editable for this edit session, including the
+  // empty intermediate state when the clinician replaces its wording.
+  const [hasQualifierControl] = useState(value.kind === "known" && value.qualifier !== undefined);
   // Editing the value alone must not silently discard its reviewed uncertainty.
   const onChange = (next: EditableCaseValue) => emitChange(next.kind === "known" && value.kind === "known" && value.qualifier
     ? { ...next, qualifier: value.qualifier } : next);
@@ -916,7 +919,7 @@ function FactValueEditor({ label, control, value, onChange: emitChange }: { labe
     </div>}
     {value.kind === "known" && control.shape === "choice" && <select aria-label={`New ${label}`} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })}>{control.options?.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select>}
     {value.kind === "known" && control.shape === "choices" && <fieldset><legend>New {label}</legend>{control.options?.map((option) => <label key={option.value}><input type="checkbox" checked={Array.isArray(known) && known.includes(option.value)} onChange={(event) => onChange({ kind: "known", value: event.target.checked ? [...(Array.isArray(known) ? known : []), option.value] : (Array.isArray(known) ? known : []).filter((item) => item !== option.value) })} /> {option.label}</label>)}</fieldset>}
-    {value.kind === "known" && value.qualifier !== undefined && <label>Uncertainty or context<input aria-label={`Uncertainty or context for ${label}`} value={value.qualifier} onChange={(event) => emitChange({ kind: "known", value: value.value, ...(event.target.value.trim() ? { qualifier: event.target.value } : {}) })} /></label>}
+    {value.kind === "known" && hasQualifierControl && <label>Uncertainty or context<input aria-label={`Uncertainty or context for ${label}`} value={value.qualifier ?? ""} onChange={(event) => emitChange({ kind: "known", value: value.value, ...(event.target.value.trim() ? { qualifier: event.target.value } : {}) })} /></label>}
   </div>;
 }
 

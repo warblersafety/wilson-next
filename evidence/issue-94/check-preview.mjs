@@ -83,6 +83,10 @@ try {
   await page.screenshot({ path: directory + 'preview-qualified-review.png', fullPage: true });
   await row.getByRole('button', { name: 'Change', exact: true }).click();
   await page.getByLabel('Uncertainty or context for Symptoms', { exact: true }).fill('');
+  await expect(page.getByLabel('Uncertainty or context for Symptoms', { exact: true })).toBeVisible();
+  await page.getByLabel('Uncertainty or context for Symptoms', { exact: true }).pressSequentially('patient is not sure it occurred');
+  await expect(page.getByLabel('Uncertainty or context for Symptoms', { exact: true })).toHaveValue('patient is not sure it occurred');
+  await page.getByLabel('Uncertainty or context for Symptoms', { exact: true }).fill('');
   await uiAction(() => page.getByRole('button', { name: 'Apply correction', exact: true }).click());
   await expect(row.locator('dd').first()).not.toContainText('patient is not sure');
   const withoutQualifier = await pdf('preview-unqualified');
@@ -92,7 +96,7 @@ try {
   expect(interpretationRequests).toBe(0);
   const result = { verifiedAt: new Date().toISOString(), sha: share.sha, deployment: share.deployment, unsignedStatus: unsigned.status(), anonymousShareAccess: true, interpretationRequests,
     separateSymptomMedicationAcceptance: true, pendingPdfBlocked: true, reporterReadinessRetained: true, replayPdfMatchesAllIndependentLocalFields: true, matchedFieldCount: Object.keys(tablets).length,
-    symptomAndDoseEditsPreserveQualifiers: true, qualifierRemovalExplicit: true, removalChangesOnlyNarrativePdfField: true, supersededQualifierRetained: true,
+    symptomAndDoseEditsPreserveQualifiers: true, qualifierRemovalExplicit: true, qualifierReplacementControlStable: true, removalChangesOnlyNarrativePdfField: true, supersededQualifierRetained: true,
     method: 'Resumed retained synthetic states; actual deployed UI actions and PDF. Exact raw provider-boundary replay covered by deterministic tests; no live model retry.' };
   await writeFile(directory + 'preview-results.json', JSON.stringify(result, null, 2) + '\n');
   await writeFile(directory + 'preview-readbacks.json', JSON.stringify({ tablets, withQualifiers, withoutQualifier }, null, 2) + '\n');

@@ -173,6 +173,12 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     });
   }
 
+  // B5 can contain the other narrative facts even when one of these is not
+  // carried. Disclose that individual omission, including unresolved conflict.
+  for (const [field, concept] of [["symptoms", "symptoms"], ["problemDescription", "product problem"]] as const) {
+    const fact = caseState.event.facts[field];
+    if (!known<unknown>(fact)) projection.omissions.push({ concept, target: `event:event:${field}`, reason: omissionReason(fact), sourceIds: fact.sourceIds });
+  }
   const eventDescription = buildEventDescription(caseState);
   if (eventDescription.value) {
     projection.sections.B.eventDescription = eventDescription.value;

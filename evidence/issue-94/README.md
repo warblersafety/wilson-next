@@ -195,6 +195,36 @@ into #112 at `6ac2c72` resolves its CI-blocking conflicts while retaining the
 **identical committed tree** of reviewed/deployed `576163d`:
 `5d8261b140417dc54725102d65bdcd71082a9ded`. The current main...HEAD diff now contains
 all #94 changes normally. The independent reviewer also received the complete
-pre-slice source diff, so no accidentally merged lines evade review. The exact
-reviewed/deployed candidate remains on the shared alias; later evidence-only
-closeout does not require another deployment or application-model run.
+pre-slice source diff, so no accidentally merged lines evade review. That candidate was verified before independent-review remediation; the final
+protected preview record below supersedes its deployment metadata.
+
+
+## Independent-review remediation
+
+The standard Opus-high review at `576163d` reported no blocking findings and
+four follow-ups. Its actual unedited result is on PR #112. This slice repairs
+the two bounded defects nearest the delivered behavior: non-carried symptoms
+and product complaints now have individual projection omissions (including
+absent, unknown, empty and conflicted states), and an existing qualifier input
+remains mounted while it is cleared/retyped. Existing omission UI displays
+non-empty reasons; unmentioned details remain unmentioned. Readiness is unchanged.
+New recurrence coverage reads actual B5 PDF for absent/unknown/unmentioned
+complaints, asserts conflicted-symptom disclosure, and replaces then explicitly
+removes a qualifier through the browser.
+
+A qualified simple quantity `500 mg (approximate)` is verified through actual
+D6 independent readback as intact descriptive text with blank unit (the original
+FDA dropdown export is `40`). This preserves readable clinical meaning while
+losing structured unit encoding. Broader qualifier projection, remaining
+narrative omissions, structured-unit preservation and qualifier re-entry after
+saved removal are tracked in #115, without beginning that slice. Fixed form
+capacity remains a limit. ARCHITECTURE now explicitly states the small-sample
+reliability limit and qualified-quantity fallback.
+
+Post-review verification: 229 deterministic tests and typecheck pass. The first
+browser attempt used the old production build and reproduced the disappearing
+input; the rebuilt application passes the new clear/retype regression after correcting
+the assertion to wait for the saved removal, rather than an already-absent old
+qualifier string. No model
+calls or successful-retry reliability claim were added. One targeted same-session
+Opus-high recheck will assess this material delta before merge.

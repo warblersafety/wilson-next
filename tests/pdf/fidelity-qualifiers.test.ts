@@ -10,7 +10,7 @@ import { parseModelProposalEnvelope } from "../../src/domain/case/model-boundary
 import { createReviewView } from "../../src/domain/case/views";
 import { projectForm3500 } from "../../src/domain/case/projection";
 import { fillForm3500Projection } from "../../src/server/pdf/form-3500";
-import { medicationCase, setMedication } from "../fixtures/medication-case";
+import { medicationCase, medicationSource, setMedication } from "../fixtures/medication-case";
 import protocol from "../../evidence/issue-94/live-protocol.json";
 import count from "../../evidence/issue-94/count-without-total-model.json";
 import ambiguous from "../../evidence/issue-94/ambiguous-dose-model.json";
@@ -47,7 +47,30 @@ it("keeps an uncertain product complaint qualified and genuine conflicting sympt
   const projection = projectForm3500(state);
   expect(projection.sections.B.eventDescription).toBe("Problem detail: packaging problem (possible, undescribed).");
   expect(createReviewView(state).attention).toContainEqual(expect.objectContaining({ target: "event:event:symptoms", kind: "conflict" }));
+  expect(projection.omissions).toContainEqual(expect.objectContaining({ target: "event:event:symptoms", reason: "conflicted" }));
   expect((await independentFields(projection))[narrative]).toBe(projection.sections.B.eventDescription);
+});
+
+it.each(["explicitly-absent", "unknown", "unmentioned"] as const)("discloses a %s product complaint without inventing one in the actual B5 output", async (kind) => {
+  let state = medicationCase();
+  if (kind !== "unmentioned") state = applyCaseCommand(state, { type: "record-clinician-facts", commandId: "complaint-disposition", expectedRevision: state.revision,
+    source: medicationSource(kind === "unknown" ? "I do not know whether there was a product defect." : "There was no product defect.", "complaint"),
+    facts: [{ id: "complaint", target: { entity: "event", entityId: "event", field: "problemDescription" }, intent: "fact", value: { kind } }],
+  }).case;
+  const before = structuredClone(state);
+  const projection = projectForm3500(state);
+  expect(projection.omissions).toContainEqual({ concept: "product problem", target: "event:event:problemDescription", reason: kind === "unmentioned" ? "empty" : kind, sourceIds: state.event.facts.problemDescription.sourceIds });
+  expect(projection.sections.B.eventDescription).toBe("Symptoms: rash.");
+  expect((await independentFields(projection))[narrative]).toBe("Symptoms: rash.");
+  expect(state).toEqual(before);
+});
+
+it("keeps a simple qualified quantity intact in the actual D6 text control", async () => {
+  const state = setMedication(medicationCase(), "amoxicillin", { dose: { kind: "known", value: "500 mg", qualifier: "approximate" } });
+  const fields = await independentFields(projectForm3500(state));
+  expect(fields["topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]"]).toBe("500 mg (approximate)");
+  // The original FDA dropdown's blank option has export value 40.
+  expect(fields["topmostSubform[0].Page4[0].Prod1[0].Prod1DoseUnit[0]"]).toBe("40");
 });
 
 it("retains dose/strength qualifiers in their own suspect-product PDF slots without arithmetic or cross-attribution", async () => {

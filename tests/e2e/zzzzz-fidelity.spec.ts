@@ -58,8 +58,14 @@ test("retained symptom/dose proposals have separate acceptance and visible uncer
   await expect(symptomRow.locator("dd").first()).toContainText("prickly forearm skin and no rash (patient is unsure");
   await symptomRow.getByRole("button", { name: "Change", exact: true }).click();
   await page.getByLabel("Uncertainty or context for Symptoms", { exact: true }).fill("");
+  await expect(page.getByLabel("Uncertainty or context for Symptoms", { exact: true })).toBeVisible();
+  await page.getByLabel("Uncertainty or context for Symptoms", { exact: true }).pressSequentially("patient remains unsure");
   await page.getByRole("button", { name: "Apply correction", exact: true }).click();
-  await expect(symptomRow.locator("dd").first()).not.toContainText("patient is unsure");
+  await expect(symptomRow.locator("dd").first()).toContainText("(patient remains unsure)");
+  await symptomRow.getByRole("button", { name: "Change", exact: true }).click();
+  await page.getByLabel("Uncertainty or context for Symptoms", { exact: true }).fill("");
+  await page.getByRole("button", { name: "Apply correction", exact: true }).click();
+  await expect(symptomRow.locator("dd").first()).toHaveText("prickly forearm skin and no rash");
   expect((await storedState(page)).case.event.facts.symptoms.resolvedValue?.value).toEqual({ kind: "known", value: ["prickly forearm skin", "no rash"] });
   expect((await storedState(page)).case.event.facts.symptoms.supersededValues.some(v => v.value.kind === "known" && v.value.qualifier)).toBe(true);
   expect(interpretationRequests).toBe(0);

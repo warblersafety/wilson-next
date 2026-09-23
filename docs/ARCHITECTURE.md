@@ -123,7 +123,7 @@ Dose and product strength are independent reviewed text facts including their
 units. Dose describes the administered amount; strength describes the stated
 amount per dosage form or concentration. Neither is calculated from the other.
 The PDF adapter separates a simple numeric quantity and a recognized unit into
-FDA controls. Descriptive quantities, compound expressions and unsupported
+FDA controls. Descriptive quantities, qualified quantities, compound expressions and unsupported
 units stay intact in the text control with the unit blank; no unit conversion
 or concentration arithmetic occurs. The adapter generates the selected unit's
 appearance and retains the FDA export value in the original dropdown options.
@@ -318,6 +318,11 @@ without arithmetic. These instructions guide extraction, not runtime clinical
 normalization. Known-value qualifiers remain visible during review, and B5
 symptom/product-complaint and D6 dose/strength output carries their accepted
 qualifiers. Existing accepted facts are not silently reinterpreted or repaired.
+Non-carried symptoms and product-complaint facts are individually disclosed in
+output omissions, including absent, unknown, unmentioned and conflicted states;
+they are not invented as positive B5 narrative. The contract guidance has bounded
+synthetic evidence, not an established reliability rate; clinician review remains
+necessary. Qualifier output for other field families remains a separate follow-up.
 
 The runtime model boundary classifies mechanically decidable contract faults
 before review. Response-level faults reject the complete response and leave
