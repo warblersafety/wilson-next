@@ -116,3 +116,56 @@ changing runtime values or inference. `final-protocol.json` declares one
 material-change recheck plus three new contrasts, max four calls and USD5, zero
 automatic retries; earlier failures and expectations remain unchanged. This is
 the final bounded evaluation batch, not an open-ended search for passing retries.
+
+## Final focused verification
+
+V3's four predeclared cases all meet the targeted source → proposal → accepted
+case → independent pypdf checks. The original-input recheck is identified
+separately from the three new cases. Explicit absence, unmentioned and unknown
+complaints remain distinct; patient manifestations keep negation, laterality and
+uncertainty; dose count/form and supplied total remain with their own product,
+without calculated totals or strength inference. `final-assessment.json` records
+those results. This is bounded behavioral evidence, not a reliability rate or
+permission to skip clinician review. V1 and v2 failure assessments remain intact.
+
+Twenty application-model calls across three batches exposed 132,335 input and
+45,925 output tokens, 387.301 seconds provider latency and USD **0.723920**
+estimated cost. There were zero automatic retries and three explicitly labelled
+rechecks after material contract changes. `model-totals.json` and each batch's
+results retain exact per-call metrics and deployment identity. The application
+model remains Sonnet 5; the independent reviewer is separate.
+
+225 deterministic tests, typecheck and production build pass. The nine existing
+browser journeys passed after opening-group repair; the new focused browser
+journey passes on the final UI and is included in required CI. It confirms
+separate Event/medication review, PDF gating, visible qualifiers before/after
+acceptance, value-only edits that retain qualifiers, explicit qualifier removal
+and retained superseded history. Only the existing qualifier is editable; no
+clinical/form field or capacity was added. Missing qualifier values are not
+invented. The normal independent review and final CI disposition belong to PR #112.
+
+The exact first two failed provider outputs now pass production-adapter replay
+without changing a value, target, qualifier, intent or source. Separate group
+acceptance, rejection, unknown-strength omission, reporter readiness and actual
+PDF readback are covered. Invalid response identity still retains the complete
+accepted case/stage and is not retried. Existing incompatible alternatives remain
+unresolved rather than being silently combined. The count/tablet and qualified
+B5/D6 PDFKit captures were visually inspected: complete text is visible, with
+compound quantities using the existing blank-unit fallback. Longer wording uses
+the existing form's automatic font sizing; capacity/continuation pages remain
+outside scope.
+
+Raw model JSON, compact grounded/accepted facts and conflicts, source excerpts,
+all actual sampled PDFs, hashes, action sequences and independent named-field
+readbacks are retained here. Full duplicate browser-state snapshots are preserved
+privately in `/private/tmp/wilson94-raw-state`; they are not a second repository
+case store. `inspect-results.py` uses pypdf, independently of the adapter, and
+`assess-remediation.py final` verifies source-authored expectations. Running it
+without `final` intentionally reports the preserved v2 failed expectation.
+`check-live.mjs` refuses a second exposure of an already recorded case.
+
+Harness corrections were not model retries: the first unit run selected an old
+Python environment without pypdf; initial new tests used an incorrect PDF field
+name/blank-unit export assumption and an opening group before the direct-edit
+stage; the browser module needed JSON import attributes. These were corrected
+without weakening runtime acceptance or changing the preserved model results.

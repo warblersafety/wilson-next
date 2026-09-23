@@ -1,0 +1,34 @@
+{
+  "assessments": [
+    {
+      "id": "recheck-mixed-complaint",
+      "result": "pass",
+      "scope": "Source-defined targeted placement, negation/uncertainty, independent product quantities, explicit acceptance and PDF fields. Not a general clinical or reliability score."
+    },
+    {
+      "id": "recheck-ambiguous-dose",
+      "result": "pass",
+      "scope": "Source-defined targeted placement, negation/uncertainty, independent product quantities, explicit acceptance and PDF fields. Not a general clinical or reliability score."
+    },
+    {
+      "id": "fresh-defect-and-denial",
+      "result": "pass",
+      "scope": "Source-defined targeted placement, negation/uncertainty, independent product quantities, explicit acceptance and PDF fields. Not a general clinical or reliability score."
+    },
+    {
+      "id": "fresh-uncertain-manifestation",
+      "result": "pass",
+      "scope": "Source-defined targeted placement, negation/uncertainty, independent product quantities, explicit acceptance and PDF fields. Not a general clinical or reliability score."
+    },
+    {
+      "id": "fresh-quality-negative",
+      "result": "pass",
+      "scope": "Source-defined targeted placement, negation/uncertainty, independent product quantities, explicit acceptance and PDF fields. Not a general clinical or reliability score."
+    },
+    {
+      "id": "fresh-count-attribution",
+      "result": "FAIL",
+      "detail": "('problemDescription', [], [])"
+    }
+  ]
+}

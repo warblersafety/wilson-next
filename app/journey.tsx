@@ -896,8 +896,11 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
   </article>;
 }
 
-function FactValueEditor({ label, control, value, onChange }: { label: string; control: FactControl; value: EditableCaseValue; onChange: (value: EditableCaseValue) => void }) {
+function FactValueEditor({ label, control, value, onChange: emitChange }: { label: string; control: FactControl; value: EditableCaseValue; onChange: (value: EditableCaseValue) => void }) {
   const known = value.kind === "known" ? value.value : undefined;
+  // Editing the value alone must not silently discard its reviewed uncertainty.
+  const onChange = (next: EditableCaseValue) => emitChange(next.kind === "known" && value.kind === "known" && value.qualifier
+    ? { ...next, qualifier: value.qualifier } : next);
   return <div className={styles.factEditor}>
     <label>{label} status<select aria-label={`${label} status`} value={value.kind} onChange={(event) => onChange(event.target.value === "known" ? editableInitialValue(undefined, control) : { kind: event.target.value as Exclude<EditableCaseValue["kind"], "known"> })}>
       <option value="known">Known</option><option value="unknown">Unknown</option><option value="explicitly-absent">Not present</option><option value="inapplicable">Not applicable</option><option value="declined">Prefer not to answer</option>
@@ -913,6 +916,7 @@ function FactValueEditor({ label, control, value, onChange }: { label: string; c
     </div>}
     {value.kind === "known" && control.shape === "choice" && <select aria-label={`New ${label}`} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })}>{control.options?.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select>}
     {value.kind === "known" && control.shape === "choices" && <fieldset><legend>New {label}</legend>{control.options?.map((option) => <label key={option.value}><input type="checkbox" checked={Array.isArray(known) && known.includes(option.value)} onChange={(event) => onChange({ kind: "known", value: event.target.checked ? [...(Array.isArray(known) ? known : []), option.value] : (Array.isArray(known) ? known : []).filter((item) => item !== option.value) })} /> {option.label}</label>)}</fieldset>}
+    {value.kind === "known" && value.qualifier !== undefined && <label>Uncertainty or context<input aria-label={`Uncertainty or context for ${label}`} value={value.qualifier} onChange={(event) => emitChange({ kind: "known", value: value.value, ...(event.target.value.trim() ? { qualifier: event.target.value } : {}) })} /></label>}
   </div>;
 }
 

@@ -6,7 +6,7 @@ import { performJourneyAction } from "../../src/server/journey/service";
 import protocol from "../../evidence/issue-94/live-protocol.json" with { type: "json" };
 import tablets from "../../evidence/issue-94/retained-tablets-model.json" with { type: "json" };
 import count from "../../evidence/issue-94/count-without-total-model.json" with { type: "json" };
-import { goTo, storedState } from "./draft4-helpers";
+import { acceptOpeningGroups, goTo, storedState } from "./draft4-helpers";
 
 async function pending(output: unknown, id: string) {
   const repository = new InMemoryCaseRepository();
@@ -48,5 +48,19 @@ test("retained symptom/dose proposals have separate acceptance and visible uncer
   await expect(page.getByRole("button", { name: "Accept Event", exact: true })).toHaveCount(0);
   await expect(page.locator("dd").filter({ hasText: qualified })).toBeVisible();
   expect((await storedState(page)).case.event.facts.symptoms.resolvedValue?.value).toEqual({ kind: "known", value: ["prickly skin", "no rash"], qualifier: "patient is unsure whether the prickly feeling was a reaction to the medicine" });
+  await acceptOpeningGroups(page);
+  // A value-only correction preserves uncertainty; removing it is explicit.
+  const symptomRow = page.locator("dt").filter({ hasText: /^Symptoms$/ }).locator("..");
+  await symptomRow.getByRole("button", { name: "Change", exact: true }).click();
+  await page.getByLabel("New Symptoms", { exact: true }).fill("prickly forearm skin\nno rash");
+  await expect(page.getByLabel("Uncertainty or context for Symptoms", { exact: true })).toHaveValue("patient is unsure whether the prickly feeling was a reaction to the medicine");
+  await page.getByRole("button", { name: "Apply correction", exact: true }).click();
+  await expect(symptomRow.locator("dd").first()).toContainText("prickly forearm skin and no rash (patient is unsure");
+  await symptomRow.getByRole("button", { name: "Change", exact: true }).click();
+  await page.getByLabel("Uncertainty or context for Symptoms", { exact: true }).fill("");
+  await page.getByRole("button", { name: "Apply correction", exact: true }).click();
+  await expect(symptomRow.locator("dd").first()).not.toContainText("patient is unsure");
+  expect((await storedState(page)).case.event.facts.symptoms.resolvedValue?.value).toEqual({ kind: "known", value: ["prickly forearm skin", "no rash"] });
+  expect((await storedState(page)).case.event.facts.symptoms.supersededValues.some(v => v.value.kind === "known" && v.value.qualifier)).toBe(true);
   expect(interpretationRequests).toBe(0);
 });
