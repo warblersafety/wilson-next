@@ -17,6 +17,7 @@ import {
 } from "./browser-diagnostics";
 import { MedicationTask } from "./medication-task";
 import styles from "./page.module.css";
+import { canSaveReporter, clinicalNeedParts, needFieldLabel } from "./clinical-guidance";
 import { productCardFields } from "./product-fields";
 
 const progressMessages = {
@@ -46,6 +47,7 @@ export default function Journey() {
   const [boundaryNotice, setBoundaryNotice] = useState<string>();
   const [resetNotice, setResetNotice] = useState(false);
   const previousTask = useRef<string | undefined>(undefined);
+  const [clinicalNavigation, setClinicalNavigation] = useState(0);
   const updateReviewFocus = useRef<string[] | undefined>(undefined);
 
   useEffect(() => { void loadJourney(); }, []);
@@ -63,6 +65,27 @@ export default function Journey() {
     }
     previousTask.current = task;
   }, [task]);
+
+  function continueClinicalReview() {
+    setScreen("details");
+    setClinicalNavigation((value) => value + 1);
+  }
+
+  useEffect(() => {
+    if (!clinicalNavigation || screen !== "details" || !snapshot) return;
+    let target: HTMLElement | null = null;
+    if (snapshot.stage === "review-update") target = document.getElementById("update-review-title");
+    else if (snapshot.stage === "understanding") target = document.querySelector<HTMLElement>("[data-proposal-review] h3");
+    else if (snapshot.stage === "clarify" && snapshot.clarification?.kind !== "reporter") {
+      const disclosure = document.getElementById("direct-clinical-question") as HTMLDetailsElement | null;
+      if (disclosure) disclosure.open = true;
+      target = document.getElementById("clinical-question");
+    }
+    target ??= document.getElementById("case-title");
+    target?.focus({ preventScroll: true });
+    target?.scrollIntoView({ block: "start" });
+    setClinicalNavigation(0);
+  }, [clinicalNavigation, screen, snapshot]);
 
   useEffect(() => {
     const newGroups = updateReviewFocus.current;
@@ -138,6 +161,10 @@ export default function Journey() {
       }
       acceptResponse(response);
       if (response.snapshot.transitionNotice) setBoundaryNotice(response.snapshot.transitionNotice);
+      if (snapshot.stage === "review-update" && response.snapshot.stage === "understanding") {
+        const tests = response.snapshot.understanding.relevantTests.filter(({ state }) => state === "proposed").length;
+        if (tests) setBoundaryNotice(`Update review is complete. ${tests} ${tests === 1 ? "test is" : "tests are"} now ready for separate review. Check and accept each test below.`);
+      }
       if (action.action === "submit-opening") setScreen("details");
       if (action.action === "answer-reporter") setScreen("save");
       if (action.action === "submit-update") setScreen("details");
@@ -246,18 +273,18 @@ export default function Journey() {
           <section className={styles.invitation} aria-label="Useful clinical details">
             <h2>{snapshot.stage === "review-update" ? "Review the proposed changes first" : "Anything to add or correct?"}</h2>
             {snapshot.stage === "review-update" && <p>You do not need to repeat information already proposed above. Review those changes before adding more.</p>}
-            {snapshot.clinicalNeeds.length > 0 && <div className={styles.caseGuidance}><p>{snapshot.stage === "review-update" ? "These clinical needs remain open until the relevant answers are accepted:" : "These details would help complete this report:"}</p><ul>{snapshot.clinicalNeeds.map((need) => <li key={`${need.key}:${need.targetIds.join()}`}>{need.question}</li>)}</ul></div>}
+            <ClinicalNeeds snapshot={snapshot} />
             {snapshot.stage !== "review-update" && <p>Answer several things together, or add another detail. Say which product or test it concerns. Proposed answers remain here until you accept them.</p>}
             <CorrectionInput update={update} setUpdate={setUpdate} busy={busy || snapshot.stage === "review-update" || snapshot.stage === "describe"} interpreting={pendingOperation === "update"} error={errorOperation === "update" ? error : undefined} act={act} />
-            {snapshot.clarification && snapshot.clarification.kind !== "reporter" && <details className={styles.directQuestions}><summary>Use direct answers for the next question</summary><CompletionTask key={clinicalDraftKey(snapshot)} snapshot={snapshot} busy={busy || snapshot.stage !== "clarify"} act={act} /></details>}
+            {snapshot.clarification && snapshot.clarification.kind !== "reporter" && <details id="direct-clinical-question" className={styles.directQuestions}><summary>Use direct answers for the next question</summary><div id="clinical-question" tabIndex={-1}><CompletionTask key={clinicalDraftKey(snapshot)} snapshot={snapshot} busy={busy || snapshot.stage !== "clarify"} act={act} /></div></details>}
           </section>
           <div className={styles.screenActions}><p>{snapshot.stage === "understanding" || snapshot.stage === "review-update" ? "Continuing does not accept proposed details. You can draft reporter details, but finish the clinical review before saving them or preparing a current PDF." : snapshot.clinicalNeeds.length > 0 ? "Complete the applicable clinical details to prepare the PDF. You can draft reporter details at any time." : "Your accepted details will be used in the report."}</p><button className={styles.primaryButton} disabled={busy} onClick={() => setScreen("reporter")}>Continue to reporter details</button></div>
         </section>
         <section data-screen="reporter" hidden={screen !== "reporter"}>
-          <ReporterTask onDirtyChange={setReporterDirty} navigate={setScreen} key={`${browserState?.case.id}:${JSON.stringify(snapshot.understanding.reporter)}:${JSON.stringify(snapshot.understanding.event.reportDate.resolved)}`} snapshot={snapshot} busy={busy} act={act} />
+          <ReporterTask continueClinicalReview={continueClinicalReview} onDirtyChange={setReporterDirty} navigate={setScreen} key={`${browserState?.case.id}:${JSON.stringify(snapshot.understanding.reporter)}:${JSON.stringify(snapshot.understanding.event.reportDate.resolved)}`} snapshot={snapshot} busy={busy} act={act} />
         </section>
         <section data-screen="save" hidden={screen !== "save"}>
-          <OutputComposition snapshot={snapshot} pdf={pdf} caseId={browserState?.case.id} busy={busy} generating={pendingOperation === "pdf"} error={errorOperation === "pdf" ? error : undefined} generatePdf={generatePdf} navigate={setScreen} hasDraft={Boolean(update.trim())} reporterDirty={reporterDirty} />
+          <OutputComposition continueClinicalReview={continueClinicalReview} snapshot={snapshot} pdf={pdf} caseId={browserState?.case.id} busy={busy} generating={pendingOperation === "pdf"} error={errorOperation === "pdf" ? error : undefined} generatePdf={generatePdf} navigate={setScreen} hasDraft={Boolean(update.trim())} reporterDirty={reporterDirty} />
         </section>
       </div>
       <footer className={styles.footer}>Wilson prepares Form FDA 3500 for your review. Nothing is submitted to FDA.</footer>
@@ -366,8 +393,7 @@ function CorrectionInput({ update, setUpdate, busy, interpreting, error, act }: 
   update: string; setUpdate: (value: string) => void; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
   interpreting: boolean; error?: string;
 }) {
-  return <section className={styles.updateBox} aria-labelledby="update-title">
-    <h3 id="update-title">Add or correct information</h3>
+  return <section className={styles.updateBox} aria-label="Add or correct information">
     <NarrativeInput id="later-update" label="Clinical update" context="update" rows={5} value={update} onChange={setUpdate} />
     <button disabled={busy || !update.trim()} onClick={() => void act({ action: "submit-update", text: update })}>Review this update</button>
     <OperationStatus active={interpreting} message={progressMessages.update} />
@@ -604,9 +630,9 @@ function DeviceDetailsTask({ snapshot, busy, act }: {
   </>;
 }
 
-function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate }: {
+function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate, continueClinicalReview }: {
   snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>; onDirtyChange?: (dirty: boolean) => void;
-  navigate?: (screen: Screen) => void;
+  navigate?: (screen: Screen) => void; continueClinicalReview?: () => void;
 }) {
   const accepted = snapshot.understanding.reporter;
   const saved = (field: string) => accepted[field]?.resolved;
@@ -627,7 +653,7 @@ function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate }: {
     onDirtyChange?.(JSON.stringify([values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity]) !== initialDraft.current);
   }, [values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity, onDirtyChange]);
   const previouslySaved = Object.values(accepted).some(({ resolved }) => resolved);
-  const canSave = (snapshot.stage === "clarify" && (snapshot.clarification?.kind === "reporter" || previouslySaved)) || snapshot.stage === "output";
+  const canSave = canSaveReporter(snapshot);
   const set = (field: keyof typeof values, value: string) => setValues((current) => ({ ...current, [field]: value }));
   const complete = values.firstName.trim() && values.lastName.trim() && values.occupation && (values.phone.trim() || values.email.trim());
   const missing = [
@@ -638,7 +664,7 @@ function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate }: {
   ];
   return <>
     <p className={styles.eyebrow}>About the reporter</p><h1>Add the reporter details for this report</h1>
-    <p className={styles.lead}>Tell us who is making this report. To provide reporter details, add a name, occupation, and phone or email. Address details are optional.</p>{!canSave && <p className={styles.notice}>You can draft these details now. Complete the clinical review before saving or declining reporter details.</p>}{saved("firstName")?.kind === "declined" && <p className={styles.notice}>Reporter details were previously declined. You can supply them here to replace that choice.</p>}
+    <p className={styles.lead}>Tell us who is making this report. To provide reporter details, add a name, occupation, and phone or email. Address details are optional.</p>{!canSave && <section className={styles.invitation} aria-label="Before saving reporter details"><h2>Clinical review comes next</h2><p>You can draft reporter details now. They stay here while you finish the clinical review required before saving or declining them.</p><PendingReview snapshot={snapshot} /><ClinicalNeeds snapshot={snapshot} /><button className={styles.primaryButton} disabled={busy} onClick={continueClinicalReview}>Continue clinical review</button></section>}{saved("firstName")?.kind === "declined" && <p className={styles.notice}>Reporter details were previously declined. You can supply them here to replace that choice.</p>}
     <div className={styles.demoShortcut}><div><strong>Trying the preview?</strong><p>Fill fictional reporter details, then review and save them.</p></div><button disabled={busy} onClick={() => {
       setValues((current) => ({ ...current, firstName: "Casey", lastName: "Reed", email: "casey.reed@example.test", occupation: "Physician" }));
       setHealthProfessional(true);
@@ -681,9 +707,49 @@ function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate }: {
         country: values.country, occupation: values.occupation, healthProfessional, reportedTo, doNotDiscloseIdentity,
       } })}>{previouslySaved ? "Save reporter details" : "Add reporter details"}</button>
       <button className={styles.inlineAction} disabled={busy} onClick={() => void act({ action: "answer-reporter", reportDate: reportDate || null, reporter: { kind: "declined" } })}>Prefer not to provide reporter details</button>
-    </div> : <div className={styles.screenActions}><p>Your draft stays here when you return to clinical review.</p><button className={styles.primaryButton} disabled={busy} onClick={() => navigate?.("details")}>Continue clinical review</button></div>}
+    </div> : null}
     {canSave && navigate && <button className={styles.inlineAction} disabled={busy} onClick={() => navigate("details")}>Back to review details</button>}
   </>;
+}
+
+function ClinicalNeeds({ snapshot }: { snapshot: JourneySnapshot }) {
+  if (!snapshot.clinicalNeeds.length) return null;
+  const label = (target: string) => target.startsWith("product:") ? targetLabel(snapshot, target) : needFieldLabel(target);
+  return <div className={styles.caseGuidance}>
+    <p>Required before preparing the PDF. Answer what you know, or explicitly mark unknown or decline where offered.</p>
+    <ul>{clinicalNeedParts(snapshot).map(({ need, pending, missing, recheckAfterReview }) => <li key={`${need.key}:${need.targetIds.join()}`}>
+      <strong>{need.question}</strong>
+      {pending.length > 0 && <p>Proposed answers awaiting acceptance: {joinList(pending.map(label))}. Review them before supplying the same details again.</p>}
+      {recheckAfterReview && <p>Remaining treatment questions will be checked after these proposals are reviewed.</p>}
+      {!recheckAfterReview && missing.length > 0 && <p>Still needs an answer: {joinList(missing.map(label))}.</p>}
+    </li>)}</ul>
+  </div>;
+}
+
+function PendingReview({ snapshot }: { snapshot: JourneySnapshot }) {
+  const groups = groupAttention(snapshot.review.attention.filter(({ kind }) => kind !== "conflict"));
+  if (!groups.length) return null;
+  return <div><p>Review these pending groups separately before continuing:</p>
+    <ul>{groups.map(({ groupId, items }) => <li key={groupId}>{reviewGroupTitle(snapshot, items)}</li>)}</ul>
+  </div>;
+}
+
+function reviewGroupTitle(snapshot: JourneySnapshot, items: ReviewAttentionItem[]): string {
+  const entities = [...new Set(items.map(({ target }) => {
+    const [entity, id] = target.split(":");
+    if (entity === "product") return productViewLabel(snapshot.understanding.products.find((product) => product.id === id)!);
+    if (entity === "test") {
+      const index = snapshot.understanding.relevantTests.findIndex((test) => test.id === id);
+      const test = snapshot.understanding.relevantTests[index];
+      return `Relevant test ${index + 1}${test ? ` — ${knownString(activeValue(test.facts.testName)) ?? "name not supplied"}${knownString(activeValue(test.facts.date)) ? `, ${displayDate(knownString(activeValue(test.facts.date)))}` : ""}` : ""}`;
+    }
+    return entity === "patient" ? "Patient" : entity === "event" ? "Event" : "Reporter";
+  }))];
+  const fields = items.map(({ target }) => target.split(":")[2]);
+  const subject = items.length === 1 ? controlForTarget(items[0].target)?.label
+    : fields.every((field) => ["stopped", "doseReduced", "stopDate", "improvedAfterChange", "restarted", "recurred"].includes(field)) ? "Treatment history"
+    : fields.every((field) => Object.keys(seriousOutcomeLabels).includes(field)) ? "Serious outcomes" : undefined;
+  return `${joinList(entities)} — ${subject ? `${subject} · ` : ""}${items.some(({ kind }) => kind === "correction") ? "proposed correction" : "proposed details"}`;
 }
 
 function UpdateReview({ snapshot, busy, act }: {
@@ -691,27 +757,35 @@ function UpdateReview({ snapshot, busy, act }: {
 }) {
   const groups = groupAttention(snapshot.review.attention.filter(({ kind, groupId }) => kind !== "conflict" && !snapshot.openingGroups.includes(groupId ?? "")));
   return <>
-    <p className={styles.eyebrow}>Review update</p>
     <h2 id="update-review-title" tabIndex={-1} className={styles.updateReviewTitle}>Review the proposed update</h2>
-    <p>Review each proposed change before continuing. Earlier information stays unchanged until you accept a correction. An accepted incompatible alternative remains visibly unresolved and is omitted from the form.</p>
-    {groups.map(({ groupId, items }) => <article className={styles.attentionCard} key={groupId}>
-      <span className={styles.attentionLabel}>{items.some(({ kind }) => kind === "correction") ? "Proposed correction" : "Proposed information"}</span>
-      {items.map((item) => <div key={item.target}>
-        <h3>{targetLabel(snapshot, item.target)}</h3>
-        <p><strong>{formatFact(item.values[0]?.value, controlForTarget(item.target))}</strong></p>
-        <Evidence excerpt={item.values[0]?.evidence} expanded />
-      </div>)}
-      <div className={styles.decisionActions}>
-        <button disabled={busy} onClick={() => void act({ action: "review-update-group", groupId, decision: "accept" })}>Accept this update</button>
-        <button disabled={busy} onClick={() => void act({ action: "review-update-group", groupId, decision: "reject" })}>Reject this update</button>
-      </div>
-    </article>)}
+    <p>Accept or reject each group separately. Earlier information stays unchanged until you accept a correction. An accepted incompatible alternative remains visibly unresolved and is omitted from the form.</p>
+    {groups.map(({ groupId, items }) => {
+      const title = reviewGroupTitle(snapshot, items);
+      const evidence = new Map<string, string[]>();
+      for (const item of items) for (const excerpt of new Set(item.values[0]?.evidence ?? [])) {
+        evidence.set(excerpt, [...(evidence.get(excerpt) ?? []), targetLabel(snapshot, item.target)]);
+      }
+      return <article className={styles.attentionCard} key={groupId} aria-label={title}>
+        <h3>{title}</h3>
+        <div className={styles.updateFacts}>{items.map((item) => <div key={item.target}>
+          <h4>{targetLabel(snapshot, item.target)}</h4>
+          <p>{formatFact(item.values[0]?.value, controlForTarget(item.target))}</p>
+        </div>)}</div>
+        {evidence.size > 0 && <details className={styles.evidence}><summary>View source evidence for this group</summary>
+          {[...evidence].map(([excerpt, labels]) => <div key={excerpt}><p className={styles.hint}>{joinList(labels)}</p><blockquote>“{excerpt}”</blockquote></div>)}
+        </details>}
+        <div className={styles.decisionActions}>
+          <button disabled={busy} onClick={() => void act({ action: "review-update-group", groupId, decision: "accept" })}>Accept this update</button>
+          <button disabled={busy} onClick={() => void act({ action: "review-update-group", groupId, decision: "reject" })}>Reject this update</button>
+        </div>
+      </article>;
+    })}
   </>;
 }
 
-function OutputComposition({ snapshot, pdf, caseId, busy, generating, error, generatePdf, navigate, hasDraft, reporterDirty }: {
+function OutputComposition({ snapshot, pdf, caseId, busy, generating, error, generatePdf, navigate, hasDraft, reporterDirty, continueClinicalReview }: {
   snapshot: JourneySnapshot; pdf?: PdfArtifact; caseId?: string; busy: boolean;
-  generating: boolean; error?: string;
+  generating: boolean; error?: string; continueClinicalReview: () => void;
   generatePdf: () => Promise<void>; navigate: (screen: Screen) => void; hasDraft: boolean; reporterDirty: boolean;
 }) {
   const artifact = pdf?.caseId === caseId ? pdf : undefined;
@@ -721,8 +795,8 @@ function OutputComposition({ snapshot, pdf, caseId, busy, generating, error, gen
     <h1>Your FDA MedWatch report</h1>
     <p className={styles.lead}>Inspect the actual generated form, then save a copy. Wilson does not submit it.</p>
     {hasDraft && <p className={styles.notice}>You have an unsent clinical draft in Review details. It is not included in the PDF.</p>}
-    {reporterDirty && <p className={styles.notice}>You have unsaved reporter details. Save them in Reporter details to include those changes in the report.</p>}
-    {snapshot.outputIssues.length > 0 && <section className={styles.invitation}><h2>The form needs more reviewed information</h2><ul>{snapshot.outputIssues.map((issue, index) => <li key={index}>{issue.message}</li>)}</ul><button disabled={busy} onClick={() => navigate(snapshot.clarification?.kind === "reporter" ? "reporter" : "details")}>Continue completing the report</button></section>}
+    {reporterDirty && <p className={styles.notice}>You have unsaved reporter details. {canSaveReporter(snapshot) ? "Save them in Reporter details to include those changes in the report." : "Your draft is retained. Finish the clinical review below, then return to Reporter details to save it."}</p>}
+    {snapshot.outputIssues.length > 0 && <section className={styles.invitation}><h2>The form needs more reviewed information</h2><PendingReview snapshot={snapshot} /><ClinicalNeeds snapshot={snapshot} /><ul>{snapshot.outputIssues.filter(({ code }) => code !== "pending-proposal-review" && code !== "open-clarification").map((issue, index) => <li key={index}>{issue.message}</li>)}</ul>{snapshot.stage === "clarify" && snapshot.clarification?.kind === "reporter" ? <><p>Clinical questions are complete. Save reporter details or explicitly choose not to provide them.</p><button className={styles.primaryButton} disabled={busy} onClick={() => navigate("reporter")}>Go to reporter details</button></> : <button className={styles.primaryButton} disabled={busy} onClick={continueClinicalReview}>Continue completing the report</button>}</section>}
     <div className={styles.pdfToolbar}><div><h2>Form FDA 3500</h2><p role="status" aria-atomic="true">{generating ? <><span className={styles.spinner} aria-hidden="true" />{artifact ? "Updating the PDF from accepted details… The earlier PDF remains below until the update is ready." : "Preparing the PDF from accepted details…"}</> : error ? "PDF generation failed. Accepted details are retained. Try generating it again." : current ? "PDF ready — it reflects the accepted report contents." : artifact ? "Earlier PDF — it does not include changes awaiting review or generation." : "Generate the PDF after completing review and reporter details."}</p></div>
       {current ? <a className={styles.primaryLink} href={artifact!.url} download={artifact!.filename}>Save PDF</a> : <button disabled={busy || !snapshot.downloadReady} onClick={() => void generatePdf()}>{artifact ? "Generate updated PDF" : "Generate PDF"}</button>}
     </div>
@@ -847,6 +921,7 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
     {fields.every((field) => !activeValue(facts[field]) && !facts[field]?.history.length && !facts[field]?.conflicts.length) && <p className={styles.hint}>No details were captured for this group. It can be left blank.</p>}
     {entityState === "withdrawn" && <p className={styles.withdrawn}>Withdrawn from the active report; reviewed facts and source history are retained below.</p>}
     {entity === "test" && entityState !== "withdrawn" && !knownString(activeValue(facts.testName)) && <p role="status">Test identity is not recorded as known. Check the source wording. You can supply its name in Clinical update or leave it unknown for a partial report.</p>}
+    {entity === "test" && allowOpeningReview && <p className={styles.reviewDependency}>Ready for review. Check this test, then accept it separately. It is not included in the report until accepted.</p>}
     {reviewBlocked && <p className={styles.reviewDependency}>Review all proposed updates above first. Then you can change, accept, or remove this {entity === "test" ? "test" : "product"}. <a href="#update-review-title" onClick={() => document.getElementById("update-review-title")?.focus()}>Go to proposed updates</a></p>}
     <dl>{groupedOutcomes && <div>
       <dt>Serious outcomes</dt>
@@ -888,10 +963,10 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
       </div>;
     })}</dl>
     {allowDirectEdit && (showMore || fields.some((field) => facts[field] && !activeValue(facts[field]) && facts[field].history.length === 0 && facts[field].conflicts.length === 0 && factControl(entity, field))) && <button className={styles.inlineAction} aria-expanded={showMore} onClick={() => setShowMore(!showMore)}>{showMore ? "Show fewer fields" : "Show more fields"}</button>}
-    {allowOpeningReview && <button className={styles.groupReview} disabled={busy || Object.entries(drafts).some(([field, value]) => !validEditableValue(value, factControl(entity, field)!))} onClick={() => void act({ action: "review-opening-group", groupId, corrections: groupCorrections })}>
+    {allowOpeningReview && <div className={styles.decisionActions}><button className={styles.groupReview} disabled={busy || Object.entries(drafts).some(([field, value]) => !validEditableValue(value, factControl(entity, field)!))} onClick={() => void act({ action: "review-opening-group", groupId, corrections: groupCorrections })}>
       Accept {title}{groupCorrections.length > 0 ? ` with ${groupCorrections.length} ${groupCorrections.length === 1 ? "change" : "changes"}` : ""}
-    </button>}
-    {allowOpeningReview && !allowRemove && <button disabled={busy} onClick={() => void act({ action: "reject-group", groupId })}>Reject {title}</button>}
+    </button>
+    {!allowRemove && <button disabled={busy} onClick={() => void act({ action: "reject-group", groupId })}>Reject {title}</button>}</div>}
     {evidence.length > 0 && <Evidence excerpt={evidence} />}
   </article>;
 }

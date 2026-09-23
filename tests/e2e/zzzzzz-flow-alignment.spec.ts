@@ -1,0 +1,107 @@
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+import { writeFile } from "node:fs/promises";
+import { expect, test } from "@playwright/test";
+import { flowAlignmentState } from "../fixtures/flow-alignment";
+import { goTo, savePdf, storedState } from "./draft4-helpers";
+import baselinePdf from "../../evidence/issue-109/pdf-readback.json" with { type: "json" };
+
+test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery and retained reporter draft", async ({ page }, info) => {
+  let interpretationRequests = 0;
+  await page.route("**/api/case", async route => {
+    if (route.request().method() === "POST" && ["submit-opening", "submit-update"].includes(route.request().postDataJSON()?.action?.action)) {
+      interpretationRequests++;
+      await route.abort();
+    } else await route.continue();
+  });
+  const pending = await flowAlignmentState();
+  await writeFile(info.outputPath("pending-state.json"), JSON.stringify(pending));
+  await page.goto("/");
+  await expect(page.getByLabel("Case description", { exact: true })).toBeVisible();
+  await page.evaluate(state => sessionStorage.setItem("wilson-journey-state-v2", JSON.stringify(state)), pending);
+  await page.reload();
+  const details = page.locator('[data-screen="details"]');
+  const invitation = details.getByRole("region", { name: "Useful clinical details" });
+  await expect(invitation).toContainText("Proposed answers awaiting acceptance: Relevant tests or laboratory results and Relevant history");
+  await expect(invitation).toContainText("Still needs an answer: Other serious event");
+  await expect(invitation).toContainText("Remaining treatment questions will be checked after these proposals are reviewed.");
+  await expect(invitation).not.toContainText("Still needs an answer: Dose reduced");
+  const medication = details.getByRole("article", { name: "ibuprofen — Treatment history · proposed details", exact: true });
+  await medication.getByText("View source evidence for this group", { exact: true }).click();
+  await expect(medication.locator("blockquote")).toHaveCount(2);
+  await expect(medication.locator("details")).toContainText("ibuprofen — Stopped date, ibuprofen — Stopped or removed, and ibuprofen — Improved after stopping or reducing");
+  await expect(medication.locator("details")).toContainText("Symptoms improved after stopping ibuprofen and it was never restarted.");
+  await page.getByLabel("Clinical update", { exact: true }).fill("Unsent fictional draft; do not apply.");
+  await page.screenshot({ path: info.outputPath("pending-review-desktop.png"), fullPage: true });
+  await goTo(page, "Reporter details");
+  await page.getByRole("button", { name: "Use demo reporter details", exact: true }).click();
+  await page.getByLabel("Date of this report", { exact: true }).fill("2026-09-23");
+  await page.getByLabel("Do not disclose my identity to the manufacturer", { exact: true }).check();
+  await expect(page.getByRole("button", { name: "Add reporter details", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("region", { name: "Before saving reporter details" })).toContainText("Other serious event");
+  expect(await storedState(page)).toEqual(pending);
+  await page.getByRole("button", { name: "Continue clinical review", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Review the proposed update", exact: true })).toBeFocused();
+  await goTo(page, "Review & save");
+  await expect(page.getByText("You have unsaved reporter details.", { exact: false })).toContainText("Finish the clinical review below");
+  await expect(page.getByRole("button", { name: "Generate PDF", exact: true })).toBeDisabled();
+  await page.getByRole("button", { name: "Continue completing the report", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Review the proposed update", exact: true })).toBeFocused();
+  await medication.getByRole("button", { name: "Accept this update", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Accept this update", exact: true })).toHaveCount(1);
+  expect((await storedState(page)).case.products[0].facts.stopped.resolvedValue?.value).toEqual({ kind: "known", value: true });
+  expect((await storedState(page)).case.event.facts.relevantHistory.resolvedValue).toBeUndefined();
+  await expect(page.getByRole("button", { name: "Accept Relevant test 1", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Accept this update", exact: true }).click();
+  await expect(page.getByRole("status").filter({ hasText: "2 tests are now ready for separate review" })).toBeVisible();
+  const test1 = page.locator("#case-card-test-1"), test2 = page.locator("#case-card-test-2");
+  await expect(test1.getByRole("heading")).toBeFocused();
+  await expect(test1.getByText("Ready for review.", { exact: false })).toBeInViewport();
+  await page.screenshot({ path: info.outputPath("tests-ready-desktop.png") });
+  await test1.getByRole("button", { name: "Accept Relevant test 1", exact: true }).click();
+  await expect(test2.getByRole("heading")).toBeFocused();
+  expect((await storedState(page)).case.relevantTests.map(({ state }) => state)).toEqual(["resolved", "proposed"]);
+  await test2.getByRole("button", { name: "Accept Relevant test 2", exact: true }).click();
+  await expect(test2.getByRole("button", { name: "Accept Relevant test 2", exact: true })).toHaveCount(0);
+  const beforeRecovery = await storedState(page);
+  await writeFile(info.outputPath("blocked-state.json"), JSON.stringify(beforeRecovery));
+  await goTo(page, "Review & save");
+  await expect(page.locator('[data-screen="save"]').getByText("Still needs an answer: Other serious event.", { exact: true })).toBeVisible();
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.screenshot({ path: info.outputPath(`clinical-blocker-output-${width}.png`), fullPage: true });
+  }
+  await page.getByRole("button", { name: "Continue completing the report", exact: true }).click();
+  await expect(page.locator("#direct-clinical-question")).toHaveAttribute("open", "");
+  await expect(page.locator("#clinical-question")).toBeFocused();
+  await expect(page.getByRole("button", { name: "Confirm outcomes", exact: true })).toBeInViewport();
+  // Navigation must retain an in-progress direct answer too.
+  await page.getByLabel("Other serious or important medical event", { exact: true }).check();
+  await goTo(page, "Reporter details");
+  await expect(page.getByLabel("Reporter email", { exact: true })).toHaveValue("casey.reed@example.test");
+  await expect(page.getByLabel("Do not disclose my identity to the manufacturer", { exact: true })).toBeChecked();
+  await page.getByRole("button", { name: "Continue clinical review", exact: true }).click();
+  await expect(page.getByLabel("Other serious or important medical event", { exact: true })).toBeChecked();
+  await expect(page.getByLabel("Clinical update", { exact: true })).toHaveValue("Unsent fictional draft; do not apply.");
+  expect(await storedState(page)).toEqual(beforeRecovery);
+  await page.getByLabel("Other serious or important medical event", { exact: true }).uncheck();
+  await page.getByRole("button", { name: "Confirm outcomes", exact: true }).click();
+  await goTo(page, "Review & save");
+  await expect(page.getByRole("button", { name: "Generate PDF", exact: true })).toBeDisabled();
+  await page.getByRole("button", { name: "Go to reporter details", exact: true }).click();
+  await page.getByRole("button", { name: "Add reporter details", exact: true }).click();
+  const file = info.outputPath("accepted.pdf");
+  await (await savePdf(page)).saveAs(file);
+  const { stdout } = await promisify(execFile)(process.env.PYPDF_PYTHON ?? "python3", ["tools/pdf/independent_readback.py", file, "--named"]);
+  const readback = JSON.parse(stdout);
+  expect(readback.namedFields).toEqual(baselinePdf.namedFields);
+  await writeFile(info.outputPath("pdf-readback.json"), JSON.stringify(readback, null, 2));
+  expect(interpretationRequests).toBe(0);
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await goTo(page, "Review details");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.screenshot({ path: info.outputPath(`accepted-review-${width}.png`), fullPage: true });
+  }
+});

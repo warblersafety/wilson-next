@@ -191,3 +191,10 @@ blockquote.evidence > span:first-child { font-size: 12px; font-weight: 600; marg
   .caseCard dl > div > .inlineAction { padding: 6px 2px; font-size: 12px; }
   .caseCard dl > div > .history, .caseCard dl > div > .hint, .caseCard dl > div > .inlineEdit { grid-column: 1 / -1; }
 }
+
+/* Draft 4's compact review, with source-to-field attribution retained on demand. */
+.updateFacts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 8px 24px; }
+.updateFacts h4 { font-size: 14px; color: #5c6678; margin: 8px 0; font-weight: 500; }
+.updateFacts p { margin: 4px 0 8px; font-weight: 600; overflow-wrap: anywhere; }
+.caseGuidance li { margin: 12px 0; }
+.caseGuidance li p { font-weight: 400; margin: 4px 0; font-size: 14px; }
