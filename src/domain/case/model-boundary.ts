@@ -345,11 +345,17 @@ function assertResponseLevelProposalConsistency(
   const groupTargets = new Map<string, string>();
   proposals.forEach((proposal, index) => {
     const identity = rawTargetIdentity(proposal.target);
-    const prior = groupTargets.get(proposal.groupReference);
-    if (turn === "opening" && prior && prior !== identity) {
-      boundaryIssue(["proposals", index, "groupReference"], "A proposal group cannot span different case entities");
+    // Opening patient/event review groups are already assigned by code, not
+    // model labels. A reused label cannot change their identity or acceptance.
+    // Keep raw-label consistency for declared entities; validate the assembled
+    // groups again after target resolution and proposal-local quarantine.
+    if (proposal.target.entity !== "patient" && proposal.target.entity !== "event") {
+      const prior = groupTargets.get(proposal.groupReference);
+      if (turn === "opening" && prior && prior !== identity) {
+        boundaryIssue(["proposals", index, "groupReference"], "A proposal group cannot span different case entities");
+      }
+      groupTargets.set(proposal.groupReference, identity);
     }
-    groupTargets.set(proposal.groupReference, identity);
     if (proposal.target.entity === "product" && proposal.target.productReference) {
       const declared = proposedProducts.get(proposal.target.productReference);
       if (declared && declared.groupReference !== proposal.groupReference) {

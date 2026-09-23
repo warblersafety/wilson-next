@@ -1,0 +1,246 @@
+{
+  "products": [
+    {
+      "productReference": "prod1",
+      "groupReference": "g1"
+    }
+  ],
+  "tests": [],
+  "proposals": [
+    {
+      "proposalReference": "pr1",
+      "groupReference": "g0",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "identifier"
+      },
+      "value": {
+        "kind": "known",
+        "value": "Q2"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "pr2",
+      "groupReference": "g0",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "ageYears"
+      },
+      "value": {
+        "kind": "known",
+        "value": 52
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "pr3",
+      "groupReference": "g0",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "sex"
+      },
+      "value": {
+        "kind": "known",
+        "value": "male"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "pr4",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "name"
+      },
+      "value": {
+        "kind": "known",
+        "value": "naproxen"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "pr5",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "productType"
+      },
+      "value": {
+        "kind": "known",
+        "value": "drug-or-biologic"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "pr6",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "role"
+      },
+      "value": {
+        "kind": "known",
+        "value": "suspect"
+      },
+      "evidenceReferences": [
+        "p5"
+      ]
+    },
+    {
+      "proposalReference": "pr7",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "strength"
+      },
+      "value": {
+        "kind": "known",
+        "value": "250 mg"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "pr8",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "dose"
+      },
+      "value": {
+        "kind": "known",
+        "value": "two tablets, a total dose of 500 mg"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "pr9",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "route"
+      },
+      "value": {
+        "kind": "known",
+        "value": "oral"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "pr10",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "frequency"
+      },
+      "value": {
+        "kind": "known",
+        "value": "twice daily"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "pr11",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "indication"
+      },
+      "value": {
+        "kind": "known",
+        "value": "back pain"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "pr12",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "startDate"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-09-02"
+      },
+      "evidenceReferences": [
+        "p4"
+      ]
+    },
+    {
+      "proposalReference": "pr13",
+      "groupReference": "g0",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "onsetDate"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-09-04"
+      },
+      "evidenceReferences": [
+        "p4"
+      ]
+    },
+    {
+      "proposalReference": "pr14",
+      "groupReference": "g0",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "symptoms"
+      },
+      "value": {
+        "kind": "known",
+        "value": [
+          "abdominal pain"
+        ]
+      },
+      "evidenceReferences": [
+        "p4"
+      ]
+    }
+  ]
+}

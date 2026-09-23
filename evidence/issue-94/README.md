@@ -35,3 +35,23 @@ are excluded. Start: September 23 19:59 UTC; checkpoint after three active hours
 if unfinished. All 55 local uncommitted documents/evidence/archives were hashed
 and copied to `/private/tmp/wilson94-preserved-20260923`; only roadmap and handoff
 will receive requested local delivery updates. Codex token measurements unavailable.
+
+## First-pass blocker found during evaluation
+
+The first two candidate calls extracted the targeted symptoms/doses correctly,
+but reused a raw opening label across patient/event/product. Both failed before
+review; they remain failures, not successful retries. The raw responses are kept
+unchanged in `retained-dose-only-model.json` and `retained-tablets-model.json`.
+Opening patient/event groups were already code-owned (`patient` and `event`),
+so rejecting their unused model labels prevented otherwise grounded proposals
+from reaching the existing separate review groups.
+
+A bounded prerequisite repair removes that redundant raw-label check for opening
+patient/event only. Product/test declaration consistency, distinct declared
+entity labels, resolved entity identity, proposal quarantine and the final
+single-entity assembled-group invariant still apply. It changes no target/value,
+evidence, within-entity acceptance unit or clinical inference. This is not the
+broader grouping redesign deferred by #109. Exact first-pass replay, not another
+model call, supplies recurrence evidence; the first two semantic replay cases
+failed before the repair and pass afterward. The prompt remains frozen for all
+ten predeclared evaluations. No retry is counted as a fix.
