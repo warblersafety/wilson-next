@@ -1,0 +1,285 @@
+{
+  "products": [
+    {
+      "productReference": "prod1",
+      "groupReference": "g1"
+    },
+    {
+      "productReference": "prod2",
+      "groupReference": "g2"
+    }
+  ],
+  "tests": [],
+  "proposals": [
+    {
+      "proposalReference": "prop1",
+      "groupReference": "g0",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "identifier"
+      },
+      "value": {
+        "kind": "known",
+        "value": "U94"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop2",
+      "groupReference": "g0",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "ageYears"
+      },
+      "value": {
+        "kind": "known",
+        "value": 57
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop3",
+      "groupReference": "g0",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "field": "sex"
+      },
+      "value": {
+        "kind": "known",
+        "value": "female"
+      },
+      "evidenceReferences": [
+        "p4"
+      ]
+    },
+    {
+      "proposalReference": "prop4",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "name"
+      },
+      "value": {
+        "kind": "known",
+        "value": "doxycycline"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop5",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "productType"
+      },
+      "value": {
+        "kind": "known",
+        "value": "drug-or-biologic"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop6",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "role"
+      },
+      "value": {
+        "kind": "known",
+        "value": "suspect"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop7",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "indication"
+      },
+      "value": {
+        "kind": "known",
+        "value": "infection"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop8",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "strength"
+      },
+      "value": {
+        "kind": "unknown"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop9",
+      "groupReference": "g2",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod2",
+        "field": "name"
+      },
+      "value": {
+        "kind": "known",
+        "value": "ibuprofen"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop10",
+      "groupReference": "g2",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod2",
+        "field": "productType"
+      },
+      "value": {
+        "kind": "known",
+        "value": "drug-or-biologic"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop11",
+      "groupReference": "g2",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod2",
+        "field": "role"
+      },
+      "value": {
+        "kind": "known",
+        "value": "suspect"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop12",
+      "groupReference": "g2",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod2",
+        "field": "indication"
+      },
+      "value": {
+        "kind": "known",
+        "value": "joint pain"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop13",
+      "groupReference": "g2",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod2",
+        "field": "strength"
+      },
+      "value": {
+        "kind": "unknown"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop14",
+      "groupReference": "g0",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "symptoms"
+      },
+      "value": {
+        "kind": "known",
+        "value": [
+          "queasiness"
+        ]
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop15",
+      "groupReference": "g0",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "symptoms"
+      },
+      "value": {
+        "kind": "known",
+        "value": [
+          "vomiting"
+        ],
+        "qualifier": "denied"
+      },
+      "evidenceReferences": [
+        "p5"
+      ]
+    },
+    {
+      "proposalReference": "prop16",
+      "groupReference": "g0",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "problemDescription"
+      },
+      "value": {
+        "kind": "known",
+        "value": "packaging problem",
+        "qualifier": "possible, undescribed"
+      },
+      "evidenceReferences": [
+        "p4"
+      ]
+    }
+  ]
+}

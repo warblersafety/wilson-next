@@ -55,3 +55,53 @@ broader grouping redesign deferred by #109. Exact first-pass replay, not another
 model call, supplies recurrence evidence; the first two semantic replay cases
 failed before the repair and pass afterward. The prompt remains frozen for all
 ten predeclared evaluations. No retry is counted as a fix.
+
+## Concurrent delivery reconciliation
+
+Another task checked out a policy branch from the in-progress #94 branch and
+merged #113 (`bb0ddf5`) into main while this evaluation was running. Contrary to
+that PR's policy-only description, its squash commit contains the initial #94
+prompt/schema annotations, request tests and predeclared protocol. They had not
+yet received this slice's independent review. No symptom-fidelity readiness or
+closure is inferred from that merge. The next local #94 commit landed on local
+main because the concurrent task had switched the checkout; it was preserved,
+cherry-picked to the intended #94 branch and the local main pointer restored to
+origin/main. No remote main write/bypass or local-document discard was performed.
+
+The #94 PR merges current main for the new DELIVERY.md policy. The complete
+material source/test change from the pre-slice base `7542a90` is additionally
+retained in `material-from-pre-slice.diff` for the normal independent reviewer;
+`main...HEAD` alone omits the prematurely merged prompt changes. Review must
+cover both, and the current full source plus first-pass evidence. Standard review
+now uses Opus high under Steve's newly merged policy. This is one review, not an
+extra reviewer or a reliability claim.
+
+## Frozen v1 batch and bounded remediation
+
+The ten v1 calls cost an estimated USD 0.369140 (provider metrics retained).
+Two original openings failed raw grouping, later repaired by unchanged-response
+replay. Eight reached PDF. Product/symptom placement and medication count/total
+attribution were correct in those proposals, but **PDF availability is not a
+fidelity pass**: mixed-complaint and ambiguous-dose split a specific denial into
+a competing whole symptoms fact, causing a disclosed conflict and omission.
+The mixed case incorrectly emitted field-wide absence. Count-without-total and
+ambiguous-dose additionally exposed stored qualifiers being dropped by review
+formatting and PDF projection. All first-pass responses/PDFs remain retained;
+no failure is erased or scored as a retry success.
+
+V2 explicitly distinguishes whole-list absence from a specific negative item
+and asks for one compatible symptoms array, retaining genuine alternatives.
+It does not combine or reinterpret returned clinical facts in code. Review
+formatting now displays existing known-value qualifiers. B5 symptom/product-
+complaint text and D6 dose/strength text retain those accepted qualifiers without
+changing the fact, its source or its acceptance. Field capacities are unchanged.
+Other projection families and richer narrative remain outside this repair.
+Existing partial-output/conflict policy is retained (ARCHITECTURE.md): the v1
+conflict remains unresolved and disclosed when replayed, never auto-accepted as
+one interpretation. A corrected proposal must still be explicitly reviewed.
+
+`remediation-protocol.json` predeclares six calls (USD5 batch, USD20 issue cap,
+USD1.50 reservation per call, zero automatic retries): two explicitly labelled
+material-change rechecks and four new contrasts. Rechecks do not establish
+independent reliability; their purpose is verifying the changed contract on the
+retained failure. The fresh cases assess generalization separately.

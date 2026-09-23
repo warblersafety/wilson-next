@@ -242,7 +242,9 @@ function projectProduct(
   const result: ProjectedProduct = { productId: product.id };
   const prefix = `sections.D.suspectProducts.${index}`;
   for (const field of sectionDProductFields) {
-    assign<unknown>(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field] as Fact<unknown>, result, field, (value) => field === "medicationType" ? ["brand", "generic-biosimilar", "otc", "compounded"].filter((label) => (value as string[]).includes(label)) : value);
+    assign<unknown>(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field] as Fact<unknown>, result, field, (value) => field === "medicationType" ? ["brand", "generic-biosimilar", "otc", "compounded"].filter((label) => (value as string[]).includes(label))
+      : field === "dose" || field === "strength" ? qualifiedText(String(value), known(product.facts[field])?.qualifier)
+        : value);
   }
   for (const [field, applies, prerequisites] of [
     ["improvedAfterChange", withdrawalApplicability(product.facts), [product.facts.stopped, product.facts.doseReduced]],
@@ -349,10 +351,14 @@ function assign<T>(
   projection.omissions.push({ concept, target, reason: omissionReason(fact), sourceIds: fact.sourceIds });
 }
 
-function known<T>(fact: Fact<T>): { value: T; sourceIds: string[] } | undefined {
+function known<T>(fact: Fact<T>): { value: T; qualifier?: string; sourceIds: string[] } | undefined {
   return fact.state === "resolved" && fact.resolvedValue?.value.kind === "known"
-    ? { value: fact.resolvedValue.value.value, sourceIds: fact.resolvedValue.sourceIds }
+    ? { value: fact.resolvedValue.value.value, qualifier: fact.resolvedValue.value.qualifier, sourceIds: fact.resolvedValue.sourceIds }
     : undefined;
+}
+
+function qualifiedText(text: string, qualifier?: string): string {
+  return qualifier ? `${text} (${qualifier})` : text;
 }
 
 function omissionReason(fact: Fact<unknown>): ProjectionOmission["reason"] {
@@ -371,8 +377,8 @@ function buildEventDescription(caseState: SemanticCase): { value?: string; sourc
       sourceIds.push(...value.sourceIds);
     }
   };
-  append(caseState.event.facts.problemDescription, (value) => `Problem detail: ${value}.`);
-  append(caseState.event.facts.symptoms, (value) => `Symptoms: ${value.join(" and ")}.`);
+  append(caseState.event.facts.problemDescription, (value) => `Problem detail: ${qualifiedText(value, known(caseState.event.facts.problemDescription)?.qualifier)}.`);
+  append(caseState.event.facts.symptoms, (value) => `Symptoms: ${qualifiedText(value.join(" and "), known(caseState.event.facts.symptoms)?.qualifier)}.`);
   append(caseState.event.facts.treatments, (value) => `Treatment: ${value.join("; ")}.`);
   append(caseState.event.facts.outcome, (value) => `Outcome: ${value}.`);
   append(caseState.event.facts.dischargeDate, (value) => `Discharged ${displayDate(value)}.`);

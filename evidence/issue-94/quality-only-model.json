@@ -1,0 +1,144 @@
+{
+  "products": [
+    {
+      "productReference": "prod1",
+      "groupReference": "g1"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalReference": "pr1",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "name"
+      },
+      "value": {
+        "kind": "known",
+        "value": "Cardiovex"
+      },
+      "evidenceReferences": [
+        "p1",
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "pr2",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "strength"
+      },
+      "value": {
+        "kind": "known",
+        "value": "20 mg"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "pr3",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "lotNumber"
+      },
+      "value": {
+        "kind": "known",
+        "value": "Q94"
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "pr4",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "role"
+      },
+      "value": {
+        "kind": "known",
+        "value": "suspect"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "pr5",
+      "groupReference": "g1",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "prod1",
+        "field": "productType"
+      },
+      "value": {
+        "kind": "known",
+        "value": "drug-or-biologic"
+      },
+      "evidenceReferences": [
+        "p1",
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "pr6",
+      "groupReference": "event1",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "problemDescription"
+      },
+      "value": {
+        "kind": "known",
+        "value": "The seal on an unopened bottle of Cardiovex 20 mg tablets was split and gritty blue flecks were visible inside"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "pr7",
+      "groupReference": "event1",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "symptoms"
+      },
+      "value": {
+        "kind": "explicitly-absent"
+      },
+      "evidenceReferences": [
+        "p4"
+      ]
+    },
+    {
+      "proposalReference": "pr8",
+      "groupReference": "event1",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "productAvailability"
+      },
+      "value": {
+        "kind": "known",
+        "value": "available"
+      },
+      "evidenceReferences": [
+        "p5"
+      ]
+    }
+  ]
+}

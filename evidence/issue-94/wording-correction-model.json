@@ -1,0 +1,22 @@
+{
+  "products": [],
+  "proposals": [
+    {
+      "proposalReference": "prop1",
+      "groupReference": "product-c80cd574-cd6f-4191-8d26-ec0db65ec8f9",
+      "intent": "correction",
+      "target": {
+        "entity": "product",
+        "productReference": "product-c80cd574-cd6f-4191-8d26-ec0db65ec8f9",
+        "field": "dose"
+      },
+      "value": {
+        "kind": "known",
+        "value": "a quarter of a tablet, 2.5 mg per dose"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    }
+  ]
+}

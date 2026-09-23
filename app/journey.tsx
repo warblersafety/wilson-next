@@ -968,6 +968,11 @@ function joinList(values: string[]): string {
 }
 
 function formatFact(value: CaseValue<unknown> | undefined, control?: FactControl): string {
+  const text = formatFactValue(value, control);
+  return value?.kind === "known" && value.qualifier ? `${text} (${value.qualifier})` : text;
+}
+
+function formatFactValue(value: CaseValue<unknown> | undefined, control?: FactControl): string {
   if (!value) return "Not provided";
   if (value.kind !== "known") return {
     unknown: "Unknown",
