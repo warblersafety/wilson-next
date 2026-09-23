@@ -322,7 +322,8 @@ Non-carried symptoms and product-complaint facts are individually disclosed in
 output omissions, including absent, unknown, unmentioned and conflicted states;
 they are not invented as positive B5 narrative. The contract guidance has bounded
 synthetic evidence, not an established reliability rate; clinician review remains
-necessary. Qualifier output for other field families remains a separate follow-up.
+necessary. Qualifier output for other field families and individual omissions for
+other non-known B5 narrative fields remain follow-up #115.
 
 The runtime model boundary classifies mechanically decidable contract faults
 before review. Response-level faults reject the complete response and leave

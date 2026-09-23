@@ -223,13 +223,19 @@ saved removal are tracked in #115, without beginning that slice. Fixed form
 capacity remains a limit. ARCHITECTURE now explicitly states the small-sample
 reliability limit and qualified-quantity fallback.
 
-Post-review verification: 229 deterministic tests and typecheck pass. The first
+Post-review verification: 229 deterministic tests, typecheck and production build
+pass. The first
 browser attempt used the old production build and reproduced the disappearing
 input; the rebuilt application passes the new clear/retype regression after correcting
 the assertion to wait for the saved removal, rather than an already-absent old
 qualifier string. No model
 calls or successful-retry reliability claim were added. One targeted same-session
-Opus-high recheck will assess this material delta before merge.
+Opus-high recheck assessed this material delta with no blocking findings. Its
+remaining evidence-record finding is resolved by `81da4dc`: final deployment
+metadata, the stable-control assertion result and four omission UI/PDF cases
+were verified and committed while the immutable recheck snapshot was running.
+The small owning-document residual about other narrative omissions is recorded
+in ARCHITECTURE as recommended; no further behavior or model call is added.
 
 
 `check-preview-omissions.mjs` additionally restores the exact retained denied,
