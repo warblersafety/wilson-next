@@ -78,3 +78,23 @@ captured before work. No production deployment or real clinical data.
 Application-model calls/spend: **0 / USD 0**. Codex token measurements unavailable.
 Implementation started approximately 18:55 UTC on September 23; the requested
 three-active-hour checkpoint applies if this slice remains unfinished.
+
+## Protected deployed check
+
+The shared `wilson-next-laboratory-fidelity.vercel.app` alias serves candidate
+`2bc8385c6641f662f97ddd344410d120716941f3`, deployment
+`dpl_zSpFAhE3mGn819gSa8A2NowjRs5T`, created after PR #110. Existing protection and
+share expiry (September 27, 21:15:51 UTC) are unchanged. The private access-bearing
+URL stays in `/private/tmp/wilson109-share-handoff.json`, outside the repository.
+Rollback deployment `dpl_5EEaK8RjUa3MN9GLJHh2NPFNXSSJ` remains available.
+
+`check-preview.mjs` resumed the local regression's pending synthetic case on the
+real deployed application, blocked interpretation calls, and performed separate
+medication, history and test acceptance. Reporter gating remained; saving the
+fictional reporter then generated the real PDF. All 59 populated AcroForm fields
+matched the independent local readback exactly. `preview-results.json` records
+fresh anonymous share success, unsigned HTTP 302, zero interpretation requests,
+and the acceptance/readback results. `preview-separate-groups.png` shows the
+pending deployed state; `preview-accepted.pdf` retains the resulting document.
+This verifies deployment/access and downstream actions; exact boundary replay is
+covered locally and in CI, not by a fresh live model call.
