@@ -172,8 +172,9 @@ without weakening runtime acceptance or changing the preserved model results.
 
 ## Protected deployed verification
 
-Candidate `576163df3eb6ba9a5cf1faba0167b84963282686`, deployment
-`dpl_8B7P1ZbvLfxG3WQ8WDsq4UwCmSGA`, passed the final protected-browser check.
+Final material candidate `c99921ee9bca5aee91782e11b3832c2b05f22824`, deployment
+`dpl_BAwHki1chu9VEaBnWii3jMn6vvid`, passed the protected-browser check after
+review remediation. Earlier candidate `576163d` also passed before remediation.
 The existing shared alias and share grant are retained, expiring September 27 at
 21:15:51 UTC. Access-bearing URL remains private at
 `/private/tmp/wilson94-share-handoff.json`. Fresh anonymous share access succeeds;
@@ -184,8 +185,9 @@ unsigned access is HTTP 302. Original working rollback is
 Real deployed UI actions require separate symptom/medication acceptance and keep
 pending-PDF/reporter gates. All **52** populated fields in the tablet replay PDF
 match the local independent readback. Symptom and dose edits keep qualifiers;
-explicit symptom-qualifier removal changes only B5 in the regenerated PDF and
-retains superseded history. Three deployed PDFs, screenshots and independent
+clear/retype keeps the qualifier control visible, and explicit symptom-qualifier
+removal changes only B5 in the regenerated PDF and
+retains superseded history. Deployed PDFs, screenshots and independent
 readbacks are retained; `preview-results.json` records zero interpretation calls.
 No user walkthrough was requested.
 
@@ -228,3 +230,17 @@ the assertion to wait for the saved removal, rather than an already-absent old
 qualifier string. No model
 calls or successful-retry reliability claim were added. One targeted same-session
 Opus-high recheck will assess this material delta before merge.
+
+
+`check-preview-omissions.mjs` additionally restores the exact retained denied,
+unknown, unmentioned and conflicted cases on the final deployment. The output
+review displays absent/unknown/conflicted reasons and leaves unmentioned details
+unasserted. Four independently read-back deployed PDFs match the projected B5
+without inventing a complaint or resolving conflicting symptoms. These run without
+interpretation, preserve the old failed model output and do not count as retries.
+`preview-omissions-results.json` and its PDFs/screenshots retain the checks.
+Required CI [35919307554](https://github.com/warblersafety/wilson-next/actions/runs/35919307554)
+passes all ten browser journeys and the deterministic/typecheck/build checks on
+`c99921e`. Final evidence-only commits still require normal protected-main CI.
+The PR owns the actual standard-review and targeted-recheck verdicts, usage,
+remaining follow-up #115, resolving commit and merge decision.
