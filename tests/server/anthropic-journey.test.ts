@@ -71,6 +71,11 @@ describe("Anthropic production model boundary", () => {
     expect(schema).toContain("Known values must match their target");
     expect(schema).toContain("event.symptoms");
     expect(schema).toContain("event.productAvailability");
+    expect(schema).toContain("actual product-quality complaint, defect or malfunction");
+    expect(schema).toContain("retaining count/volume, dosage-form wording and any supplied total together");
+    expect(requestText).toContain("do not duplicate the manifestations into problemDescription");
+    expect(requestText).toContain("Omit an unmentioned product complaint");
+    expect(requestText).toContain("do not assign an ambiguously attributed dose");
     expect(schema).toContain("productReference");
     expect(schema).not.toContain('"start"');
     expect(schema).not.toContain('"end"');

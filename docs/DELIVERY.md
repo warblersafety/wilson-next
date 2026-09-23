@@ -87,9 +87,9 @@ scope, this includes:
   its issue/branch disposition;
 - implementing the change, fixing ordinary defects, and running local, CI,
   browser, PDF, protected-preview, and other proportionate checks;
-- running each standard Claude Sonnet review required below, continuing the
+- running each standard Claude Opus review required below, continuing the
   same session to complete an incomplete inspection, and running one targeted
-  Sonnet recheck when material remediation needs it;
+  Opus recheck when material remediation needs it;
 - running bounded application-model experiments with synthetic data, judging
   them against external assessments, and collecting later independent evidence
   after a non-invalidating failure; and
@@ -111,7 +111,7 @@ Stop and reconcile rather than extending the work when it would require:
 - using real clinical data;
 - a new paid-plan purchase or spend above the standing limit;
 - destructive or difficult-to-reverse action outside ordinary branch work; or
-- expanded review with Opus, multiple independent reviewers, or another
+- expanded review above `high` effort, multiple independent reviewers, or another
   exceptional review program.
 
 Production deployment/release and physician or other external participation are
@@ -198,7 +198,7 @@ without a model call. Invoke the absolute executable directly so the rule can
 match, rather than wrapping it in a shell or Python invocation.
 
 The runner accepts the fixed Wilson repository, committed tracked files,
-read-only issue context and subscription Claude Sonnet high. It excludes
+read-only issue context and subscription Claude Opus high. It excludes
 credential/config paths and symlinks, removes inherited write credentials,
 and scopes the reviewer's only tool (`Read`) to the copied payload. It provides
 no arbitrary prompt, provider, model or repository override. Expanded review
@@ -210,7 +210,8 @@ configuration outside the application repository.
 
 ### Standard review
 
-Use the current Claude Sonnet model at `high` effort after implementation and
+Steve selected Claude Opus at `high` effort as the default on 2026-09-23.
+Use the current Claude Opus model at `high` effort after implementation and
 narrow evidence are complete. Record the canonical model ID and CLI version.
 Review the full `main...HEAD` diff, not only the latest commit.
 
@@ -248,7 +249,7 @@ speculative enhancements are not findings.
 ### Additional and expanded review
 
 Codex may continue the same review session when required inspection was
-incomplete and may run one targeted Sonnet recheck when bounded remediation
+incomplete and may run one targeted Opus recheck when bounded remediation
 materially changes reviewed code. State why the existing result is insufficient
 and pin the exact delta. Do not run a second independent reviewer or repeat a
 complete review merely for reassurance. Repeat the complete standard review
@@ -259,8 +260,9 @@ Expanded review is exceptional and must be separately requested. Use it
 for multiple distinct consequential risks such as security/privacy, durable
 data migration, model semantics, consequential workflow, clinical/output
 accuracy, broad architecture, or the integrated pre-physician checkpoint. It
-may use Claude Opus at `high` or `xhigh`; Opus `xhigh` is the maximum. Do not use
-Opus `max`, Fable, or a model/effort outside these bounds. Multiple reviewers,
+uses Claude Opus at `high` or, when specifically authorized, `xhigh`; Opus
+`xhigh` is the maximum. Opus at `high` is already the standard review default.
+Do not use Opus `max`, Fable, or a model/effort outside these bounds. Multiple reviewers,
 agents, or fresh passes require separate permission and risk-specific roles.
 
 ### Review record
@@ -369,5 +371,5 @@ updates do not trigger another review or live run.
 
 This section records the required post-Experiment 1 reassessment. At merge or
 falsification, leave one concise outcome note. Post-merge review is reserved for
-escaped defects, incidents, or contradicted premises; a standard Sonnet review
+escaped defects, incidents, or contradicted premises; a standard Opus review
 needed for that bounded work remains covered by standing authority.
