@@ -123,8 +123,8 @@ export function acceptCorrectionAndConflict(caseState: SemanticCase): SemanticCa
     commandId: "command-review-correction",
     expectedRevision: caseState.revision,
     decisions: [
-      { groupId: "naproxen-dose-correction", action: "accept" },
-      { groupId: "apixaban-date-conflict", action: "accept" },
+      { groupId: caseState.products.find(({ id }) => id === "product-naproxen")!.facts.dose.proposedValues[0].groupId, action: "accept" },
+      { groupId: caseState.products.find(({ id }) => id === "product-apixaban")!.facts.startDate.proposedValues[0].groupId, action: "accept" },
     ],
   }).case;
 }

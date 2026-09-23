@@ -37,14 +37,14 @@ describe("state-driven journey service", () => {
     expect(receivedContext?.products.map(({ id }) => id)).toEqual(["product-apixaban", "product-naproxen", "product-lisinopril"]);
 
     snapshot = await performJourneyAction(repository, caseId, {
-      action: "review-update-group", groupId: "naproxen-dose-correction", decision: "accept",
+      action: "review-update-group", groupId: snapshot.understanding.products.find(({ id }) => id === "product-naproxen")!.facts.dose.proposals[0].groupId, decision: "accept",
     }, fixedJourneyModel);
     expect(snapshot.stage).toBe("review-update");
     expect(snapshot.understanding.products.find(({ id }) => id === "product-naproxen")?.facts.dose)
       .toMatchObject({ resolved: { kind: "known", value: "250 mg" }, history: [{ value: { kind: "known", value: "500 mg" } }] });
 
     snapshot = await performJourneyAction(repository, caseId, {
-      action: "review-update-group", groupId: "apixaban-date-conflict", decision: "accept",
+      action: "review-update-group", groupId: snapshot.understanding.products.find(({ id }) => id === "product-apixaban")!.facts.startDate.proposals[0].groupId, decision: "accept",
     }, fixedJourneyModel);
     expect(snapshot).toMatchObject({ stage: "output", downloadReady: true });
     expect(snapshot.projection.sections.D.suspectProducts[0].startDate).toBeUndefined();

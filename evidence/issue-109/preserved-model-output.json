@@ -1,0 +1,269 @@
+{
+  "products": [],
+  "tests": [
+    {
+      "testReference": "test-1",
+      "groupReference": "test-1-group"
+    },
+    {
+      "testReference": "test-2",
+      "groupReference": "test-2-group"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalReference": "prop-1",
+      "groupReference": "product-3b0d61ab-0c2f-45ad-b175-589a0f7bb712",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "product-3b0d61ab-0c2f-45ad-b175-589a0f7bb712",
+        "field": "stopped"
+      },
+      "value": {
+        "kind": "known",
+        "value": true
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop-2",
+      "groupReference": "product-3b0d61ab-0c2f-45ad-b175-589a0f7bb712",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "product-3b0d61ab-0c2f-45ad-b175-589a0f7bb712",
+        "field": "stopDate"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-09-11"
+      },
+      "evidenceReferences": [
+        "p1"
+      ]
+    },
+    {
+      "proposalReference": "prop-3",
+      "groupReference": "product-3b0d61ab-0c2f-45ad-b175-589a0f7bb712",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "product-3b0d61ab-0c2f-45ad-b175-589a0f7bb712",
+        "field": "improvedAfterChange"
+      },
+      "value": {
+        "kind": "known",
+        "value": true
+      },
+      "evidenceReferences": [
+        "p1",
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "prop-4",
+      "groupReference": "product-3b0d61ab-0c2f-45ad-b175-589a0f7bb712",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "productReference": "product-3b0d61ab-0c2f-45ad-b175-589a0f7bb712",
+        "field": "restarted"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "evidenceReferences": [
+        "p2"
+      ]
+    },
+    {
+      "proposalReference": "prop-5",
+      "groupReference": "product-3b0d61ab-0c2f-45ad-b175-589a0f7bb712",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "field": "relevantHistory"
+      },
+      "value": {
+        "kind": "explicitly-absent"
+      },
+      "evidenceReferences": [
+        "p5"
+      ]
+    },
+    {
+      "proposalReference": "prop-6",
+      "groupReference": "test-1-group",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "testReference": "test-1",
+        "field": "testName"
+      },
+      "value": {
+        "kind": "known",
+        "value": "Hemoglobin"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop-7",
+      "groupReference": "test-1-group",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "testReference": "test-1",
+        "field": "testResult"
+      },
+      "value": {
+        "kind": "known",
+        "value": "8.9 g/dL"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop-8",
+      "groupReference": "test-1-group",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "testReference": "test-1",
+        "field": "date"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-09-11"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop-9",
+      "groupReference": "test-1-group",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "testReference": "test-1",
+        "field": "lowRange"
+      },
+      "value": {
+        "kind": "known",
+        "value": "12 g/dL"
+      },
+      "evidenceReferences": [
+        "p4"
+      ]
+    },
+    {
+      "proposalReference": "prop-10",
+      "groupReference": "test-1-group",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "testReference": "test-1",
+        "field": "highRange"
+      },
+      "value": {
+        "kind": "known",
+        "value": "16 g/dL"
+      },
+      "evidenceReferences": [
+        "p4"
+      ]
+    },
+    {
+      "proposalReference": "prop-11",
+      "groupReference": "test-2-group",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "testReference": "test-2",
+        "field": "testName"
+      },
+      "value": {
+        "kind": "known",
+        "value": "Hemoglobin"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop-12",
+      "groupReference": "test-2-group",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "testReference": "test-2",
+        "field": "testResult"
+      },
+      "value": {
+        "kind": "known",
+        "value": "9.4 g/dL"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop-13",
+      "groupReference": "test-2-group",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "testReference": "test-2",
+        "field": "date"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-09-12"
+      },
+      "evidenceReferences": [
+        "p3"
+      ]
+    },
+    {
+      "proposalReference": "prop-14",
+      "groupReference": "test-2-group",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "testReference": "test-2",
+        "field": "lowRange"
+      },
+      "value": {
+        "kind": "known",
+        "value": "12 g/dL"
+      },
+      "evidenceReferences": [
+        "p4"
+      ]
+    },
+    {
+      "proposalReference": "prop-15",
+      "groupReference": "test-2-group",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "testReference": "test-2",
+        "field": "highRange"
+      },
+      "value": {
+        "kind": "known",
+        "value": "16 g/dL"
+      },
+      "evidenceReferences": [
+        "p4"
+      ]
+    }
+  ]
+}

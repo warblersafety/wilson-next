@@ -1,3 +1,4 @@
+import { preservedGroupingOutput } from "../fixtures/grouping-failure";
 import { medicationScenarios } from "../fixtures/medication-model";
 import { usabilityScenario } from "../fixtures/usability-model";
 import { sourceReferenceOutput, sourceReferenceCorrection, recoveryOutput } from "../fixtures/source-reference-case";
@@ -624,5 +625,6 @@ export const predeterminedResponseScenarios = {
   draft4Navigation: medicationScenarios.issue92Sparse,
   draft4Correction: medicationScenarios.issue92Two,
   usability: usabilityScenario,
+  updateGrouping: [{ identityScope: "issue109-update", turn: "correction" as const, output: preservedGroupingOutput as import("../../src/domain/case/model-boundary").ModelProposalOutput }],
 };
 export const predeterminedModelResponses = Object.values(predeterminedResponseScenarios).flat();
