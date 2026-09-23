@@ -79,6 +79,16 @@ counts and the final two attributed scopes are now asserted, without relaxing
 the inventory check. The complete deterministic suite passed again. These were
 verification/setup failures, not live model results.
 
+Linux CI then rejected browser-server startup with `spawn E2BIG`: the expanded
+fixture JSON is 134,453 bytes, exceeding its individual exec-environment-value
+limit. Playwright now writes that unchanged JSON to a private temporary file and
+passes only its path to a test-only Node preload. The preload fills the same
+existing environment variable inside the test server process; normal process exit
+cleans up the temporary directory. Application model selection, response schema,
+fixtures, production startup and live-provider behavior are unchanged. The full
+local browser suite passes using this transport; final Linux CI owns the host
+portability result.
+
 The PR owns the actual independent review and merge
 disposition. Existing local documents, walkthroughs and mockup archives are not
 staged with this evidence; private backup hashes preserve their initial contents.
