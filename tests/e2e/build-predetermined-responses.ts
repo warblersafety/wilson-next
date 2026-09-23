@@ -1,4 +1,5 @@
 import { medicationScenarios } from "../fixtures/medication-model";
+import { usabilityScenario } from "../fixtures/usability-model";
 import { sourceReferenceOutput, sourceReferenceCorrection, recoveryOutput } from "../fixtures/source-reference-case";
 import { referenceFixture, type QuotedFixtureOutput as ModelProposalOutput } from "../fixtures/source-references.ts";
 import type { ProductFactKey } from "../../src/domain/case/types.ts";
@@ -622,5 +623,6 @@ export const predeterminedResponseScenarios = {
   ],
   draft4Navigation: medicationScenarios.issue92Sparse,
   draft4Correction: medicationScenarios.issue92Two,
+  usability: usabilityScenario,
 };
 export const predeterminedModelResponses = Object.values(predeterminedResponseScenarios).flat();

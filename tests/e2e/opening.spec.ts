@@ -6,7 +6,7 @@ async function storedCase(page: Page) {
 
 test("a blank case has no review claim, and New case protects an unsubmitted draft", async ({ page }) => {
   await page.goto("/");
-  const account = page.getByLabel("Clinical account", { exact: true });
+  const account = page.getByLabel("Case description", { exact: true });
   const newCase = page.getByRole("button", { name: "New case", exact: true });
   await expect(account).toBeVisible();
   const blank = await storedCase(page);
@@ -31,9 +31,10 @@ test("a blank case has no review claim, and New case protects an unsubmitted dra
   releaseReset();
   await expect.poll(async () => (await storedCase(page)).id).not.toBe(blank.id);
   expect(dialogs).toBe(0);
-  await expect(page.getByRole("status")).toHaveText("New case started");
+  const resetStatus = page.locator("header").getByRole("status");
+  await expect(resetStatus).toHaveText("New case started");
   await expect(account).toBeFocused();
-  await expect(page.getByRole("status")).toHaveText("", { timeout: 7_000 });
+  await expect(resetStatus).toHaveText("", { timeout: 7_000 });
 
   const draft = "Fictional draft: no rash. Still checking these details.";
   await account.fill(draft);
@@ -57,6 +58,6 @@ test("a blank case has no review claim, and New case protects an unsubmitted dra
 
   await page.reload();
   await expect(account).toBeVisible();
-  await expect(page.getByRole("status")).toHaveText("");
+  await expect(resetStatus).toHaveText("");
   await expect(page.getByText("Reviewed", { exact: true })).toHaveCount(0);
 });

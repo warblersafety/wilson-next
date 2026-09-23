@@ -6,7 +6,7 @@ import { sourceReferenceOpening, sourceReferenceUpdate, omittedTestRecovery } fr
 
 test("corrects DEMO-91 conversationally before initial acceptance, downloads five aligned rows, and recovers an omitted test", async ({ page }, testInfo) => {
   await page.goto("/");
-  await page.getByLabel("Clinical account", { exact: true }).fill(sourceReferenceOpening);
+  await page.getByLabel("Case description", { exact: true }).fill(sourceReferenceOpening);
   await page.getByRole("button", { name: "Review Wilson’s understanding", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Review the case details" })).toBeVisible();
   await expect(page.locator('[id^="case-card-test-"]')).toHaveCount(5);
@@ -51,7 +51,7 @@ test("corrects DEMO-91 conversationally before initial acceptance, downloads fiv
   for (const row of [3, 4, 5]) expect(fields[`${prefix}.Row8[0].TDate${row}[0]`]).toBeUndefined();
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "New case", exact: true }).click();
-  await page.getByLabel("Clinical account", { exact: true }).fill(sourceReferenceOpening);
+  await page.getByLabel("Case description", { exact: true }).fill(sourceReferenceOpening);
   await page.getByRole("button", { name: "Review Wilson’s understanding", exact: true }).click();
   await expect(page.locator('[id^="case-card-test-"]')).toHaveCount(4);
   await expect(page.getByText("Some details were left out")).toBeVisible();

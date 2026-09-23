@@ -22,7 +22,7 @@
 .stepper button[aria-current] { color: #0f8a86; }
 .stepper button[aria-current] > span:first-child { background: #0f8a86; color: white; border-color: #0f8a86; box-shadow: 0 0 0 4px #eaf5f3; }
 .stepper button:disabled { background: transparent; }
-.screen { max-width: 920px; margin: auto; padding: 36px 30px 56px; }
+.screen { max-width: 1140px; margin: auto; padding: 28px 30px 48px; }
 .eyebrow, .attentionLabel { color: #0f8a86; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin: 0 0 10px; }
 .lead { color: #5c6678; font-size: 18px; max-width: 65ch; margin-bottom: 28px; }
 .screen label { font-size: 14px; font-weight: 600; }
@@ -31,10 +31,10 @@
 .screen input[type='checkbox'], .screen input[type='radio'] { accent-color: #0f8a86; flex: none; width: 18px; height: 18px; }
 .screen details { margin-top: 18px; border-top: 1px solid #e5e8ee; padding-top: 8px; }
 .screen summary { min-height: 44px; padding: 10px 0; color: #5c6678; font-size: 14px; }
-.describeScreen { background: white; padding: 28px; border: 1px solid #dfe5ea; border-top: 4px solid #f4b400; border-radius: 16px; }
+.describeScreen { max-width: 860px; margin: auto; background: white; padding: 28px; border: 1px solid #dfe5ea; border-top: 4px solid #f4b400; border-radius: 16px; }
 .describeScreen textarea { min-height: 240px; }
 .describeScreen > p { color: #5c6678; }
-.describeScreen > button, .updateBox > button, .screen .groupReview, .decisionActions button:first-child, .pdfToolbar button, .primaryLink, .screenActions button:last-child { background: #0f8a86; color: white; border-color: #0f8a86; box-shadow: 0 3px 0 #096b68; }
+.describeScreen > button, .updateBox > button, .screen .groupReview, .decisionActions button:first-child, .pdfToolbar button, .primaryLink, .screen .primaryButton { background: #0f8a86; color: white; border-color: #0f8a86; box-shadow: 0 3px 0 #096b68; }
 .describeScreen > button { margin-top: 22px; }
 .appShell button:disabled { background: #eef1f5; color: #5c6678; border-color: #e5e8ee; box-shadow: none; }
 .originalAccount, .reportDescription p { white-space: pre-wrap; overflow-wrap: anywhere; }
@@ -47,14 +47,17 @@
 .caseSummaryHeading h2, .updateReviewTitle, .cardTitle h3, .conflictChoice { scroll-margin-top: 24px; }
 .caseSummaryHeading p { color: #5c6678; font-size: 14px; margin: 4px 0; }
 .cards { display: grid; gap: 18px; }
-.caseCard, .attentionCard, .conflictChoice { background: white; border: 1px solid #dfe5ea; border-radius: 16px; padding: 23px 25px; box-shadow: 0 3px 14px #141b2e04; min-width: 0; }
+.caseCard, .attentionCard, .conflictChoice { background: white; border: 1px solid #dfe5ea; border-radius: 16px; padding: 20px 24px; box-shadow: 0 3px 14px #141b2e04; min-width: 0; }
 .cardTitle { display: flex; justify-content: space-between; gap: 15px; align-items: flex-start; }
 .cardTitle h3 { font-size: 21px; margin: 2px 0 12px; }
 .cardTitle span { font-size: 12px; color: #5c6678; }
 .cardActions { display: flex; flex-wrap: wrap; gap: 8px; }
 .cardActions button, .screen .inlineAction { border: 0; background: transparent; color: #5c6678; padding: 6px 4px; font-size: 13px; box-shadow: none; }
-.caseCard dl { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; margin: 6px 0 18px; }
-.caseCard dl > div { border-top: 1px solid #e5e8ee; padding-top: 12px; min-width: 0; overflow-wrap: anywhere; }
+.caseCard dl { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; margin: 6px 0 14px; }
+.caseCard dl > div { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr) auto; align-items: start; gap: 8px; border-top: 1px solid #e5e8ee; padding-top: 6px; min-width: 0; overflow-wrap: anywhere; }
+.caseCard dl > div > .history, .caseCard dl > div > .hint, .caseCard dl > div > .inlineEdit { grid-column: 1 / -1; }
+.caseCard dl > div > .inlineAction { grid-column: 3; grid-row: 1; max-width: 115px; }
+.caseCard dt { padding-top: 7px; }
 .caseCard dt { font-size: 13px; color: #5c6678; }
 .caseCard dd { margin: 5px 0 0; line-height: 1.55; }
 .proposed { display: inline-block; background: #fff8df; border-radius: 5px; padding: 3px 7px; margin-left: 8px; font-size: 11px; font-weight: 600; color: #8a6100; }
@@ -97,6 +100,22 @@ blockquote.evidence > span:first-child { font-size: 12px; font-weight: 600; marg
 .answerGroup > p { grid-column: 1 / -1; margin: 0; font-size: 14px; color: #5c6678; }
 .reporterFields { grid-template-columns: 1fr 1fr; }
 .reporterFields label { display: block; }
+.reporterPanels { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 18px 0; }
+.reporterPanels .answerGroup { margin: 0; padding: 20px; gap: 14px; align-content: start; }
+.reporterPanels h2 { grid-column: 1 / -1; font-size: 17px; margin: 0 0 4px; }
+.reporterPanels .reporterFields { grid-column: 1 / -1; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.reporterPanels .privacyPanel { grid-column: 1 / -1; }
+.reporterPanels .privacyPanel h2 { margin-bottom: 14px; }
+.reporterPanels .privacyPanel p { margin: 12px 0 0; }
+.reporterChoices { grid-template-columns: 1fr; }
+.reporterChoices label:has(input[type='checkbox']) { display: grid; grid-template-columns: 18px minmax(0, 1fr); }
+.reportDate { display: flex; align-items: center; gap: 24px; }
+.reportDate label { flex: 0 0 220px; }
+.reportDate p { max-width: 60ch; }
+.demoShortcut { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; background: #fff8df; border-left: 4px solid #f4b400; padding: 14px 18px; margin: 20px 0 10px; }
+.demoShortcut p { font-size: 14px; margin: 4px 0 0; }
+.demoShortcut button { background: #f4b400; border-color: #f4b400; }
+.reviewDependency { background: #fff8df; border-left: 3px solid #f4b400; padding: 10px 14px; font-size: 14px; }
 .privacyPanel { display: block; background: #eef5f5; border-color: #c7dfdc; }
 .privacyPanel label { display: grid; grid-template-columns: 18px minmax(0, 1fr); align-items: start; }
 .privacyPanel input { margin: 2px 0 0; }
@@ -117,7 +136,13 @@ blockquote.evidence > span:first-child { font-size: 12px; font-weight: 600; marg
 .conflictOption + .conflictOption { border-top: 1px solid #e5e8ee; }
 .error, .notice, .progress { border-left: 3px solid #f4b400; padding: 12px 16px; margin: 18px auto; background: #fff8df; max-width: 860px; line-height: 1.6; border-radius: 0 8px 8px 0; }
 .error { background: #fff0ed; border-color: #a34233; }
-.progress { border-color: #0f8a86; background: #eaf5f3; }
+.progress { display: flex; align-items: center; gap: 10px; border-color: #0f8a86; background: #eaf5f3; max-width: none; margin: 12px 0 0; }
+.spinner { display: inline-block; flex: none; width: 18px; height: 18px; border: 2px solid #bddad6; border-top-color: #096b68; border-radius: 50%; animation: spin .9s linear infinite; vertical-align: middle; margin-right: 8px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.floatingStatus { position: fixed; z-index: 10; bottom: 18px; left: 50%; transform: translateX(-50%); width: max-content; max-width: calc(100% - 36px); }
+.pdfToolbar { align-items: flex-start; }
+.pdfToolbar > div { flex: 1; min-width: min(100%, 240px); }
+.pdfToolbar p { min-height: 24px; }
 .quarantine { max-width: 860px; margin: 16px auto; padding: 18px 22px; background: #fff8df; border-left: 3px solid #f4b400; }
 .quarantine h2 { font-size: 18px; }
 .quarantine li > span { display: block; }
@@ -132,6 +157,9 @@ blockquote.evidence > span:first-child { font-size: 12px; font-weight: 600; marg
   .stepper button { font-size: 12px; }
   .screen { padding: 28px 20px 45px; }
   .lead { font-size: 16px; }
+  .caseCard dl { grid-template-columns: 1fr; }
+  .reporterPanels { grid-template-columns: 1fr; }
+  .reporterPanels .reporterFields { grid-template-columns: 1fr 1fr; }
   .caseCard { padding: 20px; }
   .pdfFrame { height: 600px; }
 }
@@ -148,6 +176,8 @@ blockquote.evidence > span:first-child { font-size: 12px; font-weight: 600; marg
   .cardActions button { text-align: left; }
   .invitation { padding: 18px 16px; }
   .answerGroup { padding: 18px; }
+  .reporterPanels .reporterFields { grid-template-columns: 1fr; }
+  .reportDate { display: block; }
   .returnBanner { align-items: stretch; }
   .screenActions { align-items: stretch; }
   .screenActions button { flex: 1; }

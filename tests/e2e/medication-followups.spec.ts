@@ -78,7 +78,7 @@ test("medication history: conversational grouped answer and two-product correcti
 });
 
 async function opening(page: Page, text: string) {
-  await page.getByLabel("Clinical account", { exact: true }).fill(text);
+  await page.getByLabel("Case description", { exact: true }).fill(text);
   await page.getByRole("button", { name: "Review Wilson’s understanding", exact: true }).click();
   await acceptOpeningGroups(page);
 }

@@ -737,7 +737,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
 });
 
 async function submitOpening(page: Page, text: string, reportType: ReportType = "adverse-event") {
-  await page.getByLabel("Clinical account").fill(text);
+  await page.getByLabel("Case description").fill(text);
   const adverse = page.getByLabel("Adverse event", { exact: true });
   const problem = page.getByLabel("Product problem", { exact: true });
   if (reportType === "adverse-event") {
@@ -761,7 +761,7 @@ async function newCase(page: Page) {
   await expect(page.getByRole("heading", { name: "Describe what happened" })).toBeVisible();
   expect((await semanticCase(page)).id).not.toBe(previousId);
   await expect(page.getByRole("heading", { name: "Case summary", exact: true })).toHaveCount(0);
-  await expect(page.getByLabel("Clinical account", { exact: true })).toHaveValue("");
+  await expect(page.getByLabel("Case description", { exact: true })).toHaveValue("");
 }
 
 function productCard(page: Page, name: string) {
