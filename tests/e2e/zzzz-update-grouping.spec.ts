@@ -16,7 +16,7 @@ test("one unchanged cross-entity response creates separately accepted history, m
   await goTo(page, "Review details");
   await page.getByLabel("Clinical update", { exact: true }).fill(groupingUpdate);
   await page.getByRole("button", { name: "Review this update", exact: true }).click();
-  const accepts = page.getByRole("button", { name: "Accept this update", exact: true });
+  const accepts = page.getByRole("button", { name: "Accept these changes", exact: true });
   await expect(accepts).toHaveCount(2);
   const pending = await storedState(page);
   expect(pending.case.event.facts.relevantHistory.resolvedValue).toBeUndefined();
@@ -26,7 +26,7 @@ test("one unchanged cross-entity response creates separately accepted history, m
   await expect(page.getByRole("button", { name: "Accept Relevant test 1", exact: true })).toHaveCount(0);
   await page.screenshot({ path: info.outputPath("separate-update-groups.png"), fullPage: true });
   // Choose medication by its field, independently of presentation order.
-  await page.locator("article").filter({ has: page.getByRole("heading", { name: /Stopped/ }) }).getByRole("button", { name: "Accept this update", exact: true }).click();
+  await page.locator("article").filter({ has: page.getByRole("heading", { name: /Stopped/ }) }).getByRole("button", { name: "Accept these changes", exact: true }).click();
   await expect(accepts).toHaveCount(1);
   const medicationAccepted = await storedState(page);
   expect(medicationAccepted.case.products[0].facts.stopped.resolvedValue?.value).toEqual({ kind: "known", value: true });

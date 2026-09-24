@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { clinicalNeedParts, canSaveReporter } from "../../app/clinical-guidance";
+import { clinicalNeedParts, canSaveReporter, nextClinicalAction, singleEntityGroup } from "../../app/clinical-guidance";
 import { flowAlignmentState } from "../fixtures/flow-alignment";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { getJourneySnapshot, performJourneyAction } from "../../src/server/journey/service";
@@ -41,5 +41,28 @@ describe("clinical guidance uses existing review and completion state", () => {
     expect(clinicalNeedParts(reviewed).find(({ need }) => need.kind === "medication-history")).toBeUndefined();
     expect(clinicalNeedParts(reviewed).find(({ need }) => need.kind === "serious-outcomes")?.missing).toEqual(["event:event:otherSerious"]);
     expect(reviewed.downloadReady).toBe(false);
+  });
+
+  it("routes through update review, separate tests and questions without equating reporter saving with clinical completion", async () => {
+    const { snapshot, act } = await setup();
+    expect(nextClinicalAction(snapshot)?.kind).toBe("updates");
+    await act({ action: "review-update-group", groupId: snapshot.understanding.event.relevantHistory.proposals[0].groupId, decision: "accept" });
+    let next = await act({ action: "review-update-group", groupId: snapshot.understanding.products[0].facts.stopped.proposals[0].groupId, decision: "accept" });
+    expect(nextClinicalAction(next)?.kind).toBe("proposals");
+    for (const test of next.understanding.relevantTests) next = await act({ action: "review-opening-group", groupId: test.proposalGroupId!, corrections: [] });
+    expect(nextClinicalAction(next)?.kind).toBe("questions");
+    expect(canSaveReporter(next)).toBe(false);
+    const previouslySaved = structuredClone(next);
+    previouslySaved.understanding.reporter.email.resolved = { kind: "known", value: "fictional@example.test" };
+    expect(canSaveReporter(previouslySaved)).toBe(true);
+    expect(nextClinicalAction(previouslySaved)?.kind).toBe("questions");
+    expect(previouslySaved.downloadReady).toBe(false);
+  });
+
+  it("uses stable entity identity to decide whether a group can omit repeated entity prefixes", () => {
+    expect(singleEntityGroup(["product:first:name", "product:first:dose"])).toBe(true);
+    expect(singleEntityGroup(["product:first:dose", "product:second:dose"])).toBe(false);
+    expect(singleEntityGroup(["product:first:name", "test:first:testName"])).toBe(false);
+    expect(singleEntityGroup([])).toBe(false);
   });
 });

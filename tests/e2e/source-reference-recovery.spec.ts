@@ -19,13 +19,13 @@ test("corrects DEMO-91 conversationally before initial acceptance, downloads fiv
   const pending = await state(page);
   expect(pending.relevantTests).toHaveLength(5);
   expect(pending.relevantTests[0].facts.testResult.resolvedValue).toBeUndefined();
-  await expect(page.getByRole("button", { name: "Accept this update", exact: true })).toHaveCount(2);
+  await expect(page.getByRole("button", { name: "Accept these changes", exact: true })).toHaveCount(2);
   await page.screenshot({ path: testInfo.outputPath("conversational-review.png"), fullPage: true });
-  await page.getByRole("button", { name: "Accept this update", exact: true }).first().click();
-  await expect(page.getByRole("button", { name: "Accept this update", exact: true })).toHaveCount(1);
+  await page.getByRole("button", { name: "Accept these changes", exact: true }).first().click();
+  await expect(page.getByRole("button", { name: "Accept these changes", exact: true })).toHaveCount(1);
   await expect(page.getByRole("heading", { name: "Review the proposed update", exact: true })).toBeFocused();
   await expect(page.getByRole("heading", { name: "Review the proposed update", exact: true })).toBeInViewport();
-  await serverAction(page, () => page.getByRole("button", { name: "Accept this update", exact: true }).click());
+  await serverAction(page, () => page.getByRole("button", { name: "Accept these changes", exact: true }).click());
   await expect(page.getByRole("heading", { name: "Review the case details" })).toBeVisible();
   await expect(page.locator("#case-card-test-1")).toContainText("Earlier: 9.1 g/dL");
   await acceptOpeningGroups(page);
