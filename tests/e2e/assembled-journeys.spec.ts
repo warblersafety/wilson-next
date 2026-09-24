@@ -646,9 +646,9 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await ageRow.getByRole("button", { name: "Keep draft" }).click();
   await serverAction(page, () => patient.getByRole("button", { name: "Accept patient details with 1 change" }).click());
   await expect(patient).toContainText("58");
-  await serverAction(page, () => productCard(page, "lisinopril").getByRole("button", { name: "Remove lisinopril" }).click());
+  await serverAction(page, () => productCard(page, "lisinopril").getByRole("button", { name: "Discard proposed lisinopril" }).click());
   await expect(productCard(page, "lisinopril")).toHaveCount(0);
-  checkpoints.push({ journey: "shared-controls", state: "understanding", assertion: "Generic Change and Remove controls updated the server-returned case rather than browser state." });
+  checkpoints.push({ journey: "shared-controls", state: "understanding", assertion: "Generic Change and Discard controls updated the server-returned case rather than browser state." });
 
   await newCase(page);
   await submitOpening(page, regressionOpening);

@@ -167,11 +167,12 @@ test("discard preserves accepted facts; subsequent questions and previously save
   expect(discarded.case.sources).toEqual(pending.case.sources);
   await page.getByRole("button", { name: "Accept these changes", exact: true }).click();
   await page.locator("#case-card-test-1").getByRole("button", { name: "Discard proposed Relevant test 1", exact: true }).click();
-  await expect(page.locator("#case-card-test-2").getByRole("heading")).toBeFocused();
+  const remainingTest = page.locator("article").filter({ has: page.getByText("12-Sep-2026", { exact: true }) });
+  await expect(remainingTest.getByRole("heading")).toBeFocused();
   const remaining = await storedState(page);
-  expect(remaining.case.relevantTests[0].state).toBe("withdrawn");
+  expect(remaining.case.relevantTests[0].state).toBe("rejected");
   expect(remaining.case.relevantTests[1]).toEqual(pending.case.relevantTests[1]);
-  await page.getByRole("button", { name: "Accept Relevant test 2", exact: true }).click();
+  await remainingTest.getByRole("button", { name: "Accept Relevant test 1", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Questions before preparing the PDF", exact: true })).toBeFocused();
   await page.getByRole("button", { name: "Edit reporter details", exact: true }).click();
   await expect(page.getByRole("region", { name: "Before saving reporter details" })).toHaveCount(0);

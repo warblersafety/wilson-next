@@ -44,7 +44,7 @@
 .hint { color: #5c6678; font-size: 13px; margin: 10px 0; }
 .caseSummaryHeading { margin: 18px 0; }
 .caseSummaryHeading h2 { margin-bottom: 8px; }
-.caseSummaryHeading h2, #clinical-panel-title, .updateReviewTitle, .cardTitle h3, .conflictChoice { scroll-margin-top: 24px; }
+.caseSummaryHeading h2, .invitation h2, .updateReviewTitle, .cardTitle h3, .conflictChoice { scroll-margin-top: 24px; }
 .caseSummaryHeading p { color: #5c6678; font-size: 14px; margin: 4px 0; }
 .cards { display: grid; gap: 16px; }
 .caseCard, .attentionCard, .conflictChoice { background: white; border: 1px solid #dfe5ea; border-radius: 16px; padding: 16px 24px; box-shadow: 0 3px 14px #141b2e04; min-width: 0; }
