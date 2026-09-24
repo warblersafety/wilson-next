@@ -167,7 +167,7 @@ test("discard preserves accepted facts; subsequent questions and previously save
   expect(discarded.case.sources).toEqual(pending.case.sources);
   await page.getByRole("button", { name: "Accept these changes", exact: true }).click();
   await page.locator("#case-card-test-1").getByRole("button", { name: "Discard proposed Relevant test 1", exact: true }).click();
-  const remainingTest = page.locator("article").filter({ has: page.getByText("12-Sep-2026", { exact: true }) });
+  const remainingTest = page.locator("article").filter({ has: page.getByRole("definition").filter({ hasText: "12-Sep-2026" }) });
   await expect(remainingTest.getByRole("heading")).toBeFocused();
   const remaining = await storedState(page);
   expect(remaining.case.relevantTests[0].state).toBe("rejected");
