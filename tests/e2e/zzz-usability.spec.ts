@@ -25,8 +25,8 @@ test("focused usability: truthful activity, draft demo reporter, review dependen
   const releaseOpening = await holdNext(page, "/api/case", true);
   await page.getByRole("button", { name: "Review Wilson’s understanding", exact: true }).click();
   const openingStatus = page.getByRole("status").filter({ hasText: "Preparing case details for your review…" });
-  await expect(openingStatus).toBeVisible();
   await expect(openingStatus).toHaveCount(1);
+  await expect(openingStatus).toHaveAttribute("aria-atomic", "true");
   const openingButton = page.getByRole("button", { name: "Preparing details…", exact: true });
   await expect(openingButton).toBeDisabled();
   await expect(openingButton).toBeInViewport();

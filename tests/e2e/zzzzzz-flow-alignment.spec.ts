@@ -5,8 +5,6 @@ import { expect, test } from "@playwright/test";
 import { flowAlignmentState } from "../fixtures/flow-alignment";
 import { goTo, savePdf, storedState } from "./draft4-helpers";
 import baselinePdf from "../../evidence/issue-109/pdf-readback.json" with { type: "json" };
-import { applyCaseCommand } from "../../src/domain/case/commands";
-import { medicationSource } from "../fixtures/medication-case";
 import { createSemanticCase } from "../../src/domain/case/create";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { browserStateVersion } from "../../src/server/case/browser-state";
@@ -35,6 +33,7 @@ test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery an
   await expect(page.getByLabel("Clinical update", { exact: true })).toBeHidden();
   await expect(details.getByRole("button", { name: "Continue to reporter details", exact: true })).toHaveCount(0);
   await expect(details.getByRole("button", { name: "Draft reporter details", exact: true })).toBeVisible();
+  await expect(details.getByText("Field editing becomes available after you review the proposed changes above.", { exact: true })).toBeVisible();
   for (const id of [1, 2]) {
     const card = page.locator(`#case-card-test-${id}`);
     await expect(card.getByRole("button", { name: `Accept Relevant test ${id}`, exact: true })).toBeDisabled();
@@ -83,7 +82,8 @@ test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery an
   expect((await storedState(page)).case.event.facts.relevantHistory.resolvedValue).toBeUndefined();
   await expect(page.getByRole("button", { name: "Accept Relevant test 1", exact: true })).toBeDisabled();
   await page.getByRole("button", { name: "Accept these changes", exact: true }).click();
-  await expect(page.getByRole("status").filter({ hasText: "2 tests are now ready for separate review" })).toBeVisible();
+  await expect(page.getByRole("status").filter({ hasText: "2 tests are now ready for separate review" })).toHaveCount(1);
+  await expect(details.getByText("Field editing becomes available after you review the proposed changes above.", { exact: true })).toHaveCount(0);
   const test1 = page.locator("#case-card-test-1"), test2 = page.locator("#case-card-test-2");
   await expect(test1.getByRole("heading")).toBeFocused();
   await expect(test1.getByText("Not yet included in the report.", { exact: false })).toBeInViewport();
@@ -137,21 +137,33 @@ test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery an
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await page.screenshot({ path: info.outputPath(`accepted-review-${width}.png`), fullPage: true });
   }
+  // Reopen clinical work through a real correction after reporter acceptance.
+  const restarted = page.locator("#case-card-product-1 dl > div").filter({ has: page.getByText("Restarted", { exact: true }) });
+  await restarted.getByRole("button", { name: "Change", exact: true }).click();
+  await restarted.getByLabel("New Restarted", { exact: true }).selectOption("true");
+  await restarted.getByRole("button", { name: "Apply correction", exact: true }).click();
+  await expect(invitation.getByRole("heading", { name: "Questions before preparing the PDF", exact: true })).toBeVisible();
+  const reopened = await storedState(page);
+  expect(reopened.case.askedNeeds.some(({ key, status }) => key === "reporter-details" && status !== "open")).toBe(true);
+  await page.getByRole("button", { name: "Edit reporter details", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Before saving reporter details" })).toHaveCount(0);
+  await page.getByLabel("Reporter email", { exact: true }).fill("saved-again@example.test");
+  await page.getByRole("button", { name: "Save reporter details", exact: true }).click();
+  await expect.poll(async () => (await storedState(page)).case.reporter.facts.email.resolvedValue?.value).toEqual({ kind: "known", value: "saved-again@example.test" });
+  const savedAgain = await storedState(page);
+  expect(savedAgain.case.products).toEqual(reopened.case.products);
+  expect(savedAgain.case.reporter.facts.doNotDiscloseIdentity).toEqual(reopened.case.reporter.facts.doNotDiscloseIdentity);
+  await goTo(page, "Review & save");
+  await expect(page.getByRole("button", { name: "Generate updated PDF", exact: true })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Answer clinical questions", exact: true })).toBeVisible();
 });
 
-test("discard preserves accepted facts; subsequent questions and previously saved reporter navigation stay truthful", async ({ page }) => {
+test("discard preserves accepted facts; subsequent questions and reporter drafts stay truthful", async ({ page }) => {
   await page.route("**/api/case", async route => {
     if (["submit-opening", "submit-update"].includes(route.request().postDataJSON()?.action?.action)) throw new Error("Unexpected interpretation request");
     await route.continue();
   });
   const pending = await flowAlignmentState();
-  pending.case = applyCaseCommand(pending.case, {
-    type: "record-clinician-facts", commandId: "saved-reporter-fixture", expectedRevision: pending.case.revision,
-    source: medicationSource("Fictional reporter Casey Reed, physician, casey@example.test.", "saved-reporter-fixture"),
-    facts: Object.entries({ firstName: "Casey", lastName: "Reed", occupation: "Physician", email: "casey@example.test" }).map(([field, value]) => ({
-      id: `saved-${field}`, intent: "fact" as const, target: { entity: "reporter" as const, entityId: "reporter", field: field as "firstName" | "lastName" | "occupation" | "email" }, value: { kind: "known" as const, value },
-    })),
-  }).case;
   await page.goto("/");
   await page.getByLabel("Case description", { exact: true }).waitFor();
   await page.evaluate(state => sessionStorage.setItem("wilson-journey-state-v2", JSON.stringify(state)), pending);
@@ -174,9 +186,8 @@ test("discard preserves accepted facts; subsequent questions and previously save
   expect(remaining.case.relevantTests[1]).toEqual(pending.case.relevantTests[1]);
   await remainingTest.getByRole("button", { name: "Accept Relevant test 1", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Questions before preparing the PDF", exact: true })).toBeFocused();
-  await page.getByRole("button", { name: "Edit reporter details", exact: true }).click();
-  await expect(page.getByRole("region", { name: "Before saving reporter details" })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Save reporter details", exact: true })).toBeEnabled();
+  await page.getByRole("button", { name: "Draft reporter details", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Before saving reporter details" })).toBeVisible();
   await page.getByLabel("Reporter email", { exact: true }).fill("unsaved@example.test");
   await goTo(page, "Review & save");
   await expect(page.getByRole("button", { name: "Generate PDF", exact: true })).toBeDisabled();
@@ -190,7 +201,7 @@ test("discard preserves accepted facts; subsequent questions and previously save
   await expect(page.getByRole("button", { name: "Continue to reporter details", exact: true })).toBeVisible();
   await goTo(page, "Reporter details");
   await expect(page.getByLabel("Reporter email", { exact: true })).toHaveValue("unsaved@example.test");
-  expect((await storedState(page)).case.reporter.facts.email.resolvedValue?.value).toEqual({ kind: "known", value: "casey@example.test" });
+  expect((await storedState(page)).case.reporter.facts.email.resolvedValue).toBeUndefined();
 });
 
 test("opening correction remains a draft until acceptance and discarding proposed patient details preserves other groups", async ({ page }) => {

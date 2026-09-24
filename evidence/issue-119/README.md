@@ -82,3 +82,25 @@ These checks establish the bounded presentation/navigation behavior and retained
 PDF content, not general interpretation reliability, full form coverage or a
 production/real-data readiness decision. Conversational correction beside each
 card remains outside this slice.
+
+## Independent-review remediation
+
+The [standard Opus-high review](https://github.com/warblersafety/wilson-next/pull/120#issuecomment-5807226569)
+found no blockers and three useful follow-ups. One compact line under Case summary
+now explains that direct field editing returns after update review. The saved-reporter
+checks now use actual reporter acceptance followed by a clinical correction that
+opens a medication question, then successfully save a reporter email edit while
+PDF regeneration stays blocked; the artificial reporter fixture is removed. Live
+regions are asserted by content/count, with the visible button and test-card hint
+checked separately. No service or permission changes.
+
+The prior full local run passed all 13 browser journeys and all 234 deterministic
+tests; required CI passed on `c199908`. After this bounded remediation, the five
+clinical-guidance tests, typecheck, build and all four affected browser journeys
+pass. The first targeted invocation was stopped because it used the old build and
+full fixture queue; the rebuilt/matched-fixture run passed 3/4 and exposed a test
+selector expecting “Generate PDF” instead of the existing “Generate updated PDF”.
+The corrected saved-reporter journey passes, including the actual save and blocked
+regeneration. The updated pending screenshot reflects the compact explanation.
+The same review session will inspect this exact delta; its actual result belongs
+in PR #120.
