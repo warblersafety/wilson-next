@@ -72,6 +72,21 @@ Post-remediation local typecheck, build and six focused browser journeys pass.
 The retained screenshots are refreshed from that run, along with the independently
 decoded [actual PDF readback](pdf-readback.json), which matches the #109 baseline.
 
+Final application commit `bf8c3dc7e4569f5e0b7b268d50c957f93558551d` also passes
+all four deployed journeys (22.1 seconds). The shared protected alias now serves
+that commit; `preview-access.json` records the final protection/share check and
+original rollback deployment. No interpretation requests were made.
+
+Its first CI run passed typecheck, 234 tests and build but the existing simulated
+opening-error alert timed out (`zzz-usability.spec.ts:42`), followed by the shared
+queue mismatch in update grouping: 12/14 browser journeys passed, including every
+focused task-clarity journey. Run:
+https://github.com/warblersafety/wilson-next/actions/runs/35966706593.
+This matches the observed #118 symptom; no trace was retained to prove its network
+cause. This evidence-only update triggers one final required CI run with unchanged
+application code/assertions; the PR records its disposition. No #118 fix, relaxed
+assertion, retry policy or other scope expansion is included.
+
 All four focused no-interpretation journeys pass within that full run. They cover
 single question/proposal locations, pending versus missing states, source links,
 unchanged separate test acceptance and readiness, retained clinical/direct-answer/
