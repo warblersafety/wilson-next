@@ -15,7 +15,7 @@ test("one unchanged cross-entity response creates separately accepted history, m
   await page.reload();
   await goTo(page, "Review details");
   await page.getByLabel("Clinical update", { exact: true }).fill(groupingUpdate);
-  await page.getByRole("button", { name: "Review this update", exact: true }).click();
+  await page.getByRole("button", { name: "Prepare changes for review", exact: true }).click();
   const accepts = page.getByRole("button", { name: "Accept these changes", exact: true });
   await expect(accepts).toHaveCount(2);
   const pending = await storedState(page);
