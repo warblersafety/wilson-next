@@ -292,7 +292,7 @@ export default function Journey() {
           {snapshot.stage === "review-update" && <UpdateReview snapshot={snapshot} busy={busy} act={act} />}
           {snapshot.review.attention.filter(({ kind }) => kind === "conflict").map((item) => <ConflictCard key={item.target} snapshot={snapshot} item={item} busy={busy || snapshot.stage !== "output"} act={act} />)}
           <CaseSummaryHeading attention={snapshot.review.attention} />
-          {reviewingUpdate && <p className={styles.hint}>Field editing becomes available after you review the proposed changes above.</p>}
+          {reviewingUpdate && <p className={styles.hint}>Finish reviewing all proposed groups before editing accepted details.</p>}
           <p role="status" aria-atomic="true" className={styles.visuallyHidden}>{reviewNotice}</p>
           <CaseCards key={browserState?.case.id} snapshot={snapshot} busy={busy} act={act} />
           <section className={`${styles.invitation} ${!clinicalAction ? styles.optionalPanel : ""}`} aria-label="Useful clinical details">

@@ -33,7 +33,7 @@ test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery an
   await expect(page.getByLabel("Clinical update", { exact: true })).toBeHidden();
   await expect(details.getByRole("button", { name: "Continue to reporter details", exact: true })).toHaveCount(0);
   await expect(details.getByRole("button", { name: "Draft reporter details", exact: true })).toBeVisible();
-  await expect(details.getByText("Field editing becomes available after you review the proposed changes above.", { exact: true })).toBeVisible();
+  await expect(details.getByText("Finish reviewing all proposed groups before editing accepted details.", { exact: true })).toBeVisible();
   for (const id of [1, 2]) {
     const card = page.locator(`#case-card-test-${id}`);
     await expect(card.getByRole("button", { name: `Accept Relevant test ${id}`, exact: true })).toBeDisabled();
@@ -83,7 +83,7 @@ test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery an
   await expect(page.getByRole("button", { name: "Accept Relevant test 1", exact: true })).toBeDisabled();
   await page.getByRole("button", { name: "Accept these changes", exact: true }).click();
   await expect(page.getByRole("status").filter({ hasText: "2 tests are now ready for separate review" })).toHaveCount(1);
-  await expect(details.getByText("Field editing becomes available after you review the proposed changes above.", { exact: true })).toHaveCount(0);
+  await expect(details.getByText("Finish reviewing all proposed groups before editing accepted details.", { exact: true })).toHaveCount(0);
   const test1 = page.locator("#case-card-test-1"), test2 = page.locator("#case-card-test-2");
   await expect(test1.getByRole("heading")).toBeFocused();
   await expect(test1.getByText("Not yet included in the report.", { exact: false })).toBeInViewport();

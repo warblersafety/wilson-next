@@ -67,8 +67,8 @@ The next run passed 11/13; one old test expected hidden rather than disabled tes
 actions, and the new discard test incorrectly used the display number/exact date
 text despite existing renumbering and the Proposed badge. Selectors now verify
 disabled actions and the retained dated observation; rejection remains distinct
-from withdrawal. Both corrected tests pass in isolation. Final full-suite/CI and
-independent-review results are recorded in the PR and closeout below.
+from withdrawal. Both corrected tests pass in isolation. Final full-suite/CI, independent-review and protected-preview results are
+recorded in PR #120.
 
 ## Preservation and limits
 
@@ -102,5 +102,22 @@ full fixture queue; the rebuilt/matched-fixture run passed 3/4 and exposed a tes
 selector expecting “Generate PDF” instead of the existing “Generate updated PDF”.
 The corrected saved-reporter journey passes, including the actual save and blocked
 regeneration. The updated pending screenshot reflects the compact explanation.
-The same review session will inspect this exact delta; its actual result belongs
-in PR #120.
+The [same-session targeted recheck](https://github.com/warblersafety/wilson-next/pull/120#issuecomment-5807302841)
+resolved all three follow-ups with no blocker. Its sole minor copy follow-up is
+incorporated as “Finish reviewing all proposed groups before editing accepted
+details.” This explicitly includes remaining test proposals. Build and all three
+focused flow journeys pass after that editorial correction. Required CI on
+`435b778` passed the full 234 deterministic tests, 13 browser journeys, typecheck
+and build. Final-commit CI and protected-preview evidence are recorded in PR #120.
+
+Only one standard Opus-high review and one same-session targeted recheck ran.
+Their actual outputs, limitations and CLI-reported usage are in the PR; no extra
+model pass is required for the reviewer-covered copy correction. The retained
+layout spot check found no horizontal overflow at 200% CSS zoom on Describe,
+Review details and Reporter details, and retained a long account exactly. This
+is a programmatic check, not manual assistive-technology or user acceptance.
+
+The durable value is the three-file UI improvement and focused regression
+evidence. Time spent repairing outdated selectors/fixture invocation improved
+the evidence rather than the product; no broader redesign or live-model tuning
+was introduced to justify that overhead.
