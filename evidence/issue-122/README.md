@@ -55,6 +55,23 @@ and desktop/mobile shared editing. Unsigned access still redirects; the existing
 share works and expires 2026-09-27T21:15:51Z. Prior working deployment is retained
 for rollback. [Access verification](preview-access.json) contains no share token.
 
+The next unchanged-code CI run passed all 14 browser journeys as well as typecheck,
+234 tests and build:
+https://github.com/warblersafety/wilson-next/actions/runs/35965866534.
+
+Independent review identified the removed question-reason text. It is restored
+without the old generic `Clarify` prefix, preserving the authored explanation and
+medication non-causality wording; browser assertions cover medication and outcome
+reasons. Two bounded editor follow-ups use the displayed value as the dirty-state
+baseline and exclude suppressed proposal-only rows before choosing the first
+additional-field column marker. The PR records the complete review, precise
+dispositions and final post-remediation checks. Remaining non-blocking findings
+are deferred; no service or interpretation scope is added.
+
+Post-remediation local typecheck, build and six focused browser journeys pass.
+The retained screenshots are refreshed from that run, along with the independently
+decoded [actual PDF readback](pdf-readback.json), which matches the #109 baseline.
+
 All four focused no-interpretation journeys pass within that full run. They cover
 single question/proposal locations, pending versus missing states, source links,
 unchanged separate test acceptance and readiness, retained clinical/direct-answer/

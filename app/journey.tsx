@@ -443,6 +443,7 @@ function CompletionTask(props: { snapshot: JourneySnapshot; busy: boolean; act: 
   const question = props.snapshot.clarification;
   if (!question) return null;
   return <>
+    <p className={styles.hint}>{question.reason}</p>
     {question.kind === "medication-history" && <MedicationTask {...props} />}
     {question.kind === "indications" && <IndicationTask {...props} />}
     {question.kind === "serious-outcomes" && <SeriousOutcomesTask {...props} />}
@@ -949,9 +950,11 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
   // while opening/new-entity proposals still belong to this card.
   const cardValue = (fact: FactView | undefined) => fact?.resolved ?? fact?.proposals.find((proposal) => !updateIds.has(proposal.groupId))?.value;
   const additionalField = (field: string) => !cardValue(facts[field]) && !facts[field]?.history.length && !facts[field]?.conflicts.length;
-  const orderedFields = [...fields.filter((field) => !additionalField(field)), ...fields.filter(additionalField)];
+  const cardFields = fields.filter((field) => facts[field] && factControl(entity, field)
+    && !(additionalField(field) && facts[field].proposals.some(({ groupId }) => updateIds.has(groupId))));
+  const orderedFields = [...cardFields.filter((field) => !additionalField(field)), ...cardFields.filter(additionalField)];
   const editingAdditional = Boolean(editing && additionalField(editing));
-  const draftChanged = (field: string, value: EditableCaseValue) => !sameFieldValue(value, editableInitialValue(activeValue(facts[field]), factControl(entity, field)!));
+  const draftChanged = (field: string, value: EditableCaseValue) => !sameFieldValue(value, editableInitialValue(cardValue(facts[field]), factControl(entity, field)!));
   const finishEdit = (field: string, discard: boolean) => {
     focusAfterEdit.current = field;
     setEditing(undefined);
@@ -990,7 +993,6 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
       const fact = facts[field];
       if (!fact || (groupedOutcomes && !showOutcomes && outcomeFields.includes(field))) return null;
       const value = cardValue(fact);
-      if (!value && fact.proposals.some(({ groupId }) => updateIds.has(groupId)) && !fact.history.length && !fact.conflicts.length) return null;
       if (!showMore && !value && fact.history.length === 0 && fact.conflicts.length === 0) return null;
       const proposal = fact.proposals.find(({ groupId: proposalGroup }) => proposalGroup === groupId);
       const editable = Boolean(((allowOpeningReview || reviewBlocked) && proposal) || allowDirectEdit);

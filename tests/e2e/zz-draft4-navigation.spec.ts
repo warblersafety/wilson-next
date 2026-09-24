@@ -28,6 +28,7 @@ test("Draft 4 retains drafts and proposals across screens, revisits reporter det
   await expect(page.getByRole("button", { name: "Show more fields" }).first()).toBeVisible();
   await expect(page.locator('[id^="case-card-"]').getByText("Not provided", { exact: true })).toHaveCount(0);
   await expect(page.getByRole("region", { name: "Information still needed", exact: true })).toContainText("Treatment history for amoxicillin");
+  await expect(page.locator("#clinical-question")).toContainText("Answer only what you know; these observations do not establish causality.");
   await page.getByLabel("Clinical update", { exact: true }).fill(medicationSparseUpdate);
   await directAnswers(page);
   await page.getByLabel("Was this medication stopped?", { exact: true }).selectOption("true");
