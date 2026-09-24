@@ -40,6 +40,21 @@ run stalled while awaiting the simulated-error diagnostic response (the existing
 #118 concern), again displacing the next fixture; no #118 change was made. Final
 CI and review results are recorded in the PR, not inferred from these local runs.
 
+The first final-head Linux CI run passed typecheck, 234 tests, build and 13/14
+browser journeys. The usability journey reached its simulated PDF failure, then
+timed out waiting for the visible error alert (`zzz-usability.spec.ts:142`),
+consistent with the separate #118 diagnostic-wait concern; that CI run retained
+no network trace to prove the pending request. The same complete usability journey
+passed locally with a trace. No error assertion or diagnostics behavior was changed.
+Run: https://github.com/warblersafety/wilson-next/actions/runs/35965407513.
+
+All four focused journeys also pass against the protected post-PR preview at
+`83bc7478c99d64d4600f27b046162afe61ba2703` (same material tree as reviewed commit
+`66f30158f0856a49537d0d5f748cb19d530775d6`). This includes the actual downloaded PDF
+and desktop/mobile shared editing. Unsigned access still redirects; the existing
+share works and expires 2026-09-27T21:15:51Z. Prior working deployment is retained
+for rollback. [Access verification](preview-access.json) contains no share token.
+
 All four focused no-interpretation journeys pass within that full run. They cover
 single question/proposal locations, pending versus missing states, source links,
 unchanged separate test acceptance and readiness, retained clinical/direct-answer/

@@ -1,0 +1,10 @@
+{
+  "verifiedAt": "2026-09-24T06:39:22.737Z",
+  "deployment": "dpl_yaBDQECS3xM3Snpq7TEotQGi4ugQ",
+  "sha": "83bc7478c99d64d4600f27b046162afe61ba2703",
+  "unsignedStatus": 302,
+  "anonymousShareAccess": true,
+  "expiresAt": "2026-09-27T21:15:51+00:00",
+  "priorDeployment": "dpl_CnNVsSjSPqtyUDd9rtxTFLpN2CaW",
+  "rollbackDeployment": "dpl_CnNVsSjSPqtyUDd9rtxTFLpN2CaW"
+}
