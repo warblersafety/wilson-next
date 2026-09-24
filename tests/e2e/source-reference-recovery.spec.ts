@@ -14,7 +14,7 @@ test("corrects DEMO-91 conversationally before initial acceptance, downloads fiv
   await expect(page.locator("#case-card-test-3")).toContainText("don’t have its units");
   await page.screenshot({ path: testInfo.outputPath("initial-review.png"), fullPage: true });
   await page.getByLabel("Clinical update", { exact: true }).fill(sourceReferenceUpdate);
-  await serverAction(page, () => page.getByRole("button", { name: "Review this update", exact: true }).click());
+  await serverAction(page, () => page.getByRole("button", { name: "Prepare changes for review", exact: true }).click());
   await expect(page.getByRole("heading", { name: "Review the proposed update" })).toBeVisible();
   const pending = await state(page);
   expect(pending.relevantTests).toHaveLength(5);
@@ -56,7 +56,7 @@ test("corrects DEMO-91 conversationally before initial acceptance, downloads fiv
   await expect(page.locator('[id^="case-card-test-"]')).toHaveCount(4);
   await expect(page.getByText("Some details were left out")).toBeVisible();
   await page.getByLabel("Clinical update", { exact: true }).fill(omittedTestRecovery);
-  await page.getByRole("button", { name: "Review this update", exact: true }).click();
+  await page.getByRole("button", { name: "Prepare changes for review", exact: true }).click();
   await expect(page.locator('[id^="case-card-test-"]')).toHaveCount(5);
   await expect(page.locator("#case-card-test-5")).toContainText("ferritin");
   await expect(page.locator("#case-card-test-5").getByRole("heading")).toBeFocused();

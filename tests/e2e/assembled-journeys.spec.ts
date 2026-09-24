@@ -251,7 +251,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   questionTrace.push({ journey: "layer3-correction", question: "reporter block", reason: "opening device facts require no conditional detail turn", answer: "structured reporter details" });
   await serverAction(page, () => page.getByRole("button", { name: "Add reporter details" }).click());
   await page.getByLabel("Clinical update").fill(layer3CorrectionUpdate);
-  await serverAction(page, () => page.getByRole("button", { name: "Review this update" }).click());
+  await serverAction(page, () => page.getByRole("button", { name: "Prepare changes for review" }).click());
   await serverAction(page, () => page.getByRole("article").filter({ hasText: "SN-1002" }).getByRole("button", { name: "Accept these changes" }).click());
   await expect(page.getByText("Earlier: SN-1001", { exact: true })).toBeVisible();
   await serverAction(page, () => page.getByRole("article").filter({ hasText: "NS-8" }).getByRole("button", { name: "Accept these changes" }).click());
@@ -397,7 +397,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
     "test-layer1-tests-alt", "test-layer1-tests-ast", "test-layer1-tests-bilirubin",
   ]);
   await page.getByLabel("Clinical update").fill(layer1TestsUpdate);
-  await serverAction(page, () => page.getByRole("button", { name: "Review this update" }).click());
+  await serverAction(page, () => page.getByRole("button", { name: "Prepare changes for review" }).click());
   await expect(page.getByRole("heading", { name: "Review the proposed update" })).toBeVisible();
   const proposedTestCorrection = await semanticCase(page);
   expect(proposedTestCorrection.relevantTests).toHaveLength(3);
@@ -441,7 +441,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
     "product-layer1-role-warfarin", "product-layer1-role-acetaminophen",
   ]);
   await page.getByLabel("Clinical update").fill(layer1RoleUpdate);
-  await serverAction(page, () => page.getByRole("button", { name: "Review this update" }).click());
+  await serverAction(page, () => page.getByRole("button", { name: "Prepare changes for review" }).click());
   await serverAction(page, () => page.getByRole("article").filter({ hasText: "Suspect product" }).getByRole("button", { name: "Accept these changes" }).click());
   await expect(page.getByRole("heading", { name: "What was acetaminophen being used for?" })).toBeVisible();
   questionTrace.push({ journey: "layer1-role", question: "newly applicable suspect indication", reason: "accepted role correction made only acetaminophen indication newly applicable", answer: "headache" });
@@ -613,7 +613,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await completeQuestions(page);
   expect((await storedState(page)).stage).toBe("output");
   await page.getByLabel("Clinical update").fill(repeatedUpdate);
-  await serverAction(page, () => page.getByRole("button", { name: "Review this update" }).click());
+  await serverAction(page, () => page.getByRole("button", { name: "Prepare changes for review" }).click());
   await expect(page.getByRole("heading", { name: "Review the proposed update" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Accept these changes", exact: true })).toHaveCount(2);
   const doseUpdate = page.getByRole("article").filter({ hasText: "200 mg" });
@@ -661,7 +661,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await serverAction(page, () => page.getByRole("button", { name: "Add these answers" }).click());
   await completeQuestions(page);
   await page.getByLabel("Clinical update").fill(regressionUpdate);
-  await serverAction(page, () => page.getByRole("button", { name: "Review this update" }).click());
+  await serverAction(page, () => page.getByRole("button", { name: "Prepare changes for review" }).click());
   await serverAction(page, () => page.getByRole("article").filter({ hasText: "250 mg" }).getByRole("button", { name: "Accept these changes" }).click());
   await serverAction(page, () => page.getByRole("article").filter({ hasText: "13-Aug-2026" }).getByRole("button", { name: "Accept these changes" }).click());
   await expect(page.getByText("Earlier: 500 mg", { exact: true })).toBeVisible();

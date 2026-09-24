@@ -1,0 +1,124 @@
+# Issue 122 — separate clinical tasks and repair shared editing
+
+Steve approved the narrowed three-part 80/20 slice after the post-#120 planning
+discussion and explicitly lifted the earlier planning-only hold. Issue #122 owns
+scope; the PR owns independent review and final delivery evidence.
+
+Only `app/journey.tsx` and `app/page.module.css` change in production:
+
+- The missing-information panel contains the current structured question once,
+  beside its answer controls. Other outstanding needs are disclosed separately;
+  pending answers are not presented as gaps. Conditional treatment questions are
+  rechecked after proposal review. The shared freeform draft has a separate neutral
+  panel and `Prepare changes for review` action. Clinical-screen navigation uses
+  secondary `Go to...` actions where needed; Reporter/Output return actions remain.
+- Later proposals appear once in the existing update-review area, retaining
+  separate Accept/Discard controls and attributed sources. Entity summaries retain
+  accepted information and link to their pending groups by stable identity. Opening
+  and new-test proposals retain their existing local acceptance controls.
+- Field-local Cancel closes the editor and clears only its draft. Opening or
+  reverting an editor produces no false unsaved marker or opening correction.
+  Reopening resumes a retained draft. Additional blank fields append after existing
+  rows. Hiding additional fields closes their active editor while retaining its
+  draft, with a disclosure label indicating unsaved edits. Unrelated drafts and
+  accepted information, qualifiers, units and dependency invalidation remain.
+
+The existing layout and service-enforced test-review order remain. No model,
+semantic case, completion policy, projection, PDF adapter or form coverage change.
+No comprehensive regrouping, Draft 5, registration, richer progress, or work on
+#105, #115, #118 or #121. The serious-outcome interpretation concern is unresolved
+and separate; this UI never supplies missing outcome answers.
+
+## Verification
+
+234 deterministic tests, typecheck and build pass. The first full browser run
+passed 12/14 journeys: an old clinical-navigation selector stopped the usability
+journey and displaced the next journey's shared deterministic responses. That
+selector now checks the agreed secondary navigation label. Both affected journeys
+pass in isolated runs with their matching fixture queues. An intervening paired
+run stalled while awaiting the simulated-error diagnostic response (the existing
+#118 concern), again displacing the next fixture; no #118 change was made. Final
+CI and review results are recorded in the PR, not inferred from these local runs.
+
+The first final-head Linux CI run passed typecheck, 234 tests, build and 13/14
+browser journeys. The usability journey reached its simulated PDF failure, then
+timed out waiting for the visible error alert (`zzz-usability.spec.ts:142`),
+consistent with the separate #118 diagnostic-wait concern; that CI run retained
+no network trace to prove the pending request. The same complete usability journey
+passed locally with a trace. No error assertion or diagnostics behavior was changed.
+Run: https://github.com/warblersafety/wilson-next/actions/runs/35965407513.
+
+All four focused journeys also pass against the protected post-PR preview at
+`83bc7478c99d64d4600f27b046162afe61ba2703` (same material tree as reviewed commit
+`66f30158f0856a49537d0d5f748cb19d530775d6`). This includes the actual downloaded PDF
+and desktop/mobile shared editing. Unsigned access still redirects; the existing
+share works and expires 2026-09-27T21:15:51Z. Prior working deployment is retained
+for rollback. [Access verification](preview-access.json) contains no share token.
+
+The next unchanged-code CI run passed all 14 browser journeys as well as typecheck,
+234 tests and build:
+https://github.com/warblersafety/wilson-next/actions/runs/35965866534.
+
+Independent review identified the removed question-reason text. It is restored
+without the old generic `Clarify` prefix, preserving the authored explanation and
+medication non-causality wording; browser assertions cover medication and outcome
+reasons. Two bounded editor follow-ups use the displayed value as the dirty-state
+baseline and exclude suppressed proposal-only rows before choosing the first
+additional-field column marker. The PR records the complete review, precise
+dispositions and final post-remediation checks. Remaining non-blocking findings
+are deferred; no service or interpretation scope is added.
+
+Post-remediation local typecheck, build and six focused browser journeys pass.
+The retained screenshots are refreshed from that run, along with the independently
+decoded [actual PDF readback](pdf-readback.json), which matches the #109 baseline.
+
+Final application commit `bf8c3dc7e4569f5e0b7b268d50c957f93558551d` also passes
+all four deployed journeys (22.1 seconds). The shared protected alias now serves
+that commit; `preview-access.json` records the final protection/share check and
+original rollback deployment. No interpretation requests were made.
+
+Its first CI run passed typecheck, 234 tests and build but the existing simulated
+opening-error alert timed out (`zzz-usability.spec.ts:42`), followed by the shared
+queue mismatch in update grouping: 12/14 browser journeys passed, including every
+focused task-clarity journey. Run:
+https://github.com/warblersafety/wilson-next/actions/runs/35966706593.
+This matches the observed #118 symptom; no trace was retained to prove its network
+cause. This evidence-only update triggers one final required CI run with unchanged
+application code/assertions; the PR records its disposition. No #118 fix, relaxed
+assertion, retry policy or other scope expansion is included.
+
+All four focused no-interpretation journeys pass within that full run. They cover
+single question/proposal locations, pending versus missing states, source links,
+unchanged separate test acceptance and readiness, retained clinical/direct-answer/
+reporter/privacy drafts, and the actual downloaded PDF. All 59 populated PDF fields
+match the retained independent #109 readback, including separate dated hemoglobin
+rows and medication follow-up marks.
+
+The new shared-editor journey covers Patient, Event, tests and Product edits;
+pristine/reverted values, qualifiers, Cancel/focus, resumed drafts, weight entry,
+stable desktop/mobile field geometry, and applying one test correction while other
+drafts and the second observation remain unchanged. Existing device, medication
+dependency, uncertainty, conflict and output regression paths remain in the suite.
+
+Retained screenshots: [desktop editor](stable-editor-1440.png),
+[mobile editor](stable-editor-390.png), and
+[single pending-review location](pending-review-desktop.png).
+
+The initial geometry assertion counted viewport scrolling as movement. It now
+compares document coordinates; the unchanged editor placement passes at 1440px
+and 390px with no horizontal overflow. The sandbox initially blocked the local
+server bind; the authorized browser invocation ran with normal host escalation.
+No application-model calls or repeated full manual user/PDF walkthrough occurred.
+
+## Preservation and limits
+
+All 101 pre-existing modified/untracked documents, screenshots and mockup archives
+were backed up and SHA-256 checked at
+`/private/tmp/wilson-clarity-preserved-20260924/manifest.json`. They remain unchanged
+and uncommitted. Any temporary stash required by the fixed review runner is restored
+and hash-checked. No access-bearing preview URLs or credentials belong here.
+
+These checks establish the bounded interaction change and retained output, not
+general interpretation reliability, full form coverage or unassisted usability.
+The fixed standard Opus-high review and protected-preview verification follow the
+approved delivery process; no expanded review or new model experiment is needed.

@@ -53,7 +53,7 @@ test("focused usability: truthful activity, draft demo reporter, review dependen
   await expect(event.getByText("Report date", { exact: true })).toHaveCount(0);
   await event.getByRole("button", { name: "Hide individual outcomes", exact: true }).click();
   await expect(event.getByText("Hospitalized", { exact: true })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Review remaining details", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Go to remaining review", exact: true })).toBeVisible();
   const proposed = await storedState(page);
   await page.getByRole("button", { name: "Draft reporter details", exact: true }).click();
   await page.getByLabel("Do not disclose my identity to the manufacturer", { exact: true }).check();
@@ -86,7 +86,7 @@ test("focused usability: truthful activity, draft demo reporter, review dependen
   await page.getByLabel("Clinical update", { exact: true }).fill(usabilityUpdate);
   const accepted = await storedState(page);
   const releaseUpdate = await holdNext(page, "/api/case", true);
-  await page.getByRole("button", { name: "Review this update", exact: true }).click();
+  await page.getByRole("button", { name: "Prepare changes for review", exact: true }).click();
   await expect(page.getByRole("status").filter({ hasText: "Preparing your update for review…" })).toHaveCount(1);
   await expect(page.getByRole("button", { name: "Preparing update…", exact: true })).toBeDisabled();
   await expect(page.getByRole("button", { name: "Preparing update…", exact: true })).toBeInViewport();
@@ -94,9 +94,9 @@ test("focused usability: truthful activity, draft demo reporter, review dependen
   await expect(page.locator("main").getByRole("alert")).toContainText("Accepted details and your draft are retained");
   expect(await storedState(page)).toEqual(accepted);
   await expect(page.getByLabel("Clinical update", { exact: true })).toHaveValue(usabilityUpdate);
-  await page.getByRole("button", { name: "Review this update", exact: true }).click();
+  await page.getByRole("button", { name: "Prepare changes for review", exact: true }).click();
   const test1 = page.locator("#case-card-test-1"), test2 = page.locator("#case-card-test-2");
-  await expect(page.getByRole("heading", { name: "Review proposed changes first", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Review the proposed update", exact: true })).toBeVisible();
   await expect(page.locator("#case-card-patient").getByRole("button", { name: "Change", exact: true })).toHaveCount(0);
   await expect(test2).toContainText("Review the proposed changes above to enable these controls.");
   await expect(test2.getByRole("button", { name: "Accept Relevant test 2", exact: true })).toBeDisabled();

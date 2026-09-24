@@ -62,8 +62,14 @@
 .caseCard dd { margin: 5px 0 0; line-height: 1.55; }
 .proposed { display: inline-block; background: #fff8df; border-radius: 5px; padding: 3px 7px; margin-left: 8px; font-size: 11px; font-weight: 600; color: #8a6100; }
 .history { color: #5c6678; font-size: 13px; }
-.inlineEdit { padding: 12px 0; }
-.inlineEdit button { margin-top: 12px; }
+.inlineEdit { padding: 14px; border: 1px solid #c7dfdc; border-radius: 8px; background: #f3f8f7; }
+.inlineEdit button { margin: 12px 8px 0 0; }
+.editorTitle { font-weight: 600; margin: 0 0 10px; }
+.caseCard dl > .additionalField { background: #f7f8fa; padding: 8px; }
+.caseCard dl > [data-additional-start] { grid-column: 1; }
+.pendingLinks { border-left: 3px solid #f4b400; padding: 8px 14px; margin: 8px 0 14px; font-size: 14px; }
+.pendingLinks p, .pendingLinks ul { margin: 4px 0; }
+.pendingLinks ul { padding-left: 20px; }
 .factEditor { display: grid; gap: 10px; }
 .factEditor fieldset { border: 0; padding: 0; }
 .factEditor fieldset label { display: flex; align-items: center; gap: 8px; }
@@ -80,6 +86,9 @@ blockquote.evidence > span:first-child { font-size: 12px; font-weight: 600; marg
 .decisionActions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
 .invitation { background: #fff8df; border: 1px solid #eddfa9; border-top: 4px solid #f4b400; border-radius: 12px; padding: 23px 25px; margin-top: 24px; }
 .invitation h2 { margin: 0 0 12px; }
+.updatePanel { background: white; border: 1px solid #dfe5ea; border-radius: 12px; padding: 20px 24px; margin-top: 24px; }
+.updatePanel h2 { margin: 0 0 12px; }
+.updatePanel > p { color: #5c6678; font-size: 14px; }
 .caseGuidance { font-weight: 600; }
 .caseGuidance ul { padding-left: 22px; }
 .updateBox { margin-top: 20px; }
