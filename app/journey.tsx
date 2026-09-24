@@ -17,7 +17,7 @@ import {
 } from "./browser-diagnostics";
 import { MedicationTask } from "./medication-task";
 import styles from "./page.module.css";
-import { canSaveReporter, clinicalNeedParts, needFieldLabel } from "./clinical-guidance";
+import { canSaveReporter, clinicalNeedParts, needFieldLabel, nextClinicalAction, singleEntityGroup } from "./clinical-guidance";
 import { productCardFields } from "./product-fields";
 
 const progressMessages = {
@@ -45,10 +45,12 @@ export default function Journey() {
   const [error, setError] = useState<string>();
   const [errorOperation, setErrorOperation] = useState<keyof typeof progressMessages>();
   const [boundaryNotice, setBoundaryNotice] = useState<string>();
+  const [reviewNotice, setReviewNotice] = useState("");
+  const [draftDisclosureOpen, setDraftDisclosureOpen] = useState(false);
   const [resetNotice, setResetNotice] = useState(false);
   const previousTask = useRef<string | undefined>(undefined);
   const [clinicalNavigation, setClinicalNavigation] = useState(0);
-  const updateReviewFocus = useRef<string[] | undefined>(undefined);
+  const updateReviewFocus = useRef<{ groups: string[]; directQuestion: boolean } | undefined>(undefined);
 
   useEffect(() => { void loadJourney(); }, []);
 
@@ -74,9 +76,10 @@ export default function Journey() {
   useEffect(() => {
     if (!clinicalNavigation || screen !== "details" || !snapshot) return;
     let target: HTMLElement | null = null;
-    if (snapshot.stage === "review-update") target = document.getElementById("update-review-title");
-    else if (snapshot.stage === "understanding") target = document.querySelector<HTMLElement>("[data-proposal-review] h3");
-    else if (snapshot.stage === "clarify" && snapshot.clarification?.kind !== "reporter") {
+    const next = nextClinicalAction(snapshot);
+    if (next?.kind === "updates") target = document.getElementById("update-review-title");
+    else if (next?.kind === "proposals") target = document.querySelector<HTMLElement>("[data-proposal-review] h3");
+    else if (next?.kind === "questions") {
       const disclosure = document.getElementById("direct-clinical-question") as HTMLDetailsElement | null;
       if (disclosure) disclosure.open = true;
       target = document.getElementById("clinical-question");
@@ -88,13 +91,20 @@ export default function Journey() {
   }, [clinicalNavigation, screen, snapshot]);
 
   useEffect(() => {
-    const newGroups = updateReviewFocus.current;
-    if (!newGroups || !snapshot) return;
+    const request = updateReviewFocus.current;
+    if (!request || !snapshot) return;
     updateReviewFocus.current = undefined;
     const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-proposal-review]"));
-    const card = cards.find((item) => newGroups.includes(item.dataset.proposalReview!)) ?? cards[0];
+    const card = cards.find((item) => request.groups.includes(item.dataset.proposalReview!)) ?? cards[0];
+    const questions = nextClinicalAction(snapshot)?.kind === "questions";
+    if (questions && request.directQuestion) {
+      const disclosure = document.getElementById("direct-clinical-question") as HTMLDetailsElement | null;
+      if (disclosure) disclosure.open = true;
+    }
     const target = snapshot.stage === "review-update" ? document.getElementById("update-review-title")
-      : card?.querySelector<HTMLElement>("h3") ?? document.querySelector<HTMLElement>("[data-conflict-review]") ?? document.getElementById("case-title");
+      : card?.querySelector<HTMLElement>("h3")
+        ?? (questions ? document.getElementById(request.directQuestion ? "clinical-question" : "clinical-panel-title") : null)
+        ?? document.querySelector<HTMLElement>("[data-conflict-review]") ?? document.getElementById("case-title");
     target?.focus({ preventScroll: true });
     target?.scrollIntoView({ block: "start" });
   }, [snapshot]);
@@ -149,26 +159,37 @@ export default function Journey() {
     setErrorOperation(action.action === "submit-opening" ? "opening" : action.action === "submit-update" ? "update" : "case");
     setError(undefined);
     setBoundaryNotice(undefined);
+    setReviewNotice("");
     setResetNotice(false);
     try {
       const response = await requestJourneyJson<JourneyResponse>({
         method: "POST",
         body: { operation: "act", state: browserState, expectedRevision: snapshot.revision, action },
       }, "Wilson could not update the case");
-      if (["submit-update", "review-update-group", "review-opening-group", "reject-group", "resolve-conflict"].includes(action.action)) {
+      const directAnswer = action.action.startsWith("answer-") && action.action !== "answer-reporter";
+      if (["submit-update", "review-update-group", "review-opening-group", "reject-group", "resolve-conflict"].includes(action.action) || directAnswer) {
         const previousGroups = new Set(snapshot.review.attention.map(({ groupId }) => groupId));
-        updateReviewFocus.current = response.snapshot.review.attention.flatMap(({ groupId }) => groupId && !previousGroups.has(groupId) ? [groupId] : []);
+        updateReviewFocus.current = {
+          groups: response.snapshot.review.attention.flatMap(({ groupId }) => groupId && !previousGroups.has(groupId) ? [groupId] : []),
+          directQuestion: directAnswer,
+        };
       }
       acceptResponse(response);
       if (response.snapshot.transitionNotice) setBoundaryNotice(response.snapshot.transitionNotice);
       if (snapshot.stage === "review-update" && response.snapshot.stage === "understanding") {
         const tests = response.snapshot.understanding.relevantTests.filter(({ state }) => state === "proposed").length;
-        if (tests) setBoundaryNotice(`Update review is complete. ${tests} ${tests === 1 ? "test is" : "tests are"} now ready for separate review. Check and accept each test below.`);
+        if (tests) setReviewNotice(`Update review is complete. ${tests} ${tests === 1 ? "test is" : "tests are"} now ready for separate review.`);
+      }
+      if (["updates", "proposals"].includes(nextClinicalAction(snapshot)?.kind ?? "") && nextClinicalAction(response.snapshot)?.kind === "questions") {
+        setReviewNotice("Review complete. Clinical questions need answers before the PDF.");
       }
       if (action.action === "submit-opening") setScreen("details");
       if (action.action === "answer-reporter") setScreen("save");
       if (action.action === "submit-update") setScreen("details");
-      if (action.action === "submit-update") setUpdate((current) => current === action.text ? "" : current);
+      if (action.action === "submit-update") {
+        setUpdate((current) => current === action.text ? "" : current);
+        setDraftDisclosureOpen(false);
+      }
       return true;
     } catch (caught) {
       setError(displayError(caught, "Wilson could not update the case"));
@@ -192,6 +213,8 @@ export default function Journey() {
       acceptResponse(response);
       setOpening("");
       setUpdate("");
+      setReviewNotice("");
+      setDraftDisclosureOpen(false);
       setPdf(undefined);
       setScreen("describe");
       setReportType("adverse-event");
@@ -225,6 +248,8 @@ export default function Journey() {
   }, [screen, snapshot?.reportContentKey, snapshot?.downloadReady]);
 
   if (!snapshot) return <main className={styles.loading}><p>{error ?? "Preparing your case…"}</p></main>;
+  const clinicalAction = nextClinicalAction(snapshot);
+  const reviewingUpdate = clinicalAction?.kind === "updates";
 
   return (
     <main className={styles.appShell}>
@@ -261,24 +286,37 @@ export default function Journey() {
             : <><p className={styles.eyebrow}>Your starting description</p><h1>Describe what happened</h1><div className={styles.caseCard}><p className={styles.originalAccount}>{opening || browserState?.case.sources.find(({ inputType }) => inputType === "narrative")?.excerpt || "Your submitted description is retained with the source evidence in Review details."}</p></div><p>Wilson has prepared the details for review. Add new information or corrections in Review details.</p><button disabled={busy} onClick={() => setScreen("details")}>Return to review details</button></>}
         </section>
         <section data-screen="details" hidden={screen !== "details"}>
-          <p className={styles.eyebrow}>Your case, taking shape</p>
           <h1>Review the case details</h1>
-          <p className={styles.lead}>Check what Wilson captured. Accept each group when it is correct, or change what needs correcting.</p>
+          {!reviewingUpdate && <p className={styles.lead}>Check each proposed group. Change incorrect values before accepting.</p>}
           {pdf && <div className={styles.returnBanner}><div><strong>A PDF has been generated for this case</strong><p>{snapshot.downloadReady && pdf.contentKey === snapshot.reportContentKey ? "Accepted report contents are unchanged." : snapshot.downloadReady ? "Accepted details have changed. Open Review & save to update the PDF." : "New work needs review before a current PDF is ready."}</p></div><button disabled={busy} onClick={() => setScreen("save")}>Return to PDF</button></div>}
           {snapshot.stage === "review-update" && <UpdateReview snapshot={snapshot} busy={busy} act={act} />}
           {snapshot.review.attention.filter(({ kind }) => kind === "conflict").map((item) => <ConflictCard key={item.target} snapshot={snapshot} item={item} busy={busy || snapshot.stage !== "output"} act={act} />)}
           <CaseSummaryHeading attention={snapshot.review.attention} />
-          {snapshot.stage === "review-update" && <p className={styles.reviewDependency}>Review all proposed updates above before editing these case details. New tests are reviewed next.</p>}
+          {reviewingUpdate && <p className={styles.hint}>Finish reviewing all proposed groups before editing accepted details.</p>}
+          <p role="status" aria-atomic="true" className={styles.visuallyHidden}>{reviewNotice}</p>
           <CaseCards key={browserState?.case.id} snapshot={snapshot} busy={busy} act={act} />
-          <section className={styles.invitation} aria-label="Useful clinical details">
-            <h2>{snapshot.stage === "review-update" ? "Review the proposed changes first" : "Anything to add or correct?"}</h2>
-            {snapshot.stage === "review-update" && <p>You do not need to repeat information already proposed above. Review those changes before adding more.</p>}
-            <ClinicalNeeds snapshot={snapshot} />
-            {snapshot.stage !== "review-update" && <p>Answer several things together, or add another detail. Say which product or test it concerns. Proposed answers remain here until you accept them.</p>}
-            <CorrectionInput update={update} setUpdate={setUpdate} busy={busy || snapshot.stage === "review-update" || snapshot.stage === "describe"} interpreting={pendingOperation === "update"} error={errorOperation === "update" ? error : undefined} act={act} />
+          <section className={`${styles.invitation} ${!clinicalAction ? styles.optionalPanel : ""}`} aria-label="Useful clinical details">
+            <h2 id="clinical-panel-title" tabIndex={-1}>{reviewingUpdate ? "Review proposed changes first" : clinicalAction?.kind === "proposals" ? "Finish reviewing proposed details" : clinicalAction?.kind === "questions" ? "Questions before preparing the PDF" : "Add or correct information (optional)"}</h2>
+            {reviewingUpdate ? <>
+              <p>Review the groups above before sending another update.</p>
+              <button className={styles.inlineAction} disabled={busy} onClick={continueClinicalReview}>Go to proposed changes</button>
+            </> : clinicalAction?.kind === "proposals" ? <button className={styles.inlineAction} disabled={busy} onClick={continueClinicalReview}>Go to next review</button> : null}
+            <details className={reviewingUpdate ? undefined : styles.openContents} open={!reviewingUpdate || undefined}>
+              <summary hidden={!reviewingUpdate}>Details still needed after review</summary>
+              <ClinicalNeeds snapshot={snapshot} />
+            </details>
+            {!reviewingUpdate && <p>Answer several things together, or add a detail. Say which product or test it concerns. You will review proposed changes before accepting them.</p>}
+            <details className={reviewingUpdate ? undefined : styles.openContents} open={!reviewingUpdate || draftDisclosureOpen} onToggle={(event) => { if (reviewingUpdate) setDraftDisclosureOpen(event.currentTarget.open); }}>
+              <summary hidden={!reviewingUpdate}>Draft another update{update.trim() ? " — unsent text retained" : ""}</summary>
+              <CorrectionInput update={update} setUpdate={setUpdate} busy={busy || reviewingUpdate || snapshot.stage === "describe"} interpreting={pendingOperation === "update"} error={errorOperation === "update" ? error : undefined} act={act} />
+              {reviewingUpdate && <p className={styles.hint}>Available after reviewing proposed changes.</p>}
+            </details>
             {snapshot.clarification && snapshot.clarification.kind !== "reporter" && <details id="direct-clinical-question" className={styles.directQuestions}><summary>Use direct answers for the next question</summary><div id="clinical-question" tabIndex={-1}><CompletionTask key={clinicalDraftKey(snapshot)} snapshot={snapshot} busy={busy || snapshot.stage !== "clarify"} act={act} /></div></details>}
           </section>
-          <div className={styles.screenActions}><p>{snapshot.stage === "understanding" || snapshot.stage === "review-update" ? "Continuing does not accept proposed details. You can draft reporter details, but finish the clinical review before saving them or preparing a current PDF." : snapshot.clinicalNeeds.length > 0 ? "Complete the applicable clinical details to prepare the PDF. You can draft reporter details at any time." : "Your accepted details will be used in the report."}</p><button className={styles.primaryButton} disabled={busy} onClick={() => setScreen("reporter")}>Continue to reporter details</button></div>
+          <div className={styles.screenActions}>{clinicalAction ? <>
+            <button className={styles.primaryButton} disabled={busy} onClick={continueClinicalReview}>{clinicalAction.label}</button>
+            <button disabled={busy} onClick={() => setScreen("reporter")}>{canSaveReporter(snapshot) ? "Edit reporter details" : "Draft reporter details"}</button>
+          </> : <><p>Your accepted details will be used in the report.</p><button className={styles.primaryButton} disabled={busy} onClick={() => setScreen("reporter")}>Continue to reporter details</button></>}</div>
         </section>
         <section data-screen="reporter" hidden={screen !== "reporter"}>
           <ReporterTask continueClinicalReview={continueClinicalReview} onDirtyChange={setReporterDirty} navigate={setScreen} key={`${browserState?.case.id}:${JSON.stringify(snapshot.understanding.reporter)}:${JSON.stringify(snapshot.understanding.event.reportDate.resolved)}`} snapshot={snapshot} busy={busy} act={act} />
@@ -309,12 +347,9 @@ function clinicalDraftKey(snapshot: JourneySnapshot): string {
 }
 
 function CaseSummaryHeading({ attention }: { attention: ReviewAttentionItem[] }) {
-  const proposals = attention.filter(({ kind }) => kind !== "conflict").length;
   const conflicts = attention.filter(({ kind }) => kind === "conflict").length;
   return <div className={styles.caseSummaryHeading}>
     <h2 id="case-title" tabIndex={-1}>Case summary</h2>
-    <p>Check these details against your description.</p>
-    {proposals > 0 && <p>{proposals} proposed {proposals === 1 ? "detail" : "details"} to check</p>}
     {conflicts > 0 && <p>{conflicts} unresolved {conflicts === 1 ? "conflict" : "conflicts"}</p>}
   </div>;
 }
@@ -329,16 +364,16 @@ function Describe({ opening, setOpening, reportType, setReportType, busy, interp
   const productProblem = reportType === "product-problem" || reportType === "adverse-event-and-product-problem";
   return <>
     <h1 id="task-title">Describe what happened</h1>
-    <p>Describe the case by typing, pasting, or dictating. Wilson will organize the details for you to check and correct, then help you prepare a downloadable report.</p>
-    <NarrativeInput id="opening-account" label="Case description" context="account" rows={8} disabled={busy} value={opening} onChange={setOpening} />
+    <p>Describe the case by typing, pasting, or dictating. Check the text before sending it for review.</p>
+    <NarrativeInput id="opening-account" label="Case description" context="account" rows={6} disabled={busy} value={opening} onChange={setOpening} />
     <fieldset disabled={busy} className={styles.reportType}><legend>Report type</legend>
       <label><input type="checkbox" checked={adverseEvent} onChange={(event) => setReportType(event.target.checked ? productProblem ? "adverse-event-and-product-problem" : "adverse-event" : productProblem ? "product-problem" : undefined)} /> Adverse event</label>
       <label><input type="checkbox" checked={productProblem} onChange={(event) => setReportType(event.target.checked ? adverseEvent ? "adverse-event-and-product-problem" : "product-problem" : adverseEvent ? "adverse-event" : undefined)} /> Product problem</label>
     </fieldset>
-    <button disabled={busy || !opening.trim() || !reportType} onClick={() => reportType && void act({ action: "submit-opening", text: opening, reportType })}>
-      Review Wilson’s understanding
+    <button aria-busy={interpreting} disabled={busy || !opening.trim() || !reportType} onClick={() => reportType && void act({ action: "submit-opening", text: opening, reportType })}>
+      {interpreting ? <><span className={styles.spinner} aria-hidden="true" />Preparing details…</> : "Review Wilson’s understanding"}
     </button>
-    <OperationStatus active={interpreting} message={progressMessages.opening} />
+    <p role="status" aria-atomic="true" className={styles.visuallyHidden}>{interpreting ? progressMessages.opening : ""}</p>
     {error && <p className={styles.error} role="alert">{error} Your description is retained. You can try again.</p>}
   </>;
 }
@@ -350,8 +385,7 @@ function NarrativeInput({ id, label, context, rows, value, onChange, disabled = 
   const [helpOpen, setHelpOpen] = useState(false);
   return <div>
     <label htmlFor={id}>{label}</label>
-    <textarea disabled={disabled} id={id} rows={rows} value={value} onChange={(event) => onChange(event.target.value)} aria-describedby={`${id}-hint`} />
-    <p id={`${id}-hint`} className={styles.hint}>Check the text and correct any errors before continuing.</p>
+    <textarea disabled={disabled} id={id} rows={rows} value={value} onChange={(event) => onChange(event.target.value)} />
     <div className={styles.dictationDisclosure}>
       <button type="button" className={styles.dictationToggle} aria-expanded={helpOpen} aria-controls={`${id}-dictation`}
         onClick={() => setHelpOpen(!helpOpen)}>
@@ -395,8 +429,8 @@ function CorrectionInput({ update, setUpdate, busy, interpreting, error, act }: 
 }) {
   return <section className={styles.updateBox} aria-label="Add or correct information">
     <NarrativeInput id="later-update" label="Clinical update" context="update" rows={5} value={update} onChange={setUpdate} />
-    <button disabled={busy || !update.trim()} onClick={() => void act({ action: "submit-update", text: update })}>Review this update</button>
-    <OperationStatus active={interpreting} message={progressMessages.update} />
+    <button aria-busy={interpreting} disabled={busy || !update.trim()} onClick={() => void act({ action: "submit-update", text: update })}>{interpreting ? <><span className={styles.spinner} aria-hidden="true" />Preparing update…</> : "Review this update"}</button>
+    <p role="status" aria-atomic="true" className={styles.visuallyHidden}>{interpreting ? progressMessages.update : ""}</p>
     {error && <p className={styles.error} role="alert">{error} Accepted details and your draft are retained. You can try again.</p>}
   </section>;
 }
@@ -664,7 +698,7 @@ function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate, continueCl
   ];
   return <>
     <p className={styles.eyebrow}>About the reporter</p><h1>Add the reporter details for this report</h1>
-    <p className={styles.lead}>Tell us who is making this report. To provide reporter details, add a name, occupation, and phone or email. Address details are optional.</p>{!canSave && <section className={styles.invitation} aria-label="Before saving reporter details"><h2>Clinical review comes next</h2><p>You can draft reporter details now. They stay here while you finish the clinical review required before saving or declining them.</p><PendingReview snapshot={snapshot} /><ClinicalNeeds snapshot={snapshot} /><button className={styles.primaryButton} disabled={busy} onClick={continueClinicalReview}>Continue clinical review</button></section>}{saved("firstName")?.kind === "declined" && <p className={styles.notice}>Reporter details were previously declined. You can supply them here to replace that choice.</p>}
+    <p className={styles.lead}>Tell us who is making this report. To provide reporter details, add a name, occupation, and phone or email. Address details are optional.</p>{!canSave && <section className={styles.reporterDraft} aria-label="Before saving reporter details"><h2>Reporter draft</h2><p>You can enter details now. Finish clinical review before saving or declining reporter details.</p><PendingReview snapshot={snapshot} /><ClinicalNeeds snapshot={snapshot} compact /><button className={styles.primaryButton} disabled={busy} onClick={continueClinicalReview}>{nextClinicalAction(snapshot)?.label ?? "Review case details"}</button></section>}{saved("firstName")?.kind === "declined" && <p className={styles.notice}>Reporter details were previously declined. You can supply them here to replace that choice.</p>}
     <div className={styles.demoShortcut}><div><strong>Trying the preview?</strong><p>Fill fictional reporter details, then review and save them.</p></div><button disabled={busy} onClick={() => {
       setValues((current) => ({ ...current, firstName: "Casey", lastName: "Reed", email: "casey.reed@example.test", occupation: "Physician" }));
       setHealthProfessional(true);
@@ -712,14 +746,14 @@ function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate, continueCl
   </>;
 }
 
-function ClinicalNeeds({ snapshot }: { snapshot: JourneySnapshot }) {
+function ClinicalNeeds({ snapshot, compact = false }: { snapshot: JourneySnapshot; compact?: boolean }) {
   if (!snapshot.clinicalNeeds.length) return null;
   const label = (target: string) => target.startsWith("product:") ? targetLabel(snapshot, target) : needFieldLabel(target);
   return <div className={styles.caseGuidance}>
-    <p>Required before preparing the PDF. Answer what you know, or explicitly mark unknown or decline where offered.</p>
-    <ul>{clinicalNeedParts(snapshot).map(({ need, pending, missing, recheckAfterReview }) => <li key={`${need.key}:${need.targetIds.join()}`}>
-      <strong>{need.question}</strong>
-      {pending.length > 0 && <p>Proposed answers awaiting acceptance: {joinList(pending.map(label))}. Review them before supplying the same details again.</p>}
+    {!compact && <p>Answer what you know; use unknown or decline where offered.</p>}
+    <ul>{clinicalNeedParts(snapshot).filter(({ missing, recheckAfterReview }) => !compact || recheckAfterReview || missing.length > 0).map(({ need, pending, missing, recheckAfterReview }) => <li key={`${need.key}:${need.targetIds.join()}`}>
+      {!compact && <strong>{need.question}</strong>}
+      {!compact && pending.length > 0 && <p>Proposed answers awaiting acceptance: {joinList(pending.map(label))}.</p>}
       {recheckAfterReview && <p>Remaining treatment questions will be checked after these proposals are reviewed.</p>}
       {!recheckAfterReview && missing.length > 0 && <p>Still needs an answer: {joinList(missing.map(label))}.</p>}
     </li>)}</ul>
@@ -758,9 +792,11 @@ function UpdateReview({ snapshot, busy, act }: {
   const groups = groupAttention(snapshot.review.attention.filter(({ kind, groupId }) => kind !== "conflict" && !snapshot.openingGroups.includes(groupId ?? "")));
   return <>
     <h2 id="update-review-title" tabIndex={-1} className={styles.updateReviewTitle}>Review the proposed update</h2>
-    <p>Accept or reject each group separately. Earlier information stays unchanged until you accept a correction. An accepted incompatible alternative remains visibly unresolved and is omitted from the form.</p>
+    <p>Accept or discard each group separately. Accepted details stay unchanged until you accept a correction.</p>
+    <details><summary>How update review works</summary><p>An accepted incompatible alternative remains visibly unresolved and is omitted from the form.</p></details>
     {groups.map(({ groupId, items }) => {
       const title = reviewGroupTitle(snapshot, items);
+      const fieldOnly = singleEntityGroup(items.map(({ target }) => target));
       const evidence = new Map<string, string[]>();
       for (const item of items) for (const excerpt of new Set(item.values[0]?.evidence ?? [])) {
         evidence.set(excerpt, [...(evidence.get(excerpt) ?? []), targetLabel(snapshot, item.target)]);
@@ -768,15 +804,15 @@ function UpdateReview({ snapshot, busy, act }: {
       return <article className={styles.attentionCard} key={groupId} aria-label={title}>
         <h3>{title}</h3>
         <div className={styles.updateFacts}>{items.map((item) => <div key={item.target}>
-          <h4>{targetLabel(snapshot, item.target)}</h4>
+          <h4>{fieldOnly ? controlForTarget(item.target)?.label ?? targetLabel(snapshot, item.target) : targetLabel(snapshot, item.target)}</h4>
           <p>{formatFact(item.values[0]?.value, controlForTarget(item.target))}</p>
         </div>)}</div>
         {evidence.size > 0 && <details className={styles.evidence}><summary>View source evidence for this group</summary>
           {[...evidence].map(([excerpt, labels]) => <div key={excerpt}><p className={styles.hint}>{joinList(labels)}</p><blockquote>“{excerpt}”</blockquote></div>)}
         </details>}
         <div className={styles.decisionActions}>
-          <button disabled={busy} onClick={() => void act({ action: "review-update-group", groupId, decision: "accept" })}>Accept this update</button>
-          <button disabled={busy} onClick={() => void act({ action: "review-update-group", groupId, decision: "reject" })}>Reject this update</button>
+          <button disabled={busy} onClick={() => void act({ action: "review-update-group", groupId, decision: "accept" })}>Accept these changes</button>
+          <button disabled={busy} onClick={() => void act({ action: "review-update-group", groupId, decision: "reject" })}>Discard these changes</button>
         </div>
       </article>;
     })}
@@ -796,7 +832,7 @@ function OutputComposition({ snapshot, pdf, caseId, busy, generating, error, gen
     <p className={styles.lead}>Inspect the actual generated form, then save a copy. Wilson does not submit it.</p>
     {hasDraft && <p className={styles.notice}>You have an unsent clinical draft in Review details. It is not included in the PDF.</p>}
     {reporterDirty && <p className={styles.notice}>You have unsaved reporter details. {canSaveReporter(snapshot) ? "Save them in Reporter details to include those changes in the report." : "Your draft is retained. Finish the clinical review below, then return to Reporter details to save it."}</p>}
-    {snapshot.outputIssues.length > 0 && <section className={styles.invitation}><h2>The form needs more reviewed information</h2><PendingReview snapshot={snapshot} /><ClinicalNeeds snapshot={snapshot} /><ul>{snapshot.outputIssues.filter(({ code }) => code !== "pending-proposal-review" && code !== "open-clarification").map((issue, index) => <li key={index}>{issue.message}</li>)}</ul>{snapshot.stage === "clarify" && snapshot.clarification?.kind === "reporter" ? <><p>Clinical questions are complete. Save reporter details or explicitly choose not to provide them.</p><button className={styles.primaryButton} disabled={busy} onClick={() => navigate("reporter")}>Go to reporter details</button></> : <button className={styles.primaryButton} disabled={busy} onClick={continueClinicalReview}>Continue completing the report</button>}</section>}
+    {snapshot.outputIssues.length > 0 && <section className={styles.invitation}><h2>The form needs more reviewed information</h2><PendingReview snapshot={snapshot} /><ClinicalNeeds snapshot={snapshot} /><ul>{snapshot.outputIssues.filter(({ code }) => code !== "pending-proposal-review" && code !== "open-clarification").map((issue, index) => <li key={index}>{issue.message}</li>)}</ul>{snapshot.stage === "clarify" && snapshot.clarification?.kind === "reporter" ? <><p>Clinical questions are complete. Save reporter details or explicitly choose not to provide them.</p><button className={styles.primaryButton} disabled={busy} onClick={() => navigate("reporter")}>Go to reporter details</button></> : <button className={styles.primaryButton} disabled={busy} onClick={continueClinicalReview}>{nextClinicalAction(snapshot)?.label ?? "Review case details"}</button>}</section>}
     <div className={styles.pdfToolbar}><div><h2>Form FDA 3500</h2><p role="status" aria-atomic="true">{generating ? <><span className={styles.spinner} aria-hidden="true" />{artifact ? "Updating the PDF from accepted details… The earlier PDF remains below until the update is ready." : "Preparing the PDF from accepted details…"}</> : error ? "PDF generation failed. Accepted details are retained. Try generating it again." : current ? "PDF ready — it reflects the accepted report contents." : artifact ? "Earlier PDF — it does not include changes awaiting review or generation." : "Generate the PDF after completing review and reporter details."}</p></div>
       {current ? <a className={styles.primaryLink} href={artifact!.url} download={artifact!.filename}>Save PDF</a> : <button disabled={busy || !snapshot.downloadReady} onClick={() => void generatePdf()}>{artifact ? "Generate updated PDF" : "Generate PDF"}</button>}
     </div>
@@ -910,19 +946,20 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
     const proposal = facts[field]?.proposals.find(({ groupId: proposalGroup }) => proposalGroup === groupId);
     return proposal ? [{ proposalId: proposal.id, value }] : [];
   });
+  const acceptanceLabel = entity === "patient" || entity === "event" ? `${title.toLowerCase()} details` : title;
   return <article id={domId} className={styles.caseCard} data-proposal-review={allowOpeningReview ? groupId : undefined}>
     <div className={styles.cardTitle}>
       <div>{eyebrow && <span>{eyebrow}</span>}<h3 tabIndex={-1}>{title}</h3></div>
       <div className={styles.cardActions}>
-        {allowRemove && <button disabled={busy} onClick={() => void act({ action: "reject-group", groupId })}>Remove {title}</button>}
+        {(allowRemove || reviewBlocked) && <button disabled={busy || reviewBlocked} onClick={() => void act({ action: "reject-group", groupId })}>Discard proposed {title}</button>}
         {allowWithdraw && <button disabled={busy} onClick={() => void act({ action: "withdraw-entity", entity: entity as "product" | "test", entityId })}>Withdraw {title}</button>}
       </div>
     </div>
     {fields.every((field) => !activeValue(facts[field]) && !facts[field]?.history.length && !facts[field]?.conflicts.length) && <p className={styles.hint}>No details were captured for this group. It can be left blank.</p>}
     {entityState === "withdrawn" && <p className={styles.withdrawn}>Withdrawn from the active report; reviewed facts and source history are retained below.</p>}
     {entity === "test" && entityState !== "withdrawn" && !knownString(activeValue(facts.testName)) && <p role="status">Test identity is not recorded as known. Check the source wording. You can supply its name in Clinical update or leave it unknown for a partial report.</p>}
-    {entity === "test" && allowOpeningReview && <p className={styles.reviewDependency}>Ready for review. Check this test, then accept it separately. It is not included in the report until accepted.</p>}
-    {reviewBlocked && <p className={styles.reviewDependency}>Review all proposed updates above first. Then you can change, accept, or remove this {entity === "test" ? "test" : "product"}. <a href="#update-review-title" onClick={() => document.getElementById("update-review-title")?.focus()}>Go to proposed updates</a></p>}
+    {entity === "test" && allowOpeningReview && <p className={styles.hint}>Not yet included in the report. Accept this test after checking it.</p>}
+    {reviewBlocked && <p className={styles.hint}>Review the proposed changes above to enable these controls. <a href="#update-review-title" onClick={() => document.getElementById("update-review-title")?.focus()}>Go to proposed changes</a></p>}
     <dl>{groupedOutcomes && <div>
       <dt>Serious outcomes</dt>
       <dd>{outcomeFields.filter((field) => (activeValue(facts[field]) as { value: boolean }).value).map((field) => factControl("event", field)!.label).join(", ") || "None reported"}{outcomeFields.some((field) => facts[field].proposals.length > 0) && <span className={styles.proposed}>Proposed</span>}</dd>
@@ -933,7 +970,7 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
       const value = activeValue(fact);
       if (!showMore && !value && fact.history.length === 0 && fact.conflicts.length === 0) return null;
       const proposal = fact.proposals.find(({ groupId: proposalGroup }) => proposalGroup === groupId);
-      const editable = Boolean((allowOpeningReview && proposal) || allowDirectEdit);
+      const editable = Boolean(((allowOpeningReview || reviewBlocked) && proposal) || allowDirectEdit);
       if (!value && fact.history.length === 0 && fact.conflicts.length === 0 && !editable && !(entity === "test" && (field === "testName" || field === "testResult"))) return null;
       const control = factControl(entity, field);
       if (!control) return null;
@@ -943,11 +980,11 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
         <dd>{fact.state === "conflicted" ? "Unresolved conflict" : formatFact(value, control)}{fact.state === "proposed" && <span className={styles.proposed}>Proposed</span>}</dd>
         {draft && editing !== field && <dd className={styles.hint}>Unsaved edit: {formatFact(draft, control)}</dd>}
         {fact.history.map((history, index) => <dd key={index} className={styles.history}>Earlier: {formatFact(history.value, control)}</dd>)}
-        {editable && editing !== field && fact.state !== "conflicted" && <button className={styles.inlineAction} disabled={busy} onClick={() => {
+        {editable && (editing !== field || reviewBlocked) && fact.state !== "conflicted" && <button className={styles.inlineAction} disabled={busy || reviewBlocked} onClick={() => {
           setEditing(field);
           setDrafts((current) => ({ ...current, [field]: editableInitialValue(value, control) }));
         }}>{value ? "Change" : "Add"}</button>}
-        {editable && editing === field && draft && <div className={styles.inlineEdit}>
+        {editable && !reviewBlocked && editing === field && draft && <div className={styles.inlineEdit}>
           {control.help && <p>{control.help}</p>}
           <FactValueEditor label={control.label} control={control} value={draft} onChange={(next) => setDrafts((current) => ({ ...current, [field]: next }))} />
           <button disabled={busy || !validEditableValue(draft, control)} onClick={async () => {
@@ -963,10 +1000,10 @@ function CaseCard({ domId, title, eyebrow, entity, entityId, entityState, groupI
       </div>;
     })}</dl>
     {allowDirectEdit && (showMore || fields.some((field) => facts[field] && !activeValue(facts[field]) && facts[field].history.length === 0 && facts[field].conflicts.length === 0 && factControl(entity, field))) && <button className={styles.inlineAction} aria-expanded={showMore} onClick={() => setShowMore(!showMore)}>{showMore ? "Show fewer fields" : "Show more fields"}</button>}
-    {allowOpeningReview && <div className={styles.decisionActions}><button className={styles.groupReview} disabled={busy || Object.entries(drafts).some(([field, value]) => !validEditableValue(value, factControl(entity, field)!))} onClick={() => void act({ action: "review-opening-group", groupId, corrections: groupCorrections })}>
-      Accept {title}{groupCorrections.length > 0 ? ` with ${groupCorrections.length} ${groupCorrections.length === 1 ? "change" : "changes"}` : ""}
+    {(allowOpeningReview || reviewBlocked) && <div className={styles.decisionActions}><button className={styles.groupReview} disabled={busy || reviewBlocked || Object.entries(drafts).some(([field, value]) => !validEditableValue(value, factControl(entity, field)!))} onClick={() => void act({ action: "review-opening-group", groupId, corrections: groupCorrections })}>
+      Accept {acceptanceLabel}{groupCorrections.length > 0 ? ` with ${groupCorrections.length} ${groupCorrections.length === 1 ? "change" : "changes"}` : ""}
     </button>
-    {!allowRemove && <button disabled={busy} onClick={() => void act({ action: "reject-group", groupId })}>Reject {title}</button>}</div>}
+    {!allowRemove && !reviewBlocked && <button disabled={busy} onClick={() => void act({ action: "reject-group", groupId })}>Discard proposed {acceptanceLabel}</button>}</div>}
     {evidence.length > 0 && <Evidence excerpt={evidence} />}
   </article>;
 }

@@ -30,7 +30,7 @@ test("retained symptom/dose proposals have separate acceptance and visible uncer
   await expect(page.locator("dd").filter({ hasText: "two tablets, a total dose of 500 mg" })).toBeVisible();
   await expect(page.locator("dd").filter({ hasText: /^abdominal pain/ })).toBeVisible();
   await expect(page.locator("dt").filter({ hasText: /^Product problem$/ })).toHaveCount(0);
-  const eventButton = page.getByRole("button", { name: "Accept Event", exact: true });
+  const eventButton = page.getByRole("button", { name: "Accept event details", exact: true });
   await eventButton.click(); await expect(eventButton).toHaveCount(0);
   const eventAccepted = await storedState(page);
   expect(eventAccepted.case.event.facts.symptoms.resolvedValue?.value).toEqual({ kind: "known", value: ["abdominal pain"] });
@@ -44,8 +44,8 @@ test("retained symptom/dose proposals have separate acceptance and visible uncer
   const qualified = "prickly skin and no rash (patient is unsure whether the prickly feeling was a reaction to the medicine)";
   await expect(page.locator("dd").filter({ hasText: qualified })).toBeVisible();
   await page.screenshot({ path: info.outputPath("visible-symptom-uncertainty.png"), fullPage: true });
-  await page.getByRole("button", { name: "Accept Event", exact: true }).click();
-  await expect(page.getByRole("button", { name: "Accept Event", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Accept event details", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Accept event details", exact: true })).toHaveCount(0);
   await expect(page.locator("dd").filter({ hasText: qualified })).toBeVisible();
   expect((await storedState(page)).case.event.facts.symptoms.resolvedValue?.value).toEqual({ kind: "known", value: ["prickly skin", "no rash"], qualifier: "patient is unsure whether the prickly feeling was a reaction to the medicine" });
   await acceptOpeningGroups(page);

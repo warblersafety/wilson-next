@@ -69,7 +69,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   page.once("dialog", (dialog) => dialog.dismiss());
   await page.getByRole("button", { name: "New case", exact: true }).click();
   expect(await semanticCase(page)).toEqual(quarantinedIdentityCase);
-  await serverAction(page, () => page.getByRole("button", { name: "Accept Patient", exact: true }).click());
+  await serverAction(page, () => page.getByRole("button", { name: "Accept patient details", exact: true }).click());
   await expect(productOrCaseCard(page, "Patient").getByText("Proposed", { exact: true })).toHaveCount(0);
   await expect(productOrCaseCard(page, "Event").getByText("Proposed", { exact: true }).first()).toBeVisible();
   await acceptOpeningGroups(page);
@@ -252,9 +252,9 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await serverAction(page, () => page.getByRole("button", { name: "Add reporter details" }).click());
   await page.getByLabel("Clinical update").fill(layer3CorrectionUpdate);
   await serverAction(page, () => page.getByRole("button", { name: "Review this update" }).click());
-  await serverAction(page, () => page.getByRole("article").filter({ hasText: "SN-1002" }).getByRole("button", { name: "Accept this update" }).click());
+  await serverAction(page, () => page.getByRole("article").filter({ hasText: "SN-1002" }).getByRole("button", { name: "Accept these changes" }).click());
   await expect(page.getByText("Earlier: SN-1001", { exact: true })).toBeVisible();
-  await serverAction(page, () => page.getByRole("article").filter({ hasText: "NS-8" }).getByRole("button", { name: "Accept this update" }).click());
+  await serverAction(page, () => page.getByRole("article").filter({ hasText: "NS-8" }).getByRole("button", { name: "Accept these changes" }).click());
   expect((await storedState(page)).stage).toBe("output");
   await expect(page.getByRole("group", { name: "Acme NeuroSense — Model number", exact: true })).toBeVisible();
   expect(await projectedText(page)).toContain("SN-1002");
@@ -280,7 +280,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await expect(productCard(page, "Acme FlowGuard")).toContainText("Patient or consumer");
   await expect(page.getByText("health-professional", { exact: true })).toHaveCount(0);
   await expect(productOrCaseCard(page, "Event")).toContainText("available");
-  await serverAction(page, () => productCard(page, "Relevant test 1").getByRole("button", { name: "Remove Relevant test 1" }).click());
+  await serverAction(page, () => productCard(page, "Relevant test 1").getByRole("button", { name: "Discard proposed Relevant test 1" }).click());
   const operatorRow = productCard(page, "Acme FlowGuard").locator("dl > div").filter({ has: page.getByText("Device operator", { exact: true }) });
   await operatorRow.getByRole("button", { name: "Change" }).click();
   await page.getByLabel("New Device operator").selectOption("health-professional");
@@ -403,7 +403,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   expect(proposedTestCorrection.relevantTests).toHaveLength(3);
   expect(proposedTestCorrection.relevantTests[0].facts.testResult.resolvedValue?.value).toEqual({ kind: "known", value: "ALT: 132 U/L" });
   expect(proposedTestCorrection.relevantTests[0].facts.testResult.proposedValues[0]?.value).toEqual({ kind: "known", value: "ALT: 123 U/L" });
-  await serverAction(page, () => page.getByRole("article").filter({ hasText: "ALT: 123 U/L" }).getByRole("button", { name: "Accept this update" }).click());
+  await serverAction(page, () => page.getByRole("article").filter({ hasText: "ALT: 123 U/L" }).getByRole("button", { name: "Accept these changes" }).click());
   expect((await storedState(page)).stage).toBe("output");
   await expect(page.getByText("Earlier: ALT: 132 U/L", { exact: true })).toBeVisible();
   const testsAfterCorrection = await semanticCase(page);
@@ -442,7 +442,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   ]);
   await page.getByLabel("Clinical update").fill(layer1RoleUpdate);
   await serverAction(page, () => page.getByRole("button", { name: "Review this update" }).click());
-  await serverAction(page, () => page.getByRole("article").filter({ hasText: "Suspect product" }).getByRole("button", { name: "Accept this update" }).click());
+  await serverAction(page, () => page.getByRole("article").filter({ hasText: "Suspect product" }).getByRole("button", { name: "Accept these changes" }).click());
   await expect(page.getByRole("heading", { name: "What was acetaminophen being used for?" })).toBeVisible();
   questionTrace.push({ journey: "layer1-role", question: "newly applicable suspect indication", reason: "accepted role correction made only acetaminophen indication newly applicable", answer: "headache" });
   const acetaminophenAnswer = page.getByRole("group", { name: "acetaminophen" });
@@ -483,7 +483,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await richWeight.getByRole("button", { name: "Change" }).click();
   await page.getByLabel("New Weight").fill("65");
   await richWeight.getByRole("button", { name: "Keep draft" }).click();
-  await serverAction(page, () => richPatient.getByRole("button", { name: "Accept Patient with 2 changes" }).click());
+  await serverAction(page, () => richPatient.getByRole("button", { name: "Accept patient details with 2 changes" }).click());
   await acceptOpeningGroups(page);
   await expect(page.getByRole("heading", { name: "Hospitalization is already recorded. Did any other serious outcomes apply?" })).toBeVisible();
   await expect(page.getByLabel("Hospitalization (initial or prolonged) — already recorded")).toBeChecked();
@@ -615,13 +615,13 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await page.getByLabel("Clinical update").fill(repeatedUpdate);
   await serverAction(page, () => page.getByRole("button", { name: "Review this update" }).click());
   await expect(page.getByRole("heading", { name: "Review the proposed update" })).toBeVisible();
-  await expect(page.getByText("2 proposed details to check", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Accept these changes", exact: true })).toHaveCount(2);
   const doseUpdate = page.getByRole("article").filter({ hasText: "200 mg" });
-  await serverAction(page, () => doseUpdate.getByRole("button", { name: "Accept this update" }).click());
+  await serverAction(page, () => doseUpdate.getByRole("button", { name: "Accept these changes" }).click());
   await expect(page.getByText("Earlier: 400 mg", { exact: true })).toBeVisible();
-  await expect(page.getByText("1 proposed detail to check", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Accept these changes", exact: true })).toHaveCount(1);
   const dateUpdate = page.getByRole("article").filter({ hasText: "2-Jul-2026" });
-  await dateUpdate.getByRole("button", { name: "Accept this update" }).click();
+  await dateUpdate.getByRole("button", { name: "Accept these changes" }).click();
   await expect(page.getByRole("group", { name: "acetaminophen (Tylenol) — Started" })).toBeFocused();
   expect((await storedState(page)).stage).toBe("output");
   await expect(page.getByText("1 unresolved conflict", { exact: true })).toBeVisible();
@@ -644,11 +644,11 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await ageRow.getByRole("button", { name: "Change" }).click();
   await page.getByLabel("New Age").fill("58");
   await ageRow.getByRole("button", { name: "Keep draft" }).click();
-  await serverAction(page, () => patient.getByRole("button", { name: "Accept Patient with 1 change" }).click());
+  await serverAction(page, () => patient.getByRole("button", { name: "Accept patient details with 1 change" }).click());
   await expect(patient).toContainText("58");
-  await serverAction(page, () => productCard(page, "lisinopril").getByRole("button", { name: "Remove lisinopril" }).click());
+  await serverAction(page, () => productCard(page, "lisinopril").getByRole("button", { name: "Discard proposed lisinopril" }).click());
   await expect(productCard(page, "lisinopril")).toHaveCount(0);
-  checkpoints.push({ journey: "shared-controls", state: "understanding", assertion: "Generic Change and Remove controls updated the server-returned case rather than browser state." });
+  checkpoints.push({ journey: "shared-controls", state: "understanding", assertion: "Generic Change and Discard controls updated the server-returned case rather than browser state." });
 
   await newCase(page);
   await submitOpening(page, regressionOpening);
@@ -662,8 +662,8 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await completeQuestions(page);
   await page.getByLabel("Clinical update").fill(regressionUpdate);
   await serverAction(page, () => page.getByRole("button", { name: "Review this update" }).click());
-  await serverAction(page, () => page.getByRole("article").filter({ hasText: "250 mg" }).getByRole("button", { name: "Accept this update" }).click());
-  await serverAction(page, () => page.getByRole("article").filter({ hasText: "13-Aug-2026" }).getByRole("button", { name: "Accept this update" }).click());
+  await serverAction(page, () => page.getByRole("article").filter({ hasText: "250 mg" }).getByRole("button", { name: "Accept these changes" }).click());
+  await serverAction(page, () => page.getByRole("article").filter({ hasText: "13-Aug-2026" }).getByRole("button", { name: "Accept these changes" }).click());
   await expect(page.getByText("Earlier: 500 mg", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Use 13-Aug-2026" }).click();
   await expect(page.getByRole("heading", { name: "Case summary", exact: true })).toBeFocused();

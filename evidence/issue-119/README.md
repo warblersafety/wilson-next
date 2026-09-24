@@ -1,0 +1,123 @@
+# Issue 119 — bounded operator clarity
+
+Steve approved the six-change specification on September 23, 2026 after review
+of all 14 preserved post-#116 screenshots and the existing application. The issue
+contains the approved specification; PR #120 owns the final diff and independent
+review. The four screens, card layout and service-enforced acceptance order stay.
+
+## Delivered behavior
+
+- Shorter instructions and spacing, a smaller initial account box, and field-only
+  update labels within a single stable entity. Full entity/field source attribution
+  remains in the existing disclosures; no groups are combined by display name.
+- Interpretation activity appears in its initiating button, with a persistent
+  polite live region. Errors, explicit retry, retained text, reduced motion and
+  current/earlier PDF feedback remain.
+- Accept/Discard labels distinguish proposal rejection from correction and
+  withdrawal. Field edits to proposals remain drafts until group acceptance.
+- The clinical panel distinguishes pending review, actionable questions and
+  optional additions. During update review, the draft input remains mounted in
+  a disclosure; pending/missing guidance stays available separately. Completing
+  review brings actionable questions into view; direct answers focus the next
+  applicable question without passive rerenders stealing focus.
+- New test actions occupy their eventual positions while disabled, then enable
+  at the existing stage boundary. Each test still requires explicit acceptance.
+- Clinical work gets the primary navigation action; early reporter entry is
+  labelled drafting. Reporter and Output return actions name the actual next
+  task. Previously saved reporter details retain their distinct saving permission.
+
+Only three production files change: `app/journey.tsx`, `app/clinical-guidance.ts`
+and `app/page.module.css`. No service, semantic case, completion policy, source
+contract, model prompt, projection or PDF adapter changes. #105, #115, broader
+redesign, registration, form expansion, richer progress and #118 remain outside
+scope. The serious-outcome interpretation concern remains unresolved: UI wording
+never supplies missing outcome answers or claims to repair that interpretation.
+
+## Acceptance evidence
+
+234 deterministic tests, typecheck and build pass. Focused Chromium checks cover
+loading/failure/retry, reduced motion, source disclosure, independent update/test
+acceptance, disabled test actions, newly available questions, direct navigation,
+retained narrative/dictation/direct-answer/reporter/privacy drafts, and actual PDF
+readback. Discard checks prove unrelated accepted facts and sources survive;
+discarding the first test leaves the second observation unchanged. Previously
+saved reporter information remains savable while clinical completion can still
+block the PDF. Opening edits remain drafts until explicit acceptance.
+
+The focused flow uses #116's labelled synthetic variant of the preserved #109
+response, not the unavailable user session. Its downloaded `accepted.pdf` matches
+all 59 populated named fields in the independent #109 readback, including both
+dated hemoglobin rows, medication follow-ups and reporter privacy. The usability
+journey also checks current/stale PDF feedback and single-field changes after a
+clinical correction and reporter edit. No live application-model calls and no
+repeated user case/PDF walkthrough.
+
+Selected 1440px/390px screenshots retain compact attributed review, enabled test
+controls, reporter draft guidance and actual remaining clinical work. Existing
+fidelity/browser coverage retains qualifiers, history, conflicts, omissions and
+multiple products. Stable-ID unit coverage prevents shortened field labels from
+combining different entities. Programmatic accessibility evidence does not claim
+manual screen-reader parity or unassisted usability.
+
+Verification failures are retained without changing application rules: the first
+deterministic invocation omitted the repository PDF-reader environment (22 missing
+`pypdf` errors); the corrected invocation passes. The first full browser run
+stopped at an old “Remove lisinopril” selector and displaced later shared fixtures.
+The next run passed 11/13; one old test expected hidden rather than disabled test
+actions, and the new discard test incorrectly used the display number/exact date
+text despite existing renumbering and the Proposed badge. Selectors now verify
+disabled actions and the retained dated observation; rejection remains distinct
+from withdrawal. Both corrected tests pass in isolation. Final full-suite/CI, independent-review and protected-preview results are
+recorded in PR #120.
+
+## Preservation and limits
+
+All 82 pre-existing local documents, evidence and mockup files are backed up with
+SHA-256 hashes at `/private/tmp/wilson-clarity-preserved-20260924`. They remain
+uncommitted. The standard review runner requires a clean tree; any temporary
+stash is restored and hash-checked after it has copied the committed payload.
+No credentials or access-bearing preview URLs belong in this evidence directory.
+
+These checks establish the bounded presentation/navigation behavior and retained
+PDF content, not general interpretation reliability, full form coverage or a
+production/real-data readiness decision. Conversational correction beside each
+card remains outside this slice.
+
+## Independent-review remediation
+
+The [standard Opus-high review](https://github.com/warblersafety/wilson-next/pull/120#issuecomment-5807226569)
+found no blockers and three useful follow-ups. One compact line under Case summary
+now explains that direct field editing returns after update review. The saved-reporter
+checks now use actual reporter acceptance followed by a clinical correction that
+opens a medication question, then successfully save a reporter email edit while
+PDF regeneration stays blocked; the artificial reporter fixture is removed. Live
+regions are asserted by content/count, with the visible button and test-card hint
+checked separately. No service or permission changes.
+
+The prior full local run passed all 13 browser journeys and all 234 deterministic
+tests; required CI passed on `c199908`. After this bounded remediation, the five
+clinical-guidance tests, typecheck, build and all four affected browser journeys
+pass. The first targeted invocation was stopped because it used the old build and
+full fixture queue; the rebuilt/matched-fixture run passed 3/4 and exposed a test
+selector expecting “Generate PDF” instead of the existing “Generate updated PDF”.
+The corrected saved-reporter journey passes, including the actual save and blocked
+regeneration. The updated pending screenshot reflects the compact explanation.
+The [same-session targeted recheck](https://github.com/warblersafety/wilson-next/pull/120#issuecomment-5807302841)
+resolved all three follow-ups with no blocker. Its sole minor copy follow-up is
+incorporated as “Finish reviewing all proposed groups before editing accepted
+details.” This explicitly includes remaining test proposals. Build and all three
+focused flow journeys pass after that editorial correction. Required CI on
+`435b778` passed the full 234 deterministic tests, 13 browser journeys, typecheck
+and build. Final-commit CI and protected-preview evidence are recorded in PR #120.
+
+Only one standard Opus-high review and one same-session targeted recheck ran.
+Their actual outputs, limitations and CLI-reported usage are in the PR; no extra
+model pass is required for the reviewer-covered copy correction. The retained
+layout spot check found no horizontal overflow at 200% CSS zoom on Describe,
+Review details and Reporter details, and retained a long account exactly. This
+is a programmatic check, not manual assistive-technology or user acceptance.
+
+The durable value is the three-file UI improvement and focused regression
+evidence. Time spent repairing outdated selectors/fixture invocation improved
+the evidence rather than the product; no broader redesign or live-model tuning
+was introduced to justify that overhead.

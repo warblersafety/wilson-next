@@ -86,7 +86,7 @@ async function update(page: Page, text: string) {
   await goTo(page, "Review details");
   await page.getByLabel("Clinical update", { exact: true }).fill(text);
   await serverAction(page, () => page.getByRole("button", { name: "Review this update", exact: true }).click());
-  await serverAction(page, () => page.getByRole("button", { name: "Accept this update", exact: true }).click());
+  await serverAction(page, () => page.getByRole("button", { name: "Accept these changes", exact: true }).click());
 }
 async function reporter(page: Page) {
   await goTo(page, "Reporter details");

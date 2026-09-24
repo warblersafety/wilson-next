@@ -31,3 +31,18 @@ export function canSaveReporter(snapshot: JourneySnapshot): boolean {
   const previouslySaved = Object.values(snapshot.understanding.reporter).some(({ resolved }) => resolved);
   return (snapshot.stage === "clarify" && (snapshot.clarification?.kind === "reporter" || previouslySaved)) || snapshot.stage === "output";
 }
+
+/** A navigation hint, not a new completion or action-permission rule. */
+export function nextClinicalAction(snapshot: JourneySnapshot) {
+  if (snapshot.stage === "review-update") return { kind: "updates", label: "Review proposed changes" } as const;
+  if (snapshot.stage === "understanding") return { kind: "proposals", label: "Review remaining details" } as const;
+  if (snapshot.stage === "clarify" && snapshot.clarification?.kind !== "reporter") {
+    return { kind: "questions", label: "Answer clinical questions" } as const;
+  }
+  return undefined;
+}
+
+/** Shorten only within one stable entity, never by matching display names. */
+export function singleEntityGroup(targets: string[]): boolean {
+  return targets.length > 0 && new Set(targets.map((target) => target.split(":").slice(0, 2).join(":"))).size === 1;
+}
