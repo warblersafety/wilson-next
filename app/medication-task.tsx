@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useCaseDraft, draftFieldSetter } from "./journey-drafts";
+import { clinicalDraftKey } from "../src/browser/ui-drafts";
 import { applicableMedicationFields, type MedicationAnswerField } from "../src/domain/case/medication";
 import type { CaseValue } from "../src/domain/case/types";
 import type { JourneyAction, JourneySnapshot } from "../src/server/journey/service";
@@ -17,7 +18,9 @@ type Answers = Extract<JourneyAction, { action: "answer-medication-history" }>["
 export function MedicationTask({ snapshot, busy, act }: {
   snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
-  const [answers, setAnswers] = useState<Answers>({});
+  const [draft, setDraft] = useCaseDraft("medication-history", snapshot.clarification?.key ?? "none", clinicalDraftKey(snapshot), () => ({ answers: {} }));
+  const { answers } = draft;
+  const setAnswers = draftFieldSetter(setDraft, "answers");
   const question = snapshot.clarification;
   if (question?.kind !== "medication-history") return null;
   const product = snapshot.understanding.products.find(({ id }) => id === question.productId)!;

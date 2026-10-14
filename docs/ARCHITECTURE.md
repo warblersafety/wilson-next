@@ -589,6 +589,30 @@ coordinate active tabs before issuing actions and surface stale work safely.
 A stable protected origin is a deployment prerequisite: storage does not follow
 changing preview hostnames. No origin/access or infrastructure change is made here.
 
+Issue #135 adds a controlled, case-scoped typed UI snapshot for opening/report
+selection, unsent updates, screen, reporter case drafts/dirty baseline, inline
+edits and every completion task. Stable entity/question scopes and prerequisite
+keys retain current invalidation behavior. Baseline fingerprints guard drafts;
+they never become authoritative facts. Qualifier-control visibility is captured
+with the card, so an empty or whitespace edit remains editable across remount;
+blank qualifiers are omitted only at explicit correction submission, as required
+by the existing command contract. The strict JSON codec distinguishes
+unsupported versions/tasks from corrupt or cross-case records without coercing
+empty/false/unselected values. Restore decoding occurs before React dispatch;
+a failed decode leaves the current owner and raw input intact. Expected internal
+draft validation failures retain the owner and surface a recoverable message
+rather than unmounting the journey. This is in-memory capture, not durable resume.
+
+Complete submitted opening/update words are retained separately as case-bound
+input history after successful acknowledgement; unsent drafts remain distinct.
+Case source excerpts contain selected spans and cannot reconstruct full input.
+Input-history entries are neither accepted knowledge nor replayable actions.
+The starting-description view reads its history entry; submitted updates have a
+collapsed history control. Legacy tab states without complete input history show
+only an explicitly labelled excerpt. Before persistent hydration, the validated
+clinical snapshot must also validate draft targets/dependencies and surface any
+invalidation without silently destroying the retained saved record.
+
 Reusable reporter details require a separate record/store and lifecycle. They
 must survive starting a new case, seed a draft rather than silently change an
 accepted case, and support explicit editing/forgetting. Case-specific report date,
