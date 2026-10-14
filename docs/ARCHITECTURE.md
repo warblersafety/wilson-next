@@ -696,7 +696,13 @@ sent immediately, while each later report also carries the browser events that
 preceded it. A received response or browser-side failure can therefore explain
 both the initiating action and what the browser observed even if Vercel omits
 one earlier line. This trace exists only in the reporting closure for that
-request.
+request. Issue #118 makes browser reporting best effort and non-blocking:
+report delivery never gates useful request dispatch, accepted-response handling
+or error feedback. Each fetch has a one-second abort deadline to release network
+resources. Timeout, offline state and navigation can drop reports; completion is
+not acknowledged by the UI. Reports may arrive out of order, so correlation,
+sequence and cumulative trace remain necessary. This is not a durable log queue
+or a guarantee that runtime logs contain every browser event.
 
 Diagnostic classification follows the phase that actually occurred. A provider
 or transport failure emits a model-response failure and no schema/domain
