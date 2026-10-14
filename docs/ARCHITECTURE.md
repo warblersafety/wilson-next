@@ -17,7 +17,9 @@ branch-dependent product facts and responsive operator controls truthful;
 Issue #83 adds one expiring, exact-deployment Shareable Link for a designated
 synthetic-only cofounder walkthrough without creating a production release;
 Issue #96 replaces model-copied quotations with code-owned source references
-and permits conversational correction and test recovery before initial acceptance
+and permits conversational correction and test recovery before initial acceptance;
+Issue #129 adds the bounded browser-local persistence foundation and the restore
+contract required before future save/resume integration.
 
 **Owns:** Semantic case, write authority, model boundary, projections,
 application shape, privacy boundary, and architectural falsification
@@ -43,8 +45,9 @@ temporary storage behind narrow adapters. Accepted Experiment 2 runtime changes
 are production-seed code for its bounded scope, while browser-held storage,
 synthetic diagnostics, and preview protection remain explicitly temporary
 adapters. Do not introduce a generic knowledge graph, event store, distributed
-CQRS, microservices, durable database, or framework-independent internal
-platform.
+CQRS, microservices, server-side durable database, or framework-independent internal
+platform. Issue #129 permits a bounded browser-local IndexedDB adapter for the
+approved artificial-data target.
 
 The architecture must prove three things:
 
@@ -131,8 +134,10 @@ appearance and retains the FDA export value in the original dropdown options.
 Browser state v8 adds these facts. A narrowly validated v7 upgrade supplies only
 empty report-date and strength facts, preserving every existing fact, source,
 change, revision and interaction notice. Other incompatible or malformed state
-still fails visibly. This is compatibility for the disposable preview, not a
-saved-case migration framework.
+still fails visibly in the current disposable preview. For durable browser-local
+integration, the Issue #129 restore contract below supersedes that preview-only
+compatibility limit: retain migrations for every state version actually persisted
+by supported releases, preserving accepted facts and history.
 
 The output explicitly discloses remaining Section D other-category, purchase,
 identifier, expiration, ongoing-therapy, reduction-date and duration gaps.
@@ -504,6 +509,92 @@ versioned and checksummed before adapter implementation. The
 are identified by authoritative URL and retrieval date before mapping evidence
 is accepted; the live guidance page is not a byte-consumed adapter input.
 
+## Browser-local persistence amendment — Issue #129
+
+The approved artificial-data target adds durable browser-local recovery of one
+active case, for one user per browser, without accounts, server storage or a
+cross-device requirement. All patient, reporter and contact information remains
+fictional. This amendment supersedes the blanket storage deferral below for
+that bounded target, not the real-data/security boundary.
+
+The first foundation is a native IndexedDB adapter with one active-case record.
+It has no UI wiring: the running preview still uses the disposable session
+adapter described below. This foundation is not delivered end-user save/resume.
+A separate envelope version and storage generation surround the complete
+server-returned BrowserJourneyState and a separately versioned JSON draft
+container. Storage reads leave clinical state opaque/untrusted; integration
+must extend the existing server restore boundary as follows before UI wiring:
+
+- Validate/migrate the complete clinical state and preserve its accepted facts,
+  evidence, proposals, conflicts and history. Retain migrations for every version
+  actually persisted by supported releases; do not drop them when the preview
+  version window advances. Unsupported versions must remain recoverable records.
+- Re-derive the current stage and snapshot after validation. The current preview
+  `assertStoredStage` equality check must not reject an otherwise valid saved
+  case merely because a release adds applicable completion questions.
+- Validate each typed UI draft before hydration and surface any invalidated draft
+  without silently losing the complete saved record.
+- Inner-state incompatibility, including rollback to an older deployment, must
+  preserve the record and visibly explain that a compatible release is needed.
+  Never reuse the current preview `loadJourney` discard-and-start-over path for
+  persisted data. Include the writing release/state-version provenance in the
+  integration envelope so recovery can identify the required compatible release.
+
+These are required integration changes, not capabilities delivered by this
+foundation. Storage never accepts facts or creates a second semantic write path.
+
+Each write uses a fresh opaque UUID generation identifier, so external database
+loss/recreation cannot reuse a counter that an old tab still holds. A native
+readwrite transaction compares the expected generation and commits
+the entire record atomically. Draft-only changes must also advance storage
+generation. Stale writers fail instead of overwriting newer work. Replacement
+is a distinct operation; clear preserves a generation tombstone rather than
+resetting it. This prevents a stale tab from matching a reused generation.
+Corrupt or future-version records are not silently erased or overwritten.
+Failures leave the previous committed record intact and are reported explicitly.
+The foundation deliberately has no destructive recovery API. Before integration,
+add a separate explicit, confirmed discard path for corrupt records; explain the
+loss before clearing them. Preserve newer-version records/database versions after
+rollback rather than offering destructive replacement as ordinary recovery; use
+a compatible release. While recovery is blocked, users may continue with an
+explicitly unsaved in-memory case, with a persistent warning and no writes to or
+replacement of the retained record. Never silently fall back or claim it is saved.
+
+The adapter uses the browser default transaction durability. Transaction
+completion confirms an atomic browser commit, not guaranteed disk flush: an OS
+crash or power loss may lose the latest completed save. Integration saved-status
+wording must disclose this limit unless strict durability is implemented and
+verified on supported browsers. Native transaction commit is not an off-device
+backup or a guarantee against storage eviction, browser/profile/site-data loss
+or a changed origin.
+
+Later integration must capture opening text/report selection, clinical-update
+text, reporter drafts, direct field edits and every unfinished completion task
+(indications, outcomes, dates, tests/history, device and medication answers),
+keyed to stable case/entity/group/question identities. Preserve pending
+proposals, conflicts, source evidence and quarantines in the server state.
+Do not store derived readiness/projections as authority, PDF blob URLs, busy
+flags or replayable network actions. Restore must never resend model requests
+or automatically accept changes. Writes failing after a successful server
+response must retain that response in memory; retry storage, not the action.
+
+The integration slice must test real browser restart, saved/unsaved status,
+confirmed replacement, corrupt/incompatible/unavailable storage, typed-draft
+invalidation and same-browser multi-tab behavior before claiming resume works.
+Integration must serialize its own tab's saves, report saved status only after
+transaction completion, and retain unsaved work when handling a stale-write error.
+Generation checks protect storage commits; they are not a complete single-writer
+UI or prevention of simultaneous model requests. Integration must explicitly
+coordinate active tabs before issuing actions and surface stale work safely.
+A stable protected origin is a deployment prerequisite: storage does not follow
+changing preview hostnames. No origin/access or infrastructure change is made here.
+
+Reusable reporter details require a separate record/store and lifecycle. They
+must survive starting a new case, seed a draft rather than silently change an
+accepted case, and support explicit editing/forgetting. Case-specific report date,
+reporting destinations and disclosure choices stay with the case by default.
+No reporter profile persistence or portable backup is implemented by #129.
+
 ## Application and data boundary
 
 ```text
@@ -625,8 +716,9 @@ must replace this synthetic-only logging policy before use.
 
 - Generic claim/evidence graphs, ontologies, event replay, messaging, separate
   read stores, multiple services, or synchronization.
-- Durable or hosted sessions, cross-device recovery, accounts, collaboration,
-  and saved-case storage.
+- Hosted sessions, cross-device recovery, accounts, collaboration and a saved-case
+  manager. Browser-local recovery of one active artificial-data case is selected
+  above; full case/draft integration is still pending.
 - General import or deterministic-derivation frameworks.
 - Full FHIR or ICH E2B compatibility.
 - Comprehensive question planning, full Form 3500 coverage, multiple devices,
