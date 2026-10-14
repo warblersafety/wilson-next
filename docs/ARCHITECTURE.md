@@ -504,6 +504,63 @@ versioned and checksummed before adapter implementation. The
 are identified by authoritative URL and retrieval date before mapping evidence
 is accepted; the live guidance page is not a byte-consumed adapter input.
 
+## Browser-local persistence amendment — Issue #129
+
+The approved artificial-data target adds durable browser-local recovery of one
+active case, for one user per browser, without accounts, server storage or a
+cross-device requirement. All patient, reporter and contact information remains
+fictional. This amendment supersedes the blanket storage deferral below for
+that bounded target, not the real-data/security boundary.
+
+The first foundation is a native IndexedDB adapter with one active-case record.
+It has no UI wiring: the running preview still uses the disposable session
+adapter described below. This foundation is not delivered end-user save/resume.
+A separate envelope version and storage generation surround the complete
+server-returned BrowserJourneyState and a separately versioned JSON draft
+container. Storage reads leave clinical state opaque/untrusted; integration
+must use the existing server resume validation/migrations, derive a fresh
+snapshot and validate each typed UI draft before hydration. Storage never
+accepts facts or creates a second semantic write path.
+
+Each write uses a fresh opaque UUID generation identifier, so external database
+loss/recreation cannot reuse a counter that an old tab still holds. A native
+readwrite transaction compares the expected generation and commits
+the entire record atomically. Draft-only changes must also advance storage
+generation. Stale writers fail instead of overwriting newer work. Replacement
+is a distinct operation; clear preserves a generation tombstone rather than
+resetting it. This prevents a stale tab from matching a reused generation.
+Corrupt or future-version records are not silently erased or overwritten.
+Failures leave the previous committed record intact and are reported explicitly.
+Native transaction commit is not an off-device backup or a guarantee against
+storage eviction, browser/profile/site-data loss or a changed origin.
+
+Later integration must capture opening text/report selection, clinical-update
+text, reporter drafts, direct field edits and every unfinished completion task
+(indications, outcomes, dates, tests/history, device and medication answers),
+keyed to stable case/entity/group/question identities. Preserve pending
+proposals, conflicts, source evidence and quarantines in the server state.
+Do not store derived readiness/projections as authority, PDF blob URLs, busy
+flags or replayable network actions. Restore must never resend model requests
+or automatically accept changes. Writes failing after a successful server
+response must retain that response in memory; retry storage, not the action.
+
+The integration slice must test real browser restart, saved/unsaved status,
+confirmed replacement, corrupt/incompatible/unavailable storage, typed-draft
+invalidation and same-browser multi-tab behavior before claiming resume works.
+Integration must serialize its own tab's saves, report saved status only after
+transaction completion, and retain unsaved work when handling a stale-write error.
+Generation checks protect storage commits; they are not a complete single-writer
+UI or prevention of simultaneous model requests. Integration must explicitly
+coordinate active tabs before issuing actions and surface stale work safely.
+A stable protected origin is a deployment prerequisite: storage does not follow
+changing preview hostnames. No origin/access or infrastructure change is made here.
+
+Reusable reporter details require a separate record/store and lifecycle. They
+must survive starting a new case, seed a draft rather than silently change an
+accepted case, and support explicit editing/forgetting. Case-specific report date,
+reporting destinations and disclosure choices stay with the case by default.
+No reporter profile persistence or portable backup is implemented by #129.
+
 ## Application and data boundary
 
 ```text
@@ -625,8 +682,9 @@ must replace this synthetic-only logging policy before use.
 
 - Generic claim/evidence graphs, ontologies, event replay, messaging, separate
   read stores, multiple services, or synchronization.
-- Durable or hosted sessions, cross-device recovery, accounts, collaboration,
-  and saved-case storage.
+- Hosted sessions, cross-device recovery, accounts, collaboration and a saved-case
+  manager. Browser-local recovery of one active artificial-data case is selected
+  above; full case/draft integration is still pending.
 - General import or deterministic-derivation frameworks.
 - Full FHIR or ICH E2B compatibility.
 - Comprehensive question planning, full Form 3500 coverage, multiple devices,
