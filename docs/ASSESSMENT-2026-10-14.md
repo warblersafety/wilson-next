@@ -6,7 +6,7 @@ Baseline: `b538f5e6495977e07b9da622e8984448a1d40bb3` (24 September 2026). This i
 
 Wilson helps a healthcare professional describe a suspected adverse event naturally, review source-backed interpretation, correct and accept the case knowledge, answer useful follow-ups, and download a faithful Form FDA 3500. Clinical knowledge is authoritative; the form is a downstream projection. Wilson does not diagnose, judge causality, recommend treatment or submit to FDA.
 
-The selected target is full Form 3500 functionality for real healthcare professionals using **artificial case data only**. This is not a real-patient-data production release. Conversation remains the primary interaction, with direct editing as support. Preserve the existing visual design and working components; expand coverage through independently verified slices.
+The selected target is full Form 3500 functionality for real healthcare professionals using **artificial data throughout, including fictional reporter identity and contact values**. This is a readiness target, not authorization for new external sessions or for entering any real personal data. Existing synthetic-only access controls remain; this is not a real-patient-data production release. Conversation remains the primary interaction, with direct editing as support. Preserve the existing visual design and working components; expand coverage through independently verified slices.
 
 Required additions include browser-local save/resume of one active case, without accounts or cross-device requirements, and reusable editable reporter details stored separately from the case and replacing the temporary demo-populate shortcut. There is one user per browser; a case manager and portable backups are not required. Resume must preserve accepted facts, pending proposals/conflicts and unfinished work, with honest browser-storage-loss limitations. Reporter identity is entered directly and never inferred by the model.
 
@@ -44,12 +44,12 @@ Remote main matches the assessed baseline. PR #123 and the resulting main CI pas
 
 Tests and successful synthetic journeys are not proof of general live-model reliability, complete coverage or clinical usability. The pinned FDA 3500 (09/2025) asset and its SHA-256 protect mapping consistency; official-source currency was not refreshed for the initial assessment. Dependency advisories, load testing and real-data operational approval are outside this assessment. Temporary local check outputs and private archives are not public deliverables.
 
-## Proposed delivery order
+## Proposed delivery priorities
 
-1. Reliable browser-local save/resume, including pending work, failures/incompatible data, replacement and same-browser multi-tab behavior.
-2. Separate reusable editable reporter details replacing the fictional shortcut, with successive-case reuse and correction checks.
-3. Capacity/readiness and selected fidelity/completion repairs, retaining clinician acceptance and uncertainty.
-4. Remaining Form 3500 coverage through assembled, source-to-PDF slices and independent output checks.
+1. Resolve the demonstrated export-capacity/readiness mismatch in a separately scoped defect slice. Evaluate known fidelity defects, including #105, against the product stop conditions before selecting expansion; severe attribution, duplication or output disagreement stops the affected path. Do not infer permission to proceed from aggregate test success.
+2. Design reliable browser-local save/resume in the owning Architecture document before implementation: storage/versioning, failures/incompatible data, pending work, replacement, browser-storage-loss limitations and same-browser multi-tab behavior. Preserve the existing case authority rather than treating the temporary session adapter as a completed persistence design.
+3. Separate reusable editable reporter details replacing the fictional shortcut, with successive-case reuse and correction checks. Reporter values remain fictional for this milestone and storage is separate from the active case.
+4. Selected fidelity/completion repairs and remaining Form 3500 coverage through assembled, source-to-PDF slices and independent output checks, subject to the stop conditions above.
 5. Full artificial-data workflow, reliability, accessibility and usability acceptance against explicit criteria.
 
 Each slice requires its own PR and appropriate unit, full mock-browser, typecheck/build, independent-review and CI gates. Stop when a slice's design is not working cleanly; do not weaken checks or add hidden workarounds. Full artificial-data functionality does not authorize real-patient use or relax clinician control.

@@ -1,7 +1,8 @@
 # Wilson product and experience
 
-**Status:** Approved by Steve; consolidated 2026-09-05 without expanding the
-approved product
+**Status:** Product baseline consolidated 2026-09-05; artificial-data completion
+target amended in [Issue #124](https://github.com/warblersafety/wilson-next/issues/124)
+on 2026-10-14
 
 **Owns:** Product promise, users, scope, interaction contract, quality floor,
 and unacceptable outcomes
@@ -13,7 +14,8 @@ bounded medication, device and product-problem capabilities are not complete
 Form 3500 coverage or proof of general interpretation reliability.
 
 The selected next milestone is full Form 3500 functionality for healthcare
-professionals using artificial case data only. Conversation remains primary,
+professionals using artificial data throughout, including fictional reporter
+identity and contact details. Conversation remains primary,
 with direct editing as support and the existing visual design retained.
 Browser-local save/resume of one active case and separate reusable editable
 reporter details are required. Reporter reuse replaces the temporary fictional
@@ -21,7 +23,11 @@ population shortcut. Assume one user per browser; no accounts/login,
 cross-device requirement, case manager or portable backup feature is included.
 These requirements supersede the earlier interrupted-session recovery and
 storage exclusions for this artificial-data milestone; they are not delivered
-capabilities or approval for real-patient-data production.
+capabilities or approval for real-patient-data production, real personal-data
+entry or new external review sessions. Existing synthetic-only access controls
+remain in force. The persistence slice must reconcile its design in Architecture
+before implementation, including storage/versioning, recovery and multi-tab
+behavior; reusable reporter storage remains separate from the active case.
 
 See [the completion assessment](ASSESSMENT-2026-10-14.md) for current technical
 gaps and verification limits. Implement and verify each extension as a bounded

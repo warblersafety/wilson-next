@@ -67,9 +67,8 @@ and rolling it back when necessary. Retain the previous working deployment for
 rollback; simultaneous anonymous access to old and new deployments is not a
 requirement. If the hosting plan permits only one share grant, move that grant
 to the latest candidate without another approval step. Older deployments may
-require Vercel sign-in. Default new or renewed share grants to 30 days and include the expiration
-date when handing over the link. Verify the promoted link and keep existing protection; this does not
-authorize a paid-plan purchase or production release.
+require Vercel sign-in. Verify the promoted link and keep existing protection;
+this does not authorize a paid-plan purchase or production release.
 
 Update it at meaningful boundaries, not with routine terminal narration.
 Successful branches are deleted after squash merge. If an experiment falsifies
