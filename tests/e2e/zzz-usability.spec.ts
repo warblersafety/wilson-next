@@ -17,7 +17,7 @@ async function holdNext(page: Page, path: string, fail = false) {
   return release;
 }
 
-test("focused usability: truthful activity, draft demo reporter, review dependencies and regenerated PDFs", async ({ page }, info) => {
+test("focused usability: truthful activity, draft fictional reporter, review dependencies and regenerated PDFs", async ({ page }, info) => {
   test.setTimeout(90_000);
   await page.goto("/");
   await page.getByLabel("Case description", { exact: true }).fill(medicationSparseOpening);
@@ -61,7 +61,9 @@ test("focused usability: truthful activity, draft demo reporter, review dependen
   await page.getByLabel("Date of this report", { exact: true }).fill("2026-09-22");
   await page.getByLabel("Reporter phone", { exact: true }).fill("202-555-0142");
   await page.getByLabel("Health professional", { exact: true }).selectOption("false");
-  await page.getByRole("button", { name: "Use demo reporter details", exact: true }).click();
+  for (const [label, value] of [["Reporter first name", "Casey"], ["Reporter last name", "Reed"], ["Reporter email", "casey.reed@example.test"]]) await page.getByLabel(label, { exact: true }).fill(value);
+  await page.getByLabel("Reporter occupation", { exact: true }).selectOption("Physician");
+  await page.getByLabel("Health professional", { exact: true }).selectOption("true");
   for (const [label, value] of [["Reporter first name", "Casey"], ["Reporter last name", "Reed"], ["Reporter email", "casey.reed@example.test"], ["Reporter occupation", "Physician"], ["Health professional", "true"], ["Reporter phone", "202-555-0142"], ["Date of this report", "2026-09-22"]]) {
     await expect(page.getByLabel(label, { exact: true })).toHaveValue(value);
   }

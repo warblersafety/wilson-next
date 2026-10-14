@@ -25,6 +25,7 @@ export function useBrowserWorkspace() {
   const owner = useJourneyDrafts();
   const ownerRef = useRef(owner); ownerRef.current = owner;
   const [response, setResponse] = useState<JourneyResponse>();
+  const [freshCaseId, setFreshCaseId] = useState<string>();
   const responseRef = useRef(response); responseRef.current = response;
   const [phase, setPhase] = useState<Phase>("loading");
   const [recovery, setRecovery] = useState<Recovery>();
@@ -49,6 +50,7 @@ export function useBrowserWorkspace() {
     let ownQueue: CaseSaveQueue | undefined;
     const storage = new ActiveCaseStore(); store.current = storage;
     active.current = false; queue.current = undefined;
+    setFreshCaseId(undefined);
     setPhase("loading"); setRecovery(undefined); setResponse(undefined); setUnsavedOnly(false);
     let observed: ActiveCaseRecord | undefined;
     let legacy = false;
@@ -85,6 +87,7 @@ export function useBrowserWorkspace() {
             legacy = false;
             next = await requestJourneyJson<JourneyResponse>({}, "The case could not be started");
             ui = initialUiDrafts(next.state.case.id);
+            setFreshCaseId(next.state.case.id);
           }
         }
         if (cancelled) return;
@@ -148,7 +151,7 @@ export function useBrowserWorkspace() {
       if (!restored.ok) throw restored.error;
       retainedRef.current = reconciled.retained; setRetained(reconciled.retained);
     } else ownerRef.current.dispatch({ type: "response", caseId: next.state.case.id, snapshot: next.snapshot });
-    if (replace) { replacement.current = true; retainedRef.current = []; setRetained([]); }
+    if (replace) { setFreshCaseId(next.state.case.id); replacement.current = true; retainedRef.current = []; setRetained([]); }
     if (!unsavedOnly) mirror(next.state);
   }
   function latestInput() {
@@ -183,6 +186,7 @@ export function useBrowserWorkspace() {
       const next = await requestJourneyJson<JourneyResponse>({}, "The new unsaved case could not be started");
       const restored = ownerRef.current.restore(initialUiDrafts(next.state.case.id), next.state.case.id);
       if (!restored.ok) throw restored.error;
+      setFreshCaseId(next.state.case.id);
       setUnsavedOnly(true); active.current = true;
       setResponse(next); setRetained([]); setPhase("ready");
     } catch { setRecovery(value => value && { ...value, message: "The new unsaved case could not be started. Your retained saved work is unchanged. Retry when the connection is available." }); }
@@ -224,7 +228,7 @@ export function useBrowserWorkspace() {
     retainedRef.current = remaining; setRetained(remaining);
   }
   const visibleStatus: SaveStatus = status.kind === "saved" && !isCurrentSaved() ? { ...status, kind: "saving" } : status;
-  return { response, phase, recovery, recoveryBusy, status: visibleStatus, retained, notice, unsavedOnly,
+  return { response, freshCaseId, ownershipEpoch: epoch, phase, recovery, recoveryBusy, status: visibleStatus, retained, notice, unsavedOnly,
     canStart: () => phase === "ready" && active.current && !recovering.current,
     accept, discardRetained, retryLoad, continueUnsaved, discardDamaged, refreshStage,
     retrySave: () => { if (enqueueLatest()) queue.current?.retry(); }, clearNotice: () => setNotice(undefined),

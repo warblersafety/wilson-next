@@ -68,7 +68,9 @@ test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery an
   await expect(page.getByLabel("Clinical update", { exact: true })).toBeHidden();
   await page.screenshot({ path: info.outputPath("pending-review-desktop.png"), fullPage: true });
   await goTo(page, "Reporter details");
-  await page.getByRole("button", { name: "Use demo reporter details", exact: true }).click();
+  for (const [label, value] of [["Reporter first name", "Casey"], ["Reporter last name", "Reed"], ["Reporter email", "casey.reed@example.test"]]) await page.getByLabel(label, { exact: true }).fill(value);
+  await page.getByLabel("Reporter occupation", { exact: true }).selectOption("Physician");
+  await page.getByLabel("Health professional", { exact: true }).selectOption("true");
   await page.getByLabel("Date of this report", { exact: true }).fill("2026-09-23");
   await page.getByLabel("Do not disclose my identity to the manufacturer", { exact: true }).check();
   await expect(page.getByRole("button", { name: "Add reporter details", exact: true })).toHaveCount(0);

@@ -21,6 +21,7 @@ import { canSaveReporter, clinicalNeedParts, needFieldLabel, nextClinicalAction,
 import { productCardFields } from "./product-fields";
 import { useBrowserWorkspace } from "./browser-workspace";
 import { hasWorkspaceWork } from "../src/browser/workspace-state";
+import { useReporterProfile, type ReporterProfileController } from "./use-reporter-profile";
 import { RetainedDrafts } from "./retained-drafts";
 
 const progressMessages = {
@@ -45,6 +46,7 @@ export function JourneyBody() {
   const setScreen = (value: Screen) => dispatchDraft({ type: "screen", value });
   const [pdf, setPdf] = useState<PdfArtifact>();
   const workspace = useBrowserWorkspace();
+  const reporterProfile = useReporterProfile(workspace.phase === "ready" ? workspace.ownershipEpoch : undefined);
   const snapshot = workspace.response?.snapshot;
   const browserState = workspace.response?.state;
   const operationActive = useRef(false);
@@ -265,10 +267,11 @@ export function JourneyBody() {
           <div>
             <p>Wilson helps you prepare a downloadable Form FDA 3500. It does not submit the report to FDA.</p>
             <p>This preview supports a limited set of details for adult medication side effects, adverse events or product problems involving one medical device, and quality problems with other medical products. It does not cover every report or every field on the form. Details that cannot be included are shown with your case. Tests can be added during review; another medicine must be included in the starting description of a new case.</p>
-            <p>Your case and unfinished text are saved in this browser on this site when the saving status confirms it. Reopen this same site in the same browser profile to resume. Starting a new case replaces the active case after confirmation. This is not a backup: clearing site data, private browsing, storage eviction or a changed site address can make work unavailable. A power failure can lose the latest completed save. Only one tab can edit at a time.</p>
+            <p>Your case and unfinished text are saved in this browser on this site when the saving status confirms it. Reopen this same site in the same browser profile to resume. Starting a new case replaces the active case after confirmation. This is not a backup: clearing site data, private browsing, storage eviction or a changed site address can make work unavailable. A power failure can lose the latest completed save. Only one tab can edit at a time. Fictional reporter defaults are remembered separately; New case keeps them. Forget remembered details removes those defaults while keeping the current report.</p>
           </div>
         </details>
       </aside>
+      {(reporterProfile.busy || reporterProfile.failed) && <section className={styles.browserSaving} aria-label="Remembered details saving"><p role="status">{reporterProfile.message}</p><button disabled={busy || reporterProfile.busy} onClick={() => setScreen("reporter")}>Review remembered details</button></section>}
       <section aria-label="Browser saving" className={styles.browserSaving}>
         <p role="status">{workspace.unsavedOnly ? "Working without saving. Your earlier saved work is retained."
           : workspace.status.kind === "saved" ? "Saved in this browser" : workspace.status.kind === "saving" ? "Saving in this browser…" : "Changes are not saved in this browser. Your current work is still here."}</p>
@@ -327,7 +330,7 @@ export function JourneyBody() {
           </> : <><p>{capacityIssues.length > 0 ? "Your accepted details are retained, but this preview cannot yet export the complete case." : "Your accepted details will be used in the report."}</p><button className={styles.primaryButton} disabled={busy} onClick={() => setScreen("reporter")}>Continue to reporter details</button></>}</div>
         </section>
         <section data-screen="reporter" hidden={screen !== "reporter"}>
-          <ReporterTask continueClinicalReview={continueClinicalReview} onDirtyChange={setReporterDirty} navigate={setScreen} key={`${browserState?.case.id}:${reporterDraftKey(snapshot)}`} snapshot={snapshot} busy={busy} act={act} />
+          <ReporterTask profile={reporterProfile} freshCaseId={workspace.freshCaseId} caseId={browserState?.case.id} continueClinicalReview={continueClinicalReview} onDirtyChange={setReporterDirty} navigate={setScreen} key={`${browserState?.case.id}:${reporterDraftKey(snapshot)}`} snapshot={snapshot} busy={busy} act={act} />
         </section>
         <section data-screen="save" hidden={screen !== "save"}>
           <OutputComposition continueClinicalReview={continueClinicalReview} snapshot={snapshot} pdf={pdf} caseId={browserState?.case.id} busy={busy} generating={pendingOperation === "pdf"} error={errorOperation === "pdf" ? error : undefined} generatePdf={generatePdf} navigate={setScreen} hasDraft={Boolean(update.trim())} reporterDirty={reporterDirty} />
@@ -678,7 +681,8 @@ function DeviceDetailsTask({ snapshot, busy, act }: {
   </>;
 }
 
-function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate, continueClinicalReview }: {
+function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate, continueClinicalReview, profile, freshCaseId, caseId }: {
+  profile?: ReporterProfileController; freshCaseId?: string; caseId?: string;
   snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>; onDirtyChange?: (dirty: boolean) => void;
   navigate?: (screen: Screen) => void; continueClinicalReview?: () => void;
 }) {
@@ -701,11 +705,19 @@ function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate, continueCl
   const setHealthProfessional = draftFieldSetter(setDraft, "healthProfessional");
   const setReportedTo = draftFieldSetter(setDraft, "reportedTo");
   const setDoNotDiscloseIdentity = draftFieldSetter(setDraft, "doNotDiscloseIdentity");
-  const [demoNotice, setDemoNotice] = useState(false);
-  useEffect(() => {
-    onDirtyChange?.(JSON.stringify([values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity]) !== draft.baseline);
-  }, [values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity, draft.baseline, onDirtyChange]);
   const previouslySaved = Object.values(accepted).some(({ resolved }) => resolved);
+  const identityEntered = Object.entries(values).some(([field, value]) => !["country", "occupation"].includes(field) && value.trim());
+  const formKey = JSON.stringify([values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity]);
+  useEffect(() => {
+    if (!caseId || freshCaseId !== caseId || !profile?.ready || profile.busy || profile.hasPending || profile.reloadRequired) return;
+    const remembered = profile.claimFreshCase(caseId);
+    if (!remembered || previouslySaved || formKey !== draft.baseline) return;
+    setDraft(current => ({ ...current, values: { ...remembered.values }, healthProfessional: remembered.healthProfessional,
+      baseline: JSON.stringify([remembered.values, current.reportDate, remembered.healthProfessional, current.reportedTo, current.doNotDiscloseIdentity]) }));
+  }, [caseId, freshCaseId, profile, previouslySaved, formKey, draft.baseline, setDraft]);
+  useEffect(() => {
+    onDirtyChange?.(JSON.stringify([values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity]) !== draft.baseline || (!previouslySaved && identityEntered));
+  }, [values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity, draft.baseline, onDirtyChange, previouslySaved, identityEntered]);
   const canSave = canSaveReporter(snapshot);
   const set = (field: keyof typeof values, value: string) => setValues((current) => ({ ...current, [field]: value }));
   const complete = values.firstName.trim() && values.lastName.trim() && values.occupation && (values.phone.trim() || values.email.trim());
@@ -718,12 +730,15 @@ function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate, continueCl
   return <>
     <p className={styles.eyebrow}>About the reporter</p><h1>Add the reporter details for this report</h1>
     <p className={styles.lead}>Tell us who is making this report. To provide reporter details, add a name, occupation, and phone or email. Address details are optional.</p>{!canSave && <section className={styles.reporterDraft} aria-label="Before saving reporter details"><h2>Reporter draft</h2><p>You can enter details now. Finish clinical review before saving or declining reporter details.</p><PendingReview snapshot={snapshot} /><ClinicalNeeds snapshot={snapshot} compact /><button className={styles.primaryButton} disabled={busy} onClick={continueClinicalReview}>{nextClinicalAction(snapshot)?.label ?? "Review case details"}</button></section>}{saved("firstName")?.kind === "declined" && <p className={styles.notice}>Reporter details were previously declined. You can supply them here to replace that choice.</p>}
-    <div className={styles.demoShortcut}><div><strong>Trying the preview?</strong><p>Fill fictional reporter details, then review and save them.</p></div><button disabled={busy} onClick={() => {
-      setValues((current) => ({ ...current, firstName: "Casey", lastName: "Reed", email: "casey.reed@example.test", occupation: "Physician" }));
-      setHealthProfessional(true);
-      setDemoNotice(true);
-    }}>Use demo reporter details</button></div>
-    <p className={styles.hint} role="status">{demoNotice ? "Demo details filled in. Nothing has been saved; privacy and prior-reporting choices are unchanged." : ""}</p>
+    {profile && <section className={styles.demoShortcut} aria-label="Remembered fictional reporter details"><div><strong>Remember fictional reporter details</strong><p>Reuse identity, contact and professional details in this browser. The report date, prior reporting and disclosure choices stay with each case. Review these fields and save them to this report separately.</p><p role="status">{profile.message}</p></div><div className={styles.reporterProfileActions}>
+      <button disabled={busy || profile.busy || !profile.ready || profile.reloadRequired || profile.hasPending || !identityEntered} onClick={() => profile.remember({ values, healthProfessional })}>{profile.profile ? "Update remembered details" : "Remember these fictional details"}</button>
+      {profile.profile && <><button disabled={busy || profile.busy} onClick={() => {
+        if (identityEntered && !window.confirm("Replace this report's draft identity, contact and professional details with remembered fictional details? Accepted report facts, date, prior reporting and disclosure choice stay unchanged.")) return;
+        setValues({ ...profile.profile!.values }); setHealthProfessional(profile.profile!.healthProfessional);
+      }}>Use remembered details</button><button disabled={busy || profile.busy || profile.reloadRequired || profile.hasPending} onClick={profile.forget}>Forget remembered details</button></>}
+      {profile.failed && !profile.reloadRequired && <button disabled={busy || profile.busy} onClick={() => void profile.retry()}>Retry remembering details</button>}
+      {(profile.reloadRequired || profile.failed) && <button disabled={busy || profile.busy} onClick={() => void profile.reload()}>Reload remembered details</button>}
+    </div></section>}
     <div className={styles.reportDate}><label>Date of this report <input disabled={busy} aria-label="Date of this report" type="date" value={reportDate} onChange={(event) => setReportDate(event.target.value)} /></label><p className={styles.hint}>Defaults to today on your device. Change it if this report was prepared on another date. It stays the same when you reopen or download the form.</p></div>
     <div className={styles.reporterPanels}>
     <fieldset disabled={busy} aria-labelledby="reporter-identity-title" className={`${styles.answerGroup} ${styles.reporterFields}`}>

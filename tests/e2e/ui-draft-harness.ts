@@ -28,11 +28,14 @@ export async function draftOwnerHarnessHtml(strictDevelopment = false): Promise<
     const entry = join(directory, "entry.tsx");
     await writeFile(entry, `
 import { StrictMode, useEffect } from "react";
+import { ReporterProfileStore } from ${JSON.stringify(join(root, "src/browser/reporter-profile.ts"))};
 import { createRoot } from "react-dom/client";
 import { JourneyBody } from ${JSON.stringify(join(root, "app/journey.tsx"))};
 import { JourneyDraftProvider, useJourneyDrafts } from ${JSON.stringify(join(root, "app/journey-drafts.tsx"))};
 import { decodeUiDrafts, encodeUiDrafts } from ${JSON.stringify(join(root, "src/browser/ui-drafts.ts"))};
 const root = createRoot(document.getElementById("root"));
+const profileStore = new ReporterProfileStore(undefined, "wilson-profile-adapter-probe");
+window.profileProbe = { load: () => profileStore.load(), save: (value, generation) => profileStore.save(value, generation) };
 let generation = 0;
 let latest;
 let effectStarts = 0, effectStops = 0;
