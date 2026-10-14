@@ -523,15 +523,19 @@ adapter described below. This foundation is not delivered end-user save/resume.
 A separate envelope version and storage generation surround the complete
 server-returned BrowserJourneyState and a separately versioned JSON draft
 container. Storage reads leave clinical state opaque/untrusted; integration
-must extend the existing server restore boundary as follows before UI wiring:
+uses the server restore boundary as follows:
 
 - Validate/migrate the complete clinical state and preserve its accepted facts,
   evidence, proposals, conflicts and history. Retain migrations for every version
   actually persisted by supported releases; do not drop them when the preview
   version window advances. Unsupported versions must remain recoverable records.
 - Re-derive the current stage and snapshot after validation. The current preview
-  `assertStoredStage` equality check must not reject an otherwise valid saved
-  case merely because a release adds applicable completion questions.
+  resume operation re-derives the snapshot after validation and migration, so
+  `assertStoredStage` does not reject valid saved cases when current policy
+  changes applicable questions. Actions still require stored-stage and expected-
+  revision equality; clients resume first, then issue any explicit action.
+  Resume explains a changed review stage, including newly required details
+  before PDF readiness, without altering clinical state.
 - Validate each typed UI draft before hydration and surface any invalidated draft
   without silently losing the complete saved record.
 - Inner-state incompatibility, including rollback to an older deployment, must
@@ -540,8 +544,17 @@ must extend the existing server restore boundary as follows before UI wiring:
   persisted data. Include the writing release/state-version provenance in the
   integration envelope so recovery can identify the required compatible release.
 
-These are required integration changes, not capabilities delivered by this
-foundation. Storage never accepts facts or creates a second semantic write path.
+Issue137 delivers the stateless clinical-resume prerequisite: existing v7/v8/v9
+migrations remain alongside v10, resume validates and re-derives without a model
+call or semantic write, and each JourneyResponse adds provenance with the current
+state version and a strictly validated public 40-hex deployment commit (null when
+unavailable). Provenance is outside clinical state and is not authority or a
+claim that a record has been saved. Integration must capture that provenance in
+the durable envelope. The testing checkpoint must verify that the protected
+deployment actually reports its matching commit; a locally validated fallback
+is not deployed-release evidence. UI hydration, retained incompatible records and the
+remaining browser lifecycle requirements are still integration work. Storage
+never accepts facts or creates a second semantic write path.
 
 Each write uses a fresh opaque UUID generation identifier, so external database
 loss/recreation cannot reuse a counter that an old tab still holds. A native

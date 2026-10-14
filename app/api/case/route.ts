@@ -98,13 +98,18 @@ export async function postCase(request: NextRequest, model?: JourneyModel) {
     const state = parseBrowserJourneyState(requestBody.state);
     repository = repositoryForBrowserState(state);
     snapshot = await getJourneySnapshot(repository, state.case.id, state.unrepresented);
-    assertStoredStage(state, snapshot);
     if (requestBody.operation === "act") {
+      assertStoredStage(state, snapshot);
       assertExpectedBrowserRevision(state, requestBody.expectedRevision);
+    } else if (state.stage !== snapshot.stage) {
+      snapshot.transitionNotice = snapshot.stage === "clarify"
+        ? "Your case was restored. Additional report details are needed before the PDF is ready."
+        : "Your case was restored. Review the current case details before continuing.";
     }
     diagnostics.event("schema-domain", "browser-state", "success", {
       version: state.version,
-      stage: state.stage,
+      stage: snapshot.stage,
+      storedStage: state.stage,
       revision: state.case.revision,
     });
   } catch (error) {
