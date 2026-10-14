@@ -20,6 +20,7 @@ export interface BrowserJourneyState {
 export interface JourneyResponse {
   state: BrowserJourneyState;
   snapshot: JourneySnapshot;
+  provenance: ReturnType<typeof journeyProvenance>;
 }
 
 export class BrowserStateError extends Error {
@@ -325,6 +326,15 @@ export async function journeyResponse(
       unrepresented: snapshot.unrepresented,
     },
     snapshot,
+    provenance: journeyProvenance(),
+  };
+}
+
+/** Only a public commit identity may cross this boundary; never expose raw environment values. */
+export function journeyProvenance(commit = process.env.VERCEL_GIT_COMMIT_SHA) {
+  return {
+    stateVersion: browserStateVersion,
+    release: typeof commit === "string" && commit.length === 40 && /^[a-f0-9]{40}$/i.test(commit) ? commit.toLowerCase() : null,
   };
 }
 
