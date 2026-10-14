@@ -119,3 +119,20 @@ clinical commands or PDF mappings changed. Independent review, exact-head CI,
 squash merge and merged-main verification remain delivery gates. The protected
 stable-origin preview and matching deployed release provenance remain milestone
 gates; this document does not claim they have passed.
+
+## Delivery closure
+
+The preceding gates describe the pre-merge material checkpoint. They subsequently
+passed: the actual same-session Opus high targeted recheck at
+`5943e609f9515e4684e66d71df9cd18fd20e2f75` found no blockers, new material
+regressions or remaining findings. It confirmed F1–F4 and the ownership fix;
+static only, no independent test execution or Safari/Firefox evidence. See the
+[complete recheck record](https://github.com/warblersafety/wilson-next/pull/142#issuecomment-6179846585).
+
+[Exact-source CI38647130355](https://github.com/warblersafety/wilson-next/actions/runs/38647130355)
+and [merged-main CI38647742799](https://github.com/warblersafety/wilson-next/actions/runs/38647742799)
+passed. PR142 squash merged at `dc7cd047028cb95984a81b5552fe6ab014b74a11`;
+the whole final topic tree equaled main and both topic branches were deleted.
+[Delivery closure](https://github.com/warblersafety/wilson-next/pull/142#issuecomment-6179987711)
+is the canonical final record. Protected stable-origin/provenance and operator
+checks remain pending under issue143; this closure does not claim those passed.
