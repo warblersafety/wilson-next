@@ -6,6 +6,27 @@ approved product
 **Owns:** Product promise, users, scope, interaction contract, quality floor,
 and unacceptable outcomes
 
+## Current delivery status and completion target — 14 October 2026
+
+The existing application is a protected synthetic preview after PR #123. Its
+bounded medication, device and product-problem capabilities are not complete
+Form 3500 coverage or proof of general interpretation reliability.
+
+The selected next milestone is full Form 3500 functionality for healthcare
+professionals using artificial case data only. Conversation remains primary,
+with direct editing as support and the existing visual design retained.
+Browser-local save/resume of one active case and separate reusable editable
+reporter details are required. Reporter reuse replaces the temporary fictional
+population shortcut. Assume one user per browser; no accounts/login,
+cross-device requirement, case manager or portable backup feature is included.
+These requirements supersede the earlier interrupted-session recovery and
+storage exclusions for this artificial-data milestone; they are not delivered
+capabilities or approval for real-patient-data production.
+
+See [the completion assessment](ASSESSMENT-2026-10-14.md) for current technical
+gaps and verification limits. Implement and verify each extension as a bounded
+slice through the existing semantic authority and delivery controls.
+
 ## Product promise
 
 Wilson helps a clinician turn what they know about a suspected adverse event
@@ -35,8 +56,10 @@ approval, representative clinicians confirm the experience in use.
 - The clinician reviews and corrects the case before downloading the form.
 - Wilson does not diagnose, judge causality, make clinical decisions, code or
   classify the event, recommend treatment, or submit the report to FDA.
-- V1 has no accounts, application identity, shared workflow, saved-case list,
-  long-term record storage, or interrupted-session recovery.
+- V1 has no accounts, application identity, shared workflow or saved-case list.
+  The artificial-data milestone requires browser-local recovery of one active
+  case and separately reusable reporter details; broader durable storage remains
+  outside this selected scope.
 - Wilson must tolerate partial knowledge, uncertainty, refusal, correction,
   contradiction, and repeated products without silently changing meaning.
 - A capability is complete only when its assembled conversation, knowledge,
@@ -140,7 +163,7 @@ and disagreement between reviewed knowledge and the form are unacceptable.
 | Opening input | Typed narrative plus operating-system or browser dictation; no app audio pipeline |
 | Endpoint | Reviewed, downloaded Form FDA 3500; no electronic submission |
 | Accounts and collaboration | None in v1; a development-preview lock is separate deployment protection |
-| Continuity | An unfinished case may be lost on reload or restart; one running session may start over |
+| Continuity | Required browser-local save/resume of one active artificial-data case; browser storage loss remains possible |
 | Advice | No diagnosis, causality judgment, coding, classification, or treatment recommendation |
 | Development data | Synthetic only until real-data boundaries are approved |
 | Product proof | First demonstrate accurate, complete, low-burden assembled behavior; after separate product-completeness and readiness approval, representative healthcare professionals validate it in use |
