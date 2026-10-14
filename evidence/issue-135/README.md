@@ -90,5 +90,11 @@ The initial actual Opus high review found no blockers, with three follow-ups:
 Final remediation checks pass: typecheck, fresh build, all 310 unit tests across
 40 files, and all 25 Chromium journeys (1.4 minutes: 24 default-route journeys
 plus the actual-component remount harness). The originating reviewer executed
-no checks. Targeted recheck and exact-head CI are required before merge. The remount harness proves
+no checks. The actual Opus high targeted recheck at ec350c024753f6894af2384714688763c0fc3c5a
+found no blockers or new material regression, and marked F1–F3 addressed.
+Exact-head CI remains required before merge. The remount harness proves
 in-process capture/hydration only, not durable storage or process-restart resume.
+
+The remount harness relies on Vite 8.2.2 already pinned through the existing
+Vitest lockfile. A future Vitest/Vite upgrade must verify its build API options;
+no manifest, lockfile or dependency change was introduced by this slice.
