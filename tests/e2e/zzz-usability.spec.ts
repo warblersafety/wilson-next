@@ -14,7 +14,13 @@ async function holdNext(page: Page, path: string, fail = false) {
     if (fail) await route.fulfill({ status: 422, json: { error: "This request could not be completed." } });
     else await route.continue();
   }, { times: 1 });
-  return release;
+  return async () => {
+    // Busy UI can precede the request while diagnostics are awaited. Observe
+    // the injected response before asserting feedback for that response.
+    const response = page.waitForResponse(value => new URL(value.url()).pathname === path);
+    release();
+    expect((await response).status()).toBe(fail ? 422 : 200);
+  };
 }
 
 test("focused usability: truthful activity, draft demo reporter, review dependencies and regenerated PDFs", async ({ page }, info) => {
@@ -38,7 +44,7 @@ test("focused usability: truthful activity, draft demo reporter, review dependen
   expect(await spinner.evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
   await page.screenshot({ path: info.outputPath("opening-processing.png"), fullPage: true });
   expect(await storedState(page)).toEqual(blank);
-  releaseOpening();
+  await releaseOpening();
   await expect(page.locator("main").getByRole("alert")).toContainText("Your description is retained");
   expect(await storedState(page)).toEqual(blank);
   await expect(page.getByLabel("Case description", { exact: true })).toHaveValue(medicationSparseOpening);
@@ -90,7 +96,7 @@ test("focused usability: truthful activity, draft demo reporter, review dependen
   await expect(page.getByRole("status").filter({ hasText: "Preparing your update for review…" })).toHaveCount(1);
   await expect(page.getByRole("button", { name: "Preparing update…", exact: true })).toBeDisabled();
   await expect(page.getByRole("button", { name: "Preparing update…", exact: true })).toBeInViewport();
-  releaseUpdate();
+  await releaseUpdate();
   await expect(page.locator("main").getByRole("alert")).toContainText("Accepted details and your draft are retained");
   expect(await storedState(page)).toEqual(accepted);
   await expect(page.getByLabel("Clinical update", { exact: true })).toHaveValue(usabilityUpdate);
@@ -113,7 +119,7 @@ test("focused usability: truthful activity, draft demo reporter, review dependen
   await page.getByRole("button", { name: "Add reporter details", exact: true }).click();
   await expect(page.getByRole("status").filter({ hasText: "Preparing the PDF from accepted details…" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Save PDF", exact: true })).toHaveCount(0);
-  releasePdf();
+  await releasePdf();
   await expect(page.getByRole("status").filter({ hasText: "PDF ready" })).toBeVisible();
   async function readPdf(name: string) {
     const download = await savePdf(page), path = info.outputPath(name);
@@ -138,7 +144,7 @@ test("focused usability: truthful activity, draft demo reporter, review dependen
   await expect(page.getByTitle("Earlier generated Form FDA 3500", { exact: true })).toHaveAttribute("src", earlierUrl!);
   await expect(page.getByRole("button", { name: "Generate updated PDF", exact: true })).toBeDisabled();
   await page.screenshot({ path: info.outputPath("pdf-updating-desktop.png") });
-  failPdf();
+  await failPdf();
   await expect(page.locator("main").getByRole("alert")).toContainText("earlier PDF below has not been updated");
   await expect(page.getByRole("button", { name: "Generate updated PDF", exact: true })).toBeEnabled();
   expect(await storedState(page)).toEqual(corrected);

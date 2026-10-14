@@ -45,3 +45,23 @@ with prerequisite invalidation and conditional acknowledgement, before complete
 save/resume can be claimed. This slice does not persist or hydrate them, alter
 accepted facts, replay requests, erase incompatible records, implement reporter
 reuse, change access/deployment settings or connect the #129 adapter to the UI.
+
+## CI remediation
+
+The first PR CI passed typecheck, unit tests and build, but the existing usability
+journey did not observe opening-error feedback within its assertion window. Its
+unfinished scenario then left the ordered model fixture queue misaligned, causing
+the next journey to fail. Both new text-draft journeys passed in that run.
+
+The usability helper previously released a promise and immediately asserted UI
+feedback, without observing whether the held HTTP response had arrived. Busy UI
+is set before the request and diagnostics are awaited along that path (#118).
+The helper now explicitly awaits the matching response and verifies its 422/200
+status before the existing feedback assertions. No assertion, feedback timeout,
+retry, application behavior or mock response was relaxed. The isolated usability
+scenario passes with this synchronization. This does not establish that telemetry
+latency is fixed; #118 remains a separate known limitation.
+
+After the synchronization change, typecheck and all 21 full mock Chromium
+journeys passed again (1.4 minutes). Production source and the fresh build are
+unchanged from the reviewed commit; unit coverage remains 283 passing tests.
