@@ -633,6 +633,38 @@ accepted case, and support explicit editing/forgetting. Case-specific report dat
 reporting destinations and disclosure choices stay with the case by default.
 No reporter profile persistence or portable backup is implemented by #129.
 
+
+### Reusable fictional reporter defaults — Issue141
+
+A separate `wilson-reporter-profile` IndexedDB database (version1, `reporter`
+store, `remembered` key) retains only the editable identity/contact strings,
+occupation and explicit health-professional boolean. Its strict versioned
+record has a fresh generation on every transaction, including Forget tombstones;
+atomic generation comparison rejects stale writers. Neither clinical state nor
+report date, destinations or disclosure choice can enter this record.
+
+The existing Reporter form remains the editor. Remember/update snapshots its
+fictional reusable fields; Use copies defaults into the current draft, with
+confirmation before replacing entered identity. These operations never accept
+facts or change case-specific choices. Normal Add/Save reporter details remains
+the only case acceptance action. Forget requires confirmation and leaves the
+current draft/accepted case untouched; New case preserves remembered defaults.
+
+Only a genuinely fresh case may receive automatic defaults, once per case in
+the current UI owner, after profile loading/saving settles and only if the
+reporter draft is pristine and no reporter facts are accepted. Restored cases
+and dirty drafts are not seeded. Automatic defaults become the draft baseline;
+unaccepted identity still warns the output workflow that reporter work remains.
+
+Profile operations live in a stable owner across case/Reporter remounts. Failed
+writes retain their exact requested snapshot for explicit save-only retry;
+subsequent case-field edits are separate work. Stale/corrupt/future records are
+not replaced. Reload is explicit, with confirmation before discarding a failed
+profile change. Manual case entry remains available when profile storage fails.
+Pending profile writes/failed changes guard unload. Browser storage limits are
+the same as the active case; this is fictional-data convenience, not an account,
+backup, privacy-readiness claim or cross-origin/cross-device feature.
+
 ### Integrated browser workspace — Issue139
 
 The active record now wraps the complete validated clinical state with a v1

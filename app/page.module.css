@@ -122,6 +122,7 @@ blockquote.evidence > span:first-child { font-size: 12px; font-weight: 600; marg
 .reportDate label { flex: 0 0 220px; }
 .reportDate p { max-width: 60ch; }
 .demoShortcut { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; background: #fff8df; border-left: 4px solid #f4b400; padding: 14px 18px; margin: 20px 0 10px; }
+.reporterProfileActions { display: flex; flex-wrap: wrap; gap: 10px; }
 .demoShortcut p { font-size: 14px; margin: 4px 0 0; }
 .demoShortcut button { background: #f4b400; border-color: #f4b400; }
 
