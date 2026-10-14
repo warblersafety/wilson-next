@@ -9,9 +9,11 @@ No account, service, dependency or deployment/access setting was added.
 
 One IndexedDB record atomically contains the full server-returned state and a
 separately versioned JSON draft container. Stored clinical state remains opaque
-and untrusted until the existing server restore validator/migrations run in a
-later integration. The draft container is JSON-typed storage, not a completed
-field-specific UI hydration schema.
+and untrusted until a later integration extends the server restore boundary: retain
+persisted-version migrations, re-derive the stage instead of rejecting policy
+changes as stale, and preserve incompatible inner state (including rollback).
+The draft container is JSON-typed storage, not a completed field-specific UI
+hydration schema.
 
 Every write compares an expected opaque generation and gets a fresh UUID.
 Replacement is explicit; clear keeps a tombstone. Native transactions reject
@@ -56,3 +58,19 @@ Generation checks alone do not prevent simultaneous model requests or constitute
 a single-writer UI. Browser/profile/site-data loss and changed origins remain
 limitations; a stable protected origin is required for continuity across releases.
 Separate reusable fictional reporter details and their lifecycle are not implemented.
+
+## Review disposition
+
+The initial actual Opus high review found one documentation blocker (B1): the
+existing preview restore validator is not sufficient for durable saved cases.
+Architecture now requires retained persisted-version migrations, current-stage
+re-derivation, release/version provenance and preservation of incompatible inner
+state instead of the preview discard path. These remain prerequisites for UI
+integration; no runtime restore behavior is changed by this foundation.
+
+F1 is addressed in the recovery contract: future confirmed corrupt-data discard,
+retention of newer-version data after rollback, and explicit unsaved in-memory
+continuation while recovery is blocked. No destructive recovery API is added here.
+F2 is recorded as a limitation: default transaction durability does not guarantee
+disk flush or survival of OS crash/power loss; future saved-status wording must
+disclose this unless strict durability is implemented and verified.
