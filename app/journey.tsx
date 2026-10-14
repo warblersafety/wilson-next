@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { productDisplayLabel } from "../src/domain/case/product-label";
 import type { CaseValue, ReportType } from "../src/domain/case/types";
 import type { FactView, ProductView, ReviewAttentionItem } from "../src/domain/case/views";
@@ -17,6 +17,7 @@ import {
 } from "./browser-diagnostics";
 import { MedicationTask } from "./medication-task";
 import styles from "./page.module.css";
+import { initialJourneyTextDrafts, reduceJourneyTextDrafts } from "../src/browser/journey-text-drafts";
 import { canSaveReporter, clinicalNeedParts, needFieldLabel, nextClinicalAction, singleEntityGroup } from "./clinical-guidance";
 import { productCardFields } from "./product-fields";
 
@@ -37,9 +38,12 @@ export default function Journey() {
   const [pdf, setPdf] = useState<PdfArtifact>();
   const [snapshot, setSnapshot] = useState<JourneySnapshot>();
   const [browserState, setBrowserState] = useState<BrowserJourneyState>();
-  const [opening, setOpening] = useState("");
-  const [reportType, setReportType] = useState<ReportType | undefined>("adverse-event");
-  const [update, setUpdate] = useState("");
+  const [textDrafts, dispatchTextDraft] = useReducer(reduceJourneyTextDrafts, undefined, initialJourneyTextDrafts);
+  const { opening, update } = textDrafts;
+  const reportType = textDrafts.reportType ?? undefined;
+  const setOpening = (value: string) => dispatchTextDraft({ type: "opening", value });
+  const setReportType = (value: ReportType | undefined) => dispatchTextDraft({ type: "report-type", value: value ?? null });
+  const setUpdate = (value: string) => dispatchTextDraft({ type: "update", value });
   const [pendingOperation, setPendingOperation] = useState<keyof typeof progressMessages>();
   const busy = pendingOperation !== undefined;
   const [error, setError] = useState<string>();
@@ -179,7 +183,7 @@ export default function Journey() {
       if (action.action === "answer-reporter") setScreen("save");
       if (action.action === "submit-update") setScreen("details");
       if (action.action === "submit-update") {
-        setUpdate((current) => current === action.text ? "" : current);
+        dispatchTextDraft({ type: "update-submitted", text: action.text });
         setDraftDisclosureOpen(false);
       }
       return true;
@@ -203,13 +207,11 @@ export default function Journey() {
       const response = await requestJourneyJson<JourneyResponse>({}, "The new case could not be started");
       clearJourneySession();
       acceptResponse(response);
-      setOpening("");
-      setUpdate("");
+      dispatchTextDraft({ type: "new-case" });
       setReviewNotice("");
       setDraftDisclosureOpen(false);
       setPdf(undefined);
       setScreen("describe");
-      setReportType("adverse-event");
       setResetNotice(true);
     } catch (caught) {
       setError(displayError(caught, "The new case could not be started"));
