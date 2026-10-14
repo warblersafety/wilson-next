@@ -244,20 +244,28 @@ function reporter(context: BrowserContext): BrowserReporter {
   const trace: BrowserEvent[] = [];
   return async (event) => {
     trace.push(event);
+    // Telemetry must not control request dispatch or acceptance/error feedback.
+    // Snapshot the cumulative trace now; later events cannot mutate this payload.
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 1_000);
     try {
-      await fetch("/api/diagnostics/browser", {
+      void fetch("/api/diagnostics/browser", {
         method: "POST",
         cache: "no-store",
         keepalive: true,
+        signal: controller.signal,
         headers: {
           "Content-Type": "application/json",
           [runIdHeader]: context.runId,
           [operationIdHeader]: context.operationId,
         },
         body: JSON.stringify({ event, trace }),
-      });
+      }).catch(() => {
+        // Best effort: offline, timeout and navigation may drop diagnostics.
+      }).finally(() => clearTimeout(timer));
     } catch {
-      // Diagnostics must never replace the visible application failure.
+      clearTimeout(timer);
+      // A synchronous telemetry failure must not change the application outcome.
     }
   };
 }
