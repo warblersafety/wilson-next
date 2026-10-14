@@ -46,22 +46,30 @@ save/resume can be claimed. This slice does not persist or hydrate them, alter
 accepted facts, replay requests, erase incompatible records, implement reporter
 reuse, change access/deployment settings or connect the #129 adapter to the UI.
 
-## CI remediation
+## CI limitation and preserved acceptance
 
-The first PR CI passed typecheck, unit tests and build, but the existing usability
-journey did not observe opening-error feedback within its assertion window. Its
-unfinished scenario then left the ordered model fixture queue misaligned, causing
-the next journey to fail. Both new text-draft journeys passed in that run.
+The first PR CI passed typecheck, unit tests and build. The existing usability
+journey failed waiting for opening-error feedback; its unfinished scenario left
+the ordered model fixture queue misaligned for the following journey. Both new
+text-draft journeys passed. Existing open #118 records the same intermittent
+awaited-diagnostics failure and fixture-sequence effect, including earlier traces;
+this run alone does not identify which network phase delayed feedback.
 
-The usability helper previously released a promise and immediately asserted UI
-feedback, without observing whether the held HTTP response had arrived. Busy UI
-is set before the request and diagnostics are awaited along that path (#118).
-The helper now explicitly awaits the matching response and verifies its 422/200
-status before the existing feedback assertions. No assertion, feedback timeout,
-retry, application behavior or mock response was relaxed. The isolated usability
-scenario passes with this synchronization. This does not establish that telemetry
-latency is fixed; #118 remains a separate known limitation.
+A test-only response-synchronization change was evaluated locally and accepted
+by an Opus recheck, which also flagged its lost pre-request latency coverage (F3).
+It is excluded from the final change: #118 explicitly requires preserving UI
+expectations rather than working around diagnostic delays. The original strict
+usability test and its timing assertions remain unchanged. No retry, timeout
+increase or application workaround is included. This slice does not fix #118,
+and any eventual green run does not establish bounded telemetry delivery.
 
-After the synchronization change, typecheck and all 21 full mock Chromium
-journeys passed again (1.4 minutes). Production source and the fresh build are
-unchanged from the reviewed commit; unit coverage remains 283 passing tests.
+Local typecheck, 283 unit tests, fresh build and all 21 full mock Chromium
+journeys passed with the original usability test at daf7a8c. Final exact-head CI
+is required separately; the earlier failed run remains disclosed in the PR.
+
+Opus F1 (coded incompatible/corrupt draft failures) and F2 (case-scoped unfinished
+opening versus submitted-text echo) remain explicit prerequisites before any
+hydration, recorded on #131. The final production and test files are identical
+to the original reviewed daf7a8c commit; only this evidence clarification differs.
+The subsequent recheck reviewed the excluded synchronization experiment. Its F3
+coverage reduction is absent from the final diff.
