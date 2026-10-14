@@ -36,11 +36,11 @@ labels the retained excerpt instead of claiming it is a complete description.
 Explicit Node 24.20.0, installed dependencies/independent PDF reader, no live
 application-model calls:
 
-- Typecheck, fresh build, all 309 unit tests across 40 files pass.
-- All 24 full synthetic/mock Chromium journeys pass (1.4 minutes), including the
+- Typecheck, fresh build, all 310 unit tests across 40 files pass.
+- All 25 synthetic/mock Chromium journeys pass (1.4 minutes), including the
   unchanged original account display, field-local edits, serial-test identity,
   reporter dirty state and medication dependent-answer invalidation journeys.
-- Fourteen new unit checks cover all draft families through the actual storage
+- Fifteen new unit checks cover all draft families through the actual storage
   JSON envelope, corruption/version/case mismatches, independent snapshots,
   current functional updates, obsolete dependencies, complete submitted-input
   history, duplicate acknowledgement and matching text clears.
@@ -63,3 +63,32 @@ invalidation while preserving the original saved record. Then serialize whole
 case+draft commits, coordinate active tabs, preserve work on storage failure,
 avoid request replay, make saved status truthful and verify actual browser
 process restart/recovery. Reusable reporter storage remains separate future work.
+
+## Initial Opus review remediation
+
+The initial actual Opus high review found no blockers, with three follow-ups:
+
+- F1: qualifier-control visibility was still local. It is now in the card record;
+  empty/whitespace qualifier text remains exact through editor and owner remount.
+  Blank qualifiers are removed only at explicit command construction, preserving
+  the existing non-empty qualifier contract. Cancel/accepted-fact invalidation
+  clears the corresponding control marker with its draft.
+- F2: navigation alone could not prove actual capture. A Playwright-only HTML
+  harness bundles the actual JourneyBody/provider using the already installed
+  Vite toolchain. It reads the encoded owner after real control input, remounts
+  over a decoded snapshot and verifies retained card, qualifier, reporter dirty
+  baseline and clinical-update values. There is no production test route, flag
+  or global, and no dependency/lockfile change. The harness uses the existing
+  synthetic local API; no model calls occur.
+- F3: raw decoding in a reducer could unmount the UI. Restore now decodes before
+  dispatch and returns coded failure without replacing the owner. Expected
+  internal validation failures retain current data and show an understandable
+  alert; arbitrary unexpected programming exceptions are not swallowed. The
+  browser check rejects corrupt/future restore data without changing the owner,
+  then verifies an invalid action cannot unmount or lose current inputs.
+
+Final remediation checks pass: typecheck, fresh build, all 310 unit tests across
+40 files, and all 25 Chromium journeys (1.4 minutes: 24 default-route journeys
+plus the actual-component remount harness). The originating reviewer executed
+no checks. Targeted recheck and exact-head CI are required before merge. The remount harness proves
+in-process capture/hydration only, not durable storage or process-restart resume.

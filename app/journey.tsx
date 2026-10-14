@@ -17,7 +17,7 @@ import {
 } from "./browser-diagnostics";
 import { MedicationTask } from "./medication-task";
 import styles from "./page.module.css";
-import { clinicalDraftKey, reporterDraftKey, factVersions as captureFactVersions } from "../src/browser/ui-drafts";
+import { editValueForSubmission, clinicalDraftKey, reporterDraftKey, factVersions as captureFactVersions } from "../src/browser/ui-drafts";
 import { JourneyDraftProvider, useJourneyDrafts, useCaseDraft, draftFieldSetter } from "./journey-drafts";
 import { canSaveReporter, clinicalNeedParts, needFieldLabel, nextClinicalAction, singleEntityGroup } from "./clinical-guidance";
 import { productCardFields } from "./product-fields";
@@ -37,8 +37,8 @@ export default function Journey() {
   return <JourneyDraftProvider><JourneyBody /></JourneyDraftProvider>;
 }
 
-function JourneyBody() {
-  const { snapshot: uiDrafts, dispatch: dispatchDraft } = useJourneyDrafts();
+export function JourneyBody() {
+  const { snapshot: uiDrafts, dispatch: dispatchDraft, fault: draftFault } = useJourneyDrafts();
   const [reporterDirty, setReporterDirty] = useState(false);
   const screen = uiDrafts.screen;
   const setScreen = (value: Screen) => dispatchDraft({ type: "screen", value });
@@ -281,6 +281,7 @@ function JourneyBody() {
         </details>
       </aside>
       {error && errorOperation !== "opening" && errorOperation !== "update" && errorOperation !== "pdf" && <div className={`${styles.error} ${styles.floatingStatus}`} role="alert">{error}</div>}
+      {draftFault && <div className={styles.error} role="alert">{draftFault}</div>}
       {boundaryNotice && <div className={styles.notice} role="status">{boundaryNotice}</div>}
       {snapshot.unrepresented.length > 0 && <UnrepresentedNotice items={snapshot.unrepresented} />}
       <div className={styles.floatingStatus}><OperationStatus active={pendingOperation === "case" || pendingOperation === "reset"} message={pendingOperation ? progressMessages[pendingOperation] : ""} /></div>
@@ -953,13 +954,14 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
   busy: boolean;
   act: (action: JourneyAction) => Promise<boolean>;
 }) {
-  const [cardDraft, setCardDraft] = useCaseDraft("card", JSON.stringify([entity, entityId]), entityId, () => ({ showMore: false, showOutcomes: false, drafts: {}, factVersions: captureFactVersions(facts) }));
-  const { showMore, showOutcomes, editing, drafts, factVersions } = cardDraft;
+  const [cardDraft, setCardDraft] = useCaseDraft("card", JSON.stringify([entity, entityId]), entityId, () => ({ showMore: false, showOutcomes: false, drafts: {}, qualifierControls: {}, factVersions: captureFactVersions(facts) }));
+  const { showMore, showOutcomes, editing, drafts, qualifierControls, factVersions } = cardDraft;
   const setShowMore = draftFieldSetter(setCardDraft, "showMore");
   const setShowOutcomes = draftFieldSetter(setCardDraft, "showOutcomes");
   const setEditing = draftFieldSetter(setCardDraft, "editing");
   const setDrafts = draftFieldSetter(setCardDraft, "drafts");
   const setFactVersions = draftFieldSetter(setCardDraft, "factVersions");
+  const setQualifierControls = draftFieldSetter(setCardDraft, "qualifierControls");
   const editButtons = useRef<Record<string, HTMLButtonElement | null>>({});
   const focusAfterEdit = useRef<string | undefined>(undefined);
   useEffect(() => {
@@ -979,8 +981,9 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
       for (const field of ["implantDate", "explantDate", "reprocessor"]) invalid.add(field);
     }
     setDrafts((current) => Object.fromEntries(Object.entries(current).filter(([field]) => !invalid.has(field))));
+    setQualifierControls(current => Object.fromEntries(Object.entries(current).filter(([field]) => !invalid.has(field))));
     setEditing((current) => current && invalid.has(current) ? undefined : current);
-  }, [facts, entity, factVersions, setFactVersions, setDrafts, setEditing]);
+  }, [facts, entity, factVersions, setFactVersions, setDrafts, setEditing, setQualifierControls]);
   const evidence = [...new Set([...fields, ...evidenceFields].flatMap((field) => facts[field]?.evidence ?? []))];
   const updateIds = new Set(pendingUpdates.map(({ groupId }) => groupId));
   // Later proposals have one review owner above. Keep accepted values visible,
@@ -991,11 +994,14 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
     && !(additionalField(field) && facts[field].proposals.some(({ groupId }) => updateIds.has(groupId))));
   const orderedFields = [...cardFields.filter((field) => !additionalField(field)), ...cardFields.filter(additionalField)];
   const editingAdditional = Boolean(editing && additionalField(editing));
-  const draftChanged = (field: string, value: EditableCaseValue) => !sameFieldValue(value, editableInitialValue(cardValue(facts[field]), factControl(entity, field)!));
+  const draftChanged = (field: string, value: EditableCaseValue) => !sameFieldValue(editValueForSubmission(value), editableInitialValue(cardValue(facts[field]), factControl(entity, field)!));
   const finishEdit = (field: string, discard: boolean) => {
     focusAfterEdit.current = field;
     setEditing(undefined);
-    if (discard) setDrafts((current) => Object.fromEntries(Object.entries(current).filter(([key]) => key !== field)));
+    if (discard) {
+      setDrafts((current) => Object.fromEntries(Object.entries(current).filter(([key]) => key !== field)));
+      setQualifierControls(current => Object.fromEntries(Object.entries(current).filter(([key]) => key !== field)));
+    }
   };
   const outcomeFields = ["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious"];
   const groupedOutcomes = entity === "event" && outcomeFields.every((field) => {
@@ -1005,7 +1011,7 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
   });
   const groupCorrections = Object.entries(drafts).flatMap(([field, value]) => {
     const proposal = facts[field]?.proposals.find(({ groupId: proposalGroup }) => proposalGroup === groupId);
-    return proposal && !sameFieldValue(value, proposal.value) ? [{ proposalId: proposal.id, value }] : [];
+    return proposal && !sameFieldValue(editValueForSubmission(value), proposal.value) ? [{ proposalId: proposal.id, value: editValueForSubmission(value) }] : [];
   });
   const acceptanceLabel = entity === "patient" || entity === "event" ? `${title.toLowerCase()} details` : title;
   return <article id={domId} className={styles.caseCard} data-proposal-review={allowOpeningReview ? groupId : undefined}>
@@ -1045,18 +1051,20 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
         {fact.history.map((history, index) => <dd key={index} className={styles.history}>Earlier: {formatFact(history.value, control)}</dd>)}
         {editable && (editing !== field || reviewBlocked) && fact.state !== "conflicted" && <button ref={(button) => { editButtons.current[field] = button; }} className={styles.inlineAction} disabled={busy || reviewBlocked} onClick={() => {
           setEditing(field);
+          const initial = drafts[field] ?? editableInitialValue(value, control);
+          setQualifierControls(current => ({ ...current, [field]: current[field] ?? (initial.kind === "known" && initial.qualifier !== undefined) }));
           setDrafts((current) => ({ ...current, [field]: current[field] ?? editableInitialValue(value, control) }));
         }}>{value ? "Change" : "Add"}</button>}
         {editable && !reviewBlocked && editing === field && draft && <div className={styles.inlineEdit}>
           <p className={styles.editorTitle}>Editing {control.label.toLowerCase()}</p>
           {control.help && <p>{control.help}</p>}
-          <FactValueEditor label={control.label} control={control} value={draft} onChange={(next) => setDrafts((current) => ({ ...current, [field]: next }))} />
+          <FactValueEditor label={control.label} control={control} value={draft} hasQualifierControl={qualifierControls[field] ?? false} onChange={(next) => setDrafts((current) => ({ ...current, [field]: next }))} />
           <button disabled={busy || (Boolean(value) && !dirty) || !validEditableValue(draft, control)} onClick={async () => {
             if (allowOpeningReview && proposal) {
               finishEdit(field, false);
               return;
             }
-            if (!await act({ action: "set-fact", target: `${entity}:${entityId}:${field}`, value: draft })) return;
+            if (!await act({ action: "set-fact", target: `${entity}:${entityId}:${field}`, value: editValueForSubmission(draft) })) return;
             finishEdit(field, true);
           }}>{allowOpeningReview && proposal ? "Keep draft" : value ? "Apply correction" : "Add fact"}</button>
           <button disabled={busy} onClick={() => finishEdit(field, true)}>Cancel</button>
@@ -1075,14 +1083,13 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
   </article>;
 }
 
-function FactValueEditor({ label, control, value, onChange: emitChange }: { label: string; control: FactControl; value: EditableCaseValue; onChange: (value: EditableCaseValue) => void }) {
+function FactValueEditor({ label, control, value, hasQualifierControl, onChange: emitChange }: { label: string; control: FactControl; value: EditableCaseValue; hasQualifierControl: boolean; onChange: (value: EditableCaseValue) => void }) {
   const known = value.kind === "known" ? value.value : undefined;
   // Keep the existing qualifier editable for this edit session, including the
   // empty intermediate state when the clinician replaces its wording.
-  const [hasQualifierControl] = useState(value.kind === "known" && value.qualifier !== undefined);
   // Editing the value alone must not silently discard its reviewed uncertainty.
-  const onChange = (next: EditableCaseValue) => emitChange(next.kind === "known" && value.kind === "known" && value.qualifier
-    ? { ...next, qualifier: value.qualifier } : next);
+  const onChange = (next: EditableCaseValue) => emitChange(next.kind === "known" && value.kind === "known" && hasQualifierControl
+    ? { ...next, qualifier: value.qualifier ?? "" } : next);
   return <div className={styles.factEditor}>
     <label>{label} status<select aria-label={`${label} status`} value={value.kind} onChange={(event) => onChange(event.target.value === "known" ? editableInitialValue(undefined, control) : { kind: event.target.value as Exclude<EditableCaseValue["kind"], "known"> })}>
       <option value="known">Known</option><option value="unknown">Unknown</option><option value="explicitly-absent">Not present</option><option value="inapplicable">Not applicable</option><option value="declined">Prefer not to answer</option>
@@ -1098,7 +1105,7 @@ function FactValueEditor({ label, control, value, onChange: emitChange }: { labe
     </div>}
     {value.kind === "known" && control.shape === "choice" && <select aria-label={`New ${label}`} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })}>{control.options?.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select>}
     {value.kind === "known" && control.shape === "choices" && <fieldset><legend>New {label}</legend>{control.options?.map((option) => <label key={option.value}><input type="checkbox" checked={Array.isArray(known) && known.includes(option.value)} onChange={(event) => onChange({ kind: "known", value: event.target.checked ? [...(Array.isArray(known) ? known : []), option.value] : (Array.isArray(known) ? known : []).filter((item) => item !== option.value) })} /> {option.label}</label>)}</fieldset>}
-    {value.kind === "known" && hasQualifierControl && <label>Uncertainty or context<input aria-label={`Uncertainty or context for ${label}`} value={value.qualifier ?? ""} onChange={(event) => emitChange({ kind: "known", value: value.value, ...(event.target.value.trim() ? { qualifier: event.target.value } : {}) })} /></label>}
+    {value.kind === "known" && hasQualifierControl && <label>Uncertainty or context<input aria-label={`Uncertainty or context for ${label}`} value={value.qualifier ?? ""} onChange={(event) => emitChange({ kind: "known", value: value.value, qualifier: event.target.value })} /></label>}
   </div>;
 }
 

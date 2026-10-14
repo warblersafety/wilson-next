@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { CaseValue } from "../domain/case/types";
 import type { JourneySnapshot } from "../server/journey/service";
 import type { JsonObject } from "./active-case-store";
 import { DraftDecodeError } from "./draft-error";
@@ -19,8 +20,15 @@ export const componentDraftSchemas = {
   "device-details": z.object({ implantChoice: deviceChoice.optional(), explantChoice: deviceChoice.optional(), reprocessorChoice: choice.optional(), implantDate: z.string(), explantDate: z.string(), reprocessor: z.string() }).strict(),
   "medication-history": z.object({ answers: z.object({ stopped: booleanAnswer.optional(), doseReduced: booleanAnswer.optional(), stopDate: dateAnswer.optional(), improvedAfterChange: booleanAnswer.optional(), restarted: booleanAnswer.optional(), recurred: booleanAnswer.optional() }).strict() }).strict(),
   reporter: z.object({ values: reporterValues, reportDate: z.string(), healthProfessional: z.boolean(), reportedTo: z.array(z.enum(["manufacturer", "user-facility", "distributor-importer", "packer"])), doNotDiscloseIdentity: z.boolean(), baseline: z.string() }).strict(),
-  card: z.object({ showMore: z.boolean(), showOutcomes: z.boolean(), editing: z.string().optional(), drafts: z.record(z.string(), editableValue), factVersions: z.record(z.string(), z.string()) }).strict(),
+  card: z.object({ showMore: z.boolean(), showOutcomes: z.boolean(), editing: z.string().optional(), drafts: z.record(z.string(), editableValue), qualifierControls: z.record(z.string(), z.boolean()), factVersions: z.record(z.string(), z.string()) }).strict(),
 };
+/** Keep raw qualifier edits in UI state; the existing command contract omits
+ * blank qualifiers only when the user explicitly submits a correction. */
+export function editValueForSubmission<T>(value: CaseValue<T>): CaseValue<T> {
+  if (value.kind !== "known" || value.qualifier === undefined || value.qualifier.trim()) return value;
+  const { qualifier: _qualifier, ...unqualified } = value;
+  return unqualified;
+}
 export type DraftKind = keyof typeof componentDraftSchemas;
 export type DraftData<K extends DraftKind> = z.infer<(typeof componentDraftSchemas)[K]>;
 export type ComponentDraft = { [K in DraftKind]: { kind: K; scope: string; dependency: string; data: DraftData<K> } }[DraftKind];
@@ -90,7 +98,8 @@ export function reduceUiDrafts(state: UiDraftSnapshot, action: DraftAction): UiD
   }
   if (action.type === "screen") return state.screen === action.value ? state : { ...state, screen: action.value };
   if (action.type === "reset") return initialUiDrafts(action.caseId);
-  if (action.type === "replace") return decodeUiDrafts(action.snapshot);
+  // Replacement DTOs are decoded by the owner input boundary before dispatch.
+  if (action.type === "replace") return action.snapshot;
   if (action.type === "response") {
     const base = state.caseId && state.caseId !== action.caseId ? initialUiDrafts(action.caseId) : { ...state, caseId: action.caseId };
     const q = action.snapshot.clarification;

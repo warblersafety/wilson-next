@@ -1,11 +1,40 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useReducer, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
-import { draftRecordKey, initialUiDrafts, reduceUiDrafts, type DraftAction, type DraftData, type DraftKind, type UiDraftSnapshot } from "../src/browser/ui-drafts";
+import { ZodError } from "zod";
+import { DraftDecodeError } from "../src/browser/draft-error";
+import { decodeUiDrafts, draftRecordKey, initialUiDrafts, reduceUiDrafts, type DraftAction, type DraftData, type DraftKind, type UiDraftSnapshot } from "../src/browser/ui-drafts";
 
-const DraftContext = createContext<{ snapshot: UiDraftSnapshot; dispatch: Dispatch<DraftAction> } | null>(null);
-export function JourneyDraftProvider({ children }: { children: ReactNode }) {
-  const [snapshot, dispatch] = useReducer(reduceUiDrafts, undefined, initialUiDrafts);
-  return <DraftContext.Provider value={{ snapshot, dispatch }}>{children}</DraftContext.Provider>;
+type PublicDraftAction = Exclude<DraftAction, { type: "replace" }>;
+interface DraftOwner {
+  snapshot: UiDraftSnapshot;
+  fault?: string;
+}
+const DraftContext = createContext<(DraftOwner & {
+  dispatch: Dispatch<PublicDraftAction>;
+  restore: (raw: unknown, caseId?: string) => { ok: true } | { ok: false; error: DraftDecodeError };
+}) | null>(null);
+function reduceOwner(owner: DraftOwner, action: DraftAction): DraftOwner {
+  try { return { snapshot: reduceUiDrafts(owner.snapshot, action) }; }
+  catch (error) {
+    if (!(error instanceof DraftDecodeError || error instanceof ZodError)) throw error;
+    return { ...owner, fault: "An unfinished edit could not be applied. Your current work is retained." };
+  }
+}
+/** Initial snapshots must already have passed decodeUiDrafts at the input boundary. */
+export function JourneyDraftProvider({ children, initialSnapshot }: { children: ReactNode; initialSnapshot?: UiDraftSnapshot }) {
+  const [owner, dispatch] = useReducer(reduceOwner, undefined, () => ({ snapshot: initialSnapshot ?? initialUiDrafts() }));
+  const restore = useCallback((raw: unknown, caseId?: string): { ok: true } | { ok: false; error: DraftDecodeError } => {
+    try {
+      // Decode before React dispatch/render; callers retain raw data on failure.
+      const snapshot = decodeUiDrafts(raw, caseId);
+      dispatch({ type: "replace", snapshot });
+      return { ok: true };
+    } catch (error) {
+      if (!(error instanceof DraftDecodeError)) throw error;
+      return { ok: false, error };
+    }
+  }, []);
+  return <DraftContext.Provider value={{ ...owner, dispatch, restore }}>{children}</DraftContext.Provider>;
 }
 export function useJourneyDrafts() {
   const context = useContext(DraftContext);

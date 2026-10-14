@@ -593,9 +593,15 @@ Issue #135 adds a controlled, case-scoped typed UI snapshot for opening/report
 selection, unsent updates, screen, reporter case drafts/dirty baseline, inline
 edits and every completion task. Stable entity/question scopes and prerequisite
 keys retain current invalidation behavior. Baseline fingerprints guard drafts;
-they never become authoritative facts. The strict JSON codec distinguishes
+they never become authoritative facts. Qualifier-control visibility is captured
+with the card, so an empty or whitespace edit remains editable across remount;
+blank qualifiers are omitted only at explicit correction submission, as required
+by the existing command contract. The strict JSON codec distinguishes
 unsupported versions/tasks from corrupt or cross-case records without coercing
-empty/false/unselected values. This is in-memory capture, not durable resume.
+empty/false/unselected values. Restore decoding occurs before React dispatch;
+a failed decode leaves the current owner and raw input intact. Expected internal
+draft validation failures retain the owner and surface a recoverable message
+rather than unmounting the journey. This is in-memory capture, not durable resume.
 
 Complete submitted opening/update words are retained separately as case-bound
 input history after successful acknowledgement; unsent drafts remain distinct.

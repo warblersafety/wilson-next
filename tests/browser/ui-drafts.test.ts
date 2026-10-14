@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { decodeUiDrafts, encodeUiDrafts, initialUiDrafts, reduceUiDrafts, draftRecordKey, clinicalDraftKey, reporterDraftKey, type DraftKind, type DraftData, type UiDraftSnapshot } from "../../src/browser/ui-drafts";
+import { editValueForSubmission, decodeUiDrafts, encodeUiDrafts, initialUiDrafts, reduceUiDrafts, draftRecordKey, clinicalDraftKey, reporterDraftKey, type DraftKind, type DraftData, type UiDraftSnapshot } from "../../src/browser/ui-drafts";
 import { decodeJourneyTextDrafts, reduceJourneyTextDrafts } from "../../src/browser/journey-text-drafts";
 import { decodeActiveCaseRecord } from "../../src/browser/active-case-store";
 import { DraftDecodeError } from "../../src/browser/draft-error";
@@ -15,7 +15,7 @@ const samples: { [K in DraftKind]: DraftData<K> } = {
   "device-details": { implantChoice: "unknown", explantChoice: "inapplicable", reprocessorChoice: "declined", implantDate: "", explantDate: "", reprocessor: " Unsent device details " },
   "medication-history": { answers: { stopped: { kind: "known", value: false }, doseReduced: { kind: "unknown" }, stopDate: { kind: "known", value: "" }, recurred: { kind: "declined" } } },
   reporter: { values: { firstName: "Fictional", lastName: "", address: "", city: "", state: "", postalCode: "", country: "", phone: "", email: "unfinished@", occupation: "" }, reportDate: "", healthProfessional: false, reportedTo: [], doNotDiscloseIdentity: false, baseline: "original baseline before editing" },
-  card: { showMore: true, showOutcomes: true, editing: "symptoms", drafts: { symptoms: { kind: "known", value: [], qualifier: "" }, ageYears: { kind: "known", value: 0 }, weight: { kind: "known", value: { value: 0, unit: "kg" } }, history: { kind: "explicitly-absent" } }, factVersions: { symptoms: "before edit" } },
+  card: { showMore: true, showOutcomes: true, editing: "symptoms", drafts: { symptoms: { kind: "known", value: [], qualifier: "" }, ageYears: { kind: "known", value: 0 }, weight: { kind: "known", value: { value: 0, unit: "kg" } }, history: { kind: "explicitly-absent" } }, qualifierControls: { symptoms: true }, factVersions: { symptoms: "before edit" } },
 };
 function complete(): UiDraftSnapshot {
   let state = initialUiDrafts("fictional-case");
@@ -86,6 +86,13 @@ describe("complete typed UI draft snapshot", () => {
     expect(state.records[draftRecordKey("death-date", "obsolete")]).toBeUndefined();
     expect(current).toEqual(before);
     expect(reduceUiDrafts(state, { type: "response", caseId: "different-case", snapshot }).text).toEqual(initialUiDrafts().text);
+  });
+  it("retains raw qualifier text until explicit correction submission, without emitting invalid blank qualifiers", () => {
+    const pending = { kind: "known" as const, value: 58, qualifier: "  " };
+    expect(editValueForSubmission(pending)).toEqual({ kind: "known", value: 58 });
+    expect(pending.qualifier).toBe("  ");
+    const meaningful = { ...pending, qualifier: " still checking " };
+    expect(editValueForSubmission(meaningful)).toBe(meaningful);
   });
   it("retains complete submitted words separately from cleared/newer text and binds their history to the case", () => {
     let state = initialUiDrafts("fictional-case");
