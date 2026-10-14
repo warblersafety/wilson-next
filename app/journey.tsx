@@ -242,6 +242,7 @@ export default function Journey() {
   if (!snapshot) return <main className={styles.loading}><p>{error ?? "Preparing your case…"}</p></main>;
   const clinicalAction = nextClinicalAction(snapshot);
   const reviewingUpdate = clinicalAction?.kind === "updates";
+  const capacityIssues = productCapacityIssues(snapshot);
 
   return (
     <main className={styles.appShell}>
@@ -279,8 +280,9 @@ export default function Journey() {
         </section>
         <section data-screen="details" hidden={screen !== "details"}>
           <h1>Review the case details</h1>
+          {capacityIssues.length > 0 && <p className={styles.notice} role="status">This case exceeds the preview’s PDF capacity. Your reviewed details are retained. Review & save explains the supported limits.</p>}
           {clinicalAction?.kind === "proposals" && <p className={styles.lead}>Check each proposed group. Change incorrect values before accepting.</p>}
-          {pdf && <div className={styles.returnBanner}><div><strong>A PDF has been generated for this case</strong><p>{snapshot.downloadReady && pdf.contentKey === snapshot.reportContentKey ? "Accepted report contents are unchanged." : snapshot.downloadReady ? "Accepted details have changed. Open Review & save to update the PDF." : "New work needs review before a current PDF is ready."}</p></div><button disabled={busy} onClick={() => setScreen("save")}>Return to PDF</button></div>}
+          {pdf && <div className={styles.returnBanner}><div><strong>A PDF has been generated for this case</strong><p>{snapshot.downloadReady && pdf.contentKey === snapshot.reportContentKey ? "Accepted report contents are unchanged." : snapshot.downloadReady ? "Accepted details have changed. Open Review & save to update the PDF." : capacityIssues.length > 0 ? "The current case exceeds the preview’s PDF capacity. The earlier PDF is not current." : "New work needs review before a current PDF is ready."}</p></div><button disabled={busy} onClick={() => setScreen("save")}>Return to PDF</button></div>}
           {snapshot.stage === "review-update" && <UpdateReview snapshot={snapshot} busy={busy} act={act} />}
           {snapshot.review.attention.filter(({ kind }) => kind === "conflict").map((item) => <ConflictCard key={item.target} snapshot={snapshot} item={item} busy={busy || snapshot.stage !== "output"} act={act} />)}
           <CaseSummaryHeading attention={snapshot.review.attention} />
@@ -305,7 +307,7 @@ export default function Journey() {
           <div className={styles.screenActions}>{clinicalAction ? <>
             {clinicalAction.kind !== "questions" && <button className={styles.inlineAction} disabled={busy} onClick={continueClinicalReview}>{reviewingUpdate ? "Go to proposed changes" : "Go to remaining review"}</button>}
             <button disabled={busy} onClick={() => setScreen("reporter")}>{canSaveReporter(snapshot) ? "Edit reporter details" : "Draft reporter details"}</button>
-          </> : <><p>Your accepted details will be used in the report.</p><button className={styles.primaryButton} disabled={busy} onClick={() => setScreen("reporter")}>Continue to reporter details</button></>}</div>
+          </> : <><p>{capacityIssues.length > 0 ? "Your accepted details are retained, but this preview cannot yet export the complete case." : "Your accepted details will be used in the report."}</p><button className={styles.primaryButton} disabled={busy} onClick={() => setScreen("reporter")}>Continue to reporter details</button></>}</div>
         </section>
         <section data-screen="reporter" hidden={screen !== "reporter"}>
           <ReporterTask continueClinicalReview={continueClinicalReview} onDirtyChange={setReporterDirty} navigate={setScreen} key={`${browserState?.case.id}:${JSON.stringify(snapshot.understanding.reporter)}:${JSON.stringify(snapshot.understanding.event.reportDate.resolved)}`} snapshot={snapshot} busy={busy} act={act} />
@@ -325,6 +327,10 @@ function OperationStatus({ active, message }: { active: boolean; message: string
   return <div ref={status} role="status" aria-atomic="true" className={active ? styles.progress : undefined}>
     {active && <><span className={styles.spinner} aria-hidden="true" /><span>{message}</span></>}
   </div>;
+}
+
+function productCapacityIssues(snapshot: JourneySnapshot) {
+  return snapshot.outputIssues.filter(({ code }) => code === "too-many-suspect-products" || code === "too-many-concomitant-products");
 }
 
 function clinicalDraftKey(snapshot: JourneySnapshot): string {
@@ -821,7 +827,7 @@ function OutputComposition({ snapshot, pdf, caseId, busy, generating, error, gen
   generating: boolean; error?: string; continueClinicalReview: () => void;
   generatePdf: () => Promise<void>; navigate: (screen: Screen) => void; hasDraft: boolean; reporterDirty: boolean;
 }) {
-  const exceedsCapacity = snapshot.outputIssues.some(({ code }) => code === "too-many-suspect-products" || code === "too-many-concomitant-products");
+  const exceedsCapacity = productCapacityIssues(snapshot).length > 0;
   const artifact = pdf?.caseId === caseId ? pdf : undefined;
   const current = Boolean(artifact && artifact.contentKey === snapshot.reportContentKey && snapshot.downloadReady);
   return <>

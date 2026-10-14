@@ -25,6 +25,9 @@ for (const scenario of [
     await page.reload();
     await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
     const before = await storedState(page);
+    const details = page.locator('[data-screen="details"]');
+    await expect(details).toContainText("This case exceeds the preview’s PDF capacity.");
+    await expect(details).not.toContainText("Your accepted details will be used in the report.");
     const output = page.locator('[data-screen="save"]');
     await goTo(page, "Review & save");
     await expect(output.getByRole("heading", { name: "This case exceeds the preview’s PDF capacity", exact: true })).toBeVisible();
@@ -68,6 +71,9 @@ for (const scenario of [
     const savedCount = pdfRequests;
 
     await setRole(scenario.excessRole);
+    await expect(details).toContainText("The earlier PDF is not current.");
+    await expect(details).not.toContainText("New work needs review before a current PDF is ready.");
+    await expect(details).not.toContainText("Your accepted details will be used in the report.");
     await goTo(page, "Review & save");
     await expect(output.getByRole("heading", { name: "This case exceeds the preview’s PDF capacity", exact: true })).toBeVisible();
     await expect(output.getByRole("button", { name: "Generate updated PDF", exact: true })).toBeDisabled();

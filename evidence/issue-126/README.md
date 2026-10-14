@@ -36,7 +36,13 @@ Node 24.20.0, existing dependencies, no live application-model calls:
   earlier-PDF status, and a second recovery. Interpretation requests are prohibited
   by the test; none occur.
 
-Only the existing output-heading text changes when a count limit applies. The
-existing layout, editor, clinician authority, questions and projection are retained.
+Existing Review-details and output status text now distinguish capacity limits
+from unfinished review, including when an earlier PDF exists. The existing
+layout, editor, clinician authority, questions and projection are retained.
 Full Form 3500 coverage, more retained products, continuation/attachment support,
 conversational test identity and other recorded fidelity gaps remain separate work.
+
+Independent review recorded other PDF representability failures as follow-up
+#128; this count-specific fix does not claim that every possible reviewed value
+can already be exported. The existing Review-details status messages were also
+made truthful for a count block, without changing navigation or acceptance.
