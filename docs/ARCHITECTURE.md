@@ -517,9 +517,9 @@ cross-device requirement. All patient, reporter and contact information remains
 fictional. This amendment supersedes the blanket storage deferral below for
 that bounded target, not the real-data/security boundary.
 
-The first foundation is a native IndexedDB adapter with one active-case record.
-It has no UI wiring: the running preview still uses the disposable session
-adapter described below. This foundation is not delivered end-user save/resume.
+Issue129 established a native IndexedDB adapter with one active-case record,
+initially without UI wiring. Issue139 integrates that foundation as described
+below; prerequisites alone did not deliver end-user save/resume.
 A separate envelope version and storage generation surround the complete
 server-returned BrowserJourneyState and a separately versioned JSON draft
 container. Storage reads leave clinical state opaque/untrusted; integration
@@ -565,9 +565,9 @@ is a distinct operation; clear preserves a generation tombstone rather than
 resetting it. This prevents a stale tab from matching a reused generation.
 Corrupt or future-version records are not silently erased or overwritten.
 Failures leave the previous committed record intact and are reported explicitly.
-The foundation deliberately has no destructive recovery API. Before integration,
-add a separate explicit, confirmed discard path for corrupt records; explain the
-loss before clearing them. Preserve newer-version records/database versions after
+The original foundation had no destructive recovery API. Issue139 adds an
+explicit, confirmed corrupt-record discard path with a full observed-record
+comparison inside its native transaction; explain the loss before clearing it. Preserve newer-version records/database versions after
 rollback rather than offering destructive replacement as ordinary recovery; use
 a compatible release. While recovery is blocked, users may continue with an
 explicitly unsaved in-memory case, with a persistent warning and no writes to or
@@ -614,7 +614,8 @@ unsupported versions/tasks from corrupt or cross-case records without coercing
 empty/false/unselected values. Restore decoding occurs before React dispatch;
 a failed decode leaves the current owner and raw input intact. Expected internal
 draft validation failures retain the owner and surface a recoverable message
-rather than unmounting the journey. This is in-memory capture, not durable resume.
+rather than unmounting the journey. Issue135 alone was in-memory capture;
+Issue139 connects that owner to durable storage.
 
 Complete submitted opening/update words are retained separately as case-bound
 input history after successful acknowledgement; unsent drafts remain distinct.
@@ -632,6 +633,54 @@ accepted case, and support explicit editing/forgetting. Case-specific report dat
 reporting destinations and disclosure choices stay with the case by default.
 No reporter profile persistence or portable backup is implemented by #129.
 
+### Integrated browser workspace — Issue139
+
+The active record now wraps the complete validated clinical state with a v1
+workspace container: response provenance, the v1 typed UI snapshot and separately
+retained invalidated drafts. Before hydration, resume validates/migrates clinical
+state and derives the snapshot; the workspace codec checks case, chronology and
+format identity. Target reconciliation checks current entities, fields, editor
+representations, question identities and prerequisite fingerprints. Incompatible
+records remain untouched. Invalidated supported drafts leave the editable owner
+and remain readable, unapplied, in the same durable workspace. Existing input
+history remains separate from facts; no saved action or model request is replayed.
+
+A native Web Locks exclusive lease precedes reads, writes and case actions. A
+second tab cannot issue competing case requests; it can retry after the owner
+closes. There is no forced takeover. In-flight native writes settle before a
+same-page owner releases its lease on unmount; generation CAS remains necessary
+for external/stale writers and browser storage recreation. Without coordination
+or storage, an explicitly chosen new unsaved case never writes/replaces retained
+work. This is not a simultaneous collaborative editor.
+
+A coalescing queue serializes complete atomic snapshots, retaining the newest
+unsaved state across failure. Saved status compares the latest rendered payload
+to its acknowledged transaction; an older acknowledgement cannot label newer
+typing saved. Clinical mutation controls are disabled during their pending action;
+the independent update composer stays editable and acknowledges only submitted
+text. Successful responses stay in memory before optional session mirroring or
+durable writes. Retry save never repeats the action. A stale-stage action can
+perform read-only resume and ask for explicit review/retry; it does not replay it.
+
+New case confirms loss of all unfinished work and uses explicit replacement.
+Known damaged records offer confirmed discard, comparing the exact observed JSON
+record transactionally; changed, now-valid and future records are not cleared.
+Unsupported non-JSON damage that cannot be safely compared stays retained and
+cannot use that discard path. Damaged inner payloads use full-envelope comparison
+as well as generation. A durable clear keeps a tombstone and suppresses legacy
+session reimport. Future database/state/UI versions require a compatible release;
+ordinary recovery does not erase them. Optional legacy session storage is only a
+one-time input when no durable record exists and a best-effort debugging mirror;
+it is not persistence authority and its failure cannot reject accepted work.
+
+Unsaved work warns before document unload. Browser-default durability still has
+the OS crash/power-loss limit above; site-data loss/eviction, private profiles and
+changed origins remain outside recovery. Closing a browser during an uncompleted
+action can leave an unobserved server/model result; saved text is retained and no
+action is automatically repeated. Native process-restart and failure acceptance,
+full regression checks and independent review are delivery gates. Reporter profile
+persistence and protected stable-origin deployment verification remain separate.
+
 ## Application and data boundary
 
 ```text
@@ -642,8 +691,9 @@ browser UI + retained case/interaction state
 ```
 
 Use stateless application routes on Vercel. The browser retains the latest
-server-returned case, revision, and minimum interaction state in origin- and
-tab-scoped `sessionStorage` and supplies them with the next command or query.
+server-returned case, revision and complete pending interaction state in the
+origin-scoped active IndexedDB workspace and supplies the clinical state with the
+next command or query. Session storage is an optional legacy/debugging adapter.
 The server validates the received shape, expected revision, command, and
 resulting case invariants before returning a complete next state. Browser code
 stores or discards that result; it does not edit semantic case values directly.
@@ -655,16 +705,17 @@ PDF response or a no-store error. The browser opens the returned bytes for
 preview or downloads them without putting case state in a URL. A static PDF
 link, cookie-derived case identity, server revision anchor, or process affinity
 may not stand in for the complete state. This request-shape change is limited to
-the disposable preview and does not create a second write path: PDF generation
+the synthetic preview and does not create a second write path: PDF generation
 remains a read-only projection of validated case knowledge.
 
-This is deliberately not a secure persistence design. A reviewer can alter or
-delete their own browser storage; another tab, browser, or device cannot
-reliably recover the case; and closing the tab or clearing site data loses it.
-Concurrent-tab use is unsupported. Vercel stores no case contents, encrypted
-envelope, revision anchor, or session affinity record. These limits are
-acceptable only because the preview is synthetic-only, access-restricted,
-non-production, and disposable. Hosted persistence, cross-device recovery,
+This is deliberately not a secure clinical persistence design. A reviewer can
+alter or delete their own browser storage. The same browser/profile/origin can
+resume the single active case; only one tab edits. Other browsers/devices and
+cleared/evicted site data cannot recover it. Vercel has no authoritative case
+repository, revision anchor or session affinity record; transient request/model/
+diagnostic processing remains subject to the existing synthetic-data policy.
+These limits are acceptable only because the preview is synthetic-only,
+access-restricted and non-production. Hosted persistence, cross-device recovery,
 tamper resistance, and any real-clinical-data boundary require a later
 architecture decision.
 
@@ -673,7 +724,7 @@ imports. The browser-held state is a deployment adapter concern and does not
 change `applyCaseCommand` as the sole semantic write boundary.
 
 The browser-held interaction state also retains any proposal-quarantine notices
-for the life of the disposable tab so an acknowledged omission cannot disappear
+with the complete browser workspace so an acknowledged omission cannot disappear
 after another review action. Those notices are not semantic case knowledge and
 cannot project to the form. The bounded three-product, eight-relevant-test, and
 ten-asked-need collection limits are domain-owned and enforced at the command

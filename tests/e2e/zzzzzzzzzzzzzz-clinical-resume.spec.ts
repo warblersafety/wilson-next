@@ -5,8 +5,13 @@ test("resume refreshes a saved stage, explains the transition and preserves the 
   await expect(page.getByLabel("Case description", { exact: true })).toBeVisible();
   const original = await page.evaluate(() => {
     const state = JSON.parse(sessionStorage.getItem("wilson-journey-state-v2")!);
-    sessionStorage.setItem("wilson-journey-state-v2", JSON.stringify({ ...state, stage: "output" }));
+    // The durable record is changed below; the session mirror is no longer authority.
     return state;
+  });
+  await expect(page.getByRole("region", { name: "Browser saving" }).getByRole("status")).toHaveText("Saved in this browser");
+  await page.evaluate(async () => {
+    const db = await new Promise<IDBDatabase>(resolve => { const r = indexedDB.open("wilson-browser-persistence", 1); r.onsuccess = () => resolve(r.result); });
+    await new Promise<void>((resolve, reject) => { const tx = db.transaction("active-case", "readwrite"), table = tx.objectStore("active-case"), r = table.get("active"); r.onsuccess = () => { const record = r.result; record.payload.state.stage = "output"; record.generation = crypto.randomUUID(); table.put(record, "active"); }; tx.oncomplete = () => resolve(); tx.onabort = () => reject(tx.error); }); db.close();
   });
   const actions: string[] = [];
   page.on("request", request => {

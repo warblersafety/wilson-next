@@ -1,3 +1,4 @@
+import { seedStoredState } from "./draft4-helpers";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { writeFile } from "node:fs/promises";
@@ -25,7 +26,7 @@ test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery an
   await writeFile(info.outputPath("pending-state.json"), JSON.stringify(pending));
   await page.goto("/");
   await expect(page.getByLabel("Case description", { exact: true })).toBeVisible();
-  await page.evaluate(state => sessionStorage.setItem("wilson-journey-state-v2", JSON.stringify(state)), pending);
+  await seedStoredState(page, pending);
   await page.reload();
   const details = page.locator('[data-screen="details"]');
   const invitation = details.getByRole("region", { name: "Information still needed", exact: true });
@@ -179,7 +180,7 @@ test("discard preserves accepted facts; subsequent questions and reporter drafts
   const pending = await flowAlignmentState();
   await page.goto("/");
   await page.getByLabel("Case description", { exact: true }).waitFor();
-  await page.evaluate(state => sessionStorage.setItem("wilson-journey-state-v2", JSON.stringify(state)), pending);
+  await seedStoredState(page, pending);
   await page.reload();
   const event = page.getByRole("article", { name: "Event — Relevant history · proposed details", exact: true });
   await event.getByRole("button", { name: "Discard these changes", exact: true }).click();
@@ -229,7 +230,7 @@ test("opening correction remains a draft until acceptance and discarding propose
   });
   await page.goto("/");
   await page.getByLabel("Case description", { exact: true }).waitFor();
-  await page.evaluate(state => sessionStorage.setItem("wilson-journey-state-v2", JSON.stringify(state)), opening);
+  await seedStoredState(page, opening);
   await page.reload();
   const patient = page.locator("#case-card-patient");
   const age = patient.locator("dl > div").filter({ has: page.getByText("Age", { exact: true }) });
@@ -257,7 +258,7 @@ test("opening correction remains a draft until acceptance and discarding propose
   await patient.getByRole("button", { name: "Accept patient details with 1 change", exact: true }).click();
   await expect(patient.getByText("41", { exact: true })).toBeVisible();
   expect((await storedState(page)).case.patient.facts.ageYears.resolvedValue?.value).toEqual({ kind: "known", value: 41 });
-  await page.evaluate(state => sessionStorage.setItem("wilson-journey-state-v2", JSON.stringify(state)), opening);
+  await seedStoredState(page, opening);
   await page.reload();
   await patient.getByRole("button", { name: "Discard proposed patient details", exact: true }).click();
   await expect(patient.getByRole("button", { name: "Accept patient details", exact: true })).toHaveCount(0);

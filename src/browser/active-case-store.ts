@@ -77,6 +77,7 @@ const storageFailure = () => new CasePersistenceError("storage-failed", "Browser
  * not just semantic revision. Each write gets a fresh UUID, including clear,
  * so old writers cannot match a counter reused after browser storage is reset. */
 export class ActiveCaseStore {
+  private readonly corruptObservations = new Map<string, string>();
   constructor(private readonly factory?: IDBFactory, private readonly databaseName = "wilson-browser-persistence") {}
 
   load(): Promise<ActiveCaseRecord> { return this.transaction("read"); }
@@ -87,6 +88,58 @@ export class ActiveCaseStore {
     return this.write(value, expectedGeneration, true);
   }
   clear(expectedGeneration: string | null): Promise<ActiveCaseRecord> { return this.transaction("clear", expectedGeneration, null); }
+  /** For an explicitly confirmed malformed inner payload, compare the entire
+   * observed envelope as well as generation. Never clear changed recovery data. */
+  clearIfUnchanged(observed: ActiveCaseRecord): Promise<ActiveCaseRecord> {
+    decodeActiveCaseRecord(observed);
+    return this.transaction("clear", observed.generation, null, JSON.stringify(observed));
+  }
+
+  /** Obtain an opaque confirmation token without changing the observed record.
+   * Unsupported structured values cannot be compared safely and stay retained. */
+  prepareCorruptDiscard(): Promise<string> { return this.corruptRecovery(); }
+  discardCorrupt(token: string): Promise<string> { return this.corruptRecovery(token); }
+
+  private async corruptRecovery(token?: string): Promise<string> {
+    const expected = token === undefined ? undefined : this.corruptObservations.get(token);
+    if (token !== undefined && expected === undefined) throw new CasePersistenceError("invalid-input", "The recovery confirmation has expired. Read the saved case again.");
+    const db = await this.open();
+    try {
+      return await new Promise<string>((resolve, reject) => {
+        const tx = db.transaction(storeName, token === undefined ? "readonly" : "readwrite");
+        let result: string;
+        let fingerprint: string;
+        let failure: CasePersistenceError | undefined;
+        tx.oncomplete = () => {
+          if (token === undefined) this.corruptObservations.set(result, fingerprint);
+          else this.corruptObservations.delete(token);
+          resolve(result);
+        };
+        tx.onabort = () => reject(failure ?? storageFailure());
+        const store = tx.objectStore(storeName), request = store.getAll(recordKey);
+        request.onsuccess = () => {
+          try {
+            if (request.result.length === 0) throw new CasePersistenceError("stale-writer", "The saved record changed. It has not been discarded.");
+            const raw = request.result[0];
+            try {
+              decodeActiveCaseRecord(raw);
+              throw new CasePersistenceError("stale-writer", "The saved record is valid now. It has not been discarded.");
+            } catch (error) {
+              if (!(error instanceof CasePersistenceError) || error.code !== "corrupt") throw error;
+            }
+            if (raw !== undefined && !json(raw)) throw new CasePersistenceError("invalid-input", "This damaged record cannot be safely compared for recovery. It has been retained.");
+            fingerprint = raw === undefined ? "undefined" : JSON.stringify(["json", raw]);
+            if (expected !== undefined && fingerprint !== expected) throw new CasePersistenceError("stale-writer", "The damaged record changed after confirmation. It has not been discarded.");
+            result = crypto.randomUUID();
+            if (token !== undefined) store.put({ version: 1, generation: result, savedAt: new Date().toISOString(), payload: null }, recordKey);
+          } catch (error) {
+            failure = error instanceof CasePersistenceError ? error : storageFailure(); tx.abort();
+          }
+        };
+      });
+    } catch (error) { throw error instanceof CasePersistenceError ? error : storageFailure(); }
+    finally { db.close(); }
+  }
 
   private write(value: ActiveCaseInput, expectedGeneration: string | null, replace: boolean): Promise<ActiveCaseRecord> {
     try {
@@ -128,7 +181,7 @@ export class ActiveCaseStore {
     });
   }
 
-  private async transaction(mode: "read" | "save" | "replace" | "clear", expectedGeneration?: string | null, nextPayload?: StoredCasePayload | null): Promise<ActiveCaseRecord> {
+  private async transaction(mode: "read" | "save" | "replace" | "clear", expectedGeneration?: string | null, nextPayload?: StoredCasePayload | null, observed?: string): Promise<ActiveCaseRecord> {
     const writing = mode !== "read";
     if (writing && !(expectedGeneration === null || generation(expectedGeneration))) {
       throw new CasePersistenceError("invalid-input", "A valid saved-case generation is required.");
@@ -149,6 +202,7 @@ export class ActiveCaseStore {
             const current = request.result.length === 0 ? emptyRecord() : decodeActiveCaseRecord(request.result[0]);
             if (!writing) { result = current; return; }
             if (current.generation !== expectedGeneration) throw new CasePersistenceError("stale-writer", "Another tab or newer save changed this case. Reload before writing.");
+            if (observed !== undefined && JSON.stringify(current) !== observed) throw new CasePersistenceError("stale-writer", "The saved record changed after confirmation. It has not been discarded.");
             if (mode === "save" && current.payload && caseId(current.payload.state) !== caseId(nextPayload?.state)) {
               throw new CasePersistenceError("replacement-required", "Replacing the active case requires explicit confirmation.");
             }

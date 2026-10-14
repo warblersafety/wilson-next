@@ -1,3 +1,4 @@
+import { seedStoredState } from "./draft4-helpers";
 import { expect, test, type Locator } from "@playwright/test";
 import { flowAlignmentState } from "../fixtures/flow-alignment";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
@@ -23,7 +24,7 @@ test("field-local editing preserves drafts, accepted information and placement a
   });
   await page.goto("/");
   await page.getByLabel("Case description", { exact: true }).waitFor();
-  await page.evaluate(value => sessionStorage.setItem("wilson-journey-state-v2", JSON.stringify(value)), baseline);
+  await seedStoredState(page, baseline);
   await page.reload();
   await goTo(page, "Reporter details");
   await page.getByLabel("Reporter email", { exact: true }).fill("retained@example.test");

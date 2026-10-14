@@ -1,3 +1,4 @@
+import { seedStoredState } from "./draft4-helpers";
 import { expect, test } from "@playwright/test";
 import { createAnthropicJourneyModel } from "../../src/server/model/anthropic-journey";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
@@ -25,7 +26,7 @@ test("retained symptom/dose proposals have separate acceptance and visible uncer
   });
   await page.goto("/");
   await expect(page.getByLabel("Case description", { exact: true })).toBeVisible();
-  await page.evaluate(state => sessionStorage.setItem("wilson-journey-state-v2", JSON.stringify(state)), await pending(tablets, "retained-tablets"));
+  await seedStoredState(page, await pending(tablets, "retained-tablets"));
   await page.reload(); await goTo(page, "Review details");
   await expect(page.locator("dd").filter({ hasText: "two tablets, a total dose of 500 mg" })).toBeVisible();
   await expect(page.locator("dd").filter({ hasText: /^abdominal pain/ })).toBeVisible();
@@ -39,7 +40,7 @@ test("retained symptom/dose proposals have separate acceptance and visible uncer
   await goTo(page, "Review & save");
   await expect(page.getByRole("button", { name: "Generate PDF", exact: true })).toBeDisabled();
 
-  await page.evaluate(state => sessionStorage.setItem("wilson-journey-state-v2", JSON.stringify(state)), await pending(count, "count-without-total"));
+  await seedStoredState(page, await pending(count, "count-without-total"));
   await page.reload(); await goTo(page, "Review details");
   const qualified = "prickly skin and no rash (patient is unsure whether the prickly feeling was a reaction to the medicine)";
   await expect(page.locator("dd").filter({ hasText: qualified })).toBeVisible();

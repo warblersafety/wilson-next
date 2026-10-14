@@ -1,3 +1,4 @@
+import { seedStoredState } from "./draft4-helpers";
 import { acceptOpeningGroups, directAnswers, goTo, projectedText, savePdf, serverAction, showActiveTask, storedState } from "./draft4-helpers";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -64,7 +65,7 @@ test("medication history: conversational grouped answer and two-product correcti
 
   // Remaining-unknown preserves a clinician's already selected answer and
   // answers newly revealed conditional fields in this one task (no model call).
-  await page.evaluate((draft) => sessionStorage.setItem("wilson-journey-state-v2", draft), sparseDraft);
+  await seedStoredState(page, JSON.parse(sparseDraft));
   await page.reload();
   await directAnswers(page);
   await page.getByLabel("Was this medication stopped?", { exact: true }).selectOption("true");

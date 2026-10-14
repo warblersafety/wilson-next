@@ -13,12 +13,13 @@ test("submitted input history is separate from unsent drafts and unrelated unfin
   let openings = 0, updates = 0;
   await page.route("**/api/case", async route => {
     if (route.request().postDataJSON()?.action?.action === "submit-opening") {
+      state.case = { ...current, id: route.request().postDataJSON().state.case.id };
       openings++;
-      return route.fulfill({ json: { state, snapshot } });
+      return route.fulfill({ json: { state, snapshot, provenance: { stateVersion: browserStateVersion, release: null } } });
     }
     if (route.request().postDataJSON()?.action?.action === "submit-update") {
       updates++;
-      return route.fulfill({ json: { state, snapshot } });
+      return route.fulfill({ json: { state, snapshot, provenance: { stateVersion: browserStateVersion, release: null } } });
     }
     return route.continue();
   });

@@ -8,6 +8,7 @@ export const journeyStateStorageKey = "wilson-journey-state-v2";
 const correlationIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 let browserSequence = 0;
+let fallbackRunId: string | undefined;
 
 interface BrowserContext {
   runId: string;
@@ -192,12 +193,8 @@ export async function consumeJourneyJsonResponse<T>(
 export function readStoredJourneyState(): unknown | undefined {
   const value = window.sessionStorage.getItem(journeyStateStorageKey);
   if (value === null) return undefined;
-  try {
-    return JSON.parse(value);
-  } catch {
-    window.sessionStorage.removeItem(journeyStateStorageKey);
-    return undefined;
-  }
+  // A damaged legacy record stays available until explicit recovery.
+  return JSON.parse(value);
 }
 
 export function storeJourneyState(state: BrowserJourneyState): void {
@@ -208,6 +205,7 @@ export function clearJourneySession(): void {
   window.sessionStorage.removeItem(journeyStateStorageKey);
   window.sessionStorage.removeItem(runIdStorageKey);
   browserSequence = 0;
+  fallbackRunId = undefined;
 }
 
 function responseDetails(response: Response, body: string): ResponseDetails {
@@ -234,9 +232,13 @@ function diagnosticRequestBody(body: unknown): unknown {
 }
 
 function createBrowserContext(): BrowserContext {
-  const existing = window.sessionStorage.getItem(runIdStorageKey);
-  const runId = existing && correlationIdPattern.test(existing) ? existing : crypto.randomUUID();
-  if (runId !== existing) window.sessionStorage.setItem(runIdStorageKey, runId);
+  // Optional diagnostics correlation cannot block useful requests when browser
+  // session storage is disabled. Durable case persistence is a separate path.
+  let existing: string | null = null;
+  try { existing = window.sessionStorage.getItem(runIdStorageKey); } catch { /* in-memory fallback */ }
+  const runId = existing && correlationIdPattern.test(existing) ? existing : fallbackRunId ?? crypto.randomUUID();
+  fallbackRunId = runId;
+  if (runId !== existing) { try { window.sessionStorage.setItem(runIdStorageKey, runId); } catch { /* optional */ } }
   return { runId, operationId: crypto.randomUUID() };
 }
 

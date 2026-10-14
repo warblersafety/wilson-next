@@ -39,6 +39,7 @@ test("actual components encode their inputs and retain cleared qualifier control
   await page.getByLabel("Clinical update", { exact: true }).fill(" Unsent words survive a real remount ");
   const key = draftRecordKey("card", JSON.stringify(["patient", "patient"]));
   await expect.poll(async () => (await readDraftOwner(page)).text).toMatchObject({ update: " Unsent words survive a real remount " });
+  await expect(page.getByRole("region", { name: "Browser saving" }).getByRole("status")).toHaveText("Saved in this browser");
   const encoded = await readDraftOwner(page);
   expect(Object.hasOwn(encoded.records as object, key)).toBe(true);
   const records = encoded.records as Record<string, { data: Record<string, unknown> }>;
