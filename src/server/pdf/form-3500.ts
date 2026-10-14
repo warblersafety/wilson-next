@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts } from "../../domain/case/limits";
 import { PDFDocument, PDFName } from "@cantoo/pdf-lib";
 import type {
   Form3500Projection,
@@ -225,11 +226,11 @@ export async function fillForm3500Projection(
   projection: Form3500Projection,
 ): Promise<Form3500ProjectionFillResult> {
   await assertApprovedFormSource(source);
-  if (projection.sections.D.suspectProducts.length > 2) {
-    throw new Error("The approved Form 3500 adapter supports at most two suspect products");
+  if (projection.sections.D.suspectProducts.length > maximumForm3500SuspectProducts) {
+    throw new Error(`The approved Form 3500 adapter supports at most ${maximumForm3500SuspectProducts} suspect products`);
   }
-  if (projection.sections.F.concomitantProducts.length > 1) {
-    throw new Error("Experiment 1 supports one concomitant product");
+  if (projection.sections.F.concomitantProducts.length > maximumForm3500ConcomitantProducts) {
+    throw new Error(`The approved Form 3500 adapter supports at most ${maximumForm3500ConcomitantProducts} concomitant product`);
   }
   if (projection.sections.B.relevantTests.length > relevantTestFields.length) {
     throw new Error("The approved Form 3500 adapter supports at most eight relevant tests");

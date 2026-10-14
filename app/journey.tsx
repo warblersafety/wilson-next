@@ -242,6 +242,7 @@ export default function Journey() {
   if (!snapshot) return <main className={styles.loading}><p>{error ?? "Preparing your case…"}</p></main>;
   const clinicalAction = nextClinicalAction(snapshot);
   const reviewingUpdate = clinicalAction?.kind === "updates";
+  const capacityIssues = productCapacityIssues(snapshot);
 
   return (
     <main className={styles.appShell}>
@@ -279,8 +280,9 @@ export default function Journey() {
         </section>
         <section data-screen="details" hidden={screen !== "details"}>
           <h1>Review the case details</h1>
+          {capacityIssues.length > 0 && <p className={styles.notice} role="status">This case exceeds the preview’s PDF capacity. Your reviewed details are retained. Review & save explains the supported limits.</p>}
           {clinicalAction?.kind === "proposals" && <p className={styles.lead}>Check each proposed group. Change incorrect values before accepting.</p>}
-          {pdf && <div className={styles.returnBanner}><div><strong>A PDF has been generated for this case</strong><p>{snapshot.downloadReady && pdf.contentKey === snapshot.reportContentKey ? "Accepted report contents are unchanged." : snapshot.downloadReady ? "Accepted details have changed. Open Review & save to update the PDF." : "New work needs review before a current PDF is ready."}</p></div><button disabled={busy} onClick={() => setScreen("save")}>Return to PDF</button></div>}
+          {pdf && <div className={styles.returnBanner}><div><strong>A PDF has been generated for this case</strong><p>{snapshot.downloadReady && pdf.contentKey === snapshot.reportContentKey ? "Accepted report contents are unchanged." : snapshot.downloadReady ? "Accepted details have changed. Open Review & save to update the PDF." : capacityIssues.length > 0 ? "The current case exceeds the preview’s PDF capacity. The earlier PDF is not current." : "New work needs review before a current PDF is ready."}</p></div><button disabled={busy} onClick={() => setScreen("save")}>Return to PDF</button></div>}
           {snapshot.stage === "review-update" && <UpdateReview snapshot={snapshot} busy={busy} act={act} />}
           {snapshot.review.attention.filter(({ kind }) => kind === "conflict").map((item) => <ConflictCard key={item.target} snapshot={snapshot} item={item} busy={busy || snapshot.stage !== "output"} act={act} />)}
           <CaseSummaryHeading attention={snapshot.review.attention} />
@@ -305,7 +307,7 @@ export default function Journey() {
           <div className={styles.screenActions}>{clinicalAction ? <>
             {clinicalAction.kind !== "questions" && <button className={styles.inlineAction} disabled={busy} onClick={continueClinicalReview}>{reviewingUpdate ? "Go to proposed changes" : "Go to remaining review"}</button>}
             <button disabled={busy} onClick={() => setScreen("reporter")}>{canSaveReporter(snapshot) ? "Edit reporter details" : "Draft reporter details"}</button>
-          </> : <><p>Your accepted details will be used in the report.</p><button className={styles.primaryButton} disabled={busy} onClick={() => setScreen("reporter")}>Continue to reporter details</button></>}</div>
+          </> : <><p>{capacityIssues.length > 0 ? "Your accepted details are retained, but this preview cannot yet export the complete case." : "Your accepted details will be used in the report."}</p><button className={styles.primaryButton} disabled={busy} onClick={() => setScreen("reporter")}>Continue to reporter details</button></>}</div>
         </section>
         <section data-screen="reporter" hidden={screen !== "reporter"}>
           <ReporterTask continueClinicalReview={continueClinicalReview} onDirtyChange={setReporterDirty} navigate={setScreen} key={`${browserState?.case.id}:${JSON.stringify(snapshot.understanding.reporter)}:${JSON.stringify(snapshot.understanding.event.reportDate.resolved)}`} snapshot={snapshot} busy={busy} act={act} />
@@ -325,6 +327,10 @@ function OperationStatus({ active, message }: { active: boolean; message: string
   return <div ref={status} role="status" aria-atomic="true" className={active ? styles.progress : undefined}>
     {active && <><span className={styles.spinner} aria-hidden="true" /><span>{message}</span></>}
   </div>;
+}
+
+function productCapacityIssues(snapshot: JourneySnapshot) {
+  return snapshot.outputIssues.filter(({ code }) => code === "too-many-suspect-products" || code === "too-many-concomitant-products");
 }
 
 function clinicalDraftKey(snapshot: JourneySnapshot): string {
@@ -821,6 +827,7 @@ function OutputComposition({ snapshot, pdf, caseId, busy, generating, error, gen
   generating: boolean; error?: string; continueClinicalReview: () => void;
   generatePdf: () => Promise<void>; navigate: (screen: Screen) => void; hasDraft: boolean; reporterDirty: boolean;
 }) {
+  const exceedsCapacity = productCapacityIssues(snapshot).length > 0;
   const artifact = pdf?.caseId === caseId ? pdf : undefined;
   const current = Boolean(artifact && artifact.contentKey === snapshot.reportContentKey && snapshot.downloadReady);
   return <>
@@ -829,7 +836,7 @@ function OutputComposition({ snapshot, pdf, caseId, busy, generating, error, gen
     <p className={styles.lead}>Inspect the actual generated form, then save a copy. Wilson does not submit it.</p>
     {hasDraft && <p className={styles.notice}>You have an unsent clinical draft in Review details. It is not included in the PDF.</p>}
     {reporterDirty && <p className={styles.notice}>You have unsaved reporter details. {canSaveReporter(snapshot) ? "Save them in Reporter details to include those changes in the report." : "Your draft is retained. Finish the clinical review below, then return to Reporter details to save it."}</p>}
-    {snapshot.outputIssues.length > 0 && <section className={styles.invitation}><h2>The form needs more reviewed information</h2><PendingReview snapshot={snapshot} /><ClinicalNeeds snapshot={snapshot} /><ul>{snapshot.outputIssues.filter(({ code }) => code !== "pending-proposal-review" && code !== "open-clarification").map((issue, index) => <li key={index}>{issue.message}</li>)}</ul>{snapshot.stage === "clarify" && snapshot.clarification?.kind === "reporter" ? <><p>Clinical questions are complete. Save reporter details or explicitly choose not to provide them.</p><button className={styles.primaryButton} disabled={busy} onClick={() => navigate("reporter")}>Go to reporter details</button></> : <button className={styles.primaryButton} disabled={busy} onClick={continueClinicalReview}>{nextClinicalAction(snapshot)?.label ?? "Review case details"}</button>}</section>}
+    {snapshot.outputIssues.length > 0 && <section className={styles.invitation}><h2>{exceedsCapacity ? "This case exceeds the preview’s PDF capacity" : "The form needs more reviewed information"}</h2><PendingReview snapshot={snapshot} /><ClinicalNeeds snapshot={snapshot} /><ul>{snapshot.outputIssues.filter(({ code }) => code !== "pending-proposal-review" && code !== "open-clarification").map((issue, index) => <li key={index}>{issue.message}</li>)}</ul>{snapshot.stage === "clarify" && snapshot.clarification?.kind === "reporter" ? <><p>Clinical questions are complete. Save reporter details or explicitly choose not to provide them.</p><button className={styles.primaryButton} disabled={busy} onClick={() => navigate("reporter")}>Go to reporter details</button></> : <button className={styles.primaryButton} disabled={busy} onClick={continueClinicalReview}>{nextClinicalAction(snapshot)?.label ?? "Review case details"}</button>}</section>}
     <div className={styles.pdfToolbar}><div><h2>Form FDA 3500</h2><p role="status" aria-atomic="true">{generating ? <><span className={styles.spinner} aria-hidden="true" />{artifact ? "Updating the PDF from accepted details… The earlier PDF remains below until the update is ready." : "Preparing the PDF from accepted details…"}</> : error ? "PDF generation failed. Accepted details are retained. Try generating it again." : current ? "PDF ready — it reflects the accepted report contents." : artifact ? "Earlier PDF — it does not include changes awaiting review or generation." : "Generate the PDF after completing review and reporter details."}</p></div>
       {current ? <a className={styles.primaryLink} href={artifact!.url} download={artifact!.filename}>Save PDF</a> : <button disabled={busy || !snapshot.downloadReady} onClick={() => void generatePdf()}>{artifact ? "Generate updated PDF" : "Generate PDF"}</button>}
     </div>

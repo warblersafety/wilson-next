@@ -462,6 +462,15 @@ rejected during opening review. A reviewed product or test may be withdrawn
 only after the case reaches output; it remains visible as inactive history and
 is omitted from subsequent projection and PDF generation.
 
+Issue #126 aligns readiness with the bounded PDF's two non-device suspect slots
+and one concomitant slot. Exceeding either blocks export with an explicit
+capacity notice while retaining every product, fact, source and history entry.
+Readiness and the adapter share these output limits; the adapter guards remain.
+The existing one-suspect-device and unsupported-concomitant-device rules remain.
+Only an explicit clinician change can alter roles or withdraw products; capacity
+checks never make those changes. This is limitation disclosure, not continuation
+pages or complete overflow support.
+
 Output readiness is application-owned and separate from question completion.
 For these bounded paths, output requires at least one retained product and at
 least one complete suspect product whose name, role, and category are known.
