@@ -699,7 +699,8 @@ one earlier line. This trace exists only in the reporting closure for that
 request. Issue #118 makes browser reporting best effort and non-blocking:
 report delivery never gates useful request dispatch, accepted-response handling
 or error feedback. Each fetch has a one-second abort deadline to release network
-resources. Timeout, offline state and navigation can drop reports; completion is
+resources. Timeout, offline state, navigation and browser keepalive payload/in-flight
+quotas can drop reports; completion is
 not acknowledged by the UI. Reports may arrive out of order, so correlation,
 sequence and cumulative trace remain necessary. This is not a durable log queue
 or a guarantee that runtime logs contain every browser event.

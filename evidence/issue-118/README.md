@@ -31,3 +31,12 @@ unchanged case responses isolate browser transport/feedback from interpretation;
 existing full mock journeys retain interpretation/review/PDF regression evidence.
 All 23 full mock Chromium journeys pass (1.3 minutes), including both new modes.
 Independent-review and exact-head CI results are recorded on the PR.
+
+Actual Opus high review found no blocking findings. F1 notes that the existing
+keepalive transport can reject large reports or overlapping bodies under browser
+quotas; this loss cause is now explicit in Architecture. The Fetch Standard's
+[keepalive budget](https://fetch.spec.whatwg.org/#http-network-or-cache-fetch)
+rejects requests exceeding 64 KiB including in-flight keepalive bodies. Actual
+successful-case diagnostic sizes and a transport/payload adjustment remain a
+follow-up; this slice does not claim complete browser-report delivery. The
+reviewer ran no tests and did not independently inspect CI.
