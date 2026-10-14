@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { productDisplayLabel } from "../src/domain/case/product-label";
 import type { CaseValue, ReportType } from "../src/domain/case/types";
 import type { FactView, ProductView, ReviewAttentionItem } from "../src/domain/case/views";
@@ -17,7 +17,8 @@ import {
 } from "./browser-diagnostics";
 import { MedicationTask } from "./medication-task";
 import styles from "./page.module.css";
-import { initialJourneyTextDrafts, reduceJourneyTextDrafts } from "../src/browser/journey-text-drafts";
+import { clinicalDraftKey, reporterDraftKey, factVersions as captureFactVersions } from "../src/browser/ui-drafts";
+import { JourneyDraftProvider, useJourneyDrafts, useCaseDraft, draftFieldSetter } from "./journey-drafts";
 import { canSaveReporter, clinicalNeedParts, needFieldLabel, nextClinicalAction, singleEntityGroup } from "./clinical-guidance";
 import { productCardFields } from "./product-fields";
 
@@ -33,12 +34,19 @@ type Screen = "describe" | "details" | "reporter" | "save";
 type PdfArtifact = { url: string; filename: string; caseId: string; contentKey: string };
 
 export default function Journey() {
+  return <JourneyDraftProvider><JourneyBody /></JourneyDraftProvider>;
+}
+
+function JourneyBody() {
+  const { snapshot: uiDrafts, dispatch: dispatchDraft } = useJourneyDrafts();
   const [reporterDirty, setReporterDirty] = useState(false);
-  const [screen, setScreen] = useState<Screen>("describe");
+  const screen = uiDrafts.screen;
+  const setScreen = (value: Screen) => dispatchDraft({ type: "screen", value });
   const [pdf, setPdf] = useState<PdfArtifact>();
   const [snapshot, setSnapshot] = useState<JourneySnapshot>();
   const [browserState, setBrowserState] = useState<BrowserJourneyState>();
-  const [textDrafts, dispatchTextDraft] = useReducer(reduceJourneyTextDrafts, undefined, initialJourneyTextDrafts);
+  const textDrafts = uiDrafts.text;
+  const dispatchTextDraft = (action: import("../src/browser/journey-text-drafts").TextDraftAction) => dispatchDraft({ type: "text", action });
   const { opening, update } = textDrafts;
   const reportType = textDrafts.reportType ?? undefined;
   const setOpening = (value: string) => dispatchTextDraft({ type: "opening", value });
@@ -116,6 +124,7 @@ export default function Journey() {
     storeJourneyState(response.state);
     setBrowserState(response.state);
     setSnapshot(response.snapshot);
+    dispatchDraft({ type: "response", caseId: response.state.case.id, snapshot: response.snapshot });
   }
 
   async function freshJourney(notice?: string) {
@@ -151,6 +160,7 @@ export default function Journey() {
 
   async function act(action: JourneyAction) {
     if (!snapshot || !browserState) return false;
+    const inputId = action.action === "submit-opening" || action.action === "submit-update" ? crypto.randomUUID() : undefined;
     setPendingOperation(action.action === "submit-opening" ? "opening" : action.action === "submit-update" ? "update" : "case");
     setErrorOperation(action.action === "submit-opening" ? "opening" : action.action === "submit-update" ? "update" : "case");
     setError(undefined);
@@ -171,6 +181,9 @@ export default function Journey() {
         };
       }
       acceptResponse(response);
+      if (inputId && (action.action === "submit-opening" || action.action === "submit-update")) {
+        dispatchDraft({ type: "submitted", caseId: response.state.case.id, id: inputId, kind: action.action === "submit-opening" ? "opening" : "update", text: action.text, revision: response.snapshot.revision });
+      }
       if (response.snapshot.transitionNotice) setBoundaryNotice(response.snapshot.transitionNotice);
       if (snapshot.stage === "review-update" && response.snapshot.stage === "understanding") {
         const tests = response.snapshot.understanding.relevantTests.filter(({ state }) => state === "proposed").length;
@@ -179,11 +192,12 @@ export default function Journey() {
       if (["updates", "proposals"].includes(nextClinicalAction(snapshot)?.kind ?? "") && nextClinicalAction(response.snapshot)?.kind === "questions") {
         setReviewNotice("Review complete. Clinical questions need answers before the PDF.");
       }
-      if (action.action === "submit-opening") setScreen("details");
+      if (action.action === "submit-opening") {
+        setScreen("details");
+      }
       if (action.action === "answer-reporter") setScreen("save");
       if (action.action === "submit-update") setScreen("details");
       if (action.action === "submit-update") {
-        dispatchTextDraft({ type: "update-submitted", text: action.text });
         setDraftDisclosureOpen(false);
       }
       return true;
@@ -207,7 +221,7 @@ export default function Journey() {
       const response = await requestJourneyJson<JourneyResponse>({}, "The new case could not be started");
       clearJourneySession();
       acceptResponse(response);
-      dispatchTextDraft({ type: "new-case" });
+      dispatchDraft({ type: "reset", caseId: response.state.case.id });
       setReviewNotice("");
       setDraftDisclosureOpen(false);
       setPdf(undefined);
@@ -278,7 +292,7 @@ export default function Journey() {
         <section data-screen="describe" hidden={screen !== "describe"} className={styles.describeScreen}>
           {snapshot.revision === 0
             ? <Describe key={browserState?.case.id} opening={opening} setOpening={setOpening} reportType={reportType} setReportType={setReportType} busy={busy} interpreting={pendingOperation === "opening"} error={errorOperation === "opening" ? error : undefined} act={act} />
-            : <><p className={styles.eyebrow}>Your starting description</p><h1>Describe what happened</h1><div className={styles.caseCard}><p className={styles.originalAccount}>{opening || browserState?.case.sources.find(({ inputType }) => inputType === "narrative")?.excerpt || "Your submitted description is retained with the source evidence in Review details."}</p></div><p>Wilson has prepared the details for review. Add new information or corrections in Review details.</p><button disabled={busy} onClick={() => setScreen("details")}>Return to review details</button></>}
+            : <><p className={styles.eyebrow}>{uiDrafts.conversation.some(input => input.kind === "opening") ? "Your starting description" : "Retained source excerpt"}</p><h1>Describe what happened</h1><div className={styles.caseCard}><p className={styles.originalAccount}>{uiDrafts.conversation.find(input => input.kind === "opening")?.text ?? browserState?.case.sources.find(({ inputType }) => inputType === "narrative")?.excerpt ?? "Your submitted description is retained with the source evidence in Review details."}</p></div>{!uiDrafts.conversation.some(input => input.kind === "opening") && <p className={styles.hint}>Only quoted excerpts are available for this earlier tab case. Its full starting description was not retained.</p>}<p>Wilson has prepared the details for review. Add new information or corrections in Review details.</p><button disabled={busy} onClick={() => setScreen("details")}>Return to review details</button></>}
         </section>
         <section data-screen="details" hidden={screen !== "details"}>
           <h1>Review the case details</h1>
@@ -297,6 +311,11 @@ export default function Journey() {
             {snapshot.clarification && snapshot.clarification.kind !== "reporter" && <div id="direct-clinical-question" className={styles.directQuestions} hidden={clinicalAction?.kind !== "questions"}><div id="clinical-question" tabIndex={-1}><CompletionTask key={clinicalDraftKey(snapshot)} snapshot={snapshot} busy={busy || snapshot.stage !== "clarify"} act={act} /></div></div>}
             <ClinicalNeeds snapshot={snapshot} remainingOnly />
           </section>
+          {uiDrafts.conversation.some(input => input.kind === "update") && <details className={styles.caseCard}>
+            <summary>Previous clinical updates</summary>
+            <p className={styles.hint}>Your submitted words are retained here. Accepted case facts are reviewed separately.</p>
+            {uiDrafts.conversation.filter(input => input.kind === "update").map(input => <p className={styles.originalAccount} key={input.id}>{input.text}</p>)}
+          </details>}
           <section className={styles.updatePanel} aria-label="Answer, add or correct information">
             <h2>Answer, add or correct information</h2>
             <p>Use your own words to answer questions or explain additions and corrections. Name the product or test. Wilson will propose changes for you to accept.</p>
@@ -312,7 +331,7 @@ export default function Journey() {
           </> : <><p>{capacityIssues.length > 0 ? "Your accepted details are retained, but this preview cannot yet export the complete case." : "Your accepted details will be used in the report."}</p><button className={styles.primaryButton} disabled={busy} onClick={() => setScreen("reporter")}>Continue to reporter details</button></>}</div>
         </section>
         <section data-screen="reporter" hidden={screen !== "reporter"}>
-          <ReporterTask continueClinicalReview={continueClinicalReview} onDirtyChange={setReporterDirty} navigate={setScreen} key={`${browserState?.case.id}:${JSON.stringify(snapshot.understanding.reporter)}:${JSON.stringify(snapshot.understanding.event.reportDate.resolved)}`} snapshot={snapshot} busy={busy} act={act} />
+          <ReporterTask continueClinicalReview={continueClinicalReview} onDirtyChange={setReporterDirty} navigate={setScreen} key={`${browserState?.case.id}:${reporterDraftKey(snapshot)}`} snapshot={snapshot} busy={busy} act={act} />
         </section>
         <section data-screen="save" hidden={screen !== "save"}>
           <OutputComposition continueClinicalReview={continueClinicalReview} snapshot={snapshot} pdf={pdf} caseId={browserState?.case.id} busy={busy} generating={pendingOperation === "pdf"} error={errorOperation === "pdf" ? error : undefined} generatePdf={generatePdf} navigate={setScreen} hasDraft={Boolean(update.trim())} reporterDirty={reporterDirty} />
@@ -333,14 +352,6 @@ function OperationStatus({ active, message }: { active: boolean; message: string
 
 function productCapacityIssues(snapshot: JourneySnapshot) {
   return snapshot.outputIssues.filter(({ code }) => code === "too-many-suspect-products" || code === "too-many-concomitant-products");
-}
-
-function clinicalDraftKey(snapshot: JourneySnapshot): string {
-  const q = snapshot.clarification;
-  if (!q) return "none";
-  const product = q.kind === "medication-history" ? snapshot.understanding.products.find(({ id }) => id === q.productId)
-    : q.kind === "device-details" ? snapshot.understanding.products.find(({ id }) => id === q.deviceId) : undefined;
-  return JSON.stringify([q.key, q.targetIds, product && [product.state, ...["name", "role", "productType", "stopped", "doseReduced", "restarted", "implanted", "reprocessedSingleUse"].map((field) => product.facts[field].resolved)]]);
 }
 
 function CaseSummaryHeading({ attention }: { attention: ReviewAttentionItem[] }) {
@@ -466,8 +477,10 @@ function IndicationTask({ snapshot, busy, act }: {
   snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
   const productIds = snapshot.clarification?.kind === "indications" ? snapshot.clarification.productIds : [];
-  const [choices, setChoices] = useState<Record<string, IndicationChoice>>({});
-  const [texts, setTexts] = useState<Record<string, string>>({});
+  const [draft, setDraft] = useCaseDraft("indications", snapshot.clarification?.key ?? "none", clinicalDraftKey(snapshot), () => ({ choices: {}, texts: {} }));
+  const { choices, texts } = draft;
+  const setChoices = draftFieldSetter(setDraft, "choices");
+  const setTexts = draftFieldSetter(setDraft, "texts");
   const products = productIds.map((id) => snapshot.understanding.products.find((product) => product.id === id)).filter(Boolean);
   const complete = products.every((product) => {
     const choice = choices[product!.id];
@@ -514,7 +527,9 @@ function SeriousOutcomesTask({ snapshot, busy, act }: {
 }) {
   const question = snapshot.clarification;
   const missing = question?.kind === "serious-outcomes" ? new Set(question.targetIds.map((target) => target.split(":")[2])) : new Set<string>();
-  const [selected, setSelected] = useState<SeriousOutcomeKey[]>([]);
+  const [draft, setDraft] = useCaseDraft("serious-outcomes", snapshot.clarification?.key ?? "none", clinicalDraftKey(snapshot), () => ({ selected: [] }));
+  const { selected } = draft;
+  const setSelected = draftFieldSetter(setDraft, "selected");
   const existing = Object.fromEntries(Object.keys(seriousOutcomeLabels).map((field) => {
     const value = activeValue(snapshot.understanding.event[field]);
     return [field, value?.kind === "known" && value.value === true];
@@ -539,7 +554,9 @@ function SeriousOutcomesTask({ snapshot, busy, act }: {
 function DeathDateTask({ snapshot, busy, act }: {
   snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
-  const [date, setDate] = useState("");
+  const [draft, setDraft] = useCaseDraft("death-date", snapshot.clarification?.key ?? "none", clinicalDraftKey(snapshot), () => ({ date: "" }));
+  const { date } = draft;
+  const setDate = draftFieldSetter(setDraft, "date");
   return <>
     <h1 id="task-title">{snapshot.clarification?.question}</h1>
     <p>This detail is asked only because death is recorded as an outcome.</p>
@@ -560,14 +577,16 @@ function ClinicalContextTask({ snapshot, busy, act }: {
   snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
   const question = snapshot.clarification?.kind === "clinical-context" ? snapshot.clarification : undefined;
-  const [testChoice, setTestChoice] = useState<ContextChoice>();
-  const [historyChoice, setHistoryChoice] = useState<ContextChoice>();
-  const [testName, setTestName] = useState("");
-  const [testResult, setTestResult] = useState("");
-  const [lowRange, setLowRange] = useState("");
-  const [highRange, setHighRange] = useState("");
-  const [testDate, setTestDate] = useState("");
-  const [history, setHistory] = useState("");
+  const [draft, setDraft] = useCaseDraft("clinical-context", snapshot.clarification?.key ?? "none", clinicalDraftKey(snapshot), () => ({ testName: "", testResult: "", lowRange: "", highRange: "", testDate: "", history: "" }));
+  const { testChoice, historyChoice, testName, testResult, lowRange, highRange, testDate, history } = draft;
+  const setTestChoice = draftFieldSetter(setDraft, "testChoice");
+  const setHistoryChoice = draftFieldSetter(setDraft, "historyChoice");
+  const setTestName = draftFieldSetter(setDraft, "testName");
+  const setTestResult = draftFieldSetter(setDraft, "testResult");
+  const setLowRange = draftFieldSetter(setDraft, "lowRange");
+  const setHighRange = draftFieldSetter(setDraft, "highRange");
+  const setTestDate = draftFieldSetter(setDraft, "testDate");
+  const setHistory = draftFieldSetter(setDraft, "history");
   const testComplete = !question?.askTests || (testChoice && (testChoice !== "known" || Boolean(testName.trim() || testResult.trim())));
   const historyComplete = !question?.askHistory || (historyChoice && (historyChoice !== "known" || Boolean(history.trim())));
   const contextValue = (choice: ContextChoice | undefined, text: string): ClinicalHistoryValue => choice === "known"
@@ -614,12 +633,14 @@ function DeviceDetailsTask({ snapshot, busy, act }: {
   snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
   const question = snapshot.clarification?.kind === "device-details" ? snapshot.clarification : undefined;
-  const [implantChoice, setImplantChoice] = useState<DeviceDetailChoice>();
-  const [explantChoice, setExplantChoice] = useState<DeviceDetailChoice>();
-  const [reprocessorChoice, setReprocessorChoice] = useState<Exclude<DeviceDetailChoice, "inapplicable">>();
-  const [implantDate, setImplantDate] = useState("");
-  const [explantDate, setExplantDate] = useState("");
-  const [reprocessor, setReprocessor] = useState("");
+  const [draft, setDraft] = useCaseDraft("device-details", snapshot.clarification?.key ?? "none", clinicalDraftKey(snapshot), () => ({ implantDate: "", explantDate: "", reprocessor: "" }));
+  const { implantChoice, explantChoice, reprocessorChoice, implantDate, explantDate, reprocessor } = draft;
+  const setImplantChoice = draftFieldSetter(setDraft, "implantChoice");
+  const setExplantChoice = draftFieldSetter(setDraft, "explantChoice");
+  const setReprocessorChoice = draftFieldSetter(setDraft, "reprocessorChoice");
+  const setImplantDate = draftFieldSetter(setDraft, "implantDate");
+  const setExplantDate = draftFieldSetter(setDraft, "explantDate");
+  const setReprocessor = draftFieldSetter(setDraft, "reprocessor");
   const completeChoice = (asked: boolean | undefined, choice: DeviceDetailChoice | undefined, value: string) => !asked
     || Boolean(choice && (choice !== "known" || value.trim()));
   const complete = completeChoice(question?.askImplantDate, implantChoice, implantDate)
@@ -668,21 +689,26 @@ function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate, continueCl
   const accepted = snapshot.understanding.reporter;
   const saved = (field: string) => accepted[field]?.resolved;
   const text = (field: string, fallback = "") => knownString(saved(field)) ?? (saved(field) ? "" : fallback);
-  const [values, setValues] = useState(() => ({ firstName: text("firstName"), lastName: text("lastName"), address: text("address"), city: text("city"), state: text("state"), postalCode: text("postalCode"), country: text("country", "UNITED STATES"), phone: text("phone"), email: text("email"), occupation: text("occupation", "Physician") }));
-  const [reportDate, setReportDate] = useState(() => {
+  const [draft, setDraft] = useCaseDraft("reporter", "case", reporterDraftKey(snapshot), () => {
+    const values = { firstName: text("firstName"), lastName: text("lastName"), address: text("address"), city: text("city"), state: text("state"), postalCode: text("postalCode"), country: text("country", "UNITED STATES"), phone: text("phone"), email: text("email"), occupation: text("occupation", "Physician") };
     const existing = snapshot.understanding.event.reportDate.resolved;
-    if (existing) return existing.kind === "known" ? String(existing.value) : "";
     const today = new Date();
-    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+    const reportDate = existing ? existing.kind === "known" ? String(existing.value) : "" : `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+    const healthProfessional = saved("healthProfessional")?.kind === "known" ? Boolean((saved("healthProfessional") as { value: unknown }).value) : true;
+    const reportedTo = saved("reportedTo")?.kind === "known" ? (saved("reportedTo") as { value: Array<"manufacturer" | "user-facility" | "distributor-importer" | "packer"> }).value : [];
+    const doNotDiscloseIdentity = saved("doNotDiscloseIdentity")?.kind === "known" && Boolean((saved("doNotDiscloseIdentity") as { value: unknown }).value);
+    return { values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity, baseline: JSON.stringify([values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity]) };
   });
-  const [healthProfessional, setHealthProfessional] = useState(() => saved("healthProfessional")?.kind === "known" ? Boolean((saved("healthProfessional") as { value: unknown }).value) : true);
-  const [reportedTo, setReportedTo] = useState<Array<"manufacturer" | "user-facility" | "distributor-importer" | "packer">>(() => saved("reportedTo")?.kind === "known" ? (saved("reportedTo") as { value: Array<"manufacturer" | "user-facility" | "distributor-importer" | "packer"> }).value : []);
-  const [doNotDiscloseIdentity, setDoNotDiscloseIdentity] = useState(() => saved("doNotDiscloseIdentity")?.kind === "known" && Boolean((saved("doNotDiscloseIdentity") as { value: unknown }).value));
-  const initialDraft = useRef(JSON.stringify([values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity]));
+  const { values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity } = draft;
+  const setValues = draftFieldSetter(setDraft, "values");
+  const setReportDate = draftFieldSetter(setDraft, "reportDate");
+  const setHealthProfessional = draftFieldSetter(setDraft, "healthProfessional");
+  const setReportedTo = draftFieldSetter(setDraft, "reportedTo");
+  const setDoNotDiscloseIdentity = draftFieldSetter(setDraft, "doNotDiscloseIdentity");
   const [demoNotice, setDemoNotice] = useState(false);
   useEffect(() => {
-    onDirtyChange?.(JSON.stringify([values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity]) !== initialDraft.current);
-  }, [values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity, onDirtyChange]);
+    onDirtyChange?.(JSON.stringify([values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity]) !== draft.baseline);
+  }, [values, reportDate, healthProfessional, reportedTo, doNotDiscloseIdentity, draft.baseline, onDirtyChange]);
   const previouslySaved = Object.values(accepted).some(({ resolved }) => resolved);
   const canSave = canSaveReporter(snapshot);
   const set = (field: keyof typeof values, value: string) => setValues((current) => ({ ...current, [field]: value }));
@@ -927,10 +953,13 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
   busy: boolean;
   act: (action: JourneyAction) => Promise<boolean>;
 }) {
-  const [showMore, setShowMore] = useState(false);
-  const [showOutcomes, setShowOutcomes] = useState(false);
-  const [editing, setEditing] = useState<string>();
-  const [drafts, setDrafts] = useState<Record<string, EditableCaseValue>>({});
+  const [cardDraft, setCardDraft] = useCaseDraft("card", JSON.stringify([entity, entityId]), entityId, () => ({ showMore: false, showOutcomes: false, drafts: {}, factVersions: captureFactVersions(facts) }));
+  const { showMore, showOutcomes, editing, drafts, factVersions } = cardDraft;
+  const setShowMore = draftFieldSetter(setCardDraft, "showMore");
+  const setShowOutcomes = draftFieldSetter(setCardDraft, "showOutcomes");
+  const setEditing = draftFieldSetter(setCardDraft, "editing");
+  const setDrafts = draftFieldSetter(setCardDraft, "drafts");
+  const setFactVersions = draftFieldSetter(setCardDraft, "factVersions");
   const editButtons = useRef<Record<string, HTMLButtonElement | null>>({});
   const focusAfterEdit = useRef<string | undefined>(undefined);
   useEffect(() => {
@@ -938,11 +967,10 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
     editButtons.current[focusAfterEdit.current]?.focus();
     focusAfterEdit.current = undefined;
   }, [editing]);
-  const previousFacts = useRef(facts);
   useEffect(() => {
-    const changed = Object.keys(facts).filter((field) => JSON.stringify([facts[field].resolved, facts[field].history, facts[field].conflicts]) !== JSON.stringify([previousFacts.current[field]?.resolved, previousFacts.current[field]?.history, previousFacts.current[field]?.conflicts]));
-    previousFacts.current = facts;
+    const changed = Object.keys(facts).filter((field) => JSON.stringify([facts[field].resolved, facts[field].history, facts[field].conflicts]) !== factVersions[field]);
     if (changed.length === 0) return;
+    setFactVersions(captureFactVersions(facts));
     const invalid = new Set(changed);
     if (entity === "product" && changed.some((field) => ["name", "productType", "role", "stopped", "doseReduced", "restarted"].includes(field))) {
       for (const field of ["stopped", "doseReduced", "stopDate", "improvedAfterChange", "restarted", "recurred"]) invalid.add(field);
@@ -952,7 +980,7 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
     }
     setDrafts((current) => Object.fromEntries(Object.entries(current).filter(([field]) => !invalid.has(field))));
     setEditing((current) => current && invalid.has(current) ? undefined : current);
-  }, [facts, entity]);
+  }, [facts, entity, factVersions, setFactVersions, setDrafts, setEditing]);
   const evidence = [...new Set([...fields, ...evidenceFields].flatMap((field) => facts[field]?.evidence ?? []))];
   const updateIds = new Set(pendingUpdates.map(({ groupId }) => groupId));
   // Later proposals have one review owner above. Keep accepted values visible,
