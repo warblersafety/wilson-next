@@ -810,7 +810,7 @@ async function downloadAndCheck(
 
 async function semanticCase(page: Page): Promise<BrowserJourneyState["case"]> {
   return page.evaluate(() => {
-    const stored = window.sessionStorage.getItem("wilson-journey-state-v2");
+    const stored = window.sessionStorage.getItem("wilson-current-case-debug-v1");
     if (!stored) throw new Error("Wilson browser case state was unavailable");
     return (JSON.parse(stored) as BrowserJourneyState).case;
   });

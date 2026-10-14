@@ -11,6 +11,7 @@ import { journeyResponse } from "../../src/server/case/browser-state";
 import { draftRecordKey, initialUiDrafts } from "../../src/browser/ui-drafts";
 import { workspaceInput } from "../../src/browser/workspace-state";
 import { correctionAccount, openingAccount } from "../fixtures/fixed-inputs";
+import { draftOwnerHarnessHtml, readDraftLifecycle } from "./ui-draft-harness";
 import { workspaceTaskCase, workspaceTaskKinds } from "../fixtures/workspace-tasks";
 import { goTo } from "./draft4-helpers";
 
@@ -95,7 +96,12 @@ test("a real browser process restart retains pending/conflicted knowledge, compl
     page.on("request", r => { if (r.url().endsWith("/api/case") && r.method() === "POST") operations.push(r.postDataJSON().operation); });
     await page.goto(baseURL!); await saved(page);
     await expect(page.getByLabel("Reporter first name", { exact: true })).toHaveValue("  Fictional unfinished ");
+    await expect(page.getByLabel("Reporter first name", { exact: true })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Report steps" }).getByRole("button", { name: /Reporter details$/ })).toHaveAttribute("aria-current", "step");
+    await expect(page.getByRole("heading", { name: "Some details were left out", exact: true })).toBeVisible();
     await goTo(page, "Review details");
+    await expect(page.locator("[data-conflict-review]")).toBeVisible();
+    await expect(page.locator("[data-conflict-review]").getByRole("button")).toHaveCount(2);
     await expect(page.getByLabel("Clinical update", { exact: true })).toHaveValue("  Unsent correction with every word retained. ");
     const recovered = await record(page);
     const patientDraft = recovered.payload.drafts.data.ui.records[draftRecordKey("card", JSON.stringify(["patient", "patient"]))].data;
@@ -186,11 +192,17 @@ for (const failure of ["quota", "abort"] as const) {
     await expect(age.getByLabel("New Age", { exact: true })).toBeDisabled();
     const update = page.getByLabel("Clinical update", { exact: true });
     await expect(update).toBeEnabled(); await update.fill("  Independent newer words while correction is pending. ");
-    release();
     const saving = page.getByRole("region", { name: "Browser saving" });
+    // Independent typing can fail to save before the held correction returns.
+    // That earlier failure is not evidence that its response was accepted yet.
+    await expect(saving.getByRole("status")).toContainText("Changes are not saved");
+    expect((await page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-current-case-debug-v1")!))).case.patient.facts.ageYears.resolvedValue.value.value).toBe(57);
+    const acknowledgement = page.waitForResponse(response => response.url().endsWith("/api/case") && response.request().method() === "POST" && response.request().postDataJSON()?.action?.action === "set-fact");
+    release(); expect((await acknowledgement).ok()).toBe(true);
+    await expect(age.getByRole("button", { name: "Change", exact: true })).toBeEnabled();
     await expect(saving.getByRole("status")).toContainText("Changes are not saved");
     await expect(age).toContainText("58");
-    const accepted = await page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-journey-state-v2")!));
+    const accepted = await page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-current-case-debug-v1")!));
     expect(accepted.case.patient.facts.ageYears.resolvedValue.value).toEqual({ kind: "known", value: 58, qualifier: "approximately" });
     expect((await record(page))).toEqual(beforeFailure);
     expect(accepted.case.revision).toBeGreaterThan(previous.payload.state.case.revision);
@@ -282,13 +294,19 @@ test("invalidated unfinished edits remain readable after resume and another relo
   await page.goto("/"); await saved(page);
   const original = await record(page), raw = structuredClone(original);
   const scope = JSON.stringify(["product", "earlier-product"]);
-  const pending = { kind: "card", scope, dependency: "earlier-product", data: { showMore: true, showOutcomes: false, drafts: { dose: { kind: "known", value: "  Earlier unfinished dose wording ", qualifier: "uncertain" } }, qualifierControls: { dose: true }, factVersions: {} } };
+  const pending = { kind: "card", scope, dependency: "earlier-product", data: { showMore: true, showOutcomes: false, drafts: { dose: { kind: "known", value: "declined", qualifier: "uncertain" }, strength: { kind: "known", value: "  Earlier unfinished dose wording " } }, qualifierControls: { dose: true }, factVersions: {} } };
   raw.payload.drafts.data.ui.records[draftRecordKey("card", scope)] = pending;
   await putRecord(page, raw); await page.reload(); await saved(page);
   const retained = page.getByRole("complementary", { name: "Retained unfinished work" });
   await retained.getByText("Read earlier unfinished edits", { exact: true }).click();
   await expect(retained).toContainText("Earlier unfinished dose wording");
-  await expect(retained.getByRole("button")).toHaveCount(0);
+  await expect(retained.getByText("declined — uncertain", { exact: true })).toBeVisible();
+  let replacementPrompts = 0;
+  page.once("dialog", async dialog => { replacementPrompts++; await dialog.dismiss(); });
+  await page.getByRole("button", { name: "New case", exact: true }).click();
+  expect(replacementPrompts).toBe(1);
+  await expect(retained).toBeVisible();
+  await expect(retained.getByRole("button", { name: /^(Apply|Accept|Add|Use)\b/ })).toHaveCount(0);
   const after = await record(page);
   expect(after.payload.state).toEqual(original.payload.state);
   expect(after.payload.drafts.data.retained).toHaveLength(1);
@@ -296,6 +314,12 @@ test("invalidated unfinished edits remain readable after resume and another relo
   expect(after.payload.drafts.data.ui.records).not.toHaveProperty(draftRecordKey("card", scope));
   await page.reload(); await saved(page);
   expect((await record(page)).payload.drafts.data.retained).toEqual(after.payload.drafts.data.retained);
+  await page.getByRole("complementary", { name: "Retained unfinished work" }).getByText("Read earlier unfinished edits", { exact: true }).click();
+  page.once("dialog", dialog => dialog.accept());
+  await page.getByRole("button", { name: "Discard these earlier edits", exact: true }).click(); await saved(page);
+  expect((await record(page)).payload.state).toEqual(original.payload.state);
+  expect((await record(page)).payload.drafts.data.retained).toEqual([]);
+  await expect(page.getByRole("complementary", { name: "Retained unfinished work" })).toHaveCount(0);
 });
 
 
@@ -396,7 +420,7 @@ test("incompatible success metadata retains the accepted response in memory and 
   await expect(status.getByRole("status")).toContainText("Changes are not saved");
   await expect(age.getByRole("button", { name: "Change", exact: true })).toBeEnabled();
   await expect(age).toContainText("58");
-  const accepted = await page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-journey-state-v2")!));
+  const accepted = await page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-current-case-debug-v1")!));
   expect(accepted.case.patient.facts.ageYears.resolvedValue.value.value).toBe(58);
   await status.getByRole("button", { name: "Retry save", exact: true }).click();
   await expect(status.getByRole("status")).toContainText("Changes are not saved");
@@ -443,4 +467,72 @@ test("a newer native database version is retained and never offers destructive r
   await expect(page.locator("main").getByRole("alert")).toContainText("compatible version");
   await expect(page.getByRole("button", { name: "Discard damaged saved work" })).toHaveCount(0);
   expect(await record(page, true)).toEqual(before);
+});
+
+
+test("an incompatible legacy tab record survives unsaved recovery and a blank New case", async ({ page }) => {
+  const raw = JSON.stringify({ version: "wilson-browser-state-v999", stage: "describe", case: { id: "case-11111111-1111-4111-8111-111111111199" }, unrepresented: [] });
+  await page.addInitScript(raw => sessionStorage.setItem("wilson-journey-state-v2", raw), raw);
+  await page.goto("/");
+  await expect(page.locator("main").getByRole("alert")).toContainText("compatible version");
+  await page.getByRole("button", { name: "Continue with a new unsaved case" }).click();
+  await expect(page.getByLabel("Case description", { exact: true })).toBeVisible();
+  const oldId = await page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-current-case-debug-v1") ?? "null")?.case?.id);
+  const reset = page.waitForResponse(response => response.url().endsWith("/api/case") && response.request().method() === "GET");
+  await page.getByRole("button", { name: "New case", exact: true }).click();
+  expect((await reset).ok()).toBe(true);
+  await expect(page.locator("header").getByRole("status")).toHaveText("New case started");
+  await expect(page.getByLabel("Case description", { exact: true })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Browser saving" }).getByRole("status")).toContainText("Working without saving");
+  expect(await page.evaluate(() => sessionStorage.getItem("wilson-journey-state-v2"))).toBe(raw);
+  expect(oldId).toBeUndefined(); // No current debug mirror is written in unsaved mode.
+});
+
+test("an existing browser case does not overwrite this tab's separate legacy work", async ({ page }) => {
+  await page.goto("/"); await saved(page); const before = await record(page);
+  const earlier = await workspaceTaskCase("indications"), raw = JSON.stringify(earlier.state);
+  await page.evaluate(raw => sessionStorage.setItem("wilson-journey-state-v2", raw), raw);
+  await page.reload(); await saved(page);
+  await expect(page.getByText("Earlier work from this tab has been left unchanged. Wilson is showing the current browser case.", { exact: true })).toBeVisible();
+  expect(await page.evaluate(() => sessionStorage.getItem("wilson-journey-state-v2"))).toBe(raw);
+  expect((await record(page)).payload.state).toEqual(before.payload.state);
+  expect((await page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-current-case-debug-v1")!))).case.id).toBe(before.payload.state.case.id);
+});
+
+test("actual development StrictMode cancels a pending native lease without blocking its replacement effect", async ({ page }) => {
+  const html = await draftOwnerHarnessHtml(true);
+  await page.addInitScript(() => {
+    let release!: () => void;
+    const gate = new Promise<void>(resolve => { release = resolve; });
+    const probe = { entered: false, release };
+    (window as unknown as { pendingLeaseProbe: typeof probe }).pendingLeaseProbe = probe;
+    const manager = navigator.locks, request = manager.request.bind(manager);
+    let first = true;
+    manager.request = ((name: string, options: LockOptions, callback: LockGrantedCallback<unknown>) => request(name, options, async lock => {
+      if (name === "wilson-active-case-workspace" && first) { first = false; probe.entered = true; await gate; }
+      return callback(lock);
+    })) as LockManager["request"];
+  });
+  await page.route("**/__strict-workspace-check", route => route.fulfill({ contentType: "text/html", body: html }));
+  await page.goto("/__strict-workspace-check");
+  await expect.poll(async () => (await readDraftLifecycle(page))).toEqual({ starts: 2, stops: 1 });
+  await expect.poll(() => page.evaluate(() => (window as unknown as { pendingLeaseProbe: { entered: boolean } }).pendingLeaseProbe.entered)).toBe(true);
+  await page.evaluate(() => navigator.locks.query());
+  await page.evaluate(() => (window as unknown as { pendingLeaseProbe: { release(): void } }).pendingLeaseProbe.release());
+  await expect(page.getByLabel("Case description", { exact: true })).toBeVisible(); await saved(page);
+  await expect(page.getByRole("heading", { name: "This case is open in another tab" })).toHaveCount(0);
+});
+
+
+test("damaged legacy input is removed only after explicit confirmed discard", async ({ page }) => {
+  const raw = "{ damaged fictional legacy input";
+  await page.addInitScript(raw => sessionStorage.setItem("wilson-journey-state-v2", raw), raw);
+  await page.goto("/");
+  const discard = page.getByRole("button", { name: "Discard damaged saved work" });
+  await expect(discard).toBeVisible();
+  page.once("dialog", dialog => dialog.dismiss()); await discard.click();
+  expect(await page.evaluate(() => sessionStorage.getItem("wilson-journey-state-v2"))).toBe(raw);
+  page.once("dialog", dialog => dialog.accept()); await discard.click(); await saved(page);
+  expect(await page.evaluate(() => sessionStorage.getItem("wilson-journey-state-v2"))).toBeNull();
+  await expect(page.getByLabel("Case description", { exact: true })).toHaveValue("");
 });

@@ -66,7 +66,7 @@ test("corrects DEMO-91 conversationally before initial acceptance, downloads fiv
   expect(await projectedText(page)).toContain("ferritin: Result not recorded");
 });
 
-async function state(page: Page) { return page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-journey-state-v2")!).case); }
+async function state(page: Page) { return page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-current-case-debug-v1")!).case); }
 async function complete(page: Page) {
   await directAnswers(page);
   await serverAction(page, () => page.getByRole("button", { name: "Confirm outcomes" }).click());

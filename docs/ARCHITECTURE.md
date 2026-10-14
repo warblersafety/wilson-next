@@ -642,13 +642,19 @@ state and derives the snapshot; the workspace codec checks case, chronology and
 format identity. Target reconciliation checks current entities, fields, editor
 representations, question identities and prerequisite fingerprints. Incompatible
 records remain untouched. Invalidated supported drafts leave the editable owner
-and remain readable, unapplied, in the same durable workspace. Existing input
+and remain readable as historical reference in the same durable workspace.
+Only invalidated pending fields are retained; unaffected live edits are not
+duplicated. The wording does not claim they can never be applied explicitly
+later. A confirmed discard removes selected earlier edits without changing
+accepted facts, and retained work counts for New case/unload protection. Existing input
 history remains separate from facts; no saved action or model request is replayed.
 
 A native Web Locks exclusive lease precedes reads, writes and case actions. A
 second tab cannot issue competing case requests; it can retry after the owner
 closes. There is no forced takeover. In-flight native writes settle before a
-same-page owner releases its lease on unmount; generation CAS remains necessary
+same-page owner releases its lease on unmount; cancelled pending acquisitions
+are registered before their first await, so StrictMode replacement effects wait
+for their own predecessor to finish without competing with it; generation CAS remains necessary
 for external/stale writers and browser storage recreation. Without coordination
 or storage, an explicitly chosen new unsaved case never writes/replaces retained
 work. This is not a simultaneous collaborative editor.
@@ -670,8 +676,15 @@ cannot use that discard path. Damaged inner payloads use full-envelope compariso
 as well as generation. A durable clear keeps a tombstone and suppresses legacy
 session reimport. Future database/state/UI versions require a compatible release;
 ordinary recovery does not erase them. Optional legacy session storage is only a
-one-time input when no durable record exists and a best-effort debugging mirror;
-it is not persistence authority and its failure cannot reject accepted work.
+one-time input when no durable record exists and a best-effort debugging mirror.
+The old `wilson-journey-state-v2` source key is never used for the new mirror;
+`wilson-current-case-debug-v1` is separate and is not loaded as authority. Normal
+New case/debug cleanup cannot erase old tab data, including during unsaved
+recovery. Only explicit confirmed damaged-legacy recovery removes that source.
+When a durable active case already exists, different earlier tab data stays
+unchanged with a notice rather than being imported over it. This transition is
+not a case-list feature. Neither adapter is persistence authority, and optional
+session failure cannot reject accepted work.
 
 Unsaved work warns before document unload. Browser-default durability still has
 the OS crash/power-loss limit above; site-data loss/eviction, private profiles and

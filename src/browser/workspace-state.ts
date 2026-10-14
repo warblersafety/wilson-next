@@ -75,7 +75,14 @@ export function reconcileWorkspace(data: WorkspaceData, state: BrowserJourneySta
       if (!Object.hasOwn(view.facts, field) || !editableTarget(String(entity), field, record.data.drafts[field])) invalid.add(field);
     }
     const affected = Object.keys(record.data.drafts).some(field => invalid.has(field)) || Boolean(record.data.editing && invalid.has(record.data.editing));
-    if (affected) retained.push({ reason: "Some unfinished field edits need review because accepted details or prerequisites changed.", record });
+    if (affected) {
+      const invalidated: ComponentDraft = { ...record, data: { ...record.data,
+        drafts: Object.fromEntries(Object.entries(record.data.drafts).filter(([field]) => invalid.has(field))),
+        qualifierControls: Object.fromEntries(Object.entries(record.data.qualifierControls).filter(([field]) => invalid.has(field))),
+        editing: record.data.editing && invalid.has(record.data.editing) ? record.data.editing : undefined,
+      } };
+      if (hasDraftWork(invalidated)) retained.push({ reason: "These earlier field edits were set aside because accepted details or prerequisites changed.", record: invalidated });
+    }
     records[key] = { ...record, data: { ...record.data,
       drafts: Object.fromEntries(Object.entries(record.data.drafts).filter(([field]) => !invalid.has(field))),
       qualifierControls: Object.fromEntries(Object.entries(record.data.qualifierControls).filter(([field]) => !invalid.has(field))),
@@ -86,8 +93,8 @@ export function reconcileWorkspace(data: WorkspaceData, state: BrowserJourneySta
   return { ...data, ui: { ...data.ui, records }, retained };
 }
 
-export function hasWorkspaceWork(state: BrowserJourneyState | undefined, ui: UiDraftSnapshot): boolean {
-  return Boolean((state?.case.revision ?? 0) > 0 || ui.text.opening || ui.text.update || ui.text.reportType !== "adverse-event"
+export function hasWorkspaceWork(state: BrowserJourneyState | undefined, ui: UiDraftSnapshot, retainedCount = 0): boolean {
+  return Boolean(retainedCount > 0 || (state?.case.revision ?? 0) > 0 || ui.text.opening || ui.text.update || ui.text.reportType !== "adverse-event"
     || Object.values(ui.records).some(record => record.kind === "card" ? Object.keys(record.data.drafts).length > 0
       : record.kind === "reporter" && JSON.stringify([record.data.values, record.data.reportDate, record.data.healthProfessional, record.data.reportedTo, record.data.doNotDiscloseIdentity]) !== record.data.baseline));
 }
@@ -156,4 +163,17 @@ export function acknowledgeWorkspaceDrafts(ui: UiDraftSnapshot, action: JourneyA
     };
   }
   return result;
+}
+
+/** Check continuation identity/revisions before replacing the current response;
+ * storage failure is separate from an inconsistent or regressing response. */
+export function assertResponseContinuation(current: JourneyResponse | undefined, next: JourneyResponse, replace = false): void {
+  const revision = next?.state?.case?.revision;
+  if (!Number.isSafeInteger(revision) || revision < 0 || next?.snapshot?.revision !== revision
+    || next?.snapshot?.stage !== next?.state?.stage || typeof next?.state?.case?.id !== "string" || !next.state.case.id) {
+    throw new DraftDecodeError("corrupt", "The response could not be matched to this case. Your current work is retained.");
+  }
+  if (current && !replace && (next.state.case.id !== current.state.case.id || revision < current.state.case.revision)) {
+    throw new DraftDecodeError("corrupt", "The response does not continue this case. Your current work is retained.");
+  }
 }

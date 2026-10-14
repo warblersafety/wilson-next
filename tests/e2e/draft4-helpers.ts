@@ -6,7 +6,7 @@ import { workspaceInput } from "../../src/browser/workspace-state";
 import { parseBrowserJourneyState, type BrowserJourneyState } from "../../src/server/case/browser-state";
 
 export async function storedState(page: Page): Promise<BrowserJourneyState> {
-  return page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-journey-state-v2")!));
+  return page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-current-case-debug-v1")!));
 }
 export async function goTo(page: Page, name: "Describe" | "Review details" | "Reporter details" | "Review & save") {
   await page.getByRole("navigation", { name: "Report steps" }).getByRole("button", { name: new RegExp(name.replace("&", "\\&") + "$") }).click();

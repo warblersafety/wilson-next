@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 async function storedCase(page: Page) {
-  return page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-journey-state-v2")!).case);
+  return page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-current-case-debug-v1")!).case);
 }
 
 test("a blank case has no review claim, and New case protects an unsubmitted draft", async ({ page }) => {

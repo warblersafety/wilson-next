@@ -21,7 +21,7 @@ test("medication history: conversational grouped answer and two-product correcti
   await opening(page, medicationSparseOpening);
   await expect(page.getByRole("heading", { name: "Treatment history for amoxicillin" })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("medication-question.png"), fullPage: true });
-  const sparseDraft = await page.evaluate(() => sessionStorage.getItem("wilson-journey-state-v2")!);
+  const sparseDraft = await page.evaluate(() => sessionStorage.getItem("wilson-current-case-debug-v1")!);
   await update(page, medicationSparseUpdate);
   await reporter(page);
   let fields = await pdf("medication-sparse.pdf");
@@ -94,4 +94,4 @@ async function reporter(page: Page) {
   await page.getByLabel("Date of this report", { exact: true }).fill("2026-09-21");
   await serverAction(page, () => page.getByRole("button", { name: "Prefer not to provide reporter details" }).click());
 }
-async function state(page: Page) { return page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-journey-state-v2")!).case); }
+async function state(page: Page) { return page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-current-case-debug-v1")!).case); }

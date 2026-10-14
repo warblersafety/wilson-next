@@ -4,7 +4,8 @@ import { operationIdHeader, runIdHeader } from "../src/diagnostics/correlation";
 import type { BrowserJourneyState } from "../src/server/case/browser-state";
 
 const runIdStorageKey = "wilson-diagnostic-run-id";
-export const journeyStateStorageKey = "wilson-journey-state-v2";
+export const legacyJourneyStateStorageKey = "wilson-journey-state-v2";
+export const journeyStateStorageKey = "wilson-current-case-debug-v1";
 const correlationIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 let browserSequence = 0;
@@ -191,7 +192,7 @@ export async function consumeJourneyJsonResponse<T>(
 }
 
 export function readStoredJourneyState(): unknown | undefined {
-  const value = window.sessionStorage.getItem(journeyStateStorageKey);
+  const value = window.sessionStorage.getItem(legacyJourneyStateStorageKey);
   if (value === null) return undefined;
   // A damaged legacy record stays available until explicit recovery.
   return JSON.parse(value);
@@ -199,6 +200,11 @@ export function readStoredJourneyState(): unknown | undefined {
 
 export function storeJourneyState(state: BrowserJourneyState): void {
   window.sessionStorage.setItem(journeyStateStorageKey, JSON.stringify(state));
+}
+
+/** Only explicit legacy recovery may remove the pre-upgrade source. */
+export function clearLegacyJourneyState(): void {
+  window.sessionStorage.removeItem(legacyJourneyStateStorageKey);
 }
 
 export function clearJourneySession(): void {

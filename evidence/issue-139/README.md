@@ -10,9 +10,9 @@ Exact Node **24.20.0**, existing locked dependencies and installed Chromium/PDF
 reader, no installs or live application-model calls:
 
 - TypeScript `tsc --noEmit`: **PASS**.
-- Vitest full suite: **329 tests, 43 files PASS**.
+- Vitest full suite: **331 tests, 43 files PASS**.
 - Fresh Next build: **PASS**.
-- Full Playwright Chromium suite: **44 journeys PASS**, 1.5 minutes.
+- Full Playwright Chromium suite: **48 journeys PASS**, 1.5 minutes.
 - `git diff --check`: **PASS**.
 - Desktop1440/mobile390 existing journey screenshots inspected; the saving row
   follows the established shell and existing controls/layout remain.
@@ -65,7 +65,8 @@ and a dose-reduction control that is inapplicable after stopped=true. Scenarios
 now enter edits in the allowed stage and use the applicable improvement answer;
 product behavior was not changed to accommodate them. A live-invalidation gap
 found in the implementer audit was fixed and has focused unit/native recurrence
-evidence. Final full44 verification supersedes the intermediate failures.
+evidence. Initial full44 local verification superseded those failures. The final full48
+verification includes the review/CI corrections below.
 
 ## Limits and remaining gates
 
@@ -88,7 +89,51 @@ command semantics or production release were added/changed. The unchanged UI
 control inventory was moved to `src/browser/fact-controls.ts` with an app reexport
 so restore validation shares the same representation rules.
 
-Actual subscription Opus high review, final-head CI, squash merge and merged-main
-verification remain delivery gates at this checkpoint. Protected stable-origin
+Actual subscription Opus high review at `b56e74b` found no blockers; all three
+follow-ups and the evidence gap have bounded remediation below. The same review
+session's targeted recheck, final-head CI, squash merge and merged-main
+verification remain gates at this checkpoint. Protected stable-origin
 and matching deployed release provenance checks remain the phase milestone gate;
 local null release provenance is not deployed-version evidence.
+
+
+## Review and CI remediation
+
+Actual standard review: `issue139-20261014T211356-bf932fca`, Opus high,
+canonical `claude-opus-5-5`, CLI2.1.296, subscription preflight passed. It was
+static only; the reviewer ran no tests or independent CI/browser checks. No
+Safari/Firefox evidence is claimed. The full verdict/findings/limits are in PR140.
+
+- F1: only invalidated pending fields are set aside, not unaffected live edits.
+  Historical-reference wording stays true after later explicit edits. Confirmed
+  discard removes earlier edits without changing accepted facts. Retained text
+  counts as work even in a blank case. Known free text is displayed verbatim;
+  choice labels apply only to actual choices. Native evidence covers a literal
+  `declined` value, cancellation of New case, reference-only behavior and discard.
+- F2: old `wilson-journey-state-v2` tab input stays separate from the new optional
+  `wilson-current-case-debug-v1` mirror. New case cannot clear retained old input,
+  including in unsaved mode. Existing durable state never overwrites another old
+  tab source. A notice surfaces separate earlier work; only explicitly confirmed
+  damaged-legacy recovery removes it. This is compatibility preservation, not a
+  case list or a second case authority.
+- F3: cancellation is registered before acquisition's first await. A replacement
+  waits for its own cancelled native request to finish. There is no sleep, forced
+  takeover or change to ordinary second-tab blocking. The Playwright-only harness
+  uses actual React development StrictMode; its probe confirms two effect starts
+  and one cleanup, with a deliberately held native grant before successful load.
+- Evidence gap: restart now checks the visible Reporter screen and active
+  navigation, then the visible conflict and omitted-detail notice.
+- Additional implementer guard: inconsistent/regressing response revisions are
+  rejected before replacing current work; focused recurrence evidence is added.
+
+Initial CI38638597431 passed42 journeys and failed the two new quota/abort tests.
+Their independent unsent-update save can fail while the correction response is
+still held, so the old assertion could read accepted age57 before acknowledgement
+although an age58 draft was visible. The corrected tests deliberately assert57
+before release, wait for the actual successful response and completed editor,
+then require58. Original expected values, no-replay checks and timeout limits
+remain. The focused pair and final full48 suite pass; CI was not blindly rerun.
+
+Final local Node24.20.0 gates after all remediation: typecheck/build,331unit tests
+across43files and48Chromium journeys pass. Raw review reports and full local logs
+remain local; no model/release/process-restart claim is inferred from CI alone.

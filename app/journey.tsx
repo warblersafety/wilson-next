@@ -190,7 +190,7 @@ export function JourneyBody() {
 
   async function resetJourney() {
     if (!workspace.canStart() || operationActive.current) return;
-    if (hasWorkspaceWork(browserState, uiDrafts)
+    if (hasWorkspaceWork(browserState, uiDrafts, workspace.retained.length)
       && !window.confirm("Start a new case? This case and any unfinished text will be lost.")) return;
     operationActive.current = true;
     setPendingOperation("reset");
@@ -274,7 +274,7 @@ export function JourneyBody() {
           : workspace.status.kind === "saved" ? "Saved in this browser" : workspace.status.kind === "saving" ? "Saving in this browser…" : "Changes are not saved in this browser. Your current work is still here."}</p>
         {workspace.unsavedOnly ? <button disabled={busy} onClick={workspace.retryLoad}>Return to saved work</button> : workspace.status.kind === "error" && <><button disabled={busy} onClick={workspace.retrySave}>Retry save</button><button disabled={busy} onClick={workspace.retryLoad}>Reload saved case</button></>}
       </section>
-      <RetainedDrafts items={workspace.retained} snapshot={snapshot} />
+      <RetainedDrafts items={workspace.retained} snapshot={snapshot} busy={busy} discard={workspace.discardRetained} />
       {error && errorOperation !== "opening" && errorOperation !== "update" && errorOperation !== "pdf" && <div className={`${styles.error} ${styles.floatingStatus}`} role="alert">{error}</div>}
       {draftFault && <div className={styles.error} role="alert">{draftFault}</div>}
       {(boundaryNotice || workspace.notice) && <div className={styles.notice} role="status">{boundaryNotice || workspace.notice}</div>}

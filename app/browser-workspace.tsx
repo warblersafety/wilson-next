@@ -5,11 +5,11 @@ import type { BrowserJourneyState, JourneyResponse } from "../src/server/case/br
 import { ActiveCaseStore, type ActiveCaseRecord } from "../src/browser/active-case-store";
 import { CaseSaveQueue, type SaveStatus } from "../src/browser/case-save-queue";
 import { acquireWorkspaceLease, type WorkspaceRelease } from "../src/browser/workspace-lease";
-import { acknowledgeWorkspaceDrafts, decodeWorkspaceData, hasWorkspaceWork, reconcileWorkspace, workspaceInput, type RetainedDraft } from "../src/browser/workspace-state";
+import { acknowledgeWorkspaceDrafts, assertResponseContinuation, decodeWorkspaceData, hasWorkspaceWork, reconcileWorkspace, workspaceInput, type RetainedDraft } from "../src/browser/workspace-state";
 import { DraftDecodeError } from "../src/browser/draft-error";
 import { initialUiDrafts, type UiDraftSnapshot } from "../src/browser/ui-drafts";
 import { useJourneyDrafts } from "./journey-drafts";
-import { clearJourneySession, readStoredJourneyState, requestJourneyJson, storeJourneyState } from "./browser-diagnostics";
+import { clearJourneySession, clearLegacyJourneyState, readStoredJourneyState, requestJourneyJson, storeJourneyState } from "./browser-diagnostics";
 
 type Recovery = { message: string; incompatible: boolean; record?: ActiveCaseRecord; token?: string; legacy?: boolean };
 type Phase = "loading" | "blocked" | "recovery" | "ready";
@@ -44,6 +44,7 @@ export function useBrowserWorkspace() {
 
   useEffect(() => {
     let cancelled = false;
+    const acquisition = new AbortController();
     let ownRelease: WorkspaceRelease | undefined;
     let ownQueue: CaseSaveQueue | undefined;
     const storage = new ActiveCaseStore(); store.current = storage;
@@ -53,12 +54,16 @@ export function useBrowserWorkspace() {
     let legacy = false;
     async function start() {
       try {
-        ownRelease = await acquireWorkspaceLease(navigator.locks) ?? undefined;
+        ownRelease = await acquireWorkspaceLease(navigator.locks, acquisition.signal, () => ownQueue?.dispose()) ?? undefined;
         if (cancelled) { ownRelease?.(); return; }
         if (!ownRelease) { setPhase("blocked"); return; }
         release.current = ownRelease;
         observed = await storage.load();
         if (cancelled) return;
+        let legacyValue: unknown;
+        let legacyError: SyntaxError | undefined;
+        try { legacyValue = readStoredJourneyState(); }
+        catch (error) { if (error instanceof SyntaxError) legacyError = error; /* Session storage is optional. */ }
         let next: JourneyResponse;
         let ui: UiDraftSnapshot;
         let kept: RetainedDraft[] = [];
@@ -70,9 +75,8 @@ export function useBrowserWorkspace() {
           ui = reconciled.ui; kept = reconciled.retained;
         } else {
           let old: unknown;
-          legacy = true;
-          try { if (observed.generation === null) old = readStoredJourneyState(); }
-          catch (error) { if (error instanceof SyntaxError) throw error; /* Optional session storage can be unavailable. */ }
+          legacy = observed.generation === null;
+          if (legacy) { if (legacyError) throw legacyError; old = legacyValue; }
           if (old !== undefined) {
             next = await requestJourneyJson<JourneyResponse>({ method: "POST", body: { operation: "resume", state: old } }, "The earlier tab case could not be restored");
             const initial = ownerRef.current.snapshot.caseId === next.state.case.id ? ownerRef.current.snapshot : { ...initialUiDrafts(next.state.case.id), screen: next.snapshot.stage === "describe" ? "describe" as const : "details" as const };
@@ -89,7 +93,8 @@ export function useBrowserWorkspace() {
         ownQueue = new CaseSaveQueue(storage, observed.generation, observed.savedAt, value => { if (!cancelled) setStatus(value); });
         queue.current = ownQueue;
         replacement.current = false;
-        setRetained(kept); setNotice(next.snapshot.transitionNotice);
+        const earlierTabData = legacyError || (legacyValue !== undefined && JSON.stringify(legacyValue) !== JSON.stringify(next.state));
+        setRetained(kept); setNotice([next.snapshot.transitionNotice, earlierTabData ? "Earlier work from this tab has been left unchanged. Wilson is showing the current browser case." : undefined].filter(Boolean).join(" ") || undefined);
         mirror(next.state);
         active.current = true;
         setStatus({ kind: "saving", savedAt: observed.savedAt });
@@ -109,6 +114,7 @@ export function useBrowserWorkspace() {
     void start();
     return () => {
       cancelled = true; active.current = false;
+      acquisition.abort();
       ownRelease?.(ownQueue?.dispose());
       if (release.current === ownRelease) release.current = undefined;
     };
@@ -122,7 +128,7 @@ export function useBrowserWorkspace() {
   useEffect(() => {
     const preventLoss = (event: BeforeUnloadEvent) => {
       const current = responseRef.current, ui = ownerRef.current.snapshot;
-      if (!current || !hasWorkspaceWork(current.state, ui)) return;
+      if (!current || !hasWorkspaceWork(current.state, ui, retainedRef.current.length)) return;
       const pending = unsavedOnly || !isCurrentSaved();
       if (pending) { event.preventDefault(); event.returnValue = ""; }
     };
@@ -132,7 +138,7 @@ export function useBrowserWorkspace() {
 
   function accept(next: JourneyResponse, replace = false, action?: JourneyAction) {
     const current = responseRef.current;
-    if (!replace && current && next.state.case.id !== current.state.case.id) throw new DraftDecodeError("corrupt", "The response belongs to another case. Your current work is retained.");
+    assertResponseContinuation(current, next, replace);
     // A successful result remains in memory before optional/durable storage.
     responseRef.current = next; setResponse(next); setNotice(next.snapshot.transitionNotice);
     if (!replace && current && ownerRef.current.snapshot.caseId === next.state.case.id) {
@@ -166,7 +172,7 @@ export function useBrowserWorkspace() {
   }
   function retryLoad() {
     if (recovering.current) return;
-    if ((hasWorkspaceWork(responseRef.current?.state, ownerRef.current.snapshot) && !isCurrentSaved()) && !window.confirm("Reload the saved case? Current unsaved work in this tab will be lost.")) return;
+    if ((hasWorkspaceWork(responseRef.current?.state, ownerRef.current.snapshot, retainedRef.current.length) && !isCurrentSaved()) && !window.confirm("Reload the saved case? Current unsaved work in this tab will be lost.")) return;
     active.current = false;
     setEpoch(value => value + 1);
   }
@@ -189,7 +195,7 @@ export function useBrowserWorkspace() {
       if (recovery.token) await store.current.discardCorrupt(recovery.token);
       else if (recovery.record) await store.current.clearIfUnchanged(recovery.record);
       else if (!recovery.legacy) return;
-      if (recovery.legacy) clearJourneySession();
+      if (recovery.legacy) clearLegacyJourneyState();
       // Do not reimport an old optional mirror after deliberate durable discard.
       if (!recovery.legacy) { try { clearJourneySession(); } catch { /* optional */ } }
       ownerRef.current.dispatch({ type: "reset", caseId: "pending-new-case" });
@@ -209,10 +215,18 @@ export function useBrowserWorkspace() {
     if (!unsavedOnly) mirror(next.state);
     setNotice(next.snapshot.transitionNotice ?? "The case was refreshed. Review it before retrying your action.");
   }
+  function discardRetained(index: number) {
+    const item = retainedRef.current[index], caseId = responseRef.current?.state.case.id;
+    if (!item || phase !== "ready" || !active.current || recovering.current
+      || !window.confirm("Discard these earlier unfinished edits? They will no longer be available. Accepted report facts are unchanged.")) return;
+    if (responseRef.current?.state.case.id !== caseId) return;
+    const remaining = retainedRef.current.filter(candidate => candidate !== item);
+    retainedRef.current = remaining; setRetained(remaining);
+  }
   const visibleStatus: SaveStatus = status.kind === "saved" && !isCurrentSaved() ? { ...status, kind: "saving" } : status;
   return { response, phase, recovery, recoveryBusy, status: visibleStatus, retained, notice, unsavedOnly,
     canStart: () => phase === "ready" && active.current && !recovering.current,
-    accept, retryLoad, continueUnsaved, discardDamaged, refreshStage,
+    accept, discardRetained, retryLoad, continueUnsaved, discardDamaged, refreshStage,
     retrySave: () => { if (enqueueLatest()) queue.current?.retry(); }, clearNotice: () => setNotice(undefined),
     canDiscard: Boolean(recovery && !recovery.incompatible && (recovery.token || recovery.record || recovery.legacy)),
   };

@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { createSemanticCase } from "../../src/domain/case/create";
 import { productCapacityCase } from "../fixtures/product-capacity";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { getJourneySnapshot } from "../../src/server/journey/service";
 import { journeyResponse } from "../../src/server/case/browser-state";
-import { acknowledgeWorkspaceDrafts, decodeWorkspaceData, reconcileWorkspace, workspaceInput, type WorkspaceData } from "../../src/browser/workspace-state";
+import { acknowledgeWorkspaceDrafts, assertResponseContinuation, decodeWorkspaceData, hasWorkspaceWork, reconcileWorkspace, workspaceInput, type WorkspaceData } from "../../src/browser/workspace-state";
 import { draftRecordKey, initialUiDrafts, factVersions, reporterDraftKey } from "../../src/browser/ui-drafts";
 async function fixture() {
   const clinical = productCapacityCase(), repository = new InMemoryCaseRepository({ initialCase: clinical });
@@ -49,7 +50,9 @@ describe("saved workspace boundary and target reconciliation", () => {
     const result = reconcileWorkspace(data, state, changed), record = result.ui.records[key];
     expect(record.kind === "card" && record.data.drafts).toEqual({ identifier: { kind: "known", value: " Unchanged edit " } });
     expect(record.kind === "card" && record.data.editing).toBeUndefined();
-    expect(result.retained[0].record).toEqual(data.ui.records[key]);
+    const retained = result.retained[0].record;
+    expect(retained.kind === "card" && retained.data.drafts).toEqual({ ageYears: { kind: "known", value: 58, qualifier: "" } });
+    expect(retained.kind === "card" && retained.data.qualifierControls).toEqual({ ageYears: true });
     expect(result.ui.text.update).toBe(" Unsent words ");
   });
   it("retains type-incompatible or unsupported field edits instead of coercing them", async () => {
@@ -78,4 +81,23 @@ it("acknowledges only the submitted field while retaining unrelated pending work
   const result = reconcileWorkspace({ ...data, ui: acknowledged }, state, changed);
   expect(result.retained).toHaveLength(0);
   expect(result.ui.records[key].kind === "card" && result.ui.records[key].data.drafts).toEqual({ identifier: { kind: "known", value: "  Unrelated pending text " } });
+});
+
+it("rejects regressing/inconsistent response revisions before replacing current work", async () => {
+  const current = await fixture();
+  expect(() => assertResponseContinuation(current, current)).not.toThrow();
+  const older = structuredClone(current); older.state.case.revision--; older.snapshot.revision--;
+  expect(() => assertResponseContinuation(current, older)).toThrow(expect.objectContaining({ code: "corrupt" }));
+  const mismatched = structuredClone(current); mismatched.snapshot.revision++;
+  expect(() => assertResponseContinuation(current, mismatched)).toThrow(expect.objectContaining({ code: "corrupt" }));
+  const other = structuredClone(current); other.state.case.id = "case-11111111-1111-4111-8111-111111111139";
+  expect(() => assertResponseContinuation(current, other)).toThrow(expect.objectContaining({ code: "corrupt" }));
+  expect(() => assertResponseContinuation(current, other, true)).not.toThrow();
+});
+
+it("treats retained unfinished text as work even when the current clinical case is blank", async () => {
+  const { state } = await fixture();
+  const blank = { ...state, stage: "describe" as const, case: createSemanticCase(state.case.id) };
+  expect(hasWorkspaceWork(blank, initialUiDrafts(state.case.id))).toBe(false);
+  expect(hasWorkspaceWork(blank, initialUiDrafts(state.case.id), 1)).toBe(true);
 });
