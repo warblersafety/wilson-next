@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { UnrepresentedModelProposal } from "../../domain/case/model-boundary";
+import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts } from "../../domain/case/limits";
 import { completionQuestions } from "../../domain/case/completion-policy";
 import { createSemanticCase } from "../../domain/case/create";
 import { allFacts, getFact, targetFromKey, targetKey } from "../../domain/case/facts";
@@ -58,6 +59,8 @@ export type OutputReadinessIssueCode =
   | "no-complete-suspect-product"
   | "missing-report-type"
   | "missing-event-description"
+  | "too-many-suspect-products"
+  | "too-many-concomitant-products"
   | "multiple-suspect-devices"
   | "unsupported-concomitant-device";
 
@@ -659,6 +662,23 @@ export function outputReadinessIssues(
       ["event:event:problemDescription", "event:event:symptoms", "event:event:treatments", "event:event:outcome"],
       ["event"],
     );
+  }
+  // Count the actual semantic output slots. Never prune retained knowledge to
+  // make this bounded PDF fit; the adapter keeps the same guards as defense in depth.
+  for (const [products, maximum, code, label] of [
+    [projection.sections.D.suspectProducts, maximumForm3500SuspectProducts, "too-many-suspect-products", "suspect medicines or other non-device products"],
+    [projection.sections.F.concomitantProducts, maximumForm3500ConcomitantProducts, "too-many-concomitant-products", "concomitant products"],
+  ] as const) {
+    if (products.length > maximum) {
+      const ids = products.map(({ productId }) => productId);
+      const limitLabel = code === "too-many-concomitant-products" && maximum === 1 ? "concomitant product" : label;
+      issue(
+        code,
+        `This preview can include at most ${maximum} ${limitLabel} in the PDF. All ${products.length} reviewed ${label} are retained, but this case exceeds the supported PDF capacity.`,
+        ids.map((id) => `product:${id}:role`),
+        ids,
+      );
+    }
   }
   const suspectDevices = caseState.products.filter((product) => product.state === "resolved"
     && knownValue(product.facts.role) === "suspect"
