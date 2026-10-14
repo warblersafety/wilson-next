@@ -80,6 +80,19 @@ export function clinicalDraftKey(snapshot: JourneySnapshot): string {
 }
 export const reporterDraftKey = (snapshot: JourneySnapshot) => JSON.stringify([snapshot.understanding.reporter, snapshot.understanding.event.reportDate.resolved]);
 export const factVersions = (facts: JourneySnapshot["understanding"]["patient"]) => Object.fromEntries(Object.entries(facts).map(([field, fact]) => [field, JSON.stringify([fact.resolved, fact.history, fact.conflicts])]));
+/** Same prerequisite invalidation for an active editor and a restored editor. */
+export function invalidatedCardFields(facts: JourneySnapshot["understanding"]["patient"], previous: Record<string, string>, entity: string): Set<string> {
+  const current = factVersions(facts);
+  const changed = [...new Set([...Object.keys(current), ...Object.keys(previous)])].filter(field => current[field] !== previous[field]);
+  const invalid = new Set(changed);
+  if (entity === "product" && changed.some(field => ["name", "productType", "role", "stopped", "doseReduced", "restarted"].includes(field))) {
+    for (const field of ["stopped", "doseReduced", "stopDate", "improvedAfterChange", "restarted", "recurred"]) invalid.add(field);
+  }
+  if (entity === "product" && changed.some(field => ["productType", "role", "implanted", "reprocessedSingleUse"].includes(field))) {
+    for (const field of ["implantDate", "explantDate", "reprocessor"]) invalid.add(field);
+  }
+  return invalid;
+}
 export type DraftAction =
   | { type: "text"; action: TextDraftAction }
   | { type: "submitted"; caseId: string; id: string; kind: "opening" | "update"; text: string; revision: number }

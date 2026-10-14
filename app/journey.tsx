@@ -4,23 +4,24 @@ import { useEffect, useRef, useState } from "react";
 import { productDisplayLabel } from "../src/domain/case/product-label";
 import type { CaseValue, ReportType } from "../src/domain/case/types";
 import type { FactView, ProductView, ReviewAttentionItem } from "../src/domain/case/views";
-import type { BrowserJourneyState, JourneyResponse } from "../src/server/case/browser-state";
+import type { JourneyResponse } from "../src/server/case/browser-state";
 import type { JourneyAction, JourneySnapshot } from "../src/server/journey/service";
 import { factControl, knownOptionLabel, type FactControl, type FactControlEntity } from "./fact-controls";
 import {
   clearJourneySession,
   JourneyRequestError,
-  readStoredJourneyState,
   requestJourneyJson,
   requestJourneyPdf,
-  storeJourneyState,
 } from "./browser-diagnostics";
 import { MedicationTask } from "./medication-task";
 import styles from "./page.module.css";
-import { editValueForSubmission, clinicalDraftKey, reporterDraftKey, factVersions as captureFactVersions } from "../src/browser/ui-drafts";
+import { editValueForSubmission, clinicalDraftKey, reporterDraftKey, factVersions as captureFactVersions, invalidatedCardFields } from "../src/browser/ui-drafts";
 import { JourneyDraftProvider, useJourneyDrafts, useCaseDraft, draftFieldSetter } from "./journey-drafts";
 import { canSaveReporter, clinicalNeedParts, needFieldLabel, nextClinicalAction, singleEntityGroup } from "./clinical-guidance";
 import { productCardFields } from "./product-fields";
+import { useBrowserWorkspace } from "./browser-workspace";
+import { hasWorkspaceWork } from "../src/browser/workspace-state";
+import { RetainedDrafts } from "./retained-drafts";
 
 const progressMessages = {
   opening: "Preparing case details for your review…",
@@ -43,8 +44,10 @@ export function JourneyBody() {
   const screen = uiDrafts.screen;
   const setScreen = (value: Screen) => dispatchDraft({ type: "screen", value });
   const [pdf, setPdf] = useState<PdfArtifact>();
-  const [snapshot, setSnapshot] = useState<JourneySnapshot>();
-  const [browserState, setBrowserState] = useState<BrowserJourneyState>();
+  const workspace = useBrowserWorkspace();
+  const snapshot = workspace.response?.snapshot;
+  const browserState = workspace.response?.state;
+  const operationActive = useRef(false);
   const textDrafts = uiDrafts.text;
   const dispatchTextDraft = (action: import("../src/browser/journey-text-drafts").TextDraftAction) => dispatchDraft({ type: "text", action });
   const { opening, update } = textDrafts;
@@ -64,7 +67,11 @@ export function JourneyBody() {
   const [clinicalNavigation, setClinicalNavigation] = useState(0);
   const updateReviewFocus = useRef<{ groups: string[]; directQuestion: boolean } | undefined>(undefined);
 
-  useEffect(() => { void loadJourney(); }, []);
+  useEffect(() => {
+    const guard = (event: BeforeUnloadEvent) => { if (operationActive.current) { event.preventDefault(); event.returnValue = ""; } };
+    window.addEventListener("beforeunload", guard);
+    return () => window.removeEventListener("beforeunload", guard);
+  }, []);
 
   const task = screen;
   useEffect(() => () => { if (pdf) URL.revokeObjectURL(pdf.url); }, [pdf]);
@@ -120,52 +127,19 @@ export function JourneyBody() {
     return () => window.clearTimeout(timer);
   }, [resetNotice]);
 
-  function acceptResponse(response: JourneyResponse) {
-    storeJourneyState(response.state);
-    setBrowserState(response.state);
-    setSnapshot(response.snapshot);
-    dispatchDraft({ type: "response", caseId: response.state.case.id, snapshot: response.snapshot });
-  }
-
-  async function freshJourney(notice?: string) {
-    const response = await requestJourneyJson<JourneyResponse>({}, "The temporary case could not be loaded");
-    acceptResponse(response);
-    if (notice) setBoundaryNotice(notice);
-  }
-
-  async function loadJourney() {
-    try {
-      const stored = readStoredJourneyState();
-      if (stored === undefined) return await freshJourney();
-      try {
-        const response = await requestJourneyJson<JourneyResponse>({
-          method: "POST",
-          body: { operation: "resume", state: stored },
-        }, "This tab’s previous case could not be restored");
-        acceptResponse(response);
-        if (response.snapshot.transitionNotice) setBoundaryNotice(response.snapshot.transitionNotice);
-        setScreen(response.snapshot.stage === "describe" ? "describe" : "details");
-      } catch (caught) {
-        if (caught instanceof JourneyRequestError
-          && ["incompatible-browser-state", "malformed-browser-state", "stale-browser-state"].includes(caught.code ?? "")) {
-          clearJourneySession();
-          await freshJourney("Wilson could not restore this tab’s previous case. That work is no longer available, so a new case was started.");
-          return;
-        }
-        throw caught;
-      }
-    } catch (caught) {
-      setError(displayError(caught, "The temporary case could not be loaded"));
-    }
+  function acceptResponse(response: JourneyResponse, replace = false, action?: JourneyAction) {
+    workspace.accept(response, replace, action);
   }
 
   async function act(action: JourneyAction) {
-    if (!snapshot || !browserState) return false;
+    if (!snapshot || !browserState || !workspace.canStart() || operationActive.current) return false;
+    operationActive.current = true;
     const inputId = action.action === "submit-opening" || action.action === "submit-update" ? crypto.randomUUID() : undefined;
     setPendingOperation(action.action === "submit-opening" ? "opening" : action.action === "submit-update" ? "update" : "case");
     setErrorOperation(action.action === "submit-opening" ? "opening" : action.action === "submit-update" ? "update" : "case");
     setError(undefined);
     setBoundaryNotice(undefined);
+    workspace.clearNotice();
     setReviewNotice("");
     setResetNotice(false);
     try {
@@ -181,7 +155,7 @@ export function JourneyBody() {
           directQuestion: directAnswer,
         };
       }
-      acceptResponse(response);
+      acceptResponse(response, false, action);
       if (inputId && (action.action === "submit-opening" || action.action === "submit-update")) {
         dispatchDraft({ type: "submitted", caseId: response.state.case.id, id: inputId, kind: action.action === "submit-opening" ? "opening" : "update", text: action.text, revision: response.snapshot.revision });
       }
@@ -203,25 +177,32 @@ export function JourneyBody() {
       }
       return true;
     } catch (caught) {
+      if (caught instanceof JourneyRequestError && caught.code === "stale-browser-state") {
+        try { await workspace.refreshStage(); } catch { /* Preserve current work; explicit retry remains available. */ }
+      }
       setError(displayError(caught, "Wilson could not update the case"));
       return false;
     } finally {
+      operationActive.current = false;
       setPendingOperation(undefined);
     }
   }
 
   async function resetJourney() {
-    if (((snapshot?.revision ?? 0) > 0 || opening.length > 0 || update.length > 0 || reportType !== "adverse-event")
+    if (!workspace.canStart() || operationActive.current) return;
+    if (hasWorkspaceWork(browserState, uiDrafts, workspace.retained.length)
       && !window.confirm("Start a new case? This case and any unfinished text will be lost.")) return;
+    operationActive.current = true;
     setPendingOperation("reset");
     setErrorOperation("reset");
     setError(undefined);
     setBoundaryNotice(undefined);
+    workspace.clearNotice();
     setResetNotice(false);
     try {
       const response = await requestJourneyJson<JourneyResponse>({}, "The new case could not be started");
-      clearJourneySession();
-      acceptResponse(response);
+      try { clearJourneySession(); } catch { /* The optional session mirror cannot lose the successful new case. */ }
+      acceptResponse(response, true);
       dispatchDraft({ type: "reset", caseId: response.state.case.id });
       setReviewNotice("");
       setDraftDisclosureOpen(false);
@@ -231,12 +212,14 @@ export function JourneyBody() {
     } catch (caught) {
       setError(displayError(caught, "The new case could not be started"));
     } finally {
+      operationActive.current = false;
       setPendingOperation(undefined);
     }
   }
 
   async function generatePdf() {
-    if (!browserState || !snapshot?.downloadReady) return;
+    if (!browserState || !snapshot?.downloadReady || !workspace.canStart() || operationActive.current) return;
+    operationActive.current = true;
     setPendingOperation("pdf");
     setErrorOperation("pdf");
     setError(undefined);
@@ -246,6 +229,7 @@ export function JourneyBody() {
     } catch (caught) {
       setError(displayError(caught, "The official PDF could not be generated"));
     } finally {
+      operationActive.current = false;
       setPendingOperation(undefined);
     }
   }
@@ -256,7 +240,11 @@ export function JourneyBody() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, snapshot?.reportContentKey, snapshot?.downloadReady]);
 
-  if (!snapshot) return <main className={styles.loading}><p>{error ?? "Preparing your case…"}</p></main>;
+  if (!snapshot) return <main className={`${styles.loading} ${styles.appShell}`}><section className={styles.workspaceRecovery}>
+    {workspace.phase === "blocked" ? <><h1>This case is open in another tab</h1><p>Use that tab, or close it before trying here. Only one tab can edit the saved case at a time.</p><button onClick={workspace.retryLoad}>Try this tab again</button></>
+      : workspace.phase === "recovery" ? <><h1>Your saved work has been retained</h1><p role="alert">{workspace.recovery?.message}</p><button disabled={workspace.recoveryBusy} onClick={workspace.retryLoad}>Retry loading saved work</button><button disabled={workspace.recoveryBusy} onClick={() => void workspace.continueUnsaved()}>Continue with a new unsaved case</button>{workspace.canDiscard && <button disabled={workspace.recoveryBusy} onClick={() => void workspace.discardDamaged()}>Discard damaged saved work</button>}</>
+      : <p>Preparing your case…</p>}
+  </section></main>;
   const clinicalAction = nextClinicalAction(snapshot);
   const reviewingUpdate = clinicalAction?.kind === "updates";
   const capacityIssues = productCapacityIssues(snapshot);
@@ -277,13 +265,19 @@ export function JourneyBody() {
           <div>
             <p>Wilson helps you prepare a downloadable Form FDA 3500. It does not submit the report to FDA.</p>
             <p>This preview supports a limited set of details for adult medication side effects, adverse events or product problems involving one medical device, and quality problems with other medical products. It does not cover every report or every field on the form. Details that cannot be included are shown with your case. Tests can be added during review; another medicine must be included in the starting description of a new case.</p>
-            <p>Your case is temporary and kept only in this browser tab. Closing the tab or starting a new case clears it. Unsubmitted text is not saved. Do not rely on reloading, reopening a tab, or using another device to recover your work.</p>
+            <p>Your case and unfinished text are saved in this browser on this site when the saving status confirms it. Reopen this same site in the same browser profile to resume. Starting a new case replaces the active case after confirmation. This is not a backup: clearing site data, private browsing, storage eviction or a changed site address can make work unavailable. A power failure can lose the latest completed save. Only one tab can edit at a time.</p>
           </div>
         </details>
       </aside>
+      <section aria-label="Browser saving" className={styles.browserSaving}>
+        <p role="status">{workspace.unsavedOnly ? "Working without saving. Your earlier saved work is retained."
+          : workspace.status.kind === "saved" ? "Saved in this browser" : workspace.status.kind === "saving" ? "Saving in this browser…" : "Changes are not saved in this browser. Your current work is still here."}</p>
+        {workspace.unsavedOnly ? <button disabled={busy} onClick={workspace.retryLoad}>Return to saved work</button> : workspace.status.kind === "error" && <><button disabled={busy} onClick={workspace.retrySave}>Retry save</button><button disabled={busy} onClick={workspace.retryLoad}>Reload saved case</button></>}
+      </section>
+      <RetainedDrafts items={workspace.retained} snapshot={snapshot} busy={busy} discard={workspace.discardRetained} />
       {error && errorOperation !== "opening" && errorOperation !== "update" && errorOperation !== "pdf" && <div className={`${styles.error} ${styles.floatingStatus}`} role="alert">{error}</div>}
       {draftFault && <div className={styles.error} role="alert">{draftFault}</div>}
-      {boundaryNotice && <div className={styles.notice} role="status">{boundaryNotice}</div>}
+      {(boundaryNotice || workspace.notice) && <div className={styles.notice} role="status">{boundaryNotice || workspace.notice}</div>}
       {snapshot.unrepresented.length > 0 && <UnrepresentedNotice items={snapshot.unrepresented} />}
       <div className={styles.floatingStatus}><OperationStatus active={pendingOperation === "case" || pendingOperation === "reset"} message={pendingOperation ? progressMessages[pendingOperation] : ""} /></div>
       <nav className={styles.stepper} aria-label="Report steps">
@@ -493,7 +487,7 @@ function IndicationTask({ snapshot, busy, act }: {
     <p>Answer each labelled product separately, or record that the information is unknown or declined.</p>
     {products.map((product) => {
       const name = productViewLabel(product!);
-      return <fieldset className={styles.answerGroup} key={product!.id}>
+      return <fieldset disabled={busy} className={styles.answerGroup} key={product!.id}>
         <legend>{name}</legend>
         <label><input type="radio" name={`choice-${product!.id}`} checked={choices[product!.id] === "known"} onChange={() => setChoices({ ...choices, [product!.id]: "known" })} /> Known</label>
         <input aria-label={`${name} indication`} value={texts[product!.id] ?? ""} onChange={(event) => { setChoices({ ...choices, [product!.id]: "known" }); setTexts({ ...texts, [product!.id]: event.target.value }); }} />
@@ -539,7 +533,7 @@ function SeriousOutcomesTask({ snapshot, busy, act }: {
   return <>
     <h1 id="task-title">{question?.question}</h1>
     <p>Select every additional outcome that applies. Leaving an available outcome unchecked records that it did not apply. Accepted outcomes are shown and will not be asked again.</p>
-    <fieldset className={styles.answerGroup}>
+    <fieldset disabled={busy} className={styles.answerGroup}>
       <legend>Serious outcomes</legend>
       {(Object.entries(seriousOutcomeLabels) as Array<[SeriousOutcomeKey, string]>).map(([field, label]) => <label key={field}>
         <input type="checkbox" checked={Boolean(existing[field]) || selected.includes(field)} disabled={Boolean(existing[field]) || !missing.has(field)} onChange={(event) => setSelected(event.target.checked ? [...selected, field] : selected.filter((item) => item !== field))} /> {label}{existing[field] ? " — already recorded" : ""}
@@ -563,7 +557,7 @@ function DeathDateTask({ snapshot, busy, act }: {
     <h1 id="task-title">{snapshot.clarification?.question}</h1>
     <p>This detail is asked only because death is recorded as an outcome.</p>
     <label htmlFor="death-date">Date of death</label>
-    <input id="death-date" type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+    <input disabled={busy} id="death-date" type="date" value={date} onChange={(event) => setDate(event.target.value)} />
     <div className={styles.decisionActions}>
       <button disabled={busy || !date} onClick={() => void act({ action: "answer-death-date", value: { kind: "known", value: date } })}>Add date</button>
       <button disabled={busy} onClick={() => void act({ action: "answer-death-date", value: { kind: "unknown" } })}>Unknown</button>
@@ -597,7 +591,7 @@ function ClinicalContextTask({ snapshot, busy, act }: {
   return <>
     <h1 id="task-title">{question?.question}</h1>
     <p>Add only context that is relevant to understanding this event. Unknown, none, and refusal are retained and will not trigger the same question again.</p>
-    {question?.askTests && <fieldset className={styles.answerGroup}>
+    {question?.askTests && <fieldset disabled={busy} className={styles.answerGroup}>
       <legend>Relevant tests or laboratory results</legend>
       <label><input type="radio" name="test-choice" checked={testChoice === "known"} onChange={() => setTestChoice("known")} /> Add one relevant result</label>
       {testChoice === "known" && <>
@@ -612,7 +606,7 @@ function ClinicalContextTask({ snapshot, busy, act }: {
       <label><input type="radio" name="test-choice" checked={testChoice === "unknown"} onChange={() => setTestChoice("unknown")} /> Unknown</label>
       <label><input type="radio" name="test-choice" checked={testChoice === "declined"} onChange={() => setTestChoice("declined")} /> Prefer not to answer</label>
     </fieldset>}
-    {question?.askHistory && <fieldset className={styles.answerGroup}>
+    {question?.askHistory && <fieldset disabled={busy} className={styles.answerGroup}>
       <legend>Other relevant medical history</legend>
       <label><input type="radio" name="history-choice" checked={historyChoice === "known"} onChange={() => setHistoryChoice("known")} /> Add relevant history</label>
       {historyChoice === "known" && <textarea aria-label="Relevant medical history" rows={4} value={history} onChange={(event) => setHistory(event.target.value)} />}
@@ -660,17 +654,17 @@ function DeviceDetailsTask({ snapshot, busy, act }: {
   return <>
     <h1 id="task-title">{question?.question}</h1>
     <p>These details are asked only because the reviewed device facts make them applicable. Unknown, not applicable, and refusal close the detail without a repeat.</p>
-    {question?.askImplantDate && <fieldset className={styles.answerGroup}>
+    {question?.askImplantDate && <fieldset disabled={busy} className={styles.answerGroup}>
       <legend>Implant date</legend>
       {choices("implant-date-choice", implantChoice, setImplantChoice, false)}
       {implantChoice === "known" && <input aria-label="Device implant date" type="date" value={implantDate} onChange={(event) => setImplantDate(event.target.value)} />}
     </fieldset>}
-    {question?.askExplantDate && <fieldset className={styles.answerGroup}>
+    {question?.askExplantDate && <fieldset disabled={busy} className={styles.answerGroup}>
       <legend>Explant date</legend>
       {choices("explant-date-choice", explantChoice, setExplantChoice, true)}
       {explantChoice === "known" && <input aria-label="Device explant date" type="date" value={explantDate} onChange={(event) => setExplantDate(event.target.value)} />}
     </fieldset>}
-    {question?.askReprocessor && <fieldset className={styles.answerGroup}>
+    {question?.askReprocessor && <fieldset disabled={busy} className={styles.answerGroup}>
       <legend>Reprocessor</legend>
       {choices("reprocessor-choice", reprocessorChoice, (choice) => setReprocessorChoice(choice as Exclude<DeviceDetailChoice, "inapplicable">), false)}
       {reprocessorChoice === "known" && <input aria-label="Device reprocessor" value={reprocessor} onChange={(event) => setReprocessor(event.target.value)} />}
@@ -971,16 +965,9 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
     focusAfterEdit.current = undefined;
   }, [editing]);
   useEffect(() => {
-    const changed = Object.keys(facts).filter((field) => JSON.stringify([facts[field].resolved, facts[field].history, facts[field].conflicts]) !== factVersions[field]);
-    if (changed.length === 0) return;
+    const invalid = invalidatedCardFields(facts, factVersions, entity);
+    if (invalid.size === 0) return;
     setFactVersions(captureFactVersions(facts));
-    const invalid = new Set(changed);
-    if (entity === "product" && changed.some((field) => ["name", "productType", "role", "stopped", "doseReduced", "restarted"].includes(field))) {
-      for (const field of ["stopped", "doseReduced", "stopDate", "improvedAfterChange", "restarted", "recurred"]) invalid.add(field);
-    }
-    if (entity === "product" && changed.some((field) => ["productType", "role", "implanted", "reprocessedSingleUse"].includes(field))) {
-      for (const field of ["implantDate", "explantDate", "reprocessor"]) invalid.add(field);
-    }
     setDrafts((current) => Object.fromEntries(Object.entries(current).filter(([field]) => !invalid.has(field))));
     setQualifierControls(current => Object.fromEntries(Object.entries(current).filter(([field]) => !invalid.has(field))));
     setEditing((current) => current && invalid.has(current) ? undefined : current);
@@ -1059,7 +1046,7 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
         {editable && !reviewBlocked && editing === field && draft && <div className={styles.inlineEdit}>
           <p className={styles.editorTitle}>Editing {control.label.toLowerCase()}</p>
           {control.help && <p>{control.help}</p>}
-          <FactValueEditor label={control.label} control={control} value={draft} hasQualifierControl={qualifierControls[field] ?? false} onChange={(next) => setDrafts((current) => ({ ...current, [field]: next }))} />
+          <fieldset disabled={busy} className={styles.editorControls}><FactValueEditor label={control.label} control={control} value={draft} hasQualifierControl={qualifierControls[field] ?? false} onChange={(next) => setDrafts((current) => ({ ...current, [field]: next }))} /></fieldset>
           <button disabled={busy || (Boolean(value) && !dirty) || !validEditableValue(draft, control)} onClick={async () => {
             if (allowOpeningReview && proposal) {
               finishEdit(field, false);

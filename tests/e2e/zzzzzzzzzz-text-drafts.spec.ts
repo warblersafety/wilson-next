@@ -1,3 +1,4 @@
+import { seedStoredState } from "./draft4-helpers";
 import { expect, test } from "@playwright/test";
 import { productCapacityCase } from "../fixtures/product-capacity";
 import { browserStateVersion } from "../../src/server/case/browser-state";
@@ -33,7 +34,7 @@ test("update failure retains text and success acknowledges only the submitted dr
   const snapshot = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: current }), current.id);
   await page.goto("/");
   await page.getByLabel("Case description", { exact: true }).waitFor();
-  await page.evaluate(value => sessionStorage.setItem("wilson-journey-state-v2", JSON.stringify(value)), state);
+  await seedStoredState(page, state);
   await page.reload();
   const update = page.getByLabel("Clinical update", { exact: true });
   const submit = page.getByRole("button", { name: "Prepare changes for review", exact: true });
@@ -54,7 +55,7 @@ test("update failure retains text and success acknowledges only the submitted dr
     requests++;
     expect(route.request().postDataJSON().action.text).toBe("  First unsent update.  ");
     await gate;
-    await route.fulfill({ json: { state, snapshot } });
+    await route.fulfill({ json: { state, snapshot, provenance: { stateVersion: browserStateVersion, release: null } } });
   }, { times: 1 });
   await submit.click();
   await expect(page.getByRole("button", { name: "Preparing update…", exact: true })).toBeDisabled();
@@ -64,7 +65,7 @@ test("update failure retains text and success acknowledges only the submitted dr
   await expect(update).toHaveValue("Later typing while pending");
   await page.route("**/api/case", async route => {
     requests++;
-    await route.fulfill({ json: { state, snapshot } });
+    await route.fulfill({ json: { state, snapshot, provenance: { stateVersion: browserStateVersion, release: null } } });
   }, { times: 1 });
   await submit.click();
   await expect(update).toHaveValue("");

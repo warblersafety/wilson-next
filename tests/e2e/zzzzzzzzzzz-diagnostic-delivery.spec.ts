@@ -25,12 +25,13 @@ for (const mode of ["held", "offline"] as const) {
     await page.route("**/api/case", async route => {
       const action = route.request().postDataJSON()?.action;
       if (action?.action === "submit-opening") {
+        state.case = { ...current, id: route.request().postDataJSON().state.case.id };
         openings++;
-        return route.fulfill(openings === 1 ? { status: 422, json: { error: "Synthetic opening failure" } } : { json: { state, snapshot } });
+        return route.fulfill(openings === 1 ? { status: 422, json: { error: "Synthetic opening failure" } } : { json: { state, snapshot, provenance: { stateVersion: browserStateVersion, release: null } } });
       }
       if (action?.action === "submit-update") {
         updates++;
-        return route.fulfill(updates === 1 ? { status: 422, json: { error: "Synthetic update failure" } } : { json: { state, snapshot } });
+        return route.fulfill(updates === 1 ? { status: 422, json: { error: "Synthetic update failure" } } : { json: { state, snapshot, provenance: { stateVersion: browserStateVersion, release: null } } });
       }
       return route.continue();
     });

@@ -12,8 +12,8 @@ type PageStore = { [key: string]: unknown };
 async function install(page: Page, name: string) {
   const source = await readFile("src/browser/active-case-store.ts", "utf8");
   const code = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
-  await page.goto("/");
-  await expect(page.getByLabel("Case description", { exact: true })).toBeVisible();
+  await page.route("**/__native-store-check", route => route.fulfill({ contentType: "text/html", body: "<!doctype html><title>Native persistence acceptance</title>" }));
+  await page.goto("/__native-store-check");
   await page.evaluate(async ({ code, name }) => {
     const url = URL.createObjectURL(new Blob([code], { type: "text/javascript" }));
     const module = await import(url); URL.revokeObjectURL(url);

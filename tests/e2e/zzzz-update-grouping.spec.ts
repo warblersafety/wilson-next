@@ -1,3 +1,4 @@
+import { seedStoredState } from "./draft4-helpers";
 import { expect, test } from "@playwright/test";
 import { browserStateVersion } from "../../src/server/case/browser-state";
 import { groupingAcceptedCase, groupingUpdate } from "../fixtures/grouping-failure";
@@ -11,7 +12,7 @@ test("one unchanged cross-entity response creates separately accepted history, m
   });
   await page.goto("/");
   await expect(page.getByLabel("Case description", { exact: true })).toBeVisible();
-  await page.evaluate(state => sessionStorage.setItem("wilson-journey-state-v2", JSON.stringify(state)), { version: browserStateVersion, stage: "clarify", case: baseline, unrepresented: [] });
+  await seedStoredState(page, { version: browserStateVersion, stage: "clarify", case: baseline, unrepresented: [] });
   await page.reload();
   await goTo(page, "Review details");
   await page.getByLabel("Clinical update", { exact: true }).fill(groupingUpdate);

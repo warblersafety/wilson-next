@@ -47,7 +47,7 @@ test("repairs missing laboratory identity, corrects one result, and downloads fa
   await expect(first).toContainText("Earlier: 9.1 g/dL");
   expect(await projectedText(page)).toContain("hemoglobin: 8.9 g/dL");
   expect(await projectedText(page)).toContain("stool test: positive for occult blood");
-  const accepted = await page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-journey-state-v2")!).case);
+  const accepted = await page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-current-case-debug-v1")!).case);
   expect(accepted.relevantTests.slice(1).map((test: { id: string }) => test.id)).toEqual(["test-t0", "test-t1"]);
   expect(accepted.relevantTests[1].facts.date.resolvedValue.value).toEqual({ kind: "known", value: "2026-09-11" });
   const downloaded = savePdf(page);

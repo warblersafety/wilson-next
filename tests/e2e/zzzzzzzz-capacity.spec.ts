@@ -1,3 +1,4 @@
+import { seedStoredState } from "./draft4-helpers";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { expect, test } from "@playwright/test";
@@ -21,7 +22,7 @@ for (const scenario of [
     const state = { version: browserStateVersion, stage: "output" as const, case: current, unrepresented: [] };
     await page.goto("/");
     await expect(page.getByLabel("Case description", { exact: true })).toBeVisible();
-    await page.evaluate(value => sessionStorage.setItem("wilson-journey-state-v2", JSON.stringify(value)), state);
+    await seedStoredState(page, state);
     await page.reload();
     await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
     const before = await storedState(page);

@@ -11,21 +11,23 @@ interface Probe {
   remount(raw: unknown): { ok: boolean; code?: string };
   restore(raw: unknown): { ok: boolean; code?: string };
   rejectInvalid(): void;
+  lifecycle(): { starts: number; stops: number };
 }
 export const readDraftOwner = (page: Page) => page.evaluate(() => (window as unknown as { draftProbe: Probe }).draftProbe.read());
 export const remountDraftOwner = (page: Page, raw: unknown) => page.evaluate(value => (window as unknown as { draftProbe: Probe }).draftProbe.remount(value), raw);
 export const tryRestoreDraftOwner = (page: Page, raw: unknown) => page.evaluate(value => (window as unknown as { draftProbe: Probe }).draftProbe.restore(value), raw);
+export const readDraftLifecycle = (page: Page) => page.evaluate(() => (window as unknown as { draftProbe: Probe }).draftProbe.lifecycle());
 export const rejectDraftAction = (page: Page) => page.evaluate(() => (window as unknown as { draftProbe: Probe }).draftProbe.rejectInvalid());
 
 /** Test-only bundling of actual production components with a context probe.
  * Playwright fulfills the HTML; no production route/flag/global is introduced. */
-export async function draftOwnerHarnessHtml(): Promise<string> {
+export async function draftOwnerHarnessHtml(strictDevelopment = false): Promise<string> {
   const root = fileURLToPath(new URL("../../", import.meta.url));
   const directory = await mkdtemp(join(tmpdir(), "wilson-draft-harness-"));
   try {
     const entry = join(directory, "entry.tsx");
     await writeFile(entry, `
-import { useEffect } from "react";
+import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { JourneyBody } from ${JSON.stringify(join(root, "app/journey.tsx"))};
 import { JourneyDraftProvider, useJourneyDrafts } from ${JSON.stringify(join(root, "app/journey-drafts.tsx"))};
@@ -33,16 +35,20 @@ import { decodeUiDrafts, encodeUiDrafts } from ${JSON.stringify(join(root, "src/
 const root = createRoot(document.getElementById("root"));
 let generation = 0;
 let latest;
+let effectStarts = 0, effectStops = 0;
+function LifecycleProbe() { useEffect(() => { effectStarts++; return () => { effectStops++; }; }, []); return null; }
 function Probe() {
   const owner = useJourneyDrafts();
   useEffect(() => { latest = owner; });
   return null;
 }
 function render(initialSnapshot) {
-  root.render(<JourneyDraftProvider key={++generation} initialSnapshot={initialSnapshot}><JourneyBody/><Probe/></JourneyDraftProvider>);
+  const content = <JourneyDraftProvider key={++generation} initialSnapshot={initialSnapshot}><JourneyBody/><Probe/><LifecycleProbe/></JourneyDraftProvider>;
+  root.render(${strictDevelopment ? "<StrictMode>{content}</StrictMode>" : "content"});
 }
 window.draftProbe = {
   read: () => encodeUiDrafts(latest.snapshot),
+  lifecycle: () => ({ starts: effectStarts, stops: effectStops }),
   remount: raw => {
     try { const decoded = decodeUiDrafts(raw, latest.snapshot.caseId ?? undefined); render(decoded); return { ok: true }; }
     catch (error) { return { ok: false, code: error.code }; }
@@ -57,7 +63,7 @@ render();
 `);
     const result = await build({
       root, configFile: false, envFile: false, logLevel: "error",
-      define: { "process.env.NODE_ENV": JSON.stringify("production") },
+      define: { "process.env.NODE_ENV": JSON.stringify(strictDevelopment ? "development" : "production") },
       resolve: { alias: [
         { find: /^react$/, replacement: join(root, "node_modules/react/index.js") },
         { find: /^react\/jsx-runtime$/, replacement: join(root, "node_modules/react/jsx-runtime.js") },

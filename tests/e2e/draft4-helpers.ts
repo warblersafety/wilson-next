@@ -1,10 +1,12 @@
 import { expect, type Page } from "@playwright/test";
 import { nextCompletionQuestion } from "../../src/domain/case/completion-policy";
 import { projectForm3500 } from "../../src/domain/case/projection";
-import type { BrowserJourneyState } from "../../src/server/case/browser-state";
+import { initialUiDrafts } from "../../src/browser/ui-drafts";
+import { workspaceInput } from "../../src/browser/workspace-state";
+import { parseBrowserJourneyState, type BrowserJourneyState } from "../../src/server/case/browser-state";
 
 export async function storedState(page: Page): Promise<BrowserJourneyState> {
-  return page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-journey-state-v2")!));
+  return page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-current-case-debug-v1")!));
 }
 export async function goTo(page: Page, name: "Describe" | "Review details" | "Reporter details" | "Review & save") {
   await page.getByRole("navigation", { name: "Report steps" }).getByRole("button", { name: new RegExp(name.replace("&", "\\&") + "$") }).click();
@@ -48,4 +50,19 @@ export async function savePdf(page: Page) {
 }
 export async function projectedText(page: Page) {
   return JSON.stringify(projectForm3500((await storedState(page)).case));
+}
+
+/** Synthetic fixture setup writes the durable authority, not the optional old
+ * session mirror. Wait for this page's committed work before replacing it. */
+export async function seedStoredState(page: Page, candidate: unknown) {
+  const state = parseBrowserJourneyState(candidate);
+  await expect(page.getByRole("region", { name: "Browser saving" }).getByRole("status")).toHaveText("Saved in this browser");
+  const ui = { ...initialUiDrafts(state.case.id), screen: state.stage === "describe" ? "describe" as const : "details" as const };
+  const input = workspaceInput(state, { version: 1, provenance: { stateVersion: state.version, release: null }, ui, retained: [] });
+  await page.evaluate(async json => {
+    const input = JSON.parse(json);
+    const db = await new Promise<IDBDatabase>((resolve, reject) => { const r = indexedDB.open("wilson-browser-persistence", 1); r.onsuccess = () => resolve(r.result); r.onerror = () => reject(r.error); });
+    try { await new Promise<void>((resolve, reject) => { const tx = db.transaction("active-case", "readwrite"); tx.objectStore("active-case").put({ version: 1, generation: crypto.randomUUID(), savedAt: new Date().toISOString(), payload: input }, "active"); tx.oncomplete = () => resolve(); tx.onabort = () => reject(tx.error); }); }
+    finally { db.close(); }
+  }, JSON.stringify(input));
 }
