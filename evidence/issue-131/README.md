@@ -1,0 +1,75 @@
+# Issue #131 — typed top-level text drafts
+
+The current UI now owns opening text, report-type selection and unsent clinical
+update as one versioned typed record with pure transitions. No control, layout,
+navigation, semantic command, sessionStorage or IndexedDB behavior is changed.
+This boundary is a prerequisite, not complete unfinished-work capture or durable
+save/resume. No user-facing saved-status or recovery claim is introduced.
+
+The strict decoder is available for later integration; the running UI initializes
+fresh drafts and does not hydrate persisted drafts. Missing selection is `null`
+in the JSON-safe boundary and remains `undefined` at the existing control API.
+Text, whitespace and empty strings are retained without normalization. Successful
+update acknowledgement clears only the exact submitted text, retaining any later
+typing. Only successful confirmed new-case creation resets the record atomically.
+Failure and cancelled reset leave it alone.
+
+## Acceptance evidence
+
+Checks use explicit Node 24.20.0 and existing dependencies, with the installed
+independent PDF reader selected through PYPDF_PYTHON. No live model calls.
+
+The new browser tests use actual UI controls. One exercises absent report-type
+selection and whitespace text through cancelled/failed reset, then a successful
+reset to defaults. The other exercises failed update submission, a held valid
+synthetic response while typing a newer draft, and matching acknowledgement.
+That response intentionally returns unchanged valid case state: this tests the
+client transport acknowledgement, not interpretation quality or clinical changes.
+Existing full model-mocked journeys retain source-to-PDF regression coverage.
+
+The initial unit invocation omitted PYPDF_PYTHON: 25 PDF checks failed because the
+system Python lacked pypdf. No dependency was installed; selecting the existing
+reader corrects the check environment. Final results are recorded in the PR.
+
+Final local verification passes: typecheck, fresh production build, all 283 unit
+tests across 38 files, and all 21 mock Chromium journeys (1.4 minutes). The first
+browser run passed the existing 19 journeys but exposed ambiguous new alert
+selectors; scoping those to the application main fixed them. The two focused
+checks and then the complete suite passed. No runtime workaround was added.
+
+## Remaining work
+
+Reporter case drafts, direct field edits and every clinical completion task still
+have component-local state. They need typed capture keyed by stable identities,
+with prerequisite invalidation and conditional acknowledgement, before complete
+save/resume can be claimed. This slice does not persist or hydrate them, alter
+accepted facts, replay requests, erase incompatible records, implement reporter
+reuse, change access/deployment settings or connect the #129 adapter to the UI.
+
+## CI limitation and preserved acceptance
+
+The first PR CI passed typecheck, unit tests and build. The existing usability
+journey failed waiting for opening-error feedback; its unfinished scenario left
+the ordered model fixture queue misaligned for the following journey. Both new
+text-draft journeys passed. Existing open #118 records the same intermittent
+awaited-diagnostics failure and fixture-sequence effect, including earlier traces;
+this run alone does not identify which network phase delayed feedback.
+
+A test-only response-synchronization change was evaluated locally and accepted
+by an Opus recheck, which also flagged its lost pre-request latency coverage (F3).
+It is excluded from the final change: #118 explicitly requires preserving UI
+expectations rather than working around diagnostic delays. The original strict
+usability test and its timing assertions remain unchanged. No retry, timeout
+increase or application workaround is included. This slice does not fix #118,
+and any eventual green run does not establish bounded telemetry delivery.
+
+Local typecheck, 283 unit tests, fresh build and all 21 full mock Chromium
+journeys passed with the original usability test at daf7a8c. Final exact-head CI
+is required separately; the earlier failed run remains disclosed in the PR.
+
+Opus F1 (coded incompatible/corrupt draft failures) and F2 (case-scoped unfinished
+opening versus submitted-text echo) remain explicit prerequisites before any
+hydration, recorded on #131. The final production and test files are identical
+to the original reviewed daf7a8c commit; only this evidence clarification differs.
+The subsequent recheck reviewed the excluded synchronization experiment. Its F3
+coverage reduction is absent from the final diff.
