@@ -91,8 +91,9 @@ so restore validation shares the same representation rules.
 
 Actual subscription Opus high review at `b56e74b` found no blockers; all three
 follow-ups and the evidence gap have bounded remediation below. The same review
-session's targeted recheck, final-head CI, squash merge and merged-main
-verification remain gates at this checkpoint. Protected stable-origin
+session's targeted recheck found no remaining blockers at `2981363`. Exact-head
+CI38642975991 passed. Squash merge and merged-main verification remain gates
+at this checkpoint. Protected stable-origin
 and matching deployed release provenance checks remain the phase milestone gate;
 local null release provenance is not deployed-version evidence.
 
@@ -137,3 +138,20 @@ remain. The focused pair and final full48 suite pass; CI was not blindly rerun.
 Final local Node24.20.0 gates after all remediation: typecheck/build,331unit tests
 across43files and48Chromium journeys pass. Raw review reports and full local logs
 remain local; no model/release/process-restart claim is inferred from CI alone.
+
+## Targeted recheck disposition
+
+The same actual subscription Opus high session inspected the complete 849-line
+remediation delta at `29813637c8a0bf80ba599470e6421f4c69f3fd46` and found no
+blockers. F1–F3 and the restored-screen evidence gap are closed. Static only:
+no tests were run by the reviewer and implementer counts were not independently
+verified. The canonical complete findings and limits are recorded on PR140.
+
+One low-severity follow-up remains: after importing old tab data, a later action
+can make the preserved old value differ from current state, causing the earlier-
+work notice on reload even for the same case. This is cosmetic wording only;
+no data is lost. It is retained as an explicit PR follow-up, outside this slice's
+completed save/resume acceptance.
+
+This closure edit records existing results only; it changes no source, test,
+behavior, architecture or acceptance requirement.
