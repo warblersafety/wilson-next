@@ -534,6 +534,8 @@ uses the server restore boundary as follows:
   `assertStoredStage` does not reject valid saved cases when current policy
   changes applicable questions. Actions still require stored-stage and expected-
   revision equality; clients resume first, then issue any explicit action.
+  Resume explains a changed review stage, including newly required details
+  before PDF readiness, without altering clinical state.
 - Validate each typed UI draft before hydration and surface any invalidated draft
   without silently losing the complete saved record.
 - Inner-state incompatibility, including rollback to an older deployment, must
@@ -548,7 +550,9 @@ call or semantic write, and each JourneyResponse adds provenance with the curren
 state version and a strictly validated public 40-hex deployment commit (null when
 unavailable). Provenance is outside clinical state and is not authority or a
 claim that a record has been saved. Integration must capture that provenance in
-the durable envelope. UI hydration, retained incompatible records and the
+the durable envelope. The testing checkpoint must verify that the protected
+deployment actually reports its matching commit; a locally validated fallback
+is not deployed-release evidence. UI hydration, retained incompatible records and the
 remaining browser lifecycle requirements are still integration work. Storage
 never accepts facts or creates a second semantic write path.
 

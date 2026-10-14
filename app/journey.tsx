@@ -143,6 +143,7 @@ export function JourneyBody() {
           body: { operation: "resume", state: stored },
         }, "This tab’s previous case could not be restored");
         acceptResponse(response);
+        if (response.snapshot.transitionNotice) setBoundaryNotice(response.snapshot.transitionNotice);
         setScreen(response.snapshot.stage === "describe" ? "describe" : "details");
       } catch (caught) {
         if (caught instanceof JourneyRequestError
