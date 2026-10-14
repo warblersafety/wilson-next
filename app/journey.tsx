@@ -46,7 +46,7 @@ export function JourneyBody() {
   const setScreen = (value: Screen) => dispatchDraft({ type: "screen", value });
   const [pdf, setPdf] = useState<PdfArtifact>();
   const workspace = useBrowserWorkspace();
-  const reporterProfile = useReporterProfile();
+  const reporterProfile = useReporterProfile(workspace.phase === "ready" ? workspace.ownershipEpoch : undefined);
   const snapshot = workspace.response?.snapshot;
   const browserState = workspace.response?.state;
   const operationActive = useRef(false);
@@ -737,7 +737,7 @@ function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate, continueCl
         setValues({ ...profile.profile!.values }); setHealthProfessional(profile.profile!.healthProfessional);
       }}>Use remembered details</button><button disabled={busy || profile.busy || profile.reloadRequired || profile.hasPending} onClick={profile.forget}>Forget remembered details</button></>}
       {profile.failed && !profile.reloadRequired && <button disabled={busy || profile.busy} onClick={() => void profile.retry()}>Retry remembering details</button>}
-      {profile.reloadRequired && <button disabled={busy || profile.busy} onClick={() => void profile.reload()}>Reload remembered details</button>}
+      {(profile.reloadRequired || profile.failed) && <button disabled={busy || profile.busy} onClick={() => void profile.reload()}>Reload remembered details</button>}
     </div></section>}
     <div className={styles.reportDate}><label>Date of this report <input disabled={busy} aria-label="Date of this report" type="date" value={reportDate} onChange={(event) => setReportDate(event.target.value)} /></label><p className={styles.hint}>Defaults to today on your device. Change it if this report was prepared on another date. It stays the same when you reopen or download the form.</p></div>
     <div className={styles.reporterPanels}>

@@ -656,7 +656,10 @@ reporter draft is pristine and no reporter facts are accepted. Restored cases
 and dirty drafts are not seeded. Automatic defaults become the draft baseline;
 unaccepted identity still warns the output workflow that reporter work remains.
 
-Profile operations live in a stable owner across case/Reporter remounts. Failed
+Profile operations live in a stable owner across case/Reporter remounts. Loading
+and readiness are scoped to acquired workspace ownership, so a formerly blocked
+tab reads current defaults after handoff. A failed pending profile intent retains
+its original comparison generation rather than silently advancing it on case reload. Failed
 writes retain their exact requested snapshot for explicit save-only retry;
 subsequent case-field edits are separate work. Stale/corrupt/future records are
 not replaced. Reload is explicit, with confirmation before discarding a failed
@@ -724,7 +727,8 @@ changed origins remain outside recovery. Closing a browser during an uncompleted
 action can leave an unobserved server/model result; saved text is retained and no
 action is automatically repeated. Native process-restart and failure acceptance,
 full regression checks and independent review are delivery gates. Reporter profile
-persistence and protected stable-origin deployment verification remain separate.
+persistence is delivered separately by Issue141 above. Protected stable-origin
+deployment verification remains a milestone gate.
 
 ## Application and data boundary
 

@@ -139,20 +139,23 @@ test("future and corrupt profile records stay untouched while normal reporter en
   }
 });
 
-test("profile storage failure preserves latest pending defaults and accepted case; explicit retry writes once without repeating case actions", async ({ page }) => {
+for (const failure of ["quota", "abort"] as const) test(`profile ${failure} failure preserves requested defaults and accepted case; explicit retry saves without repeating case actions`, async ({ page }) => {
   await page.goto("/"); await saved(page); await prepareCase(page, true); await fill(page);
   const accepted = await storedState(page);
-  await page.evaluate(() => {
+  await page.evaluate(failure => {
     const original = IDBObjectStore.prototype.put;
     IDBObjectStore.prototype.put = function (...args) {
-      if (this.transaction.db.name === "wilson-reporter-profile") throw new DOMException("Synthetic quota", "QuotaExceededError");
-      return original.apply(this, args as [unknown, IDBValidKey?]);
+      if (this.transaction.db.name !== "wilson-reporter-profile") return original.apply(this, args as [unknown, IDBValidKey?]);
+      if (failure === "quota") throw new DOMException("Synthetic quota", "QuotaExceededError");
+      const request = original.apply(this, args as [unknown, IDBValidKey?]); this.transaction.abort(); return request;
     };
     (window as any).restoreProfilePut = () => { IDBObjectStore.prototype.put = original; };
-  });
+  }, failure);
   let actions = 0; page.on("request", r => { if (r.url().endsWith("/api/case") && r.method() === "POST" && r.postDataJSON().operation === "act") actions++; });
   await remembered(page).getByRole("button", { name: "Remember these fictional details", exact: true }).click();
   await expect(remembered(page).getByRole("button", { name: "Retry remembering details", exact: true })).toBeVisible();
+  await expect(remembered(page)).toContainText("Remembered details could not be saved. Earlier remembered details are unchanged.");
+  await expect(remembered(page)).not.toContainText("Synthetic quota");
   expect(await profileRecord(page)).toBeUndefined(); expect(await storedState(page)).toEqual(accepted);
   await page.getByLabel("Reporter first name", { exact: true }).fill("Later current draft");
   await page.evaluate(() => (window as any).restoreProfilePut());
@@ -232,4 +235,87 @@ test("stale profile writes require explicit reload and preserve current case edi
   await expect(remembered(page)).toContainText("Remembered details reloaded.");
   await expect(page.getByLabel("Reporter first name", { exact: true })).toHaveValue("Current fictional pending edit");
   expect(await storedState(page)).toEqual(accepted); expect(await profileRecord(page)).toEqual(changed);
+});
+
+test("waiting tab loads the latest remembered defaults when it gains editing ownership", async ({ page, context }) => {
+  await page.goto("/"); await saved(page); await prepareCase(page, true); await fill(page);
+  await remembered(page).getByRole("button", { name: "Remember these fictional details", exact: true }).click();
+  await expect(remembered(page)).toContainText("Fictional reporter details remembered in this browser.");
+  const waiting = await context.newPage(); await waiting.goto("/");
+  await expect(waiting.getByRole("heading", { name: "This case is open in another tab", exact: true })).toBeVisible();
+  await page.getByLabel("Reporter first name", { exact: true }).fill("Newest fictional default");
+  await remembered(page).getByRole("button", { name: "Update remembered details", exact: true }).click();
+  await expect.poll(async () => (await profileRecord(page)).profile.values.firstName).toBe("Newest fictional default"); await saved(page);
+  await page.close();
+  await waiting.getByRole("button", { name: "Try this tab again", exact: true }).click(); await saved(waiting);
+  await newCase(waiting); await makeFreshReporterVisible(waiting);
+  await expect(waiting.getByLabel("Reporter first name", { exact: true })).toHaveValue("Newest fictional default");
+});
+
+test("a failed remembered change can be explicitly abandoned without changing stored defaults or current case edits", async ({ page }) => {
+  await page.goto("/"); await saved(page); await prepareCase(page, true); await fill(page);
+  await remembered(page).getByRole("button", { name: "Remember these fictional details", exact: true }).click();
+  await expect(remembered(page)).toContainText("Fictional reporter details remembered in this browser.");
+  const original = await profileRecord(page), accepted = await storedState(page);
+  await page.getByLabel("Reporter first name", { exact: true }).fill("Only current unfinished edit");
+  await page.evaluate(() => {
+    const put = IDBObjectStore.prototype.put;
+    IDBObjectStore.prototype.put = function (...args) {
+      if (this.transaction.db.name === "wilson-reporter-profile") { const request = put.apply(this, args as [unknown, IDBValidKey?]); this.transaction.abort(); return request; }
+      return put.apply(this, args as [unknown, IDBValidKey?]);
+    };
+  });
+  await remembered(page).getByRole("button", { name: "Update remembered details", exact: true }).click();
+  await expect(remembered(page).getByRole("button", { name: "Retry remembering details", exact: true })).toBeVisible();
+  page.once("dialog", d => d.dismiss()); await remembered(page).getByRole("button", { name: "Reload remembered details", exact: true }).click();
+  await expect(remembered(page).getByRole("button", { name: "Retry remembering details", exact: true })).toBeVisible();
+  page.once("dialog", d => d.accept()); await remembered(page).getByRole("button", { name: "Reload remembered details", exact: true }).click();
+  await expect(remembered(page).getByRole("button", { name: "Retry remembering details", exact: true })).toHaveCount(0);
+  await expect(remembered(page).getByRole("button", { name: "Update remembered details", exact: true })).toBeEnabled();
+  await expect(page.getByLabel("Reporter first name", { exact: true })).toHaveValue("Only current unfinished edit");
+  expect(await profileRecord(page)).toEqual(original); expect(await storedState(page)).toEqual(accepted);
+});
+
+test("a native stored undefined is corruption, never an empty profile slot", async ({ page }) => {
+  const html = await draftOwnerHarnessHtml();
+  await page.route("**/__profile-undefined-check", route => route.fulfill({ contentType: "text/html", body: html }));
+  await page.goto("/__profile-undefined-check"); await saved(page);
+  const result = await page.evaluate(async profile => {
+    const probe = (window as any).profileProbe; await probe.load();
+    const db = await new Promise<IDBDatabase>((resolve, reject) => { const request = indexedDB.open("wilson-profile-adapter-probe", 1); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); });
+    const read = () => new Promise<unknown[]>((resolve, reject) => { const tx = db.transaction("reporter"), request = tx.objectStore("reporter").getAll("remembered"); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); });
+    try {
+      await new Promise<void>((resolve, reject) => { const tx = db.transaction("reporter", "readwrite"); tx.objectStore("reporter").put(undefined, "remembered"); tx.oncomplete = () => resolve(); tx.onabort = () => reject(tx.error); });
+      const before = await read(), errors: string[] = [];
+      for (const operation of [() => probe.load(), () => probe.save(profile, null), () => probe.save(null, null)]) { try { await operation(); errors.push("unexpected success"); } catch (e) { errors.push((e as any).code); } }
+      return { before, errors, after: await read() };
+    } finally { db.close(); }
+  }, profile);
+  expect(result.before).toEqual([undefined]); expect(result.after).toEqual(result.before); expect(result.errors).toEqual(["corrupt", "corrupt", "corrupt"]);
+});
+
+test("case-only reload cannot silently advance a failed profile intent's comparison generation", async ({ page }) => {
+  await page.goto("/"); await saved(page); await prepareCase(page, true); await fill(page);
+  await remembered(page).getByRole("button", { name: "Remember these fictional details", exact: true }).click();
+  await expect(remembered(page)).toContainText("Fictional reporter details remembered in this browser."); await saved(page);
+  await page.evaluate(() => {
+    const put = IDBObjectStore.prototype.put;
+    IDBObjectStore.prototype.put = function (...args) {
+      if (["wilson-reporter-profile", "wilson-browser-persistence"].includes(this.transaction.db.name)) throw new DOMException("Synthetic unavailable write", "QuotaExceededError");
+      return put.apply(this, args as [unknown, IDBValidKey?]);
+    };
+    (window as any).restorePendingPut = () => { IDBObjectStore.prototype.put = put; };
+  });
+  await page.getByLabel("Reporter first name", { exact: true }).fill("Pending profile intent");
+  await remembered(page).getByRole("button", { name: "Update remembered details", exact: true }).click();
+  await expect(remembered(page).getByRole("button", { name: "Retry remembering details", exact: true })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Browser saving" }).getByRole("button", { name: "Reload saved case", exact: true })).toBeVisible();
+  await page.evaluate(() => (window as any).restorePendingPut());
+  const external = { version: 1, generation: randomUUID(), profile: { ...profile, values: { ...profile.values, firstName: "Concurrent fictional default" } } };
+  await profileRecord(page, external);
+  page.once("dialog", d => d.accept());
+  await page.getByRole("region", { name: "Browser saving" }).getByRole("button", { name: "Reload saved case", exact: true }).click(); await saved(page);
+  await remembered(page).getByRole("button", { name: "Retry remembering details", exact: true }).click();
+  await expect(remembered(page)).toContainText("Remembered details changed in another tab.");
+  expect(await profileRecord(page)).toEqual(external);
 });

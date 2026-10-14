@@ -2,7 +2,9 @@
 import { useEffect, useRef, useState } from "react";
 import { ReporterProfileError, ReporterProfileStore, reporterProfileSchema, type ReporterProfile, type ReporterProfileRecord } from "../src/browser/reporter-profile";
 
-export function useReporterProfile() {
+export function useReporterProfile(ownershipEpoch?: number) {
+  const ownership = useRef(ownershipEpoch); ownership.current = ownershipEpoch;
+  const [loadedEpoch, setLoadedEpoch] = useState<number>();
   const [record, setRecord] = useState<ReporterProfileRecord>();
   const current = useRef(record); current.current = record;
   const [busy, setBusy] = useState(false), working = useRef(false);
@@ -13,13 +15,14 @@ export function useReporterProfile() {
   const seeded = useRef(new Set<string>());
   const [store] = useState(() => new ReporterProfileStore());
   useEffect(() => {
+    if (ownershipEpoch === undefined || desired.current || working.current) return;
     let cancelled = false;
     void store.load().then(value => {
       if (cancelled) return;
-      current.current = value; setRecord(value); setMessage(value.profile ? "Fictional reporter details remembered in this browser." : "No reporter details are remembered in this browser.");
-    }, error => { if (!cancelled) { setMessage(error instanceof Error ? error.message : "Remembered details are unavailable. You can still enter this report's details."); setReloadRequired(true); } });
+      current.current = value; setRecord(value); setLoadedEpoch(ownershipEpoch); setReloadRequired(false); setFailed(false); setMessage(value.profile ? "Fictional reporter details remembered in this browser." : "No reporter details are remembered in this browser.");
+    }, error => { if (!cancelled) { setMessage(error instanceof ReporterProfileError ? error.message : "Remembered details are unavailable. You can still enter this report's details."); setReloadRequired(true); } });
     return () => { cancelled = true; };
-  }, [store]);
+  }, [store, ownershipEpoch]);
   useEffect(() => {
     const guard = (event: BeforeUnloadEvent) => { if (desired.current) { event.preventDefault(); event.returnValue = ""; } };
     window.addEventListener("beforeunload", guard); return () => window.removeEventListener("beforeunload", guard);
@@ -29,11 +32,11 @@ export function useReporterProfile() {
     working.current = true; setBusy(true); setFailed(false); setMessage("Saving remembered details…");
     try {
       const value = await store.save(desired.current.profile, current.current.generation);
-      current.current = value; setRecord(value); desired.current = undefined;
+      current.current = value; setRecord(value); setLoadedEpoch(ownership.current); desired.current = undefined;
       setMessage(value.profile ? "Fictional reporter details remembered in this browser. This report is unchanged until you save its reporter details." : "Remembered details forgotten. This report's details are unchanged.");
     } catch (error) {
       setFailed(true); setReloadRequired(error instanceof ReporterProfileError && ["stale-writer", "corrupt", "incompatible"].includes(error.code));
-      setMessage(error instanceof Error ? error.message : "Remembered details could not be saved. This report's draft is retained.");
+      setMessage(error instanceof ReporterProfileError ? error.message : "Remembered details could not be saved. This report's draft is retained.");
     } finally { working.current = false; setBusy(false); }
   }
   function remember(raw: unknown) {
@@ -50,14 +53,16 @@ export function useReporterProfile() {
   async function reload() {
     if (working.current || (desired.current && !window.confirm("Reload remembered details? The failed change to remembered defaults will be discarded. This report's draft stays unchanged."))) return;
     working.current = true; setBusy(true);
-    try { const value = await store.load(); current.current = value; setRecord(value); desired.current = undefined; setFailed(false); setReloadRequired(false); setMessage(value.profile ? "Remembered details reloaded. This report is unchanged." : "No reporter details are remembered in this browser."); }
-    catch (error) { setMessage(error instanceof Error ? error.message : "Remembered details are unavailable."); }
+    try { const value = await store.load(); current.current = value; setRecord(value); setLoadedEpoch(ownership.current); desired.current = undefined; setFailed(false); setReloadRequired(false); setMessage(value.profile ? "Remembered details reloaded. This report is unchanged." : "No reporter details are remembered in this browser."); }
+    catch (error) { setMessage(error instanceof ReporterProfileError ? error.message : "Remembered details are unavailable."); }
     finally { working.current = false; setBusy(false); }
   }
-  return { profile: record?.profile, ready: Boolean(record), busy, failed, reloadRequired, message,
+  const ready = Boolean(record) && ownershipEpoch !== undefined && loadedEpoch === ownershipEpoch;
+  return { profile: ready ? record?.profile : undefined, ready, busy, failed, reloadRequired,
+    message: !ready && !failed && !busy && !reloadRequired ? "Loading remembered details…" : message,
     remember, forget, retry: write, reload, hasPending: Boolean(desired.current),
     claimFreshCase: (caseId: string) => {
-      if (!current.current || working.current || desired.current || reloadRequired || seeded.current.has(caseId)) return undefined;
+      if (!ready || !current.current || working.current || desired.current || reloadRequired || seeded.current.has(caseId)) return undefined;
       seeded.current.add(caseId); return current.current.profile ?? undefined;
     },
   };

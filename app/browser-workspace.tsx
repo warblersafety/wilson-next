@@ -228,7 +228,7 @@ export function useBrowserWorkspace() {
     retainedRef.current = remaining; setRetained(remaining);
   }
   const visibleStatus: SaveStatus = status.kind === "saved" && !isCurrentSaved() ? { ...status, kind: "saving" } : status;
-  return { response, freshCaseId, phase, recovery, recoveryBusy, status: visibleStatus, retained, notice, unsavedOnly,
+  return { response, freshCaseId, ownershipEpoch: epoch, phase, recovery, recoveryBusy, status: visibleStatus, retained, notice, unsavedOnly,
     canStart: () => phase === "ready" && active.current && !recovering.current,
     accept, discardRetained, retryLoad, continueUnsaved, discardDamaged, refreshStage,
     retrySave: () => { if (enqueueLatest()) queue.current?.retry(); }, clearNotice: () => setNotice(undefined),

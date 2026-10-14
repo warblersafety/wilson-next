@@ -13,7 +13,7 @@ describe("separate reusable reporter boundary", () => {
     }
   });
   it("retains corrupt and future data unchanged rather than normalizing it", () => {
-    for (const raw of [null, {}, { version: 2, profile }, { version: 1, generation: null, profile }, { version: 1, generation: "bad", profile }, { version: 1, generation: null, profile: null, extra: true }]) {
+    for (const raw of [undefined, null, {}, { version: 2, profile }, { version: 1, generation: null, profile }, { version: 1, generation: "bad", profile }, { version: 1, generation: null, profile: null, extra: true }]) {
       const before = structuredClone(raw); expect(() => decodeReporterProfileRecord(raw)).toThrow(); expect(raw).toEqual(before);
     }
     expect(() => decodeReporterProfileRecord({ version: 2 })).toThrow(expect.objectContaining({ code: "incompatible" }));

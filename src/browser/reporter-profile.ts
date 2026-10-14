@@ -47,14 +47,14 @@ export class ReporterProfileStore {
       let outcome: ReporterProfileRecord | undefined, error: unknown;
       let tx: IDBTransaction;
       try { tx = db.transaction("reporter", write ? "readwrite" : "readonly"); } catch { db.close(); reject(failure()); return; }
-      const abort = (reason: unknown) => { error = reason; tx.abort(); };
+      const abort = (reason: unknown) => { error = reason instanceof ReporterProfileError ? reason : failure(); tx.abort(); };
       tx.onabort = () => { db.close(); reject(error ?? failure()); };
       tx.oncomplete = () => { db.close(); outcome ? resolve(outcome) : reject(failure()); };
       try {
-        const store = tx.objectStore("reporter"), read = store.get("remembered");
+        const store = tx.objectStore("reporter"), read = store.getAll("remembered");
         read.onsuccess = () => {
           try {
-            const current = read.result === undefined ? { version: 1 as const, generation: null, profile: null } : decodeReporterProfileRecord(read.result);
+            const current = read.result.length === 0 ? { version: 1 as const, generation: null, profile: null } : decodeReporterProfileRecord(read.result[0]);
             if (!write) { outcome = current; return; }
             if (current.generation !== write.expectedGeneration) { abort(new ReporterProfileError("stale-writer", "Remembered details changed in another tab. Reload them before making another change.")); return; }
             outcome = { version: 1, generation: crypto.randomUUID(), profile: write.profile };
