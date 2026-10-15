@@ -96,3 +96,13 @@ Independent PDFs/readbacks/AP proof were regenerated after the control-map fix;
 render PNGs were byte-identical to the visually inspected images. No assertion
 was removed or broadened to bless a different age value/unit. Actual Opus review,
 exact-headCI, merge and mainCI disposition belong to the PR.
+
+Actual Opus found no blockers. Its scope-documentation follow-up is resolved:
+the shared prompt no longer says adult-only because this slice represents
+explicitly supplied month/day ages. Architecture records that narrow framing
+change and the original adult completion evidence, without claiming broader
+pediatric clinical behavior or live-model validation. Follow-up169 owns future
+authorized live unit-preservation evidence despite the legacy target name. No
+new provider calls, product behavior, semantic contract or test assertions changed
+in this editorial clarification. Delivery permits the originating review to
+cover this bounded documentation remediation; no repeat model review is needed.

@@ -146,6 +146,12 @@ complete FDA-form coverage.
 
 ### Patient age units (Issue #167)
 
+The shared model prompt drops its adult-only scope wording solely to support
+explicitly supplied A2 age representation. This does not introduce age-specific
+clinical rules or establish broader pediatric clinical validation. The original
+completion evidence used adult cases; new month/day integration evidence is
+synthetic and mocked. Actual model unit preservation remains unverified (#169).
+
 A2 age remains one atomic fact: existing numeric0–150 values mean whole years;
 explicit whole months/days use `{value, unit}` with a nonnegative safe integer.
 The internal legacy `ageYears` target key is retained for source/history/change
@@ -458,7 +464,7 @@ successfully remains visibly proposed for operator review and cannot become
 resolved without the ordinary clinician-review command. External semantic
 oracles and human scoring determine whether an experiment run passes.
 
-The supported adult medication adverse-event path uses one bounded,
+The supported medication adverse-event path (originally verified with adult cases) uses one bounded,
 deterministic completion policy. After opening proposals are reviewed, it asks
 in order about missing suspect-product indications, unestablished serious
 outcomes, death date only when death applies, missing relevant tests and medical
@@ -550,7 +556,7 @@ the other branch with an explicit not-carried-forward explanation. This keeps
 clinician evidence visible without silently projecting it into an inapplicable
 form section.
 
-For the selected adult medication, single-device adverse-event,
+For the selected medication, single-device adverse-event,
 product-problem-only, and bounded combined-report journeys, unresolved optional facts remain
 omitted and visible but do not block output after proposals, corrections, and
 applicable bounded needs have received their required review or direct answer.
