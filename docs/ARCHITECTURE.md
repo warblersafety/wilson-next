@@ -139,7 +139,7 @@ integration, the Issue #129 restore contract below supersedes that preview-only
 compatibility limit: retain migrations for every state version actually persisted
 by supported releases, preserving accepted facts and history.
 
-The existing coverage checklist distinguishes implemented Section D complete expiration dates (PR163), NDC/Unique ID (PR166), explicit ongoing status (PR177), and complete dose-reduction dates (issue178) from remaining other-category, purchase, partial expiration/reduction-date and duration gaps. Warnings and no-destination disclosures preserve visibility; they are not completed field support.
+The existing coverage checklist distinguishes implemented Section D complete expiration dates (PR163), NDC/Unique ID (PR166), explicit ongoing status (PR177), complete dose-reduction dates (PR179), and explicit native-time durations (issue181) from remaining other-category, purchase, partial expiration/reduction-date and dose-count/compound/range duration gaps. Warnings and no-destination disclosures preserve visibility; they are not completed field support.
 Download readiness remains the supported-path condition, not a claim of
 complete FDA-form coverage.
 
@@ -1240,7 +1240,7 @@ disclosure. v17 strictly validates genuine v7–v16 state before adding only emp
 date facts per existing product, retaining sources/history and unfinished edits.
 
 Coverage checklist: complete supplied reduction dates are implemented; partial
-reduction dates and treatment duration remain unsupported, alongside existing
+reduction dates and dose-count/compound/range durations remain unsupported, alongside existing
 other-category, purchase, representation and narrative gaps. A warning is not
 completed field support. Prompt/mock checks are not live-model verification.
 
@@ -1250,3 +1250,36 @@ answers, D7 stays blank instead of deriving Does not apply from those answers.
 The omission references the date and prerequisite sources and is visibly
 disclosed. Supplied date/answers and outcome history stay unchanged; this
 projection-only rule adds no question or download gate.
+
+### Explicit D3 duration and print alternative (issue 181)
+
+treatmentDuration is one supplied positive decimal spelling plus a native time
+unit (minutes, hours, days, weeks, months, years). No arithmetic, date subtraction,
+unit conversion/default, rounding or inferred quantity occurs. Amount/unit
+drafts may be incomplete and survive reload; accepted facts are strictly
+validated. Native width limits are checked without truncation. Dose counts,
+compound/range durations and unsupported units remain explicit coverage gaps.
+
+FDA D3 presents dates OR duration. Both supplied alternatives stay in knowledge;
+when both are known, clinician-only d3Value chooses which to print. A missing
+choice or an unavailable chosen alternative produces a clear review issue,
+following A2's existing print-choice pattern. The preference may be cleared
+without changing facts or unfinished edits. It is excluded from model targets.
+No numerical comparison of dates and duration is attempted. Review/save notices
+explain that retained alternatives have not been reconciled. Unselected facts,
+sources and qualifiers remain retained with output omission disclosure.
+
+Both native suspect slots receive amount and unit together; native display
+appearance is generated from the unit label and the FDA export ID retained.
+Other routing retains knowledge with no-destination disclosure. v18 strictly
+validates genuine v7–v17 states before adding only empty duration and D3 choice
+facts. Existing runtime coverage and this inventory mark only the bounded
+native-time duration path implemented; #180 and every other gap remain open.
+Prompt/mock checks are not live-model verification.
+
+D3 choice notices and the editable choice row are limited to accepted suspect
+non-device paths, matching readiness. A retained preference on another route
+remains in knowledge and receives a no-destination disclosure, never a prompt
+to choose a control that cannot affect that route. Returning to D3 restores the
+retained preference. Untouched native duration-unit widgets remain unset; export
+ID conversion applies only to duration dropdowns actually written or cleared.

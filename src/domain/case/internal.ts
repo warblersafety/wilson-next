@@ -103,6 +103,8 @@ export function emptyProductFacts(): ProductFacts {
     medicationType: emptyFact(),
     doseReduced: emptyFact(),
     doseReductionDate: emptyFact(),
+    treatmentDuration: emptyFact(),
+    d3Value: emptyFact(),
     improvedAfterChange: emptyFact(),
     restarted: emptyFact(),
     recurred: emptyFact(),

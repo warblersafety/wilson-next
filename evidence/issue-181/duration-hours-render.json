@@ -1,0 +1,23 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "duration-hours.pdf",
+  "renders": [
+    {
+      "page": 4,
+      "screenshot": "duration-hours-page-4.png",
+      "rendered": true,
+      "observed": "Exact 1.50 Hour(s); alternative treatment dates blank",
+      "samePixelsAsPriorInspectedRender": true,
+      "visuallyInspected": true
+    },
+    {
+      "page": 5,
+      "screenshot": "duration-hours-page-5.png",
+      "rendered": true,
+      "observed": "Exact 1.50 Hour(s); alternative treatment dates blank",
+      "samePixelsAsPriorInspectedRender": true,
+      "visuallyInspected": true
+    }
+  ]
+}

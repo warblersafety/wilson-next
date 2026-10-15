@@ -109,6 +109,8 @@ export interface ProductFacts {
   medicationType: Fact<Array<"brand" | "generic-biosimilar" | "otc" | "compounded">>;
   doseReduced: Fact<boolean>;
   doseReductionDate: Fact<string>;
+  treatmentDuration: Fact<import("./duration").TreatmentDuration>;
+  d3Value: Fact<"dates" | "duration">;
   improvedAfterChange: Fact<boolean>;
   restarted: Fact<boolean>;
   recurred: Fact<boolean>;

@@ -1,3 +1,4 @@
+import { d3DateFields, type TreatmentDuration } from "./duration";
 import { raceEthnicityOptions, type RaceEthnicity } from "./race-ethnicity";
 import type { PatientAge } from "./age";
 import { allFacts, targetKey } from "./facts";
@@ -5,7 +6,7 @@ import { doseReductionDateNotice, ongoingTherapyNotice, isSettled, restartApplic
 import { productDisplayLabel } from "./product-label";
 import type { Fact, ProductEntity, ProductFactKey, ReportType, SemanticCase } from "./types";
 
-const sectionDProductFields = ["name", "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "doseReductionDate", "indication", "medicationType"] as const satisfies readonly ProductFactKey[];
+const sectionDProductFields = ["name", "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "doseReductionDate", "treatmentDuration", "indication", "medicationType"] as const satisfies readonly ProductFactKey[];
 const sectionEProductFields = ["name", "commonName", "procode", "manufacturer", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const satisfies readonly ProductFactKey[];
 const sectionFProductFields = ["name", "startDate", "stopDate"] as const satisfies readonly ProductFactKey[];
 const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "role", "stopped"]);
@@ -13,7 +14,7 @@ const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "r
 export interface ProjectionOmission {
   concept: string;
   target: string;
-  reason: "empty" | "unknown" | "explicitly-absent" | "inapplicable" | "declined" | "conflicted" | "qualifier-not-included" | "a2-alternative-not-selected" | "reduction-date-conflict";
+  reason: "empty" | "unknown" | "explicitly-absent" | "inapplicable" | "declined" | "conflicted" | "qualifier-not-included" | "a2-alternative-not-selected" | "reduction-date-conflict" | "d3-alternative-not-selected";
   qualifier?: string;
   baseValueIncluded?: boolean;
   sourceIds: string[];
@@ -91,6 +92,7 @@ export interface ProjectedProduct {
   stopDate?: string;
   therapyOngoing?: boolean;
   doseReductionDate?: string;
+  treatmentDuration?: TreatmentDuration;
   indication?: string;
   medicationType?: Array<"brand" | "generic-biosimilar" | "otc" | "compounded">;
   improvedAfterChange?: boolean | "inapplicable";
@@ -136,7 +138,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       "Section C product pictures and general additional comments",
       "Additional suspect medical devices beyond the first",
       "Section D partial expiration dates, other product-type categories and purchase details",
-      "Section D partial dose-reduction dates and treatment duration",
+      "Section D partial dose-reduction dates; dose-count, compound and range treatment durations",
     ],
   };
 
@@ -262,7 +264,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       } else {
         const target = projection.sections.D.suspectProducts;
         target.push(projectProduct(product, projection, target.length, productLabel(caseState, product)));
-        recordNonCarriedProductFacts(caseState, product, [...sectionDProductFields, "doseReduced", "restarted", "improvedAfterChange", "recurred"], "Section D", projection);
+        recordNonCarriedProductFacts(caseState, product, [...sectionDProductFields, "d3Value", "doseReduced", "restarted", "improvedAfterChange", "recurred"], "Section D", projection);
       }
     } else {
       if (productType.value === "device") {
@@ -322,6 +324,16 @@ function projectProduct(
     assign<unknown>(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field] as Fact<unknown>, result, field, (value) => field === "medicationType" ? ["brand", "generic-biosimilar", "otc", "compounded"].filter((label) => (value as string[]).includes(label))
       : field === "dose" || field === "strength" ? { value: String(value), ...(known(product.facts[field])?.qualifier !== undefined ? { qualifier: known(product.facts[field])!.qualifier } : {}) }
         : value, field === "dose" || field === "strength");
+  }
+  const choice = known(product.facts.d3Value);
+  if (choice) {
+    projection.sourceTrace[`${prefix}.d3Value`] = choice.sourceIds;
+    for (const field of choice.value === "duration" ? d3DateFields : ["treatmentDuration"] as const) {
+      delete result[field]; delete projection.sourceTrace[`${prefix}.${field}`];
+      const fact = product.facts[field];
+      if (known(fact as Fact<unknown>)) projection.omissions.push({concept:`${field} for ${product.id}`,target:`product:${product.id}:${field}`,reason:"d3-alternative-not-selected",sourceIds:fact.resolvedValue!.sourceIds});
+      for (const item of projection.omissions) if (item.target === `product:${product.id}:${field}` && item.reason === "qualifier-not-included") item.baseValueIncluded = false;
+    }
   }
   for (const [field, applies, prerequisites] of [
     ["improvedAfterChange", withdrawalApplicability(product.facts), [product.facts.stopped, product.facts.doseReduced]],

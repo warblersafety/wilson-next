@@ -1,3 +1,4 @@
+import { durationUnits } from "../domain/case/duration";
 import { raceEthnicityOptions } from "../domain/case/race-ethnicity";
 import type {
   EventFactKey,
@@ -11,6 +12,7 @@ export type FactControlShape =
   | "text"
   | "age"
   | "birth-date"
+  | "duration"
   | "date"
   | "boolean"
   | "list"
@@ -23,6 +25,7 @@ export interface FactControl {
   shape: FactControlShape;
   help?: string;
   preference?: boolean;
+  preferenceHelp?: string;
   requireSelection?: boolean;
   completeDate?: boolean;
   explicitAbsentLabel?: string;
@@ -91,6 +94,8 @@ const product = {
   indication: { label: "Used for", shape: "text" },
   stopped: { label: "Stopped or removed", shape: "boolean" },
   medicationType: { label: "Medication label type", shape: "choices", options: choices(["brand", "Brand"], ["generic-biosimilar", "Generic or biosimilar"], ["otc", "Over-the-counter"], ["compounded", "Compounded"]) },
+  treatmentDuration: { label: "Treatment duration", shape: "duration", options: durationUnits.map(value => ({value, label: value[0].toUpperCase()+value.slice(1)})), help: "Enter the explicitly supplied positive amount and its unit. Wilson never calculates duration from dates, converts units, or invents a unit." },
+  d3Value: { label: "D3 value to print", shape: "choice", preference: true, options: choices(["dates", "Treatment dates"], ["duration", "Duration"]), preferenceHelp: "D3 asks for dates OR duration. No print preference uses the sole known alternative, or leaves D3 blank if neither is known. If both are known, explicitly choose one. Clearing this preference preserves all facts and unfinished edits." },
   doseReductionDate: { label: "Dose reduced on", shape: "date", completeDate: true, help: "Enter the explicitly supplied complete date as YYYY-MM-DD. Partial or impossible dates stay unfinished. Wilson never infers a dose reduction or its date." },
   doseReduced: { label: "Dose reduced", shape: "boolean" },
   improvedAfterChange: { label: "Improved after stopping or reducing", shape: "boolean" },
