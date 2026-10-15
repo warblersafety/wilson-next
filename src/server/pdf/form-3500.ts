@@ -1,3 +1,4 @@
+import { isCompleteCalendarDate } from "../../domain/case/calendar-date";
 import { raceEthnicityOptions, isRaceEthnicitySelections } from "../../domain/case/race-ethnicity";
 import { isCompleteBirthDate } from "../../domain/case/birth-date";
 import { patientAgeParts, type PatientAge } from "../../domain/case/age";
@@ -349,6 +350,9 @@ export async function fillForm3500Projection(
     writeSuspectProduct(form, suspectFields[index], product);
     const ordinal = index + 1;
     const prefix = `topmostSubform[0].Page${index + 4}[0].Prod${ordinal}[0].Prod${ordinal}`;
+    if (product.doseReductionDate !== undefined && !isCompleteCalendarDate(product.doseReductionDate)) throw new Error("D3 dose-reduction date requires a complete valid calendar date");
+    const reductionDateName = `${prefix}TherapyReduceDate[0]`;
+    if (product.doseReductionDate !== undefined || form.getTextField(reductionDateName).getText()) setText(form, reductionDateName, product.doseReductionDate ? formatDate(product.doseReductionDate) : "");
     if (product.therapyOngoing !== undefined && typeof product.therapyOngoing !== "boolean") throw new Error("D3 ongoing therapy requires an explicit boolean");
     for (const [answer, suffix] of [[true, "Yes"], [false, "No"]] as const) {
       const name = `${prefix}TherapyOngoing${suffix}[0]`;
@@ -557,6 +561,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
   ): ProjectedProduct => compact({
     productId: expected.productId,
     therapyOngoing: readOngoing(index),
+    doseReductionDate: parseDate(form.getTextField(`topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].Prod${index + 1}TherapyReduceDate[0]`).getText()),
     name: form.getTextField(names.name).getText(),
     manufacturer: form.getTextField(names.manufacturer).getText(),
     lotNumber: form.getTextField(names.lotNumber).getText(),

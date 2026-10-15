@@ -139,8 +139,7 @@ integration, the Issue #129 restore contract below supersedes that preview-only
 compatibility limit: retain migrations for every state version actually persisted
 by supported releases, preserving accepted facts and history.
 
-The output explicitly discloses remaining Section D other-category, purchase,
-ongoing-therapy, reduction-date and duration gaps.
+The existing coverage checklist distinguishes implemented Section D complete expiration dates (PR163), NDC/Unique ID (PR166), explicit ongoing status (PR177), and complete dose-reduction dates (issue178) from remaining other-category, purchase, partial expiration/reduction-date and duration gaps. Warnings and no-destination disclosures preserve visibility; they are not completed field support.
 Download readiness remains the supported-path condition, not a claim of
 complete FDA-form coverage.
 
@@ -1212,3 +1211,33 @@ This notice changes no facts, dates or download policy and makes no inference
 from missing answers or dates. A supplied restart=true does not trigger it.
 Native readback inspects both ongoing boxes even for an expected blank and
 rejects contradictory native selections.
+
+### Explicit complete dose-reduction date (issue 178)
+
+Product doseReductionDate retains the clinician-supplied complete Gregorian
+date independently of doseReduced, ongoing status, start/stop dates and event
+dates. Accepting a date never establishes that a reduction happened, rewrites
+another fact or resolves a contradictory report. The shared complete-calendar
+predicate retains the existing DOB alias; no unrelated legacy-date validation
+is widened (issue164 remains open).
+
+The existing date editor supports a strict complete-date text draft for this
+field: partial/impossible values survive reload with a visible explanation and
+disabled acceptance. Model/API/accepted-state/PDF boundaries reject those values
+without inventing missing components. Unsupported conversational date proposals
+retain their evidence in the existing unrepresented-information path. A complete
+explicitly estimated date retains its qualifier; native omission of that
+qualifier is disclosed rather than hidden.
+
+Both D3 suspect non-device slots map to their native TherapyReduceDate fields.
+Other response states and unresolved alternatives stay blank. A supplied
+settled date alongside explicitly false/absent/inapplicable doseReduced gets a
+visible review/save notice without changing facts, dates or download policy.
+Concomitant/device routing retains reviewed knowledge with a no-destination
+disclosure. v17 strictly validates genuine v7–v16 state before adding only empty
+date facts per existing product, retaining sources/history and unfinished edits.
+
+Coverage checklist: complete supplied reduction dates are implemented; partial
+reduction dates and treatment duration remain unsupported, alongside existing
+other-category, purchase, representation and narrative gaps. A warning is not
+completed field support. Prompt/mock checks are not live-model verification.

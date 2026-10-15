@@ -53,3 +53,12 @@ export function ongoingTherapyNotice(facts: ProductFacts): string | undefined {
     ? "Current therapy is reported as ongoing, but the product is also reported stopped and never restarted. Review these supplied answers; Wilson has not reconciled them or changed any dates."
     : undefined;
 }
+
+export function doseReductionDateNotice(facts: ProductFacts): string | undefined {
+  const suppliedDate = isSettled(facts.doseReductionDate) && facts.doseReductionDate.resolvedValue?.value.kind === "known";
+  const reduction = facts.doseReduced;
+  const explicitNegative = settledBoolean(reduction) === false || (isSettled(reduction) && ["explicitly-absent", "inapplicable"].includes(reduction.resolvedValue?.value.kind ?? ""));
+  return suppliedDate && explicitNegative
+    ? "A dose-reduction date is supplied, but dose reduction is explicitly reported as not occurring or not applicable. Review these supplied answers; Wilson has not reconciled them or changed the date."
+    : undefined;
+}

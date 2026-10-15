@@ -108,6 +108,7 @@ export interface ProductFacts {
   stopped: Fact<boolean>;
   medicationType: Fact<Array<"brand" | "generic-biosimilar" | "otc" | "compounded">>;
   doseReduced: Fact<boolean>;
+  doseReductionDate: Fact<string>;
   improvedAfterChange: Fact<boolean>;
   restarted: Fact<boolean>;
   recurred: Fact<boolean>;

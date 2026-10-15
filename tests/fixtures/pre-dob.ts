@@ -14,5 +14,10 @@ export function removeRaceEthnicityField(c: { patient: { facts: unknown }; produ
 }
 
 export function removeOngoingFields(c: { products?: Array<{ facts: unknown }> }): void {
+  removeReductionDateFields(c);
   for (const p of c.products ?? []) delete (p.facts as Record<string, unknown>).therapyOngoing;
+}
+
+export function removeReductionDateFields(c: { products?: Array<{ facts: unknown }> }): void {
+  for (const p of c.products ?? []) delete (p.facts as Record<string, unknown>).doseReductionDate;
 }

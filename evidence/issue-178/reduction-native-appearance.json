@@ -1,0 +1,50 @@
+{
+  "both": [
+    {
+      "field": "Prod1TherapyReduceDate[0]",
+      "value": "29-FEB-2028",
+      "rect": [
+        231.324,
+        302.785,
+        291.79,
+        316.879
+      ],
+      "hasNormalAppearance": true
+    },
+    {
+      "field": "Prod2TherapyReduceDate[0]",
+      "value": "18-SEP-2026",
+      "rect": [
+        228.138,
+        339.939,
+        288.604,
+        354.033
+      ],
+      "hasNormalAppearance": true
+    }
+  ],
+  "contradiction": [
+    {
+      "field": "Prod1TherapyReduceDate[0]",
+      "value": "18-SEP-2026",
+      "rect": [
+        231.324,
+        302.785,
+        291.79,
+        316.879
+      ],
+      "hasNormalAppearance": true
+    },
+    {
+      "field": "Prod2TherapyReduceDate[0]",
+      "value": "",
+      "rect": [
+        228.138,
+        339.939,
+        288.604,
+        354.033
+      ],
+      "hasNormalAppearance": true
+    }
+  ]
+}

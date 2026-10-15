@@ -1,4 +1,5 @@
 import { isRaceEthnicitySelections, raceEthnicityValues } from "./race-ethnicity";
+import { isCompleteCalendarDate } from "./calendar-date";
 import { isCompleteBirthDate } from "./birth-date";
 import { isPatientAge } from "./age";
 import type {
@@ -15,6 +16,7 @@ import { targetKey } from "./facts";
 export type KnownValueContract =
   | { shape: "patient-age" }
   | { shape: "birth-date" }
+  | { shape: "calendar-date" }
   | { shape: "string" }
   | { shape: "iso-date" }
   | { shape: "integer"; minimum: number; maximum: number }
@@ -98,6 +100,7 @@ export const caseValueContracts = {
     stopped: { shape: "boolean" },
     medicationType: { shape: "enum-array", values: ["brand", "generic-biosimilar", "otc", "compounded"], mismatch: "medicationType requires supported medication labels" },
     doseReduced: { shape: "boolean" },
+    doseReductionDate: { shape: "calendar-date" },
     improvedAfterChange: { shape: "boolean" },
     restarted: { shape: "boolean" },
     recurred: { shape: "boolean" },
@@ -165,6 +168,7 @@ export function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>
   const actual = value.value;
 
   switch (contract.shape) {
+    case "calendar-date": return isCompleteCalendarDate(actual) ? undefined : `${target.field} requires a complete valid ISO calendar date (YYYY-MM-DD), year 0001–9999`;
     case "birth-date": return isCompleteBirthDate(actual) ? undefined : "dateOfBirth requires a complete valid ISO calendar date (YYYY-MM-DD), year 0001–9999";
     case "patient-age": return isPatientAge(actual) ? undefined : `${target.field} requires a valid age: whole years 0–150, or an explicit nonnegative whole number with unit months, weeks or days`;
     case "string":
@@ -241,6 +245,7 @@ export function modelKnownValueGuidance(): string {
 
 function describeContract(contract: KnownValueContract): string {
   switch (contract.shape) {
+    case "calendar-date": return "a complete valid Gregorian ISO calendar date YYYY-MM-DD, year 0001–9999; never infer or repair a supplied date";
     case "birth-date": return "a complete valid Gregorian ISO calendar date YYYY-MM-DD, year 0001–9999; never invent missing components or derive age";
     case "patient-age": return "an integer 0–150 for years, or an object {value: nonnegative safe integer, unit: months, weeks or days} for explicit non-year patient age (legacy target ageYears)";
     case "string": return "a string";

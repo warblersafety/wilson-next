@@ -1126,8 +1126,8 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQ
         onChange({ kind: "known", value: event.target.value === "years" ? amount : { value: amount, unit: event.target.value as "months" | "weeks" | "days" } });
       }}><option value="years">Years</option><option value="months">Months</option><option value="weeks">Weeks</option><option value="days">Days</option></select>
     </div>}
-    {value.kind === "known" && control.shape === "birth-date" && <><input aria-label={`New ${label}`} type="text" placeholder="YYYY-MM-DD" value={String(known ?? "")} onChange={event => onChange({ kind: "known", value: event.target.value })} />{!isCompleteBirthDate(known) && <p role="status">A complete valid calendar date is required (YYYY-MM-DD). This unfinished edit is retained; no missing component is inferred.</p>}</>}
-    {value.kind === "known" && control.shape === "date" && <input aria-label={`New ${label}`} type="date" value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />}
+    {value.kind === "known" && (control.shape === "birth-date" || control.completeDate) && <><input aria-label={`New ${label}`} type="text" placeholder="YYYY-MM-DD" value={String(known ?? "")} onChange={event => onChange({ kind: "known", value: event.target.value })} />{!isCompleteBirthDate(known) && <p role="status">A complete valid calendar date is required (YYYY-MM-DD). This unfinished edit is retained; no missing component is inferred.</p>}</>}
+    {value.kind === "known" && control.shape === "date" && !control.completeDate && <input aria-label={`New ${label}`} type="date" value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />}
     {value.kind === "known" && control.shape === "boolean" && <select aria-label={`New ${label}`} value={String(known)} onChange={(event) => onChange({ kind: "known", value: event.target.value === "true" })}><option value="true">Yes</option><option value="false">No</option></select>}
     {value.kind === "known" && control.shape === "list" && <textarea aria-label={`New ${label}`} rows={3} value={Array.isArray(known) ? known.join("\n") : ""} onChange={(event) => onChange({ kind: "known", value: splitList(event.target.value) })} />}
     {value.kind === "known" && control.shape === "weight" && <div className={styles.measurement}>
@@ -1155,6 +1155,7 @@ function editableInitialValue(value: CaseValue<unknown> | undefined, control: Fa
 
 function validEditableValue(value: EditableCaseValue, control: FactControl): boolean {
   if (value.kind !== "known") return true;
+  if (control.completeDate) return isCompleteBirthDate(value.value);
   if (control.shape === "text" || control.shape === "date" || control.shape === "choice") return typeof value.value === "string" && Boolean(value.value.trim());
   if (control.requireSelection) return Array.isArray(value.value) && value.value.length > 0 && new Set(value.value).size === value.value.length && value.value.every(item => control.options?.some(option => option.value === item));
   if (control.shape === "birth-date") return isCompleteBirthDate(value.value);
