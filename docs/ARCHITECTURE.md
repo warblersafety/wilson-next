@@ -139,7 +139,7 @@ integration, the Issue #129 restore contract below supersedes that preview-only
 compatibility limit: retain migrations for every state version actually persisted
 by supported releases, preserving accepted facts and history.
 
-The existing coverage checklist distinguishes implemented Section D complete expiration dates (PR163), NDC/Unique ID (PR166), explicit ongoing status (PR177), complete dose-reduction dates (PR179), explicit native-time durations (issue181), and complete purchase dates (issue183) from remaining other-category, purchase place/address/website, partial purchase/expiration/reduction-date and dose-count/compound/range duration gaps. Warnings and no-destination disclosures preserve visibility; they are not completed field support.
+The existing coverage checklist distinguishes implemented Section D complete expiration dates (PR163), NDC/Unique ID (PR166), explicit ongoing status (PR177), complete dose-reduction dates (PR179), explicit native-time durations (issue181), and complete purchase dates (issue183), and explicit D5 cosmetic professional-use/retail choice (issue185) from remaining cannabinoid/Other D5, purchase place/address/website, partial purchase/expiration/reduction-date and dose-count/compound/range duration gaps. Warnings and no-destination disclosures preserve visibility; they are not completed field support.
 Download readiness remains the supported-path condition, not a claim of
 complete FDA-form coverage.
 
@@ -1308,3 +1308,35 @@ unfinished edits remain unchanged. Prompt v15/schema v25 add this target.
 Purchase place/address/website, partial purchase dates, other D5 categories and
 all existing inventory gaps remain unfinished. Mock evidence does not establish
 live-model compliance.
+
+
+### Explicit D5 cosmetic choice (issue185)
+
+The official 09/2025 Form3500 D5 heading says Check all that apply, while the
+Cosmetics subgroup explicitly says Select One. A single optional cosmeticUse
+fact represents Cosmetics for professional use only or Cosmetics sold on a
+retail basis. There is no default, inferred use/sale classification or automatic
+category change from a product name, brand, seller or operator. Drug-label
+facts remain independent; the subgroup's Select One does not impose blanket
+exclusivity across the whole D5 block. Contradictory explicitly supplied cosmetic
+alternatives stay conflicted until clinician resolution, not simultaneous ticks.
+
+Current reviewed suspect non-device categories route Section D, including
+explicit Other products for cosmetics. Cosmetic selection does not set the
+routing category. Unknown category stays unknown; device/concomitant routes
+retain cosmetic knowledge and existing no-destination disclosure. Existing
+product cards supply the optional choice without another required question.
+Corrections affect only the choice and retain sources, qualifiers and history;
+qualifier omission follows the existing truthful disclosure policy.
+
+Each native slot's exact professional/retail controls are set mutually
+exclusively; untouched blank controls remain untouched. Independent native
+readback never reconstructs the choice from the expected projection. Browser
+state v20 strictly validates genuine v7–v19 before adding only empty cosmetic
+facts; compatible existing and unselected cosmetic drafts survive reload.
+Promptv16/schemav26 add the explicit proposal target. Mock tests establish only
+mock behavior, not live-model compliance.
+
+D5 cannabinoid hemp and Other controls, purchase place/address/website, partial
+dates (#180 visibility), wider category/detail coverage and all prior inventory
+gaps remain unfinished. This is not full cosmetic or Form3500 functionality.

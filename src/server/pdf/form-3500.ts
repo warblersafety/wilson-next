@@ -377,6 +377,11 @@ export async function fillForm3500Projection(
       const selected = product.therapyOngoing === answer;
       if (selected || form.getCheckBox(name).isChecked()) setChecked(form, name, selected);
     }
+    if (product.cosmeticUse !== undefined && !["professional-use-only", "retail"].includes(product.cosmeticUse)) throw new Error("D5 cosmetic product type requires one supported choice");
+    for (const [choice, name] of cosmeticNativeFields(index)) {
+      const selected = product.cosmeticUse === choice;
+      if (selected || form.getCheckBox(name).isChecked()) setChecked(form,name,selected);
+    }
     for (const [label, suffix] of [["brand", "Brand"], ["generic-biosimilar", "Generic"], ["otc", "OTC"], ["compounded", "Compounded"]] as const) {
       setChecked(form, `${prefix}${suffix}[0]`, product.medicationType?.includes(label) === true);
     }
@@ -543,6 +548,11 @@ function writeSuspectProduct(
   setText(form, names.indication, product.indication);
 }
 
+function cosmeticNativeFields(index: number): Array<["professional-use-only" | "retail", string]> {
+  const parent = `topmostSubform[0].Page${index+4}[0].Prod${index+1}[0].`;
+  return [["professional-use-only", parent+(index===0?"Prod1CosmProf[0]":"pdt2CosmProf[0]")], ["retail", parent+(index===0?"Prod1CosRetail[0]":"Pdt2CosRetail[0]")]];
+}
+
 function readProjectionForm(document: PDFDocument, projection: Form3500Projection): Form3500ProjectionReadback {
   const form = document.getForm();
   const { A, B, G } = projection.sections;
@@ -590,6 +600,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
     productId: expected.productId,
     therapyOngoing: readOngoing(index),
     treatmentDuration: readDuration(index),
+    cosmeticUse: (() => { const selected = cosmeticNativeFields(index).filter(([,name])=>form.getCheckBox(name).isChecked()); if (selected.length>1) throw new Error("D5 cosmetics has multiple selected choices"); return selected[0]?.[0]; })(),
     purchaseDate: parseDate(form.getTextField(`topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].${index === 0 ? "Prod1" : "Pdt2"}PurchaseDate[0]`).getText()),
     doseReductionDate: parseDate(form.getTextField(`topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].Prod${index + 1}TherapyReduceDate[0]`).getText()),
     name: form.getTextField(names.name).getText(),

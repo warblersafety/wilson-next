@@ -100,6 +100,7 @@ export const caseValueContracts = {
     therapyOngoing: { shape: "boolean" },
     indication: { shape: "string" },
     stopped: { shape: "boolean" },
+    cosmeticUse: { shape: "enum", values: ["professional-use-only", "retail"], mismatch: "cosmeticUse requires exactly one explicitly supplied cosmetic product type" },
     medicationType: { shape: "enum-array", values: ["brand", "generic-biosimilar", "otc", "compounded"], mismatch: "medicationType requires supported medication labels" },
     doseReduced: { shape: "boolean" },
     purchaseDate: { shape: "calendar-date" },

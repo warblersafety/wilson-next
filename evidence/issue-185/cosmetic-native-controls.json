@@ -1,0 +1,62 @@
+{
+  "cosmetics-both": {
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1CosmProf[0]": {
+      "value": "/1",
+      "states": [
+        "/1",
+        "/Off"
+      ]
+    },
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1CosRetail[0]": {
+      "value": null,
+      "states": [
+        "/1",
+        "/Off"
+      ]
+    },
+    "topmostSubform[0].Page5[0].Prod2[0].pdt2CosmProf[0]": {
+      "value": null,
+      "states": [
+        "/1",
+        "/Off"
+      ]
+    },
+    "topmostSubform[0].Page5[0].Prod2[0].Pdt2CosRetail[0]": {
+      "value": "/1",
+      "states": [
+        "/1",
+        "/Off"
+      ]
+    }
+  },
+  "cosmetics-corrected": {
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1CosmProf[0]": {
+      "value": "/1",
+      "states": [
+        "/1",
+        "/Off"
+      ]
+    },
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1CosRetail[0]": {
+      "value": null,
+      "states": [
+        "/1",
+        "/Off"
+      ]
+    },
+    "topmostSubform[0].Page5[0].Prod2[0].pdt2CosmProf[0]": {
+      "value": "/1",
+      "states": [
+        "/1",
+        "/Off"
+      ]
+    },
+    "topmostSubform[0].Page5[0].Prod2[0].Pdt2CosRetail[0]": {
+      "value": null,
+      "states": [
+        "/1",
+        "/Off"
+      ]
+    }
+  }
+}

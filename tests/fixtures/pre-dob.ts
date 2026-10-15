@@ -23,7 +23,12 @@ export function removeReductionDateFields(c: { products?: Array<{ facts: unknown
   for (const p of c.products ?? []) delete (p.facts as Record<string, unknown>).doseReductionDate;
 }
 
+export function removeCosmeticUseFields(c: {products?: Array<{facts: unknown}>}): void {
+ for (const p of c.products ?? []) delete (p.facts as Record<string,unknown>).cosmeticUse;
+}
+
 export function removePurchaseDateFields(c: {products?: Array<{facts: unknown}>}): void {
+ removeCosmeticUseFields(c);
  for (const p of c.products ?? []) delete (p.facts as Record<string,unknown>).purchaseDate;
 }
 

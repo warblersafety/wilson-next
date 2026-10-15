@@ -1141,7 +1141,7 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQ
       <input aria-label={`New ${label}`} type="number" min="0.1" step="0.1" value={typeof known === "object" && known && "value" in known ? String(known.value) : ""} onChange={(event) => onChange({ kind: "known", value: { value: Number(event.target.value), unit: typeof known === "object" && known && "unit" in known && known.unit === "lb" ? "lb" : "kg" } })} />
       <select aria-label={`${label} unit`} value={typeof known === "object" && known && "unit" in known ? String(known.unit) : "kg"} onChange={(event) => onChange({ kind: "known", value: { value: typeof known === "object" && known && "value" in known ? Number(known.value) : 0, unit: event.target.value as "kg" | "lb" } })}><option value="kg">kg</option><option value="lb">lb</option></select>
     </div>}
-    {value.kind === "known" && control.shape === "choice" && <select aria-label={`New ${label}`} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })}>{control.options?.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select>}
+    {value.kind === "known" && control.shape === "choice" && <select aria-label={`New ${label}`} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })}>{control.requireSelection && <option value="">Choose explicitly supplied answer</option>}{control.options?.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select>}
     {value.kind === "known" && control.requireSelection && Array.isArray(known) && known.length === 0 && <p role="status">Choose an explicitly supplied category, or select the appropriate response status. An empty selection is unfinished and is not accepted as a negative answer.</p>}
     {value.kind === "known" && control.shape === "choices" && <fieldset><legend>New {label}</legend>{control.options?.map((option) => <label key={option.value}><input type="checkbox" checked={Array.isArray(known) && known.includes(option.value)} onChange={(event) => onChange({ kind: "known", value: event.target.checked ? [...(Array.isArray(known) ? known : []), option.value] : (Array.isArray(known) ? known : []).filter((item) => item !== option.value) })} /> {option.label}</label>)}</fieldset>}
     {value.kind === "known" && !hasQualifierControl && <button type="button" onClick={onRevealQualifier}>Add uncertainty or context</button>}
@@ -1157,7 +1157,7 @@ function editableInitialValue(value: CaseValue<unknown> | undefined, control: Fa
   if (control.shape === "boolean") return { kind: "known", value: false };
   if (control.shape === "list" || control.shape === "choices") return { kind: "known", value: [] };
   if (control.shape === "weight") return { kind: "known", value: { value: 0, unit: "kg" } };
-  if (control.shape === "choice") return { kind: "known", value: control.options?.[0]?.value ?? "" };
+  if (control.shape === "choice") return { kind: "known", value: control.requireSelection ? "" : control.options?.[0]?.value ?? "" };
   return { kind: "known", value: "" };
 }
 
