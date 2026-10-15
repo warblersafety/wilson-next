@@ -102,6 +102,7 @@ export const caseValueContracts = {
     stopped: { shape: "boolean" },
     medicationType: { shape: "enum-array", values: ["brand", "generic-biosimilar", "otc", "compounded"], mismatch: "medicationType requires supported medication labels" },
     doseReduced: { shape: "boolean" },
+    purchaseDate: { shape: "calendar-date" },
     doseReductionDate: { shape: "calendar-date" },
     treatmentDuration: { shape: "duration" },
     d3Value: { shape: "enum", values: ["dates", "duration"], mismatch: "D3 print choice requires dates or duration" },

@@ -365,6 +365,9 @@ export async function fillForm3500Projection(
       durationUnit.select(" ");
       durationUnitWrites.add(durationUnitName);
     }
+    if (product.purchaseDate !== undefined && !isCompleteCalendarDate(product.purchaseDate)) throw new Error("Section D purchase date requires a complete valid calendar date");
+    const purchaseDateName = `topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].${index === 0 ? "Prod1" : "Pdt2"}PurchaseDate[0]`;
+    if (product.purchaseDate !== undefined || form.getTextField(purchaseDateName).getText()) setText(form, purchaseDateName, product.purchaseDate ? formatDate(product.purchaseDate) : "");
     if (product.doseReductionDate !== undefined && !isCompleteCalendarDate(product.doseReductionDate)) throw new Error("D3 dose-reduction date requires a complete valid calendar date");
     const reductionDateName = `${prefix}TherapyReduceDate[0]`;
     if (product.doseReductionDate !== undefined || form.getTextField(reductionDateName).getText()) setText(form, reductionDateName, product.doseReductionDate ? formatDate(product.doseReductionDate) : "");
@@ -587,6 +590,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
     productId: expected.productId,
     therapyOngoing: readOngoing(index),
     treatmentDuration: readDuration(index),
+    purchaseDate: parseDate(form.getTextField(`topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].${index === 0 ? "Prod1" : "Pdt2"}PurchaseDate[0]`).getText()),
     doseReductionDate: parseDate(form.getTextField(`topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].Prod${index + 1}TherapyReduceDate[0]`).getText()),
     name: form.getTextField(names.name).getText(),
     manufacturer: form.getTextField(names.manufacturer).getText(),

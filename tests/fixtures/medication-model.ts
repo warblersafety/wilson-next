@@ -35,8 +35,11 @@ export const reductionCorrection = "Correction: the naproxen dose-reduction date
 export const durationOpening = medicationTwoOpening + " Amoxicillin was used for 1.50 hours; naproxen was used for 2 weeks.";
 export const durationCorrection = "Correction: the naproxen treatment duration was 1.50 months, not 2 weeks. Keep all supplied dates unchanged.";
 
-function opening(two: boolean, expiration = false, identifier = false, ageUnits: boolean | "weeks" | "birth-date" | "race-ethnicity" | "ongoing" = false, reduction = false, duration = false) {
-  const text = duration ? durationOpening : reduction ? reductionOpening : ageUnits === "ongoing" ? ongoingOpening : ageUnits === "race-ethnicity" ? raceEthnicityOpening : ageUnits === "birth-date" ? birthDateOpening : ageUnits === "weeks" ? ageWeeksOpening : ageUnits ? ageOpening : identifier ? identifierOpening : expiration ? expirationOpening : two ? medicationTwoOpening : medicationSparseOpening;
+export const purchaseOpening = medicationTwoOpening + " Amoxicillin was purchased on 29 February 2024; naproxen was purchased on 12 August 2026.";
+export const purchaseCorrection = "Correction: the naproxen purchase date is 13 August 2026, not 12 August 2026.";
+
+function opening(two: boolean, expiration = false, identifier = false, ageUnits: boolean | "weeks" | "birth-date" | "race-ethnicity" | "ongoing" = false, reduction = false, duration = false, purchase = false) {
+  const text = purchase ? purchaseOpening : duration ? durationOpening : reduction ? reductionOpening : ageUnits === "ongoing" ? ongoingOpening : ageUnits === "race-ethnicity" ? raceEthnicityOpening : ageUnits === "birth-date" ? birthDateOpening : ageUnits === "weeks" ? ageWeeksOpening : ageUnits ? ageOpening : identifier ? identifierOpening : expiration ? expirationOpening : two ? medicationTwoOpening : medicationSparseOpening;
   const proposals: QuotedFixtureOutput["proposals"] = [];
   const add = (target: QuotedFixtureOutput["proposals"][number]["target"], value: unknown, group: string) => {
     proposals.push({ proposalReference: `p${proposals.length}`, groupReference: group, intent: "fact", target,
@@ -56,6 +59,7 @@ function opening(two: boolean, expiration = false, identifier = false, ageUnits:
     ...(identifier ? { ndcOrUniqueId: "00123-0045-06" } : {}), ...(expiration ? { expirationDate: "2028-02-29" } : {}), medicationType: ["generic-biosimilar"], stopped: true, stopDate: "2026-09-17", improvedAfterChange: true, restarted: true, recurred: true,
   } : {}) });
   if (two) product("b", { name: "naproxen", productType: "drug-or-biologic", role: "suspect", indication: "joint pain", ...(identifier ? { ndcOrUniqueId: "00045-0067-08" } : {}), ...(expiration ? { expirationDate: "2027-12-31" } : {}), medicationType: ["generic-biosimilar", "otc"], stopped: false, doseReduced: true, improvedAfterChange: false, restarted: false });
+  if (purchase) { product("a", { purchaseDate: "2024-02-29" }); product("b", { purchaseDate: "2026-08-12" }); }
   if (duration) { product("a", { treatmentDuration: { value: "1.50", unit: "hours" } }); product("b", { treatmentDuration: { value: "2", unit: "weeks" } }); }
   if (reduction) { product("a", { doseReductionDate: "2028-02-29" }); product("b", { doseReductionDate: "2026-09-18" }); }
   if (ageUnits === "ongoing") { product("a", { therapyOngoing: true }); product("b", { therapyOngoing: false }); }
@@ -105,6 +109,10 @@ export const medicationScenarios = {
   productIdentifier: [
     { identityScope: "identifier", turn: "opening" as const, output: opening(true, true, true) },
     { identityScope: "identifier-update", turn: "correction" as const, output: update(identifierCorrection, "product-identifier-b", { ndcOrUniqueId: "00045-0067-09" }) },
+  ],
+  productPurchaseDate: [
+    { identityScope: "purchase-date", turn: "opening" as const, output: opening(true, false, false, false, false, false, true) },
+    { identityScope: "purchase-date-update", turn: "correction" as const, output: update(purchaseCorrection, "product-purchase-date-b", { purchaseDate: "2026-08-13" }) },
   ],
   productReductionDate: [
     { identityScope: "reduction-date", turn: "opening" as const, output: opening(true, false, false, false, true) },

@@ -6,7 +6,7 @@ import { doseReductionDateNotice, ongoingTherapyNotice, isSettled, restartApplic
 import { productDisplayLabel } from "./product-label";
 import type { Fact, ProductEntity, ProductFactKey, ReportType, SemanticCase } from "./types";
 
-const sectionDProductFields = ["name", "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "doseReductionDate", "treatmentDuration", "indication", "medicationType"] as const satisfies readonly ProductFactKey[];
+const sectionDProductFields = ["name", "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "purchaseDate", "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "doseReductionDate", "treatmentDuration", "indication", "medicationType"] as const satisfies readonly ProductFactKey[];
 const sectionEProductFields = ["name", "commonName", "procode", "manufacturer", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const satisfies readonly ProductFactKey[];
 const sectionFProductFields = ["name", "startDate", "stopDate"] as const satisfies readonly ProductFactKey[];
 const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "role", "stopped"]);
@@ -83,6 +83,7 @@ export interface ProjectedProduct {
   manufacturer?: string;
   lotNumber?: string;
   ndcOrUniqueId?: string;
+  purchaseDate?: string;
   expirationDate?: string;
   dose?: ProjectedQuantity;
   strength?: ProjectedQuantity;
@@ -137,7 +138,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       "Patient race/ethnicity detail outside the seven A5 categories",
       "Section C product pictures and general additional comments",
       "Additional suspect medical devices beyond the first",
-      "Section D partial expiration dates, other product-type categories and purchase details",
+      "Section D partial expiration dates, partial purchase dates, other product-type categories and purchase place/address/website",
       "Section D partial dose-reduction dates; dose-count, compound and range treatment durations",
     ],
   };
