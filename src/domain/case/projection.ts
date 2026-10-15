@@ -1,3 +1,4 @@
+import { allFacts, targetKey } from "./facts";
 import { isSettled, restartApplicability, withdrawalApplicability } from "./medication";
 import { productDisplayLabel } from "./product-label";
 import type { Fact, ProductEntity, ProductFactKey, ReportType, SemanticCase } from "./types";
@@ -12,6 +13,7 @@ export interface ProjectionOmission {
   target: string;
   reason: "empty" | "unknown" | "explicitly-absent" | "inapplicable" | "declined" | "conflicted" | "qualifier-not-included";
   qualifier?: string;
+  baseValueIncluded?: boolean;
   sourceIds: string[];
 }
 
@@ -244,6 +246,23 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     assign<unknown>(projection, `sections.G.reporter.${field}`, `reporter ${field}`, `reporter:reporter:${field}`, caseState.reporter.facts[field] as Fact<unknown>, projection.sections.G.reporter, field);
   }
 
+  // Completeness boundary: selectors, prerequisites and unsupported whole facts
+  // can bypass assign(). Their current context must still never disappear.
+  const carriedQualifierTargets = new Set(["event:event:symptoms", "event:event:problemDescription"]);
+  for (const product of projection.sections.D.suspectProducts) {
+    for (const field of ["dose", "strength"]) carriedQualifierTargets.add(`product:${product.productId}:${field}`);
+  }
+  const disclosed = new Set(projection.omissions.filter(({ reason }) => reason === "qualifier-not-included").map(({ target }) => target));
+  for (const { target, fact } of allFacts(caseState)) {
+    const active = target.entity === "product" ? caseState.products.some(p => p.id === target.entityId && p.state === "resolved")
+      : target.entity === "test" ? caseState.relevantTests.some(t => t.id === target.entityId && t.state === "resolved")
+        : target.entity === "patient" ? caseState.patient.state === "resolved"
+          : target.entity === "event" ? caseState.event.state === "resolved" : true;
+    const key = targetKey(target);
+    if (active && known(fact)?.qualifier && !carriedQualifierTargets.has(key) && !disclosed.has(key)) {
+      recordQualifierOmission(projection, key, "reviewed context", fact, false);
+    }
+  }
   return projection;
 }
 
@@ -368,10 +387,10 @@ function assign<T>(
 }
 
 /** Partial output: keep the accepted qualifier distinct from a missing base value. */
-function recordQualifierOmission(projection: Form3500Projection, target: string, concept: string, fact: Fact<unknown>): void {
+function recordQualifierOmission(projection: Form3500Projection, target: string, concept: string, fact: Fact<unknown>, baseValueIncluded = true): void {
   const resolved = known(fact);
   if (resolved?.qualifier) projection.omissions.push({
-    concept, target, reason: "qualifier-not-included", qualifier: resolved.qualifier, sourceIds: resolved.sourceIds,
+    concept, target, reason: "qualifier-not-included", qualifier: resolved.qualifier, baseValueIncluded, sourceIds: resolved.sourceIds,
   });
 }
 

@@ -2,7 +2,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { expect, test, type Page } from "@playwright/test";
 import { browserStateVersion } from "../../src/server/case/browser-state";
-import { assayContext, contextCase, conflictedContextCase } from "../fixtures/reviewed-context";
+import { assayContext, contextCase, conflictedContextCase, setContextFact } from "../fixtures/reviewed-context";
 import { goTo, seedStoredState, storedState, savePdf } from "./draft4-helpers";
 const narrative = "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]";
 
@@ -98,5 +98,33 @@ test("context: unresolved narrative omission, explicit chosen alternative, retai
   await expect(coverage).toContainText("chart A uncertain"); await expect(coverage).not.toContainText("chart B follow-up incomplete");
   await saved(page); await page.reload(); await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
   expect((await storedState(page)).case).toEqual(current.case);
+  noInterpretation();
+});
+
+test("context: indirect restart/routing qualifiers remain visible without claiming their base values are native fields", async ({ page }, info) => {
+  const wording = "pharmacy refill suggests possible resumption, unconfirmed";
+  const current = setContextFact(contextCase(), "product:product-apixaban:restarted", { kind: "known", value: false, qualifier: wording });
+  const noInterpretation = await seed(page, current);
+  const named = await pdf(page, info.outputPath("restart-context.pdf"));
+  expect(named["topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearNA[0]"]).toBe("/1");
+  const output = page.locator('[data-screen="save"]');
+  const coverage = output.locator("details").filter({ has: page.getByText("Report coverage and omitted information", { exact: true }) });
+  await expect(coverage).toContainText("Restarted: reviewed uncertainty or context not included");
+  await expect(coverage).toContainText(wording);
+  await expect(coverage).not.toContainText("Restarted: base value included");
+  await expect(output).not.toContainText("PDF ready — it reflects the accepted report contents.");
+  await goTo(page, "Review details");
+  const role = page.locator('#case-card-product-1 [data-field="role"]');
+  await role.getByRole("button", { name: "Change", exact: true }).click();
+  await role.getByRole("button", { name: "Add uncertainty or context", exact: true }).click();
+  await role.getByLabel("Uncertainty or context for Role", { exact: true }).fill("classification supplied, not independently inferred");
+  await apply(page, () => role.getByRole("button", { name: "Apply correction", exact: true }).click());
+  await expect(role.getByRole("button", { name: "Change", exact: true })).toBeVisible();
+  await goTo(page, "Review & save"); await expect(coverage).toContainText("Role: reviewed uncertainty or context not included");
+  await expect(coverage).toContainText("classification supplied, not independently inferred");
+  const after = await pdf(page, info.outputPath("routing-context.pdf")); expect(after).toEqual(named);
+  await saved(page); await page.reload(); await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
+  await goTo(page, "Review & save"); await expect(coverage).toContainText(wording);
+  await expect(coverage).toContainText("classification supplied, not independently inferred");
   noInterpretation();
 });

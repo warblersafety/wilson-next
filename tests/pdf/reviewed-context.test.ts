@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { promisify } from "node:util";
 import { expect, it } from "vitest";
 import { applyCaseCommand } from "../../src/domain/case/commands";
-import { getFact, targetFromKey } from "../../src/domain/case/facts";
+import { allFacts, getFact, targetFromKey, targetKey } from "../../src/domain/case/facts";
 import { projectForm3500 } from "../../src/domain/case/projection";
 import { createReviewView } from "../../src/domain/case/views";
 import { fillForm3500Projection } from "../../src/server/pdf/form-3500";
@@ -88,4 +88,40 @@ it("qualifier-only changes/remove/re-add preserve base output key and superseded
   expect(projectForm3500(readded).omissions.filter(({ reason }) => reason === "qualifier-not-included")).toEqual([expect.objectContaining({ qualifier: "second explicit context" })]);
   expect(readded.relevantTests[0].facts.testResult.supersededValues.some(v => v.value.kind === "known" && v.value.qualifier === assayContext)).toBe(true);
   expect(readded.products).toEqual(plain.products); expect(readded.relevantTests[0].facts.date).toEqual(plain.relevantTests[0].facts.date);
+});
+
+it("covers every active known qualifier, including routing and medication prerequisites, exactly once or in supported text", async () => {
+  let current = contextCase();
+  for (const field of ["stopped", "doseReduced", "restarted"]) current = setContextFact(current, `product:product-apixaban:${field}`, { kind: "known", value: false });
+  current = setContextFact(current, "event:event:relevantTestsAvailable", { kind: "known", value: true });
+  for (const { target, fact } of allFacts(current)) {
+    const value = fact.resolvedValue?.value;
+    if (fact.state === "resolved" && value?.kind === "known") current = setContextFact(current, targetKey(target), { ...value, qualifier: "explicit context" });
+  }
+  const projection = projectForm3500(current), omissions = projection.omissions.filter(({ reason }) => reason === "qualifier-not-included");
+  const carried = new Set(["event:event:symptoms", "event:event:problemDescription", ...projection.sections.D.suspectProducts.flatMap(p => [`product:${p.productId}:dose`, `product:${p.productId}:strength`])]);
+  for (const { target, fact } of allFacts(current)) {
+    const value = fact.resolvedValue?.value, key = targetKey(target);
+    if (fact.state !== "resolved" || value?.kind !== "known" || !value.qualifier) continue;
+    const matches = omissions.filter(o => o.target === key);
+    if (carried.has(key)) expect(matches).toHaveLength(0);
+    else expect(matches).toEqual([expect.objectContaining({ qualifier: "explicit context", sourceIds: fact.resolvedValue!.sourceIds })]);
+  }
+  for (const target of ["product:product-apixaban:stopped", "product:product-apixaban:doseReduced", "product:product-apixaban:restarted", "product:product-apixaban:role", "product:product-apixaban:productType", "event:event:relevantTestsAvailable"]) {
+    expect(omissions).toContainEqual(expect.objectContaining({ target, baseValueIncluded: false }));
+  }
+  const named = await fields(current);
+  expect(named["topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearNA[0]"]).toBe("/1");
+  expect(named["topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedNA[0]"]).toBe("/1");
+});
+it("retains inactive entity context as history without presenting it as current omitted information", () => {
+  let current = setContextFact(contextCase(), "product:product-lisinopril:role", { kind: "known", value: "concomitant", qualifier: "historical role context" });
+  current = setContextFact(current, "test:test-hemoglobin:testResult", { kind: "known", value: "14.2", qualifier: assayContext });
+  for (const [entity, entityId] of [["product", "product-lisinopril"], ["test", "test-hemoglobin"]] as const) {
+    current = applyCaseCommand(current, { type: "withdraw-case-entity", commandId: `context-withdraw-${entity}`, expectedRevision: current.revision, target: { entity, entityId }, source: contextSource(`withdraw-${entity}`) }).case;
+  }
+  const projection = projectForm3500(current);
+  expect(projection.omissions.filter(({ reason }) => reason === "qualifier-not-included")).toEqual([]);
+  expect(current.products[2].facts.role.resolvedValue?.value).toEqual({ kind: "known", value: "concomitant", qualifier: "historical role context" });
+  expect(current.relevantTests[0].facts.testResult.resolvedValue?.value).toEqual({ kind: "known", value: "14.2", qualifier: assayContext });
 });

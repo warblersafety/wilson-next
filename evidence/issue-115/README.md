@@ -34,8 +34,8 @@ provider wire, model prompt, clinical authority or layout system changed.
 
 Existing Node24.20.0, installed locked dependencies, existing pypdf/Chromium:
 
-- Typecheck, fresh build and all **385 unit tests in51 files pass**.
-- Nine new actual-PDF cases verify text/list/date/number partial context, the
+- Typecheck, fresh build and all **387 unit tests in51 files pass**.
+- Eleven new actual-PDF/domain cases verify text/list/date/number partial context, the
   recorded `14.2` / `assay repeated, first draw haemolysed` example, current source
   identity and unchanged native values/dates; already-carried symptom/complaint/
   dose/strength qualifiers are not falsely flagged; all four non-known narrative
@@ -45,7 +45,7 @@ Existing Node24.20.0, installed locked dependencies, existing pypdf/Chromium:
   all named fields equal the unqualified baseline, while the exact omitted context
   remains in accepted facts and projection metadata. This proves disclosure,
   **not** that omitted context is present in the artifact.
-- Two new focused browser journeys pass in8.3seconds. Actual controls exercise
+- Three focused browser journeys pass in10.4seconds. The first two exercise
   unqualified→reveal→type→reload unsaved draft→explicit acceptance→replace→remove→
   re-add→accepted reload. They check current/historical context and unrelated
   facts/dates/products, exact visible omission labels, unchanged actual UI PDFs,
@@ -53,7 +53,7 @@ Existing Node24.20.0, installed locked dependencies, existing pypdf/Chromium:
   downloads an unresolved partial PDF, chooses the explicit alternative, verifies
   only its qualifier is current and retains the other in history, then reloads.
 - All case POSTs except resume/set-fact/resolve-conflict abort; zero interpretation
-  attempts. The existing full68 journeys are retained unchanged. All70
+  attempts. The existing68 journeys are retained unchanged. All71
   mock-browser journeys pass in2.0minutes. Independent review and exact-head/main
   CI remain separate delivery gates.
 - The [390px disclosure](omitted-context-mobile.png) was visually inspected and
@@ -79,3 +79,35 @@ full Form3500 or real-data readiness. Issue150 remains paused;151/153 representa
 and154 portable glyph/fit risks remain open. In particular, unchanged stored-field
 readback does not prove portable Unicode appearance fidelity. No new font support,
 dependency/service, auth/grant or shared preview change, or live app-model call.
+
+## Actual review and bounded remediation
+
+The fresh subscription Opus5-5high review at materialb252f81, run
+`issue115-20261015T074717-8188af39`, preflight passed (CLI2.1.296), found one
+blocker and no independent follow-ups. Its actual full report is
+[on PR155](https://github.com/warblersafety/wilson-next/pull/155#issuecomment-6187248215).
+Static only: reviewer ran no tests or CI. The initial70-browser/unit/type/build
+and CI38701215515 pass atb252f81 are superseded by the remediation head.
+
+The first draft's path-by-path disclosure missed qualifiers on selectors and
+medication prerequisites, even though the editor could reveal context on them.
+The remedy is a final completeness sweep over current known facts on active
+entities. It excludes actual carried qualifiers and already-disclosed targets;
+all remaining exact context/source identity is disclosed once. A neutral label
+for indirect/unsupported base facts avoids claiming they are literal PDF fields.
+Withdrawn/rejected entities and non-current values are not promoted.
+
+Two recurrence cases verify every qualified known fact in the synthetic active
+case is either carried or disclosed exactly once, including stopped=false,
+doseReduced, restarted, role/productType and test availability; retired product/
+test context remains stored without current disclosure. Actual D7/D8 native
+Does-not-apply marks remain unchanged. The availability fixture was initially
+non-known; the test now explicitly supplies known=true before qualifying it,
+retaining the assertion instead of weakening it.
+
+The third browser journey covers the review's fictional false-restart example,
+its exact omitted uncertainty, a direct qualifier-only routing edit, unchanged
+actual PDF fields and durable reload; interpretation remains blocked. All three
+focused journeys pass in10.4seconds. All71 mocked journeys pass on the final remediation build in2.0minutes. The single
+targeted same-session recheck and new exact-head/main CI remain delivery gates.
+Issue115 still owns full representation; this is disclosure, not a hidden cure.

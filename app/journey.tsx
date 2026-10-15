@@ -902,7 +902,7 @@ function ReportCoverage({ snapshot }: { snapshot: JourneySnapshot }) {
   const omissions = snapshot.projection.omissions.filter(({ reason }) => reason !== "empty");
   const clinical = omissions.filter(({ target }) => !target.startsWith("reporter:"));
   const reporter = omissions.filter(({ target }) => target.startsWith("reporter:"));
-  const list = (items: typeof omissions) => <ul>{items.map((item, index) => <li key={index}>{humanOmission(snapshot, item.target, item.concept)}: {omissionLabel(item.reason, item.target)}{item.reason === "qualifier-not-included" && <> — <q>{item.qualifier}</q></>}</li>)}</ul>;
+  const list = (items: typeof omissions) => <ul>{items.map((item, index) => <li key={index}>{humanOmission(snapshot, item.target, item.concept)}: {omissionLabel(item.reason, item.target, item.baseValueIncluded)}{item.reason === "qualifier-not-included" && <> — <q>{item.qualifier}</q></>}</li>)}</ul>;
   return <details className={styles.coverage} open={hasOmittedQualifierContext(snapshot) || undefined}>
     <summary>Report coverage and omitted information</summary>
     <p>Based on currently accepted information. Unsent drafts and unaccepted proposals are not included in the report.</p>
@@ -1272,7 +1272,7 @@ function controlForTarget(target: string): FactControl | undefined {
   return factControl(entity as "patient" | "event" | "product" | "test" | "reporter", field);
 }
 
-function omissionLabel(reason: string, target: string): string {
+function omissionLabel(reason: string, target: string, baseValueIncluded = false): string {
   return {
     empty: "not provided",
     unknown: "unknown",
@@ -1280,7 +1280,7 @@ function omissionLabel(reason: string, target: string): string {
     inapplicable: "not applicable",
     declined: "prefer not to answer",
     conflicted: "unresolved conflict",
-    "qualifier-not-included": "base value included; reviewed uncertainty or context not included",
+    "qualifier-not-included": baseValueIncluded ? "base value included; reviewed uncertainty or context not included" : "reviewed uncertainty or context not included",
   }[reason] ?? reason.replaceAll("-", " ");
 }
 

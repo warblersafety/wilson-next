@@ -755,6 +755,15 @@ stop statements and applicable medication outcomes disclose their uncarried
 qualifiers. Non-known/conflicted treatment, outcome and discharge-date facts
 have individual omissions, without inventing narrative statements.
 
+A final completeness sweep covers every current known qualifier on active
+entities, including routing selectors, stopped=false, dose reduction/restart
+prerequisites, test availability and facts whose base values are wholly
+unsupported. It excludes the four actual qualifier-carrying paths and already
+disclosed targets. Rejected/withdrawn entities and non-current values stay history.
+Only directly mapped values/explicit B5 statements are labelled base-value-included;
+indirect or unsupported facts use a neutral context-not-included disclosure.
+Neither the sweep nor its label makes a clinical applicability decision.
+
 The existing coverage panel opens for partial qualifier omissions and quotes
 exact omitted wording with the entity/field label. Output and return-to-PDF
 messages distinguish supported PDF values from omitted context. The PDF content
