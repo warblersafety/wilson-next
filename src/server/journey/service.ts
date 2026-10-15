@@ -1,12 +1,13 @@
 import { createHash, randomUUID } from "node:crypto";
 import { productTextLimitation } from "../pdf/product-text";
+import { quantityLimitation, quantityNarrativeLimitation } from "../pdf/quantity";
 import type { UnrepresentedModelProposal } from "../../domain/case/model-boundary";
 import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts } from "../../domain/case/limits";
 import { completionQuestions } from "../../domain/case/completion-policy";
 import { createSemanticCase } from "../../domain/case/create";
 import { allFacts, getFact, targetFromKey, targetKey } from "../../domain/case/facts";
 import { productDisplayLabel } from "../../domain/case/product-label";
-import { projectForm3500 } from "../../domain/case/projection";
+import { projectForm3500, quantityContextEntries, hasBaseEventDescription } from "../../domain/case/projection";
 import type { CaseValue, Fact, FactTarget, ProductFactKey, ReporterFactKey, SemanticCase, Source } from "../../domain/case/types";
 import {
   createClarificationView,
@@ -91,6 +92,13 @@ export async function getJourneySnapshot(
   const caseState = await ensureJourneyCase(repository, caseId);
   const projection = projectForm3500(caseState);
   const outputIssues = outputReadinessIssues(caseState, projection);
+  const narrativeLimitation = await quantityNarrativeLimitation(projection);
+  if (narrativeLimitation) outputIssues.push({
+    code: "unsupported-product-text",
+    message: `The reviewed quantity narrative ${narrativeLimitation}. It is retained, but no new PDF is generated.`,
+    targets: quantityContextEntries(projection.sections.D.suspectProducts).map(entry => entry.target),
+    entityIds: projection.sections.D.suspectProducts.filter(product => product.dose?.qualifier !== undefined || product.strength?.qualifier !== undefined).map(product => product.productId),
+  });
   return {
     stage: stageFor(caseState),
     revision: caseState.revision,
@@ -659,7 +667,7 @@ export function outputReadinessIssues(
 
   const reportType = knownValue(caseState.event.facts.reportType);
   if (!reportType) issue("missing-report-type", "Accept the selected report type.", ["event:event:reportType"], ["event"]);
-  if (!projection.sections.B.eventDescription) {
+  if (!hasBaseEventDescription(caseState)) {
     issue(
       "missing-event-description",
       "Accept at least one event or product-problem fact that contributes to the report description.",
@@ -676,8 +684,8 @@ export function outputReadinessIssues(
   }
   for (const product of projection.sections.D.suspectProducts) {
     for (const field of ["route", "frequency", "dose", "strength"] as const) {
-      const value = product[field];
-      const limitation = value !== undefined ? productTextLimitation(field, value) : undefined;
+      const limitation = field === "dose" || field === "strength" ? quantityLimitation(field, product[field])
+        : product[field] !== undefined ? productTextLimitation(field, product[field]!) : undefined;
       if (limitation) issue(
         field === "route" ? "unsupported-product-route" : "unsupported-product-text",
         `${productLabel(caseState, product.productId)}: the reviewed ${field} ${limitation}. It is retained, but the PDF cannot represent it; no new PDF is generated.`,

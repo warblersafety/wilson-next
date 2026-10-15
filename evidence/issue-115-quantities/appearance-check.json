@@ -1,0 +1,11 @@
+{
+  "source": "qualified.pdf",
+  "method": "pypdf decoded native B5 appearance Tj operands separately from stored V",
+  "storedValue": "Symptoms: rash.\nSuspect product #1 strength: 5 mg (confirmed label).",
+  "appearanceTextRuns": [
+    "Symptoms: rash.",
+    "Suspect product #1 strength: 5 mg (confirmed label)."
+  ],
+  "nativeFontSize": 8.5,
+  "portableViewerClaim": false
+}

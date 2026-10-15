@@ -16,7 +16,7 @@ describe("reviewed sex and native PDF representability", () => {
     const snapshot = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: current }), current.id);
     expect(snapshot.downloadReady).toBe(false);
     expect(snapshot.outputIssues).toContainEqual({ code: field === "route" ? "unsupported-product-route" : "unsupported-product-text", message: expect.stringContaining("no non-blank wording"), targets: [`product:${current.products[0].id}:${field}`], entityIds: [current.products[0].id] });
-    expect(snapshot.projection.sections.D.suspectProducts[0][field]).toBe(value);
+    expect(snapshot.projection.sections.D.suspectProducts[0][field]).toEqual(field === "dose" || field === "strength" ? { value } : value);
     await expect(fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), snapshot.projection)).rejects.toThrow("no non-blank wording");
     for (const mode of ["preview", "download"]) {
       const state = { version: browserStateVersion, stage: "output", case: current, unrepresented: [] };

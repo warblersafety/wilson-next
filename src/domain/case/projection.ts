@@ -67,13 +67,19 @@ export interface ProjectedReporter {
   doNotDiscloseIdentity?: boolean;
 }
 
+/** Raw reviewed quantity and context stay distinct until native PDF formatting. */
+export interface ProjectedQuantity {
+  value: string;
+  qualifier?: string;
+}
+
 export interface ProjectedProduct {
   productId: string;
   name?: string;
   manufacturer?: string;
   lotNumber?: string;
-  dose?: string;
-  strength?: string;
+  dose?: ProjectedQuantity;
+  strength?: ProjectedQuantity;
   frequency?: string;
   route?: string;
   startDate?: string;
@@ -242,6 +248,15 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     }
   }
 
+  const quantityContext = quantityContextEntries(projection.sections.D.suspectProducts);
+  if (quantityContext.length) {
+    projection.sections.B.eventDescription = [projection.sections.B.eventDescription, ...quantityContext.map(entry => entry.text)].filter(Boolean).join("\n");
+    projection.sourceTrace["sections.B.eventDescription"] = [...new Set([
+      ...(projection.sourceTrace["sections.B.eventDescription"] ?? []),
+      ...quantityContext.flatMap(entry => projection.sourceTrace[entry.path] ?? []),
+    ])];
+  }
+
   for (const field of ["lastName", "firstName", "address", "city", "state", "postalCode", "country", "phone", "email", "healthProfessional", "occupation", "reportedTo", "doNotDiscloseIdentity"] as const) {
     assign<unknown>(projection, `sections.G.reporter.${field}`, `reporter ${field}`, `reporter:reporter:${field}`, caseState.reporter.facts[field] as Fact<unknown>, projection.sections.G.reporter, field);
   }
@@ -275,7 +290,7 @@ function projectProduct(
   const prefix = `sections.D.suspectProducts.${index}`;
   for (const field of sectionDProductFields) {
     assign<unknown>(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field] as Fact<unknown>, result, field, (value) => field === "medicationType" ? ["brand", "generic-biosimilar", "otc", "compounded"].filter((label) => (value as string[]).includes(label))
-      : field === "dose" || field === "strength" ? qualifiedText(String(value), known(product.facts[field])?.qualifier)
+      : field === "dose" || field === "strength" ? { value: String(value), ...(known(product.facts[field])?.qualifier !== undefined ? { qualifier: known(product.facts[field])!.qualifier } : {}) }
         : value, field === "dose" || field === "strength");
   }
   for (const [field, applies, prerequisites] of [
@@ -445,4 +460,21 @@ function displayDate(value: string): string {
 function joinWithAnd(values: string[]): string {
   if (values.length === 1) return values[0];
   return `${values.slice(0, -1).join(", ")} and ${values.at(-1)}`;
+}
+
+/** Formatting only: full accepted quantities/context linked to actual suspect slots. */
+export function quantityContextEntries(products: ProjectedProduct[]) {
+  return products.flatMap((product, index) => (["dose", "strength"] as const).flatMap(field => {
+    const quantity = product[field];
+    return quantity?.qualifier !== undefined ? [{
+      text: `Suspect product #${index + 1} ${field}: ${quantity.value} (${quantity.qualifier}).`,
+      path: `sections.D.suspectProducts.${index}.${field}`,
+      target: `product:${product.productId}:${field}`,
+    }] : [];
+  }));
+}
+
+/** Quantity context alone must not satisfy the existing event-description gate. */
+export function hasBaseEventDescription(caseState: SemanticCase): boolean {
+  return buildEventDescription(caseState).value !== undefined;
 }

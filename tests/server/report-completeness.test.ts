@@ -38,11 +38,11 @@ describe("reviewed report metadata and product strength", () => {
     const initialCase = completeResolvedCase();
     const repository = new InMemoryCaseRepository({ initialCase });
     const before = await getJourneySnapshot(repository, initialCase.id);
-    expect(before.projection.sections.D.suspectProducts[0]).toMatchObject({ dose: "5 mg" });
+    expect(before.projection.sections.D.suspectProducts[0]).toMatchObject({ dose: { value: "5 mg" } });
     expect(before.projection.sections.D.suspectProducts[0].strength).toBeUndefined();
     const updated = await performJourneyAction(repository, initialCase.id, {
       action: "set-fact", target: `product:${initialCase.products[0].id}:strength`, value: { kind: "known", value: "2.5 mg" },
     }, fixedJourneyModel);
-    expect(updated.projection.sections.D.suspectProducts[0]).toMatchObject({ dose: "5 mg", strength: "2.5 mg" });
+    expect(updated.projection.sections.D.suspectProducts[0]).toMatchObject({ dose: { value: "5 mg" }, strength: { value: "2.5 mg" } });
   });
 });
