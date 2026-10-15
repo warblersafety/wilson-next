@@ -46,8 +46,8 @@ it.each(["unknown","declined","explicitly-absent","inapplicable"]as const)("pres
 });
 it("does not infer reduction or date, and visibly retains explicitly contradictory supplied facts",async()=>{
  const base=productCapacityCase();let c=setContextFact(base,`product:${base.products[0].id}:doseReduced`,{kind:"known",value:true});expect((await inspect(c)).projection.sections.D.suspectProducts[0].doseReductionDate).toBeUndefined();
- c=setContextFact(c,`product:${c.products[0].id}:doseReduced`,{kind:"known",value:false});c=setContextFact(c,`product:${c.products[0].id}:doseReductionDate`,{kind:"known",value:"2026-09-18"});const before=structuredClone(c),r=await inspect(c,"reduction-contradiction");
- expect(r.fields[key(0)]).toBe("18-SEP-2026");expect(c.products[0].facts.doseReduced.resolvedValue?.value).toEqual({kind:"known",value:false});expect(createUnderstandingView(c).products[0].medicationNotice).toContain("dose reduction is explicitly reported");
+ c=setContextFact(c,`product:${c.products[0].id}:doseReduced`,{kind:"known",value:false});c=setContextFact(c,`product:${c.products[0].id}:stopped`,{kind:"known",value:false});c=setContextFact(c,`product:${c.products[0].id}:doseReductionDate`,{kind:"known",value:"2026-09-18"});const before=structuredClone(c),r=await inspect(c,"reduction-contradiction");
+ expect(r.fields[key(0)]).toBe("18-SEP-2026");expect(r.projection.sections.D.suspectProducts[0].improvedAfterChange).toBeUndefined();expect(r.projection.omissions).toContainEqual(expect.objectContaining({reason:"reduction-date-conflict"}));for(const answer of["Yes","No","NA"])expect(r.fields["topmostSubform[0].Page4[0].Prod1[0].Prod1Abated"+answer+"[0]"]).not.toBe("/1");expect(c.products[0].facts.doseReduced.resolvedValue?.value).toEqual({kind:"known",value:false});expect(createUnderstandingView(c).products[0].medicationNotice).toContain("dose reduction is explicitly reported");
  expect(r.projection.notIncluded.join(" ")).toContain("Wilson has not reconciled");expect(c).toEqual(before);
  c=setContextFact(c,`product:${c.products[0].id}:doseReduced`,{kind:"unknown"});expect(createUnderstandingView(c).products[0].medicationNotice??"").not.toContain("dose reduction is explicitly reported");
 });
@@ -72,4 +72,10 @@ it("discloses accepted date knowledge with no native destination after device/co
 it("rejects partial direct API acceptance without mutation or model calls",async()=>{
  const c=productCapacityCase(),state={version:browserStateVersion,stage:"output",case:c,unrepresented:[]},before=structuredClone(state);let calls=0;
  const response=await postCase(new NextRequest("http://wilson.test/api/case",{method:"POST",headers:{host:"wilson.test",origin:"http://wilson.test","content-type":"application/json"},body:JSON.stringify({operation:"act",state,expectedRevision:state.case.revision,action:{action:"set-fact",target:`product:${c.products[0].id}:doseReductionDate`,value:{kind:"known",value:"2026-09"}}})}),{propose:async()=>{calls++;throw new Error("No model calls");}});expect(response.status).toBe(400);expect(calls).toBe(0);expect(state).toEqual(before);
+});
+
+it.each([false,"inapplicable"]as const)("does not derive D7 Doesn't apply from %j withdrawal answers when a reviewed reduction date contradicts them in either slot",async negative=>{
+ let c=productCapacityCase();for(const p of c.products.slice(0,2)){for(const field of["stopped","doseReduced"]as const)c=setContextFact(c,`product:${p.id}:${field}`,negative===false?{kind:"known",value:false}:{kind:"inapplicable"});c=setContextFact(c,`product:${p.id}:doseReductionDate`,{kind:"known",value:"2026-09-18"});}
+ let r=await inspect(c);for(let i=0;i<2;i++){expect(r.projection.sections.D.suspectProducts[i].improvedAfterChange).toBeUndefined();for(const answer of["Yes","No","NA"])expect(r.fields[`topmostSubform[0].Page${i+4}[0].Prod${i+1}[0].Prod${i+1}Abated${answer}[0]`]).not.toBe("/1");}
+ const id=c.products[0].id;c=setContextFact(c,`product:${id}:doseReductionDate`,{kind:"unknown"});r=await inspect(c);expect(r.projection.sections.D.suspectProducts[0].improvedAfterChange).toBe("inapplicable");expect(r.fields["topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedNA[0]"]).toBe("/1");
 });

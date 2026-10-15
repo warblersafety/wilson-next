@@ -1305,6 +1305,7 @@ function omissionLabel(reason: string, target: string, baseValueIncluded = false
     inapplicable: "not applicable",
     declined: "prefer not to answer",
     conflicted: "unresolved conflict",
+    "reduction-date-conflict": "D7 left blank: conflicting supplied dose-reduction information; no applicability inferred",
     "a2-alternative-not-selected": "retained; not selected for A2 output",
     "qualifier-not-included": baseValueIncluded ? "base value included; reviewed uncertainty or context not included" : "reviewed uncertainty or context not included",
   }[reason] ?? reason.replaceAll("-", " ");

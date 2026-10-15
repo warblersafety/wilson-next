@@ -1224,8 +1224,10 @@ is widened (issue164 remains open).
 The existing date editor supports a strict complete-date text draft for this
 field: partial/impossible values survive reload with a visible explanation and
 disabled acceptance. Model/API/accepted-state/PDF boundaries reject those values
-without inventing missing components. Unsupported conversational date proposals
-retain their evidence in the existing unrepresented-information path. A complete
+without inventing missing components. If the model emits an unsupported conversational date proposal, the boundary
+retains its evidence in the existing unrepresented-information path. A model
+that omits an unsupported partial date before proposing it may leave only the
+generic coverage disclosure; case-specific live behavior remains unverified (issue180). A complete
 explicitly estimated date retains its qualifier; native omission of that
 qualifier is disclosed rather than hidden.
 
@@ -1241,3 +1243,10 @@ Coverage checklist: complete supplied reduction dates are implemented; partial
 reduction dates and treatment duration remain unsupported, alongside existing
 other-category, purchase, representation and narrative gaps. A warning is not
 completed field support. Prompt/mock checks are not live-model verification.
+
+
+When a reviewed reduction date contradicts explicit no-stop/no-reduction
+answers, D7 stays blank instead of deriving Does not apply from those answers.
+The omission references the date and prerequisite sources and is visibly
+disclosed. Supplied date/answers and outcome history stay unchanged; this
+projection-only rule adds no question or download gate.

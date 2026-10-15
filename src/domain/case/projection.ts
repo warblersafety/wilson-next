@@ -13,7 +13,7 @@ const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "r
 export interface ProjectionOmission {
   concept: string;
   target: string;
-  reason: "empty" | "unknown" | "explicitly-absent" | "inapplicable" | "declined" | "conflicted" | "qualifier-not-included" | "a2-alternative-not-selected";
+  reason: "empty" | "unknown" | "explicitly-absent" | "inapplicable" | "declined" | "conflicted" | "qualifier-not-included" | "a2-alternative-not-selected" | "reduction-date-conflict";
   qualifier?: string;
   baseValueIncluded?: boolean;
   sourceIds: string[];
@@ -329,6 +329,12 @@ function projectProduct(
     const outcome = product.facts[field];
     const path = `${prefix}.${field}`;
     const sources = [...new Set([...prerequisites.flatMap((fact) => fact.resolvedValue?.sourceIds ?? []), ...(outcome.resolvedValue?.sourceIds ?? [])])];
+    if (field === "improvedAfterChange" && applies === false && known(product.facts.doseReductionDate)) {
+      const conflictSources = [...new Set([...sources, ...product.facts.doseReductionDate.resolvedValue!.sourceIds])];
+      projection.omissions.push({ concept: `D7 applicability for ${product.id}`, target: `product:${product.id}:improvedAfterChange`, reason: "reduction-date-conflict", sourceIds: conflictSources });
+      projection.notIncluded.push(`${productDisplayLabel(known(product.facts.name)?.value, index + 1)} — D7 is left blank because the supplied dose-reduction date conflicts with the explicit no-stop/no-reduction answers. Wilson has not derived Does not apply or chosen an interpretation.`);
+      continue;
+    }
     if (applies === false) {
       result[field] = "inapplicable";
       projection.sourceTrace[path] = sources;

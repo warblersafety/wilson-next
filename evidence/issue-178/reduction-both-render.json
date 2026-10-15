@@ -7,13 +7,13 @@
       "page": 4,
       "screenshot": "reduction-both-page-4.png",
       "rendered": true,
-      "visualInspection": "passed: supplied date legible in correct D3 field; unrelated form/date controls preserved"
+      "visualInspection": "passed: supplied date legible in correct D3 field; unrelated controls preserved"
     },
     {
       "page": 5,
       "screenshot": "reduction-both-page-5.png",
       "rendered": true,
-      "visualInspection": "passed: supplied date legible in correct D3 field; unrelated form/date controls preserved"
+      "visualInspection": "passed: supplied date legible in correct D3 field; unrelated controls preserved"
     }
   ]
 }
