@@ -21,21 +21,25 @@ async function fields(current: ReturnType<typeof contextCase>) {
   const { stdout } = await promisify(execFile)(process.env.PYPDF_PYTHON ?? "python3", ["tools/pdf/independent_readback.py", file, "--named"]);
   expect(current).toEqual(before); return JSON.parse(stdout).namedFields as Record<string, string>;
 }
-it("discloses exact omitted text/list/date/number context with current source identity while PDF values/chronology stay unchanged", async () => {
+it("carries course context while disclosing other omitted text/date/number context without changing unrelated output", async () => {
   const plain = contextCase(); let current = plain;
-  const targets = ["test:test-hemoglobin:testResult", "event:event:treatments", "event:event:outcome", "event:event:onsetDate", "patient:patient:ageYears"];
+  const targets = ["test:test-hemoglobin:testResult", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate", "event:event:onsetDate", "patient:patient:ageYears"];
   for (const [i, target] of targets.entries()) {
     const value = getFact(current, targetFromKey(current, target)).resolvedValue!.value;
     if (value.kind !== "known") throw new Error("Expected known synthetic baseline");
     current = setContextFact(current, target, { ...value, qualifier: i === 0 ? assayContext : `Fictional context ${i}: attribution remains uncertain` });
   }
   const projection = projectForm3500(current);
-  expect(projection.sections).toEqual(projectForm3500(plain).sections);
+  const carried = new Set(["event:event:treatments", "event:event:outcome", "event:event:dischargeDate"]);
   for (const target of targets) {
     const fact = getFact(current, targetFromKey(current, target));
+    if (carried.has(target)) { expect(projection.omissions.some(omission => omission.target === target)).toBe(false); continue; }
     expect(projection.omissions).toContainEqual(expect.objectContaining({ target, reason: "qualifier-not-included", qualifier: fact.resolvedValue!.value.kind === "known" ? fact.resolvedValue!.value.qualifier : undefined, sourceIds: fact.resolvedValue!.sourceIds }));
   }
-  expect(await fields(current)).toEqual(await fields(plain));
+  const actual = await fields(current), before = await fields(plain);
+  for (const key of Object.keys(before).filter(key => key !== narrative)) expect(actual[key]).toEqual(before[key]);
+  for (const i of [1, 2, 3]) expect(actual[narrative]).toContain(`Fictional context ${i}: attribution remains uncertain`);
+  expect(actual[narrative]).not.toContain(assayContext);
   expect(Object.values(await fields(current))).toContain("Fictional assay: 14.2");
 });
 it("does not falsely flag the four already carried qualifier shapes as omitted", async () => {
@@ -73,8 +77,8 @@ it("discloses the whole conflicted narrative fact until explicit resolution, the
   const chosen = fact.conflictingValues.find(v => v.value.kind === "known" && v.value.value === "partially improved")!;
   const resolved = applyCaseCommand(current, { type: "resolve-conflict", commandId: "resolve-context", expectedRevision: current.revision, target: { entity: "event", entityId: "event", field: "outcome" }, chosenValueId: chosen.id, source: contextSource("resolution") }).case;
   const omissions = projectForm3500(resolved).omissions.filter(({ target }) => target === "event:event:outcome");
-  expect(omissions).toEqual([expect.objectContaining({ reason: "qualifier-not-included", qualifier: "chart A uncertain", sourceIds: resolved.event.facts.outcome.resolvedValue!.sourceIds })]);
-  expect((await fields(resolved))[narrative]).toContain("Outcome: partially improved.");
+  expect(omissions).toEqual([]);
+  expect((await fields(resolved))[narrative]).toContain("Outcome: partially improved (chart A uncertain).");
   expect(resolved.event.facts.outcome.supersededValues.some(v => v.value.kind === "known" && v.value.qualifier === "chart B follow-up incomplete")).toBe(true);
 });
 it("qualifier-only changes/remove/re-add preserve base output key and superseded context, not a falsely new PDF", async () => {
@@ -99,7 +103,7 @@ it("covers every active known qualifier, including routing and medication prereq
     if (fact.state === "resolved" && value?.kind === "known") current = setContextFact(current, targetKey(target), { ...value, qualifier: "explicit context" });
   }
   const projection = projectForm3500(current), omissions = projection.omissions.filter(({ reason }) => reason === "qualifier-not-included");
-  const carried = new Set(["event:event:symptoms", "event:event:problemDescription", ...projection.sections.D.suspectProducts.flatMap(p => [`product:${p.productId}:dose`, `product:${p.productId}:strength`])]);
+  const carried = new Set(["event:event:symptoms", "event:event:problemDescription", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate", ...projection.sections.D.suspectProducts.flatMap(p => [`product:${p.productId}:dose`, `product:${p.productId}:strength`])]);
   for (const { target, fact } of allFacts(current)) {
     const value = fact.resolvedValue?.value, key = targetKey(target);
     if (fact.state !== "resolved" || value?.kind !== "known" || !value.qualifier) continue;

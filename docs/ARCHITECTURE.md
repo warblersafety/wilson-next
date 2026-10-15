@@ -743,6 +743,9 @@ deployment verification remains a milestone gate.
 
 ### Reviewed context disclosure — Issue115 first slice
 
+This records the first-slice boundary. The later quantity and clinical-course
+subsections below amend the current supported representation for those facts.
+
 Projection omissions distinguish an entire fact not carried from a known base
 value carried without its reviewed qualifier. The latter records
 qualifier-not-included, exact qualifier wording, stable target and current
@@ -1015,3 +1018,26 @@ stopped-product facts; only failure introduced by added quantity notes points
 to those quantity facts. Removing a qualifier cannot disable this B5 guard. No font shrinking, glyph substitution, new pages or continuation
 capacity is introduced. This is bounded quantity support, not general qualifier
 or portable-glyph completion;115/151/153/154 remain open and150 remains paused.
+
+### B5 clinical-course context — Issue115 third slice
+
+Current known treatment, event-outcome and discharge-date qualifiers are carried
+verbatim beside their own existing B5 statements with the established parenthetical
+formatter. Their partial qualifier omissions are removed only because that exact
+context now reaches the artifact. Other qualifiers remain explicitly disclosed.
+Non-known, proposed, conflicted and superseded values are not promoted; conflict
+resolution carries only the chosen current value/context through the same boundary.
+
+This preserves supplied treatment-list order, existing B5 statement order and
+existing date display formatting. The labelled statements are a presentation
+order, not an inferred clinical timeline. Explicit clinician timing uncertainty
+remains exact; no causal links, dates, ordering or clinical conclusions are added.
+B5 source trace continues to reference current facts. Context correction/removal/
+re-add changes actual B5 content and its output key while preserving history.
+The existing full-B5 glyph/fit/capacity guard applies, including accepted context.
+
+FDA B5 instructions cover clinical course, treatment and outcome. No new field,
+font, continuation, UI, model/provider/schema or persistence design is introduced.
+B6/B7, other patient/product/device/reporter context, selector/prerequisite context
+and broader chronology representation remain separate.115 remains open;150paused,
+151/153/154/157 retain their existing scopes.
