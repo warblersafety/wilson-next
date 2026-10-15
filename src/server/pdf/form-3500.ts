@@ -1,3 +1,5 @@
+import {purchaseDetailFields,purchaseCountryLabel} from "../../domain/case/purchase-details";
+import {purchaseNativeGeometry,purchaseDetailLimitation} from "./purchase-details";
 import { isTreatmentDuration, durationNativeUnits, durationNativeLabels } from "../../domain/case/duration";
 import { durationLimitation } from "./duration";
 import { isCompleteCalendarDate } from "../../domain/case/calendar-date";
@@ -365,6 +367,12 @@ export async function fillForm3500Projection(
       durationUnit.select(" ");
       durationUnitWrites.add(durationUnitName);
     }
+    for(const field of purchaseDetailFields){
+      const value=product[field],name=purchaseNativeGeometry[index][field].name;
+      if(value!==undefined && (typeof value!=="string" || purchaseDetailLimitation(field,value,index)))throw new Error(`Unsupported Section D purchase detail: ${field}`);
+      if(field==="purchaseSellerCountry"){const control=form.getDropdown(name);if(value!==undefined)control.select(purchaseCountryLabel(value)!);else if(control.getSelected().some(v=>v.trim()))control.select(" ");}
+      else if(value!==undefined || form.getTextField(name).getText())setText(form,name,value??"");
+    }
     if (product.purchaseDate !== undefined && !isCompleteCalendarDate(product.purchaseDate)) throw new Error("Section D purchase date requires a complete valid calendar date");
     const purchaseDateName = `topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].${index === 0 ? "Prod1" : "Pdt2"}PurchaseDate[0]`;
     if (product.purchaseDate !== undefined || form.getTextField(purchaseDateName).getText()) setText(form, purchaseDateName, product.purchaseDate ? formatDate(product.purchaseDate) : "");
@@ -601,6 +609,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
     therapyOngoing: readOngoing(index),
     treatmentDuration: readDuration(index),
     cosmeticUse: (() => { const selected = cosmeticNativeFields(index).filter(([,name])=>form.getCheckBox(name).isChecked()); if (selected.length>1) throw new Error("D5 cosmetics has multiple selected choices"); return selected[0]?.[0]; })(),
+    ...Object.fromEntries(purchaseDetailFields.map(field=>{const name=purchaseNativeGeometry[index][field].name;const raw=field==="purchaseSellerCountry"?form.getDropdown(name).getSelected()[0]:form.getTextField(name).getText();return [field,field==="purchaseSellerCountry"&&!raw?.trim()?undefined:raw];})),
     purchaseDate: parseDate(form.getTextField(`topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].${index === 0 ? "Prod1" : "Pdt2"}PurchaseDate[0]`).getText()),
     doseReductionDate: parseDate(form.getTextField(`topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].Prod${index + 1}TherapyReduceDate[0]`).getText()),
     name: form.getTextField(names.name).getText(),

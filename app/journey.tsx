@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useId } from "react";
 import { isCompleteBirthDate } from "../src/domain/case/birth-date";
 import { isPatientAge } from "../src/domain/case/age";
 import { testDisplayLabel } from "../src/domain/case/test-label";
@@ -1103,6 +1103,7 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
 }
 
 function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQualifier, onChange: emitChange }: { label: string; control: FactControl; value: EditableCaseValue; hasQualifierControl: boolean; onRevealQualifier: () => void; onChange: (value: EditableCaseValue) => void }) {
+  const suggestionsId = useId();
   const known = value.kind === "known" ? value.value : undefined;
   // Keep the existing qualifier editable for this edit session, including the
   // empty intermediate state when the clinician replaces its wording.
@@ -1120,7 +1121,7 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQ
     <label>{label} status<select aria-label={`${label} status`} value={value.kind} onChange={(event) => onChange(event.target.value === "known" ? editableInitialValue(undefined, control) : { kind: event.target.value as Exclude<EditableCaseValue["kind"], "known"> })}>
       <option value="known">Known</option><option value="unknown">Unknown</option><option value="explicitly-absent">{control.explicitAbsentLabel ?? "Not present"}</option><option value="inapplicable">Not applicable</option><option value="declined">Prefer not to answer</option>
     </select></label>
-    {value.kind === "known" && control.shape === "text" && <input aria-label={`New ${label}`} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />}
+    {value.kind === "known" && control.shape === "text" && <><input aria-label={`New ${label}`} list={control.options ? suggestionsId : undefined} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />{control.options && <datalist id={suggestionsId}>{control.options.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</datalist>}</>}
     {value.kind === "known" && control.shape === "age" && <div className={styles.measurement}>
       <input aria-label={`New ${label}`} type="number" min="0" step="1" max={typeof known === "number" ? 150 : undefined} value={String(typeof known === "number" ? known : typeof known === "object" && known && "value" in known ? known.value : "")} onChange={(event) => onChange({ kind: "known", value: typeof known === "object" && known && "unit" in known && (known.unit === "months" || known.unit === "weeks" || known.unit === "days") ? { value: Number(event.target.value), unit: known.unit } : Number(event.target.value) })} />
       <select aria-label={`${label} unit`} value={typeof known === "number" ? "years" : typeof known === "object" && known && "unit" in known ? known.unit : "years"} onChange={(event) => {

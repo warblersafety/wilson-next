@@ -1,3 +1,4 @@
+import { purchaseCountrySuggestions } from "../domain/case/purchase-details";
 import { durationUnits } from "../domain/case/duration";
 import { raceEthnicityOptions } from "../domain/case/race-ethnicity";
 import type {
@@ -97,6 +98,13 @@ const product = {
   medicationType: { label: "Medication label type", shape: "choices", options: choices(["brand", "Brand"], ["generic-biosimilar", "Generic or biosimilar"], ["otc", "Over-the-counter"], ["compounded", "Compounded"]) },
   treatmentDuration: { label: "Treatment duration", shape: "duration", options: durationUnits.map(value => ({value, label: value[0].toUpperCase()+value.slice(1)})), help: "Enter the explicitly supplied positive amount and its unit. Wilson never calculates duration from dates, converts units, or invents a unit." },
   d3Value: { label: "D3 value to print", shape: "choice", preference: true, options: choices(["dates", "Treatment dates"], ["duration", "Duration"]), preferenceHelp: "D3 asks for dates OR duration. No print preference uses the sole known alternative, or leaves D3 blank if neither is known. If both are known, explicitly choose one. Clearing this preference preserves all facts and unfinished edits." },
+  purchaseSellerName: { label: "Purchase seller name", shape: "text", },
+  purchaseSellerAddress: { label: "Purchase address", shape: "text", },
+  purchaseSellerCity: { label: "Purchase city", shape: "text", },
+  purchaseSellerRegion: { label: "Purchase state/province/region", shape: "text", },
+  purchaseSellerPostalCode: { label: "Purchase postal code", shape: "text", },
+  purchaseSellerCountry: { label: "Purchase country", shape: "text", options: purchaseCountrySuggestions.map(value=>({value,label:value.toLowerCase().replace(/(^|\s)\S/g,c=>c.toUpperCase())})), help: "Enter the explicitly supplied country or select a suggested native option. Only case/outer-space formatting matches a native label; no aliases or country inference. Use Unknown status for unknown information; unmatched wording is retained with a PDF limitation.", },
+  purchaseWebsite: { label: "Purchase website", shape: "text", },
   purchaseDate: { label: "Purchase date", shape: "date", completeDate: true, help: "Enter the explicitly supplied complete purchase date as YYYY-MM-DD. Partial or impossible dates stay unfinished. Wilson never infers a purchase date from other dates." },
   doseReductionDate: { label: "Dose reduced on", shape: "date", completeDate: true, help: "Enter the explicitly supplied complete date as YYYY-MM-DD. Partial or impossible dates stay unfinished. Wilson never infers a dose reduction or its date." },
   doseReduced: { label: "Dose reduced", shape: "boolean" },

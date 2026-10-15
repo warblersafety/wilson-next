@@ -1,3 +1,4 @@
+import {purchaseDetailFields,purchaseDetailLabels,purchaseCountryLabel} from "./purchase-details";
 import { d3DateFields, type TreatmentDuration } from "./duration";
 import { raceEthnicityOptions, type RaceEthnicity } from "./race-ethnicity";
 import type { PatientAge } from "./age";
@@ -6,7 +7,7 @@ import { doseReductionDateNotice, ongoingTherapyNotice, isSettled, restartApplic
 import { productDisplayLabel } from "./product-label";
 import type { Fact, ProductEntity, ProductFactKey, ReportType, SemanticCase } from "./types";
 
-const sectionDProductFields = ["name", "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "purchaseDate", "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "doseReductionDate", "treatmentDuration", "indication", "medicationType", "cosmeticUse"] as const satisfies readonly ProductFactKey[];
+const sectionDProductFields = ["name", "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "purchaseDate", ...purchaseDetailFields, "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "doseReductionDate", "treatmentDuration", "indication", "medicationType", "cosmeticUse"] as const satisfies readonly ProductFactKey[];
 const sectionEProductFields = ["name", "commonName", "procode", "manufacturer", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const satisfies readonly ProductFactKey[];
 const sectionFProductFields = ["name", "startDate", "stopDate"] as const satisfies readonly ProductFactKey[];
 const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "role", "stopped"]);
@@ -84,6 +85,14 @@ export interface ProjectedProduct {
   lotNumber?: string;
   ndcOrUniqueId?: string;
   purchaseDate?: string;
+  purchaseSellerName?: string;
+  purchaseSellerAddress?: string;
+  purchaseSellerCity?: string;
+  purchaseSellerRegion?: string;
+  purchaseSellerPostalCode?: string;
+  purchaseSellerCountry?: string;
+  purchaseWebsite?: string;
+
   expirationDate?: string;
   dose?: ProjectedQuantity;
   strength?: ProjectedQuantity;
@@ -139,7 +148,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       "Patient race/ethnicity detail outside the seven A5 categories",
       "Section C product pictures and general additional comments",
       "Additional suspect medical devices beyond the first",
-      "Section D partial expiration dates, partial purchase dates, cannabinoid/Other product-type categories and purchase place/address/website",
+      "Section D partial expiration dates, partial purchase dates, cannabinoid/Other product-type categories and purchase wording outside native country/glyph/line/capacity limits",
       "Section D partial dose-reduction dates; dose-count, compound and range treatment durations",
     ],
   };
@@ -324,6 +333,7 @@ function projectProduct(
   const prefix = `sections.D.suspectProducts.${index}`;
   for (const field of sectionDProductFields) {
     assign<unknown>(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field] as Fact<unknown>, result, field, (value) => field === "medicationType" ? ["brand", "generic-biosimilar", "otc", "compounded"].filter((label) => (value as string[]).includes(label))
+      : field === "purchaseSellerCountry" ? purchaseCountryLabel(String(value)) ?? value
       : field === "dose" || field === "strength" ? { value: String(value), ...(known(product.facts[field])?.qualifier !== undefined ? { qualifier: known(product.facts[field])!.qualifier } : {}) }
         : value, field === "dose" || field === "strength");
   }
@@ -396,6 +406,7 @@ function productLabel(caseState: SemanticCase, product: ProductEntity): string {
 
 function humanizeProductField(field: ProductFactKey): string {
   if (field === "ndcOrUniqueId") return "NDC number or Unique ID";
+  if ((purchaseDetailFields as readonly string[]).includes(field)) return purchaseDetailLabels[field as keyof typeof purchaseDetailLabels];
   if (field === "cosmeticUse") return "Cosmetic product type";
   if (field === "udi") return "UDI";
   if (field === "procode") return "Procode";

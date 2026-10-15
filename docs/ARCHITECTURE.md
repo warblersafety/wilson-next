@@ -139,7 +139,7 @@ integration, the Issue #129 restore contract below supersedes that preview-only
 compatibility limit: retain migrations for every state version actually persisted
 by supported releases, preserving accepted facts and history.
 
-The existing coverage checklist distinguishes implemented Section D complete expiration dates (PR163), NDC/Unique ID (PR166), explicit ongoing status (PR177), complete dose-reduction dates (PR179), explicit native-time durations (issue181), and complete purchase dates (issue183), and explicit D5 cosmetic professional-use/retail choice (issue185) from remaining cannabinoid/Other D5, purchase place/address/website, partial purchase/expiration/reduction-date and dose-count/compound/range duration gaps. Warnings and no-destination disclosures preserve visibility; they are not completed field support.
+The existing coverage checklist distinguishes implemented Section D complete expiration dates (PR163), NDC/Unique ID (PR166), explicit ongoing status (PR177), complete dose-reduction dates (PR179), explicit native-time durations (issue181), and complete purchase dates (issue183), and explicit D5 cosmetic professional-use/retail choice (issue185) from remaining cannabinoid/Other D5, purchase wording outside native country/glyph/line/capacity limits, partial purchase/expiration/reduction-date and dose-count/compound/range duration gaps. Warnings and no-destination disclosures preserve visibility; they are not completed field support.
 Download readiness remains the supported-path condition, not a claim of
 complete FDA-form coverage.
 
@@ -1340,3 +1340,50 @@ mock behavior, not live-model compliance.
 D5 cannabinoid hemp and Other controls, purchase place/address/website, partial
 dates (#180 visibility), wider category/detail coverage and all prior inventory
 gaps remain unfinished. This is not full cosmetic or Form3500 functionality.
+
+
+### Native Section D purchase metadata issue188
+
+Seven independent optional reviewed text facts capture seller/place name, address,
+city, region, postal code, country and website for each suspect product. Existing
+purchaseDate stays independent. The seller is never inferred from manufacturer,
+reprocessor or reporter; no address component, country, site or identity is
+derived from another field. Websites are plain reviewed text, never fetched.
+Product cards retain the current interaction; no new mandatory question.
+
+Country is a blank text entry with explicit native-country suggestions, not a
+default or geography/alias conversion. Downstream case/outer-space equivalence
+selects the exact native display label, while raw case facts/source/history stay
+unchanged. Native UNKNOWN is excluded from known-country suggestions and matching;
+explicit unknown information uses the existing Unknown status, not a known literal. Raw unmatched wording remains accepted
+knowledge with history and source; it does not become a guessed dropdown
+selection. Both native country lists are equal and independently checked.
+Strict per-slot width/font/native MaxLen, single-line, blank, glyph and country
+guards keep unsupported words intact and prevent unsupported fresh output.
+This is bounded native support, not full supplemental representation or a request
+to change clinical facts to fit. The approved release cut still requires faithful
+field-linked supplements for valid exceptions; D5 hemp/Other, devices/overflow,
+pictures, broader partial dates and all prior gaps remain unfinished.
+
+Native metadata and widget names belong to the PDF helper. Human labels and
+explicit country suggestions carry no widget IDs into case authority. Both
+seller blocks preserve native geometry/options/appearances and untouched blanks;
+actual readback is from generated controls. Correction changes only named facts;
+withdrawal/regenerated slot assignment follows stable product identity.
+Other routes retain metadata under the existing no-destination disclosure.
+Uncarried qualifiers retain the existing exact-wording disclosure; this does not
+claim that all context is printed.
+
+Browser statev21 strictly validates genuine v7–v20 before adding only empty
+metadata facts. Existing state/source/history/revision and unfinished edits
+remain; no model action replays on resume. Promptv18/schemav27 add only explicit
+seller targets and preserve the prior cosmetic wording; #187 remains unverified.
+No live application-model evidence is claimed.
+
+
+Actual issue188 Opus B1 exposed third-suspect seller details indexing beyond the
+two native slots during readiness. The seller geometry checks now inspect only
+available native positions; the existing over-capacity notice still blocks
+output, retains every third-product fact and permits explicit repair/resume.
+This does not expand capacity or silently move/drop metadata. F1/F2 clarification
+adds only country display-format equivalence and distinct unknown status.

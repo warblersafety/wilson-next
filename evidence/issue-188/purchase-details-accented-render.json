@@ -1,0 +1,19 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "captures": [
+    {
+      "page": 4,
+      "image": "purchase-details-accented-page-4.png",
+      "visuallyInspected": true,
+      "observed": "Exact seller/address/city/region/postal/country/site text fits native purchase block; leading postal zeros and country labels visible. Accented M\u00fcller City visible without substitution."
+    },
+    {
+      "page": 5,
+      "image": "purchase-details-accented-page-5.png",
+      "visuallyInspected": true,
+      "observed": "Exact seller/address/city/region/postal/country/site text fits native purchase block; leading postal zeros and country labels visible. Both original seller identities remain independent."
+    }
+  ],
+  "inspectionNote": "Four unique images viewed; correctedpage4 and accentedpage5 byte-identical to inspected originals."
+}
