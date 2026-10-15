@@ -68,3 +68,16 @@ include an independent valid fact when testing numeric-value quarantine because
 the established boundary rejects a wholly unrepresentable response. No existing
 acceptance assertion was weakened. The complete retained PDF/render evidence is
 synthetic; review and CI outcomes belong to the PR.
+
+Actual Opus review found no blockers or independently valuable follow-ups. Its
+minor fixture observation is addressed: the constructed v10 workspace removes
+the new identifier fingerprint from saved card drafts as well as removing the
+case fact and restoring old provenance, so the retained-dose test exercises the
+pre-field draft shape. Product behavior is unchanged by this evidence repair.
+The strengthened browser journey also exercises identifier qualifier omission
+and a suspect-to-concomitant-to-suspect role correction with reload and actual
+PDFs, verifying the identifier stays with the product and never fills Section F.
+Final strengthened tree:471unit/57files,typecheck,freshbuild and all79mock browser
+journeys (2.5min) PASS again. The expanded two focused journeys also passed
+(10.9s) before the final visibility assertion/full rerun. Native PDF production
+code and independent artifact bytes are unchanged by this evidence repair.

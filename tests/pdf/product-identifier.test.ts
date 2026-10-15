@@ -37,8 +37,8 @@ async function inspect(c: ReturnType<typeof fixture>, evidence = false) {
 it("writes both native identifiers with source attribution, without changing unrelated controls", async () => {
   const c = fixture(), { fields, projection } = await inspect(c, true), before = (await inspect(productCapacityCase())).fields;
   expect(fields[key(1)]).toBe("00123-0045-06"); expect(fields[key(2)]).toBe("HCT 00-A/07");
-  const withoutExpiration = (values: Record<string, string>) => Object.fromEntries(Object.entries(values).filter(([k]) => k !== key(1) && k !== key(2)));
-  expect(withoutExpiration(fields)).toEqual(withoutExpiration(before));
+  const withoutIdentifier = (values: Record<string, string>) => Object.fromEntries(Object.entries(values).filter(([k]) => k !== key(1) && k !== key(2)));
+  expect(withoutIdentifier(fields)).toEqual(withoutIdentifier(before));
   for (let i = 0; i < 2; i++) expect(projection.sourceTrace[`sections.D.suspectProducts.${i}.ndcOrUniqueId`]).toEqual(c.products[i].facts.ndcOrUniqueId.resolvedValue!.sourceIds);
   expect(projection.notIncluded.join(" ")).toContain("Section D partial expiration dates");
   expect(productCardFields("drug-or-biologic", {})).toContain("ndcOrUniqueId");
