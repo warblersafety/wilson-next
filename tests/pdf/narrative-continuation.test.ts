@@ -40,7 +40,7 @@ it("exports all current B5-B7 content across correctly labelled numbered attachm
  const expected=structuredClone(p),plans=await planNarrativeContinuations(p),r=await inspect(p,"all-blocks");expect(p).toEqual(expected);expect(plans.map(p=>p.block)).toEqual(["B5","B6","B7"]);expect(r.pageCount).toBe(8+plans.reduce((n,p)=>n+p.pages.length,0));
  let attachment=0;
  for(const plan of plans){expect(r.fields[native[plan.field]]).toBe(plan.marker);expect(plan.marker.endsWith("continued")).toBe(true);const actual:string[]=[];
- for(const pageLines of plan.pages){const page=r.pages[attachment++];expect(page.width).toBe(612);expect(page.height).toBe(792);expect(page.runs.some(r=>r.text===`Section B, block ${plan.block} - ${plan.label}`)).toBe(true);expect(page.runs.some(run=>run.text===`Attachment page ${attachment} of ${r.pages.length}`)).toBe(true);const body=page.runs.filter(run=>run.y>=56&&run.y<=700);expect(body.map(r=>r.text)).toEqual(pageLines.filter(l=>l.text).map(l=>l.text));for(const run of body){expect(run.size).toBe(10);expect(run.font).toBe("/Helvetica");expect(run.x).toBe(42);}actual.push(...body.map(r=>r.text));}
+ for(const pageLines of plan.pages){const page=r.pages[attachment++];expect(page.width).toBe(612);expect(page.height).toBe(792);expect(page.runs.some(r=>r.text===`Section B, block ${plan.block} - ${plan.label}`)).toBe(true);expect(page.runs.some(r=>r.text===`Report reference: ${plan.reportReference}`)).toBe(true);expect(r.fields[native[plan.field]]).toContain(`Report reference: ${plan.reportReference}`);expect(page.runs.some(run=>run.text===`Attachment page ${attachment} of ${r.pages.length}`)).toBe(true);const body=page.runs.filter(run=>run.y>=56&&run.y<=700);expect(body.map(r=>r.text)).toEqual(pageLines.filter(l=>l.text).map(l=>l.text));for(const run of body){expect(run.size).toBe(10);expect(run.font).toBe("/Helvetica");expect(run.x).toBe(42);}actual.push(...body.map(r=>r.text));}
  // Short explicit fixture lines do not wrap: extraction must preserve each original line exactly.
  expect(actual.join("\n")).toBe(p.sections.B[plan.field]);}
  const ours=new Set(Object.values(native));for(const [name,value]of Object.entries(baseline.fields))if(!ours.has(name))expect(r.fields[name]).toEqual(value);expect(before.sections.D).toEqual(p.sections.D);
@@ -57,4 +57,12 @@ it.each(["W".repeat(4100),Array(90).fill("line").join("\n")])("previously blocke
 });
 it("still blocks unsupported glyphs/controls before native or attachment generation without replacement",async()=>{
  for(const text of["β", "≥", "a\tb", "a\rb", "a\u0000b", "a\u200bb"]){expect(await narrativeGlyphLimitation(text,"B5")).toBeTruthy();const p=projectForm3500(testHistoryContextCase());for(const field of Object.keys(narrativeBlocks)as Array<keyof typeof narrativeBlocks>){p.sections.B[field]=text;await expect(planNarrativeContinuations(p)).rejects.toThrow("characters");delete p.sections.B[field];}}
+});
+
+it("report references are stable for unchanged output, distinguish cases/content, and do not coerce an unsupported or long A1 identifier into an attachment header",async()=>{
+ const p=projectForm3500(testHistoryContextCase());p.sections.B.relevantHistory=lines("history",60);const original=(await planNarrativeContinuations(p))[0];
+ p.revision++;expect((await planNarrativeContinuations(p))[0].reportReference).toBe(original.reportReference);p.sections.A.patientIdentifier="β".repeat(200);const changed=(await planNarrativeContinuations(p))[0];expect(changed.reportReference).not.toBe(original.reportReference);expect(changed.marker).not.toContain("β");p.caseId+="-separate";expect((await planNarrativeContinuations(p))[0].reportReference).not.toBe(changed.reportReference);
+});
+it("wraps a very large paragraph by forward index without loss or expanding per-line work",async()=>{
+ const font=await(await PDFDocument.create()).embedFont(StandardFonts.Helvetica),text="W".repeat(200_000),wrapped=wrapContinuationText(text,font);expect(wrapped.map(l=>l.text).join("")).toBe(text);expect(wrapped.length).toBeGreaterThan(1000);
 });

@@ -6,23 +6,23 @@
     3,
     9
   ],
-  "observed": "Five remaining tests shift to correct native rows and current labels; withdrawn first test context is absent. Native reference and attachment page1of1 agree. Exact current context readable and unclipped.",
+  "observed": "Five remaining tests/current row links, no withdrawn context. Updated case/content report reference matches native pointer and header, page1of1. All context readable/unclipped.",
   "files": {
     "dense-after-withdrawal.pdf": {
-      "sha256": "5a1fed305131ec9b1bf255fd5ba916fae05a3a640ccc4d52a94305f96d4b79d6",
-      "bytes": 1058117
+      "sha256": "4b76119ecefc5337324cf4fdc1372bcb0eb94358191111a3d4121e05fff64748",
+      "bytes": 1058288
     },
     "dense-after-withdrawal-readback.json": {
-      "sha256": "9e825115283c841879369a174be7e67e596f44558a3d133b5ea3c6670fd6fdf3",
-      "bytes": 13285
+      "sha256": "463d9c02880e992fd351de184bc132112497e5352b34a15a95515b43fb47cef0",
+      "bytes": 13439
     },
     "dense-after-withdrawal-page-3.png": {
-      "sha256": "424191c3d81d04238a99d394358d73d0c8046c075134b8a50308dfbc1482586e",
-      "bytes": 183696
+      "sha256": "a0dbd79e00e080302457c94cbf5ddfdd56f9fa9f14ebce17929763a26baf7cf4",
+      "bytes": 188144
     },
     "dense-after-withdrawal-page-9.png": {
-      "sha256": "b5c6e6b255bd5acc560a0233a2ba986ec627a0ecbff6e4184dde04cc45922fea",
-      "bytes": 345574
+      "sha256": "dfa3e81e3fed241bb227903eb04678b58b4ec2aa01bc5e0f98b20906ac8a7dab",
+      "bytes": 351300
     }
   }
 }

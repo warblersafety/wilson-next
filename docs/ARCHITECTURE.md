@@ -1401,7 +1401,12 @@ The PDF-owned continuation planner uses the existing native geometry/MaxLen fit
 checks. On overflow it puts a precise attachment-page reference ending in
 "continued" in that native box and carries the entire current projected text on
 letter-sized attachment pages, in B5/B6/B7 order. Every page names Section B and
-its block and is numbered within the attachment set. Body text is fixed10pt with
+its block and is numbered within the attachment set. Native pointers and every
+attachment header share an opaque report reference derived from the case ID and current projected
+content (stable when only revision/source history changes). This is export metadata, not a new clinical identifier or assertion. A1 is
+not copied or coerced, so its length/glyph limits cannot corrupt a header.
+Paragraph wrapping advances by index without copying the remaining paragraph
+after each line. Body text is fixed10pt with
 14pt leading; word wrapping, explicit blank lines, spaces and long-token splits
 preserve all original characters. No font shrinking, truncation or clinical
 rewriting. B6's existing current table-row/field attribution stays intact. Native

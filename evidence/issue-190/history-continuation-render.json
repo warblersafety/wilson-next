@@ -7,27 +7,27 @@
     9,
     10
   ],
-  "observed": "Actual browser export after explicit review/resume. Native B7 links attachment pages1-2; all65 exact fictional history lines readable in order, both pages numbered, no clipping. Corrected export independently has8pages/noattachments.",
+  "observed": "Final actual mocked-browser export after acknowledged opening, explicit review/resume. Native B7 and both page headers share case/content-specific reference; all65 exact lines readable/unclipped, footers1of2/2of2 correct. Corrected export has8pages/noattachments.",
   "files": {
     "history-continuation.pdf": {
-      "sha256": "74f9780935b2675f82f47147b34537168f944920c6243a1b4529880dc0f21f86",
-      "bytes": 1053157
+      "sha256": "5e10ebf83c347358cb8b94db7cf3aef0bd6473716fb380921f0451355ab3a6d9",
+      "bytes": 1053444
     },
     "history-continuation-readback.json": {
-      "sha256": "7fde887c965865b1203576bd894ba30745c9fd761abc324e559386764e18e61c",
-      "bytes": 14554
+      "sha256": "fb32f7beafb7b3d360d8b6093bb34a06e1be17dfa8b1f608f9848e378a4cdf25",
+      "bytes": 14820
     },
     "history-continuation-page-3.png": {
-      "sha256": "bbf53d472dd85aaa36e164236908f75c68c46fb10ef40f842d617932959bcc71",
-      "bytes": 143375
+      "sha256": "7ede5caf1106c57208a1c96a3078092b98776e6e438fbe7bfad7228c3f46f315",
+      "bytes": 149612
     },
     "history-continuation-page-9.png": {
-      "sha256": "6dd0a403857f56c77bffffcce280a6d4806d6ddd18b3f5d06024987accf90e21",
-      "bytes": 405139
+      "sha256": "3f99ab5bcefc7df12bf739ad7ae46b925d481f3e7a26fdc3918a5777ac0c8aad",
+      "bytes": 410153
     },
     "history-continuation-page-10.png": {
-      "sha256": "a301eef78f02f940618270c96787a54ae9aeb7431b83c366dad26c623fef20e0",
-      "bytes": 194314
+      "sha256": "9c225075ec99797d5a6b4630c13c5787172b870696ab0026c8c5de6fc02607fb",
+      "bytes": 199522
     }
   }
 }

@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { PDFDocument, StandardFonts, type PDFFont } from "@cantoo/pdf-lib";
 import type { Form3500Projection } from "../../domain/case/projection";
 import { multilineTextLimitation, type NativeMultilineGeometry } from "./multiline-text";
@@ -12,7 +13,7 @@ const fontPromise = PDFDocument.create().then(document => document.embedFont(Sta
 // Fixed 10pt body, 14pt leading, letter pages with 42pt margins. Never shrink.
 export const continuationGeometry = { width: 612, height: 792, margin: 42, bodyTop: 700, bodyBottom: 56, fontSize: 10, lineHeight: 14 } as const;
 export interface ContinuationLine { text: string; breakAfter: "wrap" | "newline" | "end" }
-export interface NarrativeContinuation { field: NarrativeField; block: string; label: string; marker: string; pages: ContinuationLine[][] }
+export interface NarrativeContinuation { field: NarrativeField; block: string; label: string; marker: string; reportReference: string; pages: ContinuationLine[][] }
 
 /** This gate applies before both native and attachment output. No substitutions. */
 export async function narrativeGlyphLimitation(text: string | undefined, label: string): Promise<string | undefined> {
@@ -28,19 +29,20 @@ export function wrapContinuationText(text: string, font: PDFFont): ContinuationL
   const lines: ContinuationLine[] = [];
   const paragraphs = text.split("\n");
   paragraphs.forEach((paragraph, index) => {
-    let remaining = Array.from(paragraph);
+    const characters = Array.from(paragraph);
+    let start = 0;
     do {
-      let end = 0, lastSpace = 0, measured = "";
-      while (end < remaining.length && font.widthOfTextAtSize(measured + remaining[end], fontSize) <= width - margin * 2) {
-        measured += remaining[end++];
-        if (remaining[end - 1] === " ") lastSpace = end;
+      let end = start, lastSpace = start, measured = "";
+      while (end < characters.length && font.widthOfTextAtSize(measured + characters[end], fontSize) <= width - margin * 2) {
+        measured += characters[end++];
+        if (characters[end - 1] === " ") lastSpace = end;
       }
-      if (!end && remaining.length) throw new Error("Continuation character exceeds available line width");
-      if (end < remaining.length && lastSpace) end = lastSpace;
-      const slice = remaining.slice(0, end).join("");
-      remaining = remaining.slice(end);
-      lines.push({ text: slice, breakAfter: remaining.length ? "wrap" : index < paragraphs.length - 1 ? "newline" : "end" });
-    } while (remaining.length);
+      if (end === start && characters.length > start) throw new Error("Continuation character exceeds available line width");
+      if (end < characters.length && lastSpace > start) end = lastSpace;
+      const slice = characters.slice(start, end).join("");
+      start = end;
+      lines.push({ text: slice, breakAfter: start < characters.length ? "wrap" : index < paragraphs.length - 1 ? "newline" : "end" });
+    } while (start < characters.length);
   });
   return lines;
 }
@@ -56,12 +58,14 @@ export async function planNarrativeContinuations(projection: Form3500Projection)
     const lines = wrapContinuationText(text, font), pages: ContinuationLine[][] = [];
     const count = Math.floor((continuationGeometry.bodyTop - continuationGeometry.bodyBottom) / continuationGeometry.lineHeight) + 1;
     for (let start = 0; start < lines.length; start += count) pages.push(lines.slice(start, start + count));
-    plans.push({ field, block: geometry.block, label: geometry.label, marker: "", pages });
+    plans.push({ field, block: geometry.block, label: geometry.label, marker: "", reportReference: "", pages });
   }
+  const reportReference = `W-${createHash("sha256").update(JSON.stringify([projection.caseId, projection.sections])).digest("hex").slice(0, 20)}`;
   let pageNumber = 1;
   for (const plan of plans) {
     const last = pageNumber + plan.pages.length - 1;
-    plan.marker = `See Section B, block ${plan.block}, attachment ${pageNumber === last ? "page " + pageNumber : "pages " + pageNumber + "-" + last}; continued`;
+    plan.reportReference = reportReference;
+    plan.marker = `Report reference: ${reportReference}\nSee Section B, block ${plan.block}, attachment ${pageNumber === last ? "page " + pageNumber : "pages " + pageNumber + "-" + last}; continued`;
     pageNumber = last + 1;
   }
   return plans;
@@ -76,6 +80,7 @@ export async function appendNarrativeContinuations(document: PDFDocument, plans:
     const page = document.addPage([continuationGeometry.width, continuationGeometry.height]);
     page.drawText("Form FDA 3500 (09/2025) - Narrative continuation", { x: 42, y: 750, size: 12, font });
     page.drawText(`Section B, block ${plan.block} - ${plan.label}`, { x: 42, y: 728, size: 10, font });
+    page.drawText(`Report reference: ${plan.reportReference}`, { x: 42, y: 714, size: 8.5, font });
     lines.forEach((line, index) => {
       if (line.text) page.drawText(line.text, { x: 42, y: continuationGeometry.bodyTop - index * continuationGeometry.lineHeight, size: continuationGeometry.fontSize, font });
     });

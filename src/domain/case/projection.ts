@@ -22,6 +22,8 @@ export interface ProjectionOmission {
 }
 
 export interface Form3500Projection {
+  /** Export metadata for linking detached continuation pages; never a clinical assertion. */
+  caseId: string;
   revision: number;
   sections: {
     A: { patientIdentifier?: string; ageYears?: PatientAge; dateOfBirth?: string; raceEthnicity?: RaceEthnicity[]; sex?: "female" | "male" | "intersex"; weight?: { value: number; unit: "kg" | "lb" } };
@@ -139,6 +141,7 @@ export interface ProjectedConcomitantProduct {
 
 export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   const projection: Form3500Projection = {
+    caseId: caseState.id,
     revision: caseState.revision,
     sections: { A: {}, B: { relevantTests: [] }, C: {}, D: { suspectProducts: [] }, E: {}, F: { concomitantProducts: [] }, G: { reporter: {} } },
     sourceTrace: {},

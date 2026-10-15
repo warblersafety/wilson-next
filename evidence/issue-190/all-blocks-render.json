@@ -13,51 +13,51 @@
     14,
     15
   ],
-  "observed": "Native B5/B6/B7 references readable and correctly map attachment pages1-3/4-5/6-7. Every attachment page has correct section/block and page-of7 label, readable unclipped10pt text, correct first/last lines and margins. Original eight-page form preserved.",
+  "observed": "B5/B6/B7 native report references match every attachment header; page ranges1-3/4-5/6-7 and footers agree. All body lines readable, unclipped, in order.",
   "files": {
     "all-blocks.pdf": {
-      "sha256": "e1e10647ffd9ffae9053d248d95085e6c23ba66c7ff4b19792da502d3417cfdf",
-      "bytes": 1069181
+      "sha256": "a1aeb16656bd9344f49f6947d8150a199d8aeb46b81908a60699e0ea6c5fbcaf",
+      "bytes": 1070100
     },
     "all-blocks-readback.json": {
-      "sha256": "073a488778b8eaf03ce455b463511679f1ca2e2439aa1ddbb6d843a60e41d992",
-      "bytes": 37258
-    },
-    "all-blocks-page-10.png": {
-      "sha256": "b8abda5fb4e1d6b943b2ca6b17590559ff9a9ee231bea9f89d3572f440f0adb8",
-      "bytes": 328662
-    },
-    "all-blocks-page-11.png": {
-      "sha256": "f18bb45d2b0422dd748084eb7592648528783ec6a02285eaf7f7fc0538296b57",
-      "bytes": 93922
-    },
-    "all-blocks-page-12.png": {
-      "sha256": "e1ecd781ae548ba05178fc30bff122a12dd5acf238928e5cfdeda282d26ee834",
-      "bytes": 407759
-    },
-    "all-blocks-page-13.png": {
-      "sha256": "12aec38834fd06f6c1ba2622947d093a4f6f3d386987782f06845c50d4e14e8d",
-      "bytes": 193748
-    },
-    "all-blocks-page-14.png": {
-      "sha256": "401cfba48862571c4e534b5964ccbd4f51066ccbaac1fea2d352015ca7ecc612",
-      "bytes": 345667
-    },
-    "all-blocks-page-15.png": {
-      "sha256": "0e759b4f5b06d13bf0f3b181fe296cfa07a2b821519428c9452834f6dffd698d",
-      "bytes": 139462
+      "sha256": "ab0b6b4992a4a7ba2d3064930b74894c8949c9730f762baff5be66bde637bb8f",
+      "bytes": 38168
     },
     "all-blocks-page-2.png": {
-      "sha256": "a453a687120debb90a67e806564df441faf937fb80cd232aa67cb4815d82e4f2",
-      "bytes": 85016
+      "sha256": "ab983750551122c8e0f2041d9a6b214ba17c26b460264c1d9d708bdf95c2cc2e",
+      "bytes": 89982
     },
     "all-blocks-page-3.png": {
-      "sha256": "43f52a7e0f20093a4da92ee83cc7be296279575a25cfac0cd8b34a78c42ea462",
-      "bytes": 161181
+      "sha256": "11ae0d40c6c9952c661740382af81bedab65acea42df4ee76395ac4d20e88380",
+      "bytes": 171535
     },
     "all-blocks-page-9.png": {
-      "sha256": "6936ee6bb63ba41bd9953d32b21320f4ebc32ba2285cd8ce7dbac47ef82e5ef4",
-      "bytes": 325476
+      "sha256": "896658fa2d22bdb68d5f0c766e40d7d5f20378832fd7b56032b80664b38c7170",
+      "bytes": 330526
+    },
+    "all-blocks-page-10.png": {
+      "sha256": "0caec4caae645005c0b52de14061ca61e52edf7be7d837633c761d72759f303d",
+      "bytes": 333714
+    },
+    "all-blocks-page-11.png": {
+      "sha256": "445ffe5b48caf1f1a716c65cb10b787c9f9803ee577881bb46463c1598117d7b",
+      "bytes": 99696
+    },
+    "all-blocks-page-12.png": {
+      "sha256": "4547c273e6a7967f7ffec1d7abbe0b9d9d5ec1d66db7b95157d0d83e1d401e27",
+      "bytes": 412842
+    },
+    "all-blocks-page-13.png": {
+      "sha256": "7c669b4a6be1f74f7cad3d4d51fcfb0a27d41a0b8e0a8ba27bb3358da8881a8e",
+      "bytes": 198978
+    },
+    "all-blocks-page-14.png": {
+      "sha256": "0ec379a9957237e5758d4079a08e7460e37b9a39b478c8e0fade0650a86ec07b",
+      "bytes": 350662
+    },
+    "all-blocks-page-15.png": {
+      "sha256": "10eb357851f09a9a31fe9aa0969ddbb71e267782acf7b3f272982184a31850da",
+      "bytes": 143583
     }
   }
 }

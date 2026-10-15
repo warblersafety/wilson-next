@@ -5,18 +5,20 @@ and B7 history stay unchanged. Capacity/line-fit overflow now prints a native
 attachment-page reference ending in continued, with the entire current reviewed
 projection on numbered, section/block-labelled continuation pages. Fixed10pt
 Helvetica,14pt leading, letter pages and42pt margins; no truncation, shrinking,
-paraphrase, source-history dump or new semantic/model/persistence/UI contract.
+paraphrase or source-history dump. No new semantic fact, model/stored-state
+schema or UI flow; case ID is derived export metadata for the page reference.
 
 FDA general instructions permit narrative continuation and specify numbered
 attached pages, section/block identification and continued in the native field:
 https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500
 Current pinned09/2025 form source/controls stay intact.
 
-745unit tests/77files, typecheck/build PASS. All112mock Chromium journeys PASS4.6m;
+747unit tests/77files, typecheck/build PASS. All112mock Chromium journeys PASS4.6m;
 one owned conversational journey PASS5.0s independently. The owned fixture
 volunteers long history, checks it is unaccepted until review, resumes saved
 state, downloads actual10-page PDF, corrects history and verifies8-page output
-with no stale attachment/unrelated-field changes. No live-model inference claim.
+with no stale attachment/unrelated-field changes. No live-model inference claim. The final follow-up remediation also waits for
+the acknowledged opening response before its pending assertion.
 
 ## Independent output evidence
 
@@ -45,6 +47,16 @@ checks cover exact spaces/blank lines/newlines, accented long tokens, hard word
 wrap, combined blocks, current nonknown states, restore and obsolete-page removal.
 Actual readback reports native marker rather than reconstructing expected full
 text. The standalone pypdf inspector reads actual content/coordinates/fonts.
+
+## Opus follow-up remediation
+
+The actual first review found no blockers and two follow-ups: detached pages
+lacked a report link and wrapping repeatedly copied the remaining paragraph.
+Native pointers and every attachment header now share a case/content-specific
+opaque reference. The case ID is derived export metadata and remains redacted
+from runtime logs; no clinical A1 wording is coerced into a header. Forward-index
+wrapping preserves exact text, including a200000-character recurrence case.
+Regenerated readbacks/renders and the targeted recheck are recorded on the PR.
 
 ## Remaining limits
 

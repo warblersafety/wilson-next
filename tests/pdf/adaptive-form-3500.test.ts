@@ -15,6 +15,7 @@ const readerPath = fileURLToPath(new URL("../../tools/pdf/independent_readback.p
 describe("adaptive Form FDA 3500 projection fields", () => {
   it("preserves a frequency outside the form's standard vocabulary in its Other field", async () => {
     const projection: Form3500Projection = {
+      caseId: "fictional-pdf-case",
       revision: 1,
       sections: {
         A: {}, B: { relevantTests: [] }, C: {},
@@ -41,6 +42,7 @@ describe("adaptive Form FDA 3500 projection fields", () => {
 
   it("round-trips product availability and one suspect medical device through Sections C and E", async () => {
     const projection: Form3500Projection = {
+      caseId: "fictional-pdf-case",
       revision: 1,
       sections: {
         A: { patientIdentifier: "TEST-74" },
@@ -78,6 +80,7 @@ describe("adaptive Form FDA 3500 projection fields", () => {
 
   it("maps a product-problem-only report and non-device lot to Sections B, C, and D", async () => {
     const projection: Form3500Projection = {
+      caseId: "fictional-pdf-case",
       revision: 1,
       sections: {
         A: {}, B: { reportType: "product-problem", eventDescription: "Problem detail: Visible particles.", relevantTests: [] },
@@ -107,6 +110,7 @@ describe("adaptive Form FDA 3500 projection fields", () => {
 
   it("round-trips both report-type selections and conditionally supplied device details", async () => {
     const projection: Form3500Projection = {
+      caseId: "fictional-pdf-case",
       revision: 1,
       sections: {
         A: { patientIdentifier: "TEST-67" },
@@ -148,6 +152,7 @@ describe("adaptive Form FDA 3500 projection fields", () => {
       date: `2026-09-0${index + 1}`,
     }));
     const projection: Form3500Projection = {
+      caseId: "fictional-pdf-case",
       revision: 1,
       sections: {
         A: { patientIdentifier: "TEST-72", ageYears: 72, sex: "female", weight: { value: 64, unit: "kg" } },

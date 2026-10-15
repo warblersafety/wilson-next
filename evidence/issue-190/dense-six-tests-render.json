@@ -7,27 +7,27 @@
     9,
     10
   ],
-  "observed": "Six actual reviewed tests retain native results, limits and dates. All thirty exact contexts continue with current row/field labels on two attachment pages; final qualifier continues readably across the page boundary.",
+  "observed": "Six reviewed tests and30exact qualifiers. Native pointer and both headers share report reference. Correct row/field links; long context crosses page boundary readably.",
   "files": {
     "dense-six-tests.pdf": {
-      "sha256": "209b1d0bf72bbe182cbdf0577e5c38fb44bb5444248bdaada64a921dc3a412da",
-      "bytes": 1059169
+      "sha256": "ed01229084b40088a70cfa8576bde0cddf64ec9c1b7ceee19b432c12a8487f54",
+      "bytes": 1059448
     },
     "dense-six-tests-readback.json": {
-      "sha256": "d2349e693ec02f0bcdd93e394f833590ca3786f7b6c2e3f92a0796dbb53a85ec",
-      "bytes": 14791
+      "sha256": "ef5618bc416a0f3ac8f869f70c2760539eb8ed78bb8438df9e34e8ad6cac3ba0",
+      "bytes": 15057
     },
     "dense-six-tests-page-3.png": {
-      "sha256": "f4af19fa10d3f7f15c42b289ab1ab8ba855697cc3a97e11d90f6e2705eb228d6",
-      "bytes": 188274
+      "sha256": "1367ec01f9799aa2121eccf44bcbd59b662a30f30ade7542005715a21a21d00e",
+      "bytes": 195078
     },
     "dense-six-tests-page-9.png": {
-      "sha256": "e477cb86c35423c707c43ef0fa77e41b38c147d319d215f06077ffa3a96cfd06",
-      "bytes": 368671
+      "sha256": "22b661650ecd76dee49a63ab7e5f67d07f76e584f3f3c118e20663f4e911b604",
+      "bytes": 373923
     },
     "dense-six-tests-page-10.png": {
-      "sha256": "3ee0ef06b4fddd994342517aa71ae72d27f162383c7004417bc773c8ae5478ff",
-      "bytes": 75494
+      "sha256": "6225f22fb3fee2e69bfc5f22f79df46fc0a24a7fdecc64240bdb3102a953c8da",
+      "bytes": 80810
     }
   }
 }
