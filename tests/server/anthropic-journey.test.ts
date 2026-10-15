@@ -62,6 +62,9 @@ describe("Anthropic production model boundary", () => {
     expect(requestText).toContain("Wilson—not you—assigns stable case identity");
     expect(requestText).toContain("evidenceReferences");
     expect(requestText).toContain("negation");
+    expect(requestText).toContain("Product expirationDate is the explicitly supplied complete product expiration");
+    expect(requestText).toContain("Never infer a missing day/month or judge whether the product was expired");
+    expect(MODEL_PROMPT_REVISION).toBe("wilson-product-expiration-v4");
     expect(requestText).toContain("preserve explicitly stated descriptive detail");
     expect(requestText).toContain("named only as treatment administered in response");
     expect(requestText).not.toMatch(/apixaban|naproxen|lisinopril/i);

@@ -3,7 +3,7 @@ import { isSettled, restartApplicability, withdrawalApplicability } from "./medi
 import { productDisplayLabel } from "./product-label";
 import type { Fact, ProductEntity, ProductFactKey, ReportType, SemanticCase } from "./types";
 
-const sectionDProductFields = ["name", "manufacturer", "lotNumber", "dose", "strength", "frequency", "route", "startDate", "stopDate", "indication", "medicationType"] as const satisfies readonly ProductFactKey[];
+const sectionDProductFields = ["name", "manufacturer", "lotNumber", "expirationDate", "dose", "strength", "frequency", "route", "startDate", "stopDate", "indication", "medicationType"] as const satisfies readonly ProductFactKey[];
 const sectionEProductFields = ["name", "commonName", "procode", "manufacturer", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const satisfies readonly ProductFactKey[];
 const sectionFProductFields = ["name", "startDate", "stopDate"] as const satisfies readonly ProductFactKey[];
 const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "role", "stopped"]);
@@ -79,6 +79,7 @@ export interface ProjectedProduct {
   name?: string;
   manufacturer?: string;
   lotNumber?: string;
+  expirationDate?: string;
   dose?: ProjectedQuantity;
   strength?: ProjectedQuantity;
   frequency?: string;
@@ -128,7 +129,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       "Patient date of birth and race or ethnicity",
       "Section C product pictures and general additional comments",
       "Additional suspect medical devices beyond the first",
-      "Section D other product-type categories, expiration, purchase details and product identifiers",
+      "Section D partial expiration dates, other product-type categories, purchase details and product identifiers",
       "Section D ongoing-therapy control, dose-reduction date and treatment duration",
     ],
   };
