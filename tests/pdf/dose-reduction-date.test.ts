@@ -63,7 +63,7 @@ it("retains pending/conflicting alternatives unprinted until explicit conflict r
 it("strictly upgrades genuine v16 with only empty reduction-date facts and does not revalidate unrelated legacy accepted dates",()=>{
  let c=productCapacityCase();c=setContextFact(c,`product:${c.products[0].id}:therapyOngoing`,{kind:"known",value:true});c=setContextFact(c,`product:${c.products[0].id}:startDate`,{kind:"known",value:"2026-02-31"});
  const expected={version:browserStateVersion,stage:"output",case:c,unrepresented:[]},legacy=structuredClone({...expected,version:"wilson-browser-state-v16"});removeReductionDateFields(legacy.case);const before=structuredClone(legacy);
- expect(parseBrowserJourneyState(legacy)).toEqual(expected);expect(legacy).toEqual(before);expect(()=>parseBrowserJourneyState({...expected,version:"wilson-browser-state-v16"})).toThrow();expect(()=>parseBrowserJourneyState({...expected,version:"wilson-browser-state-v20"})).toThrow();
+ expect(parseBrowserJourneyState(legacy)).toEqual(expected);expect(legacy).toEqual(before);expect(()=>parseBrowserJourneyState({...expected,version:"wilson-browser-state-v16"})).toThrow();expect(()=>parseBrowserJourneyState({...expected,version:"wilson-browser-state-v21"})).toThrow();
  const malformed=structuredClone(expected);malformed.case=structuredClone(setContextFact(c,`product:${c.products[0].id}:doseReductionDate`,{kind:"known",value:"2026-09-18"}));malformed.case.products[0].facts.doseReductionDate.resolvedValue!.value={kind:"known",value:"2026-02-31"};expect(()=>parseBrowserJourneyState(malformed)).toThrow();
 });
 it("discloses accepted date knowledge with no native destination after device/concomitant routing",()=>{

@@ -106,6 +106,7 @@ export interface ProductFacts {
   therapyOngoing: Fact<boolean>;
   indication: Fact<string>;
   stopped: Fact<boolean>;
+  cosmeticUse: Fact<"professional-use-only" | "retail">;
   medicationType: Fact<Array<"brand" | "generic-biosimilar" | "otc" | "compounded">>;
   doseReduced: Fact<boolean>;
   doseReductionDate: Fact<string>;

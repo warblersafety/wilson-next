@@ -6,7 +6,7 @@ import { doseReductionDateNotice, ongoingTherapyNotice, isSettled, restartApplic
 import { productDisplayLabel } from "./product-label";
 import type { Fact, ProductEntity, ProductFactKey, ReportType, SemanticCase } from "./types";
 
-const sectionDProductFields = ["name", "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "purchaseDate", "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "doseReductionDate", "treatmentDuration", "indication", "medicationType"] as const satisfies readonly ProductFactKey[];
+const sectionDProductFields = ["name", "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "purchaseDate", "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "doseReductionDate", "treatmentDuration", "indication", "medicationType", "cosmeticUse"] as const satisfies readonly ProductFactKey[];
 const sectionEProductFields = ["name", "commonName", "procode", "manufacturer", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const satisfies readonly ProductFactKey[];
 const sectionFProductFields = ["name", "startDate", "stopDate"] as const satisfies readonly ProductFactKey[];
 const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "role", "stopped"]);
@@ -95,6 +95,7 @@ export interface ProjectedProduct {
   doseReductionDate?: string;
   treatmentDuration?: TreatmentDuration;
   indication?: string;
+  cosmeticUse?: "professional-use-only" | "retail";
   medicationType?: Array<"brand" | "generic-biosimilar" | "otc" | "compounded">;
   improvedAfterChange?: boolean | "inapplicable";
   recurred?: boolean | "inapplicable";
@@ -138,7 +139,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       "Patient race/ethnicity detail outside the seven A5 categories",
       "Section C product pictures and general additional comments",
       "Additional suspect medical devices beyond the first",
-      "Section D partial expiration dates, partial purchase dates, other product-type categories and purchase place/address/website",
+      "Section D partial expiration dates, partial purchase dates, cannabinoid/Other product-type categories and purchase place/address/website",
       "Section D partial dose-reduction dates; dose-count, compound and range treatment durations",
     ],
   };
@@ -395,6 +396,7 @@ function productLabel(caseState: SemanticCase, product: ProductEntity): string {
 
 function humanizeProductField(field: ProductFactKey): string {
   if (field === "ndcOrUniqueId") return "NDC number or Unique ID";
+  if (field === "cosmeticUse") return "Cosmetic product type";
   if (field === "udi") return "UDI";
   if (field === "procode") return "Procode";
   const spaced = field.replace(/([a-z0-9])([A-Z])/g, "$1 $2").toLowerCase();

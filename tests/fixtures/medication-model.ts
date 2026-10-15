@@ -1,3 +1,4 @@
+import { cosmeticScenario } from "./cosmetic-model";
 import { referenceFixture, type QuotedFixtureOutput } from "./source-references";
 import type { ProductFactKey as DomainProductFactKey } from "../../src/domain/case/types";
 type ProductFactKey = Exclude<DomainProductFactKey, "d3Value">;
@@ -102,6 +103,7 @@ export const medicationScenarios = {
     { identityScope: "patient-race-ethnicity", turn: "opening" as const, output: opening(true, false, false, "race-ethnicity") },
     { identityScope: "patient-race-ethnicity-update", turn: "correction" as const, output: referenceFixture(raceEthnicityCorrection, { products: [], proposals: [{ proposalReference: "a5-correction", groupReference: "a5-update", intent: "correction", target: { entity: "patient", field: "raceEthnicity" }, value: { kind: "known", value: ["middle-eastern-north-african", "white"] }, evidenceQuote: raceEthnicityCorrection }] }) },
   ],
+  productCosmeticUse: cosmeticScenario,
   productExpiration: [
     { identityScope: "expiration", turn: "opening" as const, output: opening(true, true) },
     { identityScope: "expiration-update", turn: "correction" as const, output: update(expirationCorrection, "product-expiration-b", { expirationDate: "2029-11-30" }) },

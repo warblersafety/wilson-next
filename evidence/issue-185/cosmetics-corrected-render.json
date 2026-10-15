@@ -1,0 +1,21 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "captures": [
+    {
+      "page": 4,
+      "screenshot": "cosmetics-corrected-page-4.png",
+      "rendered": true,
+      "visuallyInspected": true,
+      "observed": "Professional-use-only checked, retail blank; independently accepted Brand/OTC preserved."
+    },
+    {
+      "page": 5,
+      "screenshot": "cosmetics-corrected-page-5.png",
+      "rendered": true,
+      "visuallyInspected": true,
+      "observed": "Professional-use-only checked after correction, retail blank."
+    }
+  ],
+  "note": "Corrected page4 byte-identical to visually inspected original."
+}
