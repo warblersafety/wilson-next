@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
+import { productTextLimitation } from "../pdf/product-text";
 import type { UnrepresentedModelProposal } from "../../domain/case/model-boundary";
 import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts } from "../../domain/case/limits";
 import { completionQuestions } from "../../domain/case/completion-policy";
@@ -62,7 +63,10 @@ export type OutputReadinessIssueCode =
   | "too-many-suspect-products"
   | "too-many-concomitant-products"
   | "multiple-suspect-devices"
-  | "unsupported-concomitant-device";
+  | "unsupported-concomitant-device"
+  | "unsupported-patient-sex"
+  | "unsupported-product-route"
+  | "unsupported-product-text";
 
 export interface OutputReadinessIssue {
   code: OutputReadinessIssueCode;
@@ -662,6 +666,24 @@ export function outputReadinessIssues(
       ["event:event:problemDescription", "event:event:symptoms", "event:event:treatments", "event:event:outcome"],
       ["event"],
     );
+  }
+  if (projection.sections.A.sex === "intersex") {
+    issue(
+      "unsupported-patient-sex",
+      "The current FDA PDF offers only Male and Female checkboxes for sex. Your reviewed value is retained, but this PDF cannot represent it; no new PDF is generated.",
+      ["patient:patient:sex"], ["patient"],
+    );
+  }
+  for (const product of projection.sections.D.suspectProducts) {
+    for (const field of ["route", "frequency", "dose", "strength"] as const) {
+      const value = product[field];
+      const limitation = value !== undefined ? productTextLimitation(field, value) : undefined;
+      if (limitation) issue(
+        field === "route" ? "unsupported-product-route" : "unsupported-product-text",
+        `${productLabel(caseState, product.productId)}: the reviewed ${field} ${limitation}. It is retained, but the PDF cannot represent it; no new PDF is generated.`,
+        [`product:${product.productId}:${field}`], [product.productId],
+      );
+    }
   }
   // Count the actual semantic output slots. Never prune retained knowledge to
   // make this bounded PDF fit; the adapter keeps the same guards as defense in depth.

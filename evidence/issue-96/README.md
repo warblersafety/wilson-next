@@ -1,5 +1,17 @@
 # Issue #96 — source references and conversational recovery
 
+
+**15October2026 appearance-fidelity correction:** the historical Unicode results
+below establish stored-value roundtrip and the observed macOS PDFKit rendering,
+not portable generated-appearance fidelity. A fresh inspection of the committed
+`live-contrast.pdf` found stored `Serum β marker: ≥ 4 µg/L` but generated Helvetica
+text `Serum ? marker: ? 4 µg/L`. See the
+[independent appearance inspection](../issue-128/unicode-appearance-inspection.json)
+and [issue154](https://github.com/warblersafety/wilson-next/issues/154). The old
+PDFKit image is retained as historical evidence; its rendering source is not
+independently proven. Do not generalize it to other viewers or printing. The
+new issue owns the cross-field decision; no font rewrite is made in issue128.
+
 Authority: [approved #96](https://github.com/warblersafety/wilson-next/issues/96), including its latest user-approved decision; [failure handoff](https://github.com/warblersafety/wilson-next/issues/91#issuecomment-5753269605) and [actual Opus review/clarification](https://github.com/warblersafety/wilson-next/issues/96#issuecomment-5753430740). Implementation/review record: PR #97.
 
 Code assigns sentence references to the original input; the model selects one or more references and code resolves exact excerpts. Stored source/history and browser v9 representation stay compatible. The model still owns semantic interpretation; a valid reference does not prove support. No value decoder or quotation-copying fallback exists in runtime. Historical deterministic fixtures use a test-only authoring helper to select references from their existing expected wording.

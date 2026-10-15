@@ -1,0 +1,20 @@
+{
+  "inspectedAt": "2026-10-15",
+  "syntheticOnly": true,
+  "source": "evidence/issue-96/live-contrast.pdf",
+  "sourceSha256": "3c4d08ce069e6303851e585fe81d20a3b41ec3ea8bdead452879967e1371d30f",
+  "reader": "pypdf 6.16.2",
+  "method": "Decode AP/N hexadecimal Tj operands with cp1252, separately from stored V and PDFKit rendering",
+  "findings": [
+    {
+      "field": "TestData1[0]",
+      "storedValue": "Serum β marker: ≥ 4 µg/L",
+      "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+      "generatedWinAnsiTextRuns": [
+        "Serum ? marker: ? 4 µg/L"
+      ]
+    }
+  ],
+  "trackingIssue": 154,
+  "limits": "No browser/print comparison performed; the reason PDFKit displays the stored Unicode is not independently established."
+}

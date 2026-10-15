@@ -741,6 +741,39 @@ full regression checks and independent review are delivery gates. Reporter profi
 persistence is delivered separately by Issue141 above. Protected stable-origin
 deployment verification remains a milestone gate.
 
+### Native PDF representability — Issue128
+
+Supplied suspect-product route wording selects an actual FDA route option only
+by case/outer-space formatting equivalence. Otherwise the adapter selects Other
+and writes the original wording verbatim in the corresponding Other Route field.
+It never guesses an abbreviation or a more specific clinical category. Both
+suspect slots use the same encode/readback contract; unknown/declined facts stay
+non-known. Accepted blank/whitespace route, frequency, dose or strength wording
+has an explicit pre-export limitation and stays retained. Fresh form generation
+cannot retain stale Other wording after an explicit native-route correction.
+Accepted facts, identity, source and history are unchanged by output formatting.
+
+The PDF-owned product-text helper shares readiness/adapter encoding and limits.
+Other Route/Frequency text must fit the pinned native single-line rectangle at
+its unchanged8.5pt size, existing padding and current Helvetica appearance font.
+Native options and geometry are checked independently against both PDF slots.
+Longer, line-breaking or unsupported-glyph text stays accepted/projected but is
+blocked explicitly before export. Never shrink, clip, replace glyphs, shorten or
+silently normalize supplied wording to fit. Native field flags stay unchanged.
+[Issue153](https://github.com/warblersafety/wilson-next/issues/153) owns faithful
+support beyond these controls; this temporary limitation is not full support.
+
+The pinned native A3 controls offer only Male/Female. A reviewed intersex value
+stays accepted and projected, but a structured unsupported-patient-sex readiness
+issue blocks preview/download before the adapter's retained guard. The existing
+review/output surfaces explain that limitation, including when an earlier PDF
+exists. This is not a request to substitute a different value, not full support,
+and not clinical inference. [Issue151](https://github.com/warblersafety/wilson-next/issues/151)
+owns the remaining faithful supplemental-representation decision. Broader field
+coverage, continuation and qualifier fidelity remain separate. Current official
+form/instructions, local verification and limits are recorded in
+[issue128 evidence](../evidence/issue-128/README.md).
+
 ## Application and data boundary
 
 ```text
