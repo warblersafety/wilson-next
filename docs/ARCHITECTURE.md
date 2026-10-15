@@ -144,29 +144,34 @@ ongoing-therapy, reduction-date and duration gaps.
 Download readiness remains the supported-path condition, not a claim of
 complete FDA-form coverage.
 
-### Patient age units (Issue #167)
+### Patient age units (Issues #167, #170)
 
 The shared model prompt drops its adult-only scope wording solely to support
 explicitly supplied A2 age representation. This does not introduce age-specific
 clinical rules or establish broader pediatric clinical validation. The original
-completion evidence used adult cases; new month/day integration evidence is
+completion evidence used adult cases; new month/week/day integration evidence is
 synthetic and mocked. Actual model unit preservation remains unverified (#169).
 
 A2 age remains one atomic fact: existing numeric0–150 values mean whole years;
-explicit whole months/days use `{value, unit}` with a nonnegative safe integer.
+explicit whole months/weeks/days use `{value, unit}` with a nonnegative safe integer.
 The internal legacy `ageYears` target key is retained for source/history/change
 identity and old unfinished-draft compatibility; it does not coerce object ages
 to years. No DOB/date arithmetic, rounding or unit conversion. Changing the UI
 unit retains the number for explicit clinician correction, never calculates.
 The review shows units; the existing numeric years path and limits stay intact.
-No new follow-up question. Weeks, fractional/compound ages and DOB remain outside
-this slice and disclosed. Native PDF writes the exact value and exactly one unit
-box, leaving Weeks off; width is guarded at native27.621pt/Helvetica8.5pt without
+No new follow-up question. Fractional/compound ages and DOB remain outside
+this slice and disclosed. Explicit weeks use the official native Week(s) control,
+without interpreting patient age as gestational age or the reverse. Gestation
+at birth and corrected/postmenstrual ages are outside this patient-age target;
+the model must not use them or calculate chronological age from them. Native PDF writes the exact
+value and exactly one Years/Months/Weeks/Days unit box; width is guarded at
+native27.621pt/Helvetica8.5pt without
 shrinking or truncation. Qualifiers retain explicit omission disclosure.
-Statev12 strictly checks v7–v11 against their old numeric-years contract after
+Statev13 strictly checks v12 against its months/days contract and v7–v11 against
+their old numeric-years contract after
 prior migrations, preserving all facts/IDs/sources/history/revisions/targets and
 numeric unfinished drafts unchanged. Current UI draft codec additionally retains
-month/day pairs, including unfinished invalid quantities without promoting them.
+month/week/day pairs, including unfinished invalid quantities without promoting them.
 
 ### Product NDC number or Unique ID (Issue #165)
 
