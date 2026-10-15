@@ -1,3 +1,4 @@
+import { removeBirthDateFields } from "../fixtures/pre-dob";
 import { randomUUID } from "node:crypto";
 import { NextRequest } from "next/server";
 import { describe, expect, it, vi } from "vitest";
@@ -60,6 +61,7 @@ describe("durable clinical resume prerequisite", () => {
     const original = await fixture("accepted");
     const legacy = JSON.parse(JSON.stringify(original.state));
     legacy.version = `wilson-browser-state-${version}`;
+    removeBirthDateFields(legacy.case);
     legacy.stage = "output";
     for (const product of legacy.case.products) {
       if (version !== "v11") delete product.facts.ndcOrUniqueId;

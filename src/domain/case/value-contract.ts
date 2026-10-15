@@ -1,3 +1,4 @@
+import { isCompleteBirthDate } from "./birth-date";
 import { isPatientAge } from "./age";
 import type {
   CaseValue,
@@ -12,6 +13,7 @@ import { targetKey } from "./facts";
 
 export type KnownValueContract =
   | { shape: "patient-age" }
+  | { shape: "birth-date" }
   | { shape: "string" }
   | { shape: "iso-date" }
   | { shape: "integer"; minimum: number; maximum: number }
@@ -33,6 +35,8 @@ export const caseValueContracts = {
   patient: {
     identifier: { shape: "string" },
     ageYears: { shape: "patient-age" },
+    dateOfBirth: { shape: "birth-date" },
+    a2Value: { shape: "enum", values: ["age", "date-of-birth"], mismatch: "A2 print choice requires age or date-of-birth" },
     sex: { shape: "enum", values: ["female", "male", "intersex"], mismatch: "sex requires a supported value" },
     weight: { shape: "measurement", units: ["kg", "lb"] },
   },
@@ -146,7 +150,7 @@ export const caseValueContracts = {
 } as const satisfies CaseValueContracts;
 
 export const modelTargetValueContracts = {
-  patient: caseValueContracts.patient,
+  patient: omit(caseValueContracts.patient, "a2Value"),
   event: omit(omit(caseValueContracts.event, "reportType"), "reportDate"),
   product: caseValueContracts.product,
   test: caseValueContracts.test,
@@ -158,6 +162,7 @@ export function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>
   const actual = value.value;
 
   switch (contract.shape) {
+    case "birth-date": return isCompleteBirthDate(actual) ? undefined : "dateOfBirth requires a complete valid ISO calendar date (YYYY-MM-DD), year 0001–9999";
     case "patient-age": return isPatientAge(actual) ? undefined : `${target.field} requires a valid age: whole years 0–150, or an explicit nonnegative whole number with unit months, weeks or days`;
     case "string":
       return typeof actual === "string" ? undefined : `${target.field} requires a string`;
@@ -233,6 +238,7 @@ export function modelKnownValueGuidance(): string {
 
 function describeContract(contract: KnownValueContract): string {
   switch (contract.shape) {
+    case "birth-date": return "a complete valid Gregorian ISO calendar date YYYY-MM-DD, year 0001–9999; never invent missing components or derive age";
     case "patient-age": return "an integer 0–150 for years, or an object {value: nonnegative safe integer, unit: months, weeks or days} for explicit non-year patient age (legacy target ageYears)";
     case "string": return "a string";
     case "iso-date": return "an ISO date (YYYY-MM-DD)";

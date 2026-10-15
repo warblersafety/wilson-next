@@ -9,6 +9,7 @@ import type {
 export type FactControlShape =
   | "text"
   | "age"
+  | "birth-date"
   | "date"
   | "boolean"
   | "list"
@@ -29,6 +30,8 @@ const choices = (...options: Array<[string, string]>): FactControl["options"] =>
 const patient = {
   identifier: { label: "Identifier", shape: "text" },
   ageYears: { label: "Age", shape: "age", help: "Enter the stated whole-unit age at event onset and choose its stated unit. Changing units keeps the number; Wilson does not convert or calculate age." },
+  dateOfBirth: { label: "Date of birth", shape: "birth-date", help: "Enter the complete supplied date as YYYY-MM-DD. Partial or impossible dates remain unfinished edits. Wilson never calculates age from this date." },
+  a2Value: { label: "A2 value to print", shape: "choice", options: choices(["age", "Age"], ["date-of-birth", "Date of birth"]), help: "FDA asks for birth date if known, or age at event onset. If both are known, explicitly choose one for A2. Both facts and their unfinished edits stay retained." },
   sex: { label: "Sex", shape: "choice", options: choices(["female", "Female"], ["male", "Male"], ["intersex", "Intersex"]) },
   weight: { label: "Weight", shape: "weight" },
 } as const satisfies Record<PatientFactKey, FactControl>;

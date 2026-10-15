@@ -31,6 +31,8 @@ export function emptyPatientFacts(): PatientFacts {
   return {
     identifier: emptyFact(),
     ageYears: emptyFact(),
+    dateOfBirth: emptyFact(),
+    a2Value: emptyFact(),
     sex: emptyFact(),
     weight: emptyFact(),
   };

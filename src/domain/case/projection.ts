@@ -12,7 +12,7 @@ const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "r
 export interface ProjectionOmission {
   concept: string;
   target: string;
-  reason: "empty" | "unknown" | "explicitly-absent" | "inapplicable" | "declined" | "conflicted" | "qualifier-not-included";
+  reason: "empty" | "unknown" | "explicitly-absent" | "inapplicable" | "declined" | "conflicted" | "qualifier-not-included" | "a2-alternative-not-selected";
   qualifier?: string;
   baseValueIncluded?: boolean;
   sourceIds: string[];
@@ -21,7 +21,7 @@ export interface ProjectionOmission {
 export interface Form3500Projection {
   revision: number;
   sections: {
-    A: { patientIdentifier?: string; ageYears?: PatientAge; sex?: "female" | "male" | "intersex"; weight?: { value: number; unit: "kg" | "lb" } };
+    A: { patientIdentifier?: string; ageYears?: PatientAge; dateOfBirth?: string; sex?: "female" | "male" | "intersex"; weight?: { value: number; unit: "kg" | "lb" } };
     B: {
       reportType?: ReportType;
       reportDate?: string;
@@ -128,7 +128,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     sourceTrace: {},
     omissions: [],
     notIncluded: [
-      "Patient fractional or compound ages, date of birth and race or ethnicity",
+      "Patient fractional or compound ages, partial date of birth and race or ethnicity",
       "Section C product pictures and general additional comments",
       "Additional suspect medical devices beyond the first",
       "Section D partial expiration dates, other product-type categories and purchase details",
@@ -138,6 +138,17 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
 
   assign(projection, "sections.A.patientIdentifier", "patient identifier", "patient:patient:identifier", caseState.patient.facts.identifier, projection.sections.A, "patientIdentifier");
   assign(projection, "sections.A.ageYears", "patient age", "patient:patient:ageYears", caseState.patient.facts.ageYears, projection.sections.A, "ageYears");
+  assign(projection, "sections.A.dateOfBirth", "patient date of birth", "patient:patient:dateOfBirth", caseState.patient.facts.dateOfBirth, projection.sections.A, "dateOfBirth");
+  const a2Choice = known(caseState.patient.facts.a2Value);
+  if (a2Choice) {
+    projection.sourceTrace["sections.A.a2Value"] = a2Choice.sourceIds;
+    const unselected = a2Choice.value === "age" ? "dateOfBirth" : "ageYears";
+    const omitted = known<unknown>(caseState.patient.facts[unselected]);
+    delete projection.sections.A[unselected];
+    delete projection.sourceTrace[`sections.A.${unselected}`];
+    if (omitted) projection.omissions.push({ concept: unselected === "ageYears" ? "patient age" : "patient date of birth", target: `patient:patient:${unselected}`, reason: "a2-alternative-not-selected", sourceIds: omitted.sourceIds });
+    for (const item of projection.omissions) if (item.target === `patient:patient:${unselected}` && item.reason === "qualifier-not-included") item.baseValueIncluded = false;
+  }
   assign(projection, "sections.A.sex", "patient sex", "patient:patient:sex", caseState.patient.facts.sex, projection.sections.A, "sex");
   assign(projection, "sections.A.weight", "patient weight", "patient:patient:weight", caseState.patient.facts.weight, projection.sections.A, "weight");
   assign(projection, "sections.B.reportType", "report type", "event:event:reportType", caseState.event.facts.reportType, projection.sections.B, "reportType");

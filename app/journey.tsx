@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { isCompleteBirthDate } from "../src/domain/case/birth-date";
 import { isPatientAge } from "../src/domain/case/age";
 import { testDisplayLabel } from "../src/domain/case/test-label";
 import { productDisplayLabel } from "../src/domain/case/product-label";
@@ -940,7 +941,7 @@ function CaseCards({ snapshot, busy, act }: {
     .map(({ groupId, items }) => ({ groupId, title: reviewGroupTitle(snapshot, items) }));
   if (snapshot.revision === 0) return <p className={styles.emptyCase}>Proposed case details will appear here after you submit a description.</p>;
   return <div className={styles.cards}>
-    <CaseCard pendingUpdates={updatesFor("patient", "patient")} domId="case-card-patient" title="Patient" entity="patient" entityId="patient" entityState="resolved" groupId="patient" facts={understanding.patient} fields={["identifier", "ageYears", "sex", "weight"]} allowOpeningReview={openingReview && snapshot.openingGroups.includes("patient")} allowDirectEdit={directEdit} busy={busy} act={act} />
+    <CaseCard pendingUpdates={updatesFor("patient", "patient")} domId="case-card-patient" title="Patient" entity="patient" entityId="patient" entityState="resolved" groupId="patient" facts={understanding.patient} fields={["identifier", "ageYears", "dateOfBirth", "a2Value", "sex", "weight"]} allowOpeningReview={openingReview && snapshot.openingGroups.includes("patient")} allowDirectEdit={directEdit} busy={busy} act={act} />
     <CaseCard pendingUpdates={updatesFor("event", "event")} domId="case-card-event" title="Event" entity="event" entityId="event" entityState="resolved" groupId="event" facts={understanding.event} fields={["reportType", "reportDate", "problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate", "relevantHistory"]} allowOpeningReview={openingReview && snapshot.openingGroups.includes("event")} allowDirectEdit={directEdit} busy={busy} act={act} />
     {understanding.relevantTests.map((test, index) => <CaseCard pendingUpdates={updatesFor("test", test.id)} domId={`case-card-test-${index + 1}`} key={test.id} title={testDisplayLabel(test, index + 1)} eyebrow="Test or laboratory result" entity="test" entityId={test.id} entityState={test.state} groupId={test.proposalGroupId} facts={test.facts} fields={["testName", "testResult", "lowRange", "highRange", "date"]} reviewBlocked={snapshot.stage === "review-update" && test.state === "proposed"} allowOpeningReview={openingReview && test.state === "proposed"} allowDirectEdit={directEdit && test.state === "resolved"} allowRemove={openingReview && test.state === "proposed"} allowWithdraw={entityWithdrawal && test.state === "resolved"} busy={busy} act={act} />)}
     {understanding.products.map((product) => {
@@ -1051,7 +1052,8 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
       const fact = facts[field];
       if (!fact || (groupedOutcomes && !showOutcomes && outcomeFields.includes(field))) return null;
       const value = cardValue(fact);
-      if (!showMore && !value && fact.history.length === 0 && fact.conflicts.length === 0) return null;
+      const a2ChoiceNeeded = entity === "patient" && field === "a2Value" && cardValue(facts.ageYears)?.kind === "known" && cardValue(facts.dateOfBirth)?.kind === "known";
+      if (!showMore && !value && fact.history.length === 0 && fact.conflicts.length === 0 && !a2ChoiceNeeded) return null;
       const proposal = fact.proposals.find(({ groupId: proposalGroup }) => proposalGroup === groupId);
       const editable = Boolean(((allowOpeningReview || reviewBlocked) && proposal) || allowDirectEdit);
       if (!value && fact.history.length === 0 && fact.conflicts.length === 0 && !editable && !(entity === "test" && (field === "testName" || field === "testResult"))) return null;
@@ -1117,6 +1119,7 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQ
         onChange({ kind: "known", value: event.target.value === "years" ? amount : { value: amount, unit: event.target.value as "months" | "weeks" | "days" } });
       }}><option value="years">Years</option><option value="months">Months</option><option value="weeks">Weeks</option><option value="days">Days</option></select>
     </div>}
+    {value.kind === "known" && control.shape === "birth-date" && <><input aria-label={`New ${label}`} type="text" placeholder="YYYY-MM-DD" value={String(known ?? "")} onChange={event => onChange({ kind: "known", value: event.target.value })} />{!isCompleteBirthDate(known) && <p role="status">A complete valid calendar date is required (YYYY-MM-DD). This unfinished edit is retained; no missing component is inferred.</p>}</>}
     {value.kind === "known" && control.shape === "date" && <input aria-label={`New ${label}`} type="date" value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />}
     {value.kind === "known" && control.shape === "boolean" && <select aria-label={`New ${label}`} value={String(known)} onChange={(event) => onChange({ kind: "known", value: event.target.value === "true" })}><option value="true">Yes</option><option value="false">No</option></select>}
     {value.kind === "known" && control.shape === "list" && <textarea aria-label={`New ${label}`} rows={3} value={Array.isArray(known) ? known.join("\n") : ""} onChange={(event) => onChange({ kind: "known", value: splitList(event.target.value) })} />}
@@ -1144,6 +1147,7 @@ function editableInitialValue(value: CaseValue<unknown> | undefined, control: Fa
 function validEditableValue(value: EditableCaseValue, control: FactControl): boolean {
   if (value.kind !== "known") return true;
   if (control.shape === "text" || control.shape === "date" || control.shape === "choice") return typeof value.value === "string" && Boolean(value.value.trim());
+  if (control.shape === "birth-date") return isCompleteBirthDate(value.value);
   if (control.shape === "age") return isPatientAge(value.value);
   if (control.shape === "weight") return typeof value.value === "object" && !Array.isArray(value.value) && value.value.value > 0;
   if (control.shape === "list") return Array.isArray(value.value) && value.value.length > 0;
@@ -1288,6 +1292,7 @@ function omissionLabel(reason: string, target: string, baseValueIncluded = false
     inapplicable: "not applicable",
     declined: "prefer not to answer",
     conflicted: "unresolved conflict",
+    "a2-alternative-not-selected": "retained; not selected for A2 output",
     "qualifier-not-included": baseValueIncluded ? "base value included; reviewed uncertainty or context not included" : "reviewed uncertainty or context not included",
   }[reason] ?? reason.replaceAll("-", " ");
 }

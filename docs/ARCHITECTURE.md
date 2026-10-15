@@ -159,7 +159,7 @@ identity and old unfinished-draft compatibility; it does not coerce object ages
 to years. No DOB/date arithmetic, rounding or unit conversion. Changing the UI
 unit retains the number for explicit clinician correction, never calculates.
 The review shows units; the existing numeric years path and limits stay intact.
-No new follow-up question. Fractional/compound ages and DOB remain outside
+No new follow-up question. Fractional/compound ages remain outside
 this slice and disclosed. Explicit weeks use the official native Week(s) control,
 without interpreting patient age as gestational age or the reverse. Gestation
 at birth and corrected/postmenstrual ages are outside this patient-age target;
@@ -172,6 +172,33 @@ their old numeric-years contract after
 prior migrations, preserving all facts/IDs/sources/history/revisions/targets and
 numeric unfinished drafts unchanged. Current UI draft codec additionally retains
 month/week/day pairs, including unfinished invalid quantities without promoting them.
+
+### Complete date of birth and A2 choice (Issue #172)
+
+The official A2 alternative accepts the explicitly supplied complete birth date
+or age at event onset. Date of birth is a separate reviewed patient fact, never
+calculated from age or used to calculate age. The native DateBirth field receives
+DD-MMM-YYYY from the retained ISO components without timezone/date arithmetic.
+Only complete Gregorian calendar dates in years0001–9999 are accepted. Partial,
+impossible or ambiguous dates are unsupported; the text editor retains invalid
+unfinished words across reload and disables Apply. Global legacy date cleanup
+remains #164, without retrospective changes to accepted values.
+
+An explicit clinician-only A2 value-to-print fact chooses Age or Date of birth.
+The model can propose both supplied facts but cannot choose the print preference.
+If only one is known and no choice is set, it prints that one. Both known without
+a choice block new PDF until explicit selection; a selected unavailable value
+also blocks rather than silently falling back. Switching changes projection
+only: both accepted facts/source/history and independent unfinished age/DOB
+edits remain retained. The unselected known alternative has explicit omission
+disclosure. Qualifier disclosure distinguishes omitted base values from selected
+base values. No comparison, age/date consistency judgment or new follow-up question.
+
+Statev14 strictly validates legacyv7–v13 contracts before adding only empty DOB
+and A2-choice facts. Prior facts, revisions, IDs, sources, history and draft
+identities are not rewritten. The existing Age UI remains unchanged; DOB and
+A2 choice use the same fact-card review/correction and save/resume machinery.
+All integration evidence is fictional and mocked; #169 live fidelity is open.
 
 ### Product NDC number or Unique ID (Issue #165)
 
