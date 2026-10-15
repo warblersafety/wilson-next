@@ -251,6 +251,7 @@ export function JourneyBody() {
   const clinicalAction = nextClinicalAction(snapshot);
   const reviewingUpdate = clinicalAction?.kind === "updates";
   const capacityIssues = productCapacityIssues(snapshot);
+  const omittedContext = hasOmittedQualifierContext(snapshot);
   const representationLimited = snapshot.outputIssues.some(({ code }) => code === "unsupported-patient-sex" || code === "unsupported-product-route" || code === "unsupported-product-text");
 
   return (
@@ -300,7 +301,7 @@ export function JourneyBody() {
           {representationLimited && <p className={styles.notice} role="status">This PDF cannot represent every reviewed value. Your reviewed details are retained. Review & save explains the limitation.</p>}
           {capacityIssues.length > 0 && <p className={styles.notice} role="status">This case exceeds the preview’s PDF capacity. Your reviewed details are retained. Review & save explains the supported limits.</p>}
           {clinicalAction?.kind === "proposals" && <p className={styles.lead}>Check each proposed group. Change incorrect values before accepting.</p>}
-          {pdf && <div className={styles.returnBanner}><div><strong>A PDF has been generated for this case</strong><p>{snapshot.downloadReady && pdf.contentKey === snapshot.reportContentKey ? "Accepted report contents are unchanged." : snapshot.downloadReady ? "Accepted details have changed. Open Review & save to update the PDF." : representationLimited ? "The current PDF cannot represent every reviewed value. The earlier PDF is not current." : capacityIssues.length > 0 ? "The current case exceeds the preview’s PDF capacity. The earlier PDF is not current." : "New work needs review before a current PDF is ready."}</p></div><button disabled={busy} onClick={() => setScreen("save")}>Return to PDF</button></div>}
+          {pdf && <div className={styles.returnBanner}><div><strong>A PDF has been generated for this case</strong><p>{snapshot.downloadReady && pdf.contentKey === snapshot.reportContentKey ? omittedContext ? "The supported PDF contents are unchanged. Reviewed uncertainty or context is not included; Review & save lists it." : "Accepted report contents are unchanged." : snapshot.downloadReady ? "Accepted details have changed. Open Review & save to update the PDF." : representationLimited ? "The current PDF cannot represent every reviewed value. The earlier PDF is not current." : capacityIssues.length > 0 ? "The current case exceeds the preview’s PDF capacity. The earlier PDF is not current." : "New work needs review before a current PDF is ready."}</p></div><button disabled={busy} onClick={() => setScreen("save")}>Return to PDF</button></div>}
           {snapshot.stage === "review-update" && <UpdateReview snapshot={snapshot} busy={busy} act={act} />}
           {snapshot.review.attention.filter(({ kind }) => kind === "conflict").map((item) => <ConflictCard key={item.target} snapshot={snapshot} item={item} busy={busy || snapshot.stage !== "output"} act={act} />)}
           <CaseSummaryHeading attention={snapshot.review.attention} />
@@ -330,7 +331,7 @@ export function JourneyBody() {
           <div className={styles.screenActions}>{clinicalAction ? <>
             {clinicalAction.kind !== "questions" && <button className={styles.inlineAction} disabled={busy} onClick={continueClinicalReview}>{reviewingUpdate ? "Go to proposed changes" : "Go to remaining review"}</button>}
             <button disabled={busy} onClick={() => setScreen("reporter")}>{canSaveReporter(snapshot) ? "Edit reporter details" : "Draft reporter details"}</button>
-          </> : <><p>{capacityIssues.length > 0 || representationLimited ? "Your accepted details are retained, but this preview cannot yet export the complete case." : "Your accepted details will be used in the report."}</p><button className={styles.primaryButton} disabled={busy} onClick={() => setScreen("reporter")}>Continue to reporter details</button></>}</div>
+          </> : <><p>{capacityIssues.length > 0 || representationLimited ? "Your accepted details are retained, but this preview cannot yet export the complete case." : omittedContext ? "Your accepted details are retained. Only supported values will be used in the report; omitted context is listed in Review & save." : "Your accepted details will be used in the report."}</p><button className={styles.primaryButton} disabled={busy} onClick={() => setScreen("reporter")}>Continue to reporter details</button></>}</div>
         </section>
         <section data-screen="reporter" hidden={screen !== "reporter"}>
           <ReporterTask profile={reporterProfile} freshCaseId={workspace.freshCaseId} caseId={browserState?.case.id} continueClinicalReview={continueClinicalReview} onDirtyChange={setReporterDirty} navigate={setScreen} key={`${browserState?.case.id}:${reporterDraftKey(snapshot)}`} snapshot={snapshot} busy={busy} act={act} />
@@ -350,6 +351,10 @@ function OperationStatus({ active, message }: { active: boolean; message: string
   return <div ref={status} role="status" aria-atomic="true" className={active ? styles.progress : undefined}>
     {active && <><span className={styles.spinner} aria-hidden="true" /><span>{message}</span></>}
   </div>;
+}
+
+function hasOmittedQualifierContext(snapshot: JourneySnapshot): boolean {
+  return snapshot.projection.omissions.some(({ reason }) => reason === "qualifier-not-included");
 }
 
 function productCapacityIssues(snapshot: JourneySnapshot) {
@@ -870,6 +875,7 @@ function OutputComposition({ snapshot, pdf, caseId, busy, generating, error, gen
   generatePdf: () => Promise<void>; navigate: (screen: Screen) => void; hasDraft: boolean; reporterDirty: boolean;
 }) {
   const exceedsCapacity = productCapacityIssues(snapshot).length > 0;
+  const omittedContext = hasOmittedQualifierContext(snapshot);
   const representationLimited = snapshot.outputIssues.some(({ code }) => code === "unsupported-patient-sex" || code === "unsupported-product-route" || code === "unsupported-product-text");
   const artifact = pdf?.caseId === caseId ? pdf : undefined;
   const current = Boolean(artifact && artifact.contentKey === snapshot.reportContentKey && snapshot.downloadReady);
@@ -877,10 +883,11 @@ function OutputComposition({ snapshot, pdf, caseId, busy, generating, error, gen
     <p className={styles.eyebrow}>Review & save</p>
     <h1>Your FDA MedWatch report</h1>
     <p className={styles.lead}>Inspect the actual generated form, then save a copy. Wilson does not submit it.</p>
+    {omittedContext && <p className={styles.notice}>Some reviewed uncertainty or context is not included in the PDF. Report coverage below lists the exact wording.</p>}
     {hasDraft && <p className={styles.notice}>You have an unsent clinical draft in Review details. It is not included in the PDF.</p>}
     {reporterDirty && <p className={styles.notice}>You have unsaved reporter details. {canSaveReporter(snapshot) ? "Save them in Reporter details to include those changes in the report." : "Your draft is retained. Finish the clinical review below, then return to Reporter details to save it."}</p>}
     {snapshot.outputIssues.length > 0 && <section className={styles.invitation}><h2>{representationLimited ? "This PDF cannot represent every reviewed value" : exceedsCapacity ? "This case exceeds the preview’s PDF capacity" : "The form needs more reviewed information"}</h2><PendingReview snapshot={snapshot} /><ClinicalNeeds snapshot={snapshot} /><ul>{snapshot.outputIssues.filter(({ code }) => code !== "pending-proposal-review" && code !== "open-clarification").map((issue, index) => <li key={index}>{issue.message}</li>)}</ul>{snapshot.stage === "clarify" && snapshot.clarification?.kind === "reporter" ? <><p>Clinical questions are complete. Save reporter details or explicitly choose not to provide them.</p><button className={styles.primaryButton} disabled={busy} onClick={() => navigate("reporter")}>Go to reporter details</button></> : <button className={styles.primaryButton} disabled={busy} onClick={continueClinicalReview}>{nextClinicalAction(snapshot)?.label ?? "Review case details"}</button>}</section>}
-    <div className={styles.pdfToolbar}><div><h2>Form FDA 3500</h2><p role="status" aria-atomic="true">{generating ? <><span className={styles.spinner} aria-hidden="true" />{artifact ? "Updating the PDF from accepted details… The earlier PDF remains below until the update is ready." : "Preparing the PDF from accepted details…"}</> : error ? "PDF generation failed. Accepted details are retained. Try generating it again." : current ? "PDF ready — it reflects the accepted report contents." : artifact ? "Earlier PDF — it does not include changes awaiting review or generation." : "Generate the PDF after completing review and reporter details."}</p></div>
+    <div className={styles.pdfToolbar}><div><h2>Form FDA 3500</h2><p role="status" aria-atomic="true">{generating ? <><span className={styles.spinner} aria-hidden="true" />{artifact ? "Updating the PDF from accepted details… The earlier PDF remains below until the update is ready." : "Preparing the PDF from accepted details…"}</> : error ? "PDF generation failed. Accepted details are retained. Try generating it again." : current ? omittedContext ? "PDF ready — supported values are included; some reviewed context is omitted." : "PDF ready — it reflects the accepted report contents." : artifact ? "Earlier PDF — it does not include changes awaiting review or generation." : "Generate the PDF after completing review and reporter details."}</p></div>
       {current ? <a className={styles.primaryLink} href={artifact!.url} download={artifact!.filename}>Save PDF</a> : <button disabled={busy || !snapshot.downloadReady} onClick={() => void generatePdf()}>{artifact ? "Generate updated PDF" : "Generate PDF"}</button>}
     </div>
     {error && <p className={styles.error} role="alert">{error}{artifact ? " The earlier PDF below has not been updated." : " No PDF was created."}</p>}
@@ -895,12 +902,12 @@ function ReportCoverage({ snapshot }: { snapshot: JourneySnapshot }) {
   const omissions = snapshot.projection.omissions.filter(({ reason }) => reason !== "empty");
   const clinical = omissions.filter(({ target }) => !target.startsWith("reporter:"));
   const reporter = omissions.filter(({ target }) => target.startsWith("reporter:"));
-  const list = (items: typeof omissions) => <ul>{items.map((item, index) => <li key={index}>{humanOmission(snapshot, item.target, item.concept)}: {omissionLabel(item.reason, item.target)}</li>)}</ul>;
-  return <details className={styles.coverage}>
+  const list = (items: typeof omissions) => <ul>{items.map((item, index) => <li key={index}>{humanOmission(snapshot, item.target, item.concept)}: {omissionLabel(item.reason, item.target)}{item.reason === "qualifier-not-included" && <> — <q>{item.qualifier}</q></>}</li>)}</ul>;
+  return <details className={styles.coverage} open={hasOmittedQualifierContext(snapshot) || undefined}>
     <summary>Report coverage and omitted information</summary>
     <p>Based on currently accepted information. Unsent drafts and unaccepted proposals are not included in the report.</p>
-    {clinical.length > 0 && <><h3>Clinical information omitted from form fields</h3><p>These are recorded answers, including facts explicitly reported as absent. Other blank fields may simply have no supplied information.</p>{list(clinical)}</>}
-    {reporter.length > 0 && <><h3>Reporter information not included</h3><p>Blank contact or address details mean they were not supplied, not that they do not exist.</p>{list(reporter)}</>}
+    {clinical.length > 0 && <><h3>{clinical.some(({ reason }) => reason === "qualifier-not-included") ? "Clinical information omitted or partially included" : "Clinical information omitted from form fields"}</h3><p>These are recorded answers, including facts explicitly reported as absent. Other blank fields may simply have no supplied information.</p>{list(clinical)}</>}
+    {reporter.length > 0 && <><h3>{reporter.some(({ reason }) => reason === "qualifier-not-included") ? "Reporter information not fully included" : "Reporter information not included"}</h3><p>Blank contact or address details mean they were not supplied, not that they do not exist.</p>{list(reporter)}</>}
     {snapshot.projection.notIncluded.length > 0 && <><h3>Fields this preview does not support</h3><p>These limits apply to the preview, whether or not your case description mentions these details.</p><ul>{snapshot.projection.notIncluded.map((item) => <li key={item}>{item}</li>)}</ul></>}
   </details>;
 }
@@ -1065,7 +1072,7 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
         {editable && !reviewBlocked && editing === field && draft && <div className={styles.inlineEdit}>
           <p className={styles.editorTitle}>Editing {control.label.toLowerCase()}</p>
           {control.help && <p>{control.help}</p>}
-          <fieldset disabled={busy} className={styles.editorControls}><FactValueEditor label={control.label} control={control} value={draft} hasQualifierControl={qualifierControls[field] ?? false} onChange={(next) => setDrafts((current) => ({ ...current, [field]: next }))} /></fieldset>
+          <fieldset disabled={busy} className={styles.editorControls}><FactValueEditor label={control.label} control={control} value={draft} hasQualifierControl={qualifierControls[field] ?? false} onRevealQualifier={() => setQualifierControls(current => ({ ...current, [field]: true }))} onChange={(next) => setDrafts((current) => ({ ...current, [field]: next }))} /></fieldset>
           <button disabled={busy || (Boolean(value) && !dirty) || !validEditableValue(draft, control)} onClick={async () => {
             if (allowOpeningReview && proposal) {
               finishEdit(field, false);
@@ -1090,7 +1097,7 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
   </article>;
 }
 
-function FactValueEditor({ label, control, value, hasQualifierControl, onChange: emitChange }: { label: string; control: FactControl; value: EditableCaseValue; hasQualifierControl: boolean; onChange: (value: EditableCaseValue) => void }) {
+function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQualifier, onChange: emitChange }: { label: string; control: FactControl; value: EditableCaseValue; hasQualifierControl: boolean; onRevealQualifier: () => void; onChange: (value: EditableCaseValue) => void }) {
   const known = value.kind === "known" ? value.value : undefined;
   // Keep the existing qualifier editable for this edit session, including the
   // empty intermediate state when the clinician replaces its wording.
@@ -1112,6 +1119,7 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onChange:
     </div>}
     {value.kind === "known" && control.shape === "choice" && <select aria-label={`New ${label}`} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })}>{control.options?.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select>}
     {value.kind === "known" && control.shape === "choices" && <fieldset><legend>New {label}</legend>{control.options?.map((option) => <label key={option.value}><input type="checkbox" checked={Array.isArray(known) && known.includes(option.value)} onChange={(event) => onChange({ kind: "known", value: event.target.checked ? [...(Array.isArray(known) ? known : []), option.value] : (Array.isArray(known) ? known : []).filter((item) => item !== option.value) })} /> {option.label}</label>)}</fieldset>}
+    {value.kind === "known" && !hasQualifierControl && <button type="button" onClick={onRevealQualifier}>Add uncertainty or context</button>}
     {value.kind === "known" && hasQualifierControl && <label>Uncertainty or context<input aria-label={`Uncertainty or context for ${label}`} value={value.qualifier ?? ""} onChange={(event) => emitChange({ kind: "known", value: value.value, qualifier: event.target.value })} /></label>}
   </div>;
 }
@@ -1272,6 +1280,7 @@ function omissionLabel(reason: string, target: string): string {
     inapplicable: "not applicable",
     declined: "prefer not to answer",
     conflicted: "unresolved conflict",
+    "qualifier-not-included": "base value included; reviewed uncertainty or context not included",
   }[reason] ?? reason.replaceAll("-", " ");
 }
 
@@ -1279,7 +1288,7 @@ function omissionLabel(reason: string, target: string): string {
 export function humanOmission(snapshot: JourneySnapshot, target: string, fallback: string): string {
   const [entity, , field] = target.split(":");
   if (target === "event:event:relevantTestsAvailable") return "Relevant tests";
-  if (entity !== "product") return field ? fieldLabel(entity, field) : fallback;
+  if (entity !== "product" && entity !== "test") return field ? fieldLabel(entity, field) : fallback;
   return targetLabel(snapshot, target);
 }
 
