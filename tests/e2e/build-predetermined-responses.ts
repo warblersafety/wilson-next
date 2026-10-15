@@ -1,3 +1,4 @@
+import { serialCorrectionText, mixedSerialText, serialOutput } from "../fixtures/serial-test-correction";
 import { preservedGroupingOutput } from "../fixtures/grouping-failure";
 import { medicationScenarios } from "../fixtures/medication-model";
 import { usabilityScenario } from "../fixtures/usability-model";
@@ -614,6 +615,9 @@ omitted.proposals.filter(({ target }) => target.entity === "test" && target.test
 export const predeterminedResponseScenarios = {
   ...priorScenarios,
   ...medicationScenarios,
+  serial105: [{ identityScope: "issue105", turn: "correction" as const, output: serialOutput(serialCorrectionText) }],
+  serial105Mixed: [{ identityScope: "issue105-mixed", turn: "correction" as const, output: serialOutput(mixedSerialText, undefined, true) }],
+  serial105Invalid: [{ identityScope: "issue105-invalid", turn: "correction" as const, output: serialOutput(serialCorrectionText, "invented-correction-reference") }],
   issue96: [
     { identityScope: "issue96", turn: "opening" as const, output: sourceReferenceOutput() },
     { identityScope: "issue96-update", turn: "correction" as const, output: sourceReferenceCorrection("test-issue96-t0", "test-issue96-t4") },

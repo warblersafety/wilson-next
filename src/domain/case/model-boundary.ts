@@ -156,7 +156,14 @@ export function parseModelProposalEnvelope(
   const existingTestIds = new Set(candidate.existingTestIds ?? []);
   // An exact supplied ID still identifies the existing observation, even if
   // echoed in the declaration list. Only response-local references create tests.
-  const outputTests = (output.tests ?? []).filter(({ testReference }) => !existingTestIds.has(testReference));
+  // A declared correction may not allocate an observation, even if sibling
+  // facts repeat its invented/mistyped reference. Keep independent valid data.
+  const invalidCorrectionReferences = new Set(candidate.turn === "correction"
+    ? output.proposals.filter(proposal => proposal.intent === "correction" && proposal.target.entity === "test"
+      && proposal.target.testReference && !existingTestIds.has(proposal.target.testReference))
+      .map(proposal => proposal.target.testReference!) : []);
+  const outputTests = (output.tests ?? []).filter(({ testReference }) =>
+    !existingTestIds.has(testReference) && !invalidCorrectionReferences.has(testReference));
   if (candidate.turn === "opening" && (existingProductIds.size > 0 || existingTestIds.size > 0)) {
     boundaryIssue(["existingProductIds"], "Opening input cannot reference existing entities");
   }
