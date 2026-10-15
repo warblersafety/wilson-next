@@ -139,7 +139,7 @@ integration, the Issue #129 restore contract below supersedes that preview-only
 compatibility limit: retain migrations for every state version actually persisted
 by supported releases, preserving accepted facts and history.
 
-The existing coverage checklist distinguishes implemented Section D complete expiration dates (PR163), NDC/Unique ID (PR166), explicit ongoing status (PR177), complete dose-reduction dates (PR179), and explicit native-time durations (issue181) from remaining other-category, purchase, partial expiration/reduction-date and dose-count/compound/range duration gaps. Warnings and no-destination disclosures preserve visibility; they are not completed field support.
+The existing coverage checklist distinguishes implemented Section D complete expiration dates (PR163), NDC/Unique ID (PR166), explicit ongoing status (PR177), complete dose-reduction dates (PR179), explicit native-time durations (issue181), and complete purchase dates (issue183) from remaining other-category, purchase place/address/website, partial purchase/expiration/reduction-date and dose-count/compound/range duration gaps. Warnings and no-destination disclosures preserve visibility; they are not completed field support.
 Download readiness remains the supported-path condition, not a claim of
 complete FDA-form coverage.
 
@@ -1283,3 +1283,28 @@ remains in knowledge and receives a no-destination disclosure, never a prompt
 to choose a control that cannot affect that route. Returning to D3 restores the
 retained preference. Untouched native duration-unit widgets remain unset; export
 ID conversion applies only to duration dropdowns actually written or cleared.
+
+
+### Explicit Section D purchase dates (issue183)
+
+An optional product purchaseDate holds only an explicitly supplied complete valid
+Gregorian YYYY-MM-DD date. It is independent of every therapy, expiration,
+event, report and return date; none implies another. Conversation proposes with
+source/qualifier, clinician acceptance establishes knowledge, and correction
+retains history. Existing product cards provide the date editor without another
+mandatory completion question. Invalid/partial edits remain unfinished and
+survive reload. No calendar arithmetic, component filling or clinical judgment.
+
+The reviewed date projects to each Section D purchase block. Native slot two
+uses FDA's original Pdt2PurchaseDate name, distinct from slot one's
+Prod1PurchaseDate. Dates retained on device/concomitant routes remain knowledge
+with the existing no-destination disclosure; no purchase date is moved into
+therapy or narrative fields. Qualifier omission uses the existing truthful
+disclosure contract; no qualifier is silently treated as printed.
+
+Browser state v19 strictly validates genuine v7–v18 before adding only empty
+purchase facts. Existing saved facts, sources, revisions, history and compatible
+unfinished edits remain unchanged. Prompt v15/schema v25 add this target.
+Purchase place/address/website, partial purchase dates, other D5 categories and
+all existing inventory gaps remain unfinished. Mock evidence does not establish
+live-model compliance.

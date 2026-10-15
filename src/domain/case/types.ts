@@ -119,6 +119,7 @@ export interface ProductFacts {
   modelNumber: Fact<string>;
   catalogNumber: Fact<string>;
   expirationDate: Fact<string>;
+  purchaseDate: Fact<string>;
   serialNumber: Fact<string>;
   udi: Fact<string>;
   deviceOperator: Fact<"health-professional" | "patient-consumer" | "other">;

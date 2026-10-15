@@ -113,6 +113,7 @@ export function emptyProductFacts(): ProductFacts {
     modelNumber: emptyFact(),
     catalogNumber: emptyFact(),
     expirationDate: emptyFact(),
+    purchaseDate: emptyFact(),
     serialNumber: emptyFact(),
     udi: emptyFact(),
     deviceOperator: emptyFact(),

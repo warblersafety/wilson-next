@@ -1,0 +1,28 @@
+{
+  "capturedPages": [
+    {
+      "page": 4,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/Documents/Codex/2026-10-15/task/issue-183-evidence/purchase-both-page-4.png"
+    },
+    {
+      "page": 5,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/Documents/Codex/2026-10-15/task/issue-183-evidence/purchase-both-page-5.png"
+    }
+  ],
+  "manualInspectionRequired": [
+    "No password prompt, corruption, or displaced form content is visible",
+    "FDA, MedWatch, Form 3500, OMB expiry, and page identity are preserved",
+    "Sections A and B agree with the repaired reviewed patient and event",
+    "Section D contains the repaired suspect-product identity and indication",
+    "Section G agrees with the direct reporter entry"
+  ],
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "/Users/sofa-claude/Documents/Codex/2026-10-15/task/issue-183-evidence/purchase-both.pdf",
+  "inspection": {
+    "visuallyInspected": true,
+    "observed": "Page 4 shows 29-FEB-2024 in purchase block, independent of therapy start. Page 5 shows 12-AUG-2026 in purchase block. Dates fit without clipping. Corrected page 4 is byte-identical to visually inspected original."
+  }
+}

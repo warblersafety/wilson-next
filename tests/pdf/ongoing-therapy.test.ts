@@ -51,7 +51,7 @@ it("preserves knowledge but discloses no D3 checkbox destination for concomitant
 });
 it("strictly upgrades a genuine v15 with only empty new facts while retaining A5, DOB, dates and history",()=>{
  let c=productCapacityCase();c=setContextFact(c,"patient:patient:raceEthnicity",{kind:"known",value:["asian"]});const expected={version:browserStateVersion,stage:"output",case:c,unrepresented:[]};const legacy=structuredClone({...expected,version:"wilson-browser-state-v15"});removeOngoingFields(legacy.case);const before=structuredClone(legacy);expect(parseBrowserJourneyState(legacy)).toEqual(expected);expect(legacy).toEqual(before);
- expect(()=>parseBrowserJourneyState({...expected,version:"wilson-browser-state-v15"})).toThrow();expect(()=>parseBrowserJourneyState({...expected,version:"wilson-browser-state-v19"})).toThrow();
+ expect(()=>parseBrowserJourneyState({...expected,version:"wilson-browser-state-v15"})).toThrow();expect(()=>parseBrowserJourneyState({...expected,version:"wilson-browser-state-v20"})).toThrow();
 });
 it.each(["yes",1,null,[]])("rejects unsupported ongoing value %j without coercion",value=>{
  const c=productCapacityCase();expect(()=>setContextFact(c,`product:${c.products[0].id}:therapyOngoing`,{kind:"known",value})).toThrow();
