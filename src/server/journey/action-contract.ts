@@ -20,7 +20,7 @@ const caseValueSchema = z.discriminatedUnion("kind", [
       z.number(),
       z.boolean(),
       z.array(z.string()),
-      z.object({ value: z.number().positive(), unit: z.enum(["kg", "lb"]) }).strict(),
+      z.object({ value: z.number().positive(), unit: z.enum(["kg", "lb"]) }).strict(), z.object({ value: z.number(), unit: z.enum(["months", "days"]) }).strict(),
     ]),
     qualifier: z.string().optional(),
   }).strict(),

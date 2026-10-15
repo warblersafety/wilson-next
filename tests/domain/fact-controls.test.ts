@@ -19,7 +19,7 @@ describe("direct fact controls", () => {
         const control = (factControlRegistry[entity] as Record<string, { shape: string }>)[field];
         const expected = contract.shape === "string" ? "text"
           : contract.shape === "iso-date" ? "date"
-          : contract.shape === "integer" ? "age"
+          : contract.shape === "integer" || contract.shape === "patient-age" ? "age"
           : contract.shape === "string-array" ? "list"
           : contract.shape === "measurement" ? "weight"
           : contract.shape === "enum-array" ? "choices"

@@ -446,6 +446,7 @@ function validKnownValue(contract: KnownValueContract): unknown {
   switch (contract.shape) {
     case "string": return "value";
     case "iso-date": return "2026-09-10";
+    case "patient-age": return 57;
     case "integer": return contract.minimum;
     case "boolean": return true;
     case "string-array": return ["value"];

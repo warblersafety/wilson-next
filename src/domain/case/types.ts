@@ -1,3 +1,4 @@
+import type { PatientAge } from "./age";
 export type EntityState = "proposed" | "resolved" | "rejected" | "withdrawn";
 
 export type NonKnownValue =
@@ -31,7 +32,7 @@ export interface Fact<T> {
 
 export interface PatientFacts {
   identifier: Fact<string>;
-  ageYears: Fact<number>;
+  ageYears: Fact<PatientAge>;
   sex: Fact<"female" | "male" | "intersex">;
   weight: Fact<{ value: number; unit: "kg" | "lb" }>;
 }

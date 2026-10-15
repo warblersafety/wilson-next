@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { isPatientAge } from "../src/domain/case/age";
 import { testDisplayLabel } from "../src/domain/case/test-label";
 import { productDisplayLabel } from "../src/domain/case/product-label";
 import type { CaseValue, ReportType } from "../src/domain/case/types";
@@ -252,7 +253,7 @@ export function JourneyBody() {
   const reviewingUpdate = clinicalAction?.kind === "updates";
   const capacityIssues = productCapacityIssues(snapshot);
   const omittedContext = hasOmittedQualifierContext(snapshot);
-  const representationLimited = snapshot.outputIssues.some(({ code }) => code === "unsupported-patient-sex" || code === "unsupported-product-route" || code === "unsupported-product-text" || code === "unsupported-event-narrative" || code === "unsupported-test-history");
+  const representationLimited = snapshot.outputIssues.some(({ code }) => code === "unsupported-patient-age" || code === "unsupported-patient-sex" || code === "unsupported-product-route" || code === "unsupported-product-text" || code === "unsupported-event-narrative" || code === "unsupported-test-history");
 
   return (
     <main className={styles.appShell}>
@@ -876,7 +877,7 @@ function OutputComposition({ snapshot, pdf, caseId, busy, generating, error, gen
 }) {
   const exceedsCapacity = productCapacityIssues(snapshot).length > 0;
   const omittedContext = hasOmittedQualifierContext(snapshot);
-  const representationLimited = snapshot.outputIssues.some(({ code }) => code === "unsupported-patient-sex" || code === "unsupported-product-route" || code === "unsupported-product-text" || code === "unsupported-event-narrative" || code === "unsupported-test-history");
+  const representationLimited = snapshot.outputIssues.some(({ code }) => code === "unsupported-patient-age" || code === "unsupported-patient-sex" || code === "unsupported-product-route" || code === "unsupported-product-text" || code === "unsupported-event-narrative" || code === "unsupported-test-history");
   const artifact = pdf?.caseId === caseId ? pdf : undefined;
   const current = Boolean(artifact && artifact.contentKey === snapshot.reportContentKey && snapshot.downloadReady);
   return <>
@@ -1109,7 +1110,13 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQ
       <option value="known">Known</option><option value="unknown">Unknown</option><option value="explicitly-absent">Not present</option><option value="inapplicable">Not applicable</option><option value="declined">Prefer not to answer</option>
     </select></label>
     {value.kind === "known" && control.shape === "text" && <input aria-label={`New ${label}`} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />}
-    {value.kind === "known" && control.shape === "age" && <input aria-label={`New ${label}`} type="number" min="0" max="150" value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: Number(event.target.value) })} />}
+    {value.kind === "known" && control.shape === "age" && <div className={styles.measurement}>
+      <input aria-label={`New ${label}`} type="number" min="0" step="1" max={typeof known === "number" ? 150 : undefined} value={String(typeof known === "number" ? known : typeof known === "object" && known && "value" in known ? known.value : "")} onChange={(event) => onChange({ kind: "known", value: typeof known === "object" && known && "unit" in known && (known.unit === "months" || known.unit === "days") ? { value: Number(event.target.value), unit: known.unit } : Number(event.target.value) })} />
+      <select aria-label={`${label} unit`} value={typeof known === "number" ? "years" : typeof known === "object" && known && "unit" in known ? known.unit : "years"} onChange={(event) => {
+        const amount = typeof known === "number" ? known : typeof known === "object" && known && "value" in known ? known.value : 0;
+        onChange({ kind: "known", value: event.target.value === "years" ? amount : { value: amount, unit: event.target.value as "months" | "days" } });
+      }}><option value="years">Years</option><option value="months">Months</option><option value="days">Days</option></select>
+    </div>}
     {value.kind === "known" && control.shape === "date" && <input aria-label={`New ${label}`} type="date" value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />}
     {value.kind === "known" && control.shape === "boolean" && <select aria-label={`New ${label}`} value={String(known)} onChange={(event) => onChange({ kind: "known", value: event.target.value === "true" })}><option value="true">Yes</option><option value="false">No</option></select>}
     {value.kind === "known" && control.shape === "list" && <textarea aria-label={`New ${label}`} rows={3} value={Array.isArray(known) ? known.join("\n") : ""} onChange={(event) => onChange({ kind: "known", value: splitList(event.target.value) })} />}
@@ -1137,7 +1144,7 @@ function editableInitialValue(value: CaseValue<unknown> | undefined, control: Fa
 function validEditableValue(value: EditableCaseValue, control: FactControl): boolean {
   if (value.kind !== "known") return true;
   if (control.shape === "text" || control.shape === "date" || control.shape === "choice") return typeof value.value === "string" && Boolean(value.value.trim());
-  if (control.shape === "age") return typeof value.value === "number" && Number.isInteger(value.value) && value.value >= 0 && value.value <= 150;
+  if (control.shape === "age") return isPatientAge(value.value);
   if (control.shape === "weight") return typeof value.value === "object" && !Array.isArray(value.value) && value.value.value > 0;
   if (control.shape === "list") return Array.isArray(value.value) && value.value.length > 0;
   return true;
@@ -1201,6 +1208,7 @@ function formatFactValue(value: CaseValue<unknown> | undefined, control?: FactCo
     inapplicable: "Not applicable",
     declined: "Prefer not to answer",
   }[value.kind];
+  if (control?.shape === "age" && typeof value.value === "number") return `${value.value} years`;
   if (Array.isArray(value.value)) return value.value
     .map((item) => control?.options?.find((option) => option.value === item)?.label ?? item)
     .join(" and ");

@@ -1,0 +1,60 @@
+import { expect, test, type Page } from "@playwright/test";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+import { ageOpening, ageCorrection } from "../fixtures/medication-model";
+import { browserStateVersion } from "../../src/server/case/browser-state";
+import { productCapacityCase } from "../fixtures/product-capacity";
+import { setContextFact } from "../fixtures/reviewed-context";
+import { acceptOpeningGroups, goTo, savePdf, seedStoredState, serverAction, storedState } from "./draft4-helpers";
+const prefix="topmostSubform[0].Page1[0].SecA_Patient[0].Age";
+const checked=(fields:Record<string,string>,unit:string)=>Boolean(fields[`${prefix}${unit}[0]`]&&fields[`${prefix}${unit}[0]`]!=="/Off");
+const row=(page:Page)=>page.locator('#case-card-patient [data-field="ageYears"]');
+const saved=(page:Page)=>expect(page.getByRole("region",{name:"Browser saving"}).getByRole("status")).toHaveText("Saved in this browser");
+async function reload(page:Page){await saved(page);await page.reload();await expect(page.getByRole("button",{name:"New case",exact:true})).toBeEnabled();}
+async function pdf(page:Page,path:string){const d=await savePdf(page);await d.saveAs(path);const{stdout}=await promisify(execFile)(process.env.PYPDF_PYTHON??"python3",["tools/pdf/independent_readback.py",path,"--named"]);return JSON.parse(stdout).namedFields as Record<string,string>;}
+function expectAge(fields:Record<string,string>,value:string,unit:string|undefined){expect(fields[`${prefix}Value[0]`]??"").toBe(value);for(const label of ["Years","Months","Weeks","Days"])expect(checked(fields,label)).toBe(label===unit);}
+async function startEdit(page:Page){await goTo(page,"Review details");await row(page).getByRole("button",{name:"Change",exact:true}).click();}
+async function apply(page:Page){await serverAction(page,()=>row(page).getByRole("button",{name:"Apply correction",exact:true}).click());}
+
+test("explicit months and days reach A2 through conversation/correction and atomic unit edits without conversion",async({page},info)=>{
+  let interpretations=0;page.on("request",r=>{if(r.method()==="POST"&&r.url().endsWith("/api/case")){const b=r.postDataJSON();if(["submit-opening","submit-update"].includes(b?.action?.action))interpretations++;}});
+  await page.goto("/");await page.getByLabel("Case description",{exact:true}).fill(ageOpening);await page.getByRole("button",{name:"Review Wilson’s understanding",exact:true}).click();
+  await expect(row(page)).toContainText("24 months");expect((await storedState(page)).case.patient.facts.ageYears.resolvedValue).toBeUndefined();
+  await acceptOpeningGroups(page);await goTo(page,"Reporter details");await page.getByLabel("Date of this report",{exact:true}).fill("2026-09-21");await serverAction(page,()=>page.getByRole("button",{name:"Prefer not to provide reporter details"}).click());
+  await reload(page);const first=await pdf(page,info.outputPath("age-months.pdf"));expectAge(first,"24","Months");
+  await goTo(page,"Review details");await page.getByLabel("Clinical update",{exact:true}).fill(ageCorrection);await serverAction(page,()=>page.getByRole("button",{name:"Prepare changes for review",exact:true}).click());
+  expect((await storedState(page)).case.patient.facts.ageYears.resolvedValue?.value).toEqual({kind:"known",value:{value:24,unit:"months"}});
+  await serverAction(page,()=>page.getByRole("button",{name:"Accept these changes",exact:true}).click());await reload(page);
+  const days=await pdf(page,info.outputPath("age-days.pdf"));expectAge(days,"5","Days");
+  const ageNames=["Value","Years","Months","Weeks","Days"].map(s=>`${prefix}${s}[0]`),withoutAge=(fields:Record<string,string>)=>Object.fromEntries(Object.entries(fields).filter(([k])=>!ageNames.includes(k)));
+  expect(withoutAge(days)).toEqual(withoutAge(first));
+  await startEdit(page);await row(page).getByLabel("Age unit",{exact:true}).selectOption("years");await expect(row(page).getByLabel("New Age",{exact:true})).toHaveValue("5");await apply(page);await reload(page);
+  expectAge(await pdf(page,info.outputPath("age-years.pdf")),"5","Years");expect((await storedState(page)).case.patient.facts.ageYears.resolvedValue?.value).toEqual({kind:"known",value:5});
+  await startEdit(page);await row(page).getByLabel("Age unit",{exact:true}).selectOption("months");await row(page).getByLabel("New Age",{exact:true}).fill("-1.5");await saved(page);await page.reload();await saved(page);await goTo(page,"Review details");
+  await expect(row(page).getByLabel("New Age",{exact:true})).toHaveValue("-1.5");await expect(row(page).getByLabel("Age unit",{exact:true})).toHaveValue("months");await expect(row(page).getByRole("button",{name:"Apply correction",exact:true})).toBeDisabled();
+  expect((await storedState(page)).case.patient.facts.ageYears.resolvedValue?.value).toEqual({kind:"known",value:5});
+  await row(page).getByLabel("New Age",{exact:true}).fill("7");await apply(page);await reload(page);const seven=await pdf(page,info.outputPath("age-seven-months.pdf"));expectAge(seven,"7","Months");
+  await startEdit(page);await row(page).getByRole("button",{name:"Add uncertainty or context",exact:true}).click();await row(page).getByLabel("Uncertainty or context for Age",{exact:true}).fill("caregiver estimate retained");await apply(page);await reload(page);
+  const qualified=await pdf(page,info.outputPath("age-qualified.pdf"));expect(qualified).toEqual(seven);
+  const coverage=page.locator('[data-screen="save"] details').filter({has:page.getByText("Report coverage and omitted information",{exact:true})});if(await coverage.getAttribute("open")===null)await coverage.locator("summary").click();await expect(coverage.getByText("caregiver estimate retained",{exact:false})).toBeVisible();
+  await startEdit(page);await row(page).getByLabel("Age status",{exact:true}).selectOption("unknown");await apply(page);await reload(page);expectAge(await pdf(page,info.outputPath("age-unknown.pdf")),"",undefined);
+  const final=(await storedState(page)).case.patient.facts.ageYears;expect(final.supersededValues.some(v=>v.value.kind==="known"&&typeof v.value.value==="object"&&v.value.value.unit==="months")).toBe(true);expect(final.supersededValues.some(v=>v.value.kind==="known"&&v.value.qualifier==="caregiver estimate retained")).toBe(true);expect(interpretations).toBe(2);
+});
+
+async function seedWithoutInterpretation(page:Page){let unexpected=0;await page.route("**/api/case",async route=>{const b=route.request().method()==="POST"?route.request().postDataJSON():undefined;if(route.request().method()!=="POST"||b?.operation==="resume"||b?.action?.action==="set-fact")await route.continue();else{unexpected++;await route.abort();}});await page.goto("/");return()=>expect(unexpected).toBe(0);}
+test("native v11 numeric years and unfinished age/other drafts survive v12 resume unchanged",async({page},info)=>{
+  const noInterpretation=await seedWithoutInterpretation(page);await seedStoredState(page,{version:browserStateVersion,stage:"output",case:productCapacityCase(),unrepresented:[]});await page.reload();await saved(page);await startEdit(page);
+  await row(page).getByLabel("New Age",{exact:true}).fill("58");const dose=page.locator('[data-field="dose"]').first();await dose.getByRole("button",{name:"Change",exact:true}).click();await dose.getByLabel("New Dose",{exact:true}).fill("Unsent dose 00 words");await saved(page);const before=await storedState(page);
+  await page.evaluate(async()=>{const db=await new Promise<IDBDatabase>((resolve,reject)=>{const r=indexedDB.open("wilson-browser-persistence",1);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});try{await new Promise<void>((resolve,reject)=>{const tx=db.transaction("active-case","readwrite"),store=tx.objectStore("active-case"),get=store.get("active");get.onsuccess=()=>{const r=get.result;r.payload.state.version="wilson-browser-state-v11";r.payload.drafts.data.provenance.stateVersion="wilson-browser-state-v11";store.put(r,"active");};tx.oncomplete=()=>resolve();tx.onabort=()=>reject(tx.error);});}finally{db.close();}});
+  await page.reload();await saved(page);await goTo(page,"Review details");await expect(row(page).getByLabel("New Age",{exact:true})).toHaveValue("58");await expect(row(page).getByLabel("Age unit",{exact:true})).toHaveValue("years");await expect(dose.getByLabel("New Dose",{exact:true})).toHaveValue("Unsent dose 00 words");
+  const resumed=await storedState(page);expect(resumed.version).toBe(browserStateVersion);expect(resumed.case).toEqual(before.case);
+  await apply(page);await saved(page);expect((await storedState(page)).case.patient.facts.ageYears.resolvedValue?.value).toMatchObject({kind:"known",value:58});await expect(dose.getByLabel("New Dose",{exact:true})).toHaveValue("Unsent dose 00 words");
+  const fields=await pdf(page,info.outputPath("legacy-years.pdf"));expectAge(fields,"58","Years");expect(JSON.stringify(fields)).not.toContain("Unsent dose 00 words");expect((await storedState(page)).case.products).toEqual(before.case.products);noInterpretation();
+});
+test("accepted oversized day age is retained and blocks fresh PDF until explicit correction",async({page},info)=>{
+  const noInterpretation=await seedWithoutInterpretation(page);await seedStoredState(page,{version:browserStateVersion,stage:"output",case:setContextFact(productCapacityCase(),"patient:patient:ageYears",{kind:"known",value:{value:24,unit:"months"}}),unrepresented:[]});await page.reload();await saved(page);
+  let requests=0;page.on("request",r=>{if(r.url().endsWith("/api/case/pdf")&&r.method()==="POST")requests++;});
+  await startEdit(page);await row(page).getByLabel("New Age",{exact:true}).fill(String(Number.MAX_SAFE_INTEGER));await row(page).getByLabel("Age unit",{exact:true}).selectOption("days");await apply(page);await reload(page);await goTo(page,"Review & save");await expect(page.getByRole("link",{name:"Save PDF",exact:true})).toHaveCount(0);await expect(page.locator('[data-screen="save"]')).toContainText("reviewed age does not fit");expect(requests).toBe(0);
+  expect((await storedState(page)).case.patient.facts.ageYears.resolvedValue?.value).toEqual({kind:"known",value:{value:Number.MAX_SAFE_INTEGER,unit:"days"}});
+  await startEdit(page);await row(page).getByLabel("New Age",{exact:true}).fill("5");await apply(page);await reload(page);expectAge(await pdf(page,info.outputPath("age-width-recovered.pdf")),"5","Days");noInterpretation();
+});

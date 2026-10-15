@@ -1,3 +1,5 @@
+import { isPatientAge, patientAgeParts } from "../../domain/case/age";
+import { patientAgeLimitation } from "../pdf/patient-age";
 import { createHash, randomUUID } from "node:crypto";
 import { testHistoryLimitations } from "../pdf/test-history";
 import { productTextLimitation } from "../pdf/product-text";
@@ -66,6 +68,7 @@ export type OutputReadinessIssueCode =
   | "too-many-concomitant-products"
   | "multiple-suspect-devices"
   | "unsupported-concomitant-device"
+  | "unsupported-patient-age"
   | "unsupported-patient-sex"
   | "unsupported-product-route"
   | "unsupported-product-text"
@@ -526,7 +529,7 @@ export async function performJourneyAction(
           expectedRevision: current.revision,
           target,
           chosenValueId: action.chosenValueId,
-          source: fullSource("resolution", `Use ${displayValue(chosen.value)} as ${targetStatement(current, target)}.`),
+          source: fullSource("resolution", `Use ${displayValue(chosen.value, target)} as ${targetStatement(current, target)}.`),
         });
         break;
       }
@@ -687,6 +690,8 @@ export function outputReadinessIssues(
       ["event"],
     );
   }
+  const ageLimit = patientAgeLimitation(projection.sections.A.ageYears);
+  if (ageLimit) issue("unsupported-patient-age", `The reviewed age ${ageLimit}. It is retained, but the PDF cannot represent it; no new PDF is generated.`, ["patient:patient:ageYears"], ["patient"]);
   if (projection.sections.A.sex === "intersex") {
     issue(
       "unsupported-patient-sex",
@@ -777,7 +782,7 @@ function findProposal(caseState: SemanticCase, groupId: string, proposalId: stri
 }
 
 function targetStatement(caseState: SemanticCase, target: FactTarget): string {
-  if (target.entity === "patient") return `the patient ${target.field}`;
+  if (target.entity === "patient") return `the patient ${target.field === "ageYears" ? "age" : target.field}`;
   if (target.entity === "event") return `the event ${target.field}`;
   if (target.entity === "reporter") return `the reporter ${target.field}`;
   if (target.entity === "test") return `the relevant test ${target.field}`;
@@ -800,8 +805,9 @@ function knownValue<T>(fact: Fact<T> | undefined): T | undefined {
   return value?.kind === "known" ? value.value : undefined;
 }
 
-function displayValue(value: CaseValue<unknown>): string {
+function displayValue(value: CaseValue<unknown>, target?: FactTarget): string {
   if (value.kind !== "known") return value.kind.replaceAll("-", " ");
+  if (target?.entity === "patient" && target.field === "ageYears" && isPatientAge(value.value)) { const age = patientAgeParts(value.value); return `${age.value} ${age.unit}`; }
   if (Array.isArray(value.value)) return value.value.join(" and ");
   return String(value.value);
 }

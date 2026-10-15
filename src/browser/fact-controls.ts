@@ -28,7 +28,7 @@ const choices = (...options: Array<[string, string]>): FactControl["options"] =>
 
 const patient = {
   identifier: { label: "Identifier", shape: "text" },
-  ageYears: { label: "Age", shape: "age" },
+  ageYears: { label: "Age", shape: "age", help: "Enter the stated whole-unit age at event onset and choose its stated unit. Changing units keeps the number; Wilson does not convert or calculate age." },
   sex: { label: "Sex", shape: "choice", options: choices(["female", "Female"], ["male", "Male"], ["intersex", "Intersex"]) },
   weight: { label: "Weight", shape: "weight" },
 } as const satisfies Record<PatientFactKey, FactControl>;

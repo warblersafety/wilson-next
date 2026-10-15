@@ -1,3 +1,4 @@
+import type { PatientAge } from "./age";
 import { allFacts, targetKey } from "./facts";
 import { isSettled, restartApplicability, withdrawalApplicability } from "./medication";
 import { productDisplayLabel } from "./product-label";
@@ -20,7 +21,7 @@ export interface ProjectionOmission {
 export interface Form3500Projection {
   revision: number;
   sections: {
-    A: { patientIdentifier?: string; ageYears?: number; sex?: "female" | "male" | "intersex"; weight?: { value: number; unit: "kg" | "lb" } };
+    A: { patientIdentifier?: string; ageYears?: PatientAge; sex?: "female" | "male" | "intersex"; weight?: { value: number; unit: "kg" | "lb" } };
     B: {
       reportType?: ReportType;
       reportDate?: string;
@@ -127,7 +128,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     sourceTrace: {},
     omissions: [],
     notIncluded: [
-      "Patient date of birth and race or ethnicity",
+      "Patient age in weeks, fractional or compound ages, date of birth and race or ethnicity",
       "Section C product pictures and general additional comments",
       "Additional suspect medical devices beyond the first",
       "Section D partial expiration dates, other product-type categories and purchase details",
