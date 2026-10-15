@@ -75,7 +75,8 @@ const frequencyOptions: Record<string, string> = {
   daily: "Daily", "twice daily": "BID", "three times daily": "TID",
   "four times daily": "QID", "at bedtime": "HS", "as needed": "PRN",
 };
-export type ProductTextField = "route" | "frequency" | "dose" | "strength";
+export type ProductTextField = "route" | "frequency" | "dose" | "strength" | "ndcOrUniqueId";
+export const identifierGeometry = { width: 145.196, fontSize: 8.5 } as const;
 export const otherTextGeometry = {
   route: { width: 165.6, fontSize: 8.5 },
   frequency: { width: 123.129, fontSize: 8.5 },
@@ -96,6 +97,7 @@ export function encodeForm3500Route(value: string, options: readonly string[] = 
 export function productTextLimitation(field: ProductTextField, value: string): string | undefined {
   if (!value.trim()) return "has no non-blank wording";
   if (field === "dose" || field === "strength") return undefined;
+  if (field === "ndcOrUniqueId") return nativeSingleLineTextLimitation(value, identifierGeometry.width, identifierGeometry.fontSize, "NDC number or Unique ID control");
   const other = field === "route" ? encodeForm3500Route(value).other : encodeForm3500Frequency(value).other;
   if (other === undefined) return undefined;
   const { width, fontSize } = otherTextGeometry[field];

@@ -78,6 +78,7 @@ export const caseValueContracts = {
     },
     manufacturer: { shape: "string" },
     lotNumber: { shape: "string" },
+    ndcOrUniqueId: { shape: "string" },
     dose: { shape: "string" },
     strength: { shape: "string" },
     frequency: { shape: "string" },

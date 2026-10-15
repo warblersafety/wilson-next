@@ -10,8 +10,11 @@ export const medicationRestartedAgain = "Correction: amoxicillin actually was re
 export const expirationOpening = medicationTwoOpening + " Amoxicillin expires on 29 February 2028; naproxen expires on 31 December 2027.";
 export const expirationCorrection = "Correction: the naproxen expiration date is 30 November 2029, not 31 December 2027.";
 
-function opening(two: boolean, expiration = false) {
-  const text = expiration ? expirationOpening : two ? medicationTwoOpening : medicationSparseOpening;
+export const identifierOpening = expirationOpening + " The amoxicillin label NDC is 00123-0045-06; the naproxen label NDC is 00045-0067-08.";
+export const identifierCorrection = "Correction: the naproxen label NDC is 00045-0067-09, not 00045-0067-08.";
+
+function opening(two: boolean, expiration = false, identifier = false) {
+  const text = identifier ? identifierOpening : expiration ? expirationOpening : two ? medicationTwoOpening : medicationSparseOpening;
   const proposals: QuotedFixtureOutput["proposals"] = [];
   const add = (target: QuotedFixtureOutput["proposals"][number]["target"], value: unknown, group: string) => {
     proposals.push({ proposalReference: `p${proposals.length}`, groupReference: group, intent: "fact", target,
@@ -26,9 +29,9 @@ function opening(two: boolean, expiration = false) {
     for (const [field, value] of Object.entries(values)) add({ entity: "product", productReference: reference, field: field as ProductFactKey }, value, reference);
   };
   product("a", { name: "amoxicillin", productType: "drug-or-biologic", role: "suspect", indication: "infection", ...(two ? {
-    ...(expiration ? { expirationDate: "2028-02-29" } : {}), medicationType: ["generic-biosimilar"], stopped: true, stopDate: "2026-09-17", improvedAfterChange: true, restarted: true, recurred: true,
+    ...(identifier ? { ndcOrUniqueId: "00123-0045-06" } : {}), ...(expiration ? { expirationDate: "2028-02-29" } : {}), medicationType: ["generic-biosimilar"], stopped: true, stopDate: "2026-09-17", improvedAfterChange: true, restarted: true, recurred: true,
   } : {}) });
-  if (two) product("b", { name: "naproxen", productType: "drug-or-biologic", role: "suspect", indication: "joint pain", ...(expiration ? { expirationDate: "2027-12-31" } : {}), medicationType: ["generic-biosimilar", "otc"], stopped: false, doseReduced: true, improvedAfterChange: false, restarted: false });
+  if (two) product("b", { name: "naproxen", productType: "drug-or-biologic", role: "suspect", indication: "joint pain", ...(identifier ? { ndcOrUniqueId: "00045-0067-08" } : {}), ...(expiration ? { expirationDate: "2027-12-31" } : {}), medicationType: ["generic-biosimilar", "otc"], stopped: false, doseReduced: true, improvedAfterChange: false, restarted: false });
   return referenceFixture(text, { products: (two ? ["a", "b"] : ["a"]).map((reference) => ({ productReference: reference, groupReference: reference })), proposals });
 }
 
@@ -51,5 +54,9 @@ export const medicationScenarios = {
   productExpiration: [
     { identityScope: "expiration", turn: "opening" as const, output: opening(true, true) },
     { identityScope: "expiration-update", turn: "correction" as const, output: update(expirationCorrection, "product-expiration-b", { expirationDate: "2029-11-30" }) },
+  ],
+  productIdentifier: [
+    { identityScope: "identifier", turn: "opening" as const, output: opening(true, true, true) },
+    { identityScope: "identifier-update", turn: "correction" as const, output: update(identifierCorrection, "product-identifier-b", { ndcOrUniqueId: "00045-0067-09" }) },
   ],
 };

@@ -140,9 +140,24 @@ compatibility limit: retain migrations for every state version actually persiste
 by supported releases, preserving accepted facts and history.
 
 The output explicitly discloses remaining Section D other-category, purchase,
-identifier, ongoing-therapy, reduction-date and duration gaps.
+ongoing-therapy, reduction-date and duration gaps.
 Download readiness remains the supported-path condition, not a claim of
 complete FDA-form coverage.
+
+### Product NDC number or Unique ID (Issue #165)
+
+A separate product ndcOrUniqueId text fact reaches each native Section D D1
+identifier control. Preserve supplied zeros, punctuation and spacing exactly;
+never infer, look up, numerically coerce or validate a regulatory identity. Lot,
+serial, catalog and device UDI remain distinct. Conversation, explicit review,
+correction and saved recovery use the established fact boundary; no new question.
+Browser state v11 strictly validates v7–v10 before adding only an empty identifier
+fact, retaining all prior migrations and existing facts/sources/history/revisions.
+Known blank, multiline, unsupported-glyph or oversized identifiers remain accepted
+with explicit pre-export limitation, using native145.196pt/Helvetica8.5pt controls.
+No truncation, substitution, font shrinking or silent omission. Qualifier context
+retains explicit omission disclosure; Section E/F do not carry this distinct field.
+Purchase details and wider category/representation support remain unfinished.
 
 ### Product expiration dates (Issue #162)
 

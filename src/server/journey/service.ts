@@ -695,12 +695,12 @@ export function outputReadinessIssues(
     );
   }
   for (const product of projection.sections.D.suspectProducts) {
-    for (const field of ["route", "frequency", "dose", "strength"] as const) {
+    for (const field of ["route", "frequency", "dose", "strength", "ndcOrUniqueId"] as const) {
       const limitation = field === "dose" || field === "strength" ? quantityLimitation(field, product[field])
         : product[field] !== undefined ? productTextLimitation(field, product[field]!) : undefined;
       if (limitation) issue(
         field === "route" ? "unsupported-product-route" : "unsupported-product-text",
-        `${productLabel(caseState, product.productId)}: the reviewed ${field} ${limitation}. It is retained, but the PDF cannot represent it; no new PDF is generated.`,
+        `${productLabel(caseState, product.productId)}: the reviewed ${field === "ndcOrUniqueId" ? "NDC number or Unique ID" : field} ${limitation}. It is retained, but the PDF cannot represent it; no new PDF is generated.`,
         [`product:${product.productId}:${field}`], [product.productId],
       );
     }

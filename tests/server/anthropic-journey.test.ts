@@ -64,7 +64,9 @@ describe("Anthropic production model boundary", () => {
     expect(requestText).toContain("negation");
     expect(requestText).toContain("Product expirationDate is the explicitly supplied complete product expiration");
     expect(requestText).toContain("Never infer a missing day/month or judge whether the product was expired");
-    expect(MODEL_PROMPT_REVISION).toBe("wilson-product-expiration-v4");
+    expect(requestText).toContain("Preserve it as text exactly, including leading zeros, dashes, spaces and symbols");
+    expect(schema).toContain("ndcOrUniqueId");
+    expect(MODEL_PROMPT_REVISION).toBe("wilson-product-identifier-v5");
     expect(requestText).toContain("preserve explicitly stated descriptive detail");
     expect(requestText).toContain("named only as treatment administered in response");
     expect(requestText).not.toMatch(/apixaban|naproxen|lisinopril/i);

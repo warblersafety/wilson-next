@@ -209,7 +209,7 @@ describe("laboratory state upgrade", () => {
 });
 
 function removeMedicationFields(state: { case: { products: Array<{ facts: Record<string, unknown> }> } }) {
-  for (const product of state.case.products) for (const field of ["medicationType", "doseReduced", "improvedAfterChange", "restarted", "recurred"]) delete product.facts[field];
+  for (const product of state.case.products) for (const field of ["medicationType", "doseReduced", "improvedAfterChange", "restarted", "recurred", "ndcOrUniqueId"]) delete product.facts[field];
 }
 
 

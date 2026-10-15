@@ -56,17 +56,18 @@ describe("durable clinical resume prerequisite", () => {
     expect(model.propose).not.toHaveBeenCalled();
   });
 
-  it.each(["v7", "v8", "v9"])("retains the %s migration on the resume route", async (version) => {
+  it.each(["v7", "v8", "v9", "v10"])("retains the %s migration on the resume route", async (version) => {
     const original = await fixture("accepted");
     const legacy = JSON.parse(JSON.stringify(original.state));
     legacy.version = `wilson-browser-state-${version}`;
     legacy.stage = "output";
     for (const product of legacy.case.products) {
-      for (const field of ["medicationType", "doseReduced", "improvedAfterChange", "restarted", "recurred"]) delete product.facts[field];
+      delete product.facts.ndcOrUniqueId;
+      if (version !== "v10") for (const field of ["medicationType", "doseReduced", "improvedAfterChange", "restarted", "recurred"]) delete product.facts[field];
       if (version === "v7") delete product.facts.strength;
     }
     if (version === "v7") delete legacy.case.event.facts.reportDate;
-    if (version !== "v9") for (const test of legacy.case.relevantTests) delete test.facts.testName;
+    if (version === "v7" || version === "v8") for (const test of legacy.case.relevantTests) delete test.facts.testName;
     const before = structuredClone(legacy);
     expect(parseBrowserJourneyState(legacy)).toEqual({ ...original.state, stage: "output" });
     expect(legacy).toEqual(before); // Direct parser call, not the serialized route input.
