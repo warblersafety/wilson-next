@@ -1,16 +1,22 @@
 # Wilson synthetic testing checkpoint — Steve
 
-**Status: code verified; protected testing handoff pending authenticated checks.**
+**Status: verified for Steve’s bounded synthetic testing — 15 October 2026.**
 
 Reviewed application source: `5943e609f9515e4684e66d71df9cd18fd20e2f75`
 ([PR142](https://github.com/warblersafety/wilson-next/pull/142)), tree-equivalent
 to merged main `dc7cd047028cb95984a81b5552fe6ab014b74a11`.
 Deployment **7078695904** reports success for that exact source. Its immutable
 candidate URL is [the protected preview](https://wilson-next-80bolwbb0-warblersafety.vercel.app).
-This URL is verified as deployment metadata and an unsigned authentication
-redirect, **not yet as an operator-ready testing link**. Use the final explicitly
-verified origin once the remaining checks below pass. Do not substitute an older
-preview or assume stored work follows a different hostname.
+The fixed test origin is the existing
+[protected candidate alias](https://wilson-next-git-codex-141-reusable-reporter-warblersafety.vercel.app),
+verified to map to that deployment. Use the private Shareable Link supplied
+separately; bare URLs correctly require Vercel authentication. The single
+operator-approved alias grant expires **22 October 2026 at02:17:33 UTC**.
+This address is fixed only for this candidate’s seven-day window; it is not yet
+a durable cross-release storage origin. A different candidate/rollback hostname
+has separate browser storage. Same-origin promotion/rollback continuity requires
+a later decision and verification. It remains pinned to this source for the test window; do not forward its bearer
+URL or place it in public feedback. It is absent from this repository.
 
 Use only fictional clinical and reporter/contact information. This is a bounded
 save/resume and reporter-reuse checkpoint, not complete Form3500 coverage or
@@ -65,7 +71,7 @@ preview hostname, private browsing, eviction or profile loss can remove access;
 it is not a backup. A power failure can lose the latest completed browser save.
 Testing on other browsers remains useful feedback, not automated coverage.
 
-## Completed evidence and remaining checks
+## Completed evidence and checkpoint checks
 
 - [PR140](https://github.com/warblersafety/wilson-next/pull/140) delivered durable
   active-case resume. [PR142](https://github.com/warblersafety/wilson-next/pull/142)
@@ -90,52 +96,51 @@ Testing on other browsers remains useful feedback, not automated coverage.
   is the [rollback candidate](https://wilson-next-1s21pgdv3-warblersafety.vercel.app);
   its current authenticated accessibility has not been reverified.
 
-Before calling the checkpoint ready, the operator must verify:
+The [hosted verification record](../evidence/issue-143/README.md) and
+[results](../evidence/issue-143/hosted-result.json) close the five checkpoint gates:
 
-1. The exact candidate's project/deployment protection remains enabled, without a
-   public exception or project-wide bypass. Existing access controls stay intact.
-2. The existing protected origin selected for testing is stable and actually
-   resolves to this candidate. Storage is scoped to that origin; changing a
-   preview hostname does not transfer cases or reporter defaults. Check existing
-   sharing/rollback arrangements without creating a new access exception.
-3. An authenticated, no-model `GET /api/case` response reports
-   `provenance.release` equal to the **deployment source**
-   `5943e609f9515e4684e66d71df9cd18fd20e2f75`, not the different squash-merge SHA.
-4. The protected application loads and its no-model continuity surfaces work on
-   the chosen origin. Record exact URL, deployment/source, protection observation
-   and smoke result on [issue143](https://github.com/warblersafety/wilson-next/issues/143)
-   before handing it to Steve. Do not make paid/live application-model calls
-   under this documentation step.
-5. Check deployment metadata for the expected GitHub repository/immutable ID,
-   non-main branch and pull-request number, preview environment, exposed system
-   metadata, and presence of the preview model-provider configuration. Inspect
-   metadata/presence only, never credential values. A post-PR creation timestamp
-   alone does not establish the application's live-model gate or provider setup.
-   These checks are pending authenticated access; no live-model smoke result is
-   claimed.
+1. Project Vercel Authentication and fork protection are unchanged; no
+   project-wide bypass or public exception was added. Exactly one approved,
+   seven-day candidate-alias grant exists. Bare candidate and rollback URLs
+   still redirect to authentication.
+2. The existing fixed candidate alias maps to the exact reviewed deployment.
+   Real browser-process restarts on this same origin preserved work. Rollback
+   alias/source mapping is verified; no rollback was performed or saved-work
+   compatibility with that older application claimed.
+3. Authenticated `GET /api/case` returned HTTP200 and runtime
+   `provenance.release` exactly `5943e609f9515e4684e66d71df9cd18fd20e2f75`,
+   with state versionv10. The expected source is the deployed branch commit,
+   not its different squash-merge or later documentation SHA.
+4. Hosted synthetic checks passed for raw drafts, accepted state, screen,
+   browser restart, tab handoff, reporter remember/forget/reuse and fresh-case
+   choice isolation. The actual UI PDF passed independent readback. No
+   interpretation request was attempted or allowed through by the test guard.
+5. Deployment metadata matches the expected repository/immutable ID, non-main
+   branch, Preview environment and PR142. System exposure and provider-variable
+   presence are verified without reading secret values. This does not prove
+   provider-key validity or live interpretation reliability; no paid live model
+   smoke call was made.
 
-Fresh supported-route check: computer-use inventory exposes no browser; native
-macOS reports locked and automatic unlock failed. The supported hidden in-app
-browser is unavailable. No installed Vercel CLI/local package, project link,
-configured Vercel token or callable Vercel connector was found. This blocks the
-remaining authenticated checks. Existing browser sign-in state is unknown until
-that browser can be inspected; do not assume that sign-in is either required or
-already complete. No browser credentials were read/transferred, authentication
-created, software installed or settings/permissions changed. A fresh headless
-unsigned session would not establish the existing account's authenticated state.
+The working administration mechanism is the existing bounded Vercel REST/CLI
+[handoff](EXPERIMENT-1.md#vercel-deployment-credential-handoff), not desktop
+unlock. Earlier native-automation lock errors were not independent proof of OS
+lock. Hosted browser checks used the approved URL-scoped grant with installed
+headless Chromium; no browser credentials were transferred or admin login
+persisted. The private link and grant are not reproduced here. Administration-token expiry
+and end-of-session disposal remain unverified operator follow-ups under the
+current no-auth-change scope; successful access is not a passed credential-
+lifecycle check. See the evidence record’s independent-review limits.
 
-Issue143 stays open after this documentation PR merges. The Wilson operator
-owns its remaining checks; Steve supplies manual desktop access if needed.
-Record observations/results there. Mark the checkpoint ready only after all five
-checks pass, then update this document's status through a reviewed documentation
-PR and close issue143. Publication of the plan alone does not close that work.
+The originating code review/local/CI gates remain linked above. This publication
+records the hosted checks on [issue143](https://github.com/warblersafety/wilson-next/issues/143).
+After the grant expires, obtain specifically authorized valid access; do not
+reuse an expired grant or silently renew it. No production release, external
+clinician participation or real-data authorization is implied.
 
 One cosmetic follow-up from the workspace review remains: a legacy tab can show
 an earlier-work notice after importing the same case. It does not lose data and
 is unlikely on a fresh origin; see [the PR140 review record](https://github.com/warblersafety/wilson-next/pull/140#issuecomment-6179349318).
 
-The handoff remains pending these checks. No production release, external
-clinician invitation or relaxation of the synthetic-only boundary is implied.
 Broader work stays open, including [serial test correction identity #105](https://github.com/warblersafety/wilson-next/issues/105),
 [qualifiers and narrative omissions #115](https://github.com/warblersafety/wilson-next/issues/115),
 [PDF representability #128](https://github.com/warblersafety/wilson-next/issues/128)

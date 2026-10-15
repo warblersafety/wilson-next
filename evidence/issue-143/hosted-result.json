@@ -1,0 +1,47 @@
+{
+  "origin": "https://wilson-next-git-codex-141-reusable-reporter-warblersafety.vercel.app",
+  "expectedRelease": "5943e609f9515e4684e66d71df9cd18fd20e2f75",
+  "checks": [
+    "authenticated runtime provenance",
+    "real browser restart preserves opening/report choice",
+    "remembered defaults exclude case choices and accept no facts",
+    "explicit reporter acceptance and independently read actual PDF",
+    "real restart preserves accepted state, screen and independent raw drafts",
+    "single editor and safe tab handoff",
+    "confirmed Forget leaves current draft and accepted facts intact",
+    "fresh case reuses editable profile only; case-specific choices reset; no implicit acceptance"
+  ],
+  "release": "5943e609f9515e4684e66d71df9cd18fd20e2f75",
+  "stateVersion": "wilson-browser-state-v10",
+  "pdfObservation": {
+    "networkBodyBytes": 0,
+    "actualUiBytes": 1051426
+  },
+  "blockedModelRequests": 0,
+  "allowedCaseActions": [
+    "resume",
+    "resume",
+    "resume",
+    "answer-reporter",
+    "resume",
+    "resume"
+  ],
+  "pdfBytes": 1051426,
+  "status": "PASS",
+  "completedAt": "2026-10-15T02:36:07.037Z",
+  "access": {
+    "grantCount": 1,
+    "scope": "shareable-link",
+    "ttlSecondsRequested": 604800,
+    "expiresAt": "2026-10-22T02:17:33+00:00",
+    "projectWideBypassCount": 0,
+    "projectAuthenticationUnchanged": true,
+    "unsignedCandidateStatus": 302,
+    "unsignedRollbackStatus": 302,
+    "bearerStoredPublicly": false
+  },
+  "privateBootstrap": {
+    "httpStatus": 200,
+    "pageNeverNavigatedToBearerUrl": true
+  }
+}
