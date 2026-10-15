@@ -69,3 +69,13 @@ the new scenario. Those were updated to the new complete text/count, including
 unique scenario identities; no behavioral acceptance assertion was weakened.
 No dependencies, purchases, credential/auth/grant changes or shared-preview
 changes were made.
+
+Actual Opus review found no blockers and one follow-up: explicitly exclude the
+reverse gestational-age confusion in the prompt. Prompt v8 now forbids placing
+gestational age, gestation at birth or corrected/postmenstrual age in ageYears,
+and forbids deriving chronological age from them. Exact request assertions
+verify this instruction is sent; they do not prove live compliance. #169 retains
+the separately authorized future live evidence plan, expanded to these cases.
+Post-remediation495unit tests and all85full mock browser journeys passed again
+(2.9minutes), with a fresh build. This material prompt remediation receives a
+targeted Opus recheck on the PR.

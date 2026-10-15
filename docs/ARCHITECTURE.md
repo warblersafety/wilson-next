@@ -161,7 +161,9 @@ unit retains the number for explicit clinician correction, never calculates.
 The review shows units; the existing numeric years path and limits stay intact.
 No new follow-up question. Fractional/compound ages and DOB remain outside
 this slice and disclosed. Explicit weeks use the official native Week(s) control,
-without interpreting patient age as gestational age. Native PDF writes the exact
+without interpreting patient age as gestational age or the reverse. Gestation
+at birth and corrected/postmenstrual ages are outside this patient-age target;
+the model must not use them or calculate chronological age from them. Native PDF writes the exact
 value and exactly one Years/Months/Weeks/Days unit box; width is guarded at
 native27.621pt/Helvetica8.5pt without
 shrinking or truncation. Qualifiers retain explicit omission disclosure.

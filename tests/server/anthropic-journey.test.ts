@@ -69,7 +69,9 @@ describe("Anthropic production model boundary", () => {
     expect(requestText).toContain("Never turn 24 months into 2 years or 6 weeks into days/months/years or 5 days into 0 years");
     expect(schema).toContain("months");
     expect(schema).toContain("weeks");
-    expect(MODEL_PROMPT_REVISION).toBe("wilson-patient-age-units-v7");
+    expect(requestText).toContain("Never place gestational age, gestation at birth, or corrected/postmenstrual age in ageYears");
+    expect(requestText).toContain("Do not infer chronological age from them");
+    expect(MODEL_PROMPT_REVISION).toBe("wilson-patient-age-units-v8");
     expect(requestText).toContain("preserve explicitly stated descriptive detail");
     expect(requestText).toContain("named only as treatment administered in response");
     expect(requestText).not.toMatch(/apixaban|naproxen|lisinopril/i);
