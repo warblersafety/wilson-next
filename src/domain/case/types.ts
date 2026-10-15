@@ -121,6 +121,14 @@ export interface ProductFacts {
   catalogNumber: Fact<string>;
   expirationDate: Fact<string>;
   purchaseDate: Fact<string>;
+  purchaseSellerName: Fact<string>;
+  purchaseSellerAddress: Fact<string>;
+  purchaseSellerCity: Fact<string>;
+  purchaseSellerRegion: Fact<string>;
+  purchaseSellerPostalCode: Fact<string>;
+  purchaseSellerCountry: Fact<string>;
+  purchaseWebsite: Fact<string>;
+
   serialNumber: Fact<string>;
   udi: Fact<string>;
   deviceOperator: Fact<"health-professional" | "patient-consumer" | "other">;

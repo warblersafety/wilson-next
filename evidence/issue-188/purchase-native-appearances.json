@@ -1,0 +1,647 @@
+{
+  "purchase-details-both": {
+    "encrypted": false,
+    "fields": [
+      {
+        "page": 4,
+        "field": "Prod1PlaceName[0]",
+        "value": "Fictional Seller Alpha",
+        "appearanceText": [
+          "Fictional Seller Alpha"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          48.254,
+          571.18,
+          572.235,
+          585.274
+        ]
+      },
+      {
+        "page": 4,
+        "field": "Prod1Address[0]",
+        "value": "1 Example Lane",
+        "appearanceText": [
+          "1 Example Lane"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          48.254,
+          538.372,
+          572.235,
+          552.466
+        ]
+      },
+      {
+        "page": 4,
+        "field": "Prod1Country[0]",
+        "value": "UNITED KINGDOM",
+        "appearanceText": [
+          "UNITED KINGDOM"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          47.889,
+          476.328,
+          571.817,
+          490.422
+        ]
+      },
+      {
+        "page": 4,
+        "field": "Prod1City[0]",
+        "value": "Example City",
+        "appearanceText": [
+          "Example City"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          47.889,
+          506.239,
+          263.657,
+          520.333
+        ]
+      },
+      {
+        "page": 4,
+        "field": "Prod1State[0]",
+        "value": "Region A",
+        "appearanceText": [
+          "Region A"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          269.187,
+          506.168,
+          498.938,
+          520.262
+        ]
+      },
+      {
+        "page": 4,
+        "field": "ZipCode[0]",
+        "value": "00A 001",
+        "appearanceText": [
+          "00A 001"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          502.898,
+          506.142,
+          571.774,
+          520.236
+        ]
+      },
+      {
+        "page": 4,
+        "field": "Prod1Website[0]",
+        "value": "https://seller-a.example.invalid",
+        "appearanceText": [
+          "https://seller-a.example.invalid"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          47.889,
+          445.9,
+          475.938,
+          459.994
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Prod2PlaceName[0]",
+        "value": "Fictional Seller Beta",
+        "appearanceText": [
+          "Fictional Seller Beta"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          46.398,
+          610.699,
+          568.381,
+          624.793
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Prod2Address[0]",
+        "value": "2 Fictional Road",
+        "appearanceText": [
+          "2 Fictional Road"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          46.398,
+          577.891,
+          568.381,
+          591.985
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Pdt2Country[0]",
+        "value": "CANADA",
+        "appearanceText": [
+          "CANADA"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          46.338,
+          511.566,
+          570.266,
+          525.66
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Pdt2City[0]",
+        "value": "Sample City",
+        "appearanceText": [
+          "Sample City"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          45.893,
+          543.393,
+          261.661,
+          557.487
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Pdt2State[0]",
+        "value": "Region B",
+        "appearanceText": [
+          "Region B"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          266.001,
+          543.322,
+          495.752,
+          557.416
+        ]
+      },
+      {
+        "page": 5,
+        "field": "ZipCode[0]",
+        "value": "00B 002",
+        "appearanceText": [
+          "00B 002"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          499.712,
+          543.297,
+          568.588,
+          557.391
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Pdt2Website[0]",
+        "value": "https://seller-b.example.invalid",
+        "appearanceText": [
+          "https://seller-b.example.invalid"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          46.304,
+          483.267,
+          474.353,
+          497.361
+        ]
+      }
+    ]
+  },
+  "purchase-details-corrected": {
+    "encrypted": false,
+    "fields": [
+      {
+        "page": 4,
+        "field": "Prod1PlaceName[0]",
+        "value": "Fictional Seller Alpha",
+        "appearanceText": [
+          "Fictional Seller Alpha"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          48.254,
+          571.18,
+          572.235,
+          585.274
+        ]
+      },
+      {
+        "page": 4,
+        "field": "Prod1Address[0]",
+        "value": "1 Example Lane",
+        "appearanceText": [
+          "1 Example Lane"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          48.254,
+          538.372,
+          572.235,
+          552.466
+        ]
+      },
+      {
+        "page": 4,
+        "field": "Prod1Country[0]",
+        "value": "UNITED KINGDOM",
+        "appearanceText": [
+          "UNITED KINGDOM"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          47.889,
+          476.328,
+          571.817,
+          490.422
+        ]
+      },
+      {
+        "page": 4,
+        "field": "Prod1City[0]",
+        "value": "Example City",
+        "appearanceText": [
+          "Example City"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          47.889,
+          506.239,
+          263.657,
+          520.333
+        ]
+      },
+      {
+        "page": 4,
+        "field": "Prod1State[0]",
+        "value": "Region A",
+        "appearanceText": [
+          "Region A"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          269.187,
+          506.168,
+          498.938,
+          520.262
+        ]
+      },
+      {
+        "page": 4,
+        "field": "ZipCode[0]",
+        "value": "00A 001",
+        "appearanceText": [
+          "00A 001"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          502.898,
+          506.142,
+          571.774,
+          520.236
+        ]
+      },
+      {
+        "page": 4,
+        "field": "Prod1Website[0]",
+        "value": "https://seller-a.example.invalid",
+        "appearanceText": [
+          "https://seller-a.example.invalid"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          47.889,
+          445.9,
+          475.938,
+          459.994
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Prod2PlaceName[0]",
+        "value": "Fictional Seller Beta",
+        "appearanceText": [
+          "Fictional Seller Beta"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          46.398,
+          610.699,
+          568.381,
+          624.793
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Prod2Address[0]",
+        "value": "2 Fictional Road",
+        "appearanceText": [
+          "2 Fictional Road"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          46.398,
+          577.891,
+          568.381,
+          591.985
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Pdt2Country[0]",
+        "value": "CANADA",
+        "appearanceText": [
+          "CANADA"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          46.338,
+          511.566,
+          570.266,
+          525.66
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Pdt2City[0]",
+        "value": "Revised City",
+        "appearanceText": [
+          "Revised City"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          45.893,
+          543.393,
+          261.661,
+          557.487
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Pdt2State[0]",
+        "value": "Region B",
+        "appearanceText": [
+          "Region B"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          266.001,
+          543.322,
+          495.752,
+          557.416
+        ]
+      },
+      {
+        "page": 5,
+        "field": "ZipCode[0]",
+        "value": "00B 002",
+        "appearanceText": [
+          "00B 002"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          499.712,
+          543.297,
+          568.588,
+          557.391
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Pdt2Website[0]",
+        "value": "https://revised.example.invalid",
+        "appearanceText": [
+          "https://revised.example.invalid"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          46.304,
+          483.267,
+          474.353,
+          497.361
+        ]
+      }
+    ]
+  },
+  "purchase-details-accented": {
+    "encrypted": false,
+    "fields": [
+      {
+        "page": 4,
+        "field": "Prod1PlaceName[0]",
+        "value": "Fictional Seller Alpha",
+        "appearanceText": [
+          "Fictional Seller Alpha"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          48.254,
+          571.18,
+          572.235,
+          585.274
+        ]
+      },
+      {
+        "page": 4,
+        "field": "Prod1Address[0]",
+        "value": "1 Example Lane",
+        "appearanceText": [
+          "1 Example Lane"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          48.254,
+          538.372,
+          572.235,
+          552.466
+        ]
+      },
+      {
+        "page": 4,
+        "field": "Prod1Country[0]",
+        "value": "UNITED KINGDOM",
+        "appearanceText": [
+          "UNITED KINGDOM"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          47.889,
+          476.328,
+          571.817,
+          490.422
+        ]
+      },
+      {
+        "page": 4,
+        "field": "Prod1City[0]",
+        "value": "M\u00fcller City",
+        "appearanceText": [
+          "M\u00fcller City"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          47.889,
+          506.239,
+          263.657,
+          520.333
+        ]
+      },
+      {
+        "page": 4,
+        "field": "Prod1State[0]",
+        "value": "Region A",
+        "appearanceText": [
+          "Region A"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          269.187,
+          506.168,
+          498.938,
+          520.262
+        ]
+      },
+      {
+        "page": 4,
+        "field": "ZipCode[0]",
+        "value": "00A 001",
+        "appearanceText": [
+          "00A 001"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          502.898,
+          506.142,
+          571.774,
+          520.236
+        ]
+      },
+      {
+        "page": 4,
+        "field": "Prod1Website[0]",
+        "value": "https://seller-a.example.invalid",
+        "appearanceText": [
+          "https://seller-a.example.invalid"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          47.889,
+          445.9,
+          475.938,
+          459.994
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Prod2PlaceName[0]",
+        "value": "Fictional Seller Beta",
+        "appearanceText": [
+          "Fictional Seller Beta"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          46.398,
+          610.699,
+          568.381,
+          624.793
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Prod2Address[0]",
+        "value": "2 Fictional Road",
+        "appearanceText": [
+          "2 Fictional Road"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          46.398,
+          577.891,
+          568.381,
+          591.985
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Pdt2Country[0]",
+        "value": "CANADA",
+        "appearanceText": [
+          "CANADA"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          46.338,
+          511.566,
+          570.266,
+          525.66
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Pdt2City[0]",
+        "value": "Sample City",
+        "appearanceText": [
+          "Sample City"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          45.893,
+          543.393,
+          261.661,
+          557.487
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Pdt2State[0]",
+        "value": "Region B",
+        "appearanceText": [
+          "Region B"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          266.001,
+          543.322,
+          495.752,
+          557.416
+        ]
+      },
+      {
+        "page": 5,
+        "field": "ZipCode[0]",
+        "value": "00B 002",
+        "appearanceText": [
+          "00B 002"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          499.712,
+          543.297,
+          568.588,
+          557.391
+        ]
+      },
+      {
+        "page": 5,
+        "field": "Pdt2Website[0]",
+        "value": "https://seller-b.example.invalid",
+        "appearanceText": [
+          "https://seller-b.example.invalid"
+        ],
+        "defaultAppearance": "0 g\n/Helvetica 8.5 Tf",
+        "rect": [
+          46.304,
+          483.267,
+          474.353,
+          497.361
+        ]
+      }
+    ]
+  }
+}

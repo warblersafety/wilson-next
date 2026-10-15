@@ -1,3 +1,5 @@
+import {purchaseDetailFields,purchaseDetailLabels} from "../../domain/case/purchase-details";
+import {purchaseDetailLimitation} from "../pdf/purchase-details";
 import { d3ChoiceIssue, d3Eligible, isTreatmentDuration } from "../../domain/case/duration";
 import { durationLimitation } from "../pdf/duration";
 import { raceEthnicityOptions } from "../../domain/case/race-ethnicity";
@@ -61,7 +63,7 @@ export interface JourneySnapshot {
 }
 
 export type OutputReadinessIssueCode =
-  | "product-d3-choice-required" | "unsupported-treatment-duration"
+  | "product-d3-choice-required" | "unsupported-treatment-duration" | "unsupported-purchase-detail"
   | "pending-proposal-review"
   | "open-clarification"
   | "incomplete-product"
@@ -707,6 +709,10 @@ export function outputReadinessIssues(
   for (const product of projection.sections.D.suspectProducts) {
     const limit = durationLimitation(product.treatmentDuration);
     if (limit) issue("unsupported-treatment-duration",`${productLabel(caseState,product.productId)}: the reviewed duration ${limit}; no new PDF is generated.`,[`product:${product.productId}:treatmentDuration`],[product.productId]);
+  }
+  for(const [index,product] of projection.sections.D.suspectProducts.entries())for(const field of purchaseDetailFields){
+    const value=product[field];if(value===undefined)continue;const limit=purchaseDetailLimitation(field,value,index);
+    if(limit)issue("unsupported-purchase-detail",`${productLabel(caseState,product.productId)}: the reviewed ${purchaseDetailLabels[field]} ${limit}. It is retained; no new PDF is generated.`,[`product:${product.productId}:${field}`],[product.productId]);
   }
   const ageLimit = patientAgeLimitation(projection.sections.A.ageYears);
   if (ageLimit) issue("unsupported-patient-age", `The reviewed age ${ageLimit}. It is retained, but the PDF cannot represent it; no new PDF is generated.`, ["patient:patient:ageYears"], ["patient"]);
