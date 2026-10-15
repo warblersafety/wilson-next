@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts } from "../../domain/case/limits";
 import { PDFDocument, PDFName } from "@cantoo/pdf-lib";
 import { encodeForm3500Frequency, encodeForm3500Route, productTextLimitation } from "./product-text";
+import { testHistoryLimitations } from "./test-history";
 import { quantityParts, quantityLimitation, eventNarrativeLimitation } from "./quantity";
 import type {
   Form3500Projection,
@@ -39,6 +40,7 @@ const fields = {
   eventDate: "topmostSubform[0].Page1[0].SecA_Patient[0].EventDate[0]",
   eventNarrative:
     "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]",
+  relevantTestContext: "topmostSubform[0].Page3[0].AdditionalComments[0]",
   relevantHistory: "topmostSubform[0].Page3[0].Sec6Data[0].OtherHistory[0]",
   productAvailableYes: "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]",
   productAvailableNo: "topmostSubform[0].Page3[0].TestDataTable[0].EvalNo[0]",
@@ -233,6 +235,8 @@ export async function fillForm3500Projection(
   await assertApprovedFormSource(source);
   const narrativeLimitation = await eventNarrativeLimitation(projection);
   if (narrativeLimitation) throw new Error(`The reviewed B5 event description ${narrativeLimitation}`);
+  const testHistoryIssues = await testHistoryLimitations(projection);
+  if (testHistoryIssues.length) throw new Error(`The reviewed B6/B7 text ${testHistoryIssues[0].limitation}`);
   if (projection.sections.D.suspectProducts.length > maximumForm3500SuspectProducts) {
     throw new Error(`The approved Form 3500 adapter supports at most ${maximumForm3500SuspectProducts} suspect products`);
   }
@@ -267,6 +271,7 @@ export async function fillForm3500Projection(
   setText(form, fields.eventDate, B.eventDate ? formatDate(B.eventDate) : undefined);
   setText(form, fields.eventNarrative, B.eventDescription);
   setText(form, fields.relevantHistory, B.relevantHistory);
+  setText(form, fields.relevantTestContext, B.relevantTestContext);
   B.relevantTests.forEach((test, index) => {
     const names = relevantTestFields[index];
     setText(form, names.testResult, test.testResult);
@@ -563,6 +568,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
           date: parseDate(form.getTextField(relevantTestFields[index].date).getText()),
         })),
         relevantHistory: form.getTextField(fields.relevantHistory).getText(),
+        relevantTestContext: form.getTextField(fields.relevantTestContext).getText(),
       }),
       C: compact({
         productAvailability: form.getCheckBox(fields.productReturned).isChecked() ? "returned-to-manufacturer"
