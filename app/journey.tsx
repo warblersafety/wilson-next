@@ -1111,11 +1111,11 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQ
     </select></label>
     {value.kind === "known" && control.shape === "text" && <input aria-label={`New ${label}`} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />}
     {value.kind === "known" && control.shape === "age" && <div className={styles.measurement}>
-      <input aria-label={`New ${label}`} type="number" min="0" step="1" max={typeof known === "number" ? 150 : undefined} value={String(typeof known === "number" ? known : typeof known === "object" && known && "value" in known ? known.value : "")} onChange={(event) => onChange({ kind: "known", value: typeof known === "object" && known && "unit" in known && (known.unit === "months" || known.unit === "days") ? { value: Number(event.target.value), unit: known.unit } : Number(event.target.value) })} />
+      <input aria-label={`New ${label}`} type="number" min="0" step="1" max={typeof known === "number" ? 150 : undefined} value={String(typeof known === "number" ? known : typeof known === "object" && known && "value" in known ? known.value : "")} onChange={(event) => onChange({ kind: "known", value: typeof known === "object" && known && "unit" in known && (known.unit === "months" || known.unit === "weeks" || known.unit === "days") ? { value: Number(event.target.value), unit: known.unit } : Number(event.target.value) })} />
       <select aria-label={`${label} unit`} value={typeof known === "number" ? "years" : typeof known === "object" && known && "unit" in known ? known.unit : "years"} onChange={(event) => {
         const amount = typeof known === "number" ? known : typeof known === "object" && known && "value" in known ? known.value : 0;
-        onChange({ kind: "known", value: event.target.value === "years" ? amount : { value: amount, unit: event.target.value as "months" | "days" } });
-      }}><option value="years">Years</option><option value="months">Months</option><option value="days">Days</option></select>
+        onChange({ kind: "known", value: event.target.value === "years" ? amount : { value: amount, unit: event.target.value as "months" | "weeks" | "days" } });
+      }}><option value="years">Years</option><option value="months">Months</option><option value="weeks">Weeks</option><option value="days">Days</option></select>
     </div>}
     {value.kind === "known" && control.shape === "date" && <input aria-label={`New ${label}`} type="date" value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />}
     {value.kind === "known" && control.shape === "boolean" && <select aria-label={`New ${label}`} value={String(known)} onChange={(event) => onChange({ kind: "known", value: event.target.value === "true" })}><option value="true">Yes</option><option value="false">No</option></select>}

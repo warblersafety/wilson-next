@@ -158,7 +158,7 @@ export function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>
   const actual = value.value;
 
   switch (contract.shape) {
-    case "patient-age": return isPatientAge(actual) ? undefined : `${target.field} requires a valid age: whole years 0–150, or an explicit nonnegative whole number with unit months or days`;
+    case "patient-age": return isPatientAge(actual) ? undefined : `${target.field} requires a valid age: whole years 0–150, or an explicit nonnegative whole number with unit months, weeks or days`;
     case "string":
       return typeof actual === "string" ? undefined : `${target.field} requires a string`;
     case "iso-date":
@@ -233,7 +233,7 @@ export function modelKnownValueGuidance(): string {
 
 function describeContract(contract: KnownValueContract): string {
   switch (contract.shape) {
-    case "patient-age": return "an integer 0–150 for years, or an object {value: nonnegative safe integer, unit: months or days} for explicit non-year patient age (legacy target ageYears)";
+    case "patient-age": return "an integer 0–150 for years, or an object {value: nonnegative safe integer, unit: months, weeks or days} for explicit non-year patient age (legacy target ageYears)";
     case "string": return "a string";
     case "iso-date": return "an ISO date (YYYY-MM-DD)";
     case "integer": return `an integer from ${contract.minimum} through ${contract.maximum}`;

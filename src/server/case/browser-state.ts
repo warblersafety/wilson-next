@@ -8,7 +8,7 @@ import {
 import type { JourneySnapshot, JourneyStage } from "../journey/service";
 import { InMemoryCaseRepository, validateRestoredCase } from "./repository";
 
-export const browserStateVersion = "wilson-browser-state-v12";
+export const browserStateVersion = "wilson-browser-state-v13";
 
 export interface BrowserJourneyState {
   version: typeof browserStateVersion;
@@ -68,7 +68,7 @@ function factSchema<T extends z.ZodType>(value: T) {
 const isoDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const patientFactsSchema = z.object({
   identifier: factSchema(z.string()),
-  ageYears: factSchema(z.union([z.number().int().min(0).max(150), z.object({ value: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER), unit: z.enum(["months", "days"]) }).strict()])),
+  ageYears: factSchema(z.union([z.number().int().min(0).max(150), z.object({ value: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER), unit: z.enum(["months", "weeks", "days"]) }).strict()])),
   sex: factSchema(z.enum(["female", "male", "intersex"])),
   weight: factSchema(z.object({ value: z.number().positive(), unit: z.enum(["kg", "lb"]) }).strict()),
 }).strict();
@@ -207,6 +207,15 @@ const caseSchema = z.object({
   }).strict()),
 }).strict();
 
+const v12PatientSchema = caseSchema.shape.patient.extend({
+  facts: patientFactsSchema.extend({
+    ageYears: factSchema(z.union([
+      z.number().int().min(0).max(150),
+      z.object({ value: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER), unit: z.enum(["months", "days"]) }).strict(),
+    ])),
+  }),
+});
+const v12CaseSchema = caseSchema.extend({ patient: v12PatientSchema });
 const legacyPatientSchema = caseSchema.shape.patient.extend({ facts: patientFactsSchema.extend({ ageYears: factSchema(z.number().int().min(0).max(150)) }) });
 const v11CaseSchema = caseSchema.extend({ patient: legacyPatientSchema });
 const v10ProductFactsSchema = productFactsSchema.omit({ ndcOrUniqueId: true });
@@ -259,7 +268,7 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
   if (!version.success) {
     throw new BrowserStateError("The saved synthetic preview state is malformed", "malformed-browser-state");
   }
-  if (![browserStateVersion, "wilson-browser-state-v11", "wilson-browser-state-v10", "wilson-browser-state-v9", "wilson-browser-state-v8", "wilson-browser-state-v7"].includes(version.data.version)) {
+  if (![browserStateVersion, "wilson-browser-state-v12", "wilson-browser-state-v11", "wilson-browser-state-v10", "wilson-browser-state-v9", "wilson-browser-state-v8", "wilson-browser-state-v7"].includes(version.data.version)) {
     throw new BrowserStateError("The saved synthetic preview state is incompatible", "incompatible-browser-state");
   }
   const envelope = stateSchema.safeParse(input);
@@ -298,10 +307,15 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
       ...product, facts: { ...product.facts, ndcOrUniqueId: emptyAddedFact() },
     })) };
   }
-  if (version.data.version !== browserStateVersion) {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v12") {
     const legacy = v11CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = legacy.data; // Numeric years and all fact/draft target identities stay unchanged.
+  }
+  if (version.data.version === "wilson-browser-state-v12") {
+    const legacy = v12CaseSchema.safeParse(candidate);
+    if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
+    candidate = legacy.data; // Existing atomic months/days and their full history remain unchanged.
   }
   const parsedCase = caseSchema.safeParse(candidate);
   if (!parsedCase.success) {

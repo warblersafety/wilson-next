@@ -23,7 +23,7 @@ const modelTargetSchema = z.discriminatedUnion("entity", [
 const caseValueSchema = z.discriminatedUnion("kind", [
   z.object({
     kind: z.literal("known"),
-    value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string()), z.object({ value: z.number().positive(), unit: z.enum(["kg", "lb"]) }).strict(), z.object({ value: z.number(), unit: z.enum(["months", "days"]) }).strict()])
+    value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string()), z.object({ value: z.number().positive(), unit: z.enum(["kg", "lb"]) }).strict(), z.object({ value: z.number(), unit: z.enum(["months", "weeks", "days"]) }).strict()])
       .describe(`${modelKnownValueGuidance()} Preserve explicitly stated descriptive detail; normalize only conventions defined by the model instructions.`),
     qualifier: z.string().min(1).optional(),
   }).strict(),

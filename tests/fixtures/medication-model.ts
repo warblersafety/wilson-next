@@ -16,15 +16,18 @@ export const identifierCorrection = "Correction: the naproxen label NDC is 00045
 export const ageOpening = medicationTwoOpening.replace("MED-55 is 55 years old", "AGE-M24 is 24 months old");
 export const ageCorrection = "Correction: this fictional patient was 5 days old at event onset, not 24 months. Do not calculate age from any dates.";
 
-function opening(two: boolean, expiration = false, identifier = false, ageUnits = false) {
-  const text = ageUnits ? ageOpening : identifier ? identifierOpening : expiration ? expirationOpening : two ? medicationTwoOpening : medicationSparseOpening;
+export const ageWeeksOpening = ageOpening.replace("AGE-M24 is 24 months old", "AGE-W6 is 6 weeks old at event onset");
+export const ageWeeksCorrection = "Correction: this fictional patient was 7 weeks old at event onset, not 6 weeks. Preserve weeks without date or unit calculations.";
+
+function opening(two: boolean, expiration = false, identifier = false, ageUnits: boolean | "weeks" = false) {
+  const text = ageUnits === "weeks" ? ageWeeksOpening : ageUnits ? ageOpening : identifier ? identifierOpening : expiration ? expirationOpening : two ? medicationTwoOpening : medicationSparseOpening;
   const proposals: QuotedFixtureOutput["proposals"] = [];
   const add = (target: QuotedFixtureOutput["proposals"][number]["target"], value: unknown, group: string) => {
     proposals.push({ proposalReference: `p${proposals.length}`, groupReference: group, intent: "fact", target,
       value: { kind: "known", value } as QuotedFixtureOutput["proposals"][number]["value"], evidenceQuote: text });
   };
-  add({ entity: "patient", field: "identifier" }, ageUnits ? "AGE-M24" : two ? "MED-55" : "MED-40", "patient");
-  add({ entity: "patient", field: "ageYears" }, ageUnits ? { value: 24, unit: "months" } : two ? 55 : 40, "patient");
+  add({ entity: "patient", field: "identifier" }, ageUnits === "weeks" ? "AGE-W6" : ageUnits ? "AGE-M24" : two ? "MED-55" : "MED-40", "patient");
+  add({ entity: "patient", field: "ageYears" }, ageUnits === "weeks" ? { value: 6, unit: "weeks" } : ageUnits ? { value: 24, unit: "months" } : two ? 55 : 40, "patient");
   add({ entity: "event", field: "symptoms" }, ["rash"], "event");
   for (const field of ["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable"] as const) add({ entity: "event", field }, false, "event");
   proposals.push({ proposalReference: "history", groupReference: "event", intent: "fact", target: { entity: "event", field: "relevantHistory" }, value: { kind: "explicitly-absent" }, evidenceQuote: text });
@@ -57,6 +60,10 @@ export const medicationScenarios = {
   patientAge: [
     { identityScope: "patient-age", turn: "opening" as const, output: opening(true, false, false, true) },
     { identityScope: "patient-age-update", turn: "correction" as const, output: referenceFixture(ageCorrection, { products: [], proposals: [{ proposalReference: "age-correction", groupReference: "age-update", intent: "correction", target: { entity: "patient", field: "ageYears" }, value: { kind: "known", value: { value: 5, unit: "days" } }, evidenceQuote: ageCorrection }] }) },
+  ],
+  patientAgeWeeks: [
+    { identityScope: "patient-age-weeks", turn: "opening" as const, output: opening(true, false, false, "weeks") },
+    { identityScope: "patient-age-weeks-update", turn: "correction" as const, output: referenceFixture(ageWeeksCorrection, { products: [], proposals: [{ proposalReference: "weeks-correction", groupReference: "weeks-update", intent: "correction", target: { entity: "patient", field: "ageYears" }, value: { kind: "known", value: { value: 7, unit: "weeks" } }, evidenceQuote: ageWeeksCorrection }] }) },
   ],
   productExpiration: [
     { identityScope: "expiration", turn: "opening" as const, output: opening(true, true) },
