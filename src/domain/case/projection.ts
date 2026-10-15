@@ -1,3 +1,4 @@
+import { allFacts, targetKey } from "./facts";
 import { isSettled, restartApplicability, withdrawalApplicability } from "./medication";
 import { productDisplayLabel } from "./product-label";
 import type { Fact, ProductEntity, ProductFactKey, ReportType, SemanticCase } from "./types";
@@ -10,7 +11,9 @@ const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "r
 export interface ProjectionOmission {
   concept: string;
   target: string;
-  reason: "empty" | "unknown" | "explicitly-absent" | "inapplicable" | "declined" | "conflicted";
+  reason: "empty" | "unknown" | "explicitly-absent" | "inapplicable" | "declined" | "conflicted" | "qualifier-not-included";
+  qualifier?: string;
+  baseValueIncluded?: boolean;
   sourceIds: string[];
 }
 
@@ -175,9 +178,15 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
 
   // B5 can contain the other narrative facts even when one of these is not
   // carried. Disclose that individual omission, including unresolved conflict.
-  for (const [field, concept] of [["symptoms", "symptoms"], ["problemDescription", "product problem"]] as const) {
+  for (const [field, concept] of [["symptoms", "symptoms"], ["problemDescription", "product problem"], ["treatments", "treatment"], ["outcome", "event outcome"], ["dischargeDate", "discharge date"]] as const) {
     const fact = caseState.event.facts[field];
     if (!known<unknown>(fact)) projection.omissions.push({ concept, target: `event:event:${field}`, reason: omissionReason(fact), sourceIds: fact.sourceIds });
+    else if (field !== "symptoms" && field !== "problemDescription") recordQualifierOmission(projection, `event:event:${field}`, concept, fact);
+  }
+  for (const product of caseState.products.filter(({ state }) => state === "resolved")) {
+    if (known(product.facts.name) && known(product.facts.stopped)?.value === true) {
+      recordQualifierOmission(projection, `product:${product.id}:stopped`, `stopped for ${product.id}`, product.facts.stopped);
+    }
   }
   const eventDescription = buildEventDescription(caseState);
   if (eventDescription.value) {
@@ -237,6 +246,23 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     assign<unknown>(projection, `sections.G.reporter.${field}`, `reporter ${field}`, `reporter:reporter:${field}`, caseState.reporter.facts[field] as Fact<unknown>, projection.sections.G.reporter, field);
   }
 
+  // Completeness boundary: selectors, prerequisites and unsupported whole facts
+  // can bypass assign(). Their current context must still never disappear.
+  const carriedQualifierTargets = new Set(["event:event:symptoms", "event:event:problemDescription"]);
+  for (const product of projection.sections.D.suspectProducts) {
+    for (const field of ["dose", "strength"]) carriedQualifierTargets.add(`product:${product.productId}:${field}`);
+  }
+  const disclosed = new Set(projection.omissions.filter(({ reason }) => reason === "qualifier-not-included").map(({ target }) => target));
+  for (const { target, fact } of allFacts(caseState)) {
+    const active = target.entity === "product" ? caseState.products.some(p => p.id === target.entityId && p.state === "resolved")
+      : target.entity === "test" ? caseState.relevantTests.some(t => t.id === target.entityId && t.state === "resolved")
+        : target.entity === "patient" ? caseState.patient.state === "resolved"
+          : target.entity === "event" ? caseState.event.state === "resolved" : true;
+    const key = targetKey(target);
+    if (active && known(fact)?.qualifier && !carriedQualifierTargets.has(key) && !disclosed.has(key)) {
+      recordQualifierOmission(projection, key, "reviewed context", fact, false);
+    }
+  }
   return projection;
 }
 
@@ -250,7 +276,7 @@ function projectProduct(
   for (const field of sectionDProductFields) {
     assign<unknown>(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field] as Fact<unknown>, result, field, (value) => field === "medicationType" ? ["brand", "generic-biosimilar", "otc", "compounded"].filter((label) => (value as string[]).includes(label))
       : field === "dose" || field === "strength" ? qualifiedText(String(value), known(product.facts[field])?.qualifier)
-        : value);
+        : value, field === "dose" || field === "strength");
   }
   for (const [field, applies, prerequisites] of [
     ["improvedAfterChange", withdrawalApplicability(product.facts), [product.facts.stopped, product.facts.doseReduced]],
@@ -264,6 +290,7 @@ function projectProduct(
       projection.sourceTrace[path] = sources;
     } else if (applies === true && isSettled(outcome) && outcome.resolvedValue?.value.kind === "known") {
       result[field] = outcome.resolvedValue.value.value;
+      recordQualifierOmission(projection, `product:${product.id}:${field}`, `${field} for ${product.id}`, outcome);
       projection.sourceTrace[path] = sources;
     } else {
       const unresolved = prerequisites.find((fact) => !isSettled(fact) || fact.resolvedValue?.value.kind !== "known");
@@ -347,14 +374,24 @@ function assign<T>(
   output: object,
   key: string,
   transform: (value: T) => unknown = (value) => value,
+  carriesQualifier = false,
 ): void {
   const resolved = known(fact);
   if (resolved) {
     (output as Record<string, unknown>)[key] = transform(resolved.value);
     projection.sourceTrace[path] = resolved.sourceIds;
+    if (!carriesQualifier) recordQualifierOmission(projection, target, concept, fact);
     return;
   }
   projection.omissions.push({ concept, target, reason: omissionReason(fact), sourceIds: fact.sourceIds });
+}
+
+/** Partial output: keep the accepted qualifier distinct from a missing base value. */
+function recordQualifierOmission(projection: Form3500Projection, target: string, concept: string, fact: Fact<unknown>, baseValueIncluded = true): void {
+  const resolved = known(fact);
+  if (resolved?.qualifier) projection.omissions.push({
+    concept, target, reason: "qualifier-not-included", qualifier: resolved.qualifier, baseValueIncluded, sourceIds: resolved.sourceIds,
+  });
 }
 
 function known<T>(fact: Fact<T>): { value: T; qualifier?: string; sourceIds: string[] } | undefined {

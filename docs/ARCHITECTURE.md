@@ -741,6 +741,46 @@ full regression checks and independent review are delivery gates. Reporter profi
 persistence is delivered separately by Issue141 above. Protected stable-origin
 deployment verification remains a milestone gate.
 
+### Reviewed context disclosure — Issue115 first slice
+
+Projection omissions distinguish an entire fact not carried from a known base
+value carried without its reviewed qualifier. The latter records
+qualifier-not-included, exact qualifier wording, stable target and current
+resolved-value source IDs. It never promotes proposed, rejected, conflicted or
+superseded wording into a current qualifier. Existing symptom/problem and
+suspect dose/strength qualifier representations remain unchanged; no qualifiers
+are concatenated into date, boolean, enum or numeric controls by this slice.
+Mapped base values and the existing B5 treatment/outcome/discharge sentences,
+stop statements and applicable medication outcomes disclose their uncarried
+qualifiers. Non-known/conflicted treatment, outcome and discharge-date facts
+have individual omissions, without inventing narrative statements.
+
+A final completeness sweep covers every current known qualifier on active
+entities, including routing selectors, stopped=false, dose reduction/restart
+prerequisites, test availability and facts whose base values are wholly
+unsupported. It excludes the four actual qualifier-carrying paths and already
+disclosed targets. Rejected/withdrawn entities and non-current values stay history.
+Only directly mapped values/explicit B5 statements are labelled base-value-included;
+indirect or unsupported facts use a neutral context-not-included disclosure.
+Neither the sweep nor its label makes a clinical applicability decision.
+
+The existing coverage panel opens for partial qualifier omissions and quotes
+exact omitted wording with the entity/field label. Output and return-to-PDF
+messages distinguish supported PDF values from omitted context. The PDF content
+key remains a hash of actual output sections: a qualifier-only omission change
+updates the disclosure but does not pretend the PDF bytes changed. This is
+explicit partial-output disclosure, not faithful representation of that context
+inside the downloaded artifact. Issue115 remains open for the actual supported
+representation contract and the qualified-quantity unit decision.
+
+The existing fact editor can reveal its optional uncertainty/context control
+for any known editable value. Reveal alone accepts nothing; save still uses the
+same command boundary. Draft visibility/text follow the existing typed workspace
+owner; explicit remove/reopen/add preserves superseded context and source history.
+There is no new storage schema, model interpretation, causality assessment,
+clinical inference or layout system. Glyph/fit support is not expanded; the
+separate issue154 portable-appearance risk and issues151/153 remain open.
+
 ### Native PDF representability — Issue128
 
 Supplied suspect-product route wording selects an actual FDA route option only
