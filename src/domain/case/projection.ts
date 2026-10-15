@@ -1,11 +1,11 @@
 import { raceEthnicityOptions, type RaceEthnicity } from "./race-ethnicity";
 import type { PatientAge } from "./age";
 import { allFacts, targetKey } from "./facts";
-import { isSettled, restartApplicability, withdrawalApplicability } from "./medication";
+import { ongoingTherapyNotice, isSettled, restartApplicability, withdrawalApplicability } from "./medication";
 import { productDisplayLabel } from "./product-label";
 import type { Fact, ProductEntity, ProductFactKey, ReportType, SemanticCase } from "./types";
 
-const sectionDProductFields = ["name", "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "dose", "strength", "frequency", "route", "startDate", "stopDate", "indication", "medicationType"] as const satisfies readonly ProductFactKey[];
+const sectionDProductFields = ["name", "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "indication", "medicationType"] as const satisfies readonly ProductFactKey[];
 const sectionEProductFields = ["name", "commonName", "procode", "manufacturer", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const satisfies readonly ProductFactKey[];
 const sectionFProductFields = ["name", "startDate", "stopDate"] as const satisfies readonly ProductFactKey[];
 const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "role", "stopped"]);
@@ -89,6 +89,7 @@ export interface ProjectedProduct {
   route?: string;
   startDate?: string;
   stopDate?: string;
+  therapyOngoing?: boolean;
   indication?: string;
   medicationType?: Array<"brand" | "generic-biosimilar" | "otc" | "compounded">;
   improvedAfterChange?: boolean | "inapplicable";
@@ -134,7 +135,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       "Section C product pictures and general additional comments",
       "Additional suspect medical devices beyond the first",
       "Section D partial expiration dates, other product-type categories and purchase details",
-      "Section D ongoing-therapy control, dose-reduction date and treatment duration",
+      "Section D dose-reduction date and treatment duration",
     ],
   };
 
@@ -245,6 +246,8 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       });
       continue;
     }
+    const ongoingNotice = ongoingTherapyNotice(product.facts);
+    if (ongoingNotice) projection.notIncluded.push(`${productLabel(caseState, product)} — ${ongoingNotice}`);
     if (role.value === "suspect") {
       if (productType.value === "device") {
         if (!projection.sections.E.suspectDevice) {

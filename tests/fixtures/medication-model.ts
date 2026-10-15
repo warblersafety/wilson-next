@@ -25,8 +25,11 @@ export const birthDateCorrection = "Correction: the fictional patient date of bi
 export const raceEthnicityOpening = medicationTwoOpening.replace("MED-55", "A5-55") + " The clinician reports the patient self-described race and ethnicity as Asian and Hispanic or Latino.";
 export const raceEthnicityCorrection = "Correction: the complete patient-reported A5 selection is Middle Eastern or North African and White. The earlier Asian and Hispanic or Latino entries were incorrect.";
 
-function opening(two: boolean, expiration = false, identifier = false, ageUnits: boolean | "weeks" | "birth-date" | "race-ethnicity" = false) {
-  const text = ageUnits === "race-ethnicity" ? raceEthnicityOpening : ageUnits === "birth-date" ? birthDateOpening : ageUnits === "weeks" ? ageWeeksOpening : ageUnits ? ageOpening : identifier ? identifierOpening : expiration ? expirationOpening : two ? medicationTwoOpening : medicationSparseOpening;
+export const ongoingOpening = medicationTwoOpening + " Amoxicillin therapy is still ongoing after the reported restart. Naproxen therapy is explicitly not ongoing.";
+export const ongoingCorrection = "Correction: amoxicillin therapy is not ongoing now. Keep the previously supplied treatment dates and historical restart.";
+
+function opening(two: boolean, expiration = false, identifier = false, ageUnits: boolean | "weeks" | "birth-date" | "race-ethnicity" | "ongoing" = false) {
+  const text = ageUnits === "ongoing" ? ongoingOpening : ageUnits === "race-ethnicity" ? raceEthnicityOpening : ageUnits === "birth-date" ? birthDateOpening : ageUnits === "weeks" ? ageWeeksOpening : ageUnits ? ageOpening : identifier ? identifierOpening : expiration ? expirationOpening : two ? medicationTwoOpening : medicationSparseOpening;
   const proposals: QuotedFixtureOutput["proposals"] = [];
   const add = (target: QuotedFixtureOutput["proposals"][number]["target"], value: unknown, group: string) => {
     proposals.push({ proposalReference: `p${proposals.length}`, groupReference: group, intent: "fact", target,
@@ -46,6 +49,7 @@ function opening(two: boolean, expiration = false, identifier = false, ageUnits:
     ...(identifier ? { ndcOrUniqueId: "00123-0045-06" } : {}), ...(expiration ? { expirationDate: "2028-02-29" } : {}), medicationType: ["generic-biosimilar"], stopped: true, stopDate: "2026-09-17", improvedAfterChange: true, restarted: true, recurred: true,
   } : {}) });
   if (two) product("b", { name: "naproxen", productType: "drug-or-biologic", role: "suspect", indication: "joint pain", ...(identifier ? { ndcOrUniqueId: "00045-0067-08" } : {}), ...(expiration ? { expirationDate: "2027-12-31" } : {}), medicationType: ["generic-biosimilar", "otc"], stopped: false, doseReduced: true, improvedAfterChange: false, restarted: false });
+  if (ageUnits === "ongoing") { product("a", { therapyOngoing: true }); product("b", { therapyOngoing: false }); }
   return referenceFixture(text, { products: (two ? ["a", "b"] : ["a"]).map((reference) => ({ productReference: reference, groupReference: reference })), proposals });
 }
 
@@ -64,6 +68,10 @@ export const medicationScenarios = {
     { identityScope: "issue92-two", turn: "opening" as const, output: opening(true) },
     { identityScope: "issue92-never", turn: "correction" as const, output: update(medicationNeverRestarted, "product-issue92-two-a", { restarted: false }) },
     { identityScope: "issue92-again", turn: "correction" as const, output: update(medicationRestartedAgain, "product-issue92-two-a", { restarted: true }) },
+  ],
+  ongoingTherapy: [
+    { identityScope: "ongoing-therapy", turn: "opening" as const, output: opening(true, false, false, "ongoing") },
+    { identityScope: "ongoing-therapy-update", turn: "correction" as const, output: update(ongoingCorrection, "product-ongoing-therapy-a", { therapyOngoing: false }) },
   ],
   patientAge: [
     { identityScope: "patient-age", turn: "opening" as const, output: opening(true, false, false, true) },

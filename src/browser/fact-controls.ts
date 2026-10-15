@@ -86,6 +86,7 @@ const product = {
   route: { label: "Route", shape: "text" },
   startDate: { label: "Started", shape: "date" },
   stopDate: { label: "Stopped date", shape: "date" },
+  therapyOngoing: { label: "Therapy/usage still ongoing", shape: "boolean", help: "Use only the explicitly supplied current status. A missing stop date does not mean ongoing. Historical stopping or restarting and supplied dates stay separate." },
   indication: { label: "Used for", shape: "text" },
   stopped: { label: "Stopped or removed", shape: "boolean" },
   medicationType: { label: "Medication label type", shape: "choices", options: choices(["brand", "Brand"], ["generic-biosimilar", "Generic or biosimilar"], ["otc", "Over-the-counter"], ["compounded", "Compounded"]) },

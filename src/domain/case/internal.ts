@@ -97,6 +97,7 @@ export function emptyProductFacts(): ProductFacts {
     route: emptyFact(),
     startDate: emptyFact(),
     stopDate: emptyFact(),
+    therapyOngoing: emptyFact(),
     indication: emptyFact(),
     stopped: emptyFact(),
     medicationType: emptyFact(),

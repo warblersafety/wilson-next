@@ -349,6 +349,12 @@ export async function fillForm3500Projection(
     writeSuspectProduct(form, suspectFields[index], product);
     const ordinal = index + 1;
     const prefix = `topmostSubform[0].Page${index + 4}[0].Prod${ordinal}[0].Prod${ordinal}`;
+    if (product.therapyOngoing !== undefined && typeof product.therapyOngoing !== "boolean") throw new Error("D3 ongoing therapy requires an explicit boolean");
+    for (const [answer, suffix] of [[true, "Yes"], [false, "No"]] as const) {
+      const name = `${prefix}TherapyOngoing${suffix}[0]`;
+      const selected = product.therapyOngoing === answer;
+      if (selected || form.getCheckBox(name).isChecked()) setChecked(form, name, selected);
+    }
     for (const [label, suffix] of [["brand", "Brand"], ["generic-biosimilar", "Generic"], ["otc", "OTC"], ["compounded", "Compounded"]] as const) {
       setChecked(form, `${prefix}${suffix}[0]`, product.medicationType?.includes(label) === true);
     }
@@ -538,12 +544,19 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
     return { medicationType: medicationType.length ? medicationType : undefined,
       improvedAfterChange: outcome("Abated"), recurred: outcome("Reappear") };
   };
+  const readOngoing = (index: number): boolean | undefined => {
+    const prefix = `topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].Prod${index + 1}TherapyOngoing`;
+    const selected = ["Yes", "No"].filter(answer => form.getCheckBox(`${prefix}${answer}[0]`).isChecked());
+    if (selected.length > 1) throw new Error("Form 3500 ongoing therapy has contradictory selections");
+    return selected[0] === "Yes" ? true : selected[0] === "No" ? false : undefined;
+  };
   const readSuspect = (
     expected: ProjectedProduct,
     index: number,
     names: { name: string; manufacturer: string; lotNumber: string; ndcOrUniqueId: string; expirationDate: string; dose: string; doseUnit: string; strength: string; strengthUnit: string; frequency: string; otherFrequency: string; route: string; otherRoute: string; startDate: string; stopDate: string; indication: string },
   ): ProjectedProduct => compact({
     productId: expected.productId,
+    therapyOngoing: readOngoing(index),
     name: form.getTextField(names.name).getText(),
     manufacturer: form.getTextField(names.manufacturer).getText(),
     lotNumber: form.getTextField(names.lotNumber).getText(),

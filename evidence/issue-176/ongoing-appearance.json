@@ -1,0 +1,122 @@
+{
+  "yes": [
+    {
+      "field": "Prod1TherapyOngoingYes[0]",
+      "value": "/1",
+      "appearance": "/1",
+      "rect": [
+        176.071,
+        276.967,
+        186.741,
+        287.637
+      ],
+      "normalAppearances": [
+        "/1"
+      ]
+    },
+    {
+      "field": "Prod1TherapyOngoingNo[0]",
+      "value": "None",
+      "appearance": "/Off",
+      "rect": [
+        210.07,
+        276.967,
+        220.74,
+        287.637
+      ],
+      "normalAppearances": [
+        "/1",
+        "/Off"
+      ]
+    },
+    {
+      "field": "Prod2TherapyOngoingYes[0]",
+      "value": "/1",
+      "appearance": "/1",
+      "rect": [
+        172.885,
+        314.121,
+        183.555,
+        324.791
+      ],
+      "normalAppearances": [
+        "/1"
+      ]
+    },
+    {
+      "field": "Prod2TherapyOngoingNo[0]",
+      "value": "None",
+      "appearance": "/Off",
+      "rect": [
+        206.884,
+        314.121,
+        217.554,
+        324.791
+      ],
+      "normalAppearances": [
+        "/1",
+        "/Off"
+      ]
+    }
+  ],
+  "no": [
+    {
+      "field": "Prod1TherapyOngoingYes[0]",
+      "value": "None",
+      "appearance": "/Off",
+      "rect": [
+        176.071,
+        276.967,
+        186.741,
+        287.637
+      ],
+      "normalAppearances": [
+        "/1",
+        "/Off"
+      ]
+    },
+    {
+      "field": "Prod1TherapyOngoingNo[0]",
+      "value": "/1",
+      "appearance": "/1",
+      "rect": [
+        210.07,
+        276.967,
+        220.74,
+        287.637
+      ],
+      "normalAppearances": [
+        "/1"
+      ]
+    },
+    {
+      "field": "Prod2TherapyOngoingYes[0]",
+      "value": "None",
+      "appearance": "/Off",
+      "rect": [
+        172.885,
+        314.121,
+        183.555,
+        324.791
+      ],
+      "normalAppearances": [
+        "/1",
+        "/Off"
+      ]
+    },
+    {
+      "field": "Prod2TherapyOngoingNo[0]",
+      "value": "/1",
+      "appearance": "/1",
+      "rect": [
+        206.884,
+        314.121,
+        217.554,
+        324.791
+      ],
+      "normalAppearances": [
+        "/1"
+      ]
+    }
+  ]
+}

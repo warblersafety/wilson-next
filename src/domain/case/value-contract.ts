@@ -93,6 +93,7 @@ export const caseValueContracts = {
     route: { shape: "string" },
     startDate: { shape: "iso-date" },
     stopDate: { shape: "iso-date" },
+    therapyOngoing: { shape: "boolean" },
     indication: { shape: "string" },
     stopped: { shape: "boolean" },
     medicationType: { shape: "enum-array", values: ["brand", "generic-biosimilar", "otc", "compounded"], mismatch: "medicationType requires supported medication labels" },

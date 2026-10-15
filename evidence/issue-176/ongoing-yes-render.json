@@ -1,0 +1,21 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "ongoing-yes.pdf",
+  "renders": [
+    {
+      "page": 4,
+      "screenshot": "ongoing-yes-page-4.png",
+      "rendered": true,
+      "visuallyInspected": true,
+      "observed": "Only ongoing Yes marked in suspect slot 1; form/date fields preserved."
+    },
+    {
+      "page": 5,
+      "screenshot": "ongoing-yes-page-5.png",
+      "rendered": true,
+      "visuallyInspected": true,
+      "observed": "Only ongoing Yes marked in suspect slot 2; form/date fields preserved."
+    }
+  ]
+}
