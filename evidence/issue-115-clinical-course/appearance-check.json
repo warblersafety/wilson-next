@@ -1,0 +1,12 @@
+{
+  "source": "course.pdf",
+  "method": "pypdf B5 native AP text operands independently decoded; only line-wrapping whitespace normalized for comparison",
+  "storedValue": "Symptoms: melena and dizziness. Treatment: oral fluids reported first; second treatment reported later (patient reports fluids first; sequence after the second treatment is uncertain). Outcome: improved but not back to baseline (improvement reported later; timing relative to discharge remains uncertain). Discharged 21-Aug-2026 (copied from discharge note; exact departure time unknown).",
+  "appearanceTextRuns": [
+    "Symptoms: melena and dizziness. Treatment: oral fluids reported first; second treatment reported later (patient reports fluids first; sequence",
+    "after the second treatment is uncertain). Outcome: improved but not back to baseline (improvement reported later; timing relative to",
+    "discharge remains uncertain). Discharged 21-Aug-2026 (copied from discharge note; exact departure time unknown)."
+  ],
+  "matchingWordingAndOrder": true,
+  "portableViewerClaim": false
+}

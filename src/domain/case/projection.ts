@@ -187,7 +187,6 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   for (const [field, concept] of [["symptoms", "symptoms"], ["problemDescription", "product problem"], ["treatments", "treatment"], ["outcome", "event outcome"], ["dischargeDate", "discharge date"]] as const) {
     const fact = caseState.event.facts[field];
     if (!known<unknown>(fact)) projection.omissions.push({ concept, target: `event:event:${field}`, reason: omissionReason(fact), sourceIds: fact.sourceIds });
-    else if (field !== "symptoms" && field !== "problemDescription") recordQualifierOmission(projection, `event:event:${field}`, concept, fact);
   }
   for (const product of caseState.products.filter(({ state }) => state === "resolved")) {
     if (known(product.facts.name) && known(product.facts.stopped)?.value === true) {
@@ -263,7 +262,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
 
   // Completeness boundary: selectors, prerequisites and unsupported whole facts
   // can bypass assign(). Their current context must still never disappear.
-  const carriedQualifierTargets = new Set(["event:event:symptoms", "event:event:problemDescription"]);
+  const carriedQualifierTargets = new Set(["event:event:symptoms", "event:event:problemDescription", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate"]);
   for (const product of projection.sections.D.suspectProducts) {
     for (const field of ["dose", "strength"]) carriedQualifierTargets.add(`product:${product.productId}:${field}`);
   }
@@ -437,9 +436,9 @@ function buildEventDescription(caseState: SemanticCase): { value?: string; sourc
   };
   append(caseState.event.facts.problemDescription, (value) => `Problem detail: ${qualifiedText(value, known(caseState.event.facts.problemDescription)?.qualifier)}.`);
   append(caseState.event.facts.symptoms, (value) => `Symptoms: ${qualifiedText(value.join(" and "), known(caseState.event.facts.symptoms)?.qualifier)}.`);
-  append(caseState.event.facts.treatments, (value) => `Treatment: ${value.join("; ")}.`);
-  append(caseState.event.facts.outcome, (value) => `Outcome: ${value}.`);
-  append(caseState.event.facts.dischargeDate, (value) => `Discharged ${displayDate(value)}.`);
+  append(caseState.event.facts.treatments, (value) => `Treatment: ${qualifiedText(value.join("; "), known(caseState.event.facts.treatments)?.qualifier)}.`);
+  append(caseState.event.facts.outcome, (value) => `Outcome: ${qualifiedText(value, known(caseState.event.facts.outcome)?.qualifier)}.`);
+  append(caseState.event.facts.dischargeDate, (value) => `Discharged ${qualifiedText(displayDate(value), known(caseState.event.facts.dischargeDate)?.qualifier)}.`);
   const stopped = caseState.products.filter(({ state }) => state === "resolved").flatMap((product) => {
     const name = known(product.facts.name);
     const wasStopped = known(product.facts.stopped);

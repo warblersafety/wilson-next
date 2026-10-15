@@ -92,10 +92,10 @@ test("context: unresolved narrative omission, explicit chosen alternative, retai
   expect(current.case.event.facts.outcome.resolvedValue?.value).toEqual({ kind: "known", value: "partially improved", qualifier: "chart A uncertain" });
   expect(current.case.event.facts.outcome.supersededValues.some(v => v.value.kind === "known" && v.value.qualifier === "chart B follow-up incomplete")).toBe(true);
   expect(current.case.products).toEqual(baseline.case.products); expect(current.case.relevantTests).toEqual(baseline.case.relevantTests);
-  const after = await pdf(page, info.outputPath("resolved.pdf")); expect(after[narrative]).toContain("Outcome: partially improved.");
-  await expect(output).toContainText("Outcome: base value included; reviewed uncertainty or context not included");
+  const after = await pdf(page, info.outputPath("resolved.pdf")); expect(after[narrative]).toContain("Outcome: partially improved (chart A uncertain).");
+  await expect(output).not.toContainText("Outcome: base value included; reviewed uncertainty or context not included");
   const coverage = output.locator("details").filter({ has: page.getByText("Report coverage and omitted information", { exact: true }) });
-  await expect(coverage).toContainText("chart A uncertain"); await expect(coverage).not.toContainText("chart B follow-up incomplete");
+  await expect(coverage).not.toContainText("chart A uncertain"); await expect(coverage).not.toContainText("chart B follow-up incomplete");
   await saved(page); await page.reload(); await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
   expect((await storedState(page)).case).toEqual(current.case);
   noInterpretation();

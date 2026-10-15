@@ -1,0 +1,422 @@
+{
+  "revision": 29,
+  "sections": {
+    "A": {
+      "patientIdentifier": "TEST-57",
+      "ageYears": 57,
+      "sex": "female"
+    },
+    "B": {
+      "relevantTests": [
+        {
+          "testId": "test-hemoglobin",
+          "testResult": "Fictional assay: 14.2",
+          "lowRange": "4.0",
+          "highRange": "16.0",
+          "date": "2026-08-18"
+        }
+      ],
+      "reportType": "adverse-event",
+      "eventDate": "2026-08-18",
+      "hospitalized": true,
+      "death": false,
+      "lifeThreatening": false,
+      "disability": false,
+      "requiredIntervention": false,
+      "congenitalAnomaly": false,
+      "otherSerious": false,
+      "eventDescription": "Symptoms: melena and dizziness. Treatment: oral fluids reported first; second treatment reported later (patient reports fluids first; sequence after the second treatment is uncertain). Outcome: improved but not back to baseline (improvement reported later; timing relative to discharge remains uncertain). Discharged 21-Aug-2026 (copied from discharge note; exact departure time unknown)."
+    },
+    "C": {},
+    "D": {
+      "suspectProducts": [
+        {
+          "productId": "product-apixaban",
+          "name": "Synthetic product A",
+          "dose": {
+            "value": "5 mg"
+          },
+          "frequency": "twice daily",
+          "route": "oral",
+          "startDate": "2026-08-13",
+          "indication": "Fictional indication"
+        },
+        {
+          "productId": "product-naproxen",
+          "name": "Synthetic product B",
+          "dose": {
+            "value": "250 mg"
+          },
+          "frequency": "twice daily",
+          "route": "oral",
+          "startDate": "2026-08-10",
+          "indication": "Fictional indication"
+        }
+      ]
+    },
+    "E": {},
+    "F": {
+      "concomitantProducts": [
+        {
+          "productId": "product-lisinopril",
+          "name": "Synthetic product C"
+        }
+      ]
+    },
+    "G": {
+      "reporter": {}
+    }
+  },
+  "sourceTrace": {
+    "sections.A.patientIdentifier": [
+      "source-input-opening-p1"
+    ],
+    "sections.A.ageYears": [
+      "source-input-opening-p1"
+    ],
+    "sections.A.sex": [
+      "source-input-opening-p1"
+    ],
+    "sections.B.reportType": [
+      "source-report-type"
+    ],
+    "sections.B.eventDate": [
+      "source-input-opening-p4"
+    ],
+    "sections.B.hospitalized": [
+      "source-input-opening-p4"
+    ],
+    "sections.B.death": [
+      "source-serious-outcomes"
+    ],
+    "sections.B.lifeThreatening": [
+      "source-serious-outcomes"
+    ],
+    "sections.B.disability": [
+      "source-serious-outcomes"
+    ],
+    "sections.B.requiredIntervention": [
+      "source-serious-outcomes"
+    ],
+    "sections.B.congenitalAnomaly": [
+      "source-serious-outcomes"
+    ],
+    "sections.B.otherSerious": [
+      "source-serious-outcomes"
+    ],
+    "sections.B.relevantTests.0.testResult": [
+      "context-source-21-test:test-hemoglobin:testName",
+      "context-source-22-test:test-hemoglobin:testResult"
+    ],
+    "sections.B.relevantTests.0.lowRange": [
+      "context-source-24-test:test-hemoglobin:lowRange"
+    ],
+    "sections.B.relevantTests.0.highRange": [
+      "context-source-25-test:test-hemoglobin:highRange"
+    ],
+    "sections.B.relevantTests.0.date": [
+      "context-source-23-test:test-hemoglobin:date"
+    ],
+    "sections.B.eventDescription": [
+      "source-input-opening-p4",
+      "context-source-26-event:event:treatments",
+      "context-source-27-event:event:outcome",
+      "context-source-28-event:event:dischargeDate"
+    ],
+    "sections.D.suspectProducts.0.name": [
+      "capacity-18"
+    ],
+    "sections.D.suspectProducts.0.dose": [
+      "source-input-opening-p2"
+    ],
+    "sections.D.suspectProducts.0.frequency": [
+      "source-input-opening-p2"
+    ],
+    "sections.D.suspectProducts.0.route": [
+      "source-input-opening-p2"
+    ],
+    "sections.D.suspectProducts.0.startDate": [
+      "source-input-correction-p2",
+      "source-date-resolution"
+    ],
+    "sections.D.suspectProducts.0.indication": [
+      "capacity-18"
+    ],
+    "sections.D.suspectProducts.1.name": [
+      "capacity-19"
+    ],
+    "sections.D.suspectProducts.1.dose": [
+      "source-input-correction-p1"
+    ],
+    "sections.D.suspectProducts.1.frequency": [
+      "source-input-opening-p3"
+    ],
+    "sections.D.suspectProducts.1.route": [
+      "source-input-opening-p3"
+    ],
+    "sections.D.suspectProducts.1.startDate": [
+      "source-input-opening-p3"
+    ],
+    "sections.D.suspectProducts.1.indication": [
+      "capacity-19"
+    ],
+    "sections.F.concomitantProducts.0.name": [
+      "capacity-20"
+    ]
+  },
+  "omissions": [
+    {
+      "concept": "patient weight",
+      "target": "patient:patient:weight",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "date of this report",
+      "target": "event:event:reportDate",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "relevant medical history",
+      "target": "event:event:relevantHistory",
+      "reason": "explicitly-absent",
+      "sourceIds": [
+        "source-relevant-clinical-context"
+      ]
+    },
+    {
+      "concept": "product availability",
+      "target": "event:event:productAvailability",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "product problem",
+      "target": "event:event:problemDescription",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "manufacturer for product-apixaban",
+      "target": "product:product-apixaban:manufacturer",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "lotNumber for product-apixaban",
+      "target": "product:product-apixaban:lotNumber",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "strength for product-apixaban",
+      "target": "product:product-apixaban:strength",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "stopDate for product-apixaban",
+      "target": "product:product-apixaban:stopDate",
+      "reason": "unknown",
+      "sourceIds": [
+        "source-medication-12"
+      ]
+    },
+    {
+      "concept": "medicationType for product-apixaban",
+      "target": "product:product-apixaban:medicationType",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "Improvement after stopping or reducing for product-apixaban",
+      "target": "product:product-apixaban:improvedAfterChange",
+      "reason": "unknown",
+      "sourceIds": [
+        "capacity-18",
+        "source-medication-12"
+      ]
+    },
+    {
+      "concept": "Event recurrence after restart for product-apixaban",
+      "target": "product:product-apixaban:recurred",
+      "reason": "unknown",
+      "sourceIds": [
+        "source-medication-12",
+        "capacity-18"
+      ]
+    },
+    {
+      "concept": "manufacturer for product-naproxen",
+      "target": "product:product-naproxen:manufacturer",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "lotNumber for product-naproxen",
+      "target": "product:product-naproxen:lotNumber",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "strength for product-naproxen",
+      "target": "product:product-naproxen:strength",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "stopDate for product-naproxen",
+      "target": "product:product-naproxen:stopDate",
+      "reason": "unknown",
+      "sourceIds": [
+        "source-medication-14"
+      ]
+    },
+    {
+      "concept": "medicationType for product-naproxen",
+      "target": "product:product-naproxen:medicationType",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "Improvement after stopping or reducing for product-naproxen",
+      "target": "product:product-naproxen:improvedAfterChange",
+      "reason": "unknown",
+      "sourceIds": [
+        "capacity-19",
+        "source-medication-14"
+      ]
+    },
+    {
+      "concept": "Event recurrence after restart for product-naproxen",
+      "target": "product:product-naproxen:recurred",
+      "reason": "unknown",
+      "sourceIds": [
+        "source-medication-14",
+        "capacity-19"
+      ]
+    },
+    {
+      "concept": "startDate for product-lisinopril",
+      "target": "product:product-lisinopril:startDate",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "stopDate for product-lisinopril",
+      "target": "product:product-lisinopril:stopDate",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "reporter lastName",
+      "target": "reporter:reporter:lastName",
+      "reason": "declined",
+      "sourceIds": [
+        "source-reporter-details"
+      ]
+    },
+    {
+      "concept": "reporter firstName",
+      "target": "reporter:reporter:firstName",
+      "reason": "declined",
+      "sourceIds": [
+        "source-reporter-details"
+      ]
+    },
+    {
+      "concept": "reporter address",
+      "target": "reporter:reporter:address",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "reporter city",
+      "target": "reporter:reporter:city",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "reporter state",
+      "target": "reporter:reporter:state",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "reporter postalCode",
+      "target": "reporter:reporter:postalCode",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "reporter country",
+      "target": "reporter:reporter:country",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "reporter phone",
+      "target": "reporter:reporter:phone",
+      "reason": "declined",
+      "sourceIds": [
+        "source-reporter-details"
+      ]
+    },
+    {
+      "concept": "reporter email",
+      "target": "reporter:reporter:email",
+      "reason": "declined",
+      "sourceIds": [
+        "source-reporter-details"
+      ]
+    },
+    {
+      "concept": "reporter healthProfessional",
+      "target": "reporter:reporter:healthProfessional",
+      "reason": "declined",
+      "sourceIds": [
+        "source-reporter-details"
+      ]
+    },
+    {
+      "concept": "reporter occupation",
+      "target": "reporter:reporter:occupation",
+      "reason": "declined",
+      "sourceIds": [
+        "source-reporter-details"
+      ]
+    },
+    {
+      "concept": "reporter reportedTo",
+      "target": "reporter:reporter:reportedTo",
+      "reason": "declined",
+      "sourceIds": [
+        "source-reporter-details"
+      ]
+    },
+    {
+      "concept": "reporter doNotDiscloseIdentity",
+      "target": "reporter:reporter:doNotDiscloseIdentity",
+      "reason": "declined",
+      "sourceIds": [
+        "source-reporter-details"
+      ]
+    }
+  ],
+  "notIncluded": [
+    "Patient date of birth and race or ethnicity",
+    "Section C product pictures and additional comments",
+    "Additional suspect medical devices beyond the first",
+    "Section D other product-type categories, expiration, purchase details and product identifiers",
+    "Section D ongoing-therapy control, dose-reduction date and treatment duration",
+    "Synthetic product C — Dose remains in reviewed knowledge but is not included in Section F for the current product type and role.",
+    "Synthetic product C — Frequency remains in reviewed knowledge but is not included in Section F for the current product type and role.",
+    "Synthetic product C — Route remains in reviewed knowledge but is not included in Section F for the current product type and role.",
+    "Synthetic product C — Indication remains in reviewed knowledge but is not included in Section F for the current product type and role.",
+    "Synthetic product C — Dose reduced remains in reviewed knowledge but is not included in Section F for the current product type and role.",
+    "Synthetic product C — Improved after change remains in reviewed knowledge but is not included in Section F for the current product type and role.",
+    "Synthetic product C — Restarted remains in reviewed knowledge but is not included in Section F for the current product type and role.",
+    "Synthetic product C — Recurred remains in reviewed knowledge but is not included in Section F for the current product type and role."
+  ]
+}
