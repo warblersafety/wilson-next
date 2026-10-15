@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts } from "../../domain/case/limits";
 import { PDFDocument, PDFName } from "@cantoo/pdf-lib";
+import { encodeForm3500Frequency, encodeForm3500Route, productTextLimitation } from "./product-text";
 import type {
   Form3500Projection,
   ProjectedConcomitantProduct,
@@ -444,19 +445,24 @@ function writeSuspectProduct(
   names: { name: string; manufacturer: string; lotNumber: string; dose: string; doseUnit: string; strength: string; strengthUnit: string; frequency: string; otherFrequency: string; route: string; otherRoute: string; startDate: string; stopDate: string; indication: string },
   product: ProjectedProduct,
 ): void {
+  for (const field of ["route", "frequency", "dose", "strength"] as const) {
+    const value = product[field];
+    const limitation = value !== undefined ? productTextLimitation(field, value) : undefined;
+    if (limitation) throw new Error(`The reviewed ${field} ${limitation} for Form 3500`);
+  }
   setText(form, names.name, product.name);
   setText(form, names.manufacturer, product.manufacturer);
   setText(form, names.lotNumber, product.lotNumber);
   writeQuantity(form, names.dose, names.doseUnit, product.dose);
   writeQuantity(form, names.strength, names.strengthUnit, product.strength);
   if (product.frequency) {
-    const encoded = encodeFrequency(product.frequency);
+    const encoded = encodeForm3500Frequency(product.frequency);
     form.getDropdown(names.frequency).select(encoded.option);
     setText(form, names.otherFrequency, encoded.other);
   }
   if (product.route !== undefined) {
     const dropdown = form.getDropdown(names.route);
-    const encoded = encodeRoute(product.route, dropdown.getOptions());
+    const encoded = encodeForm3500Route(product.route, dropdown.getOptions());
     dropdown.select(encoded.option);
     setText(form, names.otherRoute, encoded.other);
   }
@@ -631,19 +637,6 @@ function parseDate(value: string | undefined): string | undefined {
   return `${match[3]}-${String(month).padStart(2, "0")}-${match[1]}`;
 }
 
-function encodeFrequency(value: string): { option: string; other?: string } {
-  const supported: Record<string, string> = {
-    daily: "Daily",
-    "twice daily": "BID",
-    "three times daily": "TID",
-    "four times daily": "QID",
-    "at bedtime": "HS",
-    "as needed": "PRN",
-  };
-  const encoded = supported[value];
-  return encoded ? { option: encoded } : { option: "Other", other: value };
-}
-
 function decodeFrequency(value: string | undefined, other: string | undefined): string | undefined {
   if (!value || value === " ") return undefined;
   if (value === "BID") return "twice daily";
@@ -654,14 +647,6 @@ function decodeFrequency(value: string | undefined, other: string | undefined): 
   if (value === "PRN") return "as needed";
   if (value === "Other" && other) return other;
   throw new Error(`Unreadable Form 3500 frequency ${value}`);
-}
-
-// Match only actual form labels (case/space formatting), never infer a route
-// from an abbreviation or choose a more specific clinical category.
-function encodeRoute(value: string, options: string[]): { option: string; other?: string } {
-  if (!value.trim()) throw new Error("The reviewed route has no non-blank wording for Form 3500");
-  const matched = options.find(option => option.trim() && option.toLowerCase() === value.trim().toLowerCase());
-  return matched && matched !== "Other" ? { option: matched } : { option: "Other", other: value };
 }
 
 function decodeRoute(value: string | undefined, other: string | undefined, options: string[]): string | undefined {

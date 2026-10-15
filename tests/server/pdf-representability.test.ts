@@ -10,13 +10,28 @@ import { correctCapacityProduct, productCapacityCase } from "../fixtures/product
 import { correctReportedSex } from "../fixtures/pdf-representability";
 
 describe("reviewed sex and native PDF representability", () => {
-  it.each(["", "   "])("blocks an accepted empty/whitespace route before export without losing it: %j", async route => {
-    const current = correctCapacityProduct(productCapacityCase(), 0, { route: { kind: "known", value: route } });
+  it.each((["route", "frequency", "dose", "strength"] as const).flatMap(field => ["", "   "].map(value => ({ field, value }))))("blocks accepted blank $field wording before export: '$value'", async ({ field, value }) => {
+    const current = correctCapacityProduct(productCapacityCase(), 0, { [field]: { kind: "known", value } });
+    const before = structuredClone(current);
     const snapshot = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: current }), current.id);
     expect(snapshot.downloadReady).toBe(false);
-    expect(snapshot.outputIssues).toContainEqual({ code: "unsupported-product-route", message: expect.stringContaining("no non-blank wording"), targets: [`product:${current.products[0].id}:route`], entityIds: [current.products[0].id] });
-    expect(snapshot.projection.sections.D.suspectProducts[0].route).toBe(route);
+    expect(snapshot.outputIssues).toContainEqual({ code: field === "route" ? "unsupported-product-route" : "unsupported-product-text", message: expect.stringContaining("no non-blank wording"), targets: [`product:${current.products[0].id}:${field}`], entityIds: [current.products[0].id] });
+    expect(snapshot.projection.sections.D.suspectProducts[0][field]).toBe(value);
     await expect(fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), snapshot.projection)).rejects.toThrow("no non-blank wording");
+    for (const mode of ["preview", "download"]) {
+      const state = { version: browserStateVersion, stage: "output", case: current, unrepresented: [] };
+      const response = await pdfPost(new NextRequest("http://wilson.test/api/case/pdf", { method: "POST", headers: { host: "wilson.test", origin: "http://wilson.test", "content-type": "application/json" }, body: JSON.stringify({ mode, state }) }));
+      expect(response.status).toBe(409); expect(await response.json()).toMatchObject({ code: "pdf-not-ready", error: expect.stringContaining("no non-blank wording") });
+    }
+    expect(current).toEqual(before);
+  });
+  it.each((["route", "frequency"] as const).flatMap(field => ["W".repeat(100), "supplied\nwording", "静脉"].map(value => ({ field, value }))))("retains unrepresentable Other $field and blocks before generating: $value", async ({ field, value }) => {
+    const current = correctCapacityProduct(productCapacityCase(), 0, { [field]: { kind: "known", value } });
+    const snapshot = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: current }), current.id);
+    expect(snapshot.downloadReady).toBe(false);
+    expect(snapshot.outputIssues).toContainEqual({ code: field === "route" ? "unsupported-product-route" : "unsupported-product-text", message: expect.stringContaining("the PDF cannot represent it"), targets: [`product:${current.products[0].id}:${field}`], entityIds: [current.products[0].id] });
+    expect(snapshot.projection.sections.D.suspectProducts[0][field]).toBe(value);
+    await expect(fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), snapshot.projection)).rejects.toThrow("reviewed");
   });
   it("retains a reviewed unrepresentable value and blocks readiness before the adapter", async () => {
     const current = correctReportedSex(productCapacityCase(), { kind: "known", value: "intersex" }), before = structuredClone(current);

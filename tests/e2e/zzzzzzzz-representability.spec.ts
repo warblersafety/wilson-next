@@ -108,3 +108,35 @@ test("representability: retained intersex blocks current export honestly and exp
   expect(named["topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]"]).toBe("/Off");
   noInterpretations();
 });
+
+test("representability: oversized route/frequency are retained and blocked before clipping, then explicitly corrected", async ({ page }, info) => {
+  let requests = 0; page.on("request", r => { if (r.url().endsWith("/api/case/pdf") && r.method() === "POST") requests++; });
+  const noInterpretations = await guardAndSeed(page, productCapacityCase());
+  const baseline = await storedState(page);
+  await readPdf(page, info.outputPath("before-capacity.pdf"));
+  for (const [field, label, replacement] of [["route", "New Route", "IV"], ["frequency", "New Frequency", "every second morning"]] as const) {
+    const long = `Fictional supplied ${field}: ` + "wide wording ".repeat(15);
+    const beforeRequests = requests;
+    await correct(page, `#case-card-product-1 [data-field="${field}"]`, label, long);
+    const retained = await storedState(page);
+    expect(retained.case.products[0].facts[field].resolvedValue?.value).toEqual({ kind: "known", value: long });
+    expect(retained.case.products[1]).toEqual(baseline.case.products[1]); expect(retained.case.products[2]).toEqual(baseline.case.products[2]);
+    await goTo(page, "Review & save");
+    const output = page.locator('[data-screen="save"]');
+    await expect(output.getByRole("heading", { name: "This PDF cannot represent every reviewed value", exact: true })).toBeVisible();
+    await expect(output).toContainText("does not fit the Other text control at its native font size");
+    await expect(output.getByRole("button", { name: "Generate updated PDF", exact: true })).toBeDisabled();
+    expect(requests).toBe(beforeRequests);
+    await expect(page.getByRole("region", { name: "Browser saving" }).getByRole("status")).toHaveText("Saved in this browser");
+    await page.reload(); await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
+    expect((await storedState(page)).case).toEqual(retained.case);
+    await goTo(page, "Review & save");
+    await expect(output.getByRole("button", { name: "Generate PDF", exact: true })).toBeDisabled();
+    expect(requests).toBe(beforeRequests);
+    await correct(page, `#case-card-product-1 [data-field="${field}"]`, label, replacement);
+    expect((await storedState(page)).case.products[0].facts[field].supersededValues.map(v => v.value)).toContainEqual({ kind: "known", value: long });
+    const named = await readPdf(page, info.outputPath(`explicit-${field}.pdf`));
+    expect(named[`${prefix[0]}${field === "route" ? "RouteOther" : "FreqOther"}[0]`]).toBe(replacement);
+  }
+  noInterpretations();
+});

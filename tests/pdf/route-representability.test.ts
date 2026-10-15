@@ -50,6 +50,32 @@ print(json.dumps(a))`;
     for (const field of metadata) { expect(field.flags & 32).toBe(0); expect(field.flags & 4).toBe(4); expect(field.flags).toBe(68); expect(field.fieldFlags).toBe(8388609); expect(field.value.trim()).not.toBe(""); }
     console.log(JSON.stringify({ routeEvidencePdf: file }));
   });
+  it("treats object-property names as supplied frequency wording, never native options", async () => {
+    for (const frequency of ["constructor", "toString", "__proto__"]) {
+      const current = correctCapacityProduct(productCapacityCase(), 0, { frequency: { kind: "known", value: frequency } });
+      const { named } = await inspect(current);
+      expect(named[`${first}Freq[0]`]).toBe("Other"); expect(named[`${first}FreqOther[0]`]).toBe(frequency);
+    }
+  });
+  it("retains longer wording that actually fits at the unchanged native font size", async () => {
+    const route = "supplied thin route " + "i".repeat(45), frequency = "reported " + "i".repeat(45);
+    let current = correctCapacityProduct(productCapacityCase(), 0, { route: { kind: "known", value: route }, frequency: { kind: "known", value: frequency } });
+    current = correctCapacityProduct(current, 1, { route: { kind: "known", value: route }, frequency: { kind: "known", value: frequency } });
+    const { named, file } = await inspect(current);
+    for (const prefix of [first, second]) { expect(named[`${prefix}RouteOther[0]`]).toBe(route); expect(named[`${prefix}FreqOther[0]`]).toBe(frequency); }
+    const appearanceScript = `from pypdf import PdfReader
+import sys,json
+r=PdfReader(sys.argv[1]);out=[]
+for p in r.pages:
+ for ref in p.get('/Annots',[]):
+  f=ref.get_object();n=str(f.get('/T',''))
+  if 'RouteOther' in n or 'FreqOther' in n: out.append(f['/AP']['/N'].get_object().get_data().decode('latin1'))
+print(json.dumps(out))`;
+    const appearances: string[] = JSON.parse((await run(process.env.PYPDF_PYTHON ?? "python3", ["-c", appearanceScript, file])).stdout);
+    expect(appearances).toHaveLength(4);
+    for (const appearance of appearances) expect(appearance).toContain("/Helvetica 8.5 Tf");
+    console.log(JSON.stringify({ capacityEvidencePdf: file }));
+  });
   it("explicit correction to native oral clears prior Other text without changing retained history", async () => {
     const custom = correctCapacityProduct(productCapacityCase(), 0, { route: { kind: "known", value: "unlisted supplied route" } });
     const prior = await inspect(custom); expect(prior.named[`${first}RouteOther[0]`]).toBe("unlisted supplied route");
