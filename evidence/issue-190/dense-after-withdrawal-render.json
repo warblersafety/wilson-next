@@ -1,0 +1,28 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "dense-after-withdrawal.pdf",
+  "visuallyInspectedPages": [
+    3,
+    9
+  ],
+  "observed": "Five remaining tests/current row links, no withdrawn context. Updated case/content report reference matches native pointer and header, page1of1. All context readable/unclipped.",
+  "files": {
+    "dense-after-withdrawal.pdf": {
+      "sha256": "4b76119ecefc5337324cf4fdc1372bcb0eb94358191111a3d4121e05fff64748",
+      "bytes": 1058288
+    },
+    "dense-after-withdrawal-readback.json": {
+      "sha256": "463d9c02880e992fd351de184bc132112497e5352b34a15a95515b43fb47cef0",
+      "bytes": 13439
+    },
+    "dense-after-withdrawal-page-3.png": {
+      "sha256": "a0dbd79e00e080302457c94cbf5ddfdd56f9fa9f14ebce17929763a26baf7cf4",
+      "bytes": 188144
+    },
+    "dense-after-withdrawal-page-9.png": {
+      "sha256": "dfa3e81e3fed241bb227903eb04678b58b4ec2aa01bc5e0f98b20906ac8a7dab",
+      "bytes": 351300
+    }
+  }
+}

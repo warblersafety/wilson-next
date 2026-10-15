@@ -14,6 +14,7 @@ const second = "topmostSubform[0].Page5[0].Prod2[0].Prod2";
 describe("report completeness PDF", () => {
   it("separates strength and dose in both slots, preserves concentrations, and freezes the reviewed report date", async () => {
     const projection: Form3500Projection = {
+      caseId: "fictional-pdf-case",
       revision: 1, sections: {
         A: {}, B: { reportDate: "2026-09-20", eventDate: "2026-09-03", relevantTests: [] }, C: {},
         D: { suspectProducts: [

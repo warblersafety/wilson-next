@@ -1,0 +1,33 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "dense-six-tests.pdf",
+  "visuallyInspectedPages": [
+    3,
+    9,
+    10
+  ],
+  "observed": "Six reviewed tests and30exact qualifiers. Native pointer and both headers share report reference. Correct row/field links; long context crosses page boundary readably.",
+  "files": {
+    "dense-six-tests.pdf": {
+      "sha256": "ed01229084b40088a70cfa8576bde0cddf64ec9c1b7ceee19b432c12a8487f54",
+      "bytes": 1059448
+    },
+    "dense-six-tests-readback.json": {
+      "sha256": "ef5618bc416a0f3ac8f869f70c2760539eb8ed78bb8438df9e34e8ad6cac3ba0",
+      "bytes": 15057
+    },
+    "dense-six-tests-page-3.png": {
+      "sha256": "1367ec01f9799aa2121eccf44bcbd59b662a30f30ade7542005715a21a21d00e",
+      "bytes": 195078
+    },
+    "dense-six-tests-page-9.png": {
+      "sha256": "22b661650ecd76dee49a63ab7e5f67d07f76e584f3f3c118e20663f4e911b604",
+      "bytes": 373923
+    },
+    "dense-six-tests-page-10.png": {
+      "sha256": "6225f22fb3fee2e69bfc5f22f79df46fc0a24a7fdecc64240bdb3102a953c8da",
+      "bytes": 80810
+    }
+  }
+}

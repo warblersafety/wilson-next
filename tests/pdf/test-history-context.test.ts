@@ -93,6 +93,13 @@ it.each(["testName", "testResult", "lowRange", "highRange", "date", "relevantHis
   const value = fact.resolvedValue!.value; if (value.kind !== "known") throw new Error("Expected known fixture");
   current = setContextFact(current, target, { ...value, qualifier });
   const before = structuredClone(current), snapshot = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: current }), current.id);
+  if (!qualifier.includes("β")) {
+    expect(snapshot.outputIssues.some(issue => ["unsupported-test-history", "unsupported-event-narrative"].includes(issue.code))).toBe(false);
+    const output = await fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), snapshot.projection);
+    expect(output.readback.pageCount).toBeGreaterThan(8);
+    expect(current).toEqual(before);
+    return;
+  }
   expect(snapshot.downloadReady).toBe(false); expect(snapshot.outputIssues).toContainEqual(expect.objectContaining({ code: "unsupported-test-history", targets: expect.arrayContaining([target]) }));
   expect(field === "relevantHistory" ? snapshot.projection.sections.B.relevantHistory : snapshot.projection.sections.B.relevantTestContext).toContain(qualifier);
   await expect(fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), snapshot.projection)).rejects.toThrow("B6/B7 text");

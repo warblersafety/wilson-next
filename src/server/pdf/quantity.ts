@@ -1,4 +1,4 @@
-import { multilineTextLimitation } from "./multiline-text";
+import { narrativeGlyphLimitation } from "./narrative-continuation";
 import { quantityContextEntries, type Form3500Projection } from "../../domain/case/projection";
 import type { ProjectedQuantity } from "../../domain/case/projection";
 import { nativeSingleLineTextLimitation } from "./product-text";
@@ -39,7 +39,7 @@ export function quantityLimitation(_field: "dose" | "strength", quantity: Projec
 }
 
 // Independent native metadata: Page2 DescEvent, 531.102 x520.574, border0,
-// padding1, fixed8.5pt, MaxLen4000. No font shrinking or continuation pages.
+// padding1, fixed8.5pt, MaxLen4000. Overflow uses the shared continuation planner.
 export const quantityNarrativeGeometry = { width: 531.102, height: 520.574, fontSize: 8.5, maxLength: 4000 };
 export async function eventNarrativeLimitation(projection: Form3500Projection): Promise<string | undefined> {
   const entries = quantityContextEntries(projection.sections.D.suspectProducts);
@@ -50,5 +50,5 @@ export async function eventNarrativeLimitation(projection: Form3500Projection): 
 
 /** B5 fidelity is checked regardless of whether a quantity qualifier exists. */
 export async function narrativeTextLimitation(text: string | undefined): Promise<string | undefined> {
-  return multilineTextLimitation(text, { ...quantityNarrativeGeometry, label: "B5" });
+  return narrativeGlyphLimitation(text, "B5");
 }

@@ -62,6 +62,13 @@ it.each(["β uncertainty", "x".repeat(4100), Array(90).fill("line").join("\n")])
   const state = setMedication(medicationCase(), "amoxicillin", { strength: { kind: "known", value: "5 mg", qualifier } });
   const before = structuredClone(state), projection = projectForm3500(state);
   const snapshot = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: state }), state.id);
+  if (!qualifier.includes("β")) {
+    expect(snapshot.outputIssues.some(issue => ["unsupported-test-history", "unsupported-event-narrative"].includes(issue.code))).toBe(false);
+    const output = await fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), snapshot.projection);
+    expect(output.readback.pageCount).toBeGreaterThan(8);
+    expect(state).toEqual(before);
+    return;
+  }
   expect(snapshot.downloadReady).toBe(false);
   expect(snapshot.outputIssues).toContainEqual(expect.objectContaining({ code: "unsupported-event-narrative", targets: expect.arrayContaining([`product:${state.products[0].id}:strength`]) }));
   expect(projection.sections.B.eventDescription).toContain(qualifier);
@@ -96,6 +103,12 @@ it.each(["rash ≥ 5 cm", "x".repeat(4100), Array(90).fill("line").join("\n")])(
     if (!qualified) state = correctCapacityProduct(state, 0, { dose: { kind: "known", value: "500 mg" } });
     const before = structuredClone(state);
     const snapshot = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: state }), state.id);
+    if (!symptoms.includes("≥")) {
+      expect(snapshot.outputIssues.some(issue => issue.code === "unsupported-event-narrative")).toBe(false);
+      expect((await fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), snapshot.projection)).readback.pageCount).toBeGreaterThan(8);
+      expect(state).toEqual(before);
+      continue;
+    }
     expect(snapshot.downloadReady).toBe(false);
     const issue = snapshot.outputIssues.find(issue => issue.code === "unsupported-event-narrative");
     expect(issue?.targets).toContain("event:event:symptoms");

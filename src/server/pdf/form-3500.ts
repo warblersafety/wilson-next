@@ -1,3 +1,4 @@
+import { planNarrativeContinuations, appendNarrativeContinuations } from "./narrative-continuation";
 import {purchaseDetailFields,purchaseCountryLabel} from "../../domain/case/purchase-details";
 import {purchaseNativeGeometry,purchaseDetailLimitation} from "./purchase-details";
 import { isTreatmentDuration, durationNativeUnits, durationNativeLabels } from "../../domain/case/duration";
@@ -264,6 +265,7 @@ export async function fillForm3500Projection(
     throw new Error("The approved Form 3500 adapter supports at most eight relevant tests");
   }
 
+  const continuations = await planNarrativeContinuations(projection);
   const document = await loadForm(source);
   const form = document.getForm();
   const { A, B, C, D, E, F } = projection.sections;
@@ -303,9 +305,10 @@ export async function fillForm3500Projection(
   setText(form, fields.deathDate, B.deathDate ? formatDate(B.deathDate) : undefined);
   setText(form, fields.reportDate, B.reportDate ? formatDate(B.reportDate) : undefined);
   setText(form, fields.eventDate, B.eventDate ? formatDate(B.eventDate) : undefined);
-  setText(form, fields.eventNarrative, B.eventDescription);
-  setText(form, fields.relevantHistory, B.relevantHistory);
-  setText(form, fields.relevantTestContext, B.relevantTestContext);
+  const narrativeText = (field: "eventDescription" | "relevantHistory" | "relevantTestContext") => continuations.find(plan => plan.field === field)?.marker ?? B[field];
+  setText(form, fields.eventNarrative, narrativeText("eventDescription"));
+  setText(form, fields.relevantHistory, narrativeText("relevantHistory"));
+  setText(form, fields.relevantTestContext, narrativeText("relevantTestContext"));
   B.relevantTests.forEach((test, index) => {
     const names = relevantTestFields[index];
     setText(form, names.testResult, test.testResult);
@@ -461,6 +464,7 @@ export async function fillForm3500Projection(
     if (!option) throw new Error("Unsupported Form 3500 quantity unit");
     dropdown.acroField.dict.set(PDFName.of("V"), option.value);
   }
+  await appendNarrativeContinuations(document, continuations);
   return {
     output: await document.save(),
     readback: readProjectionForm(document, projection),

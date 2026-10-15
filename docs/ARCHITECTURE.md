@@ -1387,3 +1387,42 @@ available native positions; the existing over-capacity notice still blocks
 output, retains every third-product fact and permits explicit repair/resume.
 This does not expand capacity or silently move/drop metadata. F1/F2 clarification
 adds only country display-format equivalence and distinct unknown status.
+
+### Shared B5-B7 narrative continuation (issue190)
+
+The approved practical completion cut permits exact reviewed narrative on
+section/block-linked attachment pages. FDA's general instructions allow narrative
+continuations, with numbered attachments, the section and block identified, and
+"continued" at the end of the native field. For the pinned09/2025 form, this
+supersedes the native-capacity-only blocking contract for B5 event description,
+B6 additional context, and B7 history. Native-fitting content is unchanged.
+
+The PDF-owned continuation planner uses the existing native geometry/MaxLen fit
+checks. On overflow it puts a precise attachment-page reference ending in
+"continued" in that native box and carries the entire current projected text on
+letter-sized attachment pages, in B5/B6/B7 order. Every page names Section B and
+its block and is numbered within the attachment set. Native pointers and every
+attachment header share an opaque report reference derived from the case ID and current projected
+content (stable when only revision/source history changes). This is export metadata, not a new clinical identifier or assertion. A1 is
+not copied or coerced, so its length/glyph limits cannot corrupt a header.
+Paragraph wrapping advances by index without copying the remaining paragraph
+after each line. Body text is fixed10pt with
+14pt leading; word wrapping, explicit blank lines, spaces and long-token splits
+preserve all original characters. No font shrinking, truncation or clinical
+rewriting. B6's existing current table-row/field attribution stays intact. Native
+PDF readback reports the actual marker, not a reconstruction from expected case
+values; independent page-content inspection verifies the attachment text.
+
+Only reviewed current projection content enters this renderer. It cannot promote
+pending/conflicting/nonknown, rejected, superseded or withdrawn facts, nor does it
+dump source history. No new fact/model/state schema or UI is needed: existing
+conversation, explicit correction and durable resume remain the semantic path.
+New PDF generations recompute attachments, so shortening or withdrawing content
+removes obsolete pages. Existing collection and export readiness rules remain.
+
+This foundation uses the existing Helvetica character set and still fails before
+output on unsupported glyphs/control characters. Portable clinical glyphs154,
+reviewed field-linked exception notes, general additional comments, test-grid
+row overflow, required extraD/E copies, pictures and the broader115/151/153
+representation gaps remain unfinished. No broad release-completion claim follows
+from capacity support alone. No new font/dependency or live-model route is added.
