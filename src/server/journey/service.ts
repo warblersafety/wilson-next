@@ -62,7 +62,9 @@ export type OutputReadinessIssueCode =
   | "too-many-suspect-products"
   | "too-many-concomitant-products"
   | "multiple-suspect-devices"
-  | "unsupported-concomitant-device";
+  | "unsupported-concomitant-device"
+  | "unsupported-patient-sex"
+  | "unsupported-product-route";
 
 export interface OutputReadinessIssue {
   code: OutputReadinessIssueCode;
@@ -662,6 +664,22 @@ export function outputReadinessIssues(
       ["event:event:problemDescription", "event:event:symptoms", "event:event:treatments", "event:event:outcome"],
       ["event"],
     );
+  }
+  if (projection.sections.A.sex === "intersex") {
+    issue(
+      "unsupported-patient-sex",
+      "The current FDA PDF offers only Male and Female checkboxes for sex. Your reviewed value is retained, but this PDF cannot represent it; no new PDF is generated.",
+      ["patient:patient:sex"], ["patient"],
+    );
+  }
+  for (const product of projection.sections.D.suspectProducts) {
+    if (product.route !== undefined && !product.route.trim()) {
+      issue(
+        "unsupported-product-route",
+        `${productLabel(caseState, product.productId)} has a reviewed route with no non-blank wording. It is retained, but the PDF cannot represent it; no new PDF is generated.`,
+        [`product:${product.productId}:route`], [product.productId],
+      );
+    }
   }
   // Count the actual semantic output slots. Never prune retained knowledge to
   // make this bounded PDF fit; the adapter keeps the same guards as defense in depth.
