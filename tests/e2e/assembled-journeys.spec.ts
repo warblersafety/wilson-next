@@ -280,7 +280,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await expect(productCard(page, "Acme FlowGuard")).toContainText("Patient or consumer");
   await expect(page.getByText("health-professional", { exact: true })).toHaveCount(0);
   await expect(productOrCaseCard(page, "Event")).toContainText("available");
-  await serverAction(page, () => productCard(page, "Relevant test 1").getByRole("button", { name: "Discard proposed Relevant test 1" }).click());
+  await serverAction(page, () => productCard(page, "Relevant test 1").getByRole("button", { name: /^Discard proposed / }).click());
   const operatorRow = productCard(page, "Acme FlowGuard").locator("dl > div").filter({ has: page.getByText("Device operator", { exact: true }) });
   await operatorRow.getByRole("button", { name: "Change" }).click();
   await page.getByLabel("New Device operator").selectOption("health-professional");
@@ -416,7 +416,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   expect(testsAfterCorrection.askedNeeds.map(({ key }) => key)).toEqual(["medication-history", "reporter-details"]);
   checkpoints.push({ journey: "layer1-tests", state: "corrected-output", assertion: "Three stable test entities remained distinct; the accepted ALT correction superseded only its prior value and did not reopen completion." });
   await downloadAndCheck(page, "layer1-tests", ["TEST-51", "atorvastatin", "Test identity not recorded: ALT: 123 U/L", "Test identity not recorded: AST: 118 U/L", "Test identity not recorded: Total bilirubin: 2.1 mg/dL", "Riley", "Patel"], ["Test identity not recorded: ALT: 132 U/L"]);
-  await serverAction(page, () => productCard(page, "Relevant test 3").getByRole("button", { name: "Withdraw Relevant test 3" }).click());
+  await serverAction(page, () => productCard(page, "Relevant test 3").getByRole("button", { name: /^Withdraw / }).click());
   await expect(productCard(page, "Relevant test 3")).toContainText("Withdrawn from the active report");
   expect(await projectedText(page)).not.toContain("Total bilirubin: 2.1 mg/dL");
   const testsAfterWithdrawal = await semanticCase(page);
@@ -489,7 +489,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await expect(page.getByLabel("Hospitalization (initial or prolonged) — already recorded")).toBeChecked();
   await expect(page.getByLabel("Life-threatening — already recorded")).toBeChecked();
   await expect(productOrCaseCard(page, "amoxicillin").getByRole("button", { name: "Withdraw amoxicillin" })).toHaveCount(0);
-  await expect(productOrCaseCard(page, "Relevant test 1").getByRole("button", { name: "Withdraw Relevant test 1" })).toHaveCount(0);
+  await expect(productOrCaseCard(page, "Relevant test 1").getByRole("button", { name: /^Withdraw / })).toHaveCount(0);
   questionTrace.push({ journey: "adaptive-rich", question: "serious outcomes", reason: "confirm only outcomes not already accepted", answer: "no additional outcomes" });
   await serverAction(page, () => page.getByRole("button", { name: "Confirm outcomes" }).click());
   await answerUnknownMedicationGroups(page);
@@ -765,6 +765,8 @@ async function newCase(page: Page) {
 }
 
 function productCard(page: Page, name: string) {
+  const test = /^Relevant test (\d+)$/.exec(name);
+  if (test) return page.locator(`#case-card-test-${test[1]}`);
   return page.getByRole("article").filter({ has: page.getByRole("heading", { name, exact: true }) });
 }
 

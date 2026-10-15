@@ -38,8 +38,8 @@ test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery an
   await expect(details.getByText("Finish reviewing all proposed groups before editing accepted details.", { exact: true })).toBeVisible();
   for (const id of [1, 2]) {
     const card = page.locator(`#case-card-test-${id}`);
-    await expect(card.getByRole("button", { name: `Accept Relevant test ${id}`, exact: true })).toBeDisabled();
-    await expect(card.getByRole("button", { name: `Discard proposed Relevant test ${id}`, exact: true })).toBeDisabled();
+    await expect(card.getByRole("button", { name: `Accept Hemoglobin — ${id === 1 ? "11" : "12"}-Sep-2026 (test ${id})`, exact: true })).toBeDisabled();
+    await expect(card.getByRole("button", { name: `Discard proposed Hemoglobin — ${id === 1 ? "11" : "12"}-Sep-2026 (test ${id})`, exact: true })).toBeDisabled();
     for (const button of await card.getByRole("button", { name: "Change", exact: true }).all()) await expect(button).toBeDisabled();
   }
   await expect(invitation).not.toContainText("Relevant tests or laboratory results");
@@ -92,7 +92,7 @@ test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery an
   await expect(page.getByRole("button", { name: "Accept these changes", exact: true })).toHaveCount(1);
   expect((await storedState(page)).case.products[0].facts.stopped.resolvedValue?.value).toEqual({ kind: "known", value: true });
   expect((await storedState(page)).case.event.facts.relevantHistory.resolvedValue).toBeUndefined();
-  await expect(page.getByRole("button", { name: "Accept Relevant test 1", exact: true })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Accept Hemoglobin — 11-Sep-2026 (test 1)", exact: true })).toBeDisabled();
   await page.getByRole("button", { name: "Accept these changes", exact: true }).click();
   await expect(page.getByRole("status").filter({ hasText: "2 tests are now ready for separate review" })).toHaveCount(1);
   await expect(details.getByText("Finish reviewing all proposed groups before editing accepted details.", { exact: true })).toHaveCount(0);
@@ -100,11 +100,11 @@ test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery an
   await expect(test1.getByRole("heading")).toBeFocused();
   await expect(test1.getByText("Not yet included in the report.", { exact: false })).toBeInViewport();
   await page.screenshot({ path: info.outputPath("tests-ready-desktop.png") });
-  await test1.getByRole("button", { name: "Accept Relevant test 1", exact: true }).click();
+  await test1.getByRole("button", { name: "Accept Hemoglobin — 11-Sep-2026 (test 1)", exact: true }).click();
   await expect(test2.getByRole("heading")).toBeFocused();
   expect((await storedState(page)).case.relevantTests.map(({ state }) => state)).toEqual(["resolved", "proposed"]);
-  await test2.getByRole("button", { name: "Accept Relevant test 2", exact: true }).click();
-  await expect(test2.getByRole("button", { name: "Accept Relevant test 2", exact: true })).toHaveCount(0);
+  await test2.getByRole("button", { name: "Accept Hemoglobin — 12-Sep-2026 (test 2)", exact: true }).click();
+  await expect(test2.getByRole("button", { name: "Accept Hemoglobin — 12-Sep-2026 (test 2)", exact: true })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Information still needed", exact: true })).toBeFocused();
   await expect(details.getByRole("heading", { name: "Hospitalization is already recorded. Did any other serious outcomes apply?", exact: true })).toHaveCount(1);
   await expect(page.locator("#clinical-question")).toContainText("Serious outcomes are a concise, material summary used directly in the supported report.");
@@ -194,13 +194,13 @@ test("discard preserves accepted facts; subsequent questions and reporter drafts
   expect(discarded.case.event.facts.relevantHistory.proposedValues).toEqual([]);
   expect(discarded.case.sources).toEqual(pending.case.sources);
   await page.getByRole("button", { name: "Accept these changes", exact: true }).click();
-  await page.locator("#case-card-test-1").getByRole("button", { name: "Discard proposed Relevant test 1", exact: true }).click();
+  await page.locator("#case-card-test-1").getByRole("button", { name: "Discard proposed Hemoglobin — 11-Sep-2026 (test 1)", exact: true }).click();
   const remainingTest = page.locator("article").filter({ has: page.getByRole("definition").filter({ hasText: "12-Sep-2026" }) });
   await expect(remainingTest.getByRole("heading")).toBeFocused();
   const remaining = await storedState(page);
   expect(remaining.case.relevantTests[0].state).toBe("rejected");
   expect(remaining.case.relevantTests[1]).toEqual(pending.case.relevantTests[1]);
-  await remainingTest.getByRole("button", { name: "Accept Relevant test 1", exact: true }).click();
+  await remainingTest.getByRole("button", { name: "Accept Hemoglobin — 12-Sep-2026 (test 1)", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Information still needed", exact: true })).toBeFocused();
   await page.getByRole("button", { name: "Draft reporter details", exact: true }).click();
   await expect(page.getByRole("region", { name: "Before saving reporter details" })).toBeVisible();

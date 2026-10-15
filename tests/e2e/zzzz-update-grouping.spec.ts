@@ -24,7 +24,7 @@ test("one unchanged cross-entity response creates separately accepted history, m
   expect(pending.case.products[0].facts.stopped.resolvedValue).toBeUndefined();
   expect(pending.case.products[0].facts.dose).toEqual(baseline.products[0].facts.dose);
   expect(pending.case.relevantTests).toHaveLength(2);
-  await expect(page.getByRole("button", { name: "Accept Relevant test 1", exact: true })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Accept Hemoglobin — 11-Sep-2026 (test 1)", exact: true })).toBeDisabled();
   await page.screenshot({ path: info.outputPath("separate-update-groups.png"), fullPage: true });
   // Choose medication by its field, independently of presentation order.
   await page.locator("article").filter({ has: page.getByRole("heading", { name: /Stopped/ }) }).getByRole("button", { name: "Accept these changes", exact: true }).click();
@@ -34,7 +34,7 @@ test("one unchanged cross-entity response creates separately accepted history, m
   expect(medicationAccepted.case.event.facts.relevantHistory.resolvedValue).toBeUndefined();
   await accepts.click();
   for (const n of [1, 2]) {
-    const button = page.getByRole("button", { name: `Accept Relevant test ${n}`, exact: true });
+    const button = page.getByRole("button", { name: `Accept Hemoglobin — ${n === 1 ? "11" : "12"}-Sep-2026 (test ${n})`, exact: true });
     await button.click();
     await expect(button).toHaveCount(0);
   }
