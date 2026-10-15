@@ -79,3 +79,22 @@ the separately authorized future live evidence plan, expanded to these cases.
 Post-remediation495unit tests and all85full mock browser journeys passed again
 (2.9minutes), with a fresh build. This material prompt remediation receives a
 targeted Opus recheck on the PR.
+
+## CI synchronization finding
+
+Final-head CI at91a78e9 passed typecheck/unit/build and84of85browser cases;
+the existing B7 context journey reloaded after response headers and an old
+Saved label, before confirming the correction reached browser state. It read
+the prior qualifier in the PDF. All age journeys passed. The helper now polls
+for the exact accepted history value/qualifier before waiting for durable Saved
+and reloading; final PDF and unrelated-control/history assertions are unchanged.
+This strengthens evidence without changing product code or acceptance meaning.
+Local focused/full reruns and exact final-head CI are recorded on the PR.
+
+After strengthening that helper,10focused B7 cases passed across5repetitions
+(27.1seconds), final typecheck passed, and all85full mock browser journeys
+passed again in2.9minutes. This final delta changes only synchronization in the
+existing test and this evidence record; reviewed product/model code is identical
+to91a78e9. No extra Opus run is required under Delivery's proportional closure:
+no product behavior, contract, scope or acceptance meaning changes, and no
+existing assertion is removed or weakened. Exact final-head CI remains required.

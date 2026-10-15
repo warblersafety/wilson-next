@@ -29,6 +29,10 @@ async function historyQualifier(page: Page, text: string) {
   await row.getByLabel(/^Uncertainty or context for /).fill(text);
   const response = page.waitForResponse(r => r.url().endsWith("/api/case") && r.request().method() === "POST" && r.request().postDataJSON()?.action?.action === "set-fact");
   await row.getByRole("button", { name: "Apply correction", exact: true }).click(); expect((await response).ok()).toBe(true);
+  // Response headers can arrive before the body is applied. An old Saved label
+  // is not evidence that this correction reached browser state or durable storage.
+  await expect.poll(async () => (await storedState(page)).case.event.facts.relevantHistory.resolvedValue?.value)
+    .toEqual({ kind: "known", value: historyWording, ...(text ? { qualifier: text } : {}) });
   await expect(page.getByRole("region", { name: "Browser saving" }).getByRole("status")).toHaveText("Saved in this browser");
 }
 test("B6 row/field context and B7 history survive exact correction/removal and reload without changing serial results or dates", async ({ page }, info) => {
