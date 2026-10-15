@@ -32,6 +32,7 @@ export function emptyPatientFacts(): PatientFacts {
     identifier: emptyFact(),
     ageYears: emptyFact(),
     dateOfBirth: emptyFact(),
+    raceEthnicity: emptyFact(),
     a2Value: emptyFact(),
     sex: emptyFact(),
     weight: emptyFact(),

@@ -941,7 +941,7 @@ function CaseCards({ snapshot, busy, act }: {
     .map(({ groupId, items }) => ({ groupId, title: reviewGroupTitle(snapshot, items) }));
   if (snapshot.revision === 0) return <p className={styles.emptyCase}>Proposed case details will appear here after you submit a description.</p>;
   return <div className={styles.cards}>
-    <CaseCard pendingUpdates={updatesFor("patient", "patient")} domId="case-card-patient" title="Patient" entity="patient" entityId="patient" entityState="resolved" groupId="patient" facts={understanding.patient} fields={["identifier", "ageYears", "dateOfBirth", "a2Value", "sex", "weight"]} allowOpeningReview={openingReview && snapshot.openingGroups.includes("patient")} allowDirectEdit={directEdit} busy={busy} act={act} />
+    <CaseCard pendingUpdates={updatesFor("patient", "patient")} domId="case-card-patient" title="Patient" entity="patient" entityId="patient" entityState="resolved" groupId="patient" facts={understanding.patient} fields={["identifier", "ageYears", "dateOfBirth", "a2Value", "raceEthnicity", "sex", "weight"]} allowOpeningReview={openingReview && snapshot.openingGroups.includes("patient")} allowDirectEdit={directEdit} busy={busy} act={act} />
     <CaseCard pendingUpdates={updatesFor("event", "event")} domId="case-card-event" title="Event" entity="event" entityId="event" entityState="resolved" groupId="event" facts={understanding.event} fields={["reportType", "reportDate", "problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate", "relevantHistory"]} allowOpeningReview={openingReview && snapshot.openingGroups.includes("event")} allowDirectEdit={directEdit} busy={busy} act={act} />
     {understanding.relevantTests.map((test, index) => <CaseCard pendingUpdates={updatesFor("test", test.id)} domId={`case-card-test-${index + 1}`} key={test.id} title={testDisplayLabel(test, index + 1)} eyebrow="Test or laboratory result" entity="test" entityId={test.id} entityState={test.state} groupId={test.proposalGroupId} facts={test.facts} fields={["testName", "testResult", "lowRange", "highRange", "date"]} reviewBlocked={snapshot.stage === "review-update" && test.state === "proposed"} allowOpeningReview={openingReview && test.state === "proposed"} allowDirectEdit={directEdit && test.state === "resolved"} allowRemove={openingReview && test.state === "proposed"} allowWithdraw={entityWithdrawal && test.state === "resolved"} busy={busy} act={act} />)}
     {understanding.products.map((product) => {
@@ -1116,7 +1116,7 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQ
   </div>;
   return <div className={styles.factEditor}>
     <label>{label} status<select aria-label={`${label} status`} value={value.kind} onChange={(event) => onChange(event.target.value === "known" ? editableInitialValue(undefined, control) : { kind: event.target.value as Exclude<EditableCaseValue["kind"], "known"> })}>
-      <option value="known">Known</option><option value="unknown">Unknown</option><option value="explicitly-absent">Not present</option><option value="inapplicable">Not applicable</option><option value="declined">Prefer not to answer</option>
+      <option value="known">Known</option><option value="unknown">Unknown</option><option value="explicitly-absent">{control.explicitAbsentLabel ?? "Not present"}</option><option value="inapplicable">Not applicable</option><option value="declined">Prefer not to answer</option>
     </select></label>
     {value.kind === "known" && control.shape === "text" && <input aria-label={`New ${label}`} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />}
     {value.kind === "known" && control.shape === "age" && <div className={styles.measurement}>
@@ -1135,6 +1135,7 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQ
       <select aria-label={`${label} unit`} value={typeof known === "object" && known && "unit" in known ? String(known.unit) : "kg"} onChange={(event) => onChange({ kind: "known", value: { value: typeof known === "object" && known && "value" in known ? Number(known.value) : 0, unit: event.target.value as "kg" | "lb" } })}><option value="kg">kg</option><option value="lb">lb</option></select>
     </div>}
     {value.kind === "known" && control.shape === "choice" && <select aria-label={`New ${label}`} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })}>{control.options?.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select>}
+    {value.kind === "known" && control.requireSelection && Array.isArray(known) && known.length === 0 && <p role="status">Choose an explicitly supplied category, or select the appropriate response status. An empty selection is unfinished and is not accepted as a negative answer.</p>}
     {value.kind === "known" && control.shape === "choices" && <fieldset><legend>New {label}</legend>{control.options?.map((option) => <label key={option.value}><input type="checkbox" checked={Array.isArray(known) && known.includes(option.value)} onChange={(event) => onChange({ kind: "known", value: event.target.checked ? [...(Array.isArray(known) ? known : []), option.value] : (Array.isArray(known) ? known : []).filter((item) => item !== option.value) })} /> {option.label}</label>)}</fieldset>}
     {value.kind === "known" && !hasQualifierControl && <button type="button" onClick={onRevealQualifier}>Add uncertainty or context</button>}
     {value.kind === "known" && hasQualifierControl && <label>Uncertainty or context<input aria-label={`Uncertainty or context for ${label}`} value={value.qualifier ?? ""} onChange={(event) => emitChange({ kind: "known", value: value.value, qualifier: event.target.value })} /></label>}
@@ -1155,6 +1156,7 @@ function editableInitialValue(value: CaseValue<unknown> | undefined, control: Fa
 function validEditableValue(value: EditableCaseValue, control: FactControl): boolean {
   if (value.kind !== "known") return true;
   if (control.shape === "text" || control.shape === "date" || control.shape === "choice") return typeof value.value === "string" && Boolean(value.value.trim());
+  if (control.requireSelection) return Array.isArray(value.value) && value.value.length > 0 && new Set(value.value).size === value.value.length && value.value.every(item => control.options?.some(option => option.value === item));
   if (control.shape === "birth-date") return isCompleteBirthDate(value.value);
   if (control.shape === "age") return isPatientAge(value.value);
   if (control.shape === "weight") return typeof value.value === "object" && !Array.isArray(value.value) && value.value.value > 0;
@@ -1214,6 +1216,7 @@ function formatFact(value: CaseValue<unknown> | undefined, control?: FactControl
 
 function formatFactValue(value: CaseValue<unknown> | undefined, control?: FactControl): string {
   if (!value) return "Not provided";
+  if (value.kind === "explicitly-absent" && control?.explicitAbsentLabel) return control.explicitAbsentLabel;
   if (value.kind !== "known" && control?.preference) return "No print preference";
   if (value.kind !== "known") return {
     unknown: "Unknown",
@@ -1297,7 +1300,7 @@ function omissionLabel(reason: string, target: string, baseValueIncluded = false
   return {
     empty: "not provided",
     unknown: "unknown",
-    "explicitly-absent": target.startsWith("reporter:") ? "not supplied" : "explicitly reported as absent",
+    "explicitly-absent": target === "patient:patient:raceEthnicity" ? "explicit response: none of the listed categories apply" : target.startsWith("reporter:") ? "not supplied" : "explicitly reported as absent",
     inapplicable: "not applicable",
     declined: "prefer not to answer",
     conflicted: "unresolved conflict",

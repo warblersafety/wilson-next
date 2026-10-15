@@ -1,3 +1,4 @@
+import { raceEthnicityOptions } from "../../domain/case/race-ethnicity";
 import { patientA2ChoiceIssue } from "../../domain/case/birth-date";
 import { isPatientAge, patientAgeParts } from "../../domain/case/age";
 import { patientAgeLimitation } from "../pdf/patient-age";
@@ -279,7 +280,9 @@ export async function performJourneyAction(
           expectedRevision: current.revision,
           source: fullSource(
             intent === "correction" ? "correction" : "answer",
-            `Clinician ${intent === "correction" ? "corrected this value directly" : "added this value directly"}.`,
+            target.entity === "patient" && target.field === "raceEthnicity"
+              ? `Clinician supplied the patient race and/or ethnicity: ${displayValue(action.value, target)}${action.value.kind === "known" && action.value.qualifier ? `; context: ${action.value.qualifier}` : ""}.`
+              : `Clinician ${intent === "correction" ? "corrected this value directly" : "added this value directly"}.`,
           ),
           facts: [{ id: valueId("direct-fact"), target, intent, value: action.value }],
         });
@@ -786,7 +789,7 @@ function findProposal(caseState: SemanticCase, groupId: string, proposalId: stri
 }
 
 function targetStatement(caseState: SemanticCase, target: FactTarget): string {
-  if (target.entity === "patient") return `the patient ${target.field === "ageYears" ? "age" : target.field === "dateOfBirth" ? "date of birth" : target.field === "a2Value" ? "A2 value to print" : target.field}`;
+  if (target.entity === "patient") return `the patient ${target.field === "ageYears" ? "age" : target.field === "raceEthnicity" ? "race and/or ethnicity" : target.field === "dateOfBirth" ? "date of birth" : target.field === "a2Value" ? "A2 value to print" : target.field}`;
   if (target.entity === "event") return `the event ${target.field}`;
   if (target.entity === "reporter") return `the reporter ${target.field}`;
   if (target.entity === "test") return `the relevant test ${target.field}`;
@@ -811,9 +814,11 @@ function knownValue<T>(fact: Fact<T> | undefined): T | undefined {
 
 function displayValue(value: CaseValue<unknown>, target?: FactTarget): string {
   if (target?.entity === "patient" && target.field === "a2Value" && value.kind !== "known") return "no print preference";
+  if (target?.entity === "patient" && target.field === "raceEthnicity" && value.kind === "explicitly-absent") return "none of the listed categories explicitly reported";
   if (value.kind !== "known") return value.kind.replaceAll("-", " ");
   if (target?.entity === "patient" && target.field === "ageYears" && isPatientAge(value.value)) { const age = patientAgeParts(value.value); return `${age.value} ${age.unit}`; }
   if (target?.entity === "patient" && target.field === "a2Value" && value.value === "date-of-birth") return "date of birth";
+  if (target?.entity === "patient" && target.field === "raceEthnicity" && Array.isArray(value.value)) return value.value.map(item => raceEthnicityOptions.find(option => option.value === item)?.label ?? String(item)).join(" and ");
   if (Array.isArray(value.value)) return value.value.join(" and ");
   return String(value.value);
 }

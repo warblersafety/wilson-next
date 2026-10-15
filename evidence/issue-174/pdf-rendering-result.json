@@ -1,0 +1,28 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "renders": [
+    {
+      "source": "a5-all.pdf",
+      "page": 1,
+      "screenshot": "a5-all-page-1.png",
+      "rendered": true,
+      "visuallyInspected": true,
+      "observed": "All seven A5 category boxes marked."
+    },
+    {
+      "source": "a5-partial.pdf",
+      "page": 1,
+      "screenshot": "a5-partial-page-1.png",
+      "rendered": true,
+      "visuallyInspected": true,
+      "observed": "Only Hispanic or Latino marked; other six A5 boxes blank."
+    }
+  ],
+  "inspection": [
+    "FDA form and page identity preserved",
+    "A5 marks align with exact official labels",
+    "Unrelated Section A and B content unchanged between the two renders"
+  ],
+  "independentNativeEvidence": "a5-appearance.json"
+}
