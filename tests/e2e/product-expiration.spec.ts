@@ -31,7 +31,8 @@ test("conversational product expiration: explicit review, correction, direct unk
   await serverAction(page, () => page.getByRole("button", { name: "Accept these changes", exact: true }).click());
   await reload(); const corrected = await pdf("expiration-corrected.pdf");
   expect(corrected[key(2)]).toBe("30-NOV-2029");
-  for (const k of Object.keys(first).filter(k => k !== key(2))) expect(corrected[k]).toEqual(first[k]);
+  const withoutSecondExpiration = (values: Record<string, string>) => Object.fromEntries(Object.entries(values).filter(([k]) => k !== key(2)));
+  expect(withoutSecondExpiration(corrected)).toEqual(withoutSecondExpiration(first));
   const c = (await storedState(page)).case;
   expect(c.products).toHaveLength(2); expect(c.products[1].facts.expirationDate.supersededValues.some(v => v.value.kind === "known" && v.value.value === "2027-12-31")).toBe(true);
   await goTo(page, "Review details");

@@ -58,3 +58,13 @@ updated for the two new attributable responses. An initial browser selector
 mistake was corrected to the existing `Expiration date status` label. No
 application regression or acceptance weakening was involved. Review/CI/merge
 records belong to the PR.
+
+Opus follow-ups1–3: output now explicitly discloses partial expiration dates;
+PDF comparisons check both name sets and values (including newly filled formerly
+blank controls), and the adapter readback equals the projection. The changed
+prompt has its own revision and request-text assertions. Cross-field impossible
+calendar-date validation is tracked separately; no saved-case contract is changed.
+Final remediation tree:449unit/55files, fresh build/typecheck and all77mock
+Chromium journeys (2.3min) PASS again, including symmetric all-control comparison.
+The independent native PDF bytes/render evidence remains unchanged by these
+metadata, disclosure and assertion fixes. Calendar validation follow-up: #164.

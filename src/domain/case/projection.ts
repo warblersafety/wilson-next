@@ -129,7 +129,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       "Patient date of birth and race or ethnicity",
       "Section C product pictures and general additional comments",
       "Additional suspect medical devices beyond the first",
-      "Section D other product-type categories, purchase details and product identifiers",
+      "Section D partial expiration dates, other product-type categories, purchase details and product identifiers",
       "Section D ongoing-therapy control, dose-reduction date and treatment duration",
     ],
   };

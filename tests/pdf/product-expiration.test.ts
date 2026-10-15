@@ -19,6 +19,7 @@ function fixture() {
 async function inspect(c: ReturnType<typeof fixture>, evidence = false) {
   const projection = projectForm3500(c), before = structuredClone(c);
   const result = await fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), projection);
+  expect(result.readback.sections).toEqual(projection.sections);
   const path = join(await mkdtemp(join(tmpdir(), "wilson162-")), "expiration.pdf"); await writeFile(path, result.output);
   const { stdout } = await promisify(execFile)(process.env.PYPDF_PYTHON ?? "python3", ["tools/pdf/independent_readback.py", path, "--named"]);
   if (evidence && process.env.WILSON_EXPIRATION_EVIDENCE) {
@@ -30,9 +31,10 @@ async function inspect(c: ReturnType<typeof fixture>, evidence = false) {
 it("writes both native expiration dates with source attribution, without changing unrelated controls", async () => {
   const c = fixture(), { fields, projection } = await inspect(c, true), before = (await inspect(productCapacityCase())).fields;
   expect(fields[key(1)]).toBe("29-FEB-2028"); expect(fields[key(2)]).toBe("31-DEC-2027");
-  for (const k of Object.keys(before).filter(k => k !== key(1) && k !== key(2))) expect(fields[k]).toEqual(before[k]);
+  const withoutExpiration = (values: Record<string, string>) => Object.fromEntries(Object.entries(values).filter(([k]) => k !== key(1) && k !== key(2)));
+  expect(withoutExpiration(fields)).toEqual(withoutExpiration(before));
   for (let i = 0; i < 2; i++) expect(projection.sourceTrace[`sections.D.suspectProducts.${i}.expirationDate`]).toEqual(c.products[i].facts.expirationDate.resolvedValue!.sourceIds);
-  expect(projection.notIncluded.join(" ")).not.toContain("categories, expiration");
+  expect(projection.notIncluded.join(" ")).toContain("Section D partial expiration dates");
   expect(productCardFields("drug-or-biologic", {})).toContain("expirationDate");
 });
 it("corrects and restores exact dates and retains previous accepted history", async () => {
