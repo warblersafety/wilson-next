@@ -6,6 +6,7 @@ import { z } from "zod";
 import {
   modelProposalEnvelopeSchema,
   modelProposalOutputSchema,
+  modelProposalOutputForExistingTests,
   parseModelProposalEnvelope,
   type ModelBoundaryIdentityFactory,
 } from "../../domain/case/model-boundary";
@@ -20,8 +21,8 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-symptom-dose-fidelity-v3";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v16-field-meaning";
+export const MODEL_PROMPT_REVISION = "wilson-test-correction-identity-v1";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v17-existing-test-corrections";
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
 export const MODEL_MAX_RETRIES = 0;
 
@@ -80,6 +81,7 @@ Rules:
 - On later input, use the supplied stable IDs to correct or complete an existing test, including a pending unnamed test. Declare a new test with response-local references only for a genuinely additional or entirely omitted observation. Never duplicate a supplied test just to correct it. Correct only stated fields; preserve its other facts. A new measurement is not a correction unless the input says so. Mark corrections to pending as well as accepted facts with intent correction.
 - Product dose is the amount actually taken each time; strength is the stated amount per tablet/capsule or concentration on the label. Extract them independently, retaining units and descriptive wording. In dose, preserve the explicitly supplied count or volume and dosage-form wording together with any explicitly supplied total amount, even when the total alone seems equivalent. If only a count is supplied, retain the count without calculating a total from strength. Keep each product's quantities and qualifiers with that product; do not assign an ambiguously attributed dose to either product. Never infer strength from dose, multiply tablet counts, divide concentrations, or convert units. If only dose is stated, omit strength. Report date is entered directly by the clinician, never extracted.
 - For every declared product, propose its supported productType ("drug-or-biologic", "device", or "other") and role. For product roles, emit only "suspect" or "concomitant". A reported suspect role is clinician input, not your causality judgment. For a device, preserve explicitly stated implanted and reprocessed-single-use status so Wilson can determine whether related Section E details are applicable.
+- On later input, test proposals with intent correction must target one supplied existing test ID; the response schema enumerates those IDs. Never declare a new reference to correct an existing observation. Initialize a genuinely additional observation with fact or alternative proposals, keeping it separate from existing-observation corrections. Do not guess which observation ambiguous wording means; preserve uncertainty for review.
 - For each product, preserve explicit stopping, dose reduction, improvement after either change, restart and recurrence after restart as separate stopped, doseReduced, improvedAfterChange, restarted and recurred facts. These are temporal observations, never a causality assessment. Generic recovery does not establish improvedAfterChange; no mention of restarting does not establish restarted false or recurred false. Never restarted means restarted false, not recurred false. A dose reduction does not imply stopped false; an explicit statement that neither happened can establish both false. Retain a supplied stopDate without inferring it from onset. On correction use intent correction for every explicitly corrected fact, preserving other product facts and identity.
 - medicationType contains only explicitly supplied brand, generic-biosimilar, otc or compounded labels; preserve combinations. A generic molecule name alone does not establish generic-biosimilar or brand. Never infer product-label subtype from the product category.
 - A medicine or other product named only as treatment administered in response to the adverse event belongs in event.treatments. Propose it as a report product only when the clinician separately describes it as suspect, concomitant, or otherwise involved in the report.
@@ -109,7 +111,7 @@ export function createAnthropicRequest(
       role: "user",
       content: `${turnInstruction}${context}\n\nClinician input:\n<input>\n${JSON.stringify(sourcePassages(text).map(({ reference, text }) => ({ reference, text })))}\n</input>`,
     }],
-    output_config: { format: providerOutputFormat() },
+    output_config: { format: providerOutputFormat(turn === "correction" ? reviewedCase?.relevantTests.map(({ id }) => id) ?? [] : undefined) },
   };
 }
 
@@ -253,9 +255,27 @@ export function createStreamingRequester(client: AnthropicStreamingClient): Anth
   return async (request) => client.messages.stream(request).finalMessage();
 }
 
-function providerOutputFormat(): ProviderOutputFormat {
-  const format = zodOutputFormat(modelProposalOutputSchema);
-  return { type: format.type, schema: format.schema };
+function providerOutputFormat(existingTestIds?: readonly string[]): ProviderOutputFormat {
+  const schema = existingTestIds === undefined ? modelProposalOutputSchema : modelProposalOutputForExistingTests(existingTestIds);
+  const format = zodOutputFormat(schema);
+  if (existingTestIds === undefined) return { type: format.type, schema: format.schema };
+  // The installed helper demotes enum/const to descriptions (#38). The API's
+  // documented raw-schema format supports them. Restore only those supported
+  // choices for the later-turn contract, including its branch discriminants;
+  // leave unsupported length/numeric constraints as SDK guidance/local checks.
+  return { type: format.type, schema: supportedChoices(format.schema, z.toJSONSchema(schema, { reused: "ref" })) as ProviderOutputFormat["schema"] };
+}
+
+function supportedChoices(transformed: unknown, original: unknown): unknown {
+  if (Array.isArray(transformed) && Array.isArray(original)) return transformed.map((item, index) => supportedChoices(item, original[index]));
+  if (!transformed || typeof transformed !== "object" || Array.isArray(transformed)
+    || !original || typeof original !== "object" || Array.isArray(original)) return transformed;
+  const source = original as Record<string, unknown>;
+  const result: Record<string, unknown> = Object.fromEntries(Object.entries(transformed).map(([key, value]) =>
+    [key, supportedChoices(value, source[key === "anyOf" && source.oneOf ? "oneOf" : key])]));
+  if (Array.isArray(source.enum)) result.enum = source.enum;
+  if (Object.hasOwn(source, "const")) result.const = source.const;
+  return result;
 }
 
 function reviewedContextBlock(
