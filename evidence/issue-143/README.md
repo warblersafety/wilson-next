@@ -9,7 +9,10 @@ separately and is deliberately absent from repository files and logs.
 
 ## Access and platform checks
 
-The operator approved one candidate-alias Shareable Link for seven days,
+Steve approved one candidate-alias Shareable Link for seven days in the private
+operator conversation on 15 October 2026: “Yes create the link for 7 days not
+24 hours”. [The owning issue records that approval, recipients and call limits](https://github.com/warblersafety/wilson-next/issues/143#issuecomment-6183131222),
+superseding its earlier unexecuted 24-hour proposal. The approved grant uses
 `ttl:604800`. Exactly one was created, then reconciled by GET. Vercel calls its
 expiry field `expires`; the first reconciliation expected `expiresAt`, so it
 stopped before using the grant. A subsequent **GET-only** reconciliation verified
@@ -38,8 +41,8 @@ exercised. No traffic/alias retarget or rollback occurred.
 ## Hosted synthetic evidence
 
 [hosted-result.json](hosted-result.json) records the successful run, completed
-2026-10-15T02:23:59.075Z under exact Node24.20.0 and installed Chromium, one
-hosted journey **PASS in7.3seconds**:
+2026-10-15T02:36:07.037Z under exact Node24.20.0 and installed Chromium, one
+hosted journey **PASS in7.8seconds**:
 
 - Authenticated `GET /api/case`: HTTP200, `provenance.release` exactly5943e60,
   state version `wilson-browser-state-v10`.
@@ -81,7 +84,9 @@ path via `WILSON_PREVIEW_HANDOFF_PATH`, and optionally a private output director
 via `WILSON_HOSTED_EVIDENCE_DIR` and existing `PYPDF_PYTHON`. Run the installed
 Playwright CLI with this explicit configuration. Do not run after expiry or
 against a different source/origin; the harness rejects those conditions. Traces,
-video and automatic screenshots are disabled to avoid bearer capture. The
+video and automatic screenshots are disabled. Authentication is bootstrapped
+through the same disposable context’s request client; pages navigate only to the
+clean origin, so browser failure snapshots cannot capture the bearer URL. The
 normal local/CI suite does not automatically run this live-hosted test.
 
 The original application gates remain 336unit tests/44files,60mock Chromium
@@ -90,3 +95,21 @@ This evidence adds deployed functional checks; it does not rerun or replace
 those gates. Independent review and protected publication of this evidence still
 follow Delivery. The private grant must expire automatically; no renewal or
 external invitation is implied.
+
+## Independent-review limits and follow-ups
+
+The candidate alias is fixed for this seven-day test window, not a durable
+cross-release storage address. Browser data does not transfer to another
+candidate/rollback hostname. Before later promotion, decide on one protected
+shared origin and verify same-origin upgrade/rollback continuity; neither is
+claimed here. Keep this approved alias pinned during its grant.
+
+Administration-token expiry and end-of-session disposal have **not** been
+verified. The existing owner-only handoff worked, but that does not establish
+conformance with the short-lived-token/session-cleanup requirements in
+[Experiment 1](../../docs/EXPERIMENT-1.md#vercel-deployment-credential-handoff).
+No token was created, revoked or deleted in this evidence slice; the current
+no-auth-change scope leaves cleanup/expiry confirmation to the operator. Do not
+report this as a passed credential-lifecycle check or reuse it in another session
+without resolving that requirement. This does not change the verified preview
+grant expiry or application authentication.

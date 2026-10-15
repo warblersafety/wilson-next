@@ -22,14 +22,13 @@
     "resume",
     "resume",
     "resume",
-    "resume",
     "answer-reporter",
     "resume",
     "resume"
   ],
   "pdfBytes": 1051426,
   "status": "PASS",
-  "completedAt": "2026-10-15T02:23:59.075Z",
+  "completedAt": "2026-10-15T02:36:07.037Z",
   "access": {
     "grantCount": 1,
     "scope": "shareable-link",
@@ -40,5 +39,9 @@
     "unsignedCandidateStatus": 302,
     "unsignedRollbackStatus": 302,
     "bearerStoredPublicly": false
+  },
+  "privateBootstrap": {
+    "httpStatus": 200,
+    "pageNeverNavigatedToBearerUrl": true
   }
 }

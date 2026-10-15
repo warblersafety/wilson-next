@@ -12,7 +12,10 @@ The fixed test origin is the existing
 verified to map to that deployment. Use the private Shareable Link supplied
 separately; bare URLs correctly require Vercel authentication. The single
 operator-approved alias grant expires **22 October 2026 at02:17:33 UTC**.
-It remains pinned to this source for the test window; do not forward its bearer
+This address is fixed only for this candidate’s seven-day window; it is not yet
+a durable cross-release storage origin. A different candidate/rollback hostname
+has separate browser storage. Same-origin promotion/rollback continuity requires
+a later decision and verification. It remains pinned to this source for the test window; do not forward its bearer
 URL or place it in public feedback. It is absent from this repository.
 
 Use only fictional clinical and reporter/contact information. This is a bounded
@@ -123,7 +126,10 @@ The working administration mechanism is the existing bounded Vercel REST/CLI
 unlock. Earlier native-automation lock errors were not independent proof of OS
 lock. Hosted browser checks used the approved URL-scoped grant with installed
 headless Chromium; no browser credentials were transferred or admin login
-persisted. The private link and grant are not reproduced here.
+persisted. The private link and grant are not reproduced here. Administration-token expiry
+and end-of-session disposal remain unverified operator follow-ups under the
+current no-auth-change scope; successful access is not a passed credential-
+lifecycle check. See the evidence record’s independent-review limits.
 
 The originating code review/local/CI gates remain linked above. This publication
 records the hosted checks on [issue143](https://github.com/warblersafety/wilson-next/issues/143).

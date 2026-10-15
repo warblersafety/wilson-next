@@ -43,8 +43,8 @@ test('protected hosted provenance, real restart, reporter lifecycle, tab handoff
  try{
   context=await chromium.launchPersistentContext(profile,{headless:true,serviceWorkers:'block',viewport:{width:1440,height:900}});await guard(context);
   let page=context.pages()[0];
-  try{const response=await page.goto(h.url,{waitUntil:'domcontentloaded',timeout:30000});expect(response?.ok()).toBe(true);}catch{throw new Error('Approved-link navigation failed; private URL omitted');}
-  await expect(page.getByLabel('Case description',{exact:true})).toBeVisible();await page.goto(origin);await saved(page);
+  let bootstrapStatus:number;try{bootstrapStatus=(await context.request.get(h.url,{timeout:30000})).status();}catch{throw new Error('Approved-link bootstrap failed; private URL omitted');}
+  expect(bootstrapStatus).toBe(200);await page.goto(origin);await expect(page.getByLabel('Case description',{exact:true})).toBeVisible();await saved(page);
   const version=await context.request.get(origin+'/api/case');expect(version.status()).toBe(200);const fresh=await version.json();expect(fresh.provenance.release).toBe(h.sha);proof.release=fresh.provenance.release;proof.stateVersion=fresh.provenance.stateVersion;proof.checks.push('authenticated runtime provenance');
   await page.getByLabel('Case description',{exact:true}).fill('  Fictional unfinished opening retained on hosted restart. ');
   await page.getByLabel('Adverse event',{exact:true}).check();await saved(page);
