@@ -82,6 +82,13 @@ it.each(courseFields.flatMap(field => ["β uncertain", "W".repeat(4100)].map(qua
   if (value.kind !== "known") throw new Error("Expected known course fact");
   current = setContextFact(current, `event:event:${field}`, { ...value, qualifier });
   const before = structuredClone(current), snapshot = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: current }), current.id);
+  if (!qualifier.includes("β")) {
+    expect(snapshot.outputIssues.some(issue => ["unsupported-test-history", "unsupported-event-narrative"].includes(issue.code))).toBe(false);
+    const output = await fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), snapshot.projection);
+    expect(output.readback.pageCount).toBeGreaterThan(8);
+    expect(current).toEqual(before);
+    return;
+  }
   expect(snapshot.downloadReady).toBe(false);
   expect(snapshot.projection.sections.B.eventDescription).toContain(qualifier);
   expect(snapshot.outputIssues).toContainEqual(expect.objectContaining({ code: "unsupported-event-narrative", targets: expect.arrayContaining([`event:event:${field}`]) }));

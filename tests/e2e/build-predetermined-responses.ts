@@ -1,3 +1,4 @@
+import { continuationScenario } from "../fixtures/narrative-continuation";
 import { serialCorrectionText, mixedSerialText, serialOutput } from "../fixtures/serial-test-correction";
 import { preservedGroupingOutput } from "../fixtures/grouping-failure";
 import { medicationScenarios } from "../fixtures/medication-model";
@@ -631,5 +632,6 @@ export const predeterminedResponseScenarios = {
   draft4Correction: medicationScenarios.issue92Two,
   usability: usabilityScenario,
   updateGrouping: [{ identityScope: "issue109-update", turn: "correction" as const, output: preservedGroupingOutput as import("../../src/domain/case/model-boundary").ModelProposalOutput }],
+  narrativeContinuation: continuationScenario,
 };
 export const predeterminedModelResponses = Object.values(predeterminedResponseScenarios).flat();
