@@ -1,4 +1,4 @@
-import { PDFDocument, StandardFonts } from "@cantoo/pdf-lib";
+import { multilineTextLimitation } from "./multiline-text";
 import { quantityContextEntries, type Form3500Projection } from "../../domain/case/projection";
 import type { ProjectedQuantity } from "../../domain/case/projection";
 import { nativeSingleLineTextLimitation } from "./product-text";
@@ -41,7 +41,6 @@ export function quantityLimitation(_field: "dose" | "strength", quantity: Projec
 // Independent native metadata: Page2 DescEvent, 531.102 x520.574, border0,
 // padding1, fixed8.5pt, MaxLen4000. No font shrinking or continuation pages.
 export const quantityNarrativeGeometry = { width: 531.102, height: 520.574, fontSize: 8.5, maxLength: 4000 };
-const narrativeFont = PDFDocument.create().then(document => document.embedFont(StandardFonts.Helvetica));
 export async function eventNarrativeLimitation(projection: Form3500Projection): Promise<string | undefined> {
   const entries = quantityContextEntries(projection.sections.D.suspectProducts);
   const text = projection.sections.B.eventDescription ?? "";
@@ -51,29 +50,5 @@ export async function eventNarrativeLimitation(projection: Form3500Projection): 
 
 /** B5 fidelity is checked regardless of whether a quantity qualifier exists. */
 export async function narrativeTextLimitation(text: string | undefined): Promise<string | undefined> {
-  if (!text) return undefined;
-  if (text.length > quantityNarrativeGeometry.maxLength) return "exceeds the B5 narrative capacity";
-  const font = await narrativeFont;
-  const characters = new Set(font.getCharacterSet());
-  if (Array.from(text).some(character => character !== "\n" && !characters.has(character.codePointAt(0)!))) return "contains characters the current B5 appearance font cannot represent";
-  const bounds = { x: 1, y: 1, width: quantityNarrativeGeometry.width - 2, height: quantityNarrativeGeometry.height - 2 };
-  // Native appearance wraps at whitespace and leaves an unbreakable token whole.
-  // Count conservatively with the same font metrics; retain all original text.
-  let lines = 0;
-  for (const paragraph of text.split("\n")) {
-    let remaining = paragraph;
-    do {
-      let end = remaining.length;
-      while (end > 0 && font.widthOfTextAtSize(remaining.slice(0, end), quantityNarrativeGeometry.fontSize) >= bounds.width) {
-        const previous = remaining.slice(0, end).search(/\s+\S*$/);
-        end = previous >= 0 ? previous : 0;
-      }
-      if (end === 0 && remaining.length > 0) return "does not fit B5 at its native font size";
-      lines++;
-      remaining = remaining.slice(end).trimStart();
-    } while (remaining.length);
-  }
-  const lineHeight = font.heightAtSize(quantityNarrativeGeometry.fontSize) * 1.2;
-  if (lines * lineHeight > bounds.height) return "does not fit B5 at its native font size";
-  return undefined;
+  return multilineTextLimitation(text, { ...quantityNarrativeGeometry, label: "B5" });
 }

@@ -1041,3 +1041,33 @@ font, continuation, UI, model/provider/schema or persistence design is introduce
 B6/B7, other patient/product/device/reporter context, selector/prerequisite context
 and broader chronology representation remain separate.115 remains open;150paused,
 151/153/154/157 retain their existing scopes.
+
+### B6/B7 reviewed context — Issue115 fourth slice
+
+Qualifiers on current known test name, result/stated units, lower/upper reference
+limit and date are carried verbatim in the native B6 Additional comments box.
+Each note identifies the actual current B6 table row and its specific fact field.
+This row reference follows the PDF's existing visible row mapping, not UI display
+ordinals or inferred test identity. Withdrawals regenerate both table and context
+from current active entities; notes never attach to withdrawn or different tests.
+The grid's identity/result strings, units, ranges and dates remain unchanged.
+No units, trends, dates, order, significance or clinical judgment are derived.
+
+B7 remains the raw accepted scalar history text followed by an explicitly labelled
+History context line when a current qualifier exists. This does not change whole-
+list treatment/symptom scope or159. Source trace carries the exact current fact
+sources; correction/removal/re-add changes actual output. Proposed, conflicted,
+non-known and superseded context is not promoted. Only now-carried partial
+qualifier omissions are removed; selectors/prerequisites retain their old scope.
+
+Official B6 instructions and the native tooltip designate Additional comments
+for test/lab information; B7 owns other relevant history, including time courses.
+Both native boxes retain8pt/2000characters and their fixed geometry. The existing
+B5 multiline font/fit algorithm is shared unchanged for these fields. B7 is always
+checked, including without qualifiers; unsupported base wording cannot bypass
+protection by removing context. B6 checks protect the newly populated comments;
+other native test-grid glyph/fit support remains154. Unrepresentable text stays
+accepted and blocks fresh export, with field/entity-linked readiness issues and
+adapter defense. No shrinking, truncation, glyph substitution, continuation or
+new storage/model/provider/schema is introduced.157 retains diagnostic precision;
+115 remains open for other fact context and broader chronology;150 stays paused.

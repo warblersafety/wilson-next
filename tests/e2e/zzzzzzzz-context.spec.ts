@@ -4,6 +4,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { browserStateVersion } from "../../src/server/case/browser-state";
 import { assayContext, contextCase, conflictedContextCase, setContextFact } from "../fixtures/reviewed-context";
 import { goTo, seedStoredState, storedState, savePdf } from "./draft4-helpers";
+const comments = "topmostSubform[0].Page3[0].AdditionalComments[0]";
 const narrative = "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]";
 
 async function seed(page: Page, current: ReturnType<typeof contextCase>) {
@@ -29,7 +30,7 @@ async function apply(page: Page, click: () => Promise<unknown>, action = "set-fa
 }
 async function saved(page: Page) { await expect(page.getByRole("region", { name: "Browser saving" }).getByRole("status")).toHaveText("Saved in this browser"); }
 
-test("context: add, restore draft, accept, replace, remove and re-add qualifier with exact omission and unchanged PDF", async ({ page }, info) => {
+test("context: add, restore draft, accept, replace, remove and re-add exact B6 context with unchanged native result", async ({ page }, info) => {
   let requests = 0; page.on("request", r => { if (r.url().endsWith("/api/case/pdf") && r.method() === "POST") requests++; });
   const noInterpretation = await seed(page, contextCase());
   const baseline = await storedState(page), original = await pdf(page, info.outputPath("plain.pdf"));
@@ -52,14 +53,13 @@ test("context: add, restore draft, accept, replace, remove and re-add qualifier 
   expect(accepted.case.relevantTests[0].facts.date).toEqual(baseline.case.relevantTests[0].facts.date);
   await goTo(page, "Review & save");
   const output = page.locator('[data-screen="save"]'), coverage = output.locator("details").filter({ has: page.getByText("Report coverage and omitted information", { exact: true }) });
-  await expect(coverage).toHaveAttribute("open", "");
-  await expect(coverage).toContainText("Fictional assay"); await expect(coverage).toContainText("Result and stated units: base value included; reviewed uncertainty or context not included");
-  await expect(coverage).toContainText(assayContext);
-  await expect(output).toContainText("PDF ready — supported values are included; some reviewed context is omitted.");
-  expect(requests).toBe(beforeApply); // No new PDF for a metadata-only qualification.
-  expect(await pdf(page, info.outputPath("qualified.pdf"))).toEqual(original);
+  await expect(output).not.toContainText("Result and stated units: base value included; reviewed uncertainty or context not included");
+  const qualifiedPdf = await pdf(page, info.outputPath("qualified.pdf"));
+  expect(qualifiedPdf[comments]).toContain(`B6 table row 1 - Result and stated units context: ${assayContext}`);
+  for (const key of Object.keys(original).filter(key => key !== comments)) expect(qualifiedPdf[key]).toEqual(original[key]);
+  expect(requests).toBeGreaterThan(beforeApply);
   await page.setViewportSize({ width: 390, height: 900 }); expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.screenshot({ path: info.outputPath("omitted-context-mobile.png"), fullPage: true });
+  await page.screenshot({ path: info.outputPath("test-context-mobile.png"), fullPage: true });
   await page.setViewportSize({ width: 1440, height: 900 });
   for (const qualifier of ["first result remains uncertain", "", "explicitly supplied again"]) {
     await goTo(page, "Review details"); await row.getByRole("button", { name: "Change", exact: true }).click();
@@ -68,14 +68,16 @@ test("context: add, restore draft, accept, replace, remove and re-add qualifier 
     await apply(page, () => row.getByRole("button", { name: "Apply correction", exact: true }).click());
     await expect(row.getByRole("button", { name: "Change", exact: true })).toBeVisible();
     await goTo(page, "Review & save");
-    if (qualifier) await expect(coverage).toContainText(qualifier);
-    else await expect(output).not.toContainText("Some reviewed uncertainty or context is not included");
-    expect(await pdf(page, info.outputPath(`context-${qualifier ? qualifier.split(" ")[0] : "removed"}.pdf`))).toEqual(original);
+    const named = await pdf(page, info.outputPath(`context-${qualifier ? qualifier.split(" ")[0] : "removed"}.pdf`));
+    if (qualifier) expect(named[comments]).toContain(`Result and stated units context: ${qualifier}`);
+    else expect(named[comments] ?? "").not.toContain("Result and stated units context:");
+    for (const key of Object.keys(original).filter(key => key !== comments)) expect(named[key]).toEqual(original[key]);
   }
   const current = await storedState(page);
   expect(current.case.relevantTests[0].facts.testResult.supersededValues.some(v => v.value.kind === "known" && v.value.qualifier === assayContext)).toBe(true);
   await saved(page); await page.reload(); await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
-  await goTo(page, "Review & save"); await expect(coverage).toContainText("explicitly supplied again");
+  await goTo(page, "Review & save");
+  expect((await pdf(page, info.outputPath("restored-context.pdf")))[comments]).toContain("Result and stated units context: explicitly supplied again");
   noInterpretation();
 });
 

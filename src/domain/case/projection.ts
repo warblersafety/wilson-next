@@ -36,6 +36,7 @@ export interface Form3500Projection {
       otherSerious?: boolean;
       relevantTests: ProjectedRelevantTest[];
       relevantHistory?: string;
+      relevantTestContext?: string;
     };
     C: {
       productAvailability?: "available" | "not-available" | "returned-to-manufacturer";
@@ -125,7 +126,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     omissions: [],
     notIncluded: [
       "Patient date of birth and race or ethnicity",
-      "Section C product pictures and additional comments",
+      "Section C product pictures and general additional comments",
       "Additional suspect medical devices beyond the first",
       "Section D other product-type categories, expiration, purchase details and product identifiers",
       "Section D ongoing-therapy control, dose-reduction date and treatment duration",
@@ -146,7 +147,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   if (known(caseState.event.facts.death)?.value === true) {
     assign(projection, "sections.B.deathDate", "death date", "event:event:deathDate", caseState.event.facts.deathDate, projection.sections.B, "deathDate");
   }
-  assign(projection, "sections.B.relevantHistory", "relevant medical history", "event:event:relevantHistory", caseState.event.facts.relevantHistory, projection.sections.B, "relevantHistory");
+  assign(projection, "sections.B.relevantHistory", "relevant medical history", "event:event:relevantHistory", caseState.event.facts.relevantHistory, projection.sections.B, "relevantHistory", value => known(caseState.event.facts.relevantHistory)?.qualifier ? `${value}\nHistory context: ${known(caseState.event.facts.relevantHistory)!.qualifier}` : value, true);
   assign(projection, "sections.C.productAvailability", "product availability", "event:event:productAvailability", caseState.event.facts.productAvailability, projection.sections.C, "productAvailability");
   if (known(caseState.event.facts.productAvailability)?.value === "returned-to-manufacturer") {
     assign(projection, "sections.C.productReturnDate", "product return date", "event:event:productReturnDate", caseState.event.facts.productReturnDate, projection.sections.C, "productReturnDate");
@@ -157,7 +158,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     const index = projection.sections.B.relevantTests.length;
     const observation: { testName?: string; testResult?: string } = {};
     for (const field of ["testName", "testResult"] as const) {
-      assign(projection, `sections.B.relevantTests.${index}.testResult`, `${field === "testName" ? "test identity" : "test result"} for ${test.id}`, `test:${test.id}:${field}`, test.facts[field], observation, field);
+      assign(projection, `sections.B.relevantTests.${index}.testResult`, `${field === "testName" ? "test identity" : "test result"} for ${test.id}`, `test:${test.id}:${field}`, test.facts[field], observation, field, value => value, true);
     }
     // FDA B6 has a single identity/result cell. Compose only reviewed facts and
     // explicit missing-detail labels; never derive identity from result text.
@@ -166,9 +167,14 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       ...(known(test.facts.testName)?.sourceIds ?? []), ...(known(test.facts.testResult)?.sourceIds ?? []),
     ])];
     for (const field of ["lowRange", "highRange", "date"] as const) {
-      assign(projection, `sections.B.relevantTests.${index}.${field}`, `${field} for ${test.id}`, `test:${test.id}:${field}`, test.facts[field], result, field);
+      assign(projection, `sections.B.relevantTests.${index}.${field}`, `${field} for ${test.id}`, `test:${test.id}:${field}`, test.facts[field], result, field, value => value, true);
     }
     projection.sections.B.relevantTests.push(result);
+  }
+  const testContext = relevantTestContextEntries(caseState);
+  if (testContext.length) {
+    projection.sections.B.relevantTestContext = testContext.map(entry => entry.text).join("\n");
+    projection.sourceTrace["sections.B.relevantTestContext"] = [...new Set(testContext.flatMap(entry => entry.sourceIds))];
   }
   if (projection.sections.B.relevantTests.length === 0) {
     const testsAvailable = known(caseState.event.facts.relevantTestsAvailable);
@@ -262,10 +268,11 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
 
   // Completeness boundary: selectors, prerequisites and unsupported whole facts
   // can bypass assign(). Their current context must still never disappear.
-  const carriedQualifierTargets = new Set(["event:event:symptoms", "event:event:problemDescription", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate"]);
+  const carriedQualifierTargets = new Set(["event:event:symptoms", "event:event:problemDescription", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate", "event:event:relevantHistory"]);
   for (const product of projection.sections.D.suspectProducts) {
     for (const field of ["dose", "strength"]) carriedQualifierTargets.add(`product:${product.productId}:${field}`);
   }
+  for (const entry of relevantTestContextEntries(caseState)) carriedQualifierTargets.add(entry.target);
   const disclosed = new Set(projection.omissions.filter(({ reason }) => reason === "qualifier-not-included").map(({ target }) => target));
   for (const { target, fact } of allFacts(caseState)) {
     const active = target.entity === "product" ? caseState.products.some(p => p.id === target.entityId && p.state === "resolved")
@@ -491,4 +498,14 @@ export function baseEventDescriptionTargets(caseState: SemanticCase): string[] {
     ...caseState.products.filter(product => product.state === "resolved" && known(product.facts.name) !== undefined && known(product.facts.stopped)?.value === true)
       .flatMap(product => [`product:${product.id}:name`, `product:${product.id}:stopped`]),
   ];
+}
+
+/** Native B6 table row order, not display ordinals or inferred test identity. */
+export function relevantTestContextEntries(caseState: SemanticCase) {
+  const labels = { testName: "Test name", testResult: "Result and stated units", lowRange: "Lower reference limit", highRange: "Upper reference limit", date: "Test date" } as const;
+  return caseState.relevantTests.filter(test => test.state === "resolved").flatMap((test, index) =>
+    (Object.keys(labels) as Array<keyof typeof labels>).flatMap(field => {
+      const fact = known(test.facts[field]);
+      return fact?.qualifier ? [{ text: `B6 table row ${index + 1} - ${labels[field]} context: ${fact.qualifier}`, target: `test:${test.id}:${field}`, sourceIds: fact.sourceIds, testId: test.id }] : [];
+    }));
 }

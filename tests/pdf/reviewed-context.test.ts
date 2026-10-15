@@ -13,6 +13,7 @@ import { getJourneySnapshot } from "../../src/server/journey/service";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { assayContext, contextCase, contextSource, setContextFact, conflictedContextCase, pendingContextCase } from "../fixtures/reviewed-context";
 
+const comments = "topmostSubform[0].Page3[0].AdditionalComments[0]";
 const narrative = "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]";
 async function fields(current: ReturnType<typeof contextCase>) {
   const before = structuredClone(current), projection = projectForm3500(current);
@@ -30,16 +31,17 @@ it("carries course context while disclosing other omitted text/date/number conte
     current = setContextFact(current, target, { ...value, qualifier: i === 0 ? assayContext : `Fictional context ${i}: attribution remains uncertain` });
   }
   const projection = projectForm3500(current);
-  const carried = new Set(["event:event:treatments", "event:event:outcome", "event:event:dischargeDate"]);
+  const carried = new Set(["test:test-hemoglobin:testResult", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate"]);
   for (const target of targets) {
     const fact = getFact(current, targetFromKey(current, target));
     if (carried.has(target)) { expect(projection.omissions.some(omission => omission.target === target)).toBe(false); continue; }
     expect(projection.omissions).toContainEqual(expect.objectContaining({ target, reason: "qualifier-not-included", qualifier: fact.resolvedValue!.value.kind === "known" ? fact.resolvedValue!.value.qualifier : undefined, sourceIds: fact.resolvedValue!.sourceIds }));
   }
   const actual = await fields(current), before = await fields(plain);
-  for (const key of Object.keys(before).filter(key => key !== narrative)) expect(actual[key]).toEqual(before[key]);
+  for (const key of Object.keys(before).filter(key => key !== narrative && key !== comments)) expect(actual[key]).toEqual(before[key]);
   for (const i of [1, 2, 3]) expect(actual[narrative]).toContain(`Fictional context ${i}: attribution remains uncertain`);
   expect(actual[narrative]).not.toContain(assayContext);
+  expect(actual[comments]).toContain(`B6 table row 1 - Result and stated units context: ${assayContext}`);
   expect(Object.values(await fields(current))).toContain("Fictional assay: 14.2");
 });
 it("does not falsely flag the four already carried qualifier shapes as omitted", async () => {
@@ -81,15 +83,17 @@ it("discloses the whole conflicted narrative fact until explicit resolution, the
   expect((await fields(resolved))[narrative]).toContain("Outcome: partially improved (chart A uncertain).");
   expect(resolved.event.facts.outcome.supersededValues.some(v => v.value.kind === "known" && v.value.qualifier === "chart B follow-up incomplete")).toBe(true);
 });
-it("qualifier-only changes/remove/re-add preserve base output key and superseded context, not a falsely new PDF", async () => {
+it("test-context changes/remove/re-add update actual output keys while preserving native base values and history", async () => {
   const plain = contextCase(), target = "test:test-hemoglobin:testResult";
   const qualified = setContextFact(plain, target, { kind: "known", value: "14.2", qualifier: assayContext });
   const removed = setContextFact(qualified, target, { kind: "known", value: "14.2" });
   const readded = setContextFact(removed, target, { kind: "known", value: "14.2", qualifier: "second explicit context" });
   const snapshots = await Promise.all([plain, qualified, removed, readded].map(current => getJourneySnapshot(new InMemoryCaseRepository({ initialCase: current }), current.id)));
-  expect(new Set(snapshots.map(s => s.reportContentKey)).size).toBe(1);
+  expect(new Set(snapshots.map(s => s.reportContentKey)).size).toBe(3);
+  expect(snapshots[0].reportContentKey).toBe(snapshots[2].reportContentKey);
   expect(projectForm3500(removed).omissions.some(({ reason }) => reason === "qualifier-not-included")).toBe(false);
-  expect(projectForm3500(readded).omissions.filter(({ reason }) => reason === "qualifier-not-included")).toEqual([expect.objectContaining({ qualifier: "second explicit context" })]);
+  expect(projectForm3500(readded).omissions.filter(({ reason }) => reason === "qualifier-not-included")).toEqual([]);
+  expect((await fields(readded))[comments]).toContain("Result and stated units context: second explicit context");
   expect(readded.relevantTests[0].facts.testResult.supersededValues.some(v => v.value.kind === "known" && v.value.qualifier === assayContext)).toBe(true);
   expect(readded.products).toEqual(plain.products); expect(readded.relevantTests[0].facts.date).toEqual(plain.relevantTests[0].facts.date);
 });
@@ -103,7 +107,7 @@ it("covers every active known qualifier, including routing and medication prereq
     if (fact.state === "resolved" && value?.kind === "known") current = setContextFact(current, targetKey(target), { ...value, qualifier: "explicit context" });
   }
   const projection = projectForm3500(current), omissions = projection.omissions.filter(({ reason }) => reason === "qualifier-not-included");
-  const carried = new Set(["event:event:symptoms", "event:event:problemDescription", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate", ...projection.sections.D.suspectProducts.flatMap(p => [`product:${p.productId}:dose`, `product:${p.productId}:strength`])]);
+  const carried = new Set(["event:event:symptoms", "event:event:problemDescription", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate", "event:event:relevantHistory", ...current.relevantTests.filter(test => test.state === "resolved").flatMap(test => ["testName", "testResult", "lowRange", "highRange", "date"].map(field => `test:${test.id}:${field}`)), ...projection.sections.D.suspectProducts.flatMap(p => [`product:${p.productId}:dose`, `product:${p.productId}:strength`])]);
   for (const { target, fact } of allFacts(current)) {
     const value = fact.resolvedValue?.value, key = targetKey(target);
     if (fact.state !== "resolved" || value?.kind !== "known" || !value.qualifier) continue;

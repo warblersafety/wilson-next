@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
+import { testHistoryLimitations } from "../pdf/test-history";
 import { productTextLimitation } from "../pdf/product-text";
 import { quantityLimitation, eventNarrativeLimitation, narrativeTextLimitation } from "../pdf/quantity";
 import type { UnrepresentedModelProposal } from "../../domain/case/model-boundary";
@@ -7,7 +8,7 @@ import { completionQuestions } from "../../domain/case/completion-policy";
 import { createSemanticCase } from "../../domain/case/create";
 import { allFacts, getFact, targetFromKey, targetKey } from "../../domain/case/facts";
 import { productDisplayLabel } from "../../domain/case/product-label";
-import { projectForm3500, quantityContextEntries, hasBaseEventDescription, baseEventDescription, baseEventDescriptionTargets } from "../../domain/case/projection";
+import { projectForm3500, quantityContextEntries, hasBaseEventDescription, baseEventDescription, baseEventDescriptionTargets, relevantTestContextEntries } from "../../domain/case/projection";
 import type { CaseValue, Fact, FactTarget, ProductFactKey, ReporterFactKey, SemanticCase, Source } from "../../domain/case/types";
 import {
   createClarificationView,
@@ -68,7 +69,8 @@ export type OutputReadinessIssueCode =
   | "unsupported-patient-sex"
   | "unsupported-product-route"
   | "unsupported-product-text"
-  | "unsupported-event-narrative";
+  | "unsupported-event-narrative"
+  | "unsupported-test-history";
 
 export interface OutputReadinessIssue {
   code: OutputReadinessIssueCode;
@@ -104,6 +106,10 @@ export async function getJourneySnapshot(
       targets,
       entityIds: [...new Set(targets.map(target => target.split(":")[1]))],
     });
+  }
+  for (const { field, limitation } of await testHistoryLimitations(projection)) {
+    const targets = field === "relevantHistory" ? ["event:event:relevantHistory"] : relevantTestContextEntries(caseState).map(entry => entry.target);
+    outputIssues.push({ code: "unsupported-test-history", message: `The reviewed ${field === "relevantHistory" ? "B7 history" : "B6 additional comments"} ${limitation}. The wording is retained, but no new PDF is generated.`, targets, entityIds: [...new Set(targets.map(target => targetFromKey(caseState, target).entityId))] });
   }
   return {
     stage: stageFor(caseState),

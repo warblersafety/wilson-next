@@ -1,0 +1,34 @@
+{
+  "source": "test-history.pdf",
+  "method": "pypdf native AP operands independently decoded; line-wrapping whitespace normalized only",
+  "fields": [
+    {
+      "field": "OtherHistory[0]",
+      "storedValue": "Prior episodic wheeze; the clinician supplied no exact onset date.\nHistory context: patient recalls this before the current episode; dates uncertain",
+      "appearanceTextRuns": [
+        "Prior episodic wheeze; the clinician supplied no exact onset date.",
+        "History context: patient recalls this before the current episode; dates uncertain"
+      ],
+      "wordingAndOrderMatch": true
+    },
+    {
+      "field": "AdditionalComments[0]",
+      "storedValue": "B6 table row 1 - Test name context: name transcribed from paper report\nB6 table row 1 - Result and stated units context: assay repeated, first draw haemolysed\nB6 table row 1 - Lower reference limit context: lower limit copied from same report\nB6 table row 1 - Upper reference limit context: upper limit copied from same report\nB6 table row 1 - Test date context: collection day reported; time not recorded\nB6 table row 2 - Test name context: second report: name transcribed from paper report\nB6 table row 2 - Result and stated units context: second report: assay repeated, first draw haemolysed\nB6 table row 2 - Lower reference limit context: second report: lower limit copied from same report\nB6 table row 2 - Upper reference limit context: second report: upper limit copied from same report\nB6 table row 2 - Test date context: second report: collection day reported; time not recorded",
+      "appearanceTextRuns": [
+        "B6 table row 1 - Test name context: name transcribed from paper report",
+        "B6 table row 1 - Result and stated units context: assay repeated, first draw haemolysed",
+        "B6 table row 1 - Lower reference limit context: lower limit copied from same report",
+        "B6 table row 1 - Upper reference limit context: upper limit copied from same report",
+        "B6 table row 1 - Test date context: collection day reported; time not recorded",
+        "B6 table row 2 - Test name context: second report: name transcribed from paper report",
+        "B6 table row 2 - Result and stated units context: second report: assay repeated, first draw haemolysed",
+        "B6 table row 2 - Lower reference limit context: second report: lower limit copied from same report",
+        "B6 table row 2 - Upper reference limit context: second report: upper limit copied from same report",
+        "B6 table row 2 - Test date context: second report: collection day reported; time not recorded"
+      ],
+      "wordingAndOrderMatch": true
+    }
+  ],
+  "nativeFontSize": 8,
+  "portableViewerClaim": false
+}
