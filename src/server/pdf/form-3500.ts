@@ -1,3 +1,5 @@
+import { patientAgeParts, type PatientAge } from "../../domain/case/age";
+import { patientAgeLimitation } from "./patient-age";
 import { createHash } from "node:crypto";
 import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts } from "../../domain/case/limits";
 import { PDFDocument, PDFName } from "@cantoo/pdf-lib";
@@ -22,6 +24,9 @@ const fields = {
     "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]",
   ageValue: "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]",
   ageYears: "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]",
+  ageMonths: "topmostSubform[0].Page1[0].SecA_Patient[0].AgeMonths[0]",
+  ageWeeks: "topmostSubform[0].Page1[0].SecA_Patient[0].AgeWeeks[0]",
+  ageDays: "topmostSubform[0].Page1[0].SecA_Patient[0].AgeDays[0]",
   sexMale: "topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]",
   sexFemale: "topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]",
   weightValue: "topmostSubform[0].Page1[0].SecA_Patient[0].WeightValue[0]",
@@ -256,8 +261,16 @@ export async function fillForm3500Projection(
   const { A, B, C, D, E, F } = projection.sections;
 
   setText(form, fields.patientIdentifier, A.patientIdentifier);
-  setText(form, fields.ageValue, A.ageYears?.toString());
-  setChecked(form, fields.ageYears, A.ageYears !== undefined);
+  const ageLimit = patientAgeLimitation(A.ageYears);
+  if (ageLimit) throw new Error(`The reviewed patient age ${ageLimit}`);
+  const age = A.ageYears !== undefined ? patientAgeParts(A.ageYears) : undefined;
+  setText(form, fields.ageValue, age?.value.toString());
+  setChecked(form, fields.ageYears, age?.unit === "years");
+  // Preserve unset native controls on the legacy years path; still clear any
+  // previously selected unit rather than allowing contradictory marks.
+  if (age?.unit === "months" || form.getCheckBox(fields.ageMonths).isChecked()) setChecked(form, fields.ageMonths, age?.unit === "months");
+  if (age?.unit === "days" || form.getCheckBox(fields.ageDays).isChecked()) setChecked(form, fields.ageDays, age?.unit === "days");
+  if (form.getCheckBox(fields.ageWeeks).isChecked()) setChecked(form, fields.ageWeeks, false);
   if (A.sex === "intersex") throw new Error("The fixed Form 3500 adapter does not support intersex sex projection");
   setChecked(form, fields.sexMale, A.sex === "male");
   setChecked(form, fields.sexFemale, A.sex === "female");
@@ -494,6 +507,13 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
   const form = document.getForm();
   const { A, B, G } = projection.sections;
   const reporter = G.reporter;
+  const readAge = (): PatientAge | undefined => {
+    const units = (["years", "months", "days"] as const).filter(unit => form.getCheckBox(unit === "years" ? fields.ageYears : unit === "months" ? fields.ageMonths : fields.ageDays).isChecked());
+    if (units.length > 1 || form.getCheckBox(fields.ageWeeks).isChecked()) throw new Error("Form 3500 age has contradictory or unsupported units");
+    if (!units.length) return undefined;
+    const value = Number(form.getTextField(fields.ageValue).getText());
+    return units[0] === "years" ? value : { value, unit: units[0] };
+  };
   const readMedicationControls = (index: number): Pick<ProjectedProduct, "medicationType" | "improvedAfterChange" | "recurred"> => {
     const prefix = `topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].Prod${index + 1}`;
     const medicationType = ([["brand", "Brand"], ["generic-biosimilar", "Generic"], ["otc", "OTC"], ["compounded", "Compounded"]] as const)
@@ -545,9 +565,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
     sections: {
       A: compact({
         patientIdentifier: form.getTextField(fields.patientIdentifier).getText(),
-        ageYears: form.getCheckBox(fields.ageYears).isChecked()
-          ? Number(form.getTextField(fields.ageValue).getText())
-          : undefined,
+        ageYears: readAge(),
         sex: form.getCheckBox(fields.sexFemale).isChecked()
           ? "female"
           : form.getCheckBox(fields.sexMale).isChecked() ? "male" : undefined,

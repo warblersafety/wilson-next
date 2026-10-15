@@ -1,3 +1,4 @@
+import { isPatientAge } from "./age";
 import type {
   CaseValue,
   EventFactKey,
@@ -10,6 +11,7 @@ import type {
 import { targetKey } from "./facts";
 
 export type KnownValueContract =
+  | { shape: "patient-age" }
   | { shape: "string" }
   | { shape: "iso-date" }
   | { shape: "integer"; minimum: number; maximum: number }
@@ -30,7 +32,7 @@ type CaseValueContracts = {
 export const caseValueContracts = {
   patient: {
     identifier: { shape: "string" },
-    ageYears: { shape: "integer", minimum: 0, maximum: 150 },
+    ageYears: { shape: "patient-age" },
     sex: { shape: "enum", values: ["female", "male", "intersex"], mismatch: "sex requires a supported value" },
     weight: { shape: "measurement", units: ["kg", "lb"] },
   },
@@ -156,6 +158,7 @@ export function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>
   const actual = value.value;
 
   switch (contract.shape) {
+    case "patient-age": return isPatientAge(actual) ? undefined : `${target.field} requires a valid age: whole years 0–150, or an explicit nonnegative whole number with unit months or days`;
     case "string":
       return typeof actual === "string" ? undefined : `${target.field} requires a string`;
     case "iso-date":
@@ -230,6 +233,7 @@ export function modelKnownValueGuidance(): string {
 
 function describeContract(contract: KnownValueContract): string {
   switch (contract.shape) {
+    case "patient-age": return "an integer 0–150 for years, or an object {value: nonnegative safe integer, unit: months or days} for explicit non-year patient age (legacy target ageYears)";
     case "string": return "a string";
     case "iso-date": return "an ISO date (YYYY-MM-DD)";
     case "integer": return `an integer from ${contract.minimum} through ${contract.maximum}`;

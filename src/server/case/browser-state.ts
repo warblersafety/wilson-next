@@ -8,7 +8,7 @@ import {
 import type { JourneySnapshot, JourneyStage } from "../journey/service";
 import { InMemoryCaseRepository, validateRestoredCase } from "./repository";
 
-export const browserStateVersion = "wilson-browser-state-v11";
+export const browserStateVersion = "wilson-browser-state-v12";
 
 export interface BrowserJourneyState {
   version: typeof browserStateVersion;
@@ -68,7 +68,7 @@ function factSchema<T extends z.ZodType>(value: T) {
 const isoDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const patientFactsSchema = z.object({
   identifier: factSchema(z.string()),
-  ageYears: factSchema(z.number().int().min(0).max(150)),
+  ageYears: factSchema(z.union([z.number().int().min(0).max(150), z.object({ value: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER), unit: z.enum(["months", "days"]) }).strict()])),
   sex: factSchema(z.enum(["female", "male", "intersex"])),
   weight: factSchema(z.object({ value: z.number().positive(), unit: z.enum(["kg", "lb"]) }).strict()),
 }).strict();
@@ -207,12 +207,14 @@ const caseSchema = z.object({
   }).strict()),
 }).strict();
 
+const legacyPatientSchema = caseSchema.shape.patient.extend({ facts: patientFactsSchema.extend({ ageYears: factSchema(z.number().int().min(0).max(150)) }) });
+const v11CaseSchema = caseSchema.extend({ patient: legacyPatientSchema });
 const v10ProductFactsSchema = productFactsSchema.omit({ ndcOrUniqueId: true });
-const v10CaseSchema = caseSchema.extend({
+const v10CaseSchema = v11CaseSchema.extend({
   products: z.array(caseSchema.shape.products.element.extend({ facts: v10ProductFactsSchema })).max(maximumCaseProducts),
 });
 const v9ProductFactsSchema = v10ProductFactsSchema.omit({ medicationType: true, doseReduced: true, improvedAfterChange: true, restarted: true, recurred: true });
-const v9CaseSchema = caseSchema.extend({
+const v9CaseSchema = v11CaseSchema.extend({
   products: z.array(caseSchema.shape.products.element.extend({ facts: v9ProductFactsSchema })).max(maximumCaseProducts),
 });
 const v8CaseSchema = v9CaseSchema.extend({
@@ -257,7 +259,7 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
   if (!version.success) {
     throw new BrowserStateError("The saved synthetic preview state is malformed", "malformed-browser-state");
   }
-  if (![browserStateVersion, "wilson-browser-state-v10", "wilson-browser-state-v9", "wilson-browser-state-v8", "wilson-browser-state-v7"].includes(version.data.version)) {
+  if (![browserStateVersion, "wilson-browser-state-v11", "wilson-browser-state-v10", "wilson-browser-state-v9", "wilson-browser-state-v8", "wilson-browser-state-v7"].includes(version.data.version)) {
     throw new BrowserStateError("The saved synthetic preview state is incompatible", "incompatible-browser-state");
   }
   const envelope = stateSchema.safeParse(input);
@@ -289,12 +291,17 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
       ...product, facts: { ...product.facts, medicationType: emptyAddedFact(), doseReduced: emptyAddedFact(), improvedAfterChange: emptyAddedFact(), restarted: emptyAddedFact(), recurred: emptyAddedFact() },
     })) };
   }
-  if (version.data.version !== browserStateVersion) {
+  if (["wilson-browser-state-v7", "wilson-browser-state-v8", "wilson-browser-state-v9", "wilson-browser-state-v10"].includes(version.data.version)) {
     const legacy = v10CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = { ...legacy.data, products: legacy.data.products.map((product) => ({
       ...product, facts: { ...product.facts, ndcOrUniqueId: emptyAddedFact() },
     })) };
+  }
+  if (version.data.version !== browserStateVersion) {
+    const legacy = v11CaseSchema.safeParse(candidate);
+    if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
+    candidate = legacy.data; // Numeric years and all fact/draft target identities stay unchanged.
   }
   const parsedCase = caseSchema.safeParse(candidate);
   if (!parsedCase.success) {

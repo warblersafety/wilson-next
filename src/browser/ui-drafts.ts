@@ -8,7 +8,7 @@ import { decodeJourneyTextDrafts, initialJourneyTextDrafts, journeyTextDraftSche
 const choice = z.enum(["known", "unknown", "declined"]);
 const deviceChoice = z.enum(["known", "unknown", "inapplicable", "declined"]);
 const nonKnown = z.union([z.object({ kind: z.literal("unknown") }).strict(), z.object({ kind: z.literal("declined") }).strict(), z.object({ kind: z.literal("inapplicable") }).strict(), z.object({ kind: z.literal("explicitly-absent") }).strict()]);
-const editableValue = z.union([nonKnown, z.object({ kind: z.literal("known"), value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string()), z.object({ value: z.number(), unit: z.enum(["kg", "lb"]) }).strict()]), qualifier: z.string().optional() }).strict()]);
+const editableValue = z.union([nonKnown, z.object({ kind: z.literal("known"), value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string()), z.object({ value: z.number(), unit: z.enum(["kg", "lb"]) }).strict(), z.object({ value: z.number(), unit: z.enum(["months", "days"]) }).strict()]), qualifier: z.string().optional() }).strict()]);
 const booleanAnswer = z.union([nonKnown, z.object({ kind: z.literal("known"), value: z.boolean(), qualifier: z.string().optional() }).strict()]);
 const dateAnswer = z.union([nonKnown, z.object({ kind: z.literal("known"), value: z.string(), qualifier: z.string().optional() }).strict()]);
 const reporterValues = z.object({ firstName: z.string(), lastName: z.string(), address: z.string(), city: z.string(), state: z.string(), postalCode: z.string(), country: z.string(), phone: z.string(), email: z.string(), occupation: z.string() }).strict();

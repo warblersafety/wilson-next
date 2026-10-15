@@ -39,7 +39,7 @@ test("field-local editing preserves drafts, accepted information and placement a
   await age.getByLabel("New Age", { exact: true }).fill("55");
   await expect(age.getByLabel("Uncertainty or context for Age", { exact: true })).toHaveValue("approximately");
   await sex.getByRole("button", { name: "Change", exact: true }).click();
-  await expect(age.getByText("Unsaved edit: 55 (approximately)", { exact: true })).toBeVisible();
+  await expect(age.getByText("Unsaved edit: 55 years (approximately)", { exact: true })).toBeVisible();
   await expect(sex.getByText(/^Unsaved edit:/)).toHaveCount(0);
   const fieldPosition = () => sex.evaluate(element => {
     const rect = element.getBoundingClientRect();

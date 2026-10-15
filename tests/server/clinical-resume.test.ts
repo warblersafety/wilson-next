@@ -56,14 +56,14 @@ describe("durable clinical resume prerequisite", () => {
     expect(model.propose).not.toHaveBeenCalled();
   });
 
-  it.each(["v7", "v8", "v9", "v10"])("retains the %s migration on the resume route", async (version) => {
+  it.each(["v7", "v8", "v9", "v10", "v11"])("retains the %s migration on the resume route", async (version) => {
     const original = await fixture("accepted");
     const legacy = JSON.parse(JSON.stringify(original.state));
     legacy.version = `wilson-browser-state-${version}`;
     legacy.stage = "output";
     for (const product of legacy.case.products) {
-      delete product.facts.ndcOrUniqueId;
-      if (version !== "v10") for (const field of ["medicationType", "doseReduced", "improvedAfterChange", "restarted", "recurred"]) delete product.facts[field];
+      if (version !== "v11") delete product.facts.ndcOrUniqueId;
+      if (version !== "v10" && version !== "v11") for (const field of ["medicationType", "doseReduced", "improvedAfterChange", "restarted", "recurred"]) delete product.facts[field];
       if (version === "v7") delete product.facts.strength;
     }
     if (version === "v7") delete legacy.case.event.facts.reportDate;

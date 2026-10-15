@@ -258,7 +258,7 @@ test("opening correction remains a draft until acceptance and discarding propose
   await age.getByRole("button", { name: "Keep draft", exact: true }).click();
   expect(await storedState(page)).toEqual(opening);
   await patient.getByRole("button", { name: "Accept patient details with 1 change", exact: true }).click();
-  await expect(patient.getByText("41", { exact: true })).toBeVisible();
+  await expect(patient.getByText("41 years", { exact: true })).toBeVisible();
   expect((await storedState(page)).case.patient.facts.ageYears.resolvedValue?.value).toEqual({ kind: "known", value: 41 });
   await seedStoredState(page, opening);
   await page.reload();

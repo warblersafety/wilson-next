@@ -144,6 +144,30 @@ ongoing-therapy, reduction-date and duration gaps.
 Download readiness remains the supported-path condition, not a claim of
 complete FDA-form coverage.
 
+### Patient age units (Issue #167)
+
+The shared model prompt drops its adult-only scope wording solely to support
+explicitly supplied A2 age representation. This does not introduce age-specific
+clinical rules or establish broader pediatric clinical validation. The original
+completion evidence used adult cases; new month/day integration evidence is
+synthetic and mocked. Actual model unit preservation remains unverified (#169).
+
+A2 age remains one atomic fact: existing numeric0–150 values mean whole years;
+explicit whole months/days use `{value, unit}` with a nonnegative safe integer.
+The internal legacy `ageYears` target key is retained for source/history/change
+identity and old unfinished-draft compatibility; it does not coerce object ages
+to years. No DOB/date arithmetic, rounding or unit conversion. Changing the UI
+unit retains the number for explicit clinician correction, never calculates.
+The review shows units; the existing numeric years path and limits stay intact.
+No new follow-up question. Weeks, fractional/compound ages and DOB remain outside
+this slice and disclosed. Native PDF writes the exact value and exactly one unit
+box, leaving Weeks off; width is guarded at native27.621pt/Helvetica8.5pt without
+shrinking or truncation. Qualifiers retain explicit omission disclosure.
+Statev12 strictly checks v7–v11 against their old numeric-years contract after
+prior migrations, preserving all facts/IDs/sources/history/revisions/targets and
+numeric unfinished drafts unchanged. Current UI draft codec additionally retains
+month/day pairs, including unfinished invalid quantities without promoting them.
+
 ### Product NDC number or Unique ID (Issue #165)
 
 A separate product ndcOrUniqueId text fact reaches each native Section D D1
@@ -440,7 +464,7 @@ successfully remains visibly proposed for operator review and cannot become
 resolved without the ordinary clinician-review command. External semantic
 oracles and human scoring determine whether an experiment run passes.
 
-The supported adult medication adverse-event path uses one bounded,
+The supported medication adverse-event path (originally verified with adult cases) uses one bounded,
 deterministic completion policy. After opening proposals are reviewed, it asks
 in order about missing suspect-product indications, unestablished serious
 outcomes, death date only when death applies, missing relevant tests and medical
@@ -532,7 +556,7 @@ the other branch with an explicit not-carried-forward explanation. This keeps
 clinician evidence visible without silently projecting it into an inapplicable
 form section.
 
-For the selected adult medication, single-device adverse-event,
+For the selected medication, single-device adverse-event,
 product-problem-only, and bounded combined-report journeys, unresolved optional facts remain
 omitted and visible but do not block output after proposals, corrections, and
 applicable bounded needs have received their required review or direct answer.

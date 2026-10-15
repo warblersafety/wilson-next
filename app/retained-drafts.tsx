@@ -28,7 +28,7 @@ function rows(item: RetainedDraft, snapshot: JourneySnapshot): Array<[string, st
   if (record.kind === "card") {
     let entity: FactControlEntity | undefined;
     try { const scope = JSON.parse(record.scope); if (["patient", "event", "product", "test", "reporter"].includes(scope[0])) entity = scope[0]; } catch { /* No internal identity is displayed. */ }
-    return Object.entries(record.data.drafts).map(([field, value]) => { const control = entity ? factControl(entity, field) : undefined; return [control?.label ?? "Earlier value", valueText(value, control?.options)]; });
+    return Object.entries(record.data.drafts).map(([field, value]) => { const control = entity ? factControl(entity, field) : undefined; const display = control?.shape === "age" && value.kind === "known" && typeof value.value === "number" ? { ...value, value: `${value.value} years` } : value; return [control?.label ?? "Earlier value", valueText(display, control?.options)]; });
   }
   if (record.kind === "reporter") return Object.entries({ ...record.data.values, reportDate: record.data.reportDate, healthProfessional: record.data.healthProfessional, reportedTo: record.data.reportedTo, doNotDiscloseIdentity: record.data.doNotDiscloseIdentity }).map(([field, value]) => [labels[field], valueText(value, field === "reportedTo" ? "choices" : undefined)]);
   if (record.kind === "indications") {
