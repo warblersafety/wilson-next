@@ -1028,7 +1028,7 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
     </div>
     {fields.every((field) => !activeValue(facts[field]) && !facts[field]?.history.length && !facts[field]?.conflicts.length) && <p className={styles.hint}>No details were captured for this group. It can be left blank.</p>}
     {entityState === "withdrawn" && <p className={styles.withdrawn}>Withdrawn from the active report; reviewed facts and source history are retained below.</p>}
-    {entity === "test" && entityState !== "withdrawn" && !knownString(activeValue(facts.testName)) && <p role="status">Test identity is not recorded as known. Check the source wording. You can supply its name in Clinical update or leave it unknown for a partial report.</p>}
+    {entity === "test" && entityState !== "withdrawn" && !knownString(cardValue(facts.testName)) && <p role="status">Test identity is not recorded as known. Check the source wording. You can supply its name in Clinical update or leave it unknown for a partial report.</p>}
     {entity === "test" && allowOpeningReview && <p className={styles.hint}>Not yet included in the report. Accept this test after checking it.</p>}
     {reviewBlocked && <p className={styles.hint}>Review the proposed changes above to enable these controls. <a href="#update-review-title" onClick={() => document.getElementById("update-review-title")?.focus()}>Go to proposed changes</a></p>}
     {pendingUpdates.length > 0 && <div className={styles.pendingLinks}><p>Changes awaiting review:</p><ul>{pendingUpdates.map(({ groupId, title: groupTitle }) => <li key={groupId}><a href={`#${updateGroupAnchor(groupId)}`} onClick={() => document.getElementById(updateGroupAnchor(groupId))?.focus()}>{groupTitle}</a></li>)}</ul></div>}
