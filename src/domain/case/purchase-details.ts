@@ -287,3 +287,10 @@ export const purchaseCountryOptions: readonly string[] = [
   "ZAMBIA",
   "ZIMBABWE"
 ];
+
+/** Display-format equivalence only. Never aliases, geography or unknown-state inference. */
+export function purchaseCountryLabel(value:string):string|undefined {
+ const key=value.trim().toLowerCase();
+ return purchaseCountryOptions.find(option=>option!=="UNKNOWN" && option.toLowerCase()===key);
+}
+export const purchaseCountrySuggestions = purchaseCountryOptions.filter(option=>option!=="UNKNOWN");

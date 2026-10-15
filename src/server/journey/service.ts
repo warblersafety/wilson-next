@@ -710,7 +710,7 @@ export function outputReadinessIssues(
     const limit = durationLimitation(product.treatmentDuration);
     if (limit) issue("unsupported-treatment-duration",`${productLabel(caseState,product.productId)}: the reviewed duration ${limit}; no new PDF is generated.`,[`product:${product.productId}:treatmentDuration`],[product.productId]);
   }
-  for(const [index,product] of projection.sections.D.suspectProducts.entries())for(const field of purchaseDetailFields){
+  for(const [index,product] of projection.sections.D.suspectProducts.slice(0,maximumForm3500SuspectProducts).entries())for(const field of purchaseDetailFields){
     const value=product[field];if(value===undefined)continue;const limit=purchaseDetailLimitation(field,value,index);
     if(limit)issue("unsupported-purchase-detail",`${productLabel(caseState,product.productId)}: the reviewed ${purchaseDetailLabels[field]} ${limit}. It is retained; no new PDF is generated.`,[`product:${product.productId}:${field}`],[product.productId]);
   }

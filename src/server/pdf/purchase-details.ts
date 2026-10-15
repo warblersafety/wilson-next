@@ -1,4 +1,4 @@
-import {purchaseCountryOptions,type PurchaseDetailField} from "../../domain/case/purchase-details";
+import {purchaseCountryLabel,type PurchaseDetailField} from "../../domain/case/purchase-details";
 import {nativeSingleLineTextLimitation} from "./product-text";
 export const purchaseNativeGeometry = [
   {
@@ -92,7 +92,7 @@ export const purchaseNativeGeometry = [
 ] as const;
 export function purchaseDetailLimitation(field:PurchaseDetailField,value:string,index:number):string|undefined {
  if (!value.trim()) return "has no non-blank wording";
- if (field==="purchaseSellerCountry" && !purchaseCountryOptions.includes(value)) return "does not match an explicitly selected native country; the original wording is retained without guessing a country";
+ if (field==="purchaseSellerCountry" && !purchaseCountryLabel(value)) return "does not match an explicitly selected native country; the original wording is retained without guessing a country";
  const g=purchaseNativeGeometry[index][field];
  if(g.maxLength!==null && value.length>g.maxLength) return "exceeds the native purchase control character capacity";
  return nativeSingleLineTextLimitation(value,g.width,g.fontSize,"purchase detail control");

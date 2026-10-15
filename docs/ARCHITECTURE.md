@@ -1352,7 +1352,10 @@ derived from another field. Websites are plain reviewed text, never fetched.
 Product cards retain the current interaction; no new mandatory question.
 
 Country is a blank text entry with explicit native-country suggestions, not a
-default or geography/alias conversion. Raw unmatched wording remains accepted
+default or geography/alias conversion. Downstream case/outer-space equivalence
+selects the exact native display label, while raw case facts/source/history stay
+unchanged. Native UNKNOWN is excluded from known-country suggestions and matching;
+explicit unknown information uses the existing Unknown status, not a known literal. Raw unmatched wording remains accepted
 knowledge with history and source; it does not become a guessed dropdown
 selection. Both native country lists are equal and independently checked.
 Strict per-slot width/font/native MaxLen, single-line, blank, glyph and country
@@ -1373,6 +1376,14 @@ claim that all context is printed.
 
 Browser statev21 strictly validates genuine v7–v20 before adding only empty
 metadata facts. Existing state/source/history/revision and unfinished edits
-remain; no model action replays on resume. Promptv17/schemav27 add only explicit
+remain; no model action replays on resume. Promptv18/schemav27 add only explicit
 seller targets and preserve the prior cosmetic wording; #187 remains unverified.
 No live application-model evidence is claimed.
+
+
+Actual issue188 Opus B1 exposed third-suspect seller details indexing beyond the
+two native slots during readiness. The seller geometry checks now inspect only
+available native positions; the existing over-capacity notice still blocks
+output, retains every third-product fact and permits explicit repair/resume.
+This does not expand capacity or silently move/drop metadata. F1/F2 clarification
+adds only country display-format equivalence and distinct unknown status.

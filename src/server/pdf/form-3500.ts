@@ -1,4 +1,4 @@
-import {purchaseDetailFields} from "../../domain/case/purchase-details";
+import {purchaseDetailFields,purchaseCountryLabel} from "../../domain/case/purchase-details";
 import {purchaseNativeGeometry,purchaseDetailLimitation} from "./purchase-details";
 import { isTreatmentDuration, durationNativeUnits, durationNativeLabels } from "../../domain/case/duration";
 import { durationLimitation } from "./duration";
@@ -370,7 +370,7 @@ export async function fillForm3500Projection(
     for(const field of purchaseDetailFields){
       const value=product[field],name=purchaseNativeGeometry[index][field].name;
       if(value!==undefined && (typeof value!=="string" || purchaseDetailLimitation(field,value,index)))throw new Error(`Unsupported Section D purchase detail: ${field}`);
-      if(field==="purchaseSellerCountry"){const control=form.getDropdown(name);if(value!==undefined)control.select(value);else if(control.getSelected().some(v=>v.trim()))control.select(" ");}
+      if(field==="purchaseSellerCountry"){const control=form.getDropdown(name);if(value!==undefined)control.select(purchaseCountryLabel(value)!);else if(control.getSelected().some(v=>v.trim()))control.select(" ");}
       else if(value!==undefined || form.getTextField(name).getText())setText(form,name,value??"");
     }
     if (product.purchaseDate !== undefined && !isCompleteCalendarDate(product.purchaseDate)) throw new Error("Section D purchase date requires a complete valid calendar date");

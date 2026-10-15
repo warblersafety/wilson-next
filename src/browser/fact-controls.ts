@@ -1,4 +1,4 @@
-import { purchaseCountryOptions } from "../domain/case/purchase-details";
+import { purchaseCountrySuggestions } from "../domain/case/purchase-details";
 import { durationUnits } from "../domain/case/duration";
 import { raceEthnicityOptions } from "../domain/case/race-ethnicity";
 import type {
@@ -103,7 +103,7 @@ const product = {
   purchaseSellerCity: { label: "Purchase city", shape: "text", },
   purchaseSellerRegion: { label: "Purchase state/province/region", shape: "text", },
   purchaseSellerPostalCode: { label: "Purchase postal code", shape: "text", },
-  purchaseSellerCountry: { label: "Purchase country", shape: "text", options: purchaseCountryOptions.map(value=>({value,label:value.toLowerCase().replace(/(^|\s)\S/g,c=>c.toUpperCase())})), help: "Enter the explicitly supplied country or select a suggested native option. No country is inferred or defaulted; unmatched wording remains retained with a PDF limitation.", },
+  purchaseSellerCountry: { label: "Purchase country", shape: "text", options: purchaseCountrySuggestions.map(value=>({value,label:value.toLowerCase().replace(/(^|\s)\S/g,c=>c.toUpperCase())})), help: "Enter the explicitly supplied country or select a suggested native option. Only case/outer-space formatting matches a native label; no aliases or country inference. Use Unknown status for unknown information; unmatched wording is retained with a PDF limitation.", },
   purchaseWebsite: { label: "Purchase website", shape: "text", },
   purchaseDate: { label: "Purchase date", shape: "date", completeDate: true, help: "Enter the explicitly supplied complete purchase date as YYYY-MM-DD. Partial or impossible dates stay unfinished. Wilson never infers a purchase date from other dates." },
   doseReductionDate: { label: "Dose reduced on", shape: "date", completeDate: true, help: "Enter the explicitly supplied complete date as YYYY-MM-DD. Partial or impossible dates stay unfinished. Wilson never infers a dose reduction or its date." },

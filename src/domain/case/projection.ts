@@ -1,4 +1,4 @@
-import {purchaseDetailFields,purchaseDetailLabels} from "./purchase-details";
+import {purchaseDetailFields,purchaseDetailLabels,purchaseCountryLabel} from "./purchase-details";
 import { d3DateFields, type TreatmentDuration } from "./duration";
 import { raceEthnicityOptions, type RaceEthnicity } from "./race-ethnicity";
 import type { PatientAge } from "./age";
@@ -333,6 +333,7 @@ function projectProduct(
   const prefix = `sections.D.suspectProducts.${index}`;
   for (const field of sectionDProductFields) {
     assign<unknown>(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field] as Fact<unknown>, result, field, (value) => field === "medicationType" ? ["brand", "generic-biosimilar", "otc", "compounded"].filter((label) => (value as string[]).includes(label))
+      : field === "purchaseSellerCountry" ? purchaseCountryLabel(String(value)) ?? value
       : field === "dose" || field === "strength" ? { value: String(value), ...(known(product.facts[field])?.qualifier !== undefined ? { qualifier: known(product.facts[field])!.qualifier } : {}) }
         : value, field === "dose" || field === "strength");
   }

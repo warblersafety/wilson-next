@@ -5,12 +5,13 @@ SectionD purchase blocks without deriving anything from manufacturer, reporter,
 geography or website. The existing purchaseDate is unchanged. Current pinned
 official form: https://www.fda.gov/media/76299/download?attachment=
 
-726unit/75files PASS, typecheck/build PASS; two owned mock Chromium journeys
-PASS7.6s. Full110mock browser run, actual subscription Opus review and exact-head
+732unit/75files PASS, typecheck/build PASS; three owned mock Chromium journeys
+PASS8.6s. Full111mock browser run, actual subscription Opus review and exact-head
 CI are recorded on the PR. Model fixtures exercise ordinary volunteered seller
 words, proposed until human review, and explicit city/site-only correction.
-Country starts blank with explicit native suggestions. Raw UK remains UK and
-blocked, then explicit UNITED KINGDOM correction restores native output; no
+Country starts blank with explicit native suggestions. Ordinary United Kingdom/Canada wording remains raw in case knowledge while native
+labels print uppercase. UK remains UK and blocked, then explicit country choice
+restores output; native UNKNOWN is not suggested as a known country. No
 automatic alias/country inference or website request. Genuine v20 unfinished
 date draft plus new country/address drafts survive reload. Prior v7-v19 paths
 remain strict.
@@ -41,3 +42,5 @@ truthful disclosure. D5 hemp/Other, pictures, device/concomitant/overflow,
 international reporter, partial dates, #115/#150/#151/#153/#154/#157/#161/#164/
 #169/#180/#187 and macro acceptance remain unfinished. No live application-model
 calls or claim of live interpretation reliability.
+
+Actual Opus B1 third-suspect snapshot crash is remediated with native-slot-limited readiness checks and snapshot/resume/browser role-recovery regression; capacity itself remains unchanged. F1 country case/outer-space formatting preserves raw facts/source, never aliases/geography. F2 explicit unknown status stays distinct from known literal UNKNOWN. Final counts/recheck/CI recorded on PR.

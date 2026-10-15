@@ -1,19 +1,24 @@
 {
-  "renderer": "macOS PDFKit",
-  "scale": 2,
-  "captures": [
+  "capturedPages" : [
     {
-      "page": 4,
-      "image": "purchase-details-both-page-4.png",
-      "visuallyInspected": true,
-      "observed": "Exact seller/address/city/region/postal/country/site text fits native purchase block; leading postal zeros and country labels visible. Both original seller identities remain independent."
+      "page" : 4,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/Documents\/Codex\/2026-10-15\/task\/issue-188-evidence\/purchase-details-both-page-4.png"
     },
     {
-      "page": 5,
-      "image": "purchase-details-both-page-5.png",
-      "visuallyInspected": true,
-      "observed": "Exact seller/address/city/region/postal/country/site text fits native purchase block; leading postal zeros and country labels visible. Both original seller identities remain independent."
+      "page" : 5,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/Documents\/Codex\/2026-10-15\/task\/issue-188-evidence\/purchase-details-both-page-5.png"
     }
   ],
-  "inspectionNote": "Four unique images viewed; correctedpage4 and accentedpage5 byte-identical to inspected originals."
+  "manualInspectionRequired" : [
+    "No password prompt, corruption, or displaced form content is visible",
+    "FDA, MedWatch, Form 3500, OMB expiry, and page identity are preserved",
+    "Sections A and B agree with the repaired reviewed patient and event",
+    "Section D contains the repaired suspect-product identity and indication",
+    "Section G agrees with the direct reporter entry"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "\/Users\/sofa-claude\/Documents\/Codex\/2026-10-15\/task\/issue-188-evidence\/purchase-details-both.pdf"
 }
