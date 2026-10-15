@@ -101,7 +101,7 @@ test("focused usability: truthful activity, draft fictional reporter, review dep
   await expect(page.getByRole("heading", { name: "Review the proposed update", exact: true })).toBeVisible();
   await expect(page.locator("#case-card-patient").getByRole("button", { name: "Change", exact: true })).toHaveCount(0);
   await expect(test2).toContainText("Review the proposed changes above to enable these controls.");
-  await expect(test2.getByRole("button", { name: "Accept Relevant test 2", exact: true })).toBeDisabled();
+  await expect(test2.getByRole("button", { name: "Accept Hemoglobin — 2026-09-12 (test 2)", exact: true })).toBeDisabled();
   await test2.getByRole("link", { name: "Go to proposed changes" }).click();
   await expect(page.getByRole("heading", { name: "Review the proposed update", exact: true })).toBeFocused();
   await page.screenshot({ path: info.outputPath("update-dependencies-desktop.png"), fullPage: true });

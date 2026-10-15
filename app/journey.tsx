@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { testDisplayLabel } from "../src/domain/case/test-label";
 import { productDisplayLabel } from "../src/domain/case/product-label";
 import type { CaseValue, ReportType } from "../src/domain/case/types";
 import type { FactView, ProductView, ReviewAttentionItem } from "../src/domain/case/views";
@@ -816,7 +817,7 @@ function reviewGroupTitle(snapshot: JourneySnapshot, items: ReviewAttentionItem[
     if (entity === "test") {
       const index = snapshot.understanding.relevantTests.findIndex((test) => test.id === id);
       const test = snapshot.understanding.relevantTests[index];
-      return `Relevant test ${index + 1}${test ? ` — ${knownString(activeValue(test.facts.testName)) ?? "name not supplied"}${knownString(activeValue(test.facts.date)) ? `, ${displayDate(knownString(activeValue(test.facts.date)))}` : ""}` : ""}`;
+      return testDisplayLabel(test, index + 1);
     }
     return entity === "patient" ? "Patient" : entity === "event" ? "Event" : "Reporter";
   }))];
@@ -930,7 +931,7 @@ function CaseCards({ snapshot, busy, act }: {
   return <div className={styles.cards}>
     <CaseCard pendingUpdates={updatesFor("patient", "patient")} domId="case-card-patient" title="Patient" entity="patient" entityId="patient" entityState="resolved" groupId="patient" facts={understanding.patient} fields={["identifier", "ageYears", "sex", "weight"]} allowOpeningReview={openingReview && snapshot.openingGroups.includes("patient")} allowDirectEdit={directEdit} busy={busy} act={act} />
     <CaseCard pendingUpdates={updatesFor("event", "event")} domId="case-card-event" title="Event" entity="event" entityId="event" entityState="resolved" groupId="event" facts={understanding.event} fields={["reportType", "reportDate", "problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate", "relevantHistory"]} allowOpeningReview={openingReview && snapshot.openingGroups.includes("event")} allowDirectEdit={directEdit} busy={busy} act={act} />
-    {understanding.relevantTests.map((test, index) => <CaseCard pendingUpdates={updatesFor("test", test.id)} domId={`case-card-test-${index + 1}`} key={test.id} title={`Relevant test ${index + 1}`} eyebrow="Test or laboratory result" entity="test" entityId={test.id} entityState={test.state} groupId={test.proposalGroupId} facts={test.facts} fields={["testName", "testResult", "lowRange", "highRange", "date"]} reviewBlocked={snapshot.stage === "review-update" && test.state === "proposed"} allowOpeningReview={openingReview && test.state === "proposed"} allowDirectEdit={directEdit && test.state === "resolved"} allowRemove={openingReview && test.state === "proposed"} allowWithdraw={entityWithdrawal && test.state === "resolved"} busy={busy} act={act} />)}
+    {understanding.relevantTests.map((test, index) => <CaseCard pendingUpdates={updatesFor("test", test.id)} domId={`case-card-test-${index + 1}`} key={test.id} title={testDisplayLabel(test, index + 1)} eyebrow="Test or laboratory result" entity="test" entityId={test.id} entityState={test.state} groupId={test.proposalGroupId} facts={test.facts} fields={["testName", "testResult", "lowRange", "highRange", "date"]} reviewBlocked={snapshot.stage === "review-update" && test.state === "proposed"} allowOpeningReview={openingReview && test.state === "proposed"} allowDirectEdit={directEdit && test.state === "resolved"} allowRemove={openingReview && test.state === "proposed"} allowWithdraw={entityWithdrawal && test.state === "resolved"} busy={busy} act={act} />)}
     {understanding.products.map((product) => {
       const name = productViewLabel(product);
       const role = knownString(activeValue(product.facts.role));
@@ -1247,7 +1248,7 @@ function targetLabel(snapshot: JourneySnapshot, target: string): string {
   const [entity, entityId, field] = target.split(":");
   if (entity === "test") {
     const index = snapshot.understanding.relevantTests.findIndex(({ id }) => id === entityId);
-    return `Relevant test ${index + 1} — ${fieldLabel("test", field)}`;
+    return `${index < 0 ? "Selected test" : testDisplayLabel(snapshot.understanding.relevantTests[index], index + 1)} — ${fieldLabel("test", field)}`;
   }
   if (entity !== "product") return field ? fieldLabel(entity, field) : target;
   const product = snapshot.understanding.products.find(({ id }) => id === entityId);
