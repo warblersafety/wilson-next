@@ -1,0 +1,194 @@
+{
+  "a5-all": {
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RaceAmInd[0]": {
+      "value": "/1",
+      "appearanceState": "/1",
+      "rectangle": [
+        56.613,
+        469.992,
+        67.283,
+        480.662
+      ],
+      "nativeAppearances": {
+        "/1": "q\n1 1 8.67 8.67 re\nW\nn\n0.5 w\n2 8.67 m\n8.67 2 l\n8.67 8.67 m\n2 2 l\ns\nQ\n"
+      }
+    },
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RaceAsian[0]": {
+      "value": "/1",
+      "appearanceState": "/1",
+      "rectangle": [
+        56.613,
+        455.113,
+        67.283,
+        465.783
+      ],
+      "nativeAppearances": {
+        "/1": "q\n1 1 8.67 8.67 re\nW\nn\n0.5 w\n2 8.67 m\n8.67 2 l\n8.67 8.67 m\n2 2 l\ns\nQ\n"
+      }
+    },
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RaceBlack[0]": {
+      "value": "/1",
+      "appearanceState": "/1",
+      "rectangle": [
+        56.613,
+        440.441,
+        67.283,
+        451.111
+      ],
+      "nativeAppearances": {
+        "/1": "q\n1 1 8.67 8.67 re\nW\nn\n0.5 w\n2 8.67 m\n8.67 2 l\n8.67 8.67 m\n2 2 l\ns\nQ\n"
+      }
+    },
+    "topmostSubform[0].Page1[0].SecA_Patient[0].EthnicLatino[0]": {
+      "value": "/1",
+      "appearanceState": "/1",
+      "rectangle": [
+        56.613,
+        425.21,
+        67.283,
+        435.88
+      ],
+      "nativeAppearances": {
+        "/1": "q\n1 1 8.67 8.67 re\nW\nn\n0.5 w\n2 8.67 m\n8.67 2 l\n8.67 8.67 m\n2 2 l\ns\nQ\n"
+      }
+    },
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RaceMiddleEastern[0]": {
+      "value": "/1",
+      "appearanceState": "/1",
+      "rectangle": [
+        273.849,
+        470.287,
+        284.519,
+        480.957
+      ],
+      "nativeAppearances": {
+        "/1": "q\n1 1 8.67 8.67 re\nW\nn\n0.5 w\n2 8.67 m\n8.67 2 l\n8.67 8.67 m\n2 2 l\ns\nQ\n"
+      }
+    },
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RacePacific[0]": {
+      "value": "/1",
+      "appearanceState": "/1",
+      "rectangle": [
+        274.331,
+        453.987,
+        285.001,
+        464.657
+      ],
+      "nativeAppearances": {
+        "/1": "q\n1 1 8.67 8.67 re\nW\nn\n0.5 w\n2 8.67 m\n8.67 2 l\n8.67 8.67 m\n2 2 l\ns\nQ\n"
+      }
+    },
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RaceWhite[0]": {
+      "value": "/1",
+      "appearanceState": "/1",
+      "rectangle": [
+        273.849,
+        439.185,
+        284.519,
+        449.855
+      ],
+      "nativeAppearances": {
+        "/1": "q\n1 1 8.67 8.67 re\nW\nn\n0.5 w\n2 8.67 m\n8.67 2 l\n8.67 8.67 m\n2 2 l\ns\nQ\n"
+      }
+    }
+  },
+  "a5-partial": {
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RaceAmInd[0]": {
+      "value": "",
+      "appearanceState": "/Off",
+      "rectangle": [
+        56.613,
+        469.992,
+        67.283,
+        480.662
+      ],
+      "nativeAppearances": {
+        "/1": "1 0 0 1 0 0 cm\n1 0 0 1 0 0 cm\nq\nq\n0 G\n1.5 w\n1 0 0 1 5.335000000000001 5.3349999999999795 cm\n-3.6011249999999864 -0.40551528497409134 m\n-1.3337499999999949 -2.6141499999999898 l\n3.6811499999999855 2.53412499999999 l\nS\nQ\nQ\n",
+        "/Off": "1 0 0 1 0 0 cm\n1 0 0 1 0 0 cm\n"
+      }
+    },
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RaceAsian[0]": {
+      "value": "",
+      "appearanceState": "/Off",
+      "rectangle": [
+        56.613,
+        455.113,
+        67.283,
+        465.783
+      ],
+      "nativeAppearances": {
+        "/1": "1 0 0 1 0 0 cm\n1 0 0 1 0 0 cm\nq\nq\n0 G\n1.5 w\n1 0 0 1 5.335000000000001 5.335000000000008 cm\n-3.601125000000001 -0.40551528497409295 m\n-1.3337500000000002 -2.6141500000000004 l\n3.68115 2.5341250000000004 l\nS\nQ\nQ\n",
+        "/Off": "1 0 0 1 0 0 cm\n1 0 0 1 0 0 cm\n"
+      }
+    },
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RaceBlack[0]": {
+      "value": "",
+      "appearanceState": "/Off",
+      "rectangle": [
+        56.613,
+        440.441,
+        67.283,
+        451.111
+      ],
+      "nativeAppearances": {
+        "/1": "1 0 0 1 0 0 cm\n1 0 0 1 0 0 cm\nq\nq\n0 G\n1.5 w\n1 0 0 1 5.335000000000001 5.335000000000008 cm\n-3.601125000000001 -0.40551528497409295 m\n-1.3337500000000002 -2.6141500000000004 l\n3.68115 2.5341250000000004 l\nS\nQ\nQ\n",
+        "/Off": "1 0 0 1 0 0 cm\n1 0 0 1 0 0 cm\n"
+      }
+    },
+    "topmostSubform[0].Page1[0].SecA_Patient[0].EthnicLatino[0]": {
+      "value": "/1",
+      "appearanceState": "/1",
+      "rectangle": [
+        56.613,
+        425.21,
+        67.283,
+        435.88
+      ],
+      "nativeAppearances": {
+        "/1": "q\n1 1 8.67 8.67 re\nW\nn\n0.5 w\n2 8.67 m\n8.67 2 l\n8.67 8.67 m\n2 2 l\ns\nQ\n"
+      }
+    },
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RaceMiddleEastern[0]": {
+      "value": "",
+      "appearanceState": "/Off",
+      "rectangle": [
+        273.849,
+        470.287,
+        284.519,
+        480.957
+      ],
+      "nativeAppearances": {
+        "/1": "1 0 0 1 0 0 cm\n1 0 0 1 0 0 cm\nq\nq\n0 G\n1.5 w\n1 0 0 1 5.335000000000008 5.335000000000008 cm\n-3.6011250000000055 -0.4055152849740935 m\n-1.333750000000002 -2.614150000000004 l\n3.681150000000005 2.5341250000000035 l\nS\nQ\nQ\n",
+        "/Off": "1 0 0 1 0 0 cm\n1 0 0 1 0 0 cm\n"
+      }
+    },
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RacePacific[0]": {
+      "value": "",
+      "appearanceState": "/Off",
+      "rectangle": [
+        274.331,
+        453.987,
+        285.001,
+        464.657
+      ],
+      "nativeAppearances": {
+        "/1": "1 0 0 1 0 0 cm\n1 0 0 1 0 0 cm\nq\nq\n0 G\n1.5 w\n1 0 0 1 5.3349999999999795 5.3349999999999795 cm\n-3.6011249999999864 -0.40551528497409134 m\n-1.3337499999999949 -2.6141499999999898 l\n3.6811499999999855 2.53412499999999 l\nS\nQ\nQ\n",
+        "/Off": "1 0 0 1 0 0 cm\n1 0 0 1 0 0 cm\n"
+      }
+    },
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RaceWhite[0]": {
+      "value": "",
+      "appearanceState": "/Off",
+      "rectangle": [
+        273.849,
+        439.185,
+        284.519,
+        449.855
+      ],
+      "nativeAppearances": {
+        "/1": "1 0 0 1 0 0 cm\n1 0 0 1 0 0 cm\nq\nq\n0 G\n1.5 w\n1 0 0 1 5.335000000000008 5.335000000000008 cm\n-3.6011250000000055 -0.4055152849740935 m\n-1.333750000000002 -2.614150000000004 l\n3.681150000000005 2.5341250000000035 l\nS\nQ\nQ\n",
+        "/Off": "1 0 0 1 0 0 cm\n1 0 0 1 0 0 cm\n"
+      }
+    }
+  }
+}

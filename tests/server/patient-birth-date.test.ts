@@ -31,7 +31,7 @@ it("upgrades genuine v13 by adding only empty fields, preserving week history an
  const expected={version:browserStateVersion,stage:"output",case:c,unrepresented:[]};const legacy=structuredClone({...expected,version:"wilson-browser-state-v13"});removeBirthDateFields(legacy.case);const before=structuredClone(legacy);
  expect(parseBrowserJourneyState(legacy)).toEqual(expected);expect(legacy).toEqual(before);
  const mislabeled={...expected,version:"wilson-browser-state-v13"};expect(()=>parseBrowserJourneyState(mislabeled)).toThrow();
- const withDob=setContextFact(c,"patient:patient:dateOfBirth",{kind:"known",value:"2024-02-29"});expect(()=>parseBrowserJourneyState({...expected,case:withDob,version:"wilson-browser-state-v15"})).toThrow();
+ const withDob=setContextFact(c,"patient:patient:dateOfBirth",{kind:"known",value:"2024-02-29"});expect(()=>parseBrowserJourneyState({...expected,case:withDob,version:"wilson-browser-state-v16"})).toThrow();
 });
 it.each(["2023-02-29","2024-02"])("rejects invalid DOB %s at the direct action boundary without modifying submitted state",async value=>{
  const state={version:browserStateVersion,stage:"output",case:productCapacityCase(),unrepresented:[]},before=structuredClone(state);

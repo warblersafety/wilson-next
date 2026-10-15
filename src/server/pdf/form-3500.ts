@@ -1,3 +1,4 @@
+import { raceEthnicityOptions, isRaceEthnicitySelections } from "../../domain/case/race-ethnicity";
 import { isCompleteBirthDate } from "../../domain/case/birth-date";
 import { patientAgeParts, type PatientAge } from "../../domain/case/age";
 import { patientAgeLimitation } from "./patient-age";
@@ -263,6 +264,12 @@ export async function fillForm3500Projection(
   const { A, B, C, D, E, F } = projection.sections;
 
   setText(form, fields.patientIdentifier, A.patientIdentifier);
+  if (A.raceEthnicity !== undefined && !isRaceEthnicitySelections(A.raceEthnicity)) throw new Error("A5 requires supported nonempty unique race/ethnicity selections");
+  for (const option of raceEthnicityOptions) {
+    const name = `topmostSubform[0].Page1[0].SecA_Patient[0].${option.widget}[0]`;
+    const selected = A.raceEthnicity?.includes(option.value) ?? false;
+    if (selected || form.getCheckBox(name).isChecked()) setChecked(form, name, selected);
+  }
   if (A.ageYears !== undefined && A.dateOfBirth !== undefined) throw new Error("A2 requires an explicit age or date-of-birth print choice");
   if (A.dateOfBirth !== undefined && !isCompleteBirthDate(A.dateOfBirth)) throw new Error("Date of birth requires a complete valid calendar date");
   if (A.dateOfBirth !== undefined || form.getTextField(fields.dateOfBirth).getText()) setText(form, fields.dateOfBirth, A.dateOfBirth ? formatDate(A.dateOfBirth) : "");
@@ -572,6 +579,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
         patientIdentifier: form.getTextField(fields.patientIdentifier).getText(),
         ageYears: readAge(),
         dateOfBirth: parseDate(form.getTextField(fields.dateOfBirth).getText()),
+        raceEthnicity: A.raceEthnicity !== undefined ? raceEthnicityOptions.filter(option => form.getCheckBox(`topmostSubform[0].Page1[0].SecA_Patient[0].${option.widget}[0]`).isChecked()).map(option => option.value) : undefined,
         sex: form.getCheckBox(fields.sexFemale).isChecked()
           ? "female"
           : form.getCheckBox(fields.sexMale).isChecked() ? "male" : undefined,

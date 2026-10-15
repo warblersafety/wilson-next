@@ -205,6 +205,34 @@ requires selection when both are known. Existing qualified preferences remain
 visible and can have context explicitly removed without silently losing it.
 All integration evidence is fictional and mocked; #169 live fidelity is open.
 
+### Patient-provided race and/or ethnicity (Issue #174)
+
+Current official09/2025 A5 is one combined select-all question with seven native
+categories, including Middle Eastern or North African. The raceEthnicity fact
+retains an explicitly supplied nonempty, unique list of exact supported values.
+No inference from names, appearance, geography, nationality, ancestry, language
+or other proxies. Unsupported identities never become guessed broader categories.
+The model proposes only clinician-supplied patient-reported responses for human
+review. Multiple categories and whole-list corrections retain source/history;
+the PDF uses canonical form order without rewriting the fact's supplied order.
+
+Not supplied stays empty. Explicit unknown, declined, inapplicable or none-of-the-
+listed-categories responses keep their distinct CaseValue states and disclosed
+omissions, with no checked boxes. A temporary empty known selection is an invalid
+unfinished draft, never a negative response. Unchecked boxes mean unselected,
+not explicitly denied. Known categories plus unknown/declined portions, negative
+statements or extra identity wording preserve that exact context as a qualifier;
+native positive checkboxes cannot encode it, so omission is explicit. Qualifiers
+apply to the whole list; #159 list-scope and #169 live fidelity remain unresolved.
+
+Statev15 checks originalv7–v14 schemas and adds only an empty raceEthnicity fact,
+without rewriting prior clinical values, IDs, sources/history, revisions or draft
+identities. The existing checkbox editor retains incomplete empty drafts across
+reload with Apply disabled. No default category, new question or redesign.
+Native A5 checks exactly the selected categories; untouched blank widgets stay
+unset on legacy paths. Partial/detailed identity semantics beyond the native
+categories remain bounded and never inferred. All integration evidence is mocked.
+
 ### Product NDC number or Unique ID (Issue #165)
 
 A separate product ndcOrUniqueId text fact reaches each native Section D D1

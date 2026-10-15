@@ -26,7 +26,7 @@ it("rejects malformed/mislabeled/future payloads without inventing or overwritin
   const missing = JSON.parse(JSON.stringify(good)); delete missing.case.products[0].facts.ndcOrUniqueId;
   const malformed = JSON.parse(JSON.stringify(good)); malformed.case.products[0].facts.ndcOrUniqueId = { state: "empty" };
   const mislabeled = { ...good, version: "wilson-browser-state-v10" };
-  const future = { ...good, version: "wilson-browser-state-v15" };
+  const future = { ...good, version: "wilson-browser-state-v16" };
   for (const candidate of [missing, malformed, mislabeled, future]) {
     const before = structuredClone(candidate); expect(() => parseBrowserJourneyState(candidate)).toThrow(); expect(candidate).toEqual(before);
   }

@@ -1,3 +1,4 @@
+import type { RaceEthnicity } from "./race-ethnicity";
 import type { PatientAge } from "./age";
 export type EntityState = "proposed" | "resolved" | "rejected" | "withdrawn";
 
@@ -34,6 +35,7 @@ export interface PatientFacts {
   identifier: Fact<string>;
   ageYears: Fact<PatientAge>;
   dateOfBirth: Fact<string>;
+  raceEthnicity: Fact<RaceEthnicity[]>;
   a2Value: Fact<"age" | "date-of-birth">;
   sex: Fact<"female" | "male" | "intersex">;
   weight: Fact<{ value: number; unit: "kg" | "lb" }>;

@@ -1,3 +1,4 @@
+import { isRaceEthnicitySelections, raceEthnicityValues } from "./race-ethnicity";
 import { isCompleteBirthDate } from "./birth-date";
 import { isPatientAge } from "./age";
 import type {
@@ -36,6 +37,7 @@ export const caseValueContracts = {
     identifier: { shape: "string" },
     ageYears: { shape: "patient-age" },
     dateOfBirth: { shape: "birth-date" },
+    raceEthnicity: { shape: "enum-array", values: raceEthnicityValues, mismatch: "raceEthnicity requires a nonempty unique list of explicitly supplied native A5 categories" },
     a2Value: { shape: "enum", values: ["age", "date-of-birth"], mismatch: "A2 print choice requires age or date-of-birth" },
     sex: { shape: "enum", values: ["female", "male", "intersex"], mismatch: "sex requires a supported value" },
     weight: { shape: "measurement", units: ["kg", "lb"] },
@@ -193,7 +195,7 @@ export function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>
     case "enum":
       return contract.values.includes(actual as string) ? undefined : contract.mismatch;
     case "enum-array":
-      return Array.isArray(actual) && (target.field !== "medicationType" || (actual.length > 0 && new Set(actual).size === actual.length)) && actual.every((item) => contract.values.includes(String(item)))
+      return (target.field !== "raceEthnicity" || isRaceEthnicitySelections(actual)) && Array.isArray(actual) && (target.field !== "medicationType" || (actual.length > 0 && new Set(actual).size === actual.length)) && actual.every((item) => contract.values.includes(String(item)))
         ? undefined
         : contract.mismatch;
   }

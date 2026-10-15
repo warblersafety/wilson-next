@@ -1,0 +1,19 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 1,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/Documents\/Codex\/2026-10-15\/task\/issue-174-evidence\/a5-partial-page-1.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "No password prompt, corruption, or displaced form content is visible",
+    "FDA, MedWatch, Form 3500, OMB expiry, and page identity are preserved",
+    "Sections A and B agree with the repaired reviewed patient and event",
+    "Section D contains the repaired suspect-product identity and indication",
+    "Section G agrees with the direct reporter entry"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "\/Users\/sofa-claude\/Documents\/Codex\/2026-10-15\/task\/issue-174-evidence\/a5-partial.pdf"
+}

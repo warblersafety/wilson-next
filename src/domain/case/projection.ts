@@ -1,3 +1,4 @@
+import { raceEthnicityOptions, type RaceEthnicity } from "./race-ethnicity";
 import type { PatientAge } from "./age";
 import { allFacts, targetKey } from "./facts";
 import { isSettled, restartApplicability, withdrawalApplicability } from "./medication";
@@ -21,7 +22,7 @@ export interface ProjectionOmission {
 export interface Form3500Projection {
   revision: number;
   sections: {
-    A: { patientIdentifier?: string; ageYears?: PatientAge; dateOfBirth?: string; sex?: "female" | "male" | "intersex"; weight?: { value: number; unit: "kg" | "lb" } };
+    A: { patientIdentifier?: string; ageYears?: PatientAge; dateOfBirth?: string; raceEthnicity?: RaceEthnicity[]; sex?: "female" | "male" | "intersex"; weight?: { value: number; unit: "kg" | "lb" } };
     B: {
       reportType?: ReportType;
       reportDate?: string;
@@ -128,7 +129,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     sourceTrace: {},
     omissions: [],
     notIncluded: [
-      "Patient fractional or compound ages, partial date of birth and race or ethnicity",
+      "Patient fractional or compound ages and partial date of birth",
       "Section C product pictures and general additional comments",
       "Additional suspect medical devices beyond the first",
       "Section D partial expiration dates, other product-type categories and purchase details",
@@ -149,6 +150,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     if (omitted) projection.omissions.push({ concept: unselected === "ageYears" ? "patient age" : "patient date of birth", target: `patient:patient:${unselected}`, reason: "a2-alternative-not-selected", sourceIds: omitted.sourceIds });
     for (const item of projection.omissions) if (item.target === `patient:patient:${unselected}` && item.reason === "qualifier-not-included") item.baseValueIncluded = false;
   }
+  assign(projection, "sections.A.raceEthnicity", "patient race and/or ethnicity", "patient:patient:raceEthnicity", caseState.patient.facts.raceEthnicity, projection.sections.A, "raceEthnicity", values => raceEthnicityOptions.filter(option => values.includes(option.value)).map(option => option.value));
   assign(projection, "sections.A.sex", "patient sex", "patient:patient:sex", caseState.patient.facts.sex, projection.sections.A, "sex");
   assign(projection, "sections.A.weight", "patient weight", "patient:patient:weight", caseState.patient.facts.weight, projection.sections.A, "weight");
   assign(projection, "sections.B.reportType", "report type", "event:event:reportType", caseState.event.facts.reportType, projection.sections.B, "reportType");

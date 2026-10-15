@@ -71,7 +71,11 @@ describe("Anthropic production model boundary", () => {
     expect(schema).toContain("weeks");
     expect(requestText).toContain("Never place gestational age, gestation at birth, or corrected/postmenstrual age in ageYears");
     expect(requestText).toContain("Do not infer chronological age from them");
-    expect(MODEL_PROMPT_REVISION).toBe("wilson-patient-birth-date-v9");
+    expect(MODEL_PROMPT_REVISION).toBe("wilson-patient-race-ethnicity-v10");
+    expect(schema).toContain("raceEthnicity");
+    expect(requestText).toContain("Never infer a category from name, appearance, geography, nationality, ancestry, language, religion, or anything else");
+    expect(requestText).toContain("known with a nonempty unique supported list; never known with an empty list");
+    expect(requestText).toContain("retain the known selections and exact extra context as a qualifier");
     expect(schema).toContain("dateOfBirth");
     expect(schema).not.toContain("a2Value");
     expect(requestText).toContain("Never infer missing components, repair impossible dates, calculate age from DOB or DOB from age");
