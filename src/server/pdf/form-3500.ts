@@ -316,6 +316,7 @@ export async function fillForm3500Projection(
   setChecked(form, fields.productReturned, C.productAvailability === "returned-to-manufacturer");
   setText(form, fields.productReturnDate, C.productReturnDate ? formatDate(C.productReturnDate) : undefined);
 
+  const durationUnitWrites = new Set<string>();
   const suspectFields = [
     {
       name: fields.productOneName,
@@ -357,8 +358,13 @@ export async function fillForm3500Projection(
     const durationName = `${prefix}TherapyDuration[0]`, durationUnitName = `${prefix}TherapyDurUnit[0]`;
     if (product.treatmentDuration || form.getTextField(durationName).getText()) setText(form,durationName,product.treatmentDuration?.value ?? "");
     const durationUnit = form.getDropdown(durationUnitName);
-    if (product.treatmentDuration) durationUnit.select(durationNativeLabels[product.treatmentDuration.unit]);
-    else if (durationUnit.getSelected().some(v=>v!=="8" && v!==" ")) durationUnit.select(" ");
+    if (product.treatmentDuration) {
+      durationUnit.select(durationNativeLabels[product.treatmentDuration.unit]);
+      durationUnitWrites.add(durationUnitName);
+    } else if (durationUnit.getSelected().some(v=>v!=="8" && v.trim()!=="")) {
+      durationUnit.select(" ");
+      durationUnitWrites.add(durationUnitName);
+    }
     if (product.doseReductionDate !== undefined && !isCompleteCalendarDate(product.doseReductionDate)) throw new Error("D3 dose-reduction date requires a complete valid calendar date");
     const reductionDateName = `${prefix}TherapyReduceDate[0]`;
     if (product.doseReductionDate !== undefined || form.getTextField(reductionDateName).getText()) setText(form, reductionDateName, product.doseReductionDate ? formatDate(product.doseReductionDate) : "");
@@ -431,7 +437,7 @@ export async function fillForm3500Projection(
   form.updateFieldAppearances();
   // pdf-lib selects display labels. Preserve the generated label appearance,
   // but store the original FDA option's export value for other PDF readers.
-  for (const name of [fields.productOneDoseUnit, fields.productOneStrengthUnit, fields.productTwoDoseUnit, fields.productTwoStrengthUnit, "topmostSubform[0].Page4[0].Prod1[0].Prod1TherapyDurUnit[0]", "topmostSubform[0].Page5[0].Prod2[0].Prod2TherapyDurUnit[0]"]) {
+  for (const name of [fields.productOneDoseUnit, fields.productOneStrengthUnit, fields.productTwoDoseUnit, fields.productTwoStrengthUnit, ...durationUnitWrites]) {
     const dropdown = form.getDropdown(name);
     const selected = dropdown.getSelected()[0];
     if (!selected) continue;

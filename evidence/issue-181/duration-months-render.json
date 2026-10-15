@@ -7,15 +7,17 @@
       "page": 4,
       "screenshot": "duration-months-page-4.png",
       "rendered": true,
-      "visuallyInspected": true,
-      "observed": "Expected exact amount/unit display label or explicitly selected dates, with unused alternative blank."
+      "observed": "Exact 1.50 Month(s); alternative treatment dates blank",
+      "samePixelsAsPriorInspectedRender": true,
+      "visuallyInspected": true
     },
     {
       "page": 5,
       "screenshot": "duration-months-page-5.png",
       "rendered": true,
-      "visuallyInspected": true,
-      "observed": "Expected exact amount/unit display label or explicitly selected dates, with unused alternative blank."
+      "observed": "Exact 1.50 Month(s); alternative treatment dates blank",
+      "samePixelsAsPriorInspectedRender": true,
+      "visuallyInspected": true
     }
   ]
 }

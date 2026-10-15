@@ -1,3 +1,4 @@
+import {productCardFields} from "../../app/product-fields";
 import {expect,it} from "vitest";
 import {readFile,writeFile,mkdtemp} from "node:fs/promises";
 import {join} from "node:path";
@@ -69,4 +70,21 @@ it("retains duration knowledge without a native destination after device/concomi
 it("prints a sole known duration without inventing dates or requiring a default preference",async()=>{
  let c=durationCase("minutes","45");const id=c.products[0].id;for(const field of["startDate","stopDate","doseReductionDate"]as const)c=setContextFact(c,`product:${id}:${field}`,{kind:"unknown"});c=setContextFact(c,`product:${id}:d3Value`,{kind:"unknown"});
  expect(d3ChoiceIssue(c.products[0].facts)).toBeUndefined();const r=await inspect(c);expect(r.projection.sections.D.suspectProducts[0].treatmentDuration).toEqual({value:"45",unit:"minutes"});expect(r.projection.sections.D.suspectProducts[0].startDate).toBeUndefined();
+});
+
+it("does not create values for untouched blank duration-unit widgets in earlier PDF paths",async()=>{
+ const c=productCapacityCase(),r=await inspect(c);
+ for(let i=0;i<2;i++)expect(r.fields).not.toHaveProperty(prefix(i)+"TherapyDurUnit[0]");
+});
+
+it("does not instruct or offer D3 preference on a non-D3 route; retains and discloses accepted preference knowledge",()=>{
+ let c=durationCase(),id=c.products[0].id;c=setContextFact(c,`product:${id}:role`,{kind:"known",value:"concomitant"});let view=createUnderstandingView(c).products[0];
+ expect(view.medicationNotice??"").not.toContain("D3");expect(productCardFields("drug-or-biologic",view.facts)).not.toContain("d3Value");expect(projectForm3500(c).notIncluded.join(" ")).toContain("D3 value remains in reviewed knowledge");
+ c=setContextFact(c,`product:${id}:role`,{kind:"known",value:"suspect"});c=setContextFact(c,`product:${id}:productType`,{kind:"known",value:"device"});view=createUnderstandingView(c).products[0];expect(view.medicationNotice??"").not.toContain("D3");expect(productCardFields("device",view.facts)).not.toContain("d3Value");
+ c=setContextFact(c,`product:${id}:productType`,{kind:"known",value:"drug-or-biologic"});view=createUnderstandingView(c).products[0];expect(productCardFields("drug-or-biologic",view.facts)).toContain("d3Value");expect(c.products[0].facts.d3Value.resolvedValue!.value).toEqual({kind:"known",value:"duration"});
+});
+
+it("does not give withdrawn retained knowledge an active D3 choice instruction",()=>{
+ const c=structuredClone(durationCase());c.products[0].state="withdrawn";
+ expect(createUnderstandingView(c).products[0].medicationNotice??"").not.toContain("D3");
 });

@@ -1276,3 +1276,10 @@ validates genuine v7–v17 states before adding only empty duration and D3 choic
 facts. Existing runtime coverage and this inventory mark only the bounded
 native-time duration path implemented; #180 and every other gap remain open.
 Prompt/mock checks are not live-model verification.
+
+D3 choice notices and the editable choice row are limited to accepted suspect
+non-device paths, matching readiness. A retained preference on another route
+remains in knowledge and receives a no-destination disclosure, never a prompt
+to choose a control that cannot affect that route. Returning to D3 restores the
+retained preference. Untouched native duration-unit widgets remain unset; export
+ID conversion applies only to duration dropdowns actually written or cleared.

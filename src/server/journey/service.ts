@@ -1,4 +1,4 @@
-import { d3ChoiceIssue, isTreatmentDuration } from "../../domain/case/duration";
+import { d3ChoiceIssue, d3Eligible, isTreatmentDuration } from "../../domain/case/duration";
 import { durationLimitation } from "../pdf/duration";
 import { raceEthnicityOptions } from "../../domain/case/race-ethnicity";
 import { patientA2ChoiceIssue } from "../../domain/case/birth-date";
@@ -700,7 +700,7 @@ export function outputReadinessIssues(
   }
   const a2Issue = patientA2ChoiceIssue(caseState);
   if (a2Issue) issue("patient-a2-choice-required", a2Issue, ["patient:patient:a2Value", "patient:patient:dateOfBirth", "patient:patient:ageYears"], ["patient"]);
-  for (const product of caseState.products.filter(p => p.state === "resolved" && knownValue(p.facts.role) === "suspect" && knownValue(p.facts.productType) !== "device")) {
+  for (const product of caseState.products.filter(p => p.state === "resolved" && d3Eligible(p.facts))) {
     const d3Issue = d3ChoiceIssue(product.facts);
     if (d3Issue) issue("product-d3-choice-required", `${productLabel(caseState,product.id)}: ${d3Issue}`, ["d3Value","treatmentDuration","startDate","stopDate","doseReductionDate"].map(f=>`product:${product.id}:${f}`), [product.id]);
   }

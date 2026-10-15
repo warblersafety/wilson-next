@@ -9,7 +9,7 @@ import type { Fact, ProductEntity, ProductFactKey, ReportType, SemanticCase } fr
 const sectionDProductFields = ["name", "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "doseReductionDate", "treatmentDuration", "indication", "medicationType"] as const satisfies readonly ProductFactKey[];
 const sectionEProductFields = ["name", "commonName", "procode", "manufacturer", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const satisfies readonly ProductFactKey[];
 const sectionFProductFields = ["name", "startDate", "stopDate"] as const satisfies readonly ProductFactKey[];
-const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "role", "stopped", "d3Value"]);
+const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "role", "stopped"]);
 
 export interface ProjectionOmission {
   concept: string;
@@ -264,7 +264,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       } else {
         const target = projection.sections.D.suspectProducts;
         target.push(projectProduct(product, projection, target.length, productLabel(caseState, product)));
-        recordNonCarriedProductFacts(caseState, product, [...sectionDProductFields, "doseReduced", "restarted", "improvedAfterChange", "recurred"], "Section D", projection);
+        recordNonCarriedProductFacts(caseState, product, [...sectionDProductFields, "d3Value", "doseReduced", "restarted", "improvedAfterChange", "recurred"], "Section D", projection);
       }
     } else {
       if (productType.value === "device") {

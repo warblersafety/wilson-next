@@ -21,7 +21,11 @@ export function d3ChoiceIssue(facts: ProductFacts): string | undefined {
   if (dates && duration && !choice) return "Treatment dates and duration are both retained. Choose the D3 value to print; Wilson does not calculate, compare or discard either alternative.";
   return undefined;
 }
+export function d3Eligible(facts: ProductFacts): boolean {
+  return known(facts.role) === "suspect" && ["drug-or-biologic", "other"].includes(known(facts.productType) ?? "");
+}
 export function d3Notice(facts: ProductFacts): string | undefined {
+  if (!d3Eligible(facts)) return undefined;
   const issue = d3ChoiceIssue(facts);
   if (issue) return issue;
   if (known(facts.treatmentDuration) && d3DateFields.some(field => known(facts[field]) !== undefined)) return "Treatment dates and duration are both retained as supplied. D3 prints only your selected alternative; Wilson has not calculated or reconciled them.";

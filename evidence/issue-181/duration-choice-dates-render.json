@@ -7,15 +7,17 @@
       "page": 4,
       "screenshot": "duration-choice-dates-page-4.png",
       "rendered": true,
-      "visuallyInspected": true,
-      "observed": "Expected exact amount/unit display label or explicitly selected dates, with unused alternative blank."
+      "observed": "Supplied 13-AUG-2026 start date; duration amount and unit blank",
+      "samePixelsAsPriorInspectedRender": false,
+      "visuallyInspected": true
     },
     {
       "page": 5,
       "screenshot": "duration-choice-dates-page-5.png",
       "rendered": true,
-      "visuallyInspected": true,
-      "observed": "Expected exact amount/unit display label or explicitly selected dates, with unused alternative blank."
+      "observed": "Exact 1.50 Hour(s); alternative treatment dates blank",
+      "samePixelsAsPriorInspectedRender": true,
+      "visuallyInspected": true
     }
   ]
 }
