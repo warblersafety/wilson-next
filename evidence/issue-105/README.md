@@ -1,7 +1,7 @@
 # Serial-test correction allocation containment
 
 Baseline: main `34cb8160e5c5ce90b44171aadb91e15bc1740691` (15 October 2026).
-Owning [issue105](https://github.com/warblersafety/wilson-next/issues/105) retains
+Historical [issue105](https://github.com/warblersafety/wilson-next/issues/105) retains
 the failure and [existing diagnosis](https://github.com/warblersafety/wilson-next/issues/105#issuecomment-5803617218).
 The original raw provider response is unavailable. Tests construct synthetic
 responses; they are not byte-exact replay or a live-model evaluation.
@@ -38,7 +38,7 @@ That approach was stopped and removed; commit `1b4ba62` retains the candidate fo
 reconstruction. It is not the delivered wire. No dependency was changed and no
 paid model call was attempted. Revisiting the provider contract requires an
 explicit owning architecture decision and suitable separately authorized live
-synthetic verification. Issue105 stays open for that work.
+synthetic verification. The unfinished work is retained in [open successor150](https://github.com/warblersafety/wilson-next/issues/150). Historical105 was inadvertently marked complete by a negated keyword in PR147; that wording is corrected. The scoped broker has no reopen operation, so the linked successor preserves the remaining scope without a credential or permission workaround.
 
 ## Verification
 
@@ -51,9 +51,9 @@ synthetic verification. Issue105 stays open for that work.
 - Service PDFs are read independently with pypdf. Three mocked browser journeys
   download the actual UI PDF and verify corrected/separate rows, reload/resume,
   mixed review and retained draft/case after malformed reference.
-- Final narrowed unit/browser counts and CI are recorded in the delivery PR.
-  The first wider candidate passed352unit/47files, typecheck/build and65mock
-  Chromium journeys in1.7minutes, but that is not final-source evidence.
+- Final narrowed source: **351 unit tests in47 files**, typecheck/fresh build
+  and **all65 mocked Chromium journeys passed in1.7minutes**, including actual
+  PDF readback. Exact-head and merged-main CI remain separate delivery gates.
 
 Harness corrections: new responses appear before existing source-reference
 scenarios, matching browser execution order (28 scenarios/42 responses/37 scopes).
