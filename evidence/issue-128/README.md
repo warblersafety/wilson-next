@@ -121,3 +121,23 @@ capacity/date/quantity/readback/checkbox guards remain. Broader qualifiers,
 continuation, issue150 semantic targeting and issues151/153 full-support decisions
 remain unfinished. No provider wire/prompt, dependencies, storage schema,
 credentials, grants, protection settings or shared preview alias changed.
+
+## Targeted recheck and bounded evidence closure
+
+The single targeted same-session actual Opus5-5high recheck at material
+`5b4a86f457a810b075f52d6868bd052cf39020bc` found no blocking findings or new
+material regression; B1/F1–F4 resolved. Static only, no reviewer tests/CI.
+Its non-blocking R1 is now explicitly owned by
+[issue154](https://github.com/warblersafety/wilson-next/issues/154).
+
+The [direct appearance inspection](unicode-appearance-inspection.json) of the
+existing synthetic issue96 PDF confirms stored β/≥ but generated ? glyphs.
+The issue96 README now narrows its historical claim to stored-value roundtrip
+and the observed PDFKit rendering; portable appearance fidelity was not proven.
+This is a pre-existing risk outside the two Other controls, not a new regression.
+The exact PDFKit rendering source is unproven; no new viewer/printing claim is
+made. Full-field glyph/fit support requires the issue154 decision. This closure
+changes only documentation/evidence, not the reviewed5b4a86f implementation,
+tests, product/architecture contract, fonts or dependencies. Delivery's bounded
+evidence-closure rule applies; no second reviewer or additional recheck is run.
+The owning PR records exact final-head and merged-main CI separately.
