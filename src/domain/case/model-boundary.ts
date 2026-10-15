@@ -60,26 +60,6 @@ export const modelProposalOutputSchema = withEnvelopeChecks(z.object({
   proposals: z.array(modelProposalSchema).min(1),
 }).strict());
 
-/** Later-turn correction targets are request-owned, not model-created aliases.
- * Facts/alternatives may still describe genuinely additional observations. */
-export function modelProposalOutputForExistingTests(existingTestIds: readonly string[]) {
-  const [patient, event, test, product] = modelTargetSchema.options;
-  const nonTest = modelProposalSchema.extend({ target: z.union([patient, event, product]) });
-  const testFact = modelProposalSchema.extend({ intent: z.enum(["fact", "alternative"]), target: test });
-  const ids = [...new Set(existingTestIds)];
-  const proposal = ids.length > 0
-    ? z.union([nonTest, testFact, modelProposalSchema.extend({
-      intent: z.literal("correction"),
-      target: test.extend({ testReference: z.enum(ids as [string, ...string[]]) }),
-    })])
-    : z.union([nonTest, testFact]);
-  return withEnvelopeChecks(z.object({
-    products: z.array(productDeclarationSchema),
-    tests: z.array(testDeclarationSchema).optional(),
-    proposals: z.array(proposal).min(1),
-  }).strict());
-}
-
 const quarantinableProposalSchema = z.object({
   proposalReference: z.string().min(1),
   groupReference: z.string().min(1),

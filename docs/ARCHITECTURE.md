@@ -301,6 +301,17 @@ belongs in the event treatment fact. It is proposed as a report product only
 when the clinician separately describes it as suspect, concomitant, or
 otherwise involved in the report.
 
+For later relevant-test proposals, correction intent requires an application-
+supplied existing test ID, including a still-pending or unnamed observation. A
+response-local declaration cannot turn an unmatched correction reference into a
+new observation. That declaration's dependent facts are quarantined with their
+source excerpts; independent valid observations remain reviewable. This is
+allocation containment, not clinical identity matching or proof that the model
+selected the right valid ID. Genuine additions still use separate fact or
+alternative proposals. A new observation and a correction against its own local
+reference in the same response are not accepted through this path; the supplied
+wording remains visible for restatement. The provider wire stays unchanged.
+
 For later inputs, the model's review-group label is scoped to each validated
 target entity kind and stable ID. Reusing one label for event history and a
 medication therefore creates separate review groups; different labels within

@@ -46,30 +46,6 @@ const identities: ModelBoundaryIdentityFactory = (kind, reference) => (
 );
 
 describe("Anthropic production model boundary", () => {
-  it("binds later test-correction schema targets to this request's supplied IDs", () => {
-    const context: ReviewedCaseModelContext = { ...reviewedCase, relevantTests: [
-      { id: "test-owned-first", facts: [{ field: "testResult", value: { kind: "known", value: "8.9" } }] },
-      { id: "test-owned-second", facts: [{ field: "testResult", status: "proposed", value: { kind: "known", value: "9.4" } }] },
-    ] };
-    const request = createAnthropicRequest("correction", "Correct the supplied observation.", context);
-    expect(JSON.stringify(request.output_config.format.schema)).toContain('"enum":["test-owned-first","test-owned-second"]');
-    const nodes: Record<string, unknown>[] = [];
-    const visit = (value: unknown) => {
-      if (!value || typeof value !== "object") return;
-      if (!Array.isArray(value)) nodes.push(value as Record<string, unknown>);
-      for (const child of Object.values(value)) visit(child);
-    };
-    visit(request.output_config.format.schema);
-    expect(nodes.some(node => node.const === "test")).toBe(true);
-    expect(nodes.some(node => node.const === "correction")).toBe(true);
-    expect(nodes.some(node => JSON.stringify(node.enum) === '["fact","alternative"]')).toBe(true);
-    expect(nodes.some(node => Object.hasOwn(node, "minLength") || Object.hasOwn(node, "minimum"))).toBe(false);
-    const later = createAnthropicRequest("correction", "Correct a different supplied observation.", { ...context, relevantTests: [{ id: "test-owned-other", facts: [] }] });
-    expect(JSON.stringify(later.output_config.format.schema)).toContain("test-owned-other");
-    expect(JSON.stringify(later.output_config.format.schema)).not.toContain("test-owned-first");
-    expect(request.system).toContain("test proposals with intent correction must target one supplied existing test ID");
-  });
-
   it("builds a case-agnostic structured request with code-labelled references rather than copied quotations or offsets", () => {
     const request = createAnthropicRequest("opening", openingText);
     const requestText = `${request.system}\n${request.messages[0].content}`;

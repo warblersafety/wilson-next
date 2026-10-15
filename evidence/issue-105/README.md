@@ -1,72 +1,67 @@
-# Bounded serial-test correction contract
+# Serial-test correction allocation containment
 
 Baseline: main `34cb8160e5c5ce90b44171aadb91e15bc1740691` (15 October 2026).
 Owning [issue105](https://github.com/warblersafety/wilson-next/issues/105) retains
-its original failure and [existing diagnosis](https://github.com/warblersafety/wilson-next/issues/105#issuecomment-5803617218).
-The original raw provider response is unavailable. The new tests construct
-synthetic responses; they are not a byte-exact replay or a live-model evaluation.
+the failure and [existing diagnosis](https://github.com/warblersafety/wilson-next/issues/105#issuecomment-5803617218).
+The original raw provider response is unavailable. Tests construct synthetic
+responses; they are not byte-exact replay or a live-model evaluation.
 
-## Contract and scope
+## Delivered boundary and remaining issue
 
-Later-turn test corrections use request-owned existing IDs, including pending
-or unnamed observations. The request schema enumerates those correction targets;
-genuine new observations remain possible through separate fact/alternative
-proposals and local declarations. Runtime enforcement prevents a correction
-reference from allocating an observation, including dependent facts on the same
-bad declaration, while retaining independent valid siblings. Exact existing IDs
-echoed in declarations still identify their original observations. Source,
-accepted facts, history and explicit review remain authoritative. No fuzzy
-matching, automatic acceptance, medicine-specific rule or retry-as-repair exists.
+An unmatched later-turn correction reference cannot allocate a new test merely
+by appearing in a response-local declaration. Dependent facts on that bad
+reference are quarantined too; independent valid siblings remain reviewable.
+Exact supplied IDs, including pending/unnamed observations and redundant echoed
+declarations, still resolve the original observation. Genuine additions remain
+allowed, separately reviewable and subject to the existing capacity limit.
+Sources, accepted facts, explicit acceptance and superseded history are retained.
+No fuzzy matching, automatic acceptance, clinical decision or retry-as-repair is
+introduced. Architecture records this local boundary; provider code, prompts,
+revisions and wire schema remain exactly as before this slice.
 
-The installed SDK0.124.0 `zodOutputFormat` demotes enum/const constraints to
-provider-visible descriptions; [issue38](https://github.com/warblersafety/wilson-next/issues/38)
-already records that pattern. A request-level regression caught it here. The
-[official raw-schema API](https://platform.claude.com/docs/en/build-with-claude/structured-outputs)
-supports enum/const. For this later-turn contract, the adapter restores those
-choices from the original Zod schema onto the SDK-transformed schema, including
-branch discriminants. Unsupported numeric/length constraints remain guidance
-and local checks. No SDK monkeypatch or dependency change is used. Opening
-requests remain unchanged. Existing later-turn enum/const choices also become
-structural; their meanings and local validation are unchanged.
+**This is containment, not completion of issue105.** Correct responses already
+worked; the tests protect them while blocking the demonstrated allocation error.
+The model can still choose the wrong valid ID or mislabel correction as a fact.
+An addition with a correction to its own newly declared reference in one response
+is quarantined for restatement; source excerpts remain visible. These limits do
+not establish general conversational correction reliability.
 
-Prompt revision: `wilson-test-correction-identity-v1`. Schema revision:
-`wilson-grounded-proposals-v17-existing-test-corrections`. Historical samples
-and their recorded revisions are not rewritten.
+## Stopped provider experiment
+
+The first candidate attempted request-specific allowed-ID enums. A request test
+caught the installed SDK0.124.0 demoting enum/const to descriptions, as already
+recorded by [issue38](https://github.com/warblersafety/wilson-next/issues/38).
+A documented raw-schema restoration was explored, but actual Opus review blocked
+it: it affected every update, revived the provider-schema rewriting premise
+previously stopped in issue67, and lacked live acceptance/target-selection proof.
+That approach was stopped and removed; commit `1b4ba62` retains the candidate for
+reconstruction. It is not the delivered wire. No dependency was changed and no
+paid model call was attempted. Revisiting the provider contract requires an
+explicit owning architecture decision and suitable separately authorized live
+synthetic verification. Issue105 stays open for that work.
 
 ## Verification
 
-- Request test verifies actual outgoing ID enums and branch discriminants;
-  changing context changes its allowed IDs. Unsupported numeric/length keywords
-  remain removed from the provider schema.
-- Five boundary cases cover exact IDs, invented/typo references despite a
-  declaration, independent addition versus bad-reference siblings, redundant
-  existing declarations and genuine first additions when no tests exist.
-- Five production request/boundary/service cases cover explicit acceptance,
-  stable IDs, untouched sibling/facts/ranges/dates, superseded history,
-  no-allocation/no-retry failures, genuine additions and independent mixed review.
-- Service PDF generation is independently read with pypdf. Three mocked browser
-  journeys also download the actual UI PDF, verify corrected/separate rows,
-  reload/resume, mixed review and retained draft/case after malformed reference.
-- Exact Node24.20.0: **352 unit tests in47 files**, typecheck and fresh build
-  passed. The three focused Chromium journeys passed in3.9seconds; the full
-  **65 mocked Chromium journeys passed in1.7minutes**, including actual UI PDF
-  readback. Exact-head and merged-main CI remain separate delivery gates.
+- Five boundary cases cover correct existing IDs, genuine first additions,
+  invented/typo references despite declarations, dependent bad-reference facts
+  versus valid additions, redundant ID echoes and separate review groups.
+- Five production request/boundary/service cases protect explicit acceptance,
+  stable IDs, untouched sibling/facts/dates/ranges, superseded history,
+  no-allocation/no-retry failures, genuine additions and mixed review.
+- Service PDFs are read independently with pypdf. Three mocked browser journeys
+  download the actual UI PDF and verify corrected/separate rows, reload/resume,
+  mixed review and retained draft/case after malformed reference.
+- Final narrowed unit/browser counts and CI are recorded in the delivery PR.
+  The first wider candidate passed352unit/47files, typecheck/build and65mock
+  Chromium journeys in1.7minutes, but that is not final-source evidence.
 
-Harness corrections: the three new responses must appear before the existing
-source-reference scenarios, matching browser execution order; the exact mock
-queue is now28 scenarios/42 responses/37 distinct scopes. An initial incorrectly
-prepended run was interrupted, not counted as success. A synthetic baseline is
-cloned before assigning a browser-valid case ID; browser-state decoding is
-checked before service tests. No storage validator or product assertion was
-weakened.
+Harness corrections: new responses appear before existing source-reference
+scenarios, matching browser execution order (28 scenarios/42 responses/37 scopes).
+An initially prepended full run was interrupted, not counted as success. The
+immutable synthetic baseline is cloned before assigning a browser-valid case ID;
+browser-state decoding is checked before service tests. No storage validator,
+product assertion or timeout was weakened.
 
-## Limits
-
-All application-model calls were mocked. Live provider acceptance of this exact
-schema, grammar-compilation latency/cache cost and semantic choice of the right
-existing ID remain **unverified**. A valid ID is not proof that ambiguous source
-wording means that observation; clinician review and source attribution remain
-necessary. Local strict identity/value checks remain even where provider enum
-casing can vary. No new grant, credential, auth change, paid application-model
-batch or dependency installation was used. This is not general interpretation
-reliability, complete Form3500 coverage or real-data approval.
+All application-model calls remain mocked. Live semantic target selection is
+unverified. This is not full Form3500 coverage or real-data approval. No new
+credential, grant, auth change, purchase or dependency installation occurred.

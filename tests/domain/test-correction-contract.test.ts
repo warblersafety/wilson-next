@@ -1,24 +1,21 @@
 import { describe, expect, it } from "vitest";
-import { modelProposalOutputForExistingTests, parseModelProposalEnvelope } from "../../src/domain/case/model-boundary";
+import { parseModelProposalEnvelope } from "../../src/domain/case/model-boundary";
 import { firstSerialTestId, secondSerialTestId, mixedSerialText, serialCorrectionText, serialOutput } from "../fixtures/serial-test-correction";
 
 const ids = [firstSerialTestId, secondSerialTestId];
 const identities = (kind: string, reference: string) => `${kind}-contract-${reference}`;
-const parse = (output: unknown, text = serialCorrectionText) => parseModelProposalEnvelope({ turn: "correction", input: { id: "contract-input", type: "correction", text, recordedAt: "2026-09-20T12:00:00.000Z" }, existingTestIds: ids, output }, identities);
+const parse = (output: unknown, text = serialCorrectionText, existingTestIds = ids) => parseModelProposalEnvelope({ turn: "correction", input: { id: "contract-input", type: "correction", text, recordedAt: "2026-09-20T12:00:00.000Z" }, existingTestIds, output }, identities);
 
-describe("request-owned existing-test correction contract", () => {
-  it("admits exact existing targets and a genuine mixed addition without requiring names", () => {
-    const schema = modelProposalOutputForExistingTests(ids);
-    expect(schema.safeParse(serialOutput()).success).toBe(true);
-    expect(schema.safeParse(serialOutput(mixedSerialText, secondSerialTestId, true)).success).toBe(true);
-    expect(modelProposalOutputForExistingTests([]).safeParse(serialOutput()).success).toBe(false);
+describe("existing-test correction allocation boundary", () => {
+  it("retains correct existing-ID corrections and genuine additions, including the first later observation", () => {
+    expect(parse(serialOutput()).proposals[0].target.entityId).toBe(secondSerialTestId);
+    expect(parse(serialOutput(mixedSerialText, secondSerialTestId, true), mixedSerialText).relevantTests).toHaveLength(1);
     const addition = serialOutput(mixedSerialText, secondSerialTestId, true);
     addition.proposals = addition.proposals.filter(proposal => proposal.intent === "fact");
-    expect(modelProposalOutputForExistingTests([]).safeParse(addition).success).toBe(true);
+    expect(parse(addition, mixedSerialText, []).relevantTests).toHaveLength(1);
   });
   it.each(["invented", `${secondSerialTestId}-typo`])("a declaration cannot make correction reference %s an allowed target", reference => {
     const output = serialOutput(serialCorrectionText, reference);
-    expect(modelProposalOutputForExistingTests(ids).safeParse(output).success).toBe(false);
     expect(() => parse(output)).toThrow("Every proposal was unrepresentable");
   });
   it("quarantines all dependent facts of a bad correction declaration, retaining a genuine independent addition", () => {
