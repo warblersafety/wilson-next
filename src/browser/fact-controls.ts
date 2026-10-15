@@ -89,6 +89,7 @@ const product = {
   procode: { label: "Procode", shape: "text" },
   modelNumber: { label: "Model number", shape: "text" },
   catalogNumber: { label: "Catalog number", shape: "text" },
+  ndcOrUniqueId: { label: "NDC number or Unique ID", shape: "text", help: "Copy the supplied product-label identifier exactly, including zeros, dashes and spaces. Keep lot numbers and device UDI separate." },
   expirationDate: { label: "Expiration date", shape: "date" },
   serialNumber: { label: "Serial number", shape: "text" },
   udi: { label: "Unique device identifier", shape: "text" },

@@ -1,0 +1,26 @@
+[
+  {
+    "field": "topmostSubform[0].Page4[0].Prod1[0].Prod1NDC_ID[0]",
+    "value": "00123-0045-06",
+    "rect": [
+      47.889,
+      622.295,
+      193.085,
+      636.389
+    ],
+    "appearance": "1 0 0 1 0 0 cm\n1 0 0 1 0 0 cm\nq\n1 1 m\n1 13.094000000000051 l\n144.196 13.094000000000051 l\n144.196 1 l\nh\nW\nn\n/Tx BMC\nq\nBT\n0 g\n/Helvetica 8.5 Tf\n1 0 0 1 1 3.9955000000000256 Tm\n<30303132332D303034352D3036> Tj\nET\nQ\nEMC\nQ\n",
+    "expected": "00123-0045-06"
+  },
+  {
+    "field": "topmostSubform[0].Page5[0].Prod2[0].Prod2NDC_ID[0]",
+    "value": "HCT 00-A/07",
+    "rect": [
+      44.703,
+      659.449,
+      189.899,
+      673.543
+    ],
+    "appearance": "1 0 0 1 0 0 cm\n1 0 0 1 0 0 cm\nq\n1 1 m\n1 13.094000000000051 l\n144.196 13.094000000000051 l\n144.196 1 l\nh\nW\nn\n/Tx BMC\nq\nBT\n0 g\n/Helvetica 8.5 Tf\n1 0 0 1 1 3.9955000000000256 Tm\n<4843542030302D412F3037> Tj\nET\nQ\nEMC\nQ\n",
+    "expected": "HCT 00-A/07"
+  }
+]

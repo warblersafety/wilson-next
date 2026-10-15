@@ -87,6 +87,7 @@ export function emptyProductFacts(): ProductFacts {
     role: emptyFact(),
     manufacturer: emptyFact(),
     lotNumber: emptyFact(),
+    ndcOrUniqueId: emptyFact(),
     dose: emptyFact(),
     strength: emptyFact(),
     frequency: emptyFact(),

@@ -91,6 +91,7 @@ export interface ProductFacts {
   role: Fact<"suspect" | "concomitant">;
   manufacturer: Fact<string>;
   lotNumber: Fact<string>;
+  ndcOrUniqueId: Fact<string>;
   dose: Fact<string>;
   strength: Fact<string>;
   frequency: Fact<string>;

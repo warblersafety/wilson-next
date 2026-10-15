@@ -8,7 +8,7 @@ import {
 import type { JourneySnapshot, JourneyStage } from "../journey/service";
 import { InMemoryCaseRepository, validateRestoredCase } from "./repository";
 
-export const browserStateVersion = "wilson-browser-state-v10";
+export const browserStateVersion = "wilson-browser-state-v11";
 
 export interface BrowserJourneyState {
   version: typeof browserStateVersion;
@@ -115,6 +115,7 @@ const productFactsSchema = z.object({
   role: factSchema(z.enum(["suspect", "concomitant"])),
   manufacturer: factSchema(z.string()),
   lotNumber: factSchema(z.string()),
+  ndcOrUniqueId: factSchema(z.string()),
   dose: factSchema(z.string()),
   strength: factSchema(z.string()),
   frequency: factSchema(z.string()),
@@ -206,7 +207,11 @@ const caseSchema = z.object({
   }).strict()),
 }).strict();
 
-const v9ProductFactsSchema = productFactsSchema.omit({ medicationType: true, doseReduced: true, improvedAfterChange: true, restarted: true, recurred: true });
+const v10ProductFactsSchema = productFactsSchema.omit({ ndcOrUniqueId: true });
+const v10CaseSchema = caseSchema.extend({
+  products: z.array(caseSchema.shape.products.element.extend({ facts: v10ProductFactsSchema })).max(maximumCaseProducts),
+});
+const v9ProductFactsSchema = v10ProductFactsSchema.omit({ medicationType: true, doseReduced: true, improvedAfterChange: true, restarted: true, recurred: true });
 const v9CaseSchema = caseSchema.extend({
   products: z.array(caseSchema.shape.products.element.extend({ facts: v9ProductFactsSchema })).max(maximumCaseProducts),
 });
@@ -252,7 +257,7 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
   if (!version.success) {
     throw new BrowserStateError("The saved synthetic preview state is malformed", "malformed-browser-state");
   }
-  if (![browserStateVersion, "wilson-browser-state-v9", "wilson-browser-state-v8", "wilson-browser-state-v7"].includes(version.data.version)) {
+  if (![browserStateVersion, "wilson-browser-state-v10", "wilson-browser-state-v9", "wilson-browser-state-v8", "wilson-browser-state-v7"].includes(version.data.version)) {
     throw new BrowserStateError("The saved synthetic preview state is incompatible", "incompatible-browser-state");
   }
   const envelope = stateSchema.safeParse(input);
@@ -277,11 +282,18 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
       ...test, facts: { ...test.facts, testName: emptyAddedFact() },
     })) };
   }
-  if (version.data.version !== browserStateVersion) {
+  if (["wilson-browser-state-v7", "wilson-browser-state-v8", "wilson-browser-state-v9"].includes(version.data.version)) {
     const legacy = v9CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = { ...legacy.data, products: legacy.data.products.map((product) => ({
       ...product, facts: { ...product.facts, medicationType: emptyAddedFact(), doseReduced: emptyAddedFact(), improvedAfterChange: emptyAddedFact(), restarted: emptyAddedFact(), recurred: emptyAddedFact() },
+    })) };
+  }
+  if (version.data.version !== browserStateVersion) {
+    const legacy = v10CaseSchema.safeParse(candidate);
+    if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
+    candidate = { ...legacy.data, products: legacy.data.products.map((product) => ({
+      ...product, facts: { ...product.facts, ndcOrUniqueId: emptyAddedFact() },
     })) };
   }
   const parsedCase = caseSchema.safeParse(candidate);
