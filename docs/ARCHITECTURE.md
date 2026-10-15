@@ -1187,3 +1187,21 @@ accepted and blocks fresh export, with field/entity-linked readiness issues and
 adapter defense. No shrinking, truncation, glyph substitution, continuation or
 new storage/model/provider/schema is introduced.157 retains diagnostic precision;
 115 remains open for other fact context and broader chronology;150 stays paused.
+
+### Explicit ongoing therapy (issue 176)
+
+Product therapyOngoing is the explicitly supplied current D3 ongoing-therapy
+answer, independent of historical stopped/restarted facts and supplied dates.
+Missing dates never establish status; accepting or correcting status never
+clears or rewrites dates. Apparently inconsistent clinician statements retain
+their exact sources and qualifiers without automatic reconciliation.
+Only known booleans map to the respective Yes/No native checkbox for the first
+two suspect non-device products. Other response states remain distinct and
+blank; pending/conflicting values cannot print. Context that cannot fit the
+checkbox is disclosed as omitted. Concomitant/device routing retains the fact
+with an explicit no-destination disclosure. This adds no completion question,
+clinical judgment or visual redesign. v16 strictly validates v7–v15 historical
+states before adding only an empty ongoing fact per existing product; all other
+facts and unfinished drafts retain their identities. Prompt/mock checks do not
+prove live-model compliance. Dose-reduction dates and duration remain outside
+this slice.

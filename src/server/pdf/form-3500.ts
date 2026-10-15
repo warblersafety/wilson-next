@@ -349,6 +349,12 @@ export async function fillForm3500Projection(
     writeSuspectProduct(form, suspectFields[index], product);
     const ordinal = index + 1;
     const prefix = `topmostSubform[0].Page${index + 4}[0].Prod${ordinal}[0].Prod${ordinal}`;
+    if (product.therapyOngoing !== undefined && typeof product.therapyOngoing !== "boolean") throw new Error("D3 ongoing therapy requires an explicit boolean");
+    for (const [answer, suffix] of [[true, "Yes"], [false, "No"]] as const) {
+      const name = `${prefix}TherapyOngoing${suffix}[0]`;
+      const selected = product.therapyOngoing === answer;
+      if (selected || form.getCheckBox(name).isChecked()) setChecked(form, name, selected);
+    }
     for (const [label, suffix] of [["brand", "Brand"], ["generic-biosimilar", "Generic"], ["otc", "OTC"], ["compounded", "Compounded"]] as const) {
       setChecked(form, `${prefix}${suffix}[0]`, product.medicationType?.includes(label) === true);
     }
@@ -544,6 +550,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
     names: { name: string; manufacturer: string; lotNumber: string; ndcOrUniqueId: string; expirationDate: string; dose: string; doseUnit: string; strength: string; strengthUnit: string; frequency: string; otherFrequency: string; route: string; otherRoute: string; startDate: string; stopDate: string; indication: string },
   ): ProjectedProduct => compact({
     productId: expected.productId,
+    therapyOngoing: expected.therapyOngoing !== undefined ? form.getCheckBox(`topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].Prod${index + 1}TherapyOngoingYes[0]`).isChecked() ? true : form.getCheckBox(`topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].Prod${index + 1}TherapyOngoingNo[0]`).isChecked() ? false : undefined : undefined,
     name: form.getTextField(names.name).getText(),
     manufacturer: form.getTextField(names.manufacturer).getText(),
     lotNumber: form.getTextField(names.lotNumber).getText(),

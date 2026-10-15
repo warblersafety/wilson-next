@@ -103,6 +103,7 @@ export interface ProductFacts {
   route: Fact<string>;
   startDate: Fact<string>;
   stopDate: Fact<string>;
+  therapyOngoing: Fact<boolean>;
   indication: Fact<string>;
   stopped: Fact<boolean>;
   medicationType: Fact<Array<"brand" | "generic-biosimilar" | "otc" | "compounded">>;
