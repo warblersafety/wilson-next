@@ -1,4 +1,4 @@
-import { ongoingTherapyNotice, restartApplicability, withdrawalApplicability } from "./medication";
+import { doseReductionDateNotice, ongoingTherapyNotice, restartApplicability, withdrawalApplicability } from "./medication";
 import type {
   CaseValue,
   Fact,
@@ -63,7 +63,7 @@ export function createUnderstandingView(caseState: SemanticCase): UnderstandingV
       .map((product, index) => ({
         id: product.id,
         ordinal: index + 1,
-        medicationNotice: [ongoingTherapyNotice(product.facts), ((product.facts.recurred.resolvedValue?.value.kind === "known" && restartApplicability(product.facts) !== true)
+        medicationNotice: [doseReductionDateNotice(product.facts), ongoingTherapyNotice(product.facts), ((product.facts.recurred.resolvedValue?.value.kind === "known" && restartApplicability(product.facts) !== true)
           || (product.facts.improvedAfterChange.resolvedValue?.value.kind === "known" && withdrawalApplicability(product.facts) !== true))
           ? "The applicability of a reviewed improvement or recurrence answer is unresolved. Check the stopping, dose-reduction and restart details; an unsupported outcome is not carried into the form."
           : [product.facts.improvedAfterChange, product.facts.recurred].some((fact) => fact.state === "empty" && fact.supersededValues.some(({ value }) => value.kind === "known"))

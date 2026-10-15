@@ -28,14 +28,17 @@ export const raceEthnicityCorrection = "Correction: the complete patient-reporte
 export const ongoingOpening = medicationTwoOpening + " Amoxicillin therapy is still ongoing after the reported restart. Naproxen therapy is explicitly not ongoing.";
 export const ongoingCorrection = "Correction: amoxicillin therapy is not ongoing now. Keep the previously supplied treatment dates and historical restart.";
 
-function opening(two: boolean, expiration = false, identifier = false, ageUnits: boolean | "weeks" | "birth-date" | "race-ethnicity" | "ongoing" = false) {
-  const text = ageUnits === "ongoing" ? ongoingOpening : ageUnits === "race-ethnicity" ? raceEthnicityOpening : ageUnits === "birth-date" ? birthDateOpening : ageUnits === "weeks" ? ageWeeksOpening : ageUnits ? ageOpening : identifier ? identifierOpening : expiration ? expirationOpening : two ? medicationTwoOpening : medicationSparseOpening;
+export const reductionOpening = medicationTwoOpening + " The amoxicillin dose was reduced on 29 February 2028; the naproxen dose was reduced on 18 September 2026.";
+export const reductionCorrection = "Correction: the naproxen dose-reduction date was 19 September 2026, not 18 September 2026. Keep all other supplied facts.";
+
+function opening(two: boolean, expiration = false, identifier = false, ageUnits: boolean | "weeks" | "birth-date" | "race-ethnicity" | "ongoing" = false, reduction = false) {
+  const text = reduction ? reductionOpening : ageUnits === "ongoing" ? ongoingOpening : ageUnits === "race-ethnicity" ? raceEthnicityOpening : ageUnits === "birth-date" ? birthDateOpening : ageUnits === "weeks" ? ageWeeksOpening : ageUnits ? ageOpening : identifier ? identifierOpening : expiration ? expirationOpening : two ? medicationTwoOpening : medicationSparseOpening;
   const proposals: QuotedFixtureOutput["proposals"] = [];
   const add = (target: QuotedFixtureOutput["proposals"][number]["target"], value: unknown, group: string) => {
     proposals.push({ proposalReference: `p${proposals.length}`, groupReference: group, intent: "fact", target,
       value: { kind: "known", value } as QuotedFixtureOutput["proposals"][number]["value"], evidenceQuote: text });
   };
-  add({ entity: "patient", field: "identifier" }, ageUnits === "race-ethnicity" ? "A5-55" : ageUnits === "birth-date" ? "DOB-29" : ageUnits === "weeks" ? "AGE-W6" : ageUnits ? "AGE-M24" : two ? "MED-55" : "MED-40", "patient");
+  add({ entity: "patient", field: "identifier" }, ageUnits === "race-ethnicity" ? "A5-55" : ageUnits === "birth-date" ? "DOB-29" : ageUnits === "weeks" ? "AGE-W6" : ageUnits === true ? "AGE-M24" : two ? "MED-55" : "MED-40", "patient");
   if (ageUnits === "birth-date") add({ entity: "patient", field: "dateOfBirth" }, "2024-02-29", "patient");
   else add({ entity: "patient", field: "ageYears" }, ageUnits === "weeks" ? { value: 6, unit: "weeks" } : ageUnits === true ? { value: 24, unit: "months" } : two ? 55 : 40, "patient");
   if (ageUnits === "race-ethnicity") add({ entity: "patient", field: "raceEthnicity" }, ["asian", "hispanic-latino"], "patient");
@@ -49,6 +52,7 @@ function opening(two: boolean, expiration = false, identifier = false, ageUnits:
     ...(identifier ? { ndcOrUniqueId: "00123-0045-06" } : {}), ...(expiration ? { expirationDate: "2028-02-29" } : {}), medicationType: ["generic-biosimilar"], stopped: true, stopDate: "2026-09-17", improvedAfterChange: true, restarted: true, recurred: true,
   } : {}) });
   if (two) product("b", { name: "naproxen", productType: "drug-or-biologic", role: "suspect", indication: "joint pain", ...(identifier ? { ndcOrUniqueId: "00045-0067-08" } : {}), ...(expiration ? { expirationDate: "2027-12-31" } : {}), medicationType: ["generic-biosimilar", "otc"], stopped: false, doseReduced: true, improvedAfterChange: false, restarted: false });
+  if (reduction) { product("a", { doseReductionDate: "2028-02-29" }); product("b", { doseReductionDate: "2026-09-18" }); }
   if (ageUnits === "ongoing") { product("a", { therapyOngoing: true }); product("b", { therapyOngoing: false }); }
   return referenceFixture(text, { products: (two ? ["a", "b"] : ["a"]).map((reference) => ({ productReference: reference, groupReference: reference })), proposals });
 }
@@ -96,5 +100,9 @@ export const medicationScenarios = {
   productIdentifier: [
     { identityScope: "identifier", turn: "opening" as const, output: opening(true, true, true) },
     { identityScope: "identifier-update", turn: "correction" as const, output: update(identifierCorrection, "product-identifier-b", { ndcOrUniqueId: "00045-0067-09" }) },
+  ],
+  productReductionDate: [
+    { identityScope: "reduction-date", turn: "opening" as const, output: opening(true, false, false, false, true) },
+    { identityScope: "reduction-date-update", turn: "correction" as const, output: update(reductionCorrection, "product-reduction-date-b", { doseReductionDate: "2026-09-19" }) },
   ],
 };

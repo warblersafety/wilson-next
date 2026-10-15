@@ -24,6 +24,7 @@ export interface FactControl {
   help?: string;
   preference?: boolean;
   requireSelection?: boolean;
+  completeDate?: boolean;
   explicitAbsentLabel?: string;
   options?: ReadonlyArray<{ value: string; label: string }>;
 }
@@ -90,6 +91,7 @@ const product = {
   indication: { label: "Used for", shape: "text" },
   stopped: { label: "Stopped or removed", shape: "boolean" },
   medicationType: { label: "Medication label type", shape: "choices", options: choices(["brand", "Brand"], ["generic-biosimilar", "Generic or biosimilar"], ["otc", "Over-the-counter"], ["compounded", "Compounded"]) },
+  doseReductionDate: { label: "Dose reduced on", shape: "date", completeDate: true, help: "Enter the explicitly supplied complete date as YYYY-MM-DD. Partial or impossible dates stay unfinished. Wilson never infers a dose reduction or its date." },
   doseReduced: { label: "Dose reduced", shape: "boolean" },
   improvedAfterChange: { label: "Improved after stopping or reducing", shape: "boolean" },
   restarted: { label: "Restarted", shape: "boolean" },

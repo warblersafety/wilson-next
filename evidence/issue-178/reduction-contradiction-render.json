@@ -1,0 +1,13 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "reduction-contradiction.pdf",
+  "renders": [
+    {
+      "page": 4,
+      "screenshot": "reduction-contradiction-page-4.png",
+      "rendered": true,
+      "visualInspection": "passed: supplied date legible in correct D3 field; unrelated controls preserved; all three D7 boxes blank after explicit no-stop/no-reduction conflict"
+    }
+  ]
+}

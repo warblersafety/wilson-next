@@ -1,11 +1,11 @@
 import { raceEthnicityOptions, type RaceEthnicity } from "./race-ethnicity";
 import type { PatientAge } from "./age";
 import { allFacts, targetKey } from "./facts";
-import { ongoingTherapyNotice, isSettled, restartApplicability, withdrawalApplicability } from "./medication";
+import { doseReductionDateNotice, ongoingTherapyNotice, isSettled, restartApplicability, withdrawalApplicability } from "./medication";
 import { productDisplayLabel } from "./product-label";
 import type { Fact, ProductEntity, ProductFactKey, ReportType, SemanticCase } from "./types";
 
-const sectionDProductFields = ["name", "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "indication", "medicationType"] as const satisfies readonly ProductFactKey[];
+const sectionDProductFields = ["name", "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "doseReductionDate", "indication", "medicationType"] as const satisfies readonly ProductFactKey[];
 const sectionEProductFields = ["name", "commonName", "procode", "manufacturer", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const satisfies readonly ProductFactKey[];
 const sectionFProductFields = ["name", "startDate", "stopDate"] as const satisfies readonly ProductFactKey[];
 const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "role", "stopped"]);
@@ -13,7 +13,7 @@ const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "r
 export interface ProjectionOmission {
   concept: string;
   target: string;
-  reason: "empty" | "unknown" | "explicitly-absent" | "inapplicable" | "declined" | "conflicted" | "qualifier-not-included" | "a2-alternative-not-selected";
+  reason: "empty" | "unknown" | "explicitly-absent" | "inapplicable" | "declined" | "conflicted" | "qualifier-not-included" | "a2-alternative-not-selected" | "reduction-date-conflict";
   qualifier?: string;
   baseValueIncluded?: boolean;
   sourceIds: string[];
@@ -90,6 +90,7 @@ export interface ProjectedProduct {
   startDate?: string;
   stopDate?: string;
   therapyOngoing?: boolean;
+  doseReductionDate?: string;
   indication?: string;
   medicationType?: Array<"brand" | "generic-biosimilar" | "otc" | "compounded">;
   improvedAfterChange?: boolean | "inapplicable";
@@ -135,7 +136,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       "Section C product pictures and general additional comments",
       "Additional suspect medical devices beyond the first",
       "Section D partial expiration dates, other product-type categories and purchase details",
-      "Section D dose-reduction date and treatment duration",
+      "Section D partial dose-reduction dates and treatment duration",
     ],
   };
 
@@ -246,6 +247,8 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       });
       continue;
     }
+    const reductionNotice = doseReductionDateNotice(product.facts);
+    if (reductionNotice) projection.notIncluded.push(`${productLabel(caseState, product)} — ${reductionNotice}`);
     const ongoingNotice = ongoingTherapyNotice(product.facts);
     if (ongoingNotice) projection.notIncluded.push(`${productLabel(caseState, product)} — ${ongoingNotice}`);
     if (role.value === "suspect") {
@@ -258,7 +261,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
         }
       } else {
         const target = projection.sections.D.suspectProducts;
-        target.push(projectProduct(product, projection, target.length));
+        target.push(projectProduct(product, projection, target.length, productLabel(caseState, product)));
         recordNonCarriedProductFacts(caseState, product, [...sectionDProductFields, "doseReduced", "restarted", "improvedAfterChange", "recurred"], "Section D", projection);
       }
     } else {
@@ -311,6 +314,7 @@ function projectProduct(
   product: ProductEntity,
   projection: Form3500Projection,
   index: number,
+  label: string,
 ): ProjectedProduct {
   const result: ProjectedProduct = { productId: product.id };
   const prefix = `sections.D.suspectProducts.${index}`;
@@ -326,6 +330,12 @@ function projectProduct(
     const outcome = product.facts[field];
     const path = `${prefix}.${field}`;
     const sources = [...new Set([...prerequisites.flatMap((fact) => fact.resolvedValue?.sourceIds ?? []), ...(outcome.resolvedValue?.sourceIds ?? [])])];
+    if (field === "improvedAfterChange" && applies === false && known(product.facts.doseReductionDate)) {
+      const conflictSources = [...new Set([...sources, ...product.facts.doseReductionDate.resolvedValue!.sourceIds])];
+      projection.omissions.push({ concept: `D7 applicability for ${product.id}`, target: `product:${product.id}:improvedAfterChange`, reason: "reduction-date-conflict", sourceIds: conflictSources });
+      projection.notIncluded.push(`${label} — D7 is left blank because the supplied dose-reduction date conflicts with the explicit no-stop/no-reduction answers. Wilson has not derived Does not apply or chosen an interpretation.`);
+      continue;
+    }
     if (applies === false) {
       result[field] = "inapplicable";
       projection.sourceTrace[path] = sources;

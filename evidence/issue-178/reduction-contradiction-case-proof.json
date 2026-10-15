@@ -1,0 +1,220 @@
+{
+  "caseId": "case-11111111-1111-4111-8111-111111111126",
+  "revision": 25,
+  "pdfSha256": "d378cba43ab3c557e01be75a9fd045e4cf1657a77aba0a40212ec6869e5d7e5f",
+  "products": [
+    {
+      "id": "product-apixaban",
+      "facts": {
+        "stopped": {
+          "state": "resolved",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-input-opening-p6",
+            "capacity-18",
+            "context-source-23-product:product-apixaban:stopped"
+          ],
+          "supersededValues": [
+            {
+              "id": "apixaban-stopped",
+              "groupId": "product-apixaban",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": true
+              },
+              "sourceIds": [
+                "source-input-opening-p6"
+              ]
+            },
+            {
+              "id": "capacity-18-2",
+              "groupId": "capacity-18",
+              "intent": "correction",
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "capacity-18"
+              ]
+            }
+          ],
+          "resolvedValue": {
+            "id": "context-value-23-product:product-apixaban:stopped",
+            "groupId": "context-23-product:product-apixaban:stopped",
+            "intent": "correction",
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "sourceIds": [
+              "context-source-23-product:product-apixaban:stopped"
+            ]
+          }
+        },
+        "doseReduced": {
+          "state": "resolved",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [
+            "capacity-18",
+            "context-source-21-product:product-apixaban:doseReduced",
+            "context-source-22-product:product-apixaban:doseReduced"
+          ],
+          "supersededValues": [
+            {
+              "id": "capacity-18-3",
+              "groupId": "capacity-18",
+              "intent": "correction",
+              "value": {
+                "kind": "unknown"
+              },
+              "sourceIds": [
+                "capacity-18"
+              ]
+            },
+            {
+              "id": "context-value-21-product:product-apixaban:doseReduced",
+              "groupId": "context-21-product:product-apixaban:doseReduced",
+              "intent": "correction",
+              "value": {
+                "kind": "known",
+                "value": true
+              },
+              "sourceIds": [
+                "context-source-21-product:product-apixaban:doseReduced"
+              ]
+            }
+          ],
+          "resolvedValue": {
+            "id": "context-value-22-product:product-apixaban:doseReduced",
+            "groupId": "context-22-product:product-apixaban:doseReduced",
+            "intent": "correction",
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "sourceIds": [
+              "context-source-22-product:product-apixaban:doseReduced"
+            ]
+          }
+        },
+        "doseReductionDate": {
+          "state": "resolved",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [
+            "context-source-24-product:product-apixaban:doseReductionDate"
+          ],
+          "supersededValues": [],
+          "resolvedValue": {
+            "id": "context-value-24-product:product-apixaban:doseReductionDate",
+            "groupId": "context-24-product:product-apixaban:doseReductionDate",
+            "intent": "correction",
+            "value": {
+              "kind": "known",
+              "value": "2026-09-18"
+            },
+            "sourceIds": [
+              "context-source-24-product:product-apixaban:doseReductionDate"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "product-naproxen",
+      "facts": {
+        "stopped": {
+          "state": "resolved",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-input-opening-p6",
+            "capacity-19"
+          ],
+          "supersededValues": [
+            {
+              "id": "naproxen-stopped",
+              "groupId": "product-naproxen",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": true
+              },
+              "sourceIds": [
+                "source-input-opening-p6"
+              ]
+            }
+          ],
+          "resolvedValue": {
+            "id": "capacity-19-2",
+            "groupId": "capacity-19",
+            "intent": "correction",
+            "value": {
+              "kind": "unknown"
+            },
+            "sourceIds": [
+              "capacity-19"
+            ]
+          }
+        },
+        "doseReduced": {
+          "state": "resolved",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [
+            "capacity-19"
+          ],
+          "supersededValues": [],
+          "resolvedValue": {
+            "id": "capacity-19-3",
+            "groupId": "capacity-19",
+            "intent": "correction",
+            "value": {
+              "kind": "unknown"
+            },
+            "sourceIds": [
+              "capacity-19"
+            ]
+          }
+        },
+        "doseReductionDate": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        }
+      }
+    }
+  ],
+  "projection": {
+    "suspectProducts": [
+      {
+        "productId": "product-apixaban",
+        "name": "Synthetic product A",
+        "dose": {
+          "value": "5 mg"
+        },
+        "frequency": "twice daily",
+        "route": "oral",
+        "startDate": "2026-08-13",
+        "doseReductionDate": "2026-09-18",
+        "indication": "Fictional indication"
+      },
+      {
+        "productId": "product-naproxen",
+        "name": "Synthetic product B",
+        "dose": {
+          "value": "250 mg"
+        },
+        "frequency": "twice daily",
+        "route": "oral",
+        "startDate": "2026-08-10",
+        "indication": "Fictional indication"
+      }
+    ]
+  }
+}

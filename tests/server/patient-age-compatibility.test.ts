@@ -12,7 +12,7 @@ it("upgrades v11 numeric age facts and all histories/targets byte-equivalently a
 it("does not admit new unit objects mislabelled as v11 or future/malformed accepted values", () => {
   const current = { version: browserStateVersion, stage: "output", case: setContextFact(productCapacityCase(), "patient:patient:ageYears", { kind: "known", value: { value:24,unit:"months" } }), unrepresented: [] };
   expect(parseBrowserJourneyState(current).case).toEqual(current.case);
-  for (const version of ["wilson-browser-state-v11","wilson-browser-state-v17"]) { const candidate={...structuredClone(current),version}, before=structuredClone(candidate); expect(()=>parseBrowserJourneyState(candidate)).toThrow(); expect(candidate).toEqual(before); }
+  for (const version of ["wilson-browser-state-v11","wilson-browser-state-v18"]) { const candidate={...structuredClone(current),version}, before=structuredClone(candidate); expect(()=>parseBrowserJourneyState(candidate)).toThrow(); expect(candidate).toEqual(before); }
   const malformed=structuredClone(current); malformed.case.patient.facts.ageYears.resolvedValue!.value={kind:"known",value:{value:1.5,unit:"days"}}; expect(()=>parseBrowserJourneyState(malformed)).toThrow();
 });
 it.each([{value:24,unit:"months"},{value:5,unit:"days"},{value:6,unit:"weeks"}])("accepts exact grounded $value $unit without conversion or date calculation", value => {
