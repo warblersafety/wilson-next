@@ -1,3 +1,5 @@
+import { d3ChoiceIssue, isTreatmentDuration } from "../../domain/case/duration";
+import { durationLimitation } from "../pdf/duration";
 import { raceEthnicityOptions } from "../../domain/case/race-ethnicity";
 import { patientA2ChoiceIssue } from "../../domain/case/birth-date";
 import { isPatientAge, patientAgeParts } from "../../domain/case/age";
@@ -59,6 +61,7 @@ export interface JourneySnapshot {
 }
 
 export type OutputReadinessIssueCode =
+  | "product-d3-choice-required" | "unsupported-treatment-duration"
   | "pending-proposal-review"
   | "open-clarification"
   | "incomplete-product"
@@ -697,6 +700,14 @@ export function outputReadinessIssues(
   }
   const a2Issue = patientA2ChoiceIssue(caseState);
   if (a2Issue) issue("patient-a2-choice-required", a2Issue, ["patient:patient:a2Value", "patient:patient:dateOfBirth", "patient:patient:ageYears"], ["patient"]);
+  for (const product of caseState.products.filter(p => p.state === "resolved" && knownValue(p.facts.role) === "suspect" && knownValue(p.facts.productType) !== "device")) {
+    const d3Issue = d3ChoiceIssue(product.facts);
+    if (d3Issue) issue("product-d3-choice-required", `${productLabel(caseState,product.id)}: ${d3Issue}`, ["d3Value","treatmentDuration","startDate","stopDate","doseReductionDate"].map(f=>`product:${product.id}:${f}`), [product.id]);
+  }
+  for (const product of projection.sections.D.suspectProducts) {
+    const limit = durationLimitation(product.treatmentDuration);
+    if (limit) issue("unsupported-treatment-duration",`${productLabel(caseState,product.productId)}: the reviewed duration ${limit}; no new PDF is generated.`,[`product:${product.productId}:treatmentDuration`],[product.productId]);
+  }
   const ageLimit = patientAgeLimitation(projection.sections.A.ageYears);
   if (ageLimit) issue("unsupported-patient-age", `The reviewed age ${ageLimit}. It is retained, but the PDF cannot represent it; no new PDF is generated.`, ["patient:patient:ageYears"], ["patient"]);
   if (projection.sections.A.sex === "intersex") {
@@ -813,6 +824,8 @@ function knownValue<T>(fact: Fact<T> | undefined): T | undefined {
 }
 
 function displayValue(value: CaseValue<unknown>, target?: FactTarget): string {
+  if (target?.entity === "product" && target.field === "d3Value" && value.kind !== "known") return "no print preference";
+  if (target?.field === "treatmentDuration" && value.kind === "known" && isTreatmentDuration(value.value)) return `${value.value.value} ${value.value.unit}`;
   if (target?.entity === "patient" && target.field === "a2Value" && value.kind !== "known") return "no print preference";
   if (target?.entity === "patient" && target.field === "raceEthnicity" && value.kind === "explicitly-absent") return "none of the listed categories explicitly reported";
   if (value.kind !== "known") return value.kind.replaceAll("-", " ");

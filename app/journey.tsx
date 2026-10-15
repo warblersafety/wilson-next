@@ -21,6 +21,7 @@ import styles from "./page.module.css";
 import { editValueForSubmission, clinicalDraftKey, reporterDraftKey, factVersions as captureFactVersions, invalidatedCardFields } from "../src/browser/ui-drafts";
 import { JourneyDraftProvider, useJourneyDrafts, useCaseDraft, draftFieldSetter } from "./journey-drafts";
 import { canSaveReporter, clinicalNeedParts, needFieldLabel, nextClinicalAction, singleEntityGroup } from "./clinical-guidance";
+import { isTreatmentDuration, d3DateFields } from "../src/domain/case/duration";
 import { productCardFields } from "./product-fields";
 import { useBrowserWorkspace } from "./browser-workspace";
 import { hasWorkspaceWork } from "../src/browser/workspace-state";
@@ -1053,7 +1054,8 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
       if (!fact || (groupedOutcomes && !showOutcomes && outcomeFields.includes(field))) return null;
       const value = cardValue(fact);
       const a2ChoiceNeeded = entity === "patient" && field === "a2Value" && cardValue(facts.ageYears)?.kind === "known" && cardValue(facts.dateOfBirth)?.kind === "known";
-      if (!showMore && !value && fact.history.length === 0 && fact.conflicts.length === 0 && !a2ChoiceNeeded) return null;
+      const d3ChoiceNeeded = entity === "product" && field === "d3Value" && cardValue(facts.treatmentDuration)?.kind === "known" && d3DateFields.some(f => cardValue(facts[f])?.kind === "known");
+      if (!showMore && !value && fact.history.length === 0 && fact.conflicts.length === 0 && !a2ChoiceNeeded && !d3ChoiceNeeded) return null;
       const proposal = fact.proposals.find(({ groupId: proposalGroup }) => proposalGroup === groupId);
       const editable = Boolean(((allowOpeningReview || reviewBlocked) && proposal) || allowDirectEdit);
       if (!value && fact.history.length === 0 && fact.conflicts.length === 0 && !editable && !(entity === "test" && (field === "testName" || field === "testResult"))) return null;
@@ -1111,7 +1113,7 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQ
     <select aria-label={`New ${label}`} value={value.kind === "known" ? String(value.value) : ""} onChange={event => onChange(event.target.value ? { kind: "known", value: event.target.value } : { kind: "explicitly-absent" })}>
       <option value="">No print preference</option>{control.options?.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
     </select>
-    <p>No print preference uses the sole known value, or leaves A2 blank if neither is known. If both are known, choose one. Clearing this preference does not change either fact or its unfinished edits.</p>
+    <p>{control.preferenceHelp ?? "No print preference uses the sole known value, or leaves A2 blank if neither is known. If both are known, choose one. Clearing this preference does not change either fact or its unfinished edits."}</p>
     {value.kind === "known" && value.qualifier && <p>Retained context: {value.qualifier} <button type="button" onClick={() => emitChange({ ...value, qualifier: "" })}>Remove retained context</button></p>}
   </div>;
   return <div className={styles.factEditor}>
@@ -1122,12 +1124,17 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQ
     {value.kind === "known" && control.shape === "age" && <div className={styles.measurement}>
       <input aria-label={`New ${label}`} type="number" min="0" step="1" max={typeof known === "number" ? 150 : undefined} value={String(typeof known === "number" ? known : typeof known === "object" && known && "value" in known ? known.value : "")} onChange={(event) => onChange({ kind: "known", value: typeof known === "object" && known && "unit" in known && (known.unit === "months" || known.unit === "weeks" || known.unit === "days") ? { value: Number(event.target.value), unit: known.unit } : Number(event.target.value) })} />
       <select aria-label={`${label} unit`} value={typeof known === "number" ? "years" : typeof known === "object" && known && "unit" in known ? known.unit : "years"} onChange={(event) => {
-        const amount = typeof known === "number" ? known : typeof known === "object" && known && "value" in known ? known.value : 0;
+        const amount = typeof known === "number" ? known : typeof known === "object" && known && "value" in known && typeof known.value === "number" ? known.value : 0;
         onChange({ kind: "known", value: event.target.value === "years" ? amount : { value: amount, unit: event.target.value as "months" | "weeks" | "days" } });
       }}><option value="years">Years</option><option value="months">Months</option><option value="weeks">Weeks</option><option value="days">Days</option></select>
     </div>}
     {value.kind === "known" && (control.shape === "birth-date" || control.completeDate) && <><input aria-label={`New ${label}`} type="text" placeholder="YYYY-MM-DD" value={String(known ?? "")} onChange={event => onChange({ kind: "known", value: event.target.value })} />{!isCompleteBirthDate(known) && <p role="status">A complete valid calendar date is required (YYYY-MM-DD). This unfinished edit is retained; no missing component is inferred.</p>}</>}
     {value.kind === "known" && control.shape === "date" && !control.completeDate && <input aria-label={`New ${label}`} type="date" value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />}
+    {value.kind === "known" && control.shape === "duration" && <div>
+      <input aria-label={`New ${label} amount`} type="text" inputMode="decimal" value={known && typeof known === "object" && "value" in known ? String(known.value) : ""} onChange={e => onChange({kind:"known",value:{value:e.target.value,unit:known && typeof known === "object" && "unit" in known ? String(known.unit) : ""}})} />
+      <select aria-label={`${label} unit`} value={known && typeof known === "object" && "unit" in known ? String(known.unit) : ""} onChange={e => onChange({kind:"known",value:{value:known && typeof known === "object" && "value" in known ? String(known.value) : "",unit:e.target.value}})}><option value="">Choose supplied unit</option>{control.options?.map(o=><option key={o.value} value={o.value}>{o.label}</option>)}</select>
+      {!isTreatmentDuration(known) && <p role="status">A positive amount and an explicitly supplied supported unit are required. This unfinished pair is retained.</p>}
+    </div>}
     {value.kind === "known" && control.shape === "boolean" && <select aria-label={`New ${label}`} value={String(known)} onChange={(event) => onChange({ kind: "known", value: event.target.value === "true" })}><option value="true">Yes</option><option value="false">No</option></select>}
     {value.kind === "known" && control.shape === "list" && <textarea aria-label={`New ${label}`} rows={3} value={Array.isArray(known) ? known.join("\n") : ""} onChange={(event) => onChange({ kind: "known", value: splitList(event.target.value) })} />}
     {value.kind === "known" && control.shape === "weight" && <div className={styles.measurement}>
@@ -1145,6 +1152,7 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQ
 function editableInitialValue(value: CaseValue<unknown> | undefined, control: FactControl): EditableCaseValue {
   if (value) return value as EditableCaseValue;
   if (control.preference) return { kind: "known", value: "" };
+  if (control.shape === "duration") return {kind:"known",value:{value:"",unit:""}};
   if (control.shape === "age") return { kind: "known", value: 0 };
   if (control.shape === "boolean") return { kind: "known", value: false };
   if (control.shape === "list" || control.shape === "choices") return { kind: "known", value: [] };
@@ -1155,12 +1163,13 @@ function editableInitialValue(value: CaseValue<unknown> | undefined, control: Fa
 
 function validEditableValue(value: EditableCaseValue, control: FactControl): boolean {
   if (value.kind !== "known") return true;
+  if (control.shape === "duration") return isTreatmentDuration(value.value);
   if (control.completeDate) return isCompleteBirthDate(value.value);
   if (control.shape === "text" || control.shape === "date" || control.shape === "choice") return typeof value.value === "string" && Boolean(value.value.trim());
   if (control.requireSelection) return Array.isArray(value.value) && value.value.length > 0 && new Set(value.value).size === value.value.length && value.value.every(item => control.options?.some(option => option.value === item));
   if (control.shape === "birth-date") return isCompleteBirthDate(value.value);
   if (control.shape === "age") return isPatientAge(value.value);
-  if (control.shape === "weight") return typeof value.value === "object" && !Array.isArray(value.value) && value.value.value > 0;
+  if (control.shape === "weight") return typeof value.value === "object" && !Array.isArray(value.value) && typeof value.value.value === "number" && value.value.value > 0;
   if (control.shape === "list") return Array.isArray(value.value) && value.value.length > 0;
   return true;
 }
@@ -1217,6 +1226,7 @@ function formatFact(value: CaseValue<unknown> | undefined, control?: FactControl
 
 function formatFactValue(value: CaseValue<unknown> | undefined, control?: FactControl): string {
   if (!value) return "Not provided";
+  if (value.kind === "known" && control?.shape === "duration" && isTreatmentDuration(value.value)) return `${value.value.value} ${value.value.unit}`;
   if (value.kind === "explicitly-absent" && control?.explicitAbsentLabel) return control.explicitAbsentLabel;
   if (value.kind !== "known" && control?.preference) return "No print preference";
   if (value.kind !== "known") return {
@@ -1306,6 +1316,7 @@ function omissionLabel(reason: string, target: string, baseValueIncluded = false
     declined: "prefer not to answer",
     conflicted: "unresolved conflict",
     "reduction-date-conflict": "D7 left blank: conflicting supplied dose-reduction information; no applicability inferred",
+    "d3-alternative-not-selected": "retained; not selected for D3 output",
     "a2-alternative-not-selected": "retained; not selected for A2 output",
     "qualifier-not-included": baseValueIncluded ? "base value included; reviewed uncertainty or context not included" : "reviewed uncertainty or context not included",
   }[reason] ?? reason.replaceAll("-", " ");

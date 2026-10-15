@@ -6,7 +6,7 @@ import { maximumCaseProducts, maximumRelevantTests } from "./limits";
 
 const patientFields = ["identifier", "ageYears", "dateOfBirth", "raceEthnicity", "sex", "weight"] as const;
 const eventFields = ["problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "relevantHistory", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate"] as const;
-const productFields = ["name", "productType", "role", "manufacturer", "lotNumber", "ndcOrUniqueId", "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "indication", "stopped", "medicationType", "doseReduced", "doseReductionDate", "improvedAfterChange", "restarted", "recurred", "commonName", "procode", "modelNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implanted", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const;
+const productFields = ["name", "productType", "role", "manufacturer", "lotNumber", "ndcOrUniqueId", "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "indication", "stopped", "medicationType", "doseReduced", "doseReductionDate", "treatmentDuration", "improvedAfterChange", "restarted", "recurred", "commonName", "procode", "modelNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implanted", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const;
 const relevantTestFields = ["testName", "testResult", "lowRange", "highRange", "date"] as const;
 
 const modelTargetSchema = z.discriminatedUnion("entity", [
@@ -23,7 +23,7 @@ const modelTargetSchema = z.discriminatedUnion("entity", [
 const caseValueSchema = z.discriminatedUnion("kind", [
   z.object({
     kind: z.literal("known"),
-    value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string()), z.object({ value: z.number().positive(), unit: z.enum(["kg", "lb"]) }).strict(), z.object({ value: z.number(), unit: z.enum(["months", "weeks", "days"]) }).strict()])
+    value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string()), z.object({ value: z.number().positive(), unit: z.enum(["kg", "lb"]) }).strict(), z.object({ value: z.number(), unit: z.enum(["months", "weeks", "days"]) }).strict(), z.object({ value: z.string(), unit: z.string() }).strict()])
       .describe(`${modelKnownValueGuidance()} Preserve explicitly stated descriptive detail; normalize only conventions defined by the model instructions.`),
     qualifier: z.string().min(1).optional(),
   }).strict(),

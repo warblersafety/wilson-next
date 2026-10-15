@@ -1,0 +1,326 @@
+{
+  "hours": [
+    {
+      "field": "Prod1TherapyDuration[0]",
+      "value": "1.50",
+      "rect": [
+        364.309,
+        334.72,
+        425.764,
+        348.814
+      ],
+      "hasNormalAppearance": true,
+      "options": null
+    },
+    {
+      "field": "Prod1TherapyDurUnit[0]",
+      "value": "6",
+      "rect": [
+        364.309,
+        316.363,
+        559.46,
+        330.363
+      ],
+      "hasNormalAppearance": true,
+      "options": [
+        [
+          "8",
+          " "
+        ],
+        [
+          "7",
+          "Minute(s)"
+        ],
+        [
+          "6",
+          "Hour(s)"
+        ],
+        [
+          "5",
+          "Day(s)"
+        ],
+        [
+          "4",
+          "Week(s)"
+        ],
+        [
+          "3",
+          "Month(s)"
+        ],
+        [
+          "2",
+          "Year(s)"
+        ]
+      ]
+    },
+    {
+      "field": "Prod2TherapyDuration[0]",
+      "value": "1.50",
+      "rect": [
+        361.123,
+        371.874,
+        422.578,
+        385.968
+      ],
+      "hasNormalAppearance": true,
+      "options": null
+    },
+    {
+      "field": "Prod2TherapyDurUnit[0]",
+      "value": "6",
+      "rect": [
+        361.123,
+        353.518,
+        556.274,
+        367.518
+      ],
+      "hasNormalAppearance": true,
+      "options": [
+        [
+          "8",
+          " "
+        ],
+        [
+          "7",
+          "Minute(s)"
+        ],
+        [
+          "6",
+          "Hour(s)"
+        ],
+        [
+          "5",
+          "Day(s)"
+        ],
+        [
+          "4",
+          "Week(s)"
+        ],
+        [
+          "3",
+          "Month(s)"
+        ],
+        [
+          "2",
+          "Year(s)"
+        ]
+      ]
+    }
+  ],
+  "months": [
+    {
+      "field": "Prod1TherapyDuration[0]",
+      "value": "1.50",
+      "rect": [
+        364.309,
+        334.72,
+        425.764,
+        348.814
+      ],
+      "hasNormalAppearance": true,
+      "options": null
+    },
+    {
+      "field": "Prod1TherapyDurUnit[0]",
+      "value": "3",
+      "rect": [
+        364.309,
+        316.363,
+        559.46,
+        330.363
+      ],
+      "hasNormalAppearance": true,
+      "options": [
+        [
+          "8",
+          " "
+        ],
+        [
+          "7",
+          "Minute(s)"
+        ],
+        [
+          "6",
+          "Hour(s)"
+        ],
+        [
+          "5",
+          "Day(s)"
+        ],
+        [
+          "4",
+          "Week(s)"
+        ],
+        [
+          "3",
+          "Month(s)"
+        ],
+        [
+          "2",
+          "Year(s)"
+        ]
+      ]
+    },
+    {
+      "field": "Prod2TherapyDuration[0]",
+      "value": "1.50",
+      "rect": [
+        361.123,
+        371.874,
+        422.578,
+        385.968
+      ],
+      "hasNormalAppearance": true,
+      "options": null
+    },
+    {
+      "field": "Prod2TherapyDurUnit[0]",
+      "value": "3",
+      "rect": [
+        361.123,
+        353.518,
+        556.274,
+        367.518
+      ],
+      "hasNormalAppearance": true,
+      "options": [
+        [
+          "8",
+          " "
+        ],
+        [
+          "7",
+          "Minute(s)"
+        ],
+        [
+          "6",
+          "Hour(s)"
+        ],
+        [
+          "5",
+          "Day(s)"
+        ],
+        [
+          "4",
+          "Week(s)"
+        ],
+        [
+          "3",
+          "Month(s)"
+        ],
+        [
+          "2",
+          "Year(s)"
+        ]
+      ]
+    }
+  ],
+  "choice-dates": [
+    {
+      "field": "Prod1TherapyDuration[0]",
+      "value": "",
+      "rect": [
+        364.309,
+        334.72,
+        425.764,
+        348.814
+      ],
+      "hasNormalAppearance": true,
+      "options": null
+    },
+    {
+      "field": "Prod1TherapyDurUnit[0]",
+      "value": "8",
+      "rect": [
+        364.309,
+        316.363,
+        559.46,
+        330.363
+      ],
+      "hasNormalAppearance": true,
+      "options": [
+        [
+          "8",
+          " "
+        ],
+        [
+          "7",
+          "Minute(s)"
+        ],
+        [
+          "6",
+          "Hour(s)"
+        ],
+        [
+          "5",
+          "Day(s)"
+        ],
+        [
+          "4",
+          "Week(s)"
+        ],
+        [
+          "3",
+          "Month(s)"
+        ],
+        [
+          "2",
+          "Year(s)"
+        ]
+      ]
+    },
+    {
+      "field": "Prod2TherapyDuration[0]",
+      "value": "1.50",
+      "rect": [
+        361.123,
+        371.874,
+        422.578,
+        385.968
+      ],
+      "hasNormalAppearance": true,
+      "options": null
+    },
+    {
+      "field": "Prod2TherapyDurUnit[0]",
+      "value": "6",
+      "rect": [
+        361.123,
+        353.518,
+        556.274,
+        367.518
+      ],
+      "hasNormalAppearance": true,
+      "options": [
+        [
+          "8",
+          " "
+        ],
+        [
+          "7",
+          "Minute(s)"
+        ],
+        [
+          "6",
+          "Hour(s)"
+        ],
+        [
+          "5",
+          "Day(s)"
+        ],
+        [
+          "4",
+          "Week(s)"
+        ],
+        [
+          "3",
+          "Month(s)"
+        ],
+        [
+          "2",
+          "Year(s)"
+        ]
+      ]
+    }
+  ]
+}

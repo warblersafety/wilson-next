@@ -1,3 +1,5 @@
+import { isTreatmentDuration, durationNativeUnits, durationNativeLabels } from "../../domain/case/duration";
+import { durationLimitation } from "./duration";
 import { isCompleteCalendarDate } from "../../domain/case/calendar-date";
 import { raceEthnicityOptions, isRaceEthnicitySelections } from "../../domain/case/race-ethnicity";
 import { isCompleteBirthDate } from "../../domain/case/birth-date";
@@ -350,6 +352,13 @@ export async function fillForm3500Projection(
     writeSuspectProduct(form, suspectFields[index], product);
     const ordinal = index + 1;
     const prefix = `topmostSubform[0].Page${index + 4}[0].Prod${ordinal}[0].Prod${ordinal}`;
+    if (product.treatmentDuration !== undefined && (!isTreatmentDuration(product.treatmentDuration) || durationLimitation(product.treatmentDuration))) throw new Error("Unsupported D3 treatment duration");
+    if (product.treatmentDuration && [product.startDate,product.stopDate,product.doseReductionDate].some(v => v !== undefined)) throw new Error("D3 requires an explicit dates or duration print choice");
+    const durationName = `${prefix}TherapyDuration[0]`, durationUnitName = `${prefix}TherapyDurUnit[0]`;
+    if (product.treatmentDuration || form.getTextField(durationName).getText()) setText(form,durationName,product.treatmentDuration?.value ?? "");
+    const durationUnit = form.getDropdown(durationUnitName);
+    if (product.treatmentDuration) durationUnit.select(durationNativeLabels[product.treatmentDuration.unit]);
+    else if (durationUnit.getSelected().some(v=>v!=="8" && v!==" ")) durationUnit.select(" ");
     if (product.doseReductionDate !== undefined && !isCompleteCalendarDate(product.doseReductionDate)) throw new Error("D3 dose-reduction date requires a complete valid calendar date");
     const reductionDateName = `${prefix}TherapyReduceDate[0]`;
     if (product.doseReductionDate !== undefined || form.getTextField(reductionDateName).getText()) setText(form, reductionDateName, product.doseReductionDate ? formatDate(product.doseReductionDate) : "");
@@ -422,7 +431,7 @@ export async function fillForm3500Projection(
   form.updateFieldAppearances();
   // pdf-lib selects display labels. Preserve the generated label appearance,
   // but store the original FDA option's export value for other PDF readers.
-  for (const name of [fields.productOneDoseUnit, fields.productOneStrengthUnit, fields.productTwoDoseUnit, fields.productTwoStrengthUnit]) {
+  for (const name of [fields.productOneDoseUnit, fields.productOneStrengthUnit, fields.productTwoDoseUnit, fields.productTwoStrengthUnit, "topmostSubform[0].Page4[0].Prod1[0].Prod1TherapyDurUnit[0]", "topmostSubform[0].Page5[0].Prod2[0].Prod2TherapyDurUnit[0]"]) {
     const dropdown = form.getDropdown(name);
     const selected = dropdown.getSelected()[0];
     if (!selected) continue;
@@ -554,6 +563,16 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
     if (selected.length > 1) throw new Error("Form 3500 ongoing therapy has contradictory selections");
     return selected[0] === "Yes" ? true : selected[0] === "No" ? false : undefined;
   };
+  const readDuration = (index:number) => {
+    const prefix = `topmostSubform[0].Page${index+4}[0].Prod${index+1}[0].Prod${index+1}`;
+    const value = form.getTextField(`${prefix}TherapyDuration[0]`).getText();
+    const rawUnit = form.getDropdown(`${prefix}TherapyDurUnit[0]`).getSelected()[0];
+    const unit = Object.entries(durationNativeUnits).find(([,v])=>v===rawUnit)?.[0];
+    if (!value && !unit) return undefined;
+    const result = {value:value ?? "",unit:unit ?? ""};
+    if (!isTreatmentDuration(result)) throw new Error("Unreadable D3 duration pair");
+    return result;
+  };
   const readSuspect = (
     expected: ProjectedProduct,
     index: number,
@@ -561,6 +580,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
   ): ProjectedProduct => compact({
     productId: expected.productId,
     therapyOngoing: readOngoing(index),
+    treatmentDuration: readDuration(index),
     doseReductionDate: parseDate(form.getTextField(`topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].Prod${index + 1}TherapyReduceDate[0]`).getText()),
     name: form.getTextField(names.name).getText(),
     manufacturer: form.getTextField(names.manufacturer).getText(),

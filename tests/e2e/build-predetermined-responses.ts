@@ -4,7 +4,8 @@ import { medicationScenarios } from "../fixtures/medication-model";
 import { usabilityScenario } from "../fixtures/usability-model";
 import { sourceReferenceOutput, sourceReferenceCorrection, recoveryOutput } from "../fixtures/source-reference-case";
 import { referenceFixture, type QuotedFixtureOutput as ModelProposalOutput } from "../fixtures/source-references.ts";
-import type { ProductFactKey } from "../../src/domain/case/types.ts";
+import type { ProductFactKey as DomainProductFactKey } from "../../src/domain/case/types.ts";
+type ProductFactKey = Exclude<DomainProductFactKey, "d3Value">;
 
 export const richOpening = "Patient TEST-68 is a 68-year-old man. He began cephalexin 500 mg by mouth twice daily on 01-Aug-2026 for cellulitis. On 04-Aug-2026 he developed diffuse hives and facial swelling and was hospitalized. Cephalexin was stopped, he was treated with epinephrine and diphenhydramine, and he recovered and was discharged on 05-Aug-2026. I suspect cephalexin.";
 export const adaptiveRichOpening = "Patient TEST-72 is a 72-year-old woman weighing 64 kg. She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. Her relevant history is a penicillin allergy. Amoxicillin was stopped, she received epinephrine, and she recovered. I suspect amoxicillin.";

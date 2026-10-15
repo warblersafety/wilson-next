@@ -1,3 +1,4 @@
+import { isTreatmentDuration } from "../../domain/case/duration";
 import { isCompleteCalendarDate } from "../../domain/case/calendar-date";
 import { isRaceEthnicitySelections, raceEthnicityValues } from "../../domain/case/race-ethnicity";
 import { isCompleteBirthDate } from "../../domain/case/birth-date";
@@ -11,7 +12,7 @@ import {
 import type { JourneySnapshot, JourneyStage } from "../journey/service";
 import { InMemoryCaseRepository, validateRestoredCase } from "./repository";
 
-export const browserStateVersion = "wilson-browser-state-v17";
+export const browserStateVersion = "wilson-browser-state-v18";
 
 export interface BrowserJourneyState {
   version: typeof browserStateVersion;
@@ -134,6 +135,8 @@ const productFactsSchema = z.object({
   medicationType: factSchema(z.array(z.enum(["brand", "generic-biosimilar", "otc", "compounded"]))),
   doseReduced: factSchema(z.boolean()),
   doseReductionDate: factSchema(z.string().refine(isCompleteCalendarDate)),
+  treatmentDuration: factSchema(z.object({ value: z.string(), unit: z.string() }).strict().refine(isTreatmentDuration)),
+  d3Value: factSchema(z.enum(["dates", "duration"])),
   improvedAfterChange: factSchema(z.boolean()),
   restarted: factSchema(z.boolean()),
   recurred: factSchema(z.boolean()),
@@ -215,7 +218,11 @@ const caseSchema = z.object({
   }).strict()),
 }).strict();
 
-const preReductionProductFactsSchema = productFactsSchema.omit({ doseReductionDate: true });
+const preDurationProductFactsSchema = productFactsSchema.omit({ treatmentDuration: true, d3Value: true });
+const v17CaseSchema = caseSchema.extend({
+  products: z.array(caseSchema.shape.products.element.extend({facts: preDurationProductFactsSchema})).max(maximumCaseProducts),
+});
+const preReductionProductFactsSchema = preDurationProductFactsSchema.omit({ doseReductionDate: true });
 const v16CaseSchema = caseSchema.extend({
   products: z.array(caseSchema.shape.products.element.extend({ facts: preReductionProductFactsSchema })).max(maximumCaseProducts),
 });
@@ -288,7 +295,7 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
   if (!version.success) {
     throw new BrowserStateError("The saved synthetic preview state is malformed", "malformed-browser-state");
   }
-  if (![browserStateVersion, "wilson-browser-state-v16", "wilson-browser-state-v15", "wilson-browser-state-v14", "wilson-browser-state-v13", "wilson-browser-state-v12", "wilson-browser-state-v11", "wilson-browser-state-v10", "wilson-browser-state-v9", "wilson-browser-state-v8", "wilson-browser-state-v7"].includes(version.data.version)) {
+  if (![browserStateVersion, "wilson-browser-state-v17", "wilson-browser-state-v16", "wilson-browser-state-v15", "wilson-browser-state-v14", "wilson-browser-state-v13", "wilson-browser-state-v12", "wilson-browser-state-v11", "wilson-browser-state-v10", "wilson-browser-state-v9", "wilson-browser-state-v8", "wilson-browser-state-v7"].includes(version.data.version)) {
     throw new BrowserStateError("The saved synthetic preview state is incompatible", "incompatible-browser-state");
   }
   const envelope = stateSchema.safeParse(input);
@@ -327,7 +334,7 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
       ...product, facts: { ...product.facts, ndcOrUniqueId: emptyAddedFact() },
     })) };
   }
-  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v16" && version.data.version !== "wilson-browser-state-v15" && version.data.version !== "wilson-browser-state-v14" && version.data.version !== "wilson-browser-state-v12" && version.data.version !== "wilson-browser-state-v13") {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v17" && version.data.version !== "wilson-browser-state-v16" && version.data.version !== "wilson-browser-state-v15" && version.data.version !== "wilson-browser-state-v14" && version.data.version !== "wilson-browser-state-v12" && version.data.version !== "wilson-browser-state-v13") {
     const legacy = v11CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = legacy.data; // Numeric years and all fact/draft target identities stay unchanged.
@@ -337,25 +344,30 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = legacy.data; // Existing atomic months/days and their full history remain unchanged.
   }
-  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v16" && version.data.version !== "wilson-browser-state-v15" && version.data.version !== "wilson-browser-state-v14") {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v17" && version.data.version !== "wilson-browser-state-v16" && version.data.version !== "wilson-browser-state-v15" && version.data.version !== "wilson-browser-state-v14") {
     const legacy = v13CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = { ...legacy.data, patient: { ...legacy.data.patient, facts: { ...legacy.data.patient.facts, dateOfBirth: emptyAddedFact(), a2Value: emptyAddedFact() } } };
   }
-  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v16" && version.data.version !== "wilson-browser-state-v15") {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v17" && version.data.version !== "wilson-browser-state-v16" && version.data.version !== "wilson-browser-state-v15") {
     const legacy = v14CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = { ...legacy.data, patient: { ...legacy.data.patient, facts: { ...legacy.data.patient.facts, raceEthnicity: emptyAddedFact() } } };
   }
-  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v16") {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v17" && version.data.version !== "wilson-browser-state-v16") {
     const legacy = v15CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = { ...legacy.data, products: legacy.data.products.map(product => ({ ...product, facts: { ...product.facts, therapyOngoing: emptyAddedFact() } })) };
   }
-  if (version.data.version !== browserStateVersion) {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v17") {
     const legacy = v16CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = { ...legacy.data, products: legacy.data.products.map(product => ({ ...product, facts: { ...product.facts, doseReductionDate: emptyAddedFact() } })) };
+  }
+  if (version.data.version !== browserStateVersion) {
+    const legacy = v17CaseSchema.safeParse(candidate);
+    if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
+    candidate = {...legacy.data, products: legacy.data.products.map(p => ({...p, facts:{...p.facts,treatmentDuration:emptyAddedFact(),d3Value:emptyAddedFact()}}))};
   }
   const parsedCase = caseSchema.safeParse(candidate);
   if (!parsedCase.success) {
