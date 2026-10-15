@@ -2,10 +2,12 @@ import { createHash } from "node:crypto";
 import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts } from "../../domain/case/limits";
 import { PDFDocument, PDFName } from "@cantoo/pdf-lib";
 import { encodeForm3500Frequency, encodeForm3500Route, productTextLimitation } from "./product-text";
+import { quantityParts, quantityLimitation, eventNarrativeLimitation } from "./quantity";
 import type {
   Form3500Projection,
   ProjectedConcomitantProduct,
   ProjectedProduct,
+  ProjectedQuantity,
 } from "../../domain/case/projection";
 
 export const FORM_3500_VERSION = "09/2025";
@@ -229,6 +231,8 @@ export async function fillForm3500Projection(
   projection: Form3500Projection,
 ): Promise<Form3500ProjectionFillResult> {
   await assertApprovedFormSource(source);
+  const narrativeLimitation = await eventNarrativeLimitation(projection);
+  if (narrativeLimitation) throw new Error(`The reviewed B5 event description ${narrativeLimitation}`);
   if (projection.sections.D.suspectProducts.length > maximumForm3500SuspectProducts) {
     throw new Error(`The approved Form 3500 adapter supports at most ${maximumForm3500SuspectProducts} suspect products`);
   }
@@ -446,8 +450,8 @@ function writeSuspectProduct(
   product: ProjectedProduct,
 ): void {
   for (const field of ["route", "frequency", "dose", "strength"] as const) {
-    const value = product[field];
-    const limitation = value !== undefined ? productTextLimitation(field, value) : undefined;
+    const limitation = field === "dose" || field === "strength" ? quantityLimitation(field, product[field])
+      : product[field] !== undefined ? productTextLimitation(field, product[field]!) : undefined;
     if (limitation) throw new Error(`The reviewed ${field} ${limitation} for Form 3500`);
   }
   setText(form, names.name, product.name);
@@ -659,27 +663,14 @@ function decodeRoute(value: string | undefined, other: string | undefined, optio
   throw new Error(`Unreadable Form 3500 route ${value}`);
 }
 
-// Formatting only: do not calculate doses or concentrations. Descriptive,
-// compound, or unsupported quantities stay intact in the text control.
-function quantityParts(value: string): { amount: string; unit: string } {
-  const match = value.trim().match(/^(\d+(?:\.\d+)?|\.\d+)\s*(mg|g|kg|mcg|µg|μg|ng|mL|L|IU|mg\/mL|%)$/i);
-  const units: Record<string, string> = {
-    mg: "MILLIGRAM(S) - MG", g: "GRAM(S) - GM", kg: "KILOGRAM(S) - KG",
-    mcg: "MICROGRAM(S) - UGM", "µg": "MICROGRAM(S) - UGM", "μg": "MICROGRAM(S) - UGM",
-    ng: "NANOGRAM(S) - NGM", ml: "MILLILITRE(S) - ML", l: "LITRE(S) - L",
-    iu: "INTERNATIONAL UNIT(S) - IU", "mg/ml": "MILLIGRAMS/MILLILITRES - MG/ML", "%": "PERCENT - %",
-  };
-  return match ? { amount: match[1], unit: units[match[2].toLowerCase()] } : { amount: value, unit: " " };
-}
-
-function writeQuantity(form: ReturnType<PDFDocument["getForm"]>, textName: string, unitName: string, value?: string): void {
+function writeQuantity(form: ReturnType<PDFDocument["getForm"]>, textName: string, unitName: string, value?: ProjectedQuantity): void {
   if (value === undefined) return;
-  const { amount, unit } = quantityParts(value);
+  const { amount, unit } = quantityParts(value, textName.includes("Strength") ? "strength" : "dose");
   setText(form, textName, amount);
   form.getDropdown(unitName).select(unit);
 }
 
-function readQuantity(form: ReturnType<PDFDocument["getForm"]>, textName: string, unitName: string, expected?: string): string | undefined {
+function readQuantity(form: ReturnType<PDFDocument["getForm"]>, textName: string, unitName: string, expected?: ProjectedQuantity): ProjectedQuantity | undefined {
   const amount = form.getTextField(textName).getText();
   const dropdown = form.getDropdown(unitName);
   const selected = dropdown.getSelected()[0];
@@ -689,7 +680,7 @@ function readQuantity(form: ReturnType<PDFDocument["getForm"]>, textName: string
     if (amount || unit.trim()) throw new Error("Unexpected Form 3500 quantity");
     return undefined;
   }
-  const parts = quantityParts(expected);
+  const parts = quantityParts(expected, textName.includes("Strength") ? "strength" : "dose");
   if (amount !== parts.amount || unit !== parts.unit) throw new Error("Form 3500 quantity failed readback");
   // Preserve the reviewed spelling only after checking both actual controls.
   return expected;

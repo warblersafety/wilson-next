@@ -65,30 +65,34 @@ it.each(["explicitly-absent", "unknown", "unmentioned"] as const)("discloses a %
   expect(state).toEqual(before);
 });
 
-it("keeps a simple qualified quantity intact in the actual D6 text control", async () => {
+it("carries simple quantity uncertainty in B5 while preserving the native amount and unit", async () => {
   const state = setMedication(medicationCase(), "amoxicillin", { dose: { kind: "known", value: "500 mg", qualifier: "approximate" } });
   const fields = await independentFields(projectForm3500(state));
-  expect(fields["topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]"]).toBe("500 mg (approximate)");
-  // The original FDA dropdown's blank option has export value 40.
-  expect(fields["topmostSubform[0].Page4[0].Prod1[0].Prod1DoseUnit[0]"]).toBe("40");
+  expect(fields["topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]"]).toBe("500 (see B5)");
+  expect(fields[narrative]).toContain("Suspect product #1 dose: 500 mg (approximate).");
+  // Independent FDA export code25 is milligrams, not the blank fallback40.
+  expect(fields["topmostSubform[0].Page4[0].Prod1[0].Prod1DoseUnit[0]"]).toBe("25");
 });
 
 it("retains dose/strength qualifiers in their own suspect-product PDF slots without arithmetic or cross-attribution", async () => {
   let state = setMedication(medicationCase(true), "amoxicillin", { dose: { kind: "known", value: "two capsules, 500 mg", qualifier: "reported; diary uncertain" }, strength: { kind: "known", value: "250 mg per capsule", qualifier: "label difficult to read" } });
   state = setMedication(state, "naproxen", { dose: { kind: "known", value: "half a tablet", qualifier: "approximately" }, strength: { kind: "unknown" } });
   const projection = projectForm3500(state);
-  expect(projection.sections.D.suspectProducts[0].dose).toBe("two capsules, 500 mg (reported; diary uncertain)");
-  expect(projection.sections.D.suspectProducts[1].dose).toBe("half a tablet (approximately)");
+  expect(projection.sections.D.suspectProducts[0].dose).toEqual({ value: "two capsules, 500 mg", qualifier: "reported; diary uncertain" });
+  expect(projection.sections.D.suspectProducts[1].dose).toEqual({ value: "half a tablet", qualifier: "approximately" });
   expect(projection.sections.D.suspectProducts[1].strength).toBeUndefined();
   const fields = await independentFields(projection);
   for (const [n, page] of [[1, 4], [2, 5]]) {
     const prefix = `topmostSubform[0].Page${page}[0].Prod${n}[0].Prod${n}`;
-    expect(fields[`${prefix}Dose[0]`]).toBe(projection.sections.D.suspectProducts[n - 1].dose);
+    expect(fields[`${prefix}Dose[0]`]).toBe(n === 1 ? "two capsules, 500 mg (see B5)" : "half a tablet (see B5)");
   }
-  expect(fields["topmostSubform[0].Page4[0].Prod1[0].Prod1Strength[0]"]).toBe("250 mg per capsule (label difficult to read)");
+  expect(fields["topmostSubform[0].Page4[0].Prod1[0].Prod1Strength[0]"]).toBe("See B5");
+  expect(fields[narrative]).toContain("Suspect product #1 dose: two capsules, 500 mg (reported; diary uncertain).");
+  expect(fields[narrative]).toContain("Suspect product #1 strength: 250 mg per capsule (label difficult to read).");
+  expect(fields[narrative]).toContain("Suspect product #2 dose: half a tablet (approximately).");
   // A subsequent explicit correction replaces the qualifier; it must not be
   // resurrected from a superseded assertion in a regenerated PDF.
   state = setMedication(state, "amoxicillin", { dose: { kind: "known", value: "one capsule, 250 mg" } });
-  expect(projectForm3500(state).sections.D.suspectProducts[0].dose).toBe("one capsule, 250 mg");
+  expect(projectForm3500(state).sections.D.suspectProducts[0].dose).toEqual({ value: "one capsule, 250 mg" });
   expect(state.products[0].facts.dose.supersededValues[0].value).toEqual({ kind: "known", value: "two capsules, 500 mg", qualifier: "reported; diary uncertain" });
 });

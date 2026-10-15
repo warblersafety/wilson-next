@@ -126,7 +126,7 @@ describe("pure case views and semantic Form 3500 projection", () => {
       expect.objectContaining({
         productId: "product-apixaban",
         name: "apixaban",
-        dose: "5 mg",
+        dose: { value: "5 mg" },
         frequency: "twice daily",
         route: "oral",
         startDate: "2026-08-13",
@@ -135,7 +135,7 @@ describe("pure case views and semantic Form 3500 projection", () => {
       expect.objectContaining({
         productId: "product-naproxen",
         name: "naproxen",
-        dose: "250 mg",
+        dose: { value: "250 mg" },
         frequency: "twice daily",
         route: "oral",
         startDate: "2026-08-10",

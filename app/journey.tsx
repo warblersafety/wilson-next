@@ -252,7 +252,7 @@ export function JourneyBody() {
   const reviewingUpdate = clinicalAction?.kind === "updates";
   const capacityIssues = productCapacityIssues(snapshot);
   const omittedContext = hasOmittedQualifierContext(snapshot);
-  const representationLimited = snapshot.outputIssues.some(({ code }) => code === "unsupported-patient-sex" || code === "unsupported-product-route" || code === "unsupported-product-text");
+  const representationLimited = snapshot.outputIssues.some(({ code }) => code === "unsupported-patient-sex" || code === "unsupported-product-route" || code === "unsupported-product-text" || code === "unsupported-event-narrative");
 
   return (
     <main className={styles.appShell}>
@@ -876,7 +876,7 @@ function OutputComposition({ snapshot, pdf, caseId, busy, generating, error, gen
 }) {
   const exceedsCapacity = productCapacityIssues(snapshot).length > 0;
   const omittedContext = hasOmittedQualifierContext(snapshot);
-  const representationLimited = snapshot.outputIssues.some(({ code }) => code === "unsupported-patient-sex" || code === "unsupported-product-route" || code === "unsupported-product-text");
+  const representationLimited = snapshot.outputIssues.some(({ code }) => code === "unsupported-patient-sex" || code === "unsupported-product-route" || code === "unsupported-product-text" || code === "unsupported-event-narrative");
   const artifact = pdf?.caseId === caseId ? pdf : undefined;
   const current = Boolean(artifact && artifact.contentKey === snapshot.reportContentKey && snapshot.downloadReady);
   return <>

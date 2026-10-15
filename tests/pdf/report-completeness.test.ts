@@ -17,8 +17,8 @@ describe("report completeness PDF", () => {
       revision: 1, sections: {
         A: {}, B: { reportDate: "2026-09-20", eventDate: "2026-09-03", relevantTests: [] }, C: {},
         D: { suspectProducts: [
-          { productId: "tablets", name: "Fictional tablets", dose: "500 mg", strength: "250 mg" },
-          { productId: "liquid", name: "Fictional liquid", dose: "10 mL", strength: "250 mg/5 mL" },
+          { productId: "tablets", name: "Fictional tablets", dose: { value: "500 mg" }, strength: { value: "250 mg" } },
+          { productId: "liquid", name: "Fictional liquid", dose: { value: "10 mL" }, strength: { value: "250 mg/5 mL" } },
         ] }, E: {}, F: { concomitantProducts: [] }, G: { reporter: {} },
       }, sourceTrace: {}, omissions: [], notIncluded: [],
     };
@@ -42,7 +42,7 @@ describe("report completeness PDF", () => {
       [`${second}Strength[0]`]: "250 mg/5 mL", [`${second}StrengthUnit[0]`]: "40",
     });
     delete projection.sections.D.suspectProducts[0].strength;
-    projection.sections.D.suspectProducts[1].dose = "two capsules (500 mg total)";
+    projection.sections.D.suspectProducts[1].dose = { value: "two capsules (500 mg total)" };
     const regenerated = await inspect();
     expect(regenerated[`${first}Strength[0]`]).toBeUndefined();
     expect(regenerated[`${second}Dose[0]`]).toBe("two capsules (500 mg total)");

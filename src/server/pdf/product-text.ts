@@ -98,16 +98,21 @@ export function productTextLimitation(field: ProductTextField, value: string): s
   if (field === "dose" || field === "strength") return undefined;
   const other = field === "route" ? encodeForm3500Route(value).other : encodeForm3500Frequency(value).other;
   if (other === undefined) return undefined;
-  if (/[\r\n\t]/.test(other)) return "does not fit the single-line Other text control";
   const { width, fontSize } = otherTextGeometry[field];
+  return nativeSingleLineTextLimitation(other, width, fontSize, "Other text control");
+}
+
+/** Same metrics/charset used by the existing generated Helvetica appearance. */
+export function nativeSingleLineTextLimitation(text: string, width: number, fontSize: number, label: string): string | undefined {
+  if (/[\r\n\t]/.test(text)) return `does not fit the single-line ${label}`;
   try {
     // Cantoo substitutes ? for unsupported glyphs; encoding without an error is not proof.
-    if (Array.from(other).some(character => !appearanceCharacters.has(character.codePointAt(0)!))) {
+    if (Array.from(text).some(character => !appearanceCharacters.has(character.codePointAt(0)!))) {
       return "contains characters the current PDF appearance font cannot represent";
     }
     // Native border width0 plus1pt padding on each side, per appearance provider.
-    if (appearanceFont.widthOfTextAtSize(other, fontSize) <= width - 2) return undefined;
-    return "does not fit the Other text control at its native font size";
+    if (appearanceFont.widthOfTextAtSize(text, fontSize) <= width - 2) return undefined;
+    return `does not fit the ${label} at its native font size`;
   } catch {
     return "contains characters the current PDF appearance font cannot represent";
   }
