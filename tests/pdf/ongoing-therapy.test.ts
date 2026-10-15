@@ -1,3 +1,4 @@
+import {createUnderstandingView} from "../../src/domain/case/views";
 import {expect,it} from "vitest";
 import {readFile,writeFile,mkdtemp} from "node:fs/promises";
 import {join} from "node:path";
@@ -68,4 +69,21 @@ it("keeps pending alternatives unpromoted and conflicting accepted status blank 
 it("rejects malformed direct PDF ongoing projections instead of silently printing a blank response",async()=>{
  const p=projectForm3500(productCapacityCase());(p.sections.D.suspectProducts[0] as unknown as {therapyOngoing:unknown}).therapyOngoing="yes";
  await expect(fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")),p)).rejects.toThrow("D3 ongoing therapy");
+});
+
+it("visibly flags only explicit stopped/never-restarted/ongoing answers without changing or resolving them",()=>{
+ let c=productCapacityCase();const id=c.products[0].id;
+ c=setContextFact(c,`product:${id}:therapyOngoing`,{kind:"known",value:true});
+ expect(createUnderstandingView(c).products[0].medicationNotice??"").not.toContain("never restarted");
+ c=setContextFact(c,`product:${id}:stopped`,{kind:"known",value:true});
+ c=setContextFact(c,`product:${id}:restarted`,{kind:"known",value:false});const before=structuredClone(c);
+ expect(createUnderstandingView(c).products[0].medicationNotice).toContain("reported stopped and never restarted");
+ expect(projectForm3500(c).notIncluded.join(" ")).toContain("Wilson has not reconciled");
+ expect(projectForm3500(c).sections.D.suspectProducts[0].therapyOngoing).toBe(true);expect(c).toEqual(before);
+ c=setContextFact(c,`product:${id}:restarted`,{kind:"known",value:true});expect(createUnderstandingView(c).products[0].medicationNotice??"").not.toContain("never restarted");
+});
+it("changes only the four native ongoing widgets when current status changes",async()=>{
+ const before=await inspect(productCapacityCase());let c=productCapacityCase();for(const p of c.products.slice(0,2))c=setContextFact(c,`product:${p.id}:therapyOngoing`,{kind:"known",value:true});const after=await inspect(c);
+ const unrelated=(f:Record<string,string>)=>Object.fromEntries(Object.entries(f).filter(([key])=>!key.includes("TherapyOngoing")));
+ expect(unrelated(after.fields)).toEqual(unrelated(before.fields));
 });

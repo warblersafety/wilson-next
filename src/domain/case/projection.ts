@@ -1,7 +1,7 @@
 import { raceEthnicityOptions, type RaceEthnicity } from "./race-ethnicity";
 import type { PatientAge } from "./age";
 import { allFacts, targetKey } from "./facts";
-import { isSettled, restartApplicability, withdrawalApplicability } from "./medication";
+import { ongoingTherapyNotice, isSettled, restartApplicability, withdrawalApplicability } from "./medication";
 import { productDisplayLabel } from "./product-label";
 import type { Fact, ProductEntity, ProductFactKey, ReportType, SemanticCase } from "./types";
 
@@ -246,6 +246,8 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       });
       continue;
     }
+    const ongoingNotice = ongoingTherapyNotice(product.facts);
+    if (ongoingNotice) projection.notIncluded.push(`${productLabel(caseState, product)} — ${ongoingNotice}`);
     if (role.value === "suspect") {
       if (productType.value === "device") {
         if (!projection.sections.E.suspectDevice) {

@@ -2,6 +2,7 @@ import {expect,test,type Page} from "@playwright/test";
 import {execFile} from "node:child_process";
 import {promisify} from "node:util";
 import {ongoingOpening,ongoingCorrection} from "../fixtures/medication-model";
+import {setContextFact} from "../fixtures/reviewed-context";
 import {productCapacityCase} from "../fixtures/product-capacity";
 import {browserStateVersion} from "../../src/server/case/browser-state";
 import {acceptOpeningGroups,goTo,savePdf,seedStoredState,serverAction,storedState} from "./draft4-helpers";
@@ -32,4 +33,13 @@ test("v15 saved case and unfinished dates resume with no inferred ongoing status
  marks(await pdf(page,info.outputPath("blank.pdf")),0,undefined);
  for(const kind of ["unknown","declined"]){await edit(page);await row(page).getByLabel("Therapy/usage still ongoing status",{exact:true}).selectOption(kind);await reload(page);await goTo(page,"Review details");await expect(row(page).getByLabel("Therapy/usage still ongoing status",{exact:true})).toHaveValue(kind);await serverAction(page,()=>row(page).getByRole("button",{name:/^(Add fact|Apply correction)$/}).click());await reload(page);expect((await storedState(page)).case.products[0].facts.therapyOngoing.resolvedValue?.value).toEqual({kind});marks(await pdf(page,info.outputPath(kind+".pdf")),0,undefined);}
  expect(unexpected).toBe(0);
+});
+
+test("explicit stopped/never-restarted/ongoing inconsistency is visible in review and save disclosures without altering supplied facts",async({page})=>{
+ let c=productCapacityCase();const id=c.products[0].id;for(const [field,value] of [["stopped",true],["restarted",false],["therapyOngoing",true]]as const)c=setContextFact(c,`product:${id}:${field}`,{kind:"known",value});
+ await page.route("**/api/case",async r=>{const b=r.request().method()==="POST"?r.request().postDataJSON():undefined;if(r.request().method()!=="POST"||b?.operation==="resume")await r.continue();else await r.abort();});
+ await page.goto("/");await seedStoredState(page,{version:browserStateVersion,stage:"output",case:c,unrepresented:[]});await page.reload();await saved(page);await goTo(page,"Review details");
+ await expect(page.getByRole("status").filter({hasText:"reported stopped and never restarted"})).toBeVisible();
+ await goTo(page,"Review & save");const coverage=page.locator('[data-screen="save"] details').filter({has:page.getByText("Report coverage and omitted information",{exact:true})});if(await coverage.getAttribute("open")===null)await coverage.locator("summary").click();await expect(coverage).toContainText("Wilson has not reconciled");
+ expect((await storedState(page)).case).toEqual(c);
 });

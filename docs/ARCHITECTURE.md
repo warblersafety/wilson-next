@@ -1205,3 +1205,10 @@ states before adding only an empty ongoing fact per existing product; all other
 facts and unfinished drafts retain their identities. Prompt/mock checks do not
 prove live-model compliance. Dose-reduction dates and duration remain outside
 this slice.
+
+The narrow explicit combination stopped=true, restarted=false and
+therapyOngoing=true receives a visible review and save-disclosure notice.
+This notice changes no facts, dates or download policy and makes no inference
+from missing answers or dates. A supplied restart=true does not trigger it.
+Native readback inspects both ongoing boxes even for an expected blank and
+rejects contradictory native selections.

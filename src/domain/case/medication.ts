@@ -46,3 +46,10 @@ export function medicationFieldApplies(facts: ProductFacts, field: ProductFactKe
 export function missingMedicationFields(facts: ProductFacts): MedicationAnswerField[] {
   return medicationAnswerFields.filter((field) => medicationFieldApplies(facts, field) && facts[field].state === "empty");
 }
+
+/** Narrow explicit inconsistency only; dates or missing answers never imply status. */
+export function ongoingTherapyNotice(facts: ProductFacts): string | undefined {
+  return settledBoolean(facts.stopped) === true && settledBoolean(facts.restarted) === false && settledBoolean(facts.therapyOngoing) === true
+    ? "Current therapy is reported as ongoing, but the product is also reported stopped and never restarted. Review these supplied answers; Wilson has not reconciled them or changed any dates."
+    : undefined;
+}

@@ -544,13 +544,19 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
     return { medicationType: medicationType.length ? medicationType : undefined,
       improvedAfterChange: outcome("Abated"), recurred: outcome("Reappear") };
   };
+  const readOngoing = (index: number): boolean | undefined => {
+    const prefix = `topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].Prod${index + 1}TherapyOngoing`;
+    const selected = ["Yes", "No"].filter(answer => form.getCheckBox(`${prefix}${answer}[0]`).isChecked());
+    if (selected.length > 1) throw new Error("Form 3500 ongoing therapy has contradictory selections");
+    return selected[0] === "Yes" ? true : selected[0] === "No" ? false : undefined;
+  };
   const readSuspect = (
     expected: ProjectedProduct,
     index: number,
     names: { name: string; manufacturer: string; lotNumber: string; ndcOrUniqueId: string; expirationDate: string; dose: string; doseUnit: string; strength: string; strengthUnit: string; frequency: string; otherFrequency: string; route: string; otherRoute: string; startDate: string; stopDate: string; indication: string },
   ): ProjectedProduct => compact({
     productId: expected.productId,
-    therapyOngoing: expected.therapyOngoing !== undefined ? form.getCheckBox(`topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].Prod${index + 1}TherapyOngoingYes[0]`).isChecked() ? true : form.getCheckBox(`topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].Prod${index + 1}TherapyOngoingNo[0]`).isChecked() ? false : undefined : undefined,
+    therapyOngoing: readOngoing(index),
     name: form.getTextField(names.name).getText(),
     manufacturer: form.getTextField(names.manufacturer).getText(),
     lotNumber: form.getTextField(names.lotNumber).getText(),
