@@ -37,5 +37,3 @@ route-test setup/label mismatches corrected before acceptance.
 Cosmetic professional/retail support is not full category coverage: cannabinoid/
 Other D5, purchase place/address/website, partial dates (#180) and prior inventory
 remain open. No live application-model calls or live-model validation claim.
-
-Actual Opus F1 prompted bounded promptv17 clarification of explicit cosmetic-word routing proposals versus automatic fact mutation. Mock opening now uses ordinary explicit cosmetic words, without supplying Wilson routing terminology. Live interpretation remains unverified (#187); targeted recheck and final full-suite/CI recorded on PR.

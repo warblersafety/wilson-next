@@ -1334,20 +1334,9 @@ exclusively; untouched blank controls remain untouched. Independent native
 readback never reconstructs the choice from the expected projection. Browser
 state v20 strictly validates genuine v7–v19 before adding only empty cosmetic
 facts; compatible existing and unselected cosmetic drafts survive reload.
-Promptv17/schemav26 add the explicit proposal target. Mock tests establish only
+Promptv16/schemav26 add the explicit proposal target. Mock tests establish only
 mock behavior, not live-model compliance.
 
 D5 cannabinoid hemp and Other controls, purchase place/address/website, partial
 dates (#180 visibility), wider category/detail coverage and all prior inventory
 gaps remain unfinished. This is not full cosmetic or Form3500 functionality.
-
-
-Actual issue185 Opus review F1 found no blockers but identified possible prompt
-ambiguity for ordinary explicit cosmetic descriptions. Promptv17 clarifies that
-explicitly describing a product as a cosmetic may support an Other product
-proposal for clinician review; a cosmetic selection never automatically changes
-routing or medication labels. Brand/name alone still supplies no category.
-The mock narrative now explicitly says cosmetic products without supplying
-Wilson's routing term; it tests only the authored proposal/acceptance flow.
-Actual live-model interpretation remains unverified, tracked in issue187 for a
-later explicitly authorized live-call slice. No live call was made here.

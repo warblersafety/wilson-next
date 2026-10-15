@@ -71,14 +71,12 @@ describe("Anthropic production model boundary", () => {
     expect(schema).toContain("weeks");
     expect(requestText).toContain("Never place gestational age, gestation at birth, or corrected/postmenstrual age in ageYears");
     expect(requestText).toContain("Do not infer chronological age from them");
-    expect(MODEL_PROMPT_REVISION).toBe("wilson-cosmetic-use-v17");
+    expect(MODEL_PROMPT_REVISION).toBe("wilson-cosmetic-use-v16");
     expect(schema).toContain("raceEthnicity");
     expect(schema).toContain("therapyOngoing");
     expect(schema).toContain("doseReductionDate");
     expect(schema).toContain("purchaseDate");
     expect(schema).toContain("cosmeticUse");
-    expect(requestText).toContain("explicitly describes the product as a cosmetic, you may propose productType other for clinician review");
-    expect(requestText).toContain("A cosmeticUse selection never automatically establishes or changes productType or medicationType");
     expect(schema).toContain("treatmentDuration");
     expect(requestText).toContain("Never invent an omitted unit or quantity");
     expect(requestText).toContain("or propose d3Value (an explicit clinician-only print preference)");
