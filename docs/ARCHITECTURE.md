@@ -198,6 +198,11 @@ Statev14 strictly validates legacyv7–v13 contracts before adding only empty DO
 and A2-choice facts. Prior facts, revisions, IDs, sources, history and draft
 identities are not rewritten. The existing Age UI remains unchanged; DOB and
 A2 choice use the same fact-card review/correction and save/resume machinery.
+The preference editor has no preselected Age, clinical status dropdown or new
+qualifier control. No print preference explicitly clears a previous choice;
+it uses the sole known value, permits blank A2 when neither is known, and still
+requires selection when both are known. Existing qualified preferences remain
+visible and can have context explicitly removed without silently losing it.
 All integration evidence is fictional and mocked; #169 live fidelity is open.
 
 ### Product NDC number or Unique ID (Issue #165)

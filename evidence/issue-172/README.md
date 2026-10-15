@@ -87,3 +87,33 @@ No dependencies, purchases, credentials/auth/grants, shared-preview changes or
 unrelated repository changes. No full Form3500, real-data or broad model/pediatric
 clinical-validation claim. Partial DOB, fractional/compound age, race/ethnicity
 and the other existing gaps remain outside this bounded slice.
+
+## Actual review remediation and CI prerequisite
+
+Actual subscription Opus high review at1f97c22 found no blockers and one
+follow-up: after a selected A2 value became unknown with neither alternative
+known, the clearing recovery was hidden behind generic clinical statuses.
+The preference now has an explicit No print preference option, no silent Age
+default, no clinical-status dropdown and no new qualifier control. No preference
+uses the sole known value or permits blank A2 if neither is known; both-known
+still requires selection. Existing preference context remains visible and can
+be explicitly removed, with its accepted history preserved. Recovery messages
+name the actual clearing option. Unit and browser cases cover the full recovery,
+no default selection and explicit existing-context removal.
+
+Post-remediation526unit tests/61files, finaltypecheck and freshbuild passed.
+Five focused DOB journeys passed16.4seconds. Actual targeted Opus recheck and
+final full browser/CI results are recorded on the PR.
+
+First-head CI at1f97c22 passed typecheck/unit/build and87of88browser cases. The
+existing waiting-reporter-tab test retried immediately after page.close without
+observing Chromium's native workspace lock release, and no Saved region appeared.
+The helper now requires native held-lock absence before the same user retry;
+it never steals a lock, sleeps, increases timeouts/retries or weakens any final
+ownership/data assertion. Five focused repetitions passed6.5seconds. This small
+test prerequisite delta is included with the material recovery recheck.
+
+All90full synthetic/mock Chromium journeys passed3.2minutes after both fixes,
+including the existing reporter waiting-tab path. The complete material delta
+is committed for the originating Opus review's targeted recheck and fresh
+exact-head CI. PDF mapping/artifacts are unchanged by this UI/test remediation.

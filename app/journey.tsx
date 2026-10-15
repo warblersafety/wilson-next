@@ -1107,6 +1107,13 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQ
   // Editing the value alone must not silently discard its reviewed uncertainty.
   const onChange = (next: EditableCaseValue) => emitChange(next.kind === "known" && value.kind === "known" && hasQualifierControl
     ? { ...next, qualifier: value.qualifier ?? "" } : next);
+  if (control.preference) return <div className={styles.factEditor}>
+    <select aria-label={`New ${label}`} value={value.kind === "known" ? String(value.value) : ""} onChange={event => onChange(event.target.value ? { kind: "known", value: event.target.value } : { kind: "explicitly-absent" })}>
+      <option value="">No print preference</option>{control.options?.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
+    </select>
+    <p>No print preference uses the sole known value, or leaves A2 blank if neither is known. If both are known, choose one. Clearing this preference does not change either fact or its unfinished edits.</p>
+    {value.kind === "known" && value.qualifier && <p>Retained context: {value.qualifier} <button type="button" onClick={() => emitChange({ ...value, qualifier: "" })}>Remove retained context</button></p>}
+  </div>;
   return <div className={styles.factEditor}>
     <label>{label} status<select aria-label={`${label} status`} value={value.kind} onChange={(event) => onChange(event.target.value === "known" ? editableInitialValue(undefined, control) : { kind: event.target.value as Exclude<EditableCaseValue["kind"], "known"> })}>
       <option value="known">Known</option><option value="unknown">Unknown</option><option value="explicitly-absent">Not present</option><option value="inapplicable">Not applicable</option><option value="declined">Prefer not to answer</option>
@@ -1136,6 +1143,7 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQ
 
 function editableInitialValue(value: CaseValue<unknown> | undefined, control: FactControl): EditableCaseValue {
   if (value) return value as EditableCaseValue;
+  if (control.preference) return { kind: "known", value: "" };
   if (control.shape === "age") return { kind: "known", value: 0 };
   if (control.shape === "boolean") return { kind: "known", value: false };
   if (control.shape === "list" || control.shape === "choices") return { kind: "known", value: [] };
@@ -1206,6 +1214,7 @@ function formatFact(value: CaseValue<unknown> | undefined, control?: FactControl
 
 function formatFactValue(value: CaseValue<unknown> | undefined, control?: FactControl): string {
   if (!value) return "Not provided";
+  if (value.kind !== "known" && control?.preference) return "No print preference";
   if (value.kind !== "known") return {
     unknown: "Unknown",
     "explicitly-absent": "Not present",

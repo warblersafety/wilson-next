@@ -810,6 +810,7 @@ function knownValue<T>(fact: Fact<T> | undefined): T | undefined {
 }
 
 function displayValue(value: CaseValue<unknown>, target?: FactTarget): string {
+  if (target?.entity === "patient" && target.field === "a2Value" && value.kind !== "known") return "no print preference";
   if (value.kind !== "known") return value.kind.replaceAll("-", " ");
   if (target?.entity === "patient" && target.field === "ageYears" && isPatientAge(value.value)) { const age = patientAgeParts(value.value); return `${age.value} ${age.unit}`; }
   if (target?.entity === "patient" && target.field === "a2Value" && value.value === "date-of-birth") return "date of birth";

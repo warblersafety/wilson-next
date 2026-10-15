@@ -247,6 +247,9 @@ test("waiting tab loads the latest remembered defaults when it gains editing own
   await remembered(page).getByRole("button", { name: "Update remembered details", exact: true }).click();
   await expect.poll(async () => (await profileRecord(page)).profile.values.firstName).toBe("Newest fictional default"); await saved(page);
   await page.close();
+  // Closing the page can acknowledge before Chromium releases its native lock.
+  // Observe that prerequisite before the same user retry; never steal the lease.
+  await expect.poll(() => waiting.evaluate(async () => (await navigator.locks.query()).held?.some(lock => lock.name === "wilson-active-case-workspace") ?? false)).toBe(false);
   await waiting.getByRole("button", { name: "Try this tab again", exact: true }).click(); await saved(waiting);
   await newCase(waiting); await makeFreshReporterVisible(waiting);
   await expect(waiting.getByLabel("Reporter first name", { exact: true })).toHaveValue("Newest fictional default");
