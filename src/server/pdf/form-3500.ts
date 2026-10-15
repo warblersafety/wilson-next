@@ -49,6 +49,7 @@ const fields = {
   productOneName: "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]",
   productOneManufacturer: "topmostSubform[0].Page4[0].Prod1[0].Prod1ManuComp[0]",
   productOneLot: "topmostSubform[0].Page4[0].Prod1[0].Prod1LotNum[0]",
+  productOneExpiration: "topmostSubform[0].Page4[0].Prod1[0].Prod1ExpDate[0]",
   productOneDose: "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]",
   productOneDoseUnit: "topmostSubform[0].Page4[0].Prod1[0].Prod1DoseUnit[0]",
   productOneStrength: "topmostSubform[0].Page4[0].Prod1[0].Prod1Strength[0]",
@@ -63,6 +64,7 @@ const fields = {
   productTwoName: "topmostSubform[0].Page5[0].Prod2[0].Prod2Name[0]",
   productTwoManufacturer: "topmostSubform[0].Page5[0].Prod2[0].Prod2ManuComp[0]",
   productTwoLot: "topmostSubform[0].Page5[0].Prod2[0].Prod2LotNum[0]",
+  productTwoExpiration: "topmostSubform[0].Page5[0].Prod2[0].Prod2ExpDate[0]",
   productTwoDose: "topmostSubform[0].Page5[0].Prod2[0].Prod2Dose[0]",
   productTwoDoseUnit: "topmostSubform[0].Page5[0].Prod2[0].Prod2DoseUnit[0]",
   productTwoStrength: "topmostSubform[0].Page5[0].Prod2[0].Prod2Strength[0]",
@@ -289,6 +291,7 @@ export async function fillForm3500Projection(
       name: fields.productOneName,
       manufacturer: fields.productOneManufacturer,
       lotNumber: fields.productOneLot,
+      expirationDate: fields.productOneExpiration,
       dose: fields.productOneDose, doseUnit: fields.productOneDoseUnit, strength: fields.productOneStrength, strengthUnit: fields.productOneStrengthUnit,
       frequency: fields.productOneFrequency,
       otherFrequency: fields.productOneOtherFrequency,
@@ -302,6 +305,7 @@ export async function fillForm3500Projection(
       name: fields.productTwoName,
       manufacturer: fields.productTwoManufacturer,
       lotNumber: fields.productTwoLot,
+      expirationDate: fields.productTwoExpiration,
       dose: fields.productTwoDose, doseUnit: fields.productTwoDoseUnit, strength: fields.productTwoStrength, strengthUnit: fields.productTwoStrengthUnit,
       frequency: fields.productTwoFrequency,
       otherFrequency: fields.productTwoOtherFrequency,
@@ -451,7 +455,7 @@ function setChecked(form: ReturnType<PDFDocument["getForm"]>, name: string, valu
 
 function writeSuspectProduct(
   form: ReturnType<PDFDocument["getForm"]>,
-  names: { name: string; manufacturer: string; lotNumber: string; dose: string; doseUnit: string; strength: string; strengthUnit: string; frequency: string; otherFrequency: string; route: string; otherRoute: string; startDate: string; stopDate: string; indication: string },
+  names: { name: string; manufacturer: string; lotNumber: string; expirationDate: string; dose: string; doseUnit: string; strength: string; strengthUnit: string; frequency: string; otherFrequency: string; route: string; otherRoute: string; startDate: string; stopDate: string; indication: string },
   product: ProjectedProduct,
 ): void {
   for (const field of ["route", "frequency", "dose", "strength"] as const) {
@@ -462,6 +466,7 @@ function writeSuspectProduct(
   setText(form, names.name, product.name);
   setText(form, names.manufacturer, product.manufacturer);
   setText(form, names.lotNumber, product.lotNumber);
+  setText(form, names.expirationDate, product.expirationDate ? formatDate(product.expirationDate) : undefined);
   writeQuantity(form, names.dose, names.doseUnit, product.dose);
   writeQuantity(form, names.strength, names.strengthUnit, product.strength);
   if (product.frequency) {
@@ -499,12 +504,13 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
   const readSuspect = (
     expected: ProjectedProduct,
     index: number,
-    names: { name: string; manufacturer: string; lotNumber: string; dose: string; doseUnit: string; strength: string; strengthUnit: string; frequency: string; otherFrequency: string; route: string; otherRoute: string; startDate: string; stopDate: string; indication: string },
+    names: { name: string; manufacturer: string; lotNumber: string; expirationDate: string; dose: string; doseUnit: string; strength: string; strengthUnit: string; frequency: string; otherFrequency: string; route: string; otherRoute: string; startDate: string; stopDate: string; indication: string },
   ): ProjectedProduct => compact({
     productId: expected.productId,
     name: form.getTextField(names.name).getText(),
     manufacturer: form.getTextField(names.manufacturer).getText(),
     lotNumber: form.getTextField(names.lotNumber).getText(),
+    expirationDate: parseDate(form.getTextField(names.expirationDate).getText()),
     dose: readQuantity(form, names.dose, names.doseUnit, expected.dose),
     strength: readQuantity(form, names.strength, names.strengthUnit, expected.strength),
     frequency: decodeFrequency(
@@ -518,8 +524,8 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
     ...readMedicationControls(index),
   });
   const suspectNames = [
-    { name: fields.productOneName, manufacturer: fields.productOneManufacturer, lotNumber: fields.productOneLot, dose: fields.productOneDose, doseUnit: fields.productOneDoseUnit, strength: fields.productOneStrength, strengthUnit: fields.productOneStrengthUnit, frequency: fields.productOneFrequency, otherFrequency: fields.productOneOtherFrequency, route: fields.productOneRoute, otherRoute: fields.productOneOtherRoute, startDate: fields.productOneStartDate, stopDate: fields.productOneStopDate, indication: fields.productOneIndication },
-    { name: fields.productTwoName, manufacturer: fields.productTwoManufacturer, lotNumber: fields.productTwoLot, dose: fields.productTwoDose, doseUnit: fields.productTwoDoseUnit, strength: fields.productTwoStrength, strengthUnit: fields.productTwoStrengthUnit, frequency: fields.productTwoFrequency, otherFrequency: fields.productTwoOtherFrequency, route: fields.productTwoRoute, otherRoute: fields.productTwoOtherRoute, startDate: fields.productTwoStartDate, stopDate: fields.productTwoStopDate, indication: fields.productTwoIndication },
+    { name: fields.productOneName, manufacturer: fields.productOneManufacturer, lotNumber: fields.productOneLot, expirationDate: fields.productOneExpiration, dose: fields.productOneDose, doseUnit: fields.productOneDoseUnit, strength: fields.productOneStrength, strengthUnit: fields.productOneStrengthUnit, frequency: fields.productOneFrequency, otherFrequency: fields.productOneOtherFrequency, route: fields.productOneRoute, otherRoute: fields.productOneOtherRoute, startDate: fields.productOneStartDate, stopDate: fields.productOneStopDate, indication: fields.productOneIndication },
+    { name: fields.productTwoName, manufacturer: fields.productTwoManufacturer, lotNumber: fields.productTwoLot, expirationDate: fields.productTwoExpiration, dose: fields.productTwoDose, doseUnit: fields.productTwoDoseUnit, strength: fields.productTwoStrength, strengthUnit: fields.productTwoStrengthUnit, frequency: fields.productTwoFrequency, otherFrequency: fields.productTwoOtherFrequency, route: fields.productTwoRoute, otherRoute: fields.productTwoOtherRoute, startDate: fields.productTwoStartDate, stopDate: fields.productTwoStopDate, indication: fields.productTwoIndication },
   ];
   const concomitantProducts = projection.sections.F.concomitantProducts.map((expected): ProjectedConcomitantProduct => compact({
     productId: expected.productId,

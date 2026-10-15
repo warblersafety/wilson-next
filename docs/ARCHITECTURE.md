@@ -140,9 +140,21 @@ compatibility limit: retain migrations for every state version actually persiste
 by supported releases, preserving accepted facts and history.
 
 The output explicitly discloses remaining Section D other-category, purchase,
-identifier, expiration, ongoing-therapy, reduction-date and duration gaps.
+identifier, ongoing-therapy, reduction-date and duration gaps.
 Download readiness remains the supported-path condition, not a claim of
 complete FDA-form coverage.
+
+### Product expiration dates (Issue #162)
+
+The existing product expirationDate fact also reaches Section D for each of its two
+suspect slots, through the same conversation, review/correction and saved-state
+contracts as device expiration. Only explicitly supplied complete ISO dates are
+represented, formatted DD-MMM-YYYY in the native controls; no missing components
+or clinical expiry judgments are inferred. No extra follow-up question is added.
+Qualifiers retain the existing explicit omission disclosure. Concomitant products
+retain the fact but disclose that Section F has no expiration control. Partial-date
+precision and wider category coverage remain unfinished. Existing state already
+contains expirationDate, so no state version or migration changes.
 
 ### Medication history (Issue #92)
 

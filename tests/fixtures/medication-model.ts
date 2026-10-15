@@ -7,8 +7,11 @@ export const medicationTwoOpening = "Fictional patient MED-55 is 55 years old an
 export const medicationNeverRestarted = "Correction: amoxicillin was never restarted. My earlier statement about restarting it was wrong.";
 export const medicationRestartedAgain = "Correction: amoxicillin actually was restarted. I withdraw my statement that it was never restarted.";
 
-function opening(two: boolean) {
-  const text = two ? medicationTwoOpening : medicationSparseOpening;
+export const expirationOpening = medicationTwoOpening + " Amoxicillin expires on 29 February 2028; naproxen expires on 31 December 2027.";
+export const expirationCorrection = "Correction: the naproxen expiration date is 30 November 2029, not 31 December 2027.";
+
+function opening(two: boolean, expiration = false) {
+  const text = expiration ? expirationOpening : two ? medicationTwoOpening : medicationSparseOpening;
   const proposals: QuotedFixtureOutput["proposals"] = [];
   const add = (target: QuotedFixtureOutput["proposals"][number]["target"], value: unknown, group: string) => {
     proposals.push({ proposalReference: `p${proposals.length}`, groupReference: group, intent: "fact", target,
@@ -23,9 +26,9 @@ function opening(two: boolean) {
     for (const [field, value] of Object.entries(values)) add({ entity: "product", productReference: reference, field: field as ProductFactKey }, value, reference);
   };
   product("a", { name: "amoxicillin", productType: "drug-or-biologic", role: "suspect", indication: "infection", ...(two ? {
-    medicationType: ["generic-biosimilar"], stopped: true, stopDate: "2026-09-17", improvedAfterChange: true, restarted: true, recurred: true,
+    ...(expiration ? { expirationDate: "2028-02-29" } : {}), medicationType: ["generic-biosimilar"], stopped: true, stopDate: "2026-09-17", improvedAfterChange: true, restarted: true, recurred: true,
   } : {}) });
-  if (two) product("b", { name: "naproxen", productType: "drug-or-biologic", role: "suspect", indication: "joint pain", medicationType: ["generic-biosimilar", "otc"], stopped: false, doseReduced: true, improvedAfterChange: false, restarted: false });
+  if (two) product("b", { name: "naproxen", productType: "drug-or-biologic", role: "suspect", indication: "joint pain", ...(expiration ? { expirationDate: "2027-12-31" } : {}), medicationType: ["generic-biosimilar", "otc"], stopped: false, doseReduced: true, improvedAfterChange: false, restarted: false });
   return referenceFixture(text, { products: (two ? ["a", "b"] : ["a"]).map((reference) => ({ productReference: reference, groupReference: reference })), proposals });
 }
 
@@ -44,5 +47,9 @@ export const medicationScenarios = {
     { identityScope: "issue92-two", turn: "opening" as const, output: opening(true) },
     { identityScope: "issue92-never", turn: "correction" as const, output: update(medicationNeverRestarted, "product-issue92-two-a", { restarted: false }) },
     { identityScope: "issue92-again", turn: "correction" as const, output: update(medicationRestartedAgain, "product-issue92-two-a", { restarted: true }) },
+  ],
+  productExpiration: [
+    { identityScope: "expiration", turn: "opening" as const, output: opening(true, true) },
+    { identityScope: "expiration-update", turn: "correction" as const, output: update(expirationCorrection, "product-expiration-b", { expirationDate: "2029-11-30" }) },
   ],
 };

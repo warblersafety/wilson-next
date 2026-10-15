@@ -1,0 +1,26 @@
+[
+  {
+    "field": "topmostSubform[0].Page4[0].Prod1[0].Prod1ExpDate[0]",
+    "value": "29-FEB-2028",
+    "rect": [
+      441.754,
+      225.512,
+      556.214,
+      239.606
+    ],
+    "appearance": "1 0 0 1 0 0 cm\n1 0 0 1 0 0 cm\nq\n1 1 m\n1 13.093999999999994 l\n113.46000000000004 13.093999999999994 l\n113.46000000000004 1 l\nh\nW\nn\n/Tx BMC\nq\nBT\n0 g\n/Helvetica 8.5 Tf\n1 0 0 1 31.955250000000017 3.995499999999997 Tm\n<32392D4645422D32303238> Tj\nET\nQ\nEMC\nQ\n",
+    "expected": "29-FEB-2028"
+  },
+  {
+    "field": "topmostSubform[0].Page5[0].Prod2[0].Prod2ExpDate[0]",
+    "value": "31-DEC-2027",
+    "rect": [
+      438.568,
+      257.309,
+      553.028,
+      271.403
+    ],
+    "appearance": "1 0 0 1 0 0 cm\n1 0 0 1 0 0 cm\nq\n1 1 m\n1 13.093999999999994 l\n113.46000000000004 13.093999999999994 l\n113.46000000000004 1 l\nh\nW\nn\n/Tx BMC\nq\nBT\n0 g\n/Helvetica 8.5 Tf\n1 0 0 1 31.249750000000017 3.995499999999997 Tm\n<33312D4445432D32303237> Tj\nET\nQ\nEMC\nQ\n",
+    "expected": "31-DEC-2027"
+  }
+]
