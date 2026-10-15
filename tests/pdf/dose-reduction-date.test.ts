@@ -1,3 +1,4 @@
+import {createHash} from "node:crypto";
 import {expect,it} from "vitest";
 import {readFile,writeFile,mkdtemp} from "node:fs/promises";
 import {join} from "node:path";
@@ -22,7 +23,7 @@ async function inspect(c:ReturnType<typeof productCapacityCase>,name?:string){
  expect(r.readback.sections).toEqual(projection.sections);expect(c).toEqual(before);
  const path=join(await mkdtemp(join(tmpdir(),"wilson178-")),"reduction.pdf");await writeFile(path,r.output);
  const {stdout}=await promisify(execFile)(process.env.PYPDF_PYTHON??"python3",["tools/pdf/independent_readback.py",path,"--named"]);
- if(name&&process.env.WILSON_REDUCTION_EVIDENCE){await writeFile(join(process.env.WILSON_REDUCTION_EVIDENCE,name+".pdf"),r.output);await writeFile(join(process.env.WILSON_REDUCTION_EVIDENCE,name+"-readback.json"),stdout);}
+ if(name&&process.env.WILSON_REDUCTION_EVIDENCE){await writeFile(join(process.env.WILSON_REDUCTION_EVIDENCE,name+".pdf"),r.output);await writeFile(join(process.env.WILSON_REDUCTION_EVIDENCE,name+"-readback.json"),stdout);await writeFile(join(process.env.WILSON_REDUCTION_EVIDENCE,name+"-case-proof.json"),JSON.stringify({caseId:c.id,revision:c.revision,pdfSha256:createHash("sha256").update(r.output).digest("hex"),products:c.products.slice(0,2).map(p=>({id:p.id,facts:Object.fromEntries(["stopped","doseReduced","doseReductionDate"].map(field=>[field,p.facts[field as keyof typeof p.facts]]))})),projection:projection.sections.D},null,2)+"\n");}
  return {projection,fields:JSON.parse(stdout).namedFields as Record<string,string>};
 }
 it.each(["0001-01-01","2000-02-29","2028-02-29","9999-12-31"])("retains complete Gregorian date %s without calendar arithmetic or correction",async date=>{
@@ -78,4 +79,10 @@ it.each([false,"inapplicable"]as const)("does not derive D7 Doesn't apply from %
  let c=productCapacityCase();for(const p of c.products.slice(0,2)){for(const field of["stopped","doseReduced"]as const)c=setContextFact(c,`product:${p.id}:${field}`,negative===false?{kind:"known",value:false}:{kind:"inapplicable"});c=setContextFact(c,`product:${p.id}:doseReductionDate`,{kind:"known",value:"2026-09-18"});}
  let r=await inspect(c);for(let i=0;i<2;i++){expect(r.projection.sections.D.suspectProducts[i].improvedAfterChange).toBeUndefined();for(const answer of["Yes","No","NA"])expect(r.fields[`topmostSubform[0].Page${i+4}[0].Prod${i+1}[0].Prod${i+1}Abated${answer}[0]`]).not.toBe("/1");}
  const id=c.products[0].id;c=setContextFact(c,`product:${id}:doseReductionDate`,{kind:"unknown"});r=await inspect(c);expect(r.projection.sections.D.suspectProducts[0].improvedAfterChange).toBe("inapplicable");expect(r.fields["topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedNA[0]"]).toBe("/1");
+});
+
+it("uses the case-level product identity in the D7 conflict note when an earlier product routes elsewhere",()=>{
+ let c=productCapacityCase();c=setContextFact(c,`product:${c.products[0].id}:productType`,{kind:"known",value:"device"});const id=c.products[1].id;
+ c=setContextFact(c,`product:${id}:name`,{kind:"unknown"});c=setContextFact(c,`product:${id}:stopped`,{kind:"known",value:false});c=setContextFact(c,`product:${id}:doseReduced`,{kind:"known",value:false});c=setContextFact(c,`product:${id}:doseReductionDate`,{kind:"known",value:"2026-09-18"});
+ const p=projectForm3500(c);expect(p.notIncluded).toContainEqual(expect.stringContaining("Product 2 — D7 is left blank"));expect(p.notIncluded).not.toContainEqual(expect.stringContaining("Product 1 — D7 is left blank"));expect(p.omissions).toContainEqual(expect.objectContaining({target:`product:${id}:improvedAfterChange`,reason:"reduction-date-conflict"}));
 });

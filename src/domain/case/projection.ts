@@ -261,7 +261,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
         }
       } else {
         const target = projection.sections.D.suspectProducts;
-        target.push(projectProduct(product, projection, target.length));
+        target.push(projectProduct(product, projection, target.length, productLabel(caseState, product)));
         recordNonCarriedProductFacts(caseState, product, [...sectionDProductFields, "doseReduced", "restarted", "improvedAfterChange", "recurred"], "Section D", projection);
       }
     } else {
@@ -314,6 +314,7 @@ function projectProduct(
   product: ProductEntity,
   projection: Form3500Projection,
   index: number,
+  label: string,
 ): ProjectedProduct {
   const result: ProjectedProduct = { productId: product.id };
   const prefix = `sections.D.suspectProducts.${index}`;
@@ -332,7 +333,7 @@ function projectProduct(
     if (field === "improvedAfterChange" && applies === false && known(product.facts.doseReductionDate)) {
       const conflictSources = [...new Set([...sources, ...product.facts.doseReductionDate.resolvedValue!.sourceIds])];
       projection.omissions.push({ concept: `D7 applicability for ${product.id}`, target: `product:${product.id}:improvedAfterChange`, reason: "reduction-date-conflict", sourceIds: conflictSources });
-      projection.notIncluded.push(`${productDisplayLabel(known(product.facts.name)?.value, index + 1)} — D7 is left blank because the supplied dose-reduction date conflicts with the explicit no-stop/no-reduction answers. Wilson has not derived Does not apply or chosen an interpretation.`);
+      projection.notIncluded.push(`${label} — D7 is left blank because the supplied dose-reduction date conflicts with the explicit no-stop/no-reduction answers. Wilson has not derived Does not apply or chosen an interpretation.`);
       continue;
     }
     if (applies === false) {
