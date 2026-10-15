@@ -1,0 +1,33 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "dense-six-tests.pdf",
+  "visuallyInspectedPages": [
+    3,
+    9,
+    10
+  ],
+  "observed": "Six actual reviewed tests retain native results, limits and dates. All thirty exact contexts continue with current row/field labels on two attachment pages; final qualifier continues readably across the page boundary.",
+  "files": {
+    "dense-six-tests.pdf": {
+      "sha256": "209b1d0bf72bbe182cbdf0577e5c38fb44bb5444248bdaada64a921dc3a412da",
+      "bytes": 1059169
+    },
+    "dense-six-tests-readback.json": {
+      "sha256": "d2349e693ec02f0bcdd93e394f833590ca3786f7b6c2e3f92a0796dbb53a85ec",
+      "bytes": 14791
+    },
+    "dense-six-tests-page-3.png": {
+      "sha256": "f4af19fa10d3f7f15c42b289ab1ab8ba855697cc3a97e11d90f6e2705eb228d6",
+      "bytes": 188274
+    },
+    "dense-six-tests-page-9.png": {
+      "sha256": "e477cb86c35423c707c43ef0fa77e41b38c147d319d215f06077ffa3a96cfd06",
+      "bytes": 368671
+    },
+    "dense-six-tests-page-10.png": {
+      "sha256": "3ee0ef06b4fddd994342517aa71ae72d27f162383c7004417bc773c8ae5478ff",
+      "bytes": 75494
+    }
+  }
+}

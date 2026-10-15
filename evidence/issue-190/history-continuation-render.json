@@ -1,0 +1,33 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "history-continuation.pdf",
+  "visuallyInspectedPages": [
+    3,
+    9,
+    10
+  ],
+  "observed": "Actual browser export after explicit review/resume. Native B7 links attachment pages1-2; all65 exact fictional history lines readable in order, both pages numbered, no clipping. Corrected export independently has8pages/noattachments.",
+  "files": {
+    "history-continuation.pdf": {
+      "sha256": "74f9780935b2675f82f47147b34537168f944920c6243a1b4529880dc0f21f86",
+      "bytes": 1053157
+    },
+    "history-continuation-readback.json": {
+      "sha256": "7fde887c965865b1203576bd894ba30745c9fd761abc324e559386764e18e61c",
+      "bytes": 14554
+    },
+    "history-continuation-page-3.png": {
+      "sha256": "bbf53d472dd85aaa36e164236908f75c68c46fb10ef40f842d617932959bcc71",
+      "bytes": 143375
+    },
+    "history-continuation-page-9.png": {
+      "sha256": "6dd0a403857f56c77bffffcce280a6d4806d6ddd18b3f5d06024987accf90e21",
+      "bytes": 405139
+    },
+    "history-continuation-page-10.png": {
+      "sha256": "a301eef78f02f940618270c96787a54ae9aeb7431b83c366dad26c623fef20e0",
+      "bytes": 194314
+    }
+  }
+}

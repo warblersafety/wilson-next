@@ -1,0 +1,63 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "all-blocks.pdf",
+  "visuallyInspectedPages": [
+    2,
+    3,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "observed": "Native B5/B6/B7 references readable and correctly map attachment pages1-3/4-5/6-7. Every attachment page has correct section/block and page-of7 label, readable unclipped10pt text, correct first/last lines and margins. Original eight-page form preserved.",
+  "files": {
+    "all-blocks.pdf": {
+      "sha256": "e1e10647ffd9ffae9053d248d95085e6c23ba66c7ff4b19792da502d3417cfdf",
+      "bytes": 1069181
+    },
+    "all-blocks-readback.json": {
+      "sha256": "073a488778b8eaf03ce455b463511679f1ca2e2439aa1ddbb6d843a60e41d992",
+      "bytes": 37258
+    },
+    "all-blocks-page-10.png": {
+      "sha256": "b8abda5fb4e1d6b943b2ca6b17590559ff9a9ee231bea9f89d3572f440f0adb8",
+      "bytes": 328662
+    },
+    "all-blocks-page-11.png": {
+      "sha256": "f18bb45d2b0422dd748084eb7592648528783ec6a02285eaf7f7fc0538296b57",
+      "bytes": 93922
+    },
+    "all-blocks-page-12.png": {
+      "sha256": "e1ecd781ae548ba05178fc30bff122a12dd5acf238928e5cfdeda282d26ee834",
+      "bytes": 407759
+    },
+    "all-blocks-page-13.png": {
+      "sha256": "12aec38834fd06f6c1ba2622947d093a4f6f3d386987782f06845c50d4e14e8d",
+      "bytes": 193748
+    },
+    "all-blocks-page-14.png": {
+      "sha256": "401cfba48862571c4e534b5964ccbd4f51066ccbaac1fea2d352015ca7ecc612",
+      "bytes": 345667
+    },
+    "all-blocks-page-15.png": {
+      "sha256": "0e759b4f5b06d13bf0f3b181fe296cfa07a2b821519428c9452834f6dffd698d",
+      "bytes": 139462
+    },
+    "all-blocks-page-2.png": {
+      "sha256": "a453a687120debb90a67e806564df441faf937fb80cd232aa67cb4815d82e4f2",
+      "bytes": 85016
+    },
+    "all-blocks-page-3.png": {
+      "sha256": "43f52a7e0f20093a4da92ee83cc7be296279575a25cfac0cd8b34a78c42ea462",
+      "bytes": 161181
+    },
+    "all-blocks-page-9.png": {
+      "sha256": "6936ee6bb63ba41bd9953d32b21320f4ebc32ba2285cd8ce7dbac47ef82e5ef4",
+      "bytes": 325476
+    }
+  }
+}

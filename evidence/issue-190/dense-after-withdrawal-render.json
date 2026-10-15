@@ -1,0 +1,28 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "dense-after-withdrawal.pdf",
+  "visuallyInspectedPages": [
+    3,
+    9
+  ],
+  "observed": "Five remaining tests shift to correct native rows and current labels; withdrawn first test context is absent. Native reference and attachment page1of1 agree. Exact current context readable and unclipped.",
+  "files": {
+    "dense-after-withdrawal.pdf": {
+      "sha256": "5a1fed305131ec9b1bf255fd5ba916fae05a3a640ccc4d52a94305f96d4b79d6",
+      "bytes": 1058117
+    },
+    "dense-after-withdrawal-readback.json": {
+      "sha256": "9e825115283c841879369a174be7e67e596f44558a3d133b5ea3c6670fd6fdf3",
+      "bytes": 13285
+    },
+    "dense-after-withdrawal-page-3.png": {
+      "sha256": "424191c3d81d04238a99d394358d73d0c8046c075134b8a50308dfbc1482586e",
+      "bytes": 183696
+    },
+    "dense-after-withdrawal-page-9.png": {
+      "sha256": "b5c6e6b255bd5acc560a0233a2ba986ec627a0ecbff6e4184dde04cc45922fea",
+      "bytes": 345574
+    }
+  }
+}
