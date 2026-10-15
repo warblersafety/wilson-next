@@ -117,3 +117,26 @@ All90full synthetic/mock Chromium journeys passed3.2minutes after both fixes,
 including the existing reporter waiting-tab path. The complete material delta
 is committed for the originating Opus review's targeted recheck and fresh
 exact-head CI. PDF mapping/artifacts are unchanged by this UI/test remediation.
+
+## Final CI acknowledgement finding
+
+CI at the Opus-recheckedeb83bd4 passed typecheck/unit/build and89of90browser
+cases; the reporter ownership case passed. The existing clinical-course helper
+reloaded after headers and an old Saved label before applying the corrected
+outcome; its final PDF contained the prior qualifier. The failure is retained
+on the PR, rather than hidden by rerunning the same head.
+
+A shared test acknowledgement helper now reads the response body, requires exact
+returned-case equality in browser state and operation completion, then permits
+existing navigation/save/reload checks. The failed course test and adjacent
+context/quantity helpers with the same demonstrated header-only pattern use it.
+All final PDF/history/data assertions remain unchanged; no product code, timeout,
+retry policy or acceptance meaning changes. The full/targeted actual Opus reviews
+cover the unchanged product. This bounded test-only strengthening receives an
+implementer audit and focused/full reruns under Delivery proportional closure;
+no additional Opus run is required without a material product/premise change.
+
+Post-acknowledgement-fix18focused context/course/quantity cases passed across
+three repetitions48.3seconds; finaltypecheck passed; all90full mock journeys
+passed3.3minutes. Git comparison confirms app/src/owning Architecture are
+identical to actual Opus-recheckedeb83bd4. Fresh exact-head CI remains required.

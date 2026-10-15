@@ -3,7 +3,7 @@ import { promisify } from "node:util";
 import { expect, test, type Page } from "@playwright/test";
 import { browserStateVersion } from "../../src/server/case/browser-state";
 import { assayContext, contextCase, conflictedContextCase, setContextFact } from "../fixtures/reviewed-context";
-import { goTo, seedStoredState, storedState, savePdf } from "./draft4-helpers";
+import { appliedCaseResponse, goTo, seedStoredState, storedState, savePdf } from "./draft4-helpers";
 const comments = "topmostSubform[0].Page3[0].AdditionalComments[0]";
 const narrative = "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]";
 
@@ -26,7 +26,7 @@ async function pdf(page: Page, file: string) {
 }
 async function apply(page: Page, click: () => Promise<unknown>, action = "set-fact") {
   const response = page.waitForResponse(r => r.url().endsWith("/api/case") && r.request().method() === "POST" && r.request().postDataJSON()?.action?.action === action);
-  await click(); expect((await response).ok()).toBe(true);
+  await click(); await appliedCaseResponse(page, await response);
 }
 async function saved(page: Page) { await expect(page.getByRole("region", { name: "Browser saving" }).getByRole("status")).toHaveText("Saved in this browser"); }
 

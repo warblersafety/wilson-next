@@ -3,7 +3,7 @@ import { promisify } from "node:util";
 import { expect, test } from "@playwright/test";
 import { browserStateVersion } from "../../src/server/case/browser-state";
 import { courseContext, courseContextCase } from "../fixtures/b5-course-context";
-import { goTo, seedStoredState, storedState, savePdf } from "./draft4-helpers";
+import { appliedCaseResponse, goTo, seedStoredState, storedState, savePdf } from "./draft4-helpers";
 const narrative = "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]";
 test("clinical-course context reaches the PDF and survives explicit correction/removal and reload without reordering facts", async ({ page }, info) => {
   let unexpected = 0;
@@ -33,7 +33,7 @@ test("clinical-course context reaches the PDF and survives explicit correction/r
     await row.getByRole("button", { name: "Change", exact: true }).click();
     await row.getByLabel(/^Uncertainty or context for /).fill(qualifier);
     const response = page.waitForResponse(r => r.url().endsWith("/api/case") && r.request().method() === "POST" && r.request().postDataJSON()?.action?.action === "set-fact");
-    await row.getByRole("button", { name: "Apply correction", exact: true }).click(); expect((await response).ok()).toBe(true);
+    await row.getByRole("button", { name: "Apply correction", exact: true }).click(); await appliedCaseResponse(page, await response);
     await expect(page.getByRole("region", { name: "Browser saving" }).getByRole("status")).toHaveText("Saved in this browser");
     await page.reload(); await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
   }

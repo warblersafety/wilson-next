@@ -1,9 +1,9 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, type Page, type Response } from "@playwright/test";
 import { nextCompletionQuestion } from "../../src/domain/case/completion-policy";
 import { projectForm3500 } from "../../src/domain/case/projection";
 import { initialUiDrafts } from "../../src/browser/ui-drafts";
 import { workspaceInput } from "../../src/browser/workspace-state";
-import { parseBrowserJourneyState, type BrowserJourneyState } from "../../src/server/case/browser-state";
+import { parseBrowserJourneyState, type BrowserJourneyState, type JourneyResponse } from "../../src/server/case/browser-state";
 
 export async function storedState(page: Page): Promise<BrowserJourneyState> {
   return page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-current-case-debug-v1")!));
@@ -25,10 +25,18 @@ export async function showActiveTask(page: Page) {
   await goTo(page, "Review details");
   if (state.stage === "clarify") await directAnswers(page);
 }
+/** Headers acknowledge transport, not that the UI accepted the returned case.
+ * Verify the complete returned authority before navigation or save/reload checks. */
+export async function appliedCaseResponse(page: Page, response: Response) {
+  expect(response.ok()).toBe(true);
+  const acknowledged = await response.json() as JourneyResponse;
+  await expect.poll(async () => (await storedState(page))?.case).toEqual(acknowledged.state.case);
+  await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
+}
 export async function serverAction(page: Page, click: () => Promise<unknown>) {
   const response = page.waitForResponse((r) => r.url().endsWith("/api/case") && r.request().method() === "POST");
   await click();
-  expect((await response).ok()).toBe(true);
+  await appliedCaseResponse(page, await response);
   await showActiveTask(page);
 }
 export async function acceptOpeningGroups(page: Page) {
