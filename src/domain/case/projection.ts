@@ -130,6 +130,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     omissions: [],
     notIncluded: [
       "Patient fractional or compound ages and partial date of birth",
+      "Patient race/ethnicity detail outside the seven A5 categories",
       "Section C product pictures and general additional comments",
       "Additional suspect medical devices beyond the first",
       "Section D partial expiration dates, other product-type categories and purchase details",

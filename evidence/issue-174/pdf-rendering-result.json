@@ -1,19 +1,28 @@
 {
-  "capturedPages" : [
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "renders": [
     {
-      "page" : 1,
-      "rendered" : true,
-      "screenshot" : "\/Users\/sofa-claude\/Documents\/Codex\/2026-10-15\/task\/issue-174-evidence\/a5-partial-page-1.png"
+      "source": "a5-all.pdf",
+      "page": 1,
+      "screenshot": "a5-all-page-1.png",
+      "rendered": true,
+      "visuallyInspected": true,
+      "observed": "All seven A5 category boxes marked."
+    },
+    {
+      "source": "a5-partial.pdf",
+      "page": 1,
+      "screenshot": "a5-partial-page-1.png",
+      "rendered": true,
+      "visuallyInspected": true,
+      "observed": "Only Hispanic or Latino marked; other six A5 boxes blank."
     }
   ],
-  "manualInspectionRequired" : [
-    "No password prompt, corruption, or displaced form content is visible",
-    "FDA, MedWatch, Form 3500, OMB expiry, and page identity are preserved",
-    "Sections A and B agree with the repaired reviewed patient and event",
-    "Section D contains the repaired suspect-product identity and indication",
-    "Section G agrees with the direct reporter entry"
+  "inspection": [
+    "FDA form and page identity preserved",
+    "A5 marks align with exact official labels",
+    "Unrelated Section A and B content unchanged between the two renders"
   ],
-  "renderer" : "macOS PDFKit",
-  "scale" : 2,
-  "source" : "\/Users\/sofa-claude\/Documents\/Codex\/2026-10-15\/task\/issue-174-evidence\/a5-partial.pdf"
+  "independentNativeEvidence": "a5-appearance.json"
 }
