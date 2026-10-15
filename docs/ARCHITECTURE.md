@@ -998,16 +998,20 @@ includes the current quantity sources. This is relevant clinical/product-use
 context under the FDA B5 instructions; it is not causality or chronology inference.
 No pending, conflicted or superseded qualifier becomes accepted output.
 
-Native amount/unit controls retain the formatting-only split. Qualified compound
+Native amount/unit controls retain the formatting-only split with a visible
+(see B5) pointer appended to qualified amounts. If that pointer and literal
+amount do not fit together, the text control uses See B5 and a blank unit. Qualified compound
 wording that exceeds the narrow amount control uses See B5 with a blank unit;
 its full wording remains in B5. A qualifier correction changes the output content
 key because B5 now changes. Removal removes that current narrative entry while
 accepted history stays intact. Quantity notes alone cannot satisfy the existing
 base event-description readiness requirement.
 
-When these entries are added, snapshot and adapter share a preflight of the full
-B5 text: supported existing Helvetica glyphs, native4000-character limit, native
-8.5pt size and pinned rectangle. Unrepresentable context stays accepted but blocks
-new export. No font shrinking, glyph substitution, new pages or continuation
+Snapshot and adapter always preflight the full B5 text, including cases
+without quantity qualifiers: supported existing Helvetica glyphs, native4000-character limit, native
+8.5pt size and pinned rectangle. Unrepresentable wording stays accepted but blocks
+new export. Base narrative failure points to its actual contributing event and
+stopped-product facts; only failure introduced by added quantity notes points
+to those quantity facts. Removing a qualifier cannot disable this B5 guard. No font shrinking, glyph substitution, new pages or continuation
 capacity is introduced. This is bounded quantity support, not general qualifier
 or portable-glyph completion;115/151/153/154 remain open and150 remains paused.

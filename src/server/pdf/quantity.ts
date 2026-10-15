@@ -29,8 +29,9 @@ export function quantityParts(quantity: ProjectedQuantity, field: "dose" | "stre
   const { width, fontSize } = quantityTextGeometry[field];
   // The full raw value and context are carried in B5. Never clip a compound
   // quantity or infer an amount/unit from its words to fill this narrow control.
-  return nativeSingleLineTextLimitation(parts.amount, width, fontSize, "quantity text control")
-    ? { amount: "See B5", unit: " " } : parts;
+  const amount = `${parts.amount} (see B5)`;
+  return nativeSingleLineTextLimitation(amount, width, fontSize, "quantity text control")
+    ? { amount: "See B5", unit: " " } : { ...parts, amount };
 }
 
 export function quantityLimitation(_field: "dose" | "strength", quantity: ProjectedQuantity | undefined): string | undefined {
@@ -41,11 +42,16 @@ export function quantityLimitation(_field: "dose" | "strength", quantity: Projec
 // padding1, fixed8.5pt, MaxLen4000. No font shrinking or continuation pages.
 export const quantityNarrativeGeometry = { width: 531.102, height: 520.574, fontSize: 8.5, maxLength: 4000 };
 const narrativeFont = PDFDocument.create().then(document => document.embedFont(StandardFonts.Helvetica));
-export async function quantityNarrativeLimitation(projection: Form3500Projection): Promise<string | undefined> {
+export async function eventNarrativeLimitation(projection: Form3500Projection): Promise<string | undefined> {
   const entries = quantityContextEntries(projection.sections.D.suspectProducts);
-  if (!entries.length) return undefined;
   const text = projection.sections.B.eventDescription ?? "";
   if (entries.some(entry => !text.includes(entry.text))) return "does not carry the full reviewed quantity context in B5";
+  return narrativeTextLimitation(text);
+}
+
+/** B5 fidelity is checked regardless of whether a quantity qualifier exists. */
+export async function narrativeTextLimitation(text: string | undefined): Promise<string | undefined> {
+  if (!text) return undefined;
   if (text.length > quantityNarrativeGeometry.maxLength) return "exceeds the B5 narrative capacity";
   const font = await narrativeFont;
   const characters = new Set(font.getCharacterSet());

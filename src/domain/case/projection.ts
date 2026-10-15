@@ -478,3 +478,18 @@ export function quantityContextEntries(products: ProjectedProduct[]) {
 export function hasBaseEventDescription(caseState: SemanticCase): boolean {
   return buildEventDescription(caseState).value !== undefined;
 }
+
+export function baseEventDescription(caseState: SemanticCase): string | undefined {
+  return buildEventDescription(caseState).value;
+}
+
+/** Exact contributors to the existing base narrative, independent of quantity notes. */
+export function baseEventDescriptionTargets(caseState: SemanticCase): string[] {
+  return [
+    ...(["problemDescription", "symptoms", "treatments", "outcome", "dischargeDate"] as const)
+      .filter(field => known<unknown>(caseState.event.facts[field]) !== undefined)
+      .map(field => `event:event:${field}`),
+    ...caseState.products.filter(product => product.state === "resolved" && known(product.facts.name) !== undefined && known(product.facts.stopped)?.value === true)
+      .flatMap(product => [`product:${product.id}:name`, `product:${product.id}:stopped`]),
+  ];
+}

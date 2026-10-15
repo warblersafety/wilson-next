@@ -4,10 +4,15 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+import { NextRequest } from "next/server";
+import { POST as pdfPost } from "../../app/api/case/pdf/route";
+import { browserStateVersion } from "../../src/server/case/browser-state";
+import { productCapacityCase, correctCapacityProduct } from "../fixtures/product-capacity";
+import { setContextFact } from "../fixtures/reviewed-context";
 import { PDFDocument } from "@cantoo/pdf-lib";
 import { projectForm3500 } from "../../src/domain/case/projection";
 import { fillForm3500Projection } from "../../src/server/pdf/form-3500";
-import { quantityNarrativeLimitation } from "../../src/server/pdf/quantity";
+import { eventNarrativeLimitation } from "../../src/server/pdf/quantity";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { getJourneySnapshot, outputReadinessIssues } from "../../src/server/journey/service";
 import { medicationCase, setMedication } from "../fixtures/medication-case";
@@ -32,7 +37,7 @@ it.each([["500 mg", "25"], ["2 mL", "30"], ["5 mg/mL", "29"], ["3 mcg", "16"]])(
   const { fields, projection } = await inspect(state);
   for (const [n, page] of [[1, 4], [2, 5]]) for (const field of ["Dose", "Strength"]) {
     const prefix = `topmostSubform[0].Page${page}[0].Prod${n}[0].Prod${n}${field}`;
-    expect(fields[`${prefix}[0]`]).toBe(value.split(" ")[0]);
+    expect(fields[`${prefix}[0]`]).toBe(`${value.split(" ")[0]} (see B5)`);
     expect(fields[`${prefix}Unit[0]`]).toBe(unit);
     expect(fields[narrative]).toContain(`Suspect product #${n} ${field.toLowerCase()}: ${value} (${field === "Dose" ? "reported, uncertain" : "label may be old"}).`);
   }
@@ -58,15 +63,15 @@ it.each(["β uncertainty", "x".repeat(4100), Array(90).fill("line").join("\n")])
   const before = structuredClone(state), projection = projectForm3500(state);
   const snapshot = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: state }), state.id);
   expect(snapshot.downloadReady).toBe(false);
-  expect(snapshot.outputIssues).toContainEqual(expect.objectContaining({ code: "unsupported-product-text", targets: expect.arrayContaining([`product:${state.products[0].id}:strength`]) }));
+  expect(snapshot.outputIssues).toContainEqual(expect.objectContaining({ code: "unsupported-event-narrative", targets: expect.arrayContaining([`product:${state.products[0].id}:strength`]) }));
   expect(projection.sections.B.eventDescription).toContain(qualifier);
-  await expect(fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), projection)).rejects.toThrow("quantity narrative");
+  await expect(fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), projection)).rejects.toThrow("B5 event description");
   expect(state).toEqual(before);
 });
 it("rejects a direct projection missing its full qualified narrative", async () => {
   const projection = projectForm3500(setMedication(medicationCase(), "amoxicillin", { dose: { kind: "known", value: "500 mg", qualifier: "approximate" } }));
   projection.sections.B.eventDescription = "Symptoms: rash.";
-  expect(await quantityNarrativeLimitation(projection)).toContain("full reviewed quantity context");
+  expect(await eventNarrativeLimitation(projection)).toContain("full reviewed quantity context");
 });
 it("quantity notes cannot replace the existing event-description requirement", () => {
   const state = structuredClone(setMedication(medicationCase(), "amoxicillin", { dose: { kind: "known", value: "500 mg", qualifier: "approximate" } }));
@@ -83,4 +88,27 @@ it("checks pinned narrative geometry and unchanged native font size independentl
   expect(rect.width).toBeCloseTo(531.102, 3); expect(rect.height).toBeCloseTo(520.574, 3);
   expect(field.getMaxLength()).toBe(4000);
   expect(field.acroField.getDefaultAppearance()).toContain("8.50 Tf");
+});
+
+it.each(["rash ≥ 5 cm", "x".repeat(4100), Array(90).fill("line").join("\n")])("attributes base B5 failures to their contributing event facts with and without quantities", async symptoms => {
+  let state = setContextFact(correctCapacityProduct(productCapacityCase(), 0, { dose: { kind: "known", value: "500 mg", qualifier: "approximate" } }), "event:event:symptoms", { kind: "known", value: [symptoms] });
+  for (const qualified of [true, false]) {
+    if (!qualified) state = correctCapacityProduct(state, 0, { dose: { kind: "known", value: "500 mg" } });
+    const before = structuredClone(state);
+    const snapshot = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: state }), state.id);
+    expect(snapshot.downloadReady).toBe(false);
+    const issue = snapshot.outputIssues.find(issue => issue.code === "unsupported-event-narrative");
+    expect(issue?.targets).toContain("event:event:symptoms");
+    expect(issue?.targets).not.toContain(`product:${state.products[0].id}:dose`);
+    expect(issue?.entityIds).toContain("event");
+    expect(issue?.message).toContain("B5 event description");
+    expect(issue?.message).not.toContain("quantity narrative");
+    await expect(fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), snapshot.projection)).rejects.toThrow("B5 event description");
+    for (const mode of ["preview", "download"]) {
+      const response = await pdfPost(new NextRequest("http://wilson.test/api/case/pdf", { method: "POST", headers: { host: "wilson.test", origin: "http://wilson.test", "content-type": "application/json" }, body: JSON.stringify({ mode, state: { version: browserStateVersion, stage: "output", case: state, unrepresented: [] } }) }));
+      expect(response.status).toBe(409);
+      expect(await response.json()).toMatchObject({ code: "pdf-not-ready", error: expect.stringContaining("B5 event description") });
+    }
+    expect(state).toEqual(before);
+  }
 });

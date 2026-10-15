@@ -1,13 +1,13 @@
 import { createHash, randomUUID } from "node:crypto";
 import { productTextLimitation } from "../pdf/product-text";
-import { quantityLimitation, quantityNarrativeLimitation } from "../pdf/quantity";
+import { quantityLimitation, eventNarrativeLimitation, narrativeTextLimitation } from "../pdf/quantity";
 import type { UnrepresentedModelProposal } from "../../domain/case/model-boundary";
 import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts } from "../../domain/case/limits";
 import { completionQuestions } from "../../domain/case/completion-policy";
 import { createSemanticCase } from "../../domain/case/create";
 import { allFacts, getFact, targetFromKey, targetKey } from "../../domain/case/facts";
 import { productDisplayLabel } from "../../domain/case/product-label";
-import { projectForm3500, quantityContextEntries, hasBaseEventDescription } from "../../domain/case/projection";
+import { projectForm3500, quantityContextEntries, hasBaseEventDescription, baseEventDescription, baseEventDescriptionTargets } from "../../domain/case/projection";
 import type { CaseValue, Fact, FactTarget, ProductFactKey, ReporterFactKey, SemanticCase, Source } from "../../domain/case/types";
 import {
   createClarificationView,
@@ -67,7 +67,8 @@ export type OutputReadinessIssueCode =
   | "unsupported-concomitant-device"
   | "unsupported-patient-sex"
   | "unsupported-product-route"
-  | "unsupported-product-text";
+  | "unsupported-product-text"
+  | "unsupported-event-narrative";
 
 export interface OutputReadinessIssue {
   code: OutputReadinessIssueCode;
@@ -92,13 +93,18 @@ export async function getJourneySnapshot(
   const caseState = await ensureJourneyCase(repository, caseId);
   const projection = projectForm3500(caseState);
   const outputIssues = outputReadinessIssues(caseState, projection);
-  const narrativeLimitation = await quantityNarrativeLimitation(projection);
-  if (narrativeLimitation) outputIssues.push({
-    code: "unsupported-product-text",
-    message: `The reviewed quantity narrative ${narrativeLimitation}. It is retained, but no new PDF is generated.`,
-    targets: quantityContextEntries(projection.sections.D.suspectProducts).map(entry => entry.target),
-    entityIds: projection.sections.D.suspectProducts.filter(product => product.dose?.qualifier !== undefined || product.strength?.qualifier !== undefined).map(product => product.productId),
-  });
+  const baseLimitation = await narrativeTextLimitation(baseEventDescription(caseState));
+  const narrativeLimitation = baseLimitation ?? await eventNarrativeLimitation(projection);
+  if (narrativeLimitation) {
+    const quantityTargets = quantityContextEntries(projection.sections.D.suspectProducts).map(entry => entry.target);
+    const targets = baseLimitation || !quantityTargets.length ? baseEventDescriptionTargets(caseState) : quantityTargets;
+    outputIssues.push({
+      code: "unsupported-event-narrative",
+      message: `The reviewed B5 event description ${narrativeLimitation}. The wording is retained, but no new PDF is generated. Review the contributing narrative details.`,
+      targets,
+      entityIds: [...new Set(targets.map(target => target.split(":")[1]))],
+    });
+  }
   return {
     stage: stageFor(caseState),
     revision: caseState.revision,

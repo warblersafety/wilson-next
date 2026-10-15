@@ -68,7 +68,7 @@ it.each(["explicitly-absent", "unknown", "unmentioned"] as const)("discloses a %
 it("carries simple quantity uncertainty in B5 while preserving the native amount and unit", async () => {
   const state = setMedication(medicationCase(), "amoxicillin", { dose: { kind: "known", value: "500 mg", qualifier: "approximate" } });
   const fields = await independentFields(projectForm3500(state));
-  expect(fields["topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]"]).toBe("500");
+  expect(fields["topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]"]).toBe("500 (see B5)");
   expect(fields[narrative]).toContain("Suspect product #1 dose: 500 mg (approximate).");
   // Independent FDA export code25 is milligrams, not the blank fallback40.
   expect(fields["topmostSubform[0].Page4[0].Prod1[0].Prod1DoseUnit[0]"]).toBe("25");
@@ -84,7 +84,7 @@ it("retains dose/strength qualifiers in their own suspect-product PDF slots with
   const fields = await independentFields(projection);
   for (const [n, page] of [[1, 4], [2, 5]]) {
     const prefix = `topmostSubform[0].Page${page}[0].Prod${n}[0].Prod${n}`;
-    expect(fields[`${prefix}Dose[0]`]).toBe(n === 1 ? "two capsules, 500 mg" : "half a tablet");
+    expect(fields[`${prefix}Dose[0]`]).toBe(n === 1 ? "two capsules, 500 mg (see B5)" : "half a tablet (see B5)");
   }
   expect(fields["topmostSubform[0].Page4[0].Prod1[0].Prod1Strength[0]"]).toBe("See B5");
   expect(fields[narrative]).toContain("Suspect product #1 dose: two capsules, 500 mg (reported; diary uncertain).");

@@ -19,13 +19,18 @@ separates labeled strength from amount used, D2 describes actual product use.
 The native09/2025PDF is unchanged. Existing B5 is used, not the lab-only
 AdditionalComments widget, new pages or smaller typography.
 
-FullB5 preflight applies when quantity notes are added: existing Helvetica
+FullB5 preflight always applies, including unqualified cases: existing Helvetica
 character support,4000characters,531.102x520.574native rectangle,1ptpadding,
-8.5pt and whitespace wrapping. Long unbreakable text/vertical overflow and
-unsupported glyphs remain retained with explicit readiness failure. Snapshot
-and adapter share the check; the adapter also rejects a direct projection
-missing fullnotes. Quantity notes alone cannot satisfy the old base event gate.
-This bounded guard does not solve portable glyph/fit support for other fields.
+8.5pt and whitespace wrapping. Base text is independently measured for correct
+attribution to contributing event/stopped-product facts. Added quantity failures
+point to quantity facts only when base text fits. Removing the qualifier cannot
+disable fidelity checking. Long unbreakable text/vertical overflow and unsupported
+glyphs remain retained with explicit readiness failure. Snapshot and adapter
+share checks; the adapter rejects direct projections missing fullnotes. Quantity
+notes alone cannot satisfy the old base event gate. Other PDF fields remain154.
+Qualified native amount controls now include (see B5); if the full pointer and
+literal text cannot fit, the native text is See B5 with blankunit. Native unit
+export is retained for supported simple values that fit with the pointer.
 
 Verification includes independent pypdf native-field readback (not adapter-only
 roundtrip), bothsuspect slots/dose/strength and FDA unitexports25/30/29/16,
@@ -42,22 +47,31 @@ attachments locations, with the unchanged repository test config/assertions.
 No denied-path retry or permission expansion was used. Initial harness CWD and
 independent-reader decoding mistakes were fixed in the harness/newtests only.
 
-Local verification:398unit tests/52files PASS, final typecheck PASS, fresh
-production build PASS. Full browser run:71existing journeys PASS, newtest failed
-on an incorrect existing-control label. Corrected only that new locator; the
-new journey then PASS in2.6seconds with all correction/reload/PDF assertions.
-Exact-head CI and actual independent review remain required before merge.
+Actual Opus5-5high review at164376b identified B1: the previous quantity-only
+guard activation misattributed base B5 failures and qualifier removal bypassed
+it. F1: native fields lacked a qualification pointer. Actual full report is on
+PR156comment6188484129. Both are remediated as above. The actual targeted same-session
+recheck and exact-headCI results are recorded in canonical PR156 before merge.
+
+Remediation local verification:401unit tests/52files PASS, typecheck and fresh
+production build PASS. Two focused browser journeys PASS3.0seconds, including
+the exact base rash≥5cm/removal recurrence, no accidental PDF/model requests,
+accepted wording retained, correct metadata, and qualifier-correction/reload.
+New API cases cover glyph/4000char/vertical failures with and without qualifiers,
+preview and download409s, adapter defense and event-only attribution.
+Full73mockbrowser suite PASS2.1minutes after remediation. Exact-headCI and
+actual independent-review disposition are recorded in PR156.
 
 Retained [synthetic PDF](qualified.pdf), [independent readback](readback.json),
-[B5 appearance check](appearance-check.json), [B5 render](route-page-2.png), and
-[native strength render](route-page-4.png) show the corrected5mg strength and
-exact confirmed-label context. PDFKit2x rendering visually inspected: no clipping,
-question-mark substitution or displaced form content in those values. B5 actual
-AP text operands independently equal stored expected ASCII text; this supports
-this fixture, not a cross-viewer portable-glyph claim.
+[B5/strength appearance check](appearance-check.json), [B5 render](route-page-2.png),
+and [native strength render](route-page-4.png) show5mg(seeB5) with nativeMG and
+exact confirmed-label context inB5. PDFKit2x renders visually inspected; actual
+AP ASCII operands independently checked for bothfields. This proves thisfixture,
+not a general portable-glyph/font expansion.
 
-Independent-review precondition remains unresolved while the unrelated assessment
-report is preserved as an untracked file. The fixed reviewer requires a completely
-clean tree. Do not hide/move that report or weaken the check to claim review. Issue150 stays
-paused;151/153/154 stayOPEN. No provider/model/schema/storage/UI/dependency,
-previewgrant/auth or application-model-call changes are included.
+The earlier own-generated assessment report was losslessly archived outside the
+checkout with verified SHA and explicit archive record under task direction;
+review now runs against a clean tree without hiding implementation or changing
+the fixed reviewer. Existing repository reports are unchanged. No provider/model/
+schema/storage/dependency or previewgrant/auth/application-model-call changes.
+115staysOPEN for remaining context/chronology;150paused;151/153/154remainOPEN.

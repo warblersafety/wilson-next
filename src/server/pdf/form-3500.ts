@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts } from "../../domain/case/limits";
 import { PDFDocument, PDFName } from "@cantoo/pdf-lib";
 import { encodeForm3500Frequency, encodeForm3500Route, productTextLimitation } from "./product-text";
-import { quantityParts, quantityLimitation, quantityNarrativeLimitation } from "./quantity";
+import { quantityParts, quantityLimitation, eventNarrativeLimitation } from "./quantity";
 import type {
   Form3500Projection,
   ProjectedConcomitantProduct,
@@ -231,8 +231,8 @@ export async function fillForm3500Projection(
   projection: Form3500Projection,
 ): Promise<Form3500ProjectionFillResult> {
   await assertApprovedFormSource(source);
-  const narrativeLimitation = await quantityNarrativeLimitation(projection);
-  if (narrativeLimitation) throw new Error(`The reviewed quantity narrative ${narrativeLimitation}`);
+  const narrativeLimitation = await eventNarrativeLimitation(projection);
+  if (narrativeLimitation) throw new Error(`The reviewed B5 event description ${narrativeLimitation}`);
   if (projection.sections.D.suspectProducts.length > maximumForm3500SuspectProducts) {
     throw new Error(`The approved Form 3500 adapter supports at most ${maximumForm3500SuspectProducts} suspect products`);
   }
