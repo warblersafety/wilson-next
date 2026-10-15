@@ -71,7 +71,11 @@ describe("Anthropic production model boundary", () => {
     expect(schema).toContain("weeks");
     expect(requestText).toContain("Never place gestational age, gestation at birth, or corrected/postmenstrual age in ageYears");
     expect(requestText).toContain("Do not infer chronological age from them");
-    expect(MODEL_PROMPT_REVISION).toBe("wilson-patient-age-units-v8");
+    expect(MODEL_PROMPT_REVISION).toBe("wilson-patient-birth-date-v9");
+    expect(schema).toContain("dateOfBirth");
+    expect(schema).not.toContain("a2Value");
+    expect(requestText).toContain("Never infer missing components, repair impossible dates, calculate age from DOB or DOB from age");
+    expect(requestText).toContain("Never propose a2Value or choose which alternative to print");
     expect(requestText).toContain("preserve explicitly stated descriptive detail");
     expect(requestText).toContain("named only as treatment administered in response");
     expect(requestText).not.toMatch(/apixaban|naproxen|lisinopril/i);

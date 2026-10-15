@@ -445,6 +445,7 @@ function companionProposal(evidenceQuote: string) {
 function validKnownValue(contract: KnownValueContract): unknown {
   switch (contract.shape) {
     case "string": return "value";
+    case "birth-date": return "2024-02-29";
     case "iso-date": return "2026-09-10";
     case "patient-age": return 57;
     case "integer": return contract.minimum;

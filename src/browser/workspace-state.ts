@@ -107,6 +107,7 @@ function editableTarget(entity: string, field: string, value: CaseValue<unknown>
   if (!value || value.kind !== "known") return true;
   const raw = value.value;
   switch (control.shape) {
+    case "birth-date": return typeof raw === "string";
     case "age": return (typeof raw === "number" && Number.isFinite(raw)) || Boolean(raw && typeof raw === "object" && "value" in raw && typeof raw.value === "number" && Number.isFinite(raw.value) && "unit" in raw && ["months", "weeks", "days"].includes(String(raw.unit)));
     case "boolean": return typeof raw === "boolean";
     case "weight": return Boolean(raw && typeof raw === "object" && "value" in raw && typeof raw.value === "number" && Number.isFinite(raw.value) && "unit" in raw && ["kg", "lb"].includes(String(raw.unit)));

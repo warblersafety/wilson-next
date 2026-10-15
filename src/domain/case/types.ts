@@ -33,6 +33,8 @@ export interface Fact<T> {
 export interface PatientFacts {
   identifier: Fact<string>;
   ageYears: Fact<PatientAge>;
+  dateOfBirth: Fact<string>;
+  a2Value: Fact<"age" | "date-of-birth">;
   sex: Fact<"female" | "male" | "intersex">;
   weight: Fact<{ value: number; unit: "kg" | "lb" }>;
 }

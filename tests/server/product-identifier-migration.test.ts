@@ -1,3 +1,4 @@
+import { removeBirthDateFields } from "../fixtures/pre-dob";
 import { expect, it } from "vitest";
 import { applyCaseCommand } from "../../src/domain/case/commands";
 import { browserStateVersion, parseBrowserJourneyState } from "../../src/server/case/browser-state";
@@ -14,6 +15,7 @@ it.each(["resolved", "pending", "conflicted", "withdrawn"])("migrates genuine v1
   }
   const expected = { version: browserStateVersion, stage: "output", case: c, unrepresented: [] };
   const legacy = JSON.parse(JSON.stringify(expected)); legacy.version = "wilson-browser-state-v10";
+  removeBirthDateFields(legacy.case);
   for (const p of legacy.case.products) delete p.facts.ndcOrUniqueId;
   const before = structuredClone(legacy);
   expect(parseBrowserJourneyState(legacy)).toEqual(expected);
@@ -24,7 +26,7 @@ it("rejects malformed/mislabeled/future payloads without inventing or overwritin
   const missing = JSON.parse(JSON.stringify(good)); delete missing.case.products[0].facts.ndcOrUniqueId;
   const malformed = JSON.parse(JSON.stringify(good)); malformed.case.products[0].facts.ndcOrUniqueId = { state: "empty" };
   const mislabeled = { ...good, version: "wilson-browser-state-v10" };
-  const future = { ...good, version: "wilson-browser-state-v14" };
+  const future = { ...good, version: "wilson-browser-state-v15" };
   for (const candidate of [missing, malformed, mislabeled, future]) {
     const before = structuredClone(candidate); expect(() => parseBrowserJourneyState(candidate)).toThrow(); expect(candidate).toEqual(before);
   }

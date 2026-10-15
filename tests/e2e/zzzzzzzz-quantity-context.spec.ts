@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 import { browserStateVersion } from "../../src/server/case/browser-state";
 import { setContextFact } from "../fixtures/reviewed-context";
 import { productCapacityCase, correctCapacityProduct } from "../fixtures/product-capacity";
-import { goTo, seedStoredState, storedState, savePdf } from "./draft4-helpers";
+import { appliedCaseResponse, goTo, seedStoredState, storedState, savePdf } from "./draft4-helpers";
 const narrative = "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]";
 test("qualified quantities survive reload and correction with actual native units and exact B5 context", async ({ page }, info) => {
   let unexpected = 0;
@@ -33,7 +33,7 @@ test("qualified quantities survive reload and correction with actual native unit
     await row.getByRole("button", { name: "Change", exact: true }).click();
     await row.getByLabel("Uncertainty or context for Product strength", { exact: true }).fill("confirmed label");
     const response = page.waitForResponse(r => r.url().endsWith("/api/case") && r.request().method() === "POST" && r.request().postDataJSON()?.action?.action === "set-fact");
-    await row.getByRole("button", { name: "Apply correction", exact: true }).click(); expect((await response).ok()).toBe(true);
+    await row.getByRole("button", { name: "Apply correction", exact: true }).click(); await appliedCaseResponse(page, await response);
     await expect(page.getByRole("region", { name: "Browser saving" }).getByRole("status")).toHaveText("Saved in this browser");
     const saved = await storedState(page);
     expect(saved.case.products[0].facts.strength.resolvedValue?.value).toEqual({ kind: "known", value: "5 mg", qualifier: "confirmed label" });
@@ -61,7 +61,7 @@ test("a base B5 glyph failure remains attributed and blocked after a valid quant
       await row.getByRole("button", { name: "Change", exact: true }).click();
       await row.getByLabel(/^Uncertainty or context for /).fill("");
       const response = page.waitForResponse(r => r.url().endsWith("/api/case") && r.request().method() === "POST" && r.request().postDataJSON()?.action?.action === "set-fact");
-      await row.getByRole("button", { name: "Apply correction", exact: true }).click(); expect((await response).ok()).toBe(true);
+      await row.getByRole("button", { name: "Apply correction", exact: true }).click(); await appliedCaseResponse(page, await response);
       expect((await storedState(page)).case.products[0].facts.dose.resolvedValue?.value).toEqual({ kind: "known", value: "500 mg" });
     }
     await goTo(page, "Review & save");

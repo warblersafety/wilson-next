@@ -18,6 +18,7 @@ describe("direct fact controls", () => {
       for (const [field, contract] of Object.entries(caseValueContracts[entity])) {
         const control = (factControlRegistry[entity] as Record<string, { shape: string }>)[field];
         const expected = contract.shape === "string" ? "text"
+          : contract.shape === "birth-date" ? "birth-date"
           : contract.shape === "iso-date" ? "date"
           : contract.shape === "integer" || contract.shape === "patient-age" ? "age"
           : contract.shape === "string-array" ? "list"

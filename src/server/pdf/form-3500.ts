@@ -1,3 +1,4 @@
+import { isCompleteBirthDate } from "../../domain/case/birth-date";
 import { patientAgeParts, type PatientAge } from "../../domain/case/age";
 import { patientAgeLimitation } from "./patient-age";
 import { createHash } from "node:crypto";
@@ -22,6 +23,7 @@ const fields = {
   reportDate: "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]",
   patientIdentifier:
     "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]",
+  dateOfBirth: "topmostSubform[0].Page1[0].SecA_Patient[0].DateBirth[0]",
   ageValue: "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]",
   ageYears: "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]",
   ageMonths: "topmostSubform[0].Page1[0].SecA_Patient[0].AgeMonths[0]",
@@ -261,6 +263,9 @@ export async function fillForm3500Projection(
   const { A, B, C, D, E, F } = projection.sections;
 
   setText(form, fields.patientIdentifier, A.patientIdentifier);
+  if (A.ageYears !== undefined && A.dateOfBirth !== undefined) throw new Error("A2 requires an explicit age or date-of-birth print choice");
+  if (A.dateOfBirth !== undefined && !isCompleteBirthDate(A.dateOfBirth)) throw new Error("Date of birth requires a complete valid calendar date");
+  if (A.dateOfBirth !== undefined || form.getTextField(fields.dateOfBirth).getText()) setText(form, fields.dateOfBirth, A.dateOfBirth ? formatDate(A.dateOfBirth) : "");
   const ageLimit = patientAgeLimitation(A.ageYears);
   if (ageLimit) throw new Error(`The reviewed patient age ${ageLimit}`);
   const age = A.ageYears !== undefined ? patientAgeParts(A.ageYears) : undefined;
@@ -566,6 +571,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
       A: compact({
         patientIdentifier: form.getTextField(fields.patientIdentifier).getText(),
         ageYears: readAge(),
+        dateOfBirth: parseDate(form.getTextField(fields.dateOfBirth).getText()),
         sex: form.getCheckBox(fields.sexFemale).isChecked()
           ? "female"
           : form.getCheckBox(fields.sexMale).isChecked() ? "male" : undefined,

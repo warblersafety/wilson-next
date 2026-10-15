@@ -1,3 +1,4 @@
+import { patientA2ChoiceIssue } from "../../domain/case/birth-date";
 import { isPatientAge, patientAgeParts } from "../../domain/case/age";
 import { patientAgeLimitation } from "../pdf/patient-age";
 import { createHash, randomUUID } from "node:crypto";
@@ -68,6 +69,7 @@ export type OutputReadinessIssueCode =
   | "too-many-concomitant-products"
   | "multiple-suspect-devices"
   | "unsupported-concomitant-device"
+  | "patient-a2-choice-required"
   | "unsupported-patient-age"
   | "unsupported-patient-sex"
   | "unsupported-product-route"
@@ -690,6 +692,8 @@ export function outputReadinessIssues(
       ["event"],
     );
   }
+  const a2Issue = patientA2ChoiceIssue(caseState);
+  if (a2Issue) issue("patient-a2-choice-required", a2Issue, ["patient:patient:a2Value", "patient:patient:dateOfBirth", "patient:patient:ageYears"], ["patient"]);
   const ageLimit = patientAgeLimitation(projection.sections.A.ageYears);
   if (ageLimit) issue("unsupported-patient-age", `The reviewed age ${ageLimit}. It is retained, but the PDF cannot represent it; no new PDF is generated.`, ["patient:patient:ageYears"], ["patient"]);
   if (projection.sections.A.sex === "intersex") {
@@ -782,7 +786,7 @@ function findProposal(caseState: SemanticCase, groupId: string, proposalId: stri
 }
 
 function targetStatement(caseState: SemanticCase, target: FactTarget): string {
-  if (target.entity === "patient") return `the patient ${target.field === "ageYears" ? "age" : target.field}`;
+  if (target.entity === "patient") return `the patient ${target.field === "ageYears" ? "age" : target.field === "dateOfBirth" ? "date of birth" : target.field === "a2Value" ? "A2 value to print" : target.field}`;
   if (target.entity === "event") return `the event ${target.field}`;
   if (target.entity === "reporter") return `the reporter ${target.field}`;
   if (target.entity === "test") return `the relevant test ${target.field}`;
@@ -806,8 +810,10 @@ function knownValue<T>(fact: Fact<T> | undefined): T | undefined {
 }
 
 function displayValue(value: CaseValue<unknown>, target?: FactTarget): string {
+  if (target?.entity === "patient" && target.field === "a2Value" && value.kind !== "known") return "no print preference";
   if (value.kind !== "known") return value.kind.replaceAll("-", " ");
   if (target?.entity === "patient" && target.field === "ageYears" && isPatientAge(value.value)) { const age = patientAgeParts(value.value); return `${age.value} ${age.unit}`; }
+  if (target?.entity === "patient" && target.field === "a2Value" && value.value === "date-of-birth") return "date of birth";
   if (Array.isArray(value.value)) return value.value.join(" and ");
   return String(value.value);
 }

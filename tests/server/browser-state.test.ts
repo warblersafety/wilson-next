@@ -1,3 +1,4 @@
+import { removeBirthDateFields } from "../fixtures/pre-dob";
 import { randomUUID } from "node:crypto";
 import { NextRequest } from "next/server";
 import { describe, expect, it } from "vitest";
@@ -171,6 +172,7 @@ describe("report-completeness state upgrade", () => {
     const { state } = await journeyResponse(repository, snapshot);
     const legacy = JSON.parse(JSON.stringify(state));
     legacy.version = "wilson-browser-state-v7";
+    removeBirthDateFields(legacy.case);
     removeMedicationFields(legacy);
     delete legacy.case.event.facts.reportDate;
     for (const product of legacy.case.products) delete product.facts.strength;
@@ -195,6 +197,7 @@ describe("laboratory state upgrade", () => {
     const { state } = await journeyResponse(repository, snapshot);
     const legacy = JSON.parse(JSON.stringify(state));
     legacy.version = "wilson-browser-state-v8";
+    removeBirthDateFields(legacy.case);
     removeMedicationFields(legacy);
     for (const test of legacy.case.relevantTests) delete test.facts.testName;
     const upgraded = parseBrowserJourneyState(legacy);
@@ -220,6 +223,7 @@ describe("medication state upgrade", () => {
     const { state } = await journeyResponse(repository, snapshot);
     const legacy = JSON.parse(JSON.stringify(state));
     legacy.version = "wilson-browser-state-v9";
+    removeBirthDateFields(legacy.case);
     removeMedicationFields(legacy);
     expect(parseBrowserJourneyState(legacy)).toEqual(state);
     delete legacy.case.products[0].facts.stopped;
