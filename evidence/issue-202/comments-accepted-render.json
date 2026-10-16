@@ -1,0 +1,16 @@
+{
+  "capturedPages": [
+    {
+      "page": 3,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-202/comments-accepted-page-3.png"
+    }
+  ],
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-202/comments-accepted.pdf",
+  "manualInspectionCompleted": [
+    "Native page3 Additional comments text and qualifier visible and unclipped",
+    "B6 table and B7 remain separate; no comment moved into either"
+  ]
+}

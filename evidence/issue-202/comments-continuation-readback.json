@@ -1,0 +1,893 @@
+{
+  "pageCount": 11,
+  "fields": {
+    "topmostSubform[0]": "",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]": "TEST-57",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "57",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]": "/1",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]": "/Off",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]": "/1",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].WeightLB[0]": "/Off",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].WeightKG[0]": "/Off",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/Off",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].Death[0]": "/Off",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].Hospital[0]": "/1",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].LifeThreaten[0]": "/Off",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].Disability[0]": "/Off",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].ReqdInter[0]": "/Off",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].Congenital[0]": "/Off",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].OtherEvents[0]": "/Off",
+    "topmostSubform[0].Page1[0].SecA_Patient[0].EventDate[0]": "18-AUG-2026",
+    "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Symptoms: melena and dizziness. Treatment: two units of packed red cells. Outcome: recovered. Discharged 21-Aug-2026.",
+    "topmostSubform[0].Page3[0].Sec6Data[0].OtherHistory[0]": "Prior episodic wheeze; the clinician supplied no exact onset date.\nHistory context: patient recalls this before the current episode; dates uncertain",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TestData1[0]": "Fictional assay: 14.2 \u00b5g/L",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TLowRange1[0]": "4.0",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].THighRange1[0]": "16.0",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TDate1[0]": "18-AUG-2026",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TestData2[0]": "Fictional assay: 15.8 \u00b5g/L",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TLowRange2[0]": "4.0",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].THighRange2[0]": "16.0",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TDate2[0]": "19-AUG-2026",
+    "topmostSubform[0].Page3[0].TestDataTable[0].EvalRetd[0]": "/Off",
+    "topmostSubform[0].Page3[0].TestDataTable[0].EvalNo[0]": "/Off",
+    "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/Off",
+    "topmostSubform[0].Page3[0].AdditionalComments[0]": "Report reference: W-5b32e8dc0dc02681c60c\nSee Section B, block B6, attachment pages 1-3; continued",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "Synthetic product A",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]": "5",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1DoseUnit[0]": "25",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1Freq[0]": "BID",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1Route[0]": "Oral",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1TherapyStartDate[0]": "13-AUG-2026",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1Diagnosis[0]": "Fictional indication",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1Compounded[0]": "/Off",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedYes[0]": "/Off",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedNo[0]": "/Off",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedNA[0]": "/Off",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearYes[0]": "/Off",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearNo[0]": "/Off",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearNA[0]": "/Off",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1Brand[0]": "/Off",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1Generic[0]": "/Off",
+    "topmostSubform[0].Page4[0].Prod1[0].Prod1OTC[0]": "/Off",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2Name[0]": "Synthetic product B",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2Dose[0]": "250",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2DoseUnit[0]": "25",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2Freq[0]": "BID",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2Route[0]": "Oral",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2TherapyStartDate[0]": "10-AUG-2026",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2Diagnosis[0]": "Fictional indication",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2Compounded[0]": "/Off",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2AbatedYes[0]": "/Off",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2AbatedNo[0]": "/Off",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2AbatedNA[0]": "/Off",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2ReappearYes[0]": "/Off",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2ReappearNo[0]": "/Off",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2ReappearNA[0]": "/Off",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2Brand[0]": "/Off",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2Generic[0]": "/Off",
+    "topmostSubform[0].Page5[0].Prod2[0].Prod2OTC[0]": "/Off",
+    "topmostSubform[0].Page6[0].SecF_Other[0].Table1[0].Row1[0].Prod1[0]": "Synthetic product C",
+    "topmostSubform[0].Page7[0].SecG_Reporter[0].ProYes[0]": "/Off",
+    "topmostSubform[0].Page7[0].SecG_Reporter[0].ProNo[0]": "/Off",
+    "topmostSubform[0].Page7[0].SecG_Reporter[0].ManuComp[0]": "/Off",
+    "topmostSubform[0].Page7[0].SecG_Reporter[0].UserFac[0]": "/Off",
+    "topmostSubform[0].Page7[0].SecG_Reporter[0].DistImp[0]": "/Off",
+    "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]": "/Off",
+    "topmostSubform[0].Page7[0].SecG_Reporter[0].Packer[0]": "/Off"
+  },
+  "pages": [
+    {
+      "pdfPage": 9,
+      "width": 612.0,
+      "height": 792.0,
+      "runs": [
+        {
+          "text": "Form FDA 3500 (09/2025) - Narrative continuation",
+          "x": 42.0,
+          "y": 750.0,
+          "size": 12.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Section B, block B6 - Additional comments and relevant test context",
+          "x": 42.0,
+          "y": 728.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Report reference: W-5b32e8dc0dc02681c60c",
+          "x": 42.0,
+          "y": 714.0,
+          "size": 8.5,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "B6 table row 1 - Test name context: name transcribed from paper report",
+          "x": 42.0,
+          "y": 700.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "B6 table row 1 - Result and stated units context: assay repeated, first draw haemolysed",
+          "x": 42.0,
+          "y": 686.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "B6 table row 1 - Lower reference limit context: lower limit copied from same report",
+          "x": 42.0,
+          "y": 672.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "B6 table row 1 - Upper reference limit context: upper limit copied from same report",
+          "x": 42.0,
+          "y": 658.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "B6 table row 1 - Test date context: collection day reported; time not recorded",
+          "x": 42.0,
+          "y": 644.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "B6 table row 2 - Test name context: second report: name transcribed from paper report",
+          "x": 42.0,
+          "y": 630.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "B6 table row 2 - Result and stated units context: second report: assay repeated, first draw haemolysed",
+          "x": 42.0,
+          "y": 616.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "B6 table row 2 - Lower reference limit context: second report: lower limit copied from same report",
+          "x": 42.0,
+          "y": 602.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "B6 table row 2 - Upper reference limit context: second report: upper limit copied from same report",
+          "x": 42.0,
+          "y": 588.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "B6 table row 2 - Test date context: second report: collection day reported; time not recorded",
+          "x": 42.0,
+          "y": 574.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Additional comments: Fictional comment 1: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 560.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 2: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 546.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 3: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 532.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 4: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 518.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 5: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 504.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 6: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 490.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 7: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 476.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 8: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 462.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 9: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 448.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 10: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 434.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 11: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 420.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 12: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 406.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 13: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 392.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 14: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 378.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 15: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 364.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 16: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 350.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 17: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 336.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 18: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 322.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 19: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 308.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 20: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 294.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 21: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 280.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 22: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 266.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 23: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 252.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 24: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 238.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 25: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 224.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 26: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 210.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 27: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 196.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 28: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 182.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 29: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 168.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 30: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 154.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 31: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 140.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 32: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 126.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 33: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 112.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 34: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 98.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 35: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 84.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 36: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 70.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 37: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 56.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Attachment page 1 of 3",
+          "x": 42.0,
+          "y": 32.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        }
+      ]
+    },
+    {
+      "pdfPage": 10,
+      "width": 612.0,
+      "height": 792.0,
+      "runs": [
+        {
+          "text": "Form FDA 3500 (09/2025) - Narrative continuation",
+          "x": 42.0,
+          "y": 750.0,
+          "size": 12.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Section B, block B6 - Additional comments and relevant test context",
+          "x": 42.0,
+          "y": 728.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Report reference: W-5b32e8dc0dc02681c60c",
+          "x": 42.0,
+          "y": 714.0,
+          "size": 8.5,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 38: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 700.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 39: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 686.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 40: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 672.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 41: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 658.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 42: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 644.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 43: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 630.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 44: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 616.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 45: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 602.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 46: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 588.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 47: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 574.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 48: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 560.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 49: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 546.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 50: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 532.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 51: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 518.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 52: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 504.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 53: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 490.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 54: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 476.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 55: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 462.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 56: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 448.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 57: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 434.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 58: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 420.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 59: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 406.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 60: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 392.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 61: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 378.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 62: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 364.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 63: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 350.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 64: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 336.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 65: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 322.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 66: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 308.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 67: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 294.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 68: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 280.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 69: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 266.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 70: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 252.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 71: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 238.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 72: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 224.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 73: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 210.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 74: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 196.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 75: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 182.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 76: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 168.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 77: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 154.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 78: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 140.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 79: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 126.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 80: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 112.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 81: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 98.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 82: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 84.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 83: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 70.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 84: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 56.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Attachment page 2 of 3",
+          "x": 42.0,
+          "y": 32.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        }
+      ]
+    },
+    {
+      "pdfPage": 11,
+      "width": 612.0,
+      "height": 792.0,
+      "runs": [
+        {
+          "text": "Form FDA 3500 (09/2025) - Narrative continuation",
+          "x": 42.0,
+          "y": 750.0,
+          "size": 12.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Section B, block B6 - Additional comments and relevant test context",
+          "x": 42.0,
+          "y": 728.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Report reference: W-5b32e8dc0dc02681c60c",
+          "x": 42.0,
+          "y": 714.0,
+          "size": 8.5,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 85: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 700.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 86: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 686.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 87: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 672.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 88: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 658.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 89: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 644.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Fictional comment 90: sample custody recorded; exact location awaits confirmation.",
+          "x": 42.0,
+          "y": 630.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Additional comments context: arrangement reported by staff; availability not independently confirmed",
+          "x": 42.0,
+          "y": 616.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        },
+        {
+          "text": "Attachment page 3 of 3",
+          "x": 42.0,
+          "y": 32.0,
+          "size": 10.0,
+          "font": "/Helvetica"
+        }
+      ]
+    }
+  ]
+}

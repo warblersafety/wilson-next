@@ -1,0 +1,68 @@
+{
+  "unitTests": 838,
+  "unitFiles": 83,
+  "typecheck": "pass",
+  "build": "pass",
+  "focusedMockBrowserJourneys": 4,
+  "fullMockBrowserGate": "129 passed",
+  "liveApplicationModelRequests": 0,
+  "actualPDFs": [
+    {
+      "file": "comments-accepted.pdf",
+      "sha256": "b585fc8aa5bbdff11a6a93274726a22549bde1681cbafeba1c32434f230929fa",
+      "pages": 8
+    },
+    {
+      "file": "comments-unresolved.pdf",
+      "sha256": "4cba114cc0ea4d628297221c3347c036087101a9e085c393e3ad39ea6a304aed",
+      "pages": 8
+    },
+    {
+      "file": "comments-resolved.pdf",
+      "sha256": "c0f422dee39af20071f954d025869e66bfbf46173a6506b7bb7574619752f2f1",
+      "pages": 8
+    },
+    {
+      "file": "comments-corrected.pdf",
+      "sha256": "fa6fff72eb5fdd828bf54056f430b65f8965fdd9c0c2e4d577794cd7031442ba",
+      "pages": 8
+    },
+    {
+      "file": "comments-unknown.pdf",
+      "sha256": "4cba114cc0ea4d628297221c3347c036087101a9e085c393e3ad39ea6a304aed",
+      "pages": 8
+    },
+    {
+      "file": "comments-v22-empty.pdf",
+      "sha256": "4cba114cc0ea4d628297221c3347c036087101a9e085c393e3ad39ea6a304aed",
+      "pages": 8
+    },
+    {
+      "file": "comments-continuation.pdf",
+      "sha256": "83fd0d89566fee5e0c69ae846ce226290b02378cf57b45c64d159d4eb2409403",
+      "pages": 11
+    },
+    {
+      "file": "comments-continuation-removed.pdf",
+      "sha256": "149072a19097081dec9f1d85087792f0c9097fb831c2ecd82d85b4c042e05bb1",
+      "pages": 8
+    }
+  ],
+  "genuineV22FixtureSHA256": "31d6f2cc759267ad2ccd74352287a755ef852973e0e66f12c7f7d3daea63097e",
+  "independentVisualInspection": "PDFKit2x native page3, continuation native marker page3 and attachment page9 inspected readable/unclipped; exact comments/context and separate test/history blocks",
+  "freshFullRunPDFHashes": "all eight match focused retained originals",
+  "mockQueue": {
+    "responses": 77,
+    "authoredScenarios": 45,
+    "distinctIdentityScopes": 72
+  },
+  "finalFreshBuildAndFocusedGate": "pass; four journeys, final clinician help text",
+  "actualReview": {
+    "run": "issue202-20261016T074946-2366bcd2",
+    "model": "claude-opus-5-5",
+    "effort": "high",
+    "blockingFindings": 0,
+    "followup": "Low severity neutral withdrawal tracked #204; evidence precisely states explicit Unknown/Declined corrections. No new lifecycle inferred. Targeted recheck pending."
+  },
+  "statusCorrectionEvidence": "comments-unknown.pdf is explicit Unknown; comments-continuation-removed.pdf is explicit Declined. These are not neutral withdrawal."
+}

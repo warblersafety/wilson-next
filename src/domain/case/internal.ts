@@ -57,6 +57,7 @@ export function emptyEventFacts(): EventFacts {
     otherSerious: emptyFact(),
     relevantTestsAvailable: emptyFact(),
     relevantHistory: emptyFact(),
+    additionalComments: emptyFact(),
     treatments: emptyFact(),
     outcome: emptyFact(),
     dischargeDate: emptyFact(),

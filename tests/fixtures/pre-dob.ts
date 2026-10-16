@@ -23,22 +23,23 @@ export function removeReductionDateFields(c: { products?: Array<{ facts: unknown
   for (const p of c.products ?? []) delete (p.facts as Record<string, unknown>).doseReductionDate;
 }
 
-export function removePurchaseDetailsFields(c: {patient?: {facts: unknown}; products?: Array<{facts: unknown}>}): void {
+export function removePurchaseDetailsFields(c: {event?: {facts: unknown}; patient?: {facts: unknown}; products?: Array<{facts: unknown}>}): void {
+ if(c.event)delete (c.event.facts as Record<string,unknown>).additionalComments;
  if(c.patient)delete (c.patient.facts as Record<string,unknown>).involvement;
  for(const p of c.products??[])for(const f of ["purchaseSellerName", "purchaseSellerAddress", "purchaseSellerCity", "purchaseSellerRegion", "purchaseSellerPostalCode", "purchaseSellerCountry", "purchaseWebsite"])delete (p.facts as Record<string,unknown>)[f];
 }
 
-export function removeCosmeticUseFields(c: {patient?: {facts: unknown}; products?: Array<{facts: unknown}>}): void {
+export function removeCosmeticUseFields(c: {event?: {facts: unknown}; patient?: {facts: unknown}; products?: Array<{facts: unknown}>}): void {
  removePurchaseDetailsFields(c);
  for (const p of c.products ?? []) delete (p.facts as Record<string,unknown>).cosmeticUse;
 }
 
-export function removePurchaseDateFields(c: {patient?: {facts: unknown}; products?: Array<{facts: unknown}>}): void {
+export function removePurchaseDateFields(c: {event?: {facts: unknown}; patient?: {facts: unknown}; products?: Array<{facts: unknown}>}): void {
  removeCosmeticUseFields(c);
  for (const p of c.products ?? []) delete (p.facts as Record<string,unknown>).purchaseDate;
 }
 
-export function removeDurationFields(c: {patient?: {facts: unknown}; products?: Array<{facts: unknown}>}): void {
+export function removeDurationFields(c: {event?: {facts: unknown}; patient?: {facts: unknown}; products?: Array<{facts: unknown}>}): void {
  removePurchaseDateFields(c);
  for (const p of c.products ?? []) { delete (p.facts as Record<string,unknown>).treatmentDuration; delete (p.facts as Record<string,unknown>).d3Value; }
 }
