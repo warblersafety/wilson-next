@@ -20,8 +20,9 @@ blocking without truncating or erasing accepted source text.
 FDA general narrative/B5 authority checked 2026-10-16:
 https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500
 
-815 unit tests /81 files, typecheck/build and both focused synthetic/mock browser
-journeys passed. All124 full mock browser journeys passed. Six actual browser PDFs and
+815 unit tests /81 files, typecheck/build and both initial focused synthetic/mock browser
+journeys passed. After actual Opus F1 remediation, all125 full mock browser
+journeys passed, including three issue-specific journeys. Six actual browser PDFs and
 independent pypdf readbacks are retained and hashed in verification.json:
 reviewed lists; unresolved treatment alternatives; explicitly chosen treatment
 list; separate symptom/treatment context removal; final context re-add. B5 of
@@ -31,7 +32,11 @@ native fields match the initial accepted list state in the browser assertions.
 The deterministic mock queue is75 responses across44 authored scenarios;
 no live application-model calls or paid batch was used for this slice.
 
-Actual Opus review and exact-head CI remain required before merge. The short
+Actual subscription Opus review found no blockers. F1 exposed the separate
+reference-only Earlier unfinished edits formatter: it now uses the same label,
+with browser coverage for two reloads, no apply controls, and unchanged accepted
+case/PDF. Earlier history labels are also asserted. Raw review is on PR201;
+targeted recheck and final exact-head CI remain required before merge. The short
 macro completion checklist is maintained in docs/PRODUCT.md. Issue200's blanket
 positive-B2/report-type gate was stopped after checking FDA's prospective-risk
 criteria; its recorded decision leaves the issue open without a clinical

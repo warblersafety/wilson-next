@@ -1522,7 +1522,9 @@ https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-comp
 
 Symptoms and treatments each store one qualifier on the entire list fact, not
 on individual items. Review, pending updates, conflict choices, unsaved edits
-and history now label that text as "Context for this list". B5 uses a separate
+and history now label that text as "Context for this list". The separate
+reference-only Earlier unfinished edits panel uses the same list label without
+applying or exporting those drafts. B5 uses a separate
 "Symptoms list context" or "Treatment list context" statement after the list.
 The exact qualifier and item order are unchanged. Even context mentioning only
 one item is never parsed, redistributed or expanded into inferred item claims.

@@ -4,7 +4,7 @@
   "typecheck": "pass",
   "build": "pass",
   "focusedMockBrowserJourneys": 2,
-  "fullMockBrowser": "124 passed",
+  "fullMockBrowser": "125 passed",
   "liveApplicationModelRequests": 0,
   "actualPDFs": [
     {
@@ -38,5 +38,15 @@
     "authoredScenarios": 44,
     "distinctIdentityScopes": 70
   },
-  "freshFullRunPDFHashes": "all six match retained focused outputs"
+  "freshFullRunPDFHashes": "all six match retained focused outputs",
+  "issueSpecificMockBrowserJourneys": 3,
+  "retainedDraftCheck": "Earlier unfinished list context labelled; two reloads; no Apply/Accept; accepted case and independently read PDF fields unchanged",
+  "review": {
+    "run": "issue159-20261016T064831-d319d8ee",
+    "model": "claude-opus-5-5",
+    "effort": "high",
+    "blockingFindings": 0,
+    "followup": "F1 retained-draft display fixed and browser-covered; targeted recheck pending",
+    "report": "https://github.com/warblersafety/wilson-next/pull/201#issuecomment-6209878512"
+  }
 }
