@@ -1698,3 +1698,13 @@ separate. The opening help text also reflects multiple devices within the case b
 The prompt adjustment removes two stale single-device scope
 phrases and bumps its identifier to wilson-native-e-copies-v23; schema/grounding and all other rules remain,
 including deferred unmerged PR195. No live extraction-completeness claim.
+
+The same per-device completion key is scoped by its applicable product targets:
+an earlier answered device does not suppress later devices, and unknown,
+inapplicable or declined facts settle their own questions. Existing target-scoped
+saved drafts and answer/history storage remain authoritative. Native E text
+appearance checks cover all ten text controls using independently verified pinned
+widget geometry, font size, multiline flags and max lengths. Readiness reports
+the exact device/field; the adapter repeats the checks before flattening. Values
+are retained for explicit correction, never silently truncated or substituted.
+The two-device reference is singular; three-device references retain the range.

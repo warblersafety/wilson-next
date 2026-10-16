@@ -1,3 +1,4 @@
+import {deviceTextFields, deviceTextLimitation} from "../pdf/device-text";
 import { narrativeGlyphLimitation } from "../pdf/narrative-continuation";
 import { seriousOutcomeLabels } from "../../domain/case/serious-outcomes";
 import { hasReservedNoPatientIdentifier, noPatientConflictingTargets, noPatientOutcomeConflictingTargets } from "../../domain/case/patient-involvement";
@@ -113,6 +114,12 @@ export async function getJourneySnapshot(
   const caseState = await ensureJourneyCase(repository, caseId);
   const projection = projectForm3500(caseState);
   const outputIssues = outputReadinessIssues(caseState, projection);
+  for (const device of projection.sections.E.suspectDevices) for (const field of deviceTextFields) {
+    const value = device[field.projected];
+    if (value === undefined) continue;
+    const limitation = await deviceTextLimitation(field.projected,value);
+    if (limitation) outputIssues.push({code:"unsupported-product-text",message:`${productLabel(caseState,device.productId)}: the reviewed Section E ${field.label} ${limitation}. The wording is retained; no new PDF is generated.`,targets:[`product:${device.productId}:${field.fact}`],entityIds:[device.productId]});
+  }
   const baseLimitation = await narrativeTextLimitation(baseEventDescription(caseState));
   const narrativeLimitation = baseLimitation ?? await eventNarrativeLimitation(projection);
   if (narrativeLimitation) {

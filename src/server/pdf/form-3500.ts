@@ -1,3 +1,4 @@
+import {deviceTextFields, deviceTextLimitation} from "./device-text";
 import { isOtherProductTypes, type OtherProductType } from "../../domain/case/other-product-types";
 import { planNarrativeContinuations, appendNarrativeContinuations, form3500ReportReference } from "./narrative-continuation";
 import {purchaseDetailFields,purchaseCountryLabel} from "../../domain/case/purchase-details";
@@ -262,8 +263,8 @@ export async function fillForm3500Projection(source: Uint8Array, projection: For
   document.getPages()[3].drawText("Suspect products #1-2 are in this form; #3 is in the additional native copy.", {x:44,y:763,size:8,font:linkFont});
   }
   if (devices.length > 1) {
-    document.getPages()[5].drawText(`Report ${reference} - additional Section E form copies follow this report.`, {x:44,y:776,size:8,font:linkFont});
-    document.getPages()[5].drawText(`Suspect device #1 is below; devices #2-${devices.length} use additional native copies.`, {x:44,y:763,size:8,font:linkFont});
+    document.getPages()[5].drawText(`Report ${reference} - additional Section E form ${devices.length === 2 ? "copy follows" : "copies follow"} this report.`, {x:44,y:776,size:8,font:linkFont});
+    document.getPages()[5].drawText(`Suspect device #1 is below; ${devices.length === 2 ? "device #2 uses an additional native copy" : `devices #2-${devices.length} use additional native copies`}.`, {x:44,y:763,size:8,font:linkFont});
   }
   const additionalReadback: typeof initial.readback.sections.D.suspectProducts = [];
   const deviceReadback: typeof initial.readback.sections.E.suspectDevices = [];
@@ -462,6 +463,7 @@ async function fillNativeForm3500Projection(
 
   const device = E.suspectDevices[0];
   if (device) {
+    for (const field of deviceTextFields) { const value = device[field.projected]; if (value !== undefined) { const limit = await deviceTextLimitation(field.projected,value); if (limit) throw new Error(`Unsupported Section E ${field.label}: ${limit}`); } }
     setText(form, fields.deviceBrandName, device.brandName);
     setText(form, fields.deviceCommonName, device.commonName);
     setText(form, fields.deviceProcode, device.procode);

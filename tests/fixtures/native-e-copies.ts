@@ -1,3 +1,4 @@
+import {emptyFact} from "../../src/domain/case/internal";
 import {correctCapacityProduct,productCapacityCase} from "./product-capacity";
 import {referenceFixture} from "./source-references";
 export const deviceNames=["Fictional device Alpha","Fictional device Beta","Fictional device Gamma"];
@@ -6,3 +7,4 @@ export function nativeECase(count=3){let c=productCapacityCase();for(let i=0;i<3
 }:{role:{kind:"known",value:"suspect"},productType:{kind:"known",value:"other"}});return c;}
 export const nativeEUpdate="Correction for Fictional device Beta only: its serial number is SER-BETA-CORRECTED, the second account remains unverified. Keep all other devices and fields unchanged.";
 export const nativeEScenario=[{identityScope:"native-e-correction",turn:"correction"as const,output:referenceFixture(nativeEUpdate,{products:[],proposals:[{proposalReference:"beta-serial",groupReference:"beta-serial",intent:"correction",target:{entity:"product",productReference:"product-naproxen",field:"serialNumber"},value:{kind:"known",value:"SER-BETA-CORRECTED",qualifier:"the second account remains unverified"},evidenceQuote:nativeEUpdate}]})}];
+export function missingDeviceDetailsCase(){let c=nativeECase();c=correctCapacityProduct(c,1,{implanted:{kind:"known",value:true}});c=correctCapacityProduct(c,2,{reprocessedSingleUse:{kind:"known",value:true}});c=structuredClone(c);c.products[1].facts.implantDate=emptyFact();c.products[1].facts.explantDate=emptyFact();c.products[2].facts.reprocessor=emptyFact();c.askedNeeds.push({key:"device-details",status:"answered",targetIds:[`product:${c.products[0].id}:implantDate`,`product:${c.products[0].id}:explantDate`,`product:${c.products[0].id}:reprocessor`]});return c;}

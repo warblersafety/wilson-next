@@ -1,0 +1,18 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 6,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/two-devices-mixed-page-6.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "Main E and each native E-only copy have matching report reference and correct device ordinal",
+    "Beta and Gamma have distinct exact native fields and explicit operator\/reprocessing\/service marks",
+    "Main B5 context identifies each field\/device exactly, without clipping",
+    "Remediation render: verify singular copy label or repaired native text\/applicable unanswered fields"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/two-devices-mixed.pdf"
+}

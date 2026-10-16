@@ -28,20 +28,31 @@ schema and grounding stay unchanged. No general prompt experiment or live-model
 completeness claim. Retained case limit stays3; fourth projected device rejects.
 Concomitant-device and F/test overflow gates remain separate, as does X01.
 
-884 unit tests /87files, typecheck/build and three focused mock browser journeys
-passed. All139 full mock browser journeys passed. After narrow prompt/opening-help
-scope wording corrections, all12 model-boundary tests and three focused browser
-journeys passed with fresh typecheck/build; PDF bytes match the retained evidence.
-Final exact-headCI remains required. Five actual browser PDFs plus a27-page long-
-context PDF have independent pypdf readbacks. PDFKit2x captures cover main B5/E
+Actual Opus review found no blockers and three follow-ups, all remediated here:
+applicable device-details questions now advance per retained device without
+repeating unknown/refused answers; all ten native E text controls have explicit
+font, glyph, fit and capacity checks before flattening; the two-device main-page
+reference uses singular wording. Text checks retain accepted facts and identify
+the precise device/field for explicit correction. They reuse the pinned native
+geometry and existing appearance metrics; they do not add font support, truncate,
+shrink or infer replacement text. Independent pypdf geometry assertions cover
+all ten controls, including UDI/reprocessor multiline flags and character limits.
+Broader glyph support remains issue154.
+
+891 unit tests /87files, typecheck/build and five focused mock browser journeys
+passed. All141 full mock browser journeys passed after remediation. Eight actual PDF
+artifacts have independent pypdf readbacks. PDFKit2x captures cover main B5/E
 and all16 added pages9–24. Native E pages14/22 were individually inspected for
 distinct values and operator/reprocessing/service marks. The seven non-E page
 pairs have byte-identical independent renders; one of every pair was visually
 inspected blank, preserving original native labels/printable controls. Long
 continuation/native pages9/17/25 share their reference and readable layout.
-Semantic adapter readback alone is not the actual-output evidence.
+Fresh remediation captures verify the singular two-device label, repaired Beta
+manufacturer and blank unknown/inapplicable dates/refused reprocessor on the
+applicable native copies. Semantic adapter readback alone is not actual-output
+evidence.
 
-Zero live application-model calls. Actual Opus full/recheck, exact-headCI,
+Zero live application-model calls. Actual Opus targeted recheck, exact-headCI,
 guarded merge/mainCI/tree/clean and protected hosted checkpoint remain required.
 Six macro completion categories remain. D/E native copies within3 products close
 a real structural gap; broader capacity, F rows/devices, pictures/portable export
