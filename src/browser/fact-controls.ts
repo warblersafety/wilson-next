@@ -37,6 +37,7 @@ const choices = (...options: Array<[string, string]>): FactControl["options"] =>
   options.map(([value, label]) => ({ value, label }));
 
 const patient = {
+  involvement: { label: "Patient involvement", shape: "choice", requireSelection: true, options: choices(["present", "Patient involved"], ["none", "No patient involved"]), explicitAbsentLabel: "Explicitly absent status (does not mean no patient)", help: "Choose No patient involved only when explicitly stated. FDA A1 then prints none. Unknown, declined, unmentioned or missing demographics never mean no patient. Existing demographics stay retained; contradictory known details must be corrected before export." },
   identifier: { label: "Identifier", shape: "text" },
   ageYears: { label: "Age", shape: "age", help: "Enter the stated whole-unit age at event onset and choose its stated unit. Changing units keeps the number; Wilson does not convert or calculate age." },
   dateOfBirth: { label: "Date of birth", shape: "birth-date", help: "Enter the complete supplied date as YYYY-MM-DD. Partial or impossible dates remain unfinished edits. Wilson never calculates age from this date." },

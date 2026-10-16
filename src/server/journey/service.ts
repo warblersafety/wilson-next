@@ -1,3 +1,4 @@
+import { hasReservedNoPatientIdentifier, noPatientConflictingTargets } from "../../domain/case/patient-involvement";
 import {purchaseDetailFields,purchaseDetailLabels} from "../../domain/case/purchase-details";
 import {purchaseDetailLimitation} from "../pdf/purchase-details";
 import { d3ChoiceIssue, d3Eligible, isTreatmentDuration } from "../../domain/case/duration";
@@ -75,6 +76,9 @@ export type OutputReadinessIssueCode =
   | "too-many-concomitant-products"
   | "multiple-suspect-devices"
   | "unsupported-concomitant-device"
+  | "no-patient-report-type-conflict"
+  | "reserved-no-patient-identifier"
+  | "no-patient-demographics-conflict"
   | "patient-a2-choice-required"
   | "unsupported-patient-age"
   | "unsupported-patient-sex"
@@ -700,6 +704,10 @@ export function outputReadinessIssues(
       ["event"],
     );
   }
+  if (hasReservedNoPatientIdentifier(caseState)) issue("reserved-no-patient-identifier", "FDA reserves A1 none for no patient involvement. The retained identifier text has not been reinterpreted. Explicitly correct the identifier and Patient involvement before export.", ["patient:patient:identifier", "patient:patient:involvement"], ["patient"]);
+  if (knownValue(caseState.patient.facts.involvement) === "none" && (reportType === "adverse-event" || reportType === "adverse-event-and-product-problem")) issue("no-patient-report-type-conflict", "No patient involved conflicts with a report type that includes an adverse event. Review Patient involvement and Report type; neither has been changed automatically.", ["patient:patient:involvement", "event:event:reportType"], ["patient", "event"]);
+  const noPatientConflicts = noPatientConflictingTargets(caseState);
+  if (noPatientConflicts.length) issue("no-patient-demographics-conflict", "No patient involved conflicts with retained known patient details. Correct Patient involvement or explicitly correct those details before export. Nothing has been cleared automatically.", ["patient:patient:involvement", ...noPatientConflicts], ["patient"]);
   const a2Issue = patientA2ChoiceIssue(caseState);
   if (a2Issue) issue("patient-a2-choice-required", a2Issue, ["patient:patient:a2Value", "patient:patient:dateOfBirth", "patient:patient:ageYears"], ["patient"]);
   for (const product of caseState.products.filter(p => p.state === "resolved" && d3Eligible(p.facts))) {

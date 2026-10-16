@@ -1,3 +1,4 @@
+import { noPatientConflictingTargets } from "./patient-involvement";
 import {purchaseDetailFields,purchaseDetailLabels,purchaseCountryLabel} from "./purchase-details";
 import { d3DateFields, type TreatmentDuration } from "./duration";
 import { raceEthnicityOptions, type RaceEthnicity } from "./race-ethnicity";
@@ -157,6 +158,13 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   };
 
   assign(projection, "sections.A.patientIdentifier", "patient identifier", "patient:patient:identifier", caseState.patient.facts.identifier, projection.sections.A, "patientIdentifier");
+  const involvement: { value?: "present" | "none" } = {};
+  assign(projection, "sections.A.patientInvolvement", "patient involvement", "patient:patient:involvement", caseState.patient.facts.involvement, involvement, "value");
+  if (involvement.value === "none" && noPatientConflictingTargets(caseState).length === 0) {
+    // FDA A1: literal none only from accepted explicit no-patient participation.
+    projection.sections.A.patientIdentifier = "none";
+    projection.sourceTrace["sections.A.patientIdentifier"] = known(caseState.patient.facts.involvement)!.sourceIds;
+  }
   assign(projection, "sections.A.ageYears", "patient age", "patient:patient:ageYears", caseState.patient.facts.ageYears, projection.sections.A, "ageYears");
   assign(projection, "sections.A.dateOfBirth", "patient date of birth", "patient:patient:dateOfBirth", caseState.patient.facts.dateOfBirth, projection.sections.A, "dateOfBirth");
   const a2Choice = known(caseState.patient.facts.a2Value);

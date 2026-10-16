@@ -4,7 +4,7 @@ import { knownValueMismatch, modelKnownValueGuidance } from "./value-contract";
 import { resolveSourceReferences, type SourcePassage } from "./source-passages";
 import { maximumCaseProducts, maximumRelevantTests } from "./limits";
 
-const patientFields = ["identifier", "ageYears", "dateOfBirth", "raceEthnicity", "sex", "weight"] as const;
+const patientFields = ["involvement", "identifier", "ageYears", "dateOfBirth", "raceEthnicity", "sex", "weight"] as const;
 const eventFields = ["problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "relevantHistory", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate"] as const;
 const productFields = ["name", "productType", "role", "manufacturer", "lotNumber", "ndcOrUniqueId", "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "indication", "stopped", "medicationType", "cosmeticUse", "doseReduced", "doseReductionDate", "purchaseDate", "purchaseSellerName", "purchaseSellerAddress", "purchaseSellerCity", "purchaseSellerRegion", "purchaseSellerPostalCode", "purchaseSellerCountry", "purchaseWebsite", "treatmentDuration", "improvedAfterChange", "restarted", "recurred", "commonName", "procode", "modelNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implanted", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const;
 const relevantTestFields = ["testName", "testResult", "lowRange", "highRange", "date"] as const;

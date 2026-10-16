@@ -29,6 +29,7 @@ export function emptyFact<T>(): Fact<T> {
 
 export function emptyPatientFacts(): PatientFacts {
   return {
+    involvement: emptyFact(),
     identifier: emptyFact(),
     ageYears: emptyFact(),
     dateOfBirth: emptyFact(),
