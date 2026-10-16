@@ -26,17 +26,8 @@ Continuation sheets use section/block labels, numbered pages and report referenc
 at10pt; native pointers retain existing font size. Pinned source hash unchanged:
 1147d7c86bb002cba7fb9352ca8e3402524d8fa0236916b7bf7e5dcdcf88bf9c.
 
-1000 unit tests/94 files, typecheck/build, two focused browser journeys and the
-PDF precision matrix passed. Full155 mocked browser, actual Opus/recheck and
-exact-head/mainCI gates are being
-recorded on this slice PR. No new dependencies, ZIP work, auth/grants or live
-application-model calls. Other date fields/source gaps remain under #180; broad
-semantic correction #150 and glyph/capacity #154 remain separate.
+Historical pre-review checkpoint8e9355b passed1000 unit tests/94 files, typecheck/build, all155 mocked browser journeys and exact-head CI38935754533. The first full browser run exposed hidden duplicate source nodes; active/expanded source rendering fixed it without changing navigation assertions. The first Opus attempt hit the session limit; after the stated reset, actual subscription review issue219-20261016T184050-2a7f3353 completed and found B1: continuation-only changes did not invalidate existing PDFs. Raw report: https://github.com/warblersafety/wilson-next/pull/220#issuecomment-6222408397.
 
-The first full run found hidden duplicate source nodes affecting navigation; the
-source panel now renders words only while expanded in active Details. Existing
-navigation regressions plus both new journeys pass (four focused checks). The
-fresh155-run is pending. An actual Opus attempt stopped at the existing session
-limit without a completed review report (run issue219-20261016T164653-31894ea1,
-stated reset18:40UTC on2026-10-16). No retry/fallback was attempted. Review and
-recheck remain mandatory; this draft is not merge-ready based on tests alone.
+Review remediation includes continuation text/block/ordinal in the report content key; tests cover partial-to-partial, context-only and direct partial-to-Unknown regeneration, all nonknown statuses and source-only key stability. Same-named F products retain independent non-carried notices. Direct source entries are readable summaries, prompt revision is v24, and model-proposed partial years must appear in exact cited wording. Complete concomitant expiration remains explicitly disclosed as not carried; this slice does not claim general F exception coverage.
+
+Remediation1003 units/94 files, typecheck/build passed; fresh156 browser journeys are running. Actual same-session recheck, remediation exact-head CI, protected hosted verification and merge/mainCI remain pending. This dated record does not claim those unfinished gates passed. No new dependencies, ZIP work, auth/grants or live application-model calls. Broader date/source180, semantic correction150 and glyph/capacity154 remain separate.

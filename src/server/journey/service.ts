@@ -161,7 +161,7 @@ export async function getJourneySnapshot(
     projection,
     downloadReady: outputIssues.length === 0,
     clinicalNeeds: completionQuestions(caseState).filter(({ kind }) => kind !== "reporter"),
-    reportContentKey: createHash("sha256").update(JSON.stringify(projection.sections, (key, value) =>
+    reportContentKey: createHash("sha256").update(JSON.stringify({sections:projection.sections,expirationNotes:projection.expirationNotes?.map(({block,ordinal,text})=>({block,ordinal,text}))}, (key, value) =>
       ["productId", "testId"].includes(key) ? undefined
         : ["reportedTo", "medicationType"].includes(key) && Array.isArray(value) ? [...value].sort() : value)).digest("hex"),
     outputIssues,
@@ -316,7 +316,7 @@ export async function performJourneyAction(
           source: fullSource(
             intent === "correction" ? "correction" : "answer",
             target.entity === "product" && target.field === "expirationDate"
-              ? `Clinician supplied expiration information: ${JSON.stringify(action.value)}.`
+              ? `Clinician supplied expiration information: ${displayValue(action.value, target)}.`
               : target.entity === "patient" && target.field === "raceEthnicity"
               ? `Clinician supplied the patient race and/or ethnicity: ${displayValue(action.value, target)}${action.value.kind === "known" && action.value.qualifier ? `; context: ${action.value.qualifier}` : ""}.`
               : `Clinician ${intent === "correction" ? "corrected this value directly" : "added this value directly"}.`,

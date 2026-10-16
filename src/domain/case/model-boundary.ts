@@ -245,6 +245,9 @@ export function parseModelProposalEnvelope(
     if(target.entity==="product" && target.field==="expirationDate" && proposal.value.kind==="known" && isPartialExpiration(proposal.value.value) && !evidence.some(p=>input.text.slice(p.start,p.end).includes(proposal.value.kind==="known" && isPartialExpiration(proposal.value.value)?proposal.value.value.wording:""))) {
       unrepresented.push(quarantineProposal(rawProposal,"evidence-not-found"));continue;
     }
+    if(target.entity==="product" && target.field==="expirationDate" && proposal.value.kind==="known" && isPartialExpiration(proposal.value.value) && !proposal.value.value.wording.includes(proposal.value.value.year)) {
+      unrepresented.push(quarantineProposal(rawProposal,"evidence-not-found"));continue;
+    }
     prepared.push({ proposal, target, groupId, evidence });
   }
 

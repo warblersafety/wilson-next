@@ -1,16 +1,16 @@
 {
   "issue": 219,
   "parentIssue": 180,
-  "unitTests": 1000,
+  "unitTests": 1003,
   "unitFiles": 94,
   "focusedBrowserJourneys": 2,
   "typecheck": "passed",
   "build": "passed",
   "PDFs": 8,
   "PDFKitRenders": 18,
-  "fullBrowser155": "Fresh full repeat pending after navigation duplicate fix; initial16 failures included mock queue cascade",
-  "actualOpus": "BLOCKED existing subscription session limit; no completed report; reset2026-10-16T18:40:00Z",
-  "exactHeadCI": "pending",
+  "fullBrowser155": "Passed on 8e9355b (6.7m); historical pre-review checkpoint",
+  "actualOpus": "Full review issue219-20261016T184050-2a7f3353 completed; B1 stale-PDF hash fixed, recheck pending",
+  "exactHeadCI": "Passed on 8e9355b: run38935754533; remediation head CI pending",
   "mainCI": "pending",
   "newDependencies": 0,
   "liveApplicationModelCalls": 0,
@@ -18,6 +18,13 @@
   "sourceVisibility": "case-specific retained full account plus explicit ordinary expiration recovery; no universal omission detection claim",
   "focusedRegressionBrowserJourneys": 4,
   "sourcePanelFix": "Only render source account when expanded in active Details; unfinished precision has readable text",
-  "reviewRun": "issue219-20261016T164653-31894ea1",
-  "reviewRetryAttempted": false
+  "reviewRun": "issue219-20261016T184050-2a7f3353",
+  "reviewRetryAttempted": true,
+  "fullBrowser156": "Running after review remediation",
+  "reviewFixes": [
+    "Continuation content participates in PDF content key",
+    "Stable-fact F disclosure, no display-name filtering",
+    "Readable clinician-entry source summaries",
+    "Prompt revision v24, explicit year evidence gate"
+  ]
 }

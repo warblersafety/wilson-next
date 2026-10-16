@@ -20,7 +20,7 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-native-e-copies-v23";
+export const MODEL_PROMPT_REVISION = "wilson-expiration-precision-v24";
 export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v32-expiration-precision";
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
 export const MODEL_MAX_RETRIES = 0;

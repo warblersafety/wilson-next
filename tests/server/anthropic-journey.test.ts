@@ -74,7 +74,7 @@ describe("Anthropic production model boundary", () => {
     expect(schema).toContain("weeks");
     expect(requestText).toContain("Never place gestational age, gestation at birth, or corrected/postmenstrual age in ageYears");
     expect(requestText).toContain("Do not infer chronological age from them");
-    expect(MODEL_PROMPT_REVISION).toBe("wilson-native-e-copies-v23");
+    expect(MODEL_PROMPT_REVISION).toBe("wilson-expiration-precision-v24");
     expect(schema).toContain("raceEthnicity");
     expect(schema).toContain("therapyOngoing");
     expect(schema).toContain("doseReductionDate");

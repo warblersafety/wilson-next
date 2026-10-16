@@ -321,7 +321,6 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     const note={productId:product.id,block,ordinal:(d>=0?d:e>=0?e:f)+1,text:expirationText(value.value,value.qualifier),sourceIds:value.sourceIds};
     const index=projection.expirationNotes!.push(note)-1;projection.sourceTrace[`expirationNotes.${index}`]=value.sourceIds;
     projection.omissions=projection.omissions.filter(o=>o.target!==`product:${product.id}:expirationDate`);
-    projection.notIncluded=projection.notIncluded.filter(t=>!t.startsWith(`${productLabel(caseState,product)} — Expiration date remains`));
     if(d>=0){delete projection.sections.D.suspectProducts[d].expirationDate;delete projection.sourceTrace[`sections.D.suspectProducts.${d}.expirationDate`];}
     if(e>=0){delete projection.sections.E.suspectDevices[e].expirationDate;delete projection.sourceTrace[`sections.E.suspectDevices.${e}.expirationDate`];}
   }
@@ -429,6 +428,7 @@ function recordNonCarriedProductFacts(
 ): void {
   const carriedFields = new Set<ProductFactKey>(carried);
   for (const [field, fact] of Object.entries(product.facts) as Array<[ProductFactKey, Fact<unknown>]>) {
+    if (field === "expirationDate" && isPartialExpiration(known(fact)?.value)) continue;
     if (carriedFields.has(field) || productSelectorOrSharedFields.has(field) || !hasAcceptedKnowledge(fact)) continue;
     projection.notIncluded.push(
       `${productLabel(caseState, product)} — ${humanizeProductField(field)} remains in reviewed knowledge but is not included in ${destination} for the current product type and role.`,
