@@ -1,0 +1,16 @@
+{
+  "units": 1049,
+  "unitFiles": 100,
+  "typecheck": "passed",
+  "build": "passed",
+  "focusedBrowser": 2,
+  "initialFullBrowser": 163,
+  "finalFullBrowser": "running",
+  "distinctPDFs": 5,
+  "PDFKitCaptures": 7,
+  "completeBaselineGenuine": true,
+  "nativePartialCorrectionOnlyChangesComments": true,
+  "UnknownOnlyClearsDateAndComments": true,
+  "continuationRowLabel": "entry start only; later pages repeat B6/reference/pagination",
+  "review": "Actual Opus no blockers;four follow-ups remediated, targeted recheck pending"
+}

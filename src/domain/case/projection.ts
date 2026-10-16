@@ -74,6 +74,7 @@ export interface ProjectedRelevantTest {
   lowRange?: string;
   highRange?: string;
   date?: string;
+  dateInComments?: boolean;
 }
 
 export const reporterTextFields = ["lastName","firstName","address","city","state","postalCode","country","phone","email"] as const;
@@ -235,9 +236,12 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     projection.sourceTrace[`sections.B.relevantTests.${index}.testResult`] = [...new Set([
       ...(known(test.facts.testName)?.sourceIds ?? []), ...(known(test.facts.testResult)?.sourceIds ?? []),
     ])];
-    for (const field of ["lowRange", "highRange", "date"] as const) {
+    for (const field of ["lowRange", "highRange"] as const) {
       assign(projection, `sections.B.relevantTests.${index}.${field}`, `${field} for ${test.id}`, `test:${test.id}:${field}`, test.facts[field], result, field, value => value, true);
     }
+    const date=known(test.facts.date);
+    if(date && isPartialDate(date.value)) result.dateInComments=true;
+    else assign(projection,`sections.B.relevantTests.${index}.date`,`date for ${test.id}`,`test:${test.id}:date`,test.facts.date,result,"date",value=>value as string,true);
     projection.sections.B.relevantTests.push(result);
   }
   const testContext = additionalCommentsEntries(caseState);
@@ -629,6 +633,7 @@ export function relevantTestContextEntries(caseState: SemanticCase) {
   return caseState.relevantTests.filter(test => test.state === "resolved").flatMap((test, index) =>
     (Object.keys(labels) as Array<keyof typeof labels>).flatMap(field => {
       const fact = known(test.facts[field]);
+      if(field==="date" && fact && isPartialDate(fact.value))return [{text:`B6 table row ${index+1} - Test date wording:\n${suppliedDateText(fact.value,"test date",fact.qualifier)}`,target:`test:${test.id}:date`,sourceIds:fact.sourceIds,testId:test.id}];
       return fact?.qualifier ? [{ text: `B6 table row ${index + 1} - ${labels[field]} context: ${fact.qualifier}`, target: `test:${test.id}:${field}`, sourceIds: fact.sourceIds, testId: test.id }] : [];
     }));
 }

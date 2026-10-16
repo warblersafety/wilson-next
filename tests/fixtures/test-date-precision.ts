@@ -1,0 +1,7 @@
+import{applyCaseCommand}from'../../src/domain/case/commands';
+import{emptyFact}from'../../src/domain/case/internal';
+import{contextCase,contextSource,setContextFact}from'./reviewed-context';
+export const monthTestDate={precision:'month' as const,year:'2028',month:'02',wording:'Collected in February 2028'};
+export function testDateCase(){let c=contextCase();for(let i=2;i<=3;i++){const id=`test-date-serial-${i}`,groupId=`test-date-group-${i}`;c=applyCaseCommand(c,{type:'record-clinician-facts',commandId:`create-${id}`,expectedRevision:c.revision,source:contextSource(id),relevantTests:[{id,groupId}],facts:[{id:`name-${id}`,intent:'fact',target:{entity:'test',entityId:id,field:'testName'},value:{kind:'known',value:'Fictional serial assay'}},{id:`result-${id}`,intent:'fact',target:{entity:'test',entityId:id,field:'testResult'},value:{kind:'known',value:`Fictional result ${i}`}},{id:`date-${id}`,intent:'fact',target:{entity:'test',entityId:id,field:'date'},value:{kind:'known',value:'2026-08-19'}}]}).case;}for(const t of c.relevantTests)c=setContextFact(c,`test:${t.id}:testName`,{kind:'known',value:'Fictional serial assay'});return c;}
+
+export function missingTestDateContextCase(){const c=structuredClone(contextCase());c.relevantTests=[];c.event.facts.relevantTestsAvailable=emptyFact();c.event.facts.relevantHistory=emptyFact();c.askedNeeds=c.askedNeeds.filter(n=>n.key!=="relevant-clinical-context");return c;}

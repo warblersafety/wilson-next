@@ -21,6 +21,7 @@ export type KnownValueContract =
   | { shape: "patient-age" }
   | { shape: "expiration" }
   | { shape: "product-date" }
+  | { shape: "supplied-date" }
   | { shape: "birth-date" }
   | { shape: "calendar-date" }
   | { shape: "duration" }
@@ -154,7 +155,7 @@ export const caseValueContracts = {
     testResult: { shape: "string" },
     lowRange: { shape: "string" },
     highRange: { shape: "string" },
-    date: { shape: "iso-date" },
+    date: { shape: "supplied-date" },
   },
   reporter: {
     lastName: { shape: "string" },
@@ -190,6 +191,7 @@ export function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>
   const actual = value.value;
 
   switch (contract.shape) {
+    case "supplied-date":
     case "product-date": return isSuppliedDate(actual) ? undefined : `${target.field} requires a complete valid calendar date or explicit supplied precision and exact wording`;
     case "expiration": return isExpirationValue(actual) ? undefined : "expirationDate requires a complete valid ISO calendar date or explicit month/year or year-only precision with exact supplied wording";
     case "duration": return isTreatmentDuration(actual) ? undefined : "treatmentDuration requires an explicit positive decimal string amount and supported unit";
@@ -268,6 +270,7 @@ export function modelKnownValueGuidance(): string {
 
 function describeContract(contract: KnownValueContract): string {
   switch (contract.shape) {
+    case "supplied-date": return "a complete valid Gregorian YYYY-MM-DD string, or explicit {precision: month,year: YYYY,month: MM,wording: exact supplied text} or {precision: year,year: YYYY,wording: exact supplied text}; never infer missing components, chronology or collection time";
     case "product-date": return "a complete valid Gregorian YYYY-MM-DD string, or explicit {precision: month,year: YYYY,month: MM,wording: exact supplied text} or {precision: year,year: YYYY,wording: exact supplied text}; never infer missing components or stopping/reduction/ongoing status";
     case "expiration": return "a complete valid Gregorian YYYY-MM-DD string, or {precision: month,year: YYYY,month: MM,wording: exact supplied text} or {precision: year,year: YYYY,wording: exact supplied text}; never invent day/month or judge expiry";
     case "duration": return "an object {value: positive plain decimal string, unit: minutes|hours|days|weeks|months|years}, preserving spelling; never calculate from dates or invent units";
@@ -303,5 +306,5 @@ function omit<const T extends Record<string, KnownValueContract>, const K extend
 
 /** Includes legacy shape-only date contracts; storage deliberately retains their old values. */
 export function isCalendarDateTarget(target: FactTarget): boolean {
-  return ["iso-date", "calendar-date", "birth-date", "expiration", "product-date"].includes(contractForTarget(target).shape);
+  return ["iso-date", "calendar-date", "birth-date", "expiration", "product-date", "supplied-date"].includes(contractForTarget(target).shape);
 }

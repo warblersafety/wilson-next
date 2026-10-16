@@ -34,9 +34,9 @@ describe("collection-time context regression from actual synthetic response", ()
   const accepted = accept(createSemanticCase("case-00000000-0000-4000-8000-000000000192"), envelope, "actual-v19");
   expect(projectForm3500(accepted).sections.B.relevantTestContext).toBe("B6 table row 1 - Test date context: Collection time was not recorded");
  });
- it("instructs the existing date-qualifier path without adding timestamps or changing the schema", () => {
+ it("preserves collection-time qualifiers alongside supported complete/partial dates without timestamps", () => {
   const prompt = createAnthropicRequest("opening", timeOpening).system;
-  expect(prompt).toContain("keep the supplied date as known and place the exact collection-time wording in its value.qualifier");
+  expect(prompt).toContain("Keep the supplied complete or partial date as known and place the exact collection-time wording in its value.qualifier");
   expect(prompt).toContain("If no known date is supplied");
   expect(prompt).toContain("an explicitly unavailable date still uses unknown");
   expect(prompt).toContain("Never infer a time");

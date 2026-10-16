@@ -14,6 +14,7 @@ export type FactControlShape =
   | "age"
   | "expiration"
   | "product-date"
+  | "supplied-date"
   | "birth-date"
   | "duration"
   | "date"
@@ -144,7 +145,7 @@ const test = {
   testResult: { label: "Result and stated units", shape: "text", help: "Retain numeric or qualitative wording. Add units only if known." },
   lowRange: { label: "Low range", shape: "text" },
   highRange: { label: "High range", shape: "text" },
-  date: { label: "Date", shape: "date", completeDate: true },
+  date: { label: "Date", shape: "supplied-date", help:"Use the stated date precision and exact wording. Collection-time context stays separate; no date or time is inferred." },
 } as const satisfies Record<RelevantTestFactKey, FactControl>;
 
 const reporter = {

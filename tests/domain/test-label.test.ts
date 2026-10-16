@@ -47,3 +47,5 @@ describe("test display labels", () => {
     expect(testDisplayLabel(observation(fact(known(name)), date), 1)).toBe(`${name} (test 1)`);
   });
 });
+
+it("shows supplied partial precision without a day, keeps accepted dates during pending corrections and omits conflicted partial dates",()=>{const month={kind:"known" as const,value:{precision:"month",year:"2028",month:"02",wording:"Collected February 2028"}};const year={kind:"known" as const,value:{precision:"year",year:"2029",wording:"Collected during 2029"}};const test=observation(fact(known("Same assay")),fact(month,year)),before=structuredClone(test);expect(testDisplayLabel(test,2)).toBe("Same assay — 2028-02 (month and year only) (test 2)");expect(testDisplayLabel(observation(fact(known("Same assay")),fact(year)),3)).toBe("Same assay — 2029 (year only) (test 3)");expect(testDisplayLabel({...observation(fact(known("Same assay")),fact(undefined,month)),state:"proposed"},1)).toBe("Same assay — 2028-02 (month and year only) (test 1)");expect(test).toEqual(before);test.facts.date.conflicts=[{id:"c",value:year,evidence:[]}];expect(testDisplayLabel(test,2)).toBe("Same assay (test 2)");});

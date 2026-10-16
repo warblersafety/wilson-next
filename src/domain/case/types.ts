@@ -74,7 +74,7 @@ export interface RelevantTestFacts {
   testResult: Fact<string>;
   lowRange: Fact<string>;
   highRange: Fact<string>;
-  date: Fact<string>;
+  date: Fact<SuppliedDate>;
 }
 
 export interface ReporterFacts {

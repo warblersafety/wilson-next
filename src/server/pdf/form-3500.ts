@@ -370,10 +370,11 @@ async function fillNativeForm3500Projection(
   setText(form, fields.relevantTestContext, narrativeText("relevantTestContext"));
   B.relevantTests.forEach((test, index) => {
     const names = relevantTestFields[index];
+    if(test.dateInComments && (test.date || !B.relevantTestContext?.includes(`B6 table row ${index+1} - Test date wording:\n`))) throw new Error("A partial B6 date requires its own row-linked comments and no complete native date");
     setText(form, names.testResult, test.testResult);
     setText(form, names.lowRange, test.lowRange);
     setText(form, names.highRange, test.highRange);
-    setText(form, names.date, test.date ? formatDate(test.date) : undefined);
+    setText(form, names.date, test.dateInComments ? "B6 comments" : test.date ? formatDate(test.date) : undefined);
   });
   setChecked(form, fields.productAvailableYes, C.productAvailability === "available");
   setChecked(form, fields.productAvailableNo, C.productAvailability === "not-available");
@@ -757,6 +758,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
           lowRange: form.getTextField(relevantTestFields[index].lowRange).getText(),
           highRange: form.getTextField(relevantTestFields[index].highRange).getText(),
           date: parseDate(form.getTextField(relevantTestFields[index].date).getText()),
+          dateInComments: form.getTextField(relevantTestFields[index].date).getText()==="B6 comments"?true:undefined,
         })),
         relevantHistory: form.getTextField(fields.relevantHistory).getText(),
         relevantTestContext: form.getTextField(fields.relevantTestContext).getText(),
@@ -832,7 +834,7 @@ function formatDate(value: string): string {
 }
 
 function parseDate(value: string | undefined): string | undefined {
-  if (!value || value === "D6 continued" || value === "E4 continued" || ["D1 cont.","D3 cont.","E6a cont.","E6b cont.","F1 cont."].includes(value)) return undefined;
+  if (!value || value === "D6 continued" || value === "E4 continued" || ["D1 cont.","D3 cont.","E6a cont.","E6b cont.","F1 cont.","B6 comments"].includes(value)) return undefined;
   const match = /^(\d{2})-([A-Z]{3})-(\d{4})$/.exec(value);
   const month = match ? months.indexOf(match[2]) + 1 : 0;
   if (!match || month === 0) throw new Error(`Unreadable Form 3500 date ${value}`);
