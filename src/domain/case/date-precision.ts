@@ -15,3 +15,8 @@ export const isSuppliedDate=(v:unknown):v is SuppliedDate=>isCompleteCalendarDat
 export function suppliedDateText(value:PartialDate,label:string,qualifier?:string):string {
  return [`Supplied ${label} precision: ${value.precision==='month'?value.year+'-'+value.month:value.year} (${value.precision==='month'?'month and year only':'year only'}).`,`Exact supplied wording: ${value.wording}`,...(qualifier?[`Uncertainty or context: ${qualifier}`]:[]),'No missing month or day has been inferred.'].join('\n');
 }
+
+export const eventDateFields=['onsetDate','deathDate','dischargeDate'] as const;
+export type EventDateField=typeof eventDateFields[number];
+export const eventDateLabels={onsetDate:'Event onset date',deathDate:'Death date',dischargeDate:'Discharge date'} as const;
+export const isEventDateField=(field:string):field is EventDateField=>(eventDateFields as readonly string[]).includes(field);

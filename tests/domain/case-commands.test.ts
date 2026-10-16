@@ -265,7 +265,7 @@ describe("applyCaseCommand", () => {
   it.each([
     ["symptoms scalar", { entity: "event", entityId: "event", field: "symptoms" }, "rash", "requires a string array"],
     ["availability free text", { entity: "event", entityId: "event", field: "productAvailability" }, "available for evaluation", "requires a supported availability state"],
-    ["non-ISO date", { entity: "event", entityId: "event", field: "onsetDate" }, "September 10", "requires a complete valid ISO calendar date"],
+    ["non-ISO date", { entity: "event", entityId: "event", field: "onsetDate" }, "September 10", "requires a complete valid calendar date or explicit supplied precision and exact wording"],
     ["boolean text", { entity: "event", entityId: "event", field: "hospitalized" }, "yes", "requires a boolean"],
     ["age above domain limit", { entity: "patient", entityId: "patient", field: "ageYears" }, 151, "requires a valid age"],
     ["noncanonical enum", { entity: "patient", entityId: "patient", field: "sex" }, "not recorded", "requires a supported value"],

@@ -17,7 +17,7 @@ export const componentDraftSchemas = {
   "legacy-date-recovery": z.object({drafts:z.record(z.string(),editableValue),qualifierControls:z.record(z.string(),z.boolean())}).strict(),
   indications: z.object({ choices: z.record(z.string(), choice), texts: z.record(z.string(), z.string()) }).strict(),
   "serious-outcomes": z.object({ selected: z.array(z.enum(["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious"])) }).strict(),
-  "death-date": z.object({ date: z.string() }).strict(),
+  "death-date": z.object({ date: rawSuppliedDate }).strict(),
   "clinical-context": z.object({ testChoice: z.enum(["known", "explicitly-absent", "unknown", "declined"]).optional(), historyChoice: z.enum(["known", "explicitly-absent", "unknown", "declined"]).optional(), testName: z.string(), testResult: z.string(), lowRange: z.string(), highRange: z.string(), testDate: rawSuppliedDate, history: z.string() }).strict(),
   "device-details": z.object({ implantChoice: deviceChoice.optional(), explantChoice: deviceChoice.optional(), reprocessorChoice: choice.optional(), implantDate: rawSuppliedDate, explantDate: rawSuppliedDate, reprocessor: z.string() }).strict(),
   "medication-history": z.object({ answers: z.object({ stopped: booleanAnswer.optional(), doseReduced: booleanAnswer.optional(), stopDate: z.union([nonKnown,z.object({kind:z.literal("known"),value:z.union([z.string(),z.object({precision:z.enum(["month","year"]),year:z.string(),month:z.string().optional(),wording:z.string()}).strict()]),qualifier:z.string().optional()}).strict()]).optional(), improvedAfterChange: booleanAnswer.optional(), restarted: booleanAnswer.optional(), recurred: booleanAnswer.optional() }).strict() }).strict(),
