@@ -1,3 +1,4 @@
+import type { PatientFactKey } from "../../src/domain/case/types";
 import { applyCaseCommand } from "../../src/domain/case/commands";
 import { describe, expect, it } from "vitest";
 import oldState from "../fixtures/patient-involvement-v21.json" with { type: "json" };
@@ -42,6 +43,15 @@ describe("explicit patient participation", () => {
  ])("retains known %s and flags its explicit contradiction with none", (field,value) => {
   const c=setContextFact(setContextFact(migrated().case,`patient:patient:${field}`,{kind:"known",value}),target,{kind:"known",value:"none"});
   expect(noPatientConflictingTargets(c)).toEqual([`patient:patient:${field}`]);expect(projectForm3500(c).sections.A.patientIdentifier).not.toBe("none");expect(c.patient.facts[field as keyof typeof c.patient.facts].resolvedValue?.value).toEqual({kind:"known",value});
+ });
+ it.each([
+  ["identifier", "SYN-A", "SYN-B"], ["ageYears", 42, 43], ["dateOfBirth", "1984-09-03", "1984-09-04"],
+  ["raceEthnicity", ["asian"], ["white"]], ["sex", "female", "male"], ["weight", {value:64,unit:"kg"}, {value:65,unit:"kg"}],
+ ])("known disputed %s cannot unblock a no-patient claim", async (field,first,second) => {
+  const c=setContextFact(migrated().case,target,{kind:"known",value:"none"});const text="Fictional records disagree on the patient detail.",source={id:"disputed-source",inputId:"disputed-input",inputType:"correction" as const,actor:"clinician" as const,excerpt:text,start:0,end:text.length,recordedAt:"2026-10-16T04:00:00.000Z"};
+  const pending=applyCaseCommand(c,{type:"attach-grounded-proposals",commandId:"disputed-demographic",expectedRevision:c.revision,products:[],sources:[source],proposals:[first,second].map((value,i)=>({proposalId:`disputed-${i}`,groupId:"disputed-demographic",intent:"alternative" as const,target:{entity:"patient" as const,entityId:"patient" as const,field:field as PatientFactKey},value:{kind:"known" as const,value},sourceIds:[source.id]}))}).case;
+  const accepted=applyCaseCommand(pending,{type:"review-proposal-groups",commandId:"accept-disputed-demographic",expectedRevision:pending.revision,decisions:[{groupId:"disputed-demographic",action:"accept"}]}).case;
+  expect(accepted.patient.facts[field as keyof typeof accepted.patient.facts].state).toBe("conflicted");expect(noPatientConflictingTargets(accepted)).toEqual([`patient:patient:${field}`]);expect(projectForm3500(accepted).sections.A.patientIdentifier).not.toBe("none");const snapshot=await getJourneySnapshot(new InMemoryCaseRepository({initialCase:accepted,maxCases:1}),accepted.id);expect(snapshot.downloadReady).toBe(false);expect(snapshot.outputIssues.some(i=>i.code==="no-patient-demographics-conflict")).toBe(true);expect(parseBrowserJourneyState({...migrated(),case:accepted}).case).toEqual(accepted);
  });
  it.each(["adverse-event","adverse-event-and-product-problem"] as const)("flags no-patient versus explicit %s without choosing a report type", async reportType => {
   const c=setContextFact(setContextFact(migrated().case,target,{kind:"known",value:"none"}),"event:event:reportType",{kind:"known",value:reportType});

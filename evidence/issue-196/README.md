@@ -13,3 +13,18 @@ Local **770 unit tests / 79 files, typecheck, production build and all 117 full 
 Bounded live plan if later authorized: one explicit no-patient cosmetic opening, then one explicit involvement correction on that reviewed case, verifying source/status/A1 and other facts with ordinary review. At most2model requests, no retries; pause on missing metrics or material failure. This plan is not permission to run it. Other narrative omissions, unsupported partial dates/demographics, broader supplement integration and general semantic correction remain separate release-cut scope.
 
 Independent macOS PDFKit 2× page1 render was inspected: A1 `none` is readable and unclipped, A2–A5 remain blank, Product Problem alone is selected, and FDA identity/native geometry remain intact. The renderer is independent of the application PDF library. Present-with-unknown-ID and participation-unknown PDFs are byte-identical, as expected for the native form’s lack of a positive participation checkbox; the reviewed semantic states remain distinct in persisted case knowledge.
+
+## Actual Opus blocker remediation
+
+The original full run passed 770 unit tests and 117 mock browser journeys. Actual
+Opus found that known alternatives in conflicted demographics could bypass the
+new no-patient guard. That blocker is fixed: both projection and readiness now
+count current known conflicting alternatives, without changing generic partial
+conflict policy or deleting facts. All six demographic targets have isolated
+unit regressions; the browser recurrence starts with only accepted age42 and
+no-patient status, then accepts disputed ages42/43, reloads and remains blocked.
+776 unit tests, rebuilt application and all5affected browser journeys pass.
+All six fresh PDF named-field readbacks match the retained originals. The final
+full118browser gate and targeted Opus recheck are required before merge.
+Opus's separate serious-outcome consistency follow-up is tracked as issue198;
+this slice does not claim that no-patient versus B2 outcomes is fully reconciled.

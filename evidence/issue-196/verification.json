@@ -1,7 +1,6 @@
 {
-  "unitTests": 770,
+  "unitTests": 776,
   "unitFiles": 79,
-  "mockBrowserJourneys": 117,
   "typecheck": "pass",
   "build": "pass",
   "modelCalls": 0,
@@ -37,5 +36,11 @@
       "sha256": "6799d86de5033af64f3618482fa9e936c51c0cc923e496fab001df2bf51bac45"
     }
   ],
-  "limitations": "Authored mock provider outputs; no live extraction efficacy claim; other narratives unchanged; exact context/supplement gaps remain separate."
+  "limitations": "Authored mock provider outputs; no live extraction efficacy claim; other narratives unchanged; exact context/supplement gaps remain separate.",
+  "preRemediationFullMockBrowserJourneys": 117,
+  "focusedRemediationBrowserJourneys": 5,
+  "finalFullBrowserGate": "118 journeys pending after B1 remediation",
+  "pdfEvidenceUnaffectedByGuardFix": "All6 new focused-browser PDF named-field readbacks equal the retained originals",
+  "actualOpusB1Remediation": "Known conflicting demographic alternatives now block no-patient projection/readiness; all6demographics covered, isolated age42->disputed42/43 browser review/resume passes",
+  "followUp": "Issue198: explicit no-patient versus known-true serious outcomes remains separate, not claimed closed"
 }

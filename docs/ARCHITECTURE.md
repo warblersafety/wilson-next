@@ -1468,11 +1468,13 @@ also blocks for human correction, without changing either selection. This checks
 only two explicit statuses, never infers participation from clinical details.
 
 No-patient status plus current known identifier, age, DOB, race/ethnicity, sex or
-weight is a deterministic output contradiction. All facts stay visible and
+weight is a deterministic output contradiction, including known alternatives
+in conflicted demographics. All facts stay visible and
 retained; no inferred status, auto-clearing, hidden demographics or guessed
 clinical resolution. Correct participation or the explicitly identified facts
-through existing controls. Pending/conflicting status cannot establish none;
-ordinary pending/conflict readiness continues to block output. Positive patient
+through existing controls. Pending or conflicted involvement cannot establish none. Pending proposals
+block output; existing conflicted involvement remains disclosed partial output
+without an A1 no-patient claim. Known conflicting demographics block that claim. Positive patient
 involvement with unknown identifier remains a patient with unknown identity.
 
 Browser state v22 strictly validates genuine v7-v21 before adding only an empty

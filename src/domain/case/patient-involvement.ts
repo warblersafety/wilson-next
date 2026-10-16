@@ -9,7 +9,8 @@ export function noPatientConflictingTargets(caseState: SemanticCase): string[] {
   const involvement = facts.involvement;
   if (involvement.state !== "resolved" || involvement.resolvedValue?.value.kind !== "known" || involvement.resolvedValue.value.value !== "none") return [];
   return (["identifier", "ageYears", "dateOfBirth", "raceEthnicity", "sex", "weight"] as const)
-    .filter(field => facts[field].state === "resolved" && facts[field].resolvedValue?.value.kind === "known")
+    .filter(field => (facts[field].state === "resolved" && facts[field].resolvedValue?.value.kind === "known")
+      || (facts[field].state === "conflicted" && facts[field].conflictingValues.some(candidate => candidate.value.kind === "known")))
     .map(field => `patient:patient:${field}`);
 }
 
