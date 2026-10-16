@@ -21,6 +21,7 @@ function valueText(value: unknown, options?: ReadonlyArray<{ value: string; labe
     if (item.kind === "known" && (listShape || arrayContextLabel) && Array.isArray(item.value) && typeof item.qualifier === "string") return listWithContext(valueText(item.value, options), item.qualifier === "" ? "(blank context)" : item.qualifier, arrayContextLabel);
     if (item.kind === "known") return `${valueText(item.value, options)}${typeof item.qualifier === "string" ? ` — ${item.qualifier === "" ? "(blank context)" : item.qualifier}` : ""}`;
     if (typeof item.kind === "string") return words[item.kind] ?? "Not supplied";
+    if ("precision" in item && "wording" in item) return `${String(item.wording)} — ${String(item.year)}${item.precision === "month" ? "-"+String(item.month??"") : ""} (${item.precision === "month" ? "month and year only" : "year only"})`;
     if ("value" in item && "unit" in item) return `${valueText(item.value, options)} ${valueText(item.unit)}`;
   }
   return "Not supplied";

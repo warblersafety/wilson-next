@@ -1,0 +1,19 @@
+{
+  "issue": 219,
+  "parentIssue": 180,
+  "unitTests": 1000,
+  "unitFiles": 94,
+  "focusedBrowserJourneys": 2,
+  "typecheck": "passed",
+  "build": "passed",
+  "PDFs": 8,
+  "PDFKitRenders": 18,
+  "fullBrowser155": "pending",
+  "actualOpus": "pending",
+  "exactHeadCI": "pending",
+  "mainCI": "pending",
+  "newDependencies": 0,
+  "liveApplicationModelCalls": 0,
+  "ZIP": "pending approval; no work",
+  "sourceVisibility": "case-specific retained full account plus explicit ordinary expiration recovery; no universal omission detection claim"
+}

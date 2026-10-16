@@ -122,7 +122,7 @@ export interface ProductFacts {
   procode: Fact<string>;
   modelNumber: Fact<string>;
   catalogNumber: Fact<string>;
-  expirationDate: Fact<string>;
+  expirationDate: Fact<import("./expiration").ExpirationValue>;
   purchaseDate: Fact<string>;
   purchaseSellerName: Fact<string>;
   purchaseSellerAddress: Fact<string>;

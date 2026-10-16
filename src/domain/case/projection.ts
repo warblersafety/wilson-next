@@ -1,4 +1,5 @@
-import { isCalendarDateTarget } from "./value-contract";
+import {isPartialExpiration,expirationText,type PartialExpiration} from "./expiration";
+import { isCalendarDateTarget, knownValueMismatch } from "./value-contract";
 import { isCompleteCalendarDate } from "./calendar-date";
 import { otherProductTypeValues, type OtherProductType } from "./other-product-types";
 import { listWithContext } from "./list-context";
@@ -58,6 +59,7 @@ export interface Form3500Projection {
     F: { concomitantProducts: ProjectedConcomitantProduct[] };
     G: { reporter: ProjectedReporter };
   };
+  expirationNotes?: {productId:string;block:"D6"|"E4"|"F1";ordinal:number;text:string;sourceIds:string[]}[];
   invalidCalendarDates?: { target: string; value: string }[];
   sourceTrace: Record<string, string[]>;
   omissions: ProjectionOmission[];
@@ -160,16 +162,17 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       if (target.entity === "product" && !caseState.products.some(p => p.id === target.entityId && p.state === "resolved")) return [];
       if (target.entity === "test" && !caseState.relevantTests.some(t => t.id === target.entityId && t.state === "resolved")) return [];
       const value = known(fact)?.value;
-      return isCalendarDateTarget(target) && value !== undefined && !isCompleteCalendarDate(value)
+      return isCalendarDateTarget(target) && value !== undefined && knownValueMismatch(target,{kind:"known",value})
         ? [{target: targetKey(target), value: String(value)}] : [];
     }),
+    expirationNotes: [],
     sourceTrace: {},
     omissions: [],
     notIncluded: [
       "Patient fractional or compound ages and partial date of birth",
       "Patient race/ethnicity detail outside the seven A5 categories",
       "Section C product pictures",
-      "Section D partial expiration dates, partial purchase dates and purchase wording outside native country/glyph/line/capacity limits",
+      "Expiration precision outside complete dates or explicit month/year and year-only wording; partial purchase dates and purchase wording outside native country/glyph/line/capacity limits",
       "Section D partial dose-reduction dates; dose-count, compound and range treatment durations",
     ],
   };
@@ -311,6 +314,17 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     }
   }
 
+  for(const product of caseState.products.filter(p=>p.state==="resolved")) {
+    const value=known(product.facts.expirationDate);if(!value||!isPartialExpiration(value.value))continue;
+    const d=projection.sections.D.suspectProducts.findIndex(p=>p.productId===product.id),e=projection.sections.E.suspectDevices.findIndex(p=>p.productId===product.id),f=projection.sections.F.concomitantProducts.findIndex(p=>p.productId===product.id);
+    const block:"D6"|"E4"|"F1"|undefined=d>=0?"D6":e>=0?"E4":f>=0?"F1":undefined;if(!block)continue;
+    const note={productId:product.id,block,ordinal:(d>=0?d:e>=0?e:f)+1,text:expirationText(value.value,value.qualifier),sourceIds:value.sourceIds};
+    const index=projection.expirationNotes!.push(note)-1;projection.sourceTrace[`expirationNotes.${index}`]=value.sourceIds;
+    projection.omissions=projection.omissions.filter(o=>o.target!==`product:${product.id}:expirationDate`);
+    projection.notIncluded=projection.notIncluded.filter(t=>!t.startsWith(`${productLabel(caseState,product)} — Expiration date remains`));
+    if(d>=0){delete projection.sections.D.suspectProducts[d].expirationDate;delete projection.sourceTrace[`sections.D.suspectProducts.${d}.expirationDate`];}
+    if(e>=0){delete projection.sections.E.suspectDevices[e].expirationDate;delete projection.sourceTrace[`sections.E.suspectDevices.${e}.expirationDate`];}
+  }
   const quantityContext = [...quantityContextEntries(projection.sections.D.suspectProducts), ...d5OtherTypeContextEntries(caseState, projection), ...deviceContextEntries(caseState, projection)];
   if (quantityContext.length) {
     projection.sections.B.eventDescription = [projection.sections.B.eventDescription, ...quantityContext.map(entry => entry.text)].filter(Boolean).join("\n");
@@ -336,6 +350,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   for (const product of projection.sections.F.concomitantProducts) for (const context of product.fieldContext ?? []) carriedQualifierTargets.add(`product:${product.productId}:${context.field}`);
   for (const context of projection.sections.G.reporter.fieldContext??[]) carriedQualifierTargets.add(`reporter:reporter:${context.field}`);
   for (const entry of relevantTestContextEntries(caseState)) carriedQualifierTargets.add(entry.target);
+  for(const note of projection.expirationNotes??[])carriedQualifierTargets.add(`product:${note.productId}:expirationDate`);
   const disclosed = new Set(projection.omissions.filter(({ reason }) => reason === "qualifier-not-included").map(({ target }) => target));
   for (const { target, fact } of allFacts(caseState)) {
     const active = target.entity === "product" ? caseState.products.some(p => p.id === target.entityId && p.state === "resolved")
@@ -626,6 +641,7 @@ export function deviceContextEntries(caseState: SemanticCase, projection: Form35
     const product = caseState.products.find(p => p.id === device.productId);
     return product ? sectionEProductFields.flatMap(field => {
       const value = known(product.facts[field] as Fact<unknown>);
+      if(field === "expirationDate" && value && isPartialExpiration(value.value)) return [];
       return value?.qualifier ? [{ text: `Suspect device #${index+1} Section E ${humanizeProductField(field)} context: ${value.qualifier}`, target: `product:${product.id}:${field}`, sourceIds: value.sourceIds }] : [];
     }) : [];
   });

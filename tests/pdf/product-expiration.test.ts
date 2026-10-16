@@ -34,7 +34,7 @@ it("writes both native expiration dates with source attribution, without changin
   const withoutExpiration = (values: Record<string, string>) => Object.fromEntries(Object.entries(values).filter(([k]) => k !== key(1) && k !== key(2)));
   expect(withoutExpiration(fields)).toEqual(withoutExpiration(before));
   for (let i = 0; i < 2; i++) expect(projection.sourceTrace[`sections.D.suspectProducts.${i}.expirationDate`]).toEqual(c.products[i].facts.expirationDate.resolvedValue!.sourceIds);
-  expect(projection.notIncluded.join(" ")).toContain("Section D partial expiration dates");
+  expect(projection.notIncluded.join(" ")).toContain("Expiration precision outside complete dates");
   expect(productCardFields("drug-or-biologic", {})).toContain("expirationDate");
 });
 it("corrects and restores exact dates and retains previous accepted history", async () => {
