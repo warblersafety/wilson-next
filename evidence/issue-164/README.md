@@ -7,8 +7,11 @@ Date editors retain partial/impossible text drafts across reload. No repair, dat
 arithmetic, missing components, model calls, dependency, or ZIP work.
 
 `calendar-leap-fields.pdf` independently reads native 29-FEB-2028 in B3, B6,
-D3 and D6. PDFKit renders cover pages1,2,3,4. Browser correction/unknown evidence
-will be retained from the full mocked suite after completion. No invalid PDF is
+D3 and D6. PDFKit renders cover pages1,2,3,4. Browser correction/unknown PDFs and the invalid-date review screenshot are retained.
+Both browser PDFs independently read as eight pages; corrected B3 is29-FEB-2028
+and Unknown clears only B3. Six PDFKit page renders accompany three PDFs.
+973 unit tests/92 files, typecheck/build, all150 mocked browser journeys, and
+a focused repeat passed. Actual Opus review and final CI gates remain pending. No invalid PDF is
 created: service/readiness and adapter tests reject before output.
 
 Official semantics checked 2026-10-16:
