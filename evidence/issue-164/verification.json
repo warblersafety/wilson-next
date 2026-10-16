@@ -9,8 +9,8 @@
   "PDFs": 4,
   "PDFKitRenders": 7,
   "actualOpusRun": "issue164-20261016T153535-fcb68b46",
-  "reviewResult": "B1 explicit pending/conflict recovery implemented with persistent typed drafts; F1 v31 revision updated; F2 evidence recorded",
-  "finalRecoveryValidation": "focused passed; full153 repeat and Opus recheck pending",
+  "reviewResult": "Initial B1/F1/F2 resolved by actual Opus recheck; nonblocking R1 corrected-source provenance fixed and asserted for known and Unknown",
+  "finalRecoveryValidation": "Four focused recovery browser journeys passed; 153 full repeat and final exact-head/main CI pending",
   "liveApplicationModelCalls": 0,
   "newDependencies": 0,
   "remaining": [
@@ -24,5 +24,7 @@
   "focusedRecoveryBrowserJourneys": 4,
   "recoveryTypecheck": "passed",
   "recoveryBuild": "passed",
-  "UIRecoveryScreenshots": 3
+  "UIRecoveryScreenshots": 3,
+  "recheck": "https://github.com/warblersafety/wilson-next/pull/218#issuecomment-6219279568",
+  "r1SourceFocused": "37 server date tests passed; current corrected sourceTrace excludes invalid historical source"
 }

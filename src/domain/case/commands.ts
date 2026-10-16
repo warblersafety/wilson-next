@@ -463,7 +463,7 @@ function resolveConflict(
     intent: dateCorrection !== undefined ? "correction" : chosen.intent,
     id: `${chosen.id}:resolved`,
     groupId: resolutionSource.inputId,
-    sourceIds: unique([...chosen.sourceIds, resolutionSource.id]),
+    sourceIds: dateCorrection !== undefined ? [resolutionSource.id] : unique([...chosen.sourceIds, resolutionSource.id]),
   };
   fact.conflictingValues = [];
   addSources(fact, [resolutionSource.id]);

@@ -1828,3 +1828,6 @@ their review changes; they never become clinical authority automatically. This
 does not reopen general semantic correction #150. Model schema description
 revision is `wilson-grounded-proposals-v31-calendar-validity`; no provider or live
 model call is introduced.
+A newly supplied invalid-date conflict correction cites only its clinician
+correction source. The impossible alternatives keep their original sources in
+history; those sources are not presented as support for the new date/status.
