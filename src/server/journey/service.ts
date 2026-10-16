@@ -70,6 +70,7 @@ export interface JourneySnapshot {
 }
 
 export type OutputReadinessIssueCode =
+  | "invalid-calendar-date"
   | "product-d3-choice-required" | "unsupported-treatment-duration" | "unsupported-purchase-detail"
   | "pending-proposal-review"
   | "open-clarification"
@@ -668,6 +669,9 @@ export function outputReadinessIssues(
   const issue = (code: OutputReadinessIssueCode, message: string, targets: string[] = [], entityIds: string[] = []) => {
     issues.push({ code, message, targets, entityIds });
   };
+  for (const {target, value} of projection.invalidCalendarDates ?? []) {
+    issue("invalid-calendar-date", `The retained date ${value} is not a valid complete calendar date. It has not been changed. Correct this date in Review details using the supplied date, or explicitly record Unknown, Declined, or another supplied status; Wilson does not repair or infer components. No new PDF is generated.`, [target], [targetFromKey(caseState, target).entityId]);
+  }
   if (hasPendingProposals(caseState)) {
     issue(
       "pending-proposal-review",

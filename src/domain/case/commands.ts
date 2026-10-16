@@ -450,6 +450,7 @@ function resolveConflict(
   if (fact.state !== "conflicted") throw new Error(`${targetKey(target)} is not conflicted`);
   const chosen = fact.conflictingValues.find(({ id }) => id === chosenValueId);
   if (!chosen) throw new Error(`Conflict has no alternative ${chosenValueId}`);
+  assertValueMatchesTarget(target, chosen.value);
 
   const inactive = fact.conflictingValues.filter(({ id }) => id !== chosen.id);
   fact.supersededValues.push(...inactive);

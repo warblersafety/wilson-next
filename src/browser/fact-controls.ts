@@ -55,12 +55,12 @@ const event = {
     ["product-problem", "Product problem"],
     ["adverse-event-and-product-problem", "Adverse event and product problem"],
   ) },
-  reportDate: { label: "Date of this report", shape: "date" },
+  reportDate: { label: "Date of this report", shape: "date", completeDate: true },
   problemDescription: { label: "Product problem", shape: "text" },
   symptoms: { label: "Symptoms", shape: "list" },
-  onsetDate: { label: "Onset", shape: "date" },
+  onsetDate: { label: "Onset", shape: "date", completeDate: true },
   death: { label: "Death", shape: "boolean" },
-  deathDate: { label: "Date of death", shape: "date" },
+  deathDate: { label: "Date of death", shape: "date", completeDate: true },
   lifeThreatening: { label: "Life-threatening", shape: "boolean" },
   hospitalized: { label: "Hospitalized", shape: "boolean" },
   disability: { label: "Disability or permanent damage", shape: "boolean" },
@@ -72,13 +72,13 @@ const event = {
   additionalComments: { label: "Additional comments", shape: "text", multiline: true, help: "Optional general comments for the report. Use the other fields for tests, history and product details." },
   treatments: { label: "Treatment", shape: "list" },
   outcome: { label: "Outcome", shape: "text" },
-  dischargeDate: { label: "Discharged", shape: "date" },
+  dischargeDate: { label: "Discharged", shape: "date", completeDate: true },
   productAvailability: { label: "Product availability", shape: "choice", options: choices(
     ["available", "Available for evaluation"],
     ["not-available", "Not available for evaluation"],
     ["returned-to-manufacturer", "Returned to manufacturer"],
   ) },
-  productReturnDate: { label: "Returned to manufacturer", shape: "date" },
+  productReturnDate: { label: "Returned to manufacturer", shape: "date", completeDate: true },
 } as const satisfies Record<EventFactKey, FactControl>;
 
 const product = {
@@ -93,8 +93,8 @@ const product = {
   strength: { label: "Product strength", shape: "text", help: "Amount per tablet/capsule or liquid concentration from the product label (for example, 250 mg or 250 mg/5 mL). A dose does not establish strength." },
   frequency: { label: "Frequency", shape: "text" },
   route: { label: "Route", shape: "text" },
-  startDate: { label: "Started", shape: "date" },
-  stopDate: { label: "Stopped date", shape: "date" },
+  startDate: { label: "Started", shape: "date", completeDate: true },
+  stopDate: { label: "Stopped date", shape: "date", completeDate: true },
   therapyOngoing: { label: "Therapy/usage still ongoing", shape: "boolean", help: "Use only the explicitly supplied current status. A missing stop date does not mean ongoing. Historical stopping or restarting and supplied dates stay separate." },
   indication: { label: "Used for", shape: "text" },
   stopped: { label: "Stopped or removed", shape: "boolean" },
@@ -121,15 +121,15 @@ const product = {
   modelNumber: { label: "Model number", shape: "text" },
   catalogNumber: { label: "Catalog number", shape: "text" },
   ndcOrUniqueId: { label: "NDC number or Unique ID", shape: "text", help: "Copy the supplied product-label identifier exactly, including zeros, dashes and spaces. Keep lot numbers and device UDI separate." },
-  expirationDate: { label: "Expiration date", shape: "date" },
+  expirationDate: { label: "Expiration date", shape: "date", completeDate: true },
   serialNumber: { label: "Serial number", shape: "text" },
   udi: { label: "Unique device identifier", shape: "text" },
   deviceOperator: { label: "Device operator", shape: "choice", options: choices(
     ["health-professional", "Health professional"], ["patient-consumer", "Patient or consumer"], ["other", "Other operator"],
   ) },
   implanted: { label: "Implanted device", shape: "boolean" },
-  implantDate: { label: "Implant date", shape: "date" },
-  explantDate: { label: "Explant date", shape: "date" },
+  implantDate: { label: "Implant date", shape: "date", completeDate: true },
+  explantDate: { label: "Explant date", shape: "date", completeDate: true },
   reprocessedSingleUse: { label: "Reprocessed single-use device", shape: "boolean" },
   reprocessor: { label: "Reprocessor", shape: "text" },
   servicedByThirdParty: { label: "Third-party serviced", shape: "choice", options: choices(
@@ -142,7 +142,7 @@ const test = {
   testResult: { label: "Result and stated units", shape: "text", help: "Retain numeric or qualitative wording. Add units only if known." },
   lowRange: { label: "Low range", shape: "text" },
   highRange: { label: "High range", shape: "text" },
-  date: { label: "Date", shape: "date" },
+  date: { label: "Date", shape: "date", completeDate: true },
 } as const satisfies Record<RelevantTestFactKey, FactControl>;
 
 const reporter = {

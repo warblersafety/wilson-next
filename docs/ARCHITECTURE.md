@@ -1806,3 +1806,14 @@ accepted facts or explicitly remembered defaults may prefill it.
 Issue217 separately tracks the pre-existing Sex control/birth-basis guidance
 premise. Issue151 does not relabel stored facts or select a new demographic
 contract while providing faithful output for the existing reviewed values.
+
+Calendar validity (#164): new known date facts use the shared complete Gregorian
+validator at the model and authoritative command boundaries, including conflict
+selection. No date arithmetic, repair, or missing component inference is performed.
+Legacy shape-only date fields retain their existing browser-state schemas: current,
+pending, conflicting and historical values restore without rewriting the case.
+A resolved invalid date on a retained entity produces a targeted export blocker;
+explicit clinician correction preserves the old value in history. The PDF adapter
+also checks dates before native formatting. Date fact editors retain unfinished
+partial/impossible text drafts. This is calendar validity only: #180 remains the
+required field-linked representation and source-visibility path for partial dates.
