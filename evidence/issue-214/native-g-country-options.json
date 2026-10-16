@@ -1,0 +1,1107 @@
+{
+  "sourceSha256": "1147d7c86bb002cba7fb9352ca8e3402524d8fa0236916b7bf7e5dcdcf88bf9c",
+  "field": "topmostSubform[0].Page7[0].SecG_Reporter[0].Country[0]",
+  "exportDisplayPairs": [
+    [
+      " ",
+      " "
+    ],
+    [
+      "UNITED STATES",
+      "UNITED STATES"
+    ],
+    [
+      "AFGHANISTAN",
+      "AFGHANISTAN"
+    ],
+    [
+      "AKROTIRI",
+      "AKROTIRI"
+    ],
+    [
+      "ALBANIA",
+      "ALBANIA"
+    ],
+    [
+      "ALGERIA",
+      "ALGERIA"
+    ],
+    [
+      "AMERICAN SAMOA",
+      "AMERICAN SAMOA"
+    ],
+    [
+      "ANDORRA",
+      "ANDORRA"
+    ],
+    [
+      "ANGOLA",
+      "ANGOLA"
+    ],
+    [
+      "ANGUILLA",
+      "ANGUILLA"
+    ],
+    [
+      "ANTARCTICA",
+      "ANTARCTICA"
+    ],
+    [
+      "ANTIGUA AND BARBUDA",
+      "ANTIGUA AND BARBUDA"
+    ],
+    [
+      "ARGENTINA",
+      "ARGENTINA"
+    ],
+    [
+      "ARMENIA",
+      "ARMENIA"
+    ],
+    [
+      "ARUBA",
+      "ARUBA"
+    ],
+    [
+      "ASHMORE AND CARTIER ISLANDS",
+      "ASHMORE AND CARTIER ISLANDS"
+    ],
+    [
+      "AUSTRALIA",
+      "AUSTRALIA"
+    ],
+    [
+      "AUSTRIA",
+      "AUSTRIA"
+    ],
+    [
+      "AZERBAIJAN",
+      "AZERBAIJAN"
+    ],
+    [
+      "BAHAMAS, THE",
+      "BAHAMAS, THE"
+    ],
+    [
+      "BAHRAIN",
+      "BAHRAIN"
+    ],
+    [
+      "BAKER ISLAND",
+      "BAKER ISLAND"
+    ],
+    [
+      "BANGLADESH",
+      "BANGLADESH"
+    ],
+    [
+      "BARBADOS",
+      "BARBADOS"
+    ],
+    [
+      "BASSAS DA INDIA",
+      "BASSAS DA INDIA"
+    ],
+    [
+      "BELARUS",
+      "BELARUS"
+    ],
+    [
+      "BELGIUM",
+      "BELGIUM"
+    ],
+    [
+      "BELIZE",
+      "BELIZE"
+    ],
+    [
+      "BENIN",
+      "BENIN"
+    ],
+    [
+      "BERMUDA",
+      "BERMUDA"
+    ],
+    [
+      "BHUTAN",
+      "BHUTAN"
+    ],
+    [
+      "BOLIVIA",
+      "BOLIVIA"
+    ],
+    [
+      "BONAIRE, SINT EUSTATIUS, AND SABA",
+      "BONAIRE, SINT EUSTATIUS, AND SABA"
+    ],
+    [
+      "BOSNIA AND HERZEGOVINA",
+      "BOSNIA AND HERZEGOVINA"
+    ],
+    [
+      "BOTSWANA",
+      "BOTSWANA"
+    ],
+    [
+      "BOUVET ISLAND",
+      "BOUVET ISLAND"
+    ],
+    [
+      "BRAZIL",
+      "BRAZIL"
+    ],
+    [
+      "BRITISH INDIAN OCEAN TERRITORY",
+      "BRITISH INDIAN OCEAN TERRITORY"
+    ],
+    [
+      "BRUNEI",
+      "BRUNEI"
+    ],
+    [
+      "BULGARIA",
+      "BULGARIA"
+    ],
+    [
+      "BURKINA FASO",
+      "BURKINA FASO"
+    ],
+    [
+      "BURMA",
+      "BURMA"
+    ],
+    [
+      "BURUNDI",
+      "BURUNDI"
+    ],
+    [
+      "CABO VERDE",
+      "CABO VERDE"
+    ],
+    [
+      "CAMBODIA",
+      "CAMBODIA"
+    ],
+    [
+      "CAMEROON",
+      "CAMEROON"
+    ],
+    [
+      "CANADA",
+      "CANADA"
+    ],
+    [
+      "CAYMAN ISLANDS",
+      "CAYMAN ISLANDS"
+    ],
+    [
+      "CENTRAL AFRICAN REPUBLIC",
+      "CENTRAL AFRICAN REPUBLIC"
+    ],
+    [
+      "CHAD",
+      "CHAD"
+    ],
+    [
+      "CHILE",
+      "CHILE"
+    ],
+    [
+      "CHINA",
+      "CHINA"
+    ],
+    [
+      "CHRISTMAS ISLAND",
+      "CHRISTMAS ISLAND"
+    ],
+    [
+      "CLIPPERTON ISLAND",
+      "CLIPPERTON ISLAND"
+    ],
+    [
+      "COCOS (KEELING) ISLANDS",
+      "COCOS (KEELING) ISLANDS"
+    ],
+    [
+      "COLOMBIA",
+      "COLOMBIA"
+    ],
+    [
+      "COMOROS",
+      "COMOROS"
+    ],
+    [
+      "CONGO (BRAZZAVILLE)",
+      "CONGO (BRAZZAVILLE)"
+    ],
+    [
+      "CONGO (KINSHASA)",
+      "CONGO (KINSHASA)"
+    ],
+    [
+      "COOK ISLANDS",
+      "COOK ISLANDS"
+    ],
+    [
+      "CORAL SEA ISLANDS",
+      "CORAL SEA ISLANDS"
+    ],
+    [
+      "COSTA RICA",
+      "COSTA RICA"
+    ],
+    [
+      "CROATIA",
+      "CROATIA"
+    ],
+    [
+      "CUBA",
+      "CUBA"
+    ],
+    [
+      "CURA\u00c7AO",
+      "CURA\u00c7AO"
+    ],
+    [
+      "CYPRUS",
+      "CYPRUS"
+    ],
+    [
+      "CZECH REPUBLIC",
+      "CZECH REPUBLIC"
+    ],
+    [
+      "C\u00d4TE D\u2019IVOIRE",
+      "C\u00d4TE D\u2019IVOIRE"
+    ],
+    [
+      "DENMARK",
+      "DENMARK"
+    ],
+    [
+      "DHEKELIA",
+      "DHEKELIA"
+    ],
+    [
+      "DIEGO GARCIA",
+      "DIEGO GARCIA"
+    ],
+    [
+      "DJIBOUTI",
+      "DJIBOUTI"
+    ],
+    [
+      "DOMINICA",
+      "DOMINICA"
+    ],
+    [
+      "DOMINICAN REPUBLIC",
+      "DOMINICAN REPUBLIC"
+    ],
+    [
+      "ECUADOR",
+      "ECUADOR"
+    ],
+    [
+      "EGYPT",
+      "EGYPT"
+    ],
+    [
+      "EL SALVADOR",
+      "EL SALVADOR"
+    ],
+    [
+      "EQUATORIAL GUINEA",
+      "EQUATORIAL GUINEA"
+    ],
+    [
+      "ERITREA",
+      "ERITREA"
+    ],
+    [
+      "ESTONIA",
+      "ESTONIA"
+    ],
+    [
+      "ETHIOPIA",
+      "ETHIOPIA"
+    ],
+    [
+      "EUROPA ISLAND",
+      "EUROPA ISLAND"
+    ],
+    [
+      "FALKLAND ISLANDS (ISLAS MALVINAS)",
+      "FALKLAND ISLANDS (ISLAS MALVINAS)"
+    ],
+    [
+      "FAROE ISLANDS",
+      "FAROE ISLANDS"
+    ],
+    [
+      "FIJI",
+      "FIJI"
+    ],
+    [
+      "FINLAND",
+      "FINLAND"
+    ],
+    [
+      "FRANCE",
+      "FRANCE"
+    ],
+    [
+      "FRENCH GUIANA",
+      "FRENCH GUIANA"
+    ],
+    [
+      "FRENCH POLYNESIA",
+      "FRENCH POLYNESIA"
+    ],
+    [
+      "FRENCH SOUTHERN AND ANTARCTIC LANDS",
+      "FRENCH SOUTHERN AND ANTARCTIC LANDS"
+    ],
+    [
+      "GABON",
+      "GABON"
+    ],
+    [
+      "GAMBIA, THE",
+      "GAMBIA, THE"
+    ],
+    [
+      "GAZA STRIP",
+      "GAZA STRIP"
+    ],
+    [
+      "GEORGIA",
+      "GEORGIA"
+    ],
+    [
+      "GERMANY",
+      "GERMANY"
+    ],
+    [
+      "GHANA",
+      "GHANA"
+    ],
+    [
+      "GIBRALTAR",
+      "GIBRALTAR"
+    ],
+    [
+      "GLORIOSO ISLANDS",
+      "GLORIOSO ISLANDS"
+    ],
+    [
+      "GREECE",
+      "GREECE"
+    ],
+    [
+      "GREENLAND",
+      "GREENLAND"
+    ],
+    [
+      "GRENADA",
+      "GRENADA"
+    ],
+    [
+      "GUADELOUPE",
+      "GUADELOUPE"
+    ],
+    [
+      "GUAM",
+      "GUAM"
+    ],
+    [
+      "GUANTANAMO BAY NAVAL BASE",
+      "GUANTANAMO BAY NAVAL BASE"
+    ],
+    [
+      "GUATEMALA",
+      "GUATEMALA"
+    ],
+    [
+      "GUERNSEY",
+      "GUERNSEY"
+    ],
+    [
+      "GUINEA",
+      "GUINEA"
+    ],
+    [
+      "GUINEA-BISSAU",
+      "GUINEA-BISSAU"
+    ],
+    [
+      "GUYANA",
+      "GUYANA"
+    ],
+    [
+      "HAITI",
+      "HAITI"
+    ],
+    [
+      "HEARD ISLAND AND MCDONALD ISLANDS",
+      "HEARD ISLAND AND MCDONALD ISLANDS"
+    ],
+    [
+      "HONDURAS",
+      "HONDURAS"
+    ],
+    [
+      "HONG KONG",
+      "HONG KONG"
+    ],
+    [
+      "HOWLAND ISLAND",
+      "HOWLAND ISLAND"
+    ],
+    [
+      "HUNGARY",
+      "HUNGARY"
+    ],
+    [
+      "ICELAND",
+      "ICELAND"
+    ],
+    [
+      "INDIA",
+      "INDIA"
+    ],
+    [
+      "INDONESIA",
+      "INDONESIA"
+    ],
+    [
+      "IRAN",
+      "IRAN"
+    ],
+    [
+      "IRAQ",
+      "IRAQ"
+    ],
+    [
+      "IRELAND",
+      "IRELAND"
+    ],
+    [
+      "ISLE OF MAN",
+      "ISLE OF MAN"
+    ],
+    [
+      "ISRAEL",
+      "ISRAEL"
+    ],
+    [
+      "ITALY",
+      "ITALY"
+    ],
+    [
+      "JAMAICA",
+      "JAMAICA"
+    ],
+    [
+      "JAN MAYEN",
+      "JAN MAYEN"
+    ],
+    [
+      "JAPAN",
+      "JAPAN"
+    ],
+    [
+      "JARVIS ISLAND",
+      "JARVIS ISLAND"
+    ],
+    [
+      "JERSEY",
+      "JERSEY"
+    ],
+    [
+      "JOHNSTON ATOLL",
+      "JOHNSTON ATOLL"
+    ],
+    [
+      "JORDAN",
+      "JORDAN"
+    ],
+    [
+      "JUAN DE NOVA ISLAND",
+      "JUAN DE NOVA ISLAND"
+    ],
+    [
+      "KAZAKHSTAN",
+      "KAZAKHSTAN"
+    ],
+    [
+      "KENYA",
+      "KENYA"
+    ],
+    [
+      "KINGMAN REEF",
+      "KINGMAN REEF"
+    ],
+    [
+      "KIRIBATI",
+      "KIRIBATI"
+    ],
+    [
+      "KOREA, NORTH",
+      "KOREA, NORTH"
+    ],
+    [
+      "KOREA, SOUTH",
+      "KOREA, SOUTH"
+    ],
+    [
+      "KOSOVO",
+      "KOSOVO"
+    ],
+    [
+      "KUWAIT",
+      "KUWAIT"
+    ],
+    [
+      "KYRGYZSTAN",
+      "KYRGYZSTAN"
+    ],
+    [
+      "LAOS",
+      "LAOS"
+    ],
+    [
+      "LATVIA",
+      "LATVIA"
+    ],
+    [
+      "LEBANON",
+      "LEBANON"
+    ],
+    [
+      "LESOTHO",
+      "LESOTHO"
+    ],
+    [
+      "LIBERIA",
+      "LIBERIA"
+    ],
+    [
+      "LIBYA",
+      "LIBYA"
+    ],
+    [
+      "LIECHTENSTEIN",
+      "LIECHTENSTEIN"
+    ],
+    [
+      "LITHUANIA",
+      "LITHUANIA"
+    ],
+    [
+      "LUXEMBOURG",
+      "LUXEMBOURG"
+    ],
+    [
+      "MACAU",
+      "MACAU"
+    ],
+    [
+      "MACEDONIA",
+      "MACEDONIA"
+    ],
+    [
+      "MADAGASCAR",
+      "MADAGASCAR"
+    ],
+    [
+      "MALAWI",
+      "MALAWI"
+    ],
+    [
+      "MALAYSIA",
+      "MALAYSIA"
+    ],
+    [
+      "MALDIVES",
+      "MALDIVES"
+    ],
+    [
+      "MALI",
+      "MALI"
+    ],
+    [
+      "MALTA",
+      "MALTA"
+    ],
+    [
+      "MARSHALL ISLANDS",
+      "MARSHALL ISLANDS"
+    ],
+    [
+      "MARTINIQUE",
+      "MARTINIQUE"
+    ],
+    [
+      "MAURITANIA",
+      "MAURITANIA"
+    ],
+    [
+      "MAURITIUS",
+      "MAURITIUS"
+    ],
+    [
+      "MAYOTTE",
+      "MAYOTTE"
+    ],
+    [
+      "MEXICO",
+      "MEXICO"
+    ],
+    [
+      "MICRONESIA, FEDERATED STATES OF",
+      "MICRONESIA, FEDERATED STATES OF"
+    ],
+    [
+      "MIDWAY ISLANDS",
+      "MIDWAY ISLANDS"
+    ],
+    [
+      "MOLDOVA",
+      "MOLDOVA"
+    ],
+    [
+      "MONACO",
+      "MONACO"
+    ],
+    [
+      "MONGOLIA",
+      "MONGOLIA"
+    ],
+    [
+      "MONTENEGRO",
+      "MONTENEGRO"
+    ],
+    [
+      "MONTSERRAT",
+      "MONTSERRAT"
+    ],
+    [
+      "MOROCCO",
+      "MOROCCO"
+    ],
+    [
+      "MOZAMBIQUE",
+      "MOZAMBIQUE"
+    ],
+    [
+      "NAMIBIA",
+      "NAMIBIA"
+    ],
+    [
+      "NAURU",
+      "NAURU"
+    ],
+    [
+      "NAVASSA ISLAND",
+      "NAVASSA ISLAND"
+    ],
+    [
+      "NEPAL",
+      "NEPAL"
+    ],
+    [
+      "NETHERLANDS",
+      "NETHERLANDS"
+    ],
+    [
+      "NEW CALEDONIA",
+      "NEW CALEDONIA"
+    ],
+    [
+      "NEW ZEALAND",
+      "NEW ZEALAND"
+    ],
+    [
+      "NICARAGUA",
+      "NICARAGUA"
+    ],
+    [
+      "NIGER",
+      "NIGER"
+    ],
+    [
+      "NIGERIA",
+      "NIGERIA"
+    ],
+    [
+      "NIUE",
+      "NIUE"
+    ],
+    [
+      "NORFOLK ISLAND",
+      "NORFOLK ISLAND"
+    ],
+    [
+      "NORTHERN MARIANA ISLANDS",
+      "NORTHERN MARIANA ISLANDS"
+    ],
+    [
+      "NORWAY",
+      "NORWAY"
+    ],
+    [
+      "OMAN",
+      "OMAN"
+    ],
+    [
+      "PAKISTAN",
+      "PAKISTAN"
+    ],
+    [
+      "PALAU",
+      "PALAU"
+    ],
+    [
+      "PALMYRA ATOLL",
+      "PALMYRA ATOLL"
+    ],
+    [
+      "PANAMA",
+      "PANAMA"
+    ],
+    [
+      "PAPUA NEW GUINEA",
+      "PAPUA NEW GUINEA"
+    ],
+    [
+      "PARACEL ISLANDS",
+      "PARACEL ISLANDS"
+    ],
+    [
+      "PARAGUAY",
+      "PARAGUAY"
+    ],
+    [
+      "PERU",
+      "PERU"
+    ],
+    [
+      "PHILIPPINES",
+      "PHILIPPINES"
+    ],
+    [
+      "PITCAIRN ISLANDS",
+      "PITCAIRN ISLANDS"
+    ],
+    [
+      "POLAND",
+      "POLAND"
+    ],
+    [
+      "PORTUGAL",
+      "PORTUGAL"
+    ],
+    [
+      "PUERTO RICO",
+      "PUERTO RICO"
+    ],
+    [
+      "QATAR",
+      "QATAR"
+    ],
+    [
+      "REUNION",
+      "REUNION"
+    ],
+    [
+      "ROMANIA",
+      "ROMANIA"
+    ],
+    [
+      "RUSSIA",
+      "RUSSIA"
+    ],
+    [
+      "RWANDA",
+      "RWANDA"
+    ],
+    [
+      "SAINT BARTHELEMY",
+      "SAINT BARTHELEMY"
+    ],
+    [
+      "SAINT HELENA, ASCENSION, AND TRISTAN DA CUNHA",
+      "SAINT HELENA, ASCENSION, AND TRISTAN DA CUNHA"
+    ],
+    [
+      "SAINT KITTS AND NEVIS",
+      "SAINT KITTS AND NEVIS"
+    ],
+    [
+      "SAINT LUCIA",
+      "SAINT LUCIA"
+    ],
+    [
+      "SAINT MARTIN",
+      "SAINT MARTIN"
+    ],
+    [
+      "SAINT PIERRE AND MIQUELON",
+      "SAINT PIERRE AND MIQUELON"
+    ],
+    [
+      "SAINT VINCENT AND THE GRENADINES",
+      "SAINT VINCENT AND THE GRENADINES"
+    ],
+    [
+      "SAMOA",
+      "SAMOA"
+    ],
+    [
+      "SAN MARINO",
+      "SAN MARINO"
+    ],
+    [
+      "SAO TOME AND PRINCIPE",
+      "SAO TOME AND PRINCIPE"
+    ],
+    [
+      "SAUDI ARABIA",
+      "SAUDI ARABIA"
+    ],
+    [
+      "SENEGAL",
+      "SENEGAL"
+    ],
+    [
+      "SERBIA",
+      "SERBIA"
+    ],
+    [
+      "SEYCHELLES",
+      "SEYCHELLES"
+    ],
+    [
+      "SIERRA LEONE",
+      "SIERRA LEONE"
+    ],
+    [
+      "SINGAPORE",
+      "SINGAPORE"
+    ],
+    [
+      "SINT MAARTEN",
+      "SINT MAARTEN"
+    ],
+    [
+      "SLOVAKIA",
+      "SLOVAKIA"
+    ],
+    [
+      "SLOVENIA",
+      "SLOVENIA"
+    ],
+    [
+      "SOLOMON ISLANDS",
+      "SOLOMON ISLANDS"
+    ],
+    [
+      "SOMALIA",
+      "SOMALIA"
+    ],
+    [
+      "SOUTH AFRICA",
+      "SOUTH AFRICA"
+    ],
+    [
+      "SOUTH GEORGIA AND SOUTH SANDWICH ISLANDS",
+      "SOUTH GEORGIA AND SOUTH SANDWICH ISLANDS"
+    ],
+    [
+      "SOUTH SUDAN",
+      "SOUTH SUDAN"
+    ],
+    [
+      "SPAIN",
+      "SPAIN"
+    ],
+    [
+      "SPRATLY ISLANDS",
+      "SPRATLY ISLANDS"
+    ],
+    [
+      "SRI LANKA",
+      "SRI LANKA"
+    ],
+    [
+      "SUDAN",
+      "SUDAN"
+    ],
+    [
+      "SURINAME",
+      "SURINAME"
+    ],
+    [
+      "SVALBARD",
+      "SVALBARD"
+    ],
+    [
+      "SWAZILAND",
+      "SWAZILAND"
+    ],
+    [
+      "SWEDEN",
+      "SWEDEN"
+    ],
+    [
+      "SWITZERLAND",
+      "SWITZERLAND"
+    ],
+    [
+      "SYRIA",
+      "SYRIA"
+    ],
+    [
+      "TAIWAN",
+      "TAIWAN"
+    ],
+    [
+      "TAJIKISTAN",
+      "TAJIKISTAN"
+    ],
+    [
+      "TANZANIA",
+      "TANZANIA"
+    ],
+    [
+      "THAILAND",
+      "THAILAND"
+    ],
+    [
+      "TIMOR-LESTE",
+      "TIMOR-LESTE"
+    ],
+    [
+      "TOGO",
+      "TOGO"
+    ],
+    [
+      "TOKELAU",
+      "TOKELAU"
+    ],
+    [
+      "TONGA",
+      "TONGA"
+    ],
+    [
+      "TRINIDAD AND TOBAGO",
+      "TRINIDAD AND TOBAGO"
+    ],
+    [
+      "TROMELIN ISLAND",
+      "TROMELIN ISLAND"
+    ],
+    [
+      "TUNISIA",
+      "TUNISIA"
+    ],
+    [
+      "TURKEY",
+      "TURKEY"
+    ],
+    [
+      "TURKMENISTAN",
+      "TURKMENISTAN"
+    ],
+    [
+      "TURKS AND CAICOS ISLANDS",
+      "TURKS AND CAICOS ISLANDS"
+    ],
+    [
+      "TUVALU",
+      "TUVALU"
+    ],
+    [
+      "UGANDA",
+      "UGANDA"
+    ],
+    [
+      "UKRAINE",
+      "UKRAINE"
+    ],
+    [
+      "UNITED ARAB EMIRATES",
+      "UNITED ARAB EMIRATES"
+    ],
+    [
+      "UNITED KINGDOM",
+      "UNITED KINGDOM"
+    ],
+    [
+      "UNKNOWN",
+      "UNKNOWN"
+    ],
+    [
+      "URUGUAY",
+      "URUGUAY"
+    ],
+    [
+      "UZBEKISTAN",
+      "UZBEKISTAN"
+    ],
+    [
+      "VANUATU",
+      "VANUATU"
+    ],
+    [
+      "VATICAN CITY",
+      "VATICAN CITY"
+    ],
+    [
+      "VENEZUELA",
+      "VENEZUELA"
+    ],
+    [
+      "VIETNAM",
+      "VIETNAM"
+    ],
+    [
+      "VIRGIN ISLANDS, BRITISH",
+      "VIRGIN ISLANDS, BRITISH"
+    ],
+    [
+      "VIRGIN ISLANDS, U.S.",
+      "VIRGIN ISLANDS, U.S."
+    ],
+    [
+      "WAKE ISLAND",
+      "WAKE ISLAND"
+    ],
+    [
+      "WALLIS AND FUTUNA",
+      "WALLIS AND FUTUNA"
+    ],
+    [
+      "WEST BANK",
+      "WEST BANK"
+    ],
+    [
+      "WESTERN SAHARA",
+      "WESTERN SAHARA"
+    ],
+    [
+      "YEMEN",
+      "YEMEN"
+    ],
+    [
+      "ZAMBIA",
+      "ZAMBIA"
+    ],
+    [
+      "ZIMBABWE",
+      "ZIMBABWE"
+    ]
+  ],
+  "allExportValuesEqualDisplayLabels": true
+}

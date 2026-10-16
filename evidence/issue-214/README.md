@@ -31,3 +31,14 @@ Local verification: 919 unit tests across 89 files, typecheck and production
 build pass. All 147 mocked-browser journeys pass, including three new reporter paths.
 Actual Opus review and exact-head CI remain pending at this checkpoint. No application-model calls were made. Current glyph and
 native occupation exceptions remain bounded follow-up scope.
+
+Actual Opus review dispositions: the out-of-slice acceptance paragraph was
+removed from this PR and preserved privately outside the checkout. Reporter
+context editing is not claimed by this slice. Initial country entry is blank
+unless accepted or explicitly remembered; reporter glyph guidance opens the
+reporter panel. Tests assert unchanged remembered defaults and all unrelated
+facts after country correction, including independent corrected PDF readback.
+All 275 native country export/display pairs are retained independently in
+`native-g-country-options.json`; every pair is equal. Review fixes pass 919
+unit tests, typecheck and build; the expanded 148-journey full mock run and
+same-session Opus recheck are pending at this checkpoint.

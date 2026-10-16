@@ -1779,4 +1779,8 @@ case-specific. Corrections retain history; no account or credential management.
 
 Reporter panel saves preserve a current known qualifier when its base value is
 unchanged. A base-value correction retains prior context in history and does not
-attach it to the new value. Explicit context editing remains in Review details.
+attach it to the new value. This slice exposes base reporter text editing, not
+reporter qualifier editing; the reporter has no Review details card. Qualifiers
+from validated imported/API state remain preserved rather than being silently
+cleared by an unrelated panel save. Reporter entry does not preset a country;
+accepted facts or explicitly remembered defaults may prefill it.

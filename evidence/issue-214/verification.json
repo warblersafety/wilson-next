@@ -9,11 +9,22 @@
   "pdfs": 7,
   "pdfKitRenders": 15,
   "independentReader": "pypdf",
-  "review": "pending",
+  "review": {
+    "run": "issue214-20261016T134052-1ddf6cad",
+    "fullCompleted": true,
+    "model": "claude-opus-5-5",
+    "blockingFinding": "B1 removed from PR",
+    "followups": "F1-F4 bounded fixes implemented",
+    "recheck": "pending",
+    "rawReport": "https://github.com/warblersafety/wilson-next/pull/215#issuecomment-6216954281"
+  },
   "notes": [
-    "Native country geometry/options checked against pinned source",
-    "G1 values and context remain exact",
-    "No profile defaults become accepted facts",
-    "Only formatting changed after full local verification; exact-head CI will rerun all checks"
-  ]
+    "Review fixes pass full 919 units, typecheck and build",
+    "All 275 country export/display pairs independently equal",
+    "Previous full 147 browser journeys passed; current expanded 148 run pending"
+  ],
+  "expandedFullMockBrowserJourneys": {
+    "expected": 148,
+    "status": "running"
+  }
 }

@@ -37,15 +37,3 @@ required functional fixes. The proposed blanket B1/B2 consistency rule (#200)
 remains an unresolved semantic question, not a valid inferred clinical gate.
 PR195's general prompt experiment stays unmerged. Unlimited language perfection,
 accounts/login, cross-device cases and real-patient-data production are excluded.
-
-Practical boundary for the remaining cut: calendar work must prevent fabricated
-or malformed dates and preserve explicitly supplied precision; it need not infer
-clinical chronology or resolve every ambiguous date expression automatically.
-Quantity work needs faithful stated values/units and exact reviewed exceptions;
-it does not require automatic interpretation of every compound sentence. Neutral
-withdrawal work is the explicit removal of an optional additional-comment note
-without inventing unknown/absent clinical knowledge; it is not a general history
-editor. Ordinary clinician clarification and exact source review are acceptable.
-Rare automatic interpretation failures with a clear faithful manual path are
-bounded acceptance limitations; silent loss, false values or unusable export are
-functional blockers. This checklist does not expand the approved product cut.
