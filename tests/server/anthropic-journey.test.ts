@@ -64,7 +64,8 @@ describe("Anthropic production model boundary", () => {
     expect(requestText).toContain("Wilson—not you—assigns stable case identity");
     expect(requestText).toContain("evidenceReferences");
     expect(requestText).toContain("negation");
-    expect(requestText).toContain("Product expirationDate is the explicitly supplied complete product expiration");
+    expect(requestText).toContain("Propose partial expiration facts for human review rather than omitting them");
+    expect(requestText).toContain("Product expirationDate is an explicitly supplied expiration/best-by/use-by date.");
     expect(requestText).toContain("Never infer a missing day/month or judge whether the product was expired");
     expect(requestText).toContain("Preserve it as text exactly, including leading zeros, dashes, spaces and symbols");
     expect(schema).toContain("ndcOrUniqueId");
@@ -73,7 +74,7 @@ describe("Anthropic production model boundary", () => {
     expect(schema).toContain("weeks");
     expect(requestText).toContain("Never place gestational age, gestation at birth, or corrected/postmenstrual age in ageYears");
     expect(requestText).toContain("Do not infer chronological age from them");
-    expect(MODEL_PROMPT_REVISION).toBe("wilson-native-e-copies-v23");
+    expect(MODEL_PROMPT_REVISION).toBe("wilson-expiration-precision-v24");
     expect(schema).toContain("raceEthnicity");
     expect(schema).toContain("therapyOngoing");
     expect(schema).toContain("doseReductionDate");

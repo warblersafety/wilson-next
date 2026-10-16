@@ -1,3 +1,4 @@
+import {appendExpirationContinuations} from "./expiration";
 import {appendSexContinuations, sexTextLimitation} from "./patient-sex";
 import {reporterGeometry,reporterNativeText,appendReporterContinuations,reporterTextIssues,reporterCountryLabel} from "./reporter-text";
 import {concomitantRowFields, concomitantNativeName, appendConcomitantContinuations, concomitantTextIssues} from "./concomitant";
@@ -282,7 +283,7 @@ export async function fillForm3500Projection(source: Uint8Array, projection: For
     const font = await copy.embedFont(StandardFonts.Helvetica);
     const page = copy.getPages()[3];
     page.drawText(`Additional FDA form copy ${index+1} - Section D only; report ${reference}`, { x:44, y:776, size:8, font });
-    page.drawText(`Suspect product #${nativeForm3500SuspectSlots+index+1} uses this copy's first block; context is in the main report B5.`, { x:44, y:763, size:8, font });
+    page.drawText((projection.expirationNotes??[]).some(n=>n.productId===product.productId) ? `Suspect product #${nativeForm3500SuspectSlots+index+1} uses this copy's first block; expiration wording follows this copy.` : `Suspect product #${nativeForm3500SuspectSlots+index+1} uses this copy's first block; context is in the main report B5.`, { x:44, y:763, size:8, font });
     for (const copied of await document.copyPages(copy, copy.getPageIndices())) document.addPage(copied);
     additionalReadback.push(...extra.readback.sections.D.suspectProducts);
   }
@@ -293,7 +294,7 @@ export async function fillForm3500Projection(source: Uint8Array, projection: For
     copy.getForm().flatten({updateFieldAppearances:false});
     const font = await copy.embedFont(StandardFonts.Helvetica);
     copy.getPages()[5].drawText(`Additional FDA form copy - Section E only; report ${reference}`, {x:44,y:776,size:8,font});
-    copy.getPages()[5].drawText(`Suspect device #${index+2}; field context is in the main report B5.`, {x:44,y:763,size:8,font});
+    copy.getPages()[5].drawText((projection.expirationNotes??[]).some(n=>n.productId===device.productId) ? `Suspect device #${index+2}; expiration wording follows this copy; other context is in main B5.` : `Suspect device #${index+2}; field context is in the main report B5.`, {x:44,y:763,size:8,font});
     for (const page of await document.copyPages(copy, copy.getPageIndices())) document.addPage(page);
     deviceReadback.push(...extra.readback.sections.E.suspectDevices);
   }
@@ -515,6 +516,7 @@ async function fillNativeForm3500Projection(
   setChecked(form, fields.reporterPacker, reporter.reportedTo?.includes("packer") === true);
   setChecked(form, fields.reporterIdentityNo, reporter.doNotDiscloseIdentity === true);
 
+  await appendExpirationContinuations(document,projection,reportNarrative);
   form.updateFieldAppearances();
   // pdf-lib selects display labels. Preserve the generated label appearance,
   // but store the original FDA option's export value for other PDF readers.
@@ -830,7 +832,7 @@ function formatDate(value: string): string {
 }
 
 function parseDate(value: string | undefined): string | undefined {
-  if (!value) return undefined;
+  if (!value || value === "D6 continued" || value === "E4 continued") return undefined;
   const match = /^(\d{2})-([A-Z]{3})-(\d{4})$/.exec(value);
   const month = match ? months.indexOf(match[2]) + 1 : 0;
   if (!match || month === 0) throw new Error(`Unreadable Form 3500 date ${value}`);

@@ -1,4 +1,5 @@
 "use client";
+import {isExpirationValue,isPartialExpiration} from "../src/domain/case/expiration";
 import {purchaseCountrySuggestions} from "../src/domain/case/purchase-details";
 
 import { listWithContext } from "../src/domain/case/list-context";
@@ -71,6 +72,7 @@ export function JourneyBody() {
   const [boundaryNotice, setBoundaryNotice] = useState<string>();
   const [reviewNotice, setReviewNotice] = useState("");
   const [draftDisclosureOpen, setDraftDisclosureOpen] = useState(false);
+  const [sourceAccountOpen,setSourceAccountOpen]=useState(false);
   const [resetNotice, setResetNotice] = useState(false);
   const previousTask = useRef<string | undefined>(undefined);
   const [clinicalNavigation, setClinicalNavigation] = useState(0);
@@ -304,6 +306,7 @@ export function JourneyBody() {
         </section>
         <section data-screen="details" hidden={screen !== "details"}>
           <h1>Review the case details</h1>
+          <details className={styles.caseCard} open={sourceAccountOpen} onToggle={e=>setSourceAccountOpen(e.currentTarget.open)}><summary>Your supplied account and date wording</summary>{sourceAccountOpen && screen === "details" && <div><p>Compare your complete submitted words with the proposed details. If expiration wording was missed, add its stated precision and exact wording in that product’s Expiration date field. Wilson does not detect every omission automatically.</p>{uiDrafts.conversation.length ? uiDrafts.conversation.map(input=><p className={styles.originalAccount} key={input.id}>{input.text}</p>) : <><p>Only retained source records are available for this earlier case; the complete account was not stored. Direct edits are recorded as clinician-entry summaries, not verbatim conversation.</p>{browserState?.case.sources.filter(s=>["narrative","correction","answer"].includes(s.inputType)).map(s=><p className={styles.originalAccount} key={s.id}>{s.excerpt}</p>)}</>}</div>}</details>
           {representationLimited && <p className={styles.notice} role="status">This PDF cannot represent every reviewed value. Your reviewed details are retained. Review & save explains the limitation.</p>}
           {capacityIssues.length > 0 && <p className={styles.notice} role="status">This case exceeds the preview’s PDF capacity. Your reviewed details are retained. Review & save explains the supported limits.</p>}
           {clinicalAction?.kind === "proposals" && <p className={styles.lead}>Check each proposed group. Change incorrect values before accepting.</p>}
@@ -946,7 +949,7 @@ function ConflictCard({ snapshot, item, busy, act }: {
 }
 
 function invalidDateValue(value: CaseValue<unknown> | undefined, control: FactControl | undefined): boolean {
-  return Boolean(value?.kind === "known" && control && (control.shape === "date" || control.shape === "birth-date") && !isCompleteBirthDate(value.value));
+  return Boolean(value?.kind === "known" && control && (control.shape === "expiration" ? !isExpirationValue(value.value) : (control.shape === "date" || control.shape === "birth-date") && !isCompleteBirthDate(value.value)));
 }
 function LegacyDateConflictCorrection({snapshot,item,busy,act}:{snapshot:JourneySnapshot;item:ReviewAttentionItem;busy:boolean;act:(a:JourneyAction)=>Promise<boolean>}) {
   const [draft,setDraft] = useCaseDraft("legacy-date-recovery", `conflict:${item.target}`, JSON.stringify(item.values), () => ({drafts:{},qualifierControls:{}}));
@@ -1147,6 +1150,15 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQ
     <label>{label} status<select aria-label={`${label} status`} value={value.kind} onChange={(event) => onChange(event.target.value === "known" ? editableInitialValue(undefined, control) : { kind: event.target.value as Exclude<EditableCaseValue["kind"], "known"> })}>
       <option value="known">Known</option><option value="unknown">Unknown</option><option value="explicitly-absent">{control.explicitAbsentLabel ?? "Not present"}</option><option value="inapplicable">Not applicable</option><option value="declined">Prefer not to answer</option>
     </select></label>
+    {value.kind === "known" && control.shape === "expiration" && <>
+      <label>Expiration precision<select aria-label="Expiration precision" value={typeof known === "object" && known && "precision" in known ? known.precision : "complete"} onChange={e=>{const prior=typeof known === "object" && known && "precision" in known ? known : undefined;onChange({kind:"known",value:e.target.value === "complete" ? "" : {precision:e.target.value as "month"|"year",year:prior?.year??"",...(e.target.value === "month"?{month:prior?.precision === "month" ? prior.month??"" : ""}:{}),wording:prior?.wording??""}});}}><option value="complete">Complete date</option><option value="month">Month and year only</option><option value="year">Year only</option></select></label>
+      {typeof known === "string" || known === undefined ? <input aria-label={`New ${label}`} placeholder="YYYY-MM-DD" value={String(known??"")} onChange={e=>onChange({kind:"known",value:e.target.value})}/> : typeof known === "object" && known && "precision" in known && <>
+        <input aria-label="Expiration year" placeholder="YYYY" value={known.year} onChange={e=>onChange({kind:"known",value:{...known,year:e.target.value}})}/>
+        {known.precision === "month" && <input aria-label="Expiration month" placeholder="MM" value={known.month??""} onChange={e=>onChange({kind:"known",value:{...known,month:e.target.value}})}/>}
+        <textarea aria-label="Exact supplied expiration wording" rows={3} value={known.wording} onChange={e=>onChange({kind:"known",value:{...known,wording:e.target.value}})}/>
+      </>}
+      {!isExpirationValue(known) && <p role="status">Supply a valid complete date, or the supplied year/month and exact wording. This unfinished edit is retained; no missing component is inferred.</p>}
+    </>}
     {value.kind === "known" && control.shape === "text" && control.multiline && <textarea aria-label={`New ${label}`} rows={4} value={String(known ?? "")} onChange={event => onChange({ kind: "known", value: event.target.value })} />}
     {value.kind === "known" && control.shape === "text" && !control.multiline && <><input aria-label={`New ${label}`} list={control.options ? suggestionsId : undefined} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />{control.options && <datalist id={suggestionsId}>{control.options.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</datalist>}</>}
     {value.kind === "known" && control.shape === "age" && <div className={styles.measurement}>
@@ -1192,13 +1204,14 @@ function editableInitialValue(value: CaseValue<unknown> | undefined, control: Fa
 function validEditableValue(value: EditableCaseValue, control: FactControl): boolean {
   if (value.kind !== "known") return true;
   if (control.shape === "duration") return isTreatmentDuration(value.value);
+  if (control.shape === "expiration") return isExpirationValue(value.value);
   if (control.completeDate) return isCompleteBirthDate(value.value);
   if (control.shape === "date") return isCompleteBirthDate(value.value);
   if (control.shape === "text" || control.shape === "choice") return typeof value.value === "string" && Boolean(value.value.trim());
   if (control.requireSelection) return Array.isArray(value.value) && value.value.length > 0 && new Set(value.value).size === value.value.length && value.value.every(item => control.options?.some(option => option.value === item));
   if (control.shape === "birth-date") return isCompleteBirthDate(value.value);
   if (control.shape === "age") return isPatientAge(value.value);
-  if (control.shape === "weight") return typeof value.value === "object" && !Array.isArray(value.value) && typeof value.value.value === "number" && value.value.value > 0;
+  if (control.shape === "weight") return typeof value.value === "object" && !Array.isArray(value.value) && "value" in value.value && typeof value.value.value === "number" && value.value.value > 0;
   if (control.shape === "list") return Array.isArray(value.value) && value.value.length > 0;
   return true;
 }
@@ -1266,6 +1279,10 @@ function formatFactValue(value: CaseValue<unknown> | undefined, control?: FactCo
     declined: "Prefer not to answer",
   }[value.kind];
   if (control?.shape === "age" && typeof value.value === "number") return `${value.value} years`;
+  if (typeof value.value === "object" && value.value && "precision" in value.value) {
+    const raw=value.value as Record<string,unknown>;
+    return `${String(raw.wording??"") || "Expiration wording unfinished"} (${raw.precision === "month" ? (String(raw.year??"")||"year unfinished")+"-"+(String(raw.month??"")||"month unfinished") : String(raw.year??"")||"year unfinished"}; ${raw.precision === "month" ? "month and year only" : "year only"})`;
+  }
   if (Array.isArray(value.value)) return value.value
     .map((item) => control?.options?.find((option) => option.value === item)?.label ?? item)
     .join(" and ");

@@ -40,7 +40,7 @@ it("writes both native identifiers with source attribution, without changing unr
   const withoutIdentifier = (values: Record<string, string>) => Object.fromEntries(Object.entries(values).filter(([k]) => k !== key(1) && k !== key(2)));
   expect(withoutIdentifier(fields)).toEqual(withoutIdentifier(before));
   for (let i = 0; i < 2; i++) expect(projection.sourceTrace[`sections.D.suspectProducts.${i}.ndcOrUniqueId`]).toEqual(c.products[i].facts.ndcOrUniqueId.resolvedValue!.sourceIds);
-  expect(projection.notIncluded.join(" ")).toContain("Section D partial expiration dates");
+  expect(projection.notIncluded.join(" ")).toContain("Expiration precision outside complete dates");
   expect(productCardFields("drug-or-biologic", {})).toContain("ndcOrUniqueId");
 });
 it("corrects and restores exact identifiers and retains previous accepted history", async () => {

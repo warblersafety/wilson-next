@@ -48,7 +48,7 @@ export function wrapContinuationText(text: string, font: PDFFont): ContinuationL
 }
 
 export function form3500ReportReference(projection: Form3500Projection): string {
-  return `W-${createHash("sha256").update(JSON.stringify([projection.caseId, projection.sections])).digest("hex").slice(0, 20)}`;
+  return `W-${createHash("sha256").update(JSON.stringify([projection.caseId, projection.sections, ...(projection.expirationNotes?.length ? [projection.expirationNotes.map(({block,ordinal,text})=>({block,ordinal,text}))] : [])])).digest("hex").slice(0, 20)}`;
 }
 
 export async function planNarrativeContinuations(projection: Form3500Projection, referenceProjection: Form3500Projection = projection): Promise<NarrativeContinuation[]> {

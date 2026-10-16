@@ -1,0 +1,31 @@
+{
+  "issue": 219,
+  "parentIssue": 180,
+  "unitTests": 1003,
+  "unitFiles": 94,
+  "focusedBrowserJourneys": 2,
+  "typecheck": "passed",
+  "build": "passed",
+  "PDFs": 8,
+  "PDFKitRenders": 18,
+  "fullBrowser155": "Passed on 8e9355b (6.7m); historical pre-review checkpoint",
+  "actualOpus": "Full review and first remediation recheck clear; targeted detached-reference recheck pending",
+  "exactHeadCI": "Historical8e passed38935754533;3244 superseded; final exact-head pending",
+  "mainCI": "pending",
+  "newDependencies": 0,
+  "liveApplicationModelCalls": 0,
+  "ZIP": "pending approval; no work",
+  "sourceVisibility": "case-specific retained full account plus explicit ordinary expiration recovery; no universal omission detection claim",
+  "focusedRegressionBrowserJourneys": 4,
+  "sourcePanelFix": "Only render source account when expanded in active Details; unfinished precision has readable text",
+  "reviewRun": "issue219-20261016T184050-2a7f3353",
+  "reviewRetryAttempted": true,
+  "fullBrowser156": "Fresh final full repeat running; preceding remediation run155 passed/1 new test setup timeout, explicit replacement setup fixed and all3 focused journeys pass",
+  "reviewFixes": [
+    "Continuation content participates in PDF content key",
+    "Stable-fact F disclosure, no display-name filtering",
+    "Readable clinician-entry source summaries",
+    "Prompt revision v24, explicit year evidence gate"
+  ],
+  "detachedReference": "Includes current expiration block/ordinal/text; all8 regenerated PDF fields/page text unchanged except opaque reference"
+}

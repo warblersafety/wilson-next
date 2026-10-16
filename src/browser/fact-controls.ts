@@ -12,6 +12,7 @@ import type {
 export type FactControlShape =
   | "text"
   | "age"
+  | "expiration"
   | "birth-date"
   | "duration"
   | "date"
@@ -121,7 +122,7 @@ const product = {
   modelNumber: { label: "Model number", shape: "text" },
   catalogNumber: { label: "Catalog number", shape: "text" },
   ndcOrUniqueId: { label: "NDC number or Unique ID", shape: "text", help: "Copy the supplied product-label identifier exactly, including zeros, dashes and spaces. Keep lot numbers and device UDI separate." },
-  expirationDate: { label: "Expiration date", shape: "date", completeDate: true },
+  expirationDate: { label: "Expiration date", shape: "expiration", help: "Use the supplied precision. Month/year and year-only wording prints in a field-linked supplement; never fill a missing day or month. Check the supplied account for wording Wilson did not propose." },
   serialNumber: { label: "Serial number", shape: "text" },
   udi: { label: "Unique device identifier", shape: "text" },
   deviceOperator: { label: "Device operator", shape: "choice", options: choices(

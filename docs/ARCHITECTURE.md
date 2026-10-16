@@ -139,7 +139,7 @@ integration, the Issue #129 restore contract below supersedes that preview-only
 compatibility limit: retain migrations for every state version actually persisted
 by supported releases, preserving accepted facts and history.
 
-The existing coverage checklist distinguishes implemented Section D complete expiration dates (PR163), NDC/Unique ID (PR166), explicit ongoing status (PR177), complete dose-reduction dates (PR179), explicit native-time durations (issue181), and complete purchase dates (issue183), and explicit D5 cosmetic professional-use/retail choice (issue185), and explicit cannabinoid/Other D5 (issue205) from remaining purchase wording outside native country/glyph/line/capacity limits, partial purchase/expiration/reduction-date and dose-count/compound/range duration gaps. Warnings and no-destination disclosures preserve visibility; they are not completed field support.
+The existing coverage checklist distinguishes implemented Section D complete expiration dates (PR163), NDC/Unique ID (PR166), explicit ongoing status (PR177), complete dose-reduction dates (PR179), explicit native-time durations (issue181), and complete purchase dates (issue183), and explicit D5 cosmetic professional-use/retail choice (issue185), and explicit cannabinoid/Other D5 (issue205) from remaining purchase wording outside native country/glyph/line/capacity limits, partial purchase/reduction-date and dose-count/compound/range duration gaps. Warnings and no-destination disclosures preserve visibility; they are not completed field support.
 Download readiness remains the supported-path condition, not a claim of
 complete FDA-form coverage.
 
@@ -249,15 +249,14 @@ Purchase details and wider category/representation support remain unfinished.
 
 ### Product expiration dates (Issue #162)
 
-The existing product expirationDate fact also reaches Section D for each of its two
-suspect slots, through the same conversation, review/correction and saved-state
-contracts as device expiration. Only explicitly supplied complete ISO dates are
-represented, formatted DD-MMM-YYYY in the native controls; no missing components
-or clinical expiry judgments are inferred. No extra follow-up question is added.
-Qualifiers retain the existing explicit omission disclosure. Concomitant products
-retain the fact but disclose that Section F has no expiration control. Partial-date
-precision and wider category coverage remain unfinished. Existing state already
-contains expirationDate, so no state version or migration changes.
+Complete product expiration dates reach native D6 and E4 without interpreting
+expiry status. Issue219 extends the same fact with explicit month/year and
+year-only precision plus exact supplied wording, preserving qualifier/source.
+Those partial values use D6/E4/F1-row-linked continuations and never a fabricated
+native full date; complete dates retain their existing behavior. Browser v25
+upgrades genuine v24 without rewriting case facts/history. See the issue219
+architecture contract below. Other partial dates and wider source visibility
+remain under #180.
 
 ### Medication history (Issue #92)
 
@@ -1831,3 +1830,41 @@ model call is introduced.
 A newly supplied invalid-date conflict correction cites only its clinician
 correction source. The impossible alternatives keep their original sources in
 history; those sources are not presented as support for the new date/status.
+
+### Expiration precision and source visibility (issue219; first #180 slice)
+
+The existing expirationDate fact accepts either the existing complete Gregorian
+ISO string or a typed partial value: precision month/year, explicit four-digit
+year, optional explicit two-digit month, and exact nonblank supplied wording.
+Year-only values cannot contain a month. No day field exists in the partial
+shape; no missing component or chronology is inferred. Qualifiers stay on the
+same known fact. Invalid full dates remain invalid under #164.
+
+Browser state v25 extends only expiration values. Genuine v24 validates against
+its frozen schema before upgrading unchanged; older migrations retain their
+existing steps. Complete and legacy impossible strings, pending/conflicts,
+history, sources and identities are not rewritten. UI drafts accept raw empty or
+invalid partial components so unfinished work survives reload without authority.
+
+Reviewed partial values create separately derived expiration notes. Their native
+D6/E4 full-date values remain absent; the actual native control says D6/E4
+continued. F1 row-linked notes preserve concomitant expiration wording even
+though F has no native expiration control. Continuations keep exact raw wording,
+explicit supplied precision and qualifier at fixed10pt, repeated block/product
+ordinal and opaque report reference, with numbered pages. Extra D/E copies own
+their notes once and use global product/device ordinals. No intermediate PDF save
+or encryption workaround is introduced. Unsupported glyphs remain retained and
+block export with the exact expiration target (#154 remains separate).
+
+Model schema revision v32-expiration-precision requests explicit partial facts
+instead of omission. The boundary also requires the claimed exact wording to be
+present in the cited source passage. Structural mock tests do not claim universal
+live model recognition. Review details exposes retained complete submitted
+accounts and read-back; the ordinary product editor lets the clinician explicitly
+add missed expiration wording. Legacy cases lacking full accounts disclose that
+only source excerpts remain. There is no arbitrary automatic omission detector.
+Other partial date targets/source gaps remain under #180; #150 remains paused.
+
+Issue219 review remediation: generated report content keys include current expiration continuation text, official block and ordinal, so partial-only corrections and withdrawal invalidate old PDFs. Source IDs alone do not change printed content. Non-carried Section F notices are decided per stable product fact before display formatting, never removed by matching names. This bounded slice carries partial expiration wording in F1 supplements; complete concomitant expirations retain their existing explicit non-carried disclosure, with no claim that all F facts are printable. Broader field-linked F exception representation remains release work. Direct expiration source records use readable clinician-entry summaries; legacy source records are not presented as verbatim conversation. Prompt revision is wilson-expiration-precision-v24. Model partial years must appear explicitly in the cited exact wording; abbreviated/ambiguous dates stay quarantined for explicit clinician entry rather than century inference. This does not claim arbitrary date-language validation.
+
+Issue219 detached-page references likewise include current expiration note block/ordinal/text, preventing an earlier partial-expiration supplement from sharing a reference with a revised report. Reports without expiration continuations keep the existing reference hash input; source-only changes remain irrelevant.
