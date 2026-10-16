@@ -20,7 +20,7 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-test-time-context-v19";
+export const MODEL_PROMPT_REVISION = "wilson-general-material-context-v20-experiment";
 export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v27-purchase-details";
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
 export const MODEL_MAX_RETRIES = 0;
@@ -101,7 +101,9 @@ Rules:
 - proposalReference and groupReference are response-local linkage values, not case IDs. Every declared test and product requires its own distinct groupReference; never reuse one group for different tests or products. All proposals for that entity use its declared groupReference. Keep later update groups within one existing case entity as well.
 - Every proposal must select evidenceReferences from the code-labelled current input passages. Return their reference IDs, never copied quotations, offsets, or invented IDs. Include multiple passages when a subject, shared date, negation, correction or uncertainty spans passages. Select enough context to support the complete claim, not merely a matching number. References establish source existence, not semantic support: you must still interpret attribution carefully.
 - Case context includes accepted and explicitly marked pending proposals only to link mentions and distinguish corrections or alternatives. Pending values are not accepted knowledge. Never cite context as current clinician evidence.
-- Omit unsupported facts. Every proposal remains unaccepted until ordinary human review.`;
+- Omit unsupported facts. Every proposal remains unaccepted until ordinary human review.
+
+Capture the complete explicitly stated meaning, not only the core value or finding. Retain supplied circumstances that qualify a statement, including uncertainty, explicit negation, use or non-use, and involvement or non-involvement. Keep this context with its stated subject in a supported narrative value or the qualifier of the same known fact. Preserve the clinician’s wording for that context; do not compress away these clauses, substitute a different negative statement, expand terms, or infer missing details. Keep known, unknown, absent, inapplicable and unmentioned distinct. If the current schema cannot express a fact, do not invent a value, date component, identity or target to make it fit. This instruction does not add schema support.`;
 
 export function createAnthropicRequest(
   turn: ModelTurn,
