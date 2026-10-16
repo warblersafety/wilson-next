@@ -235,7 +235,7 @@ review/correction, browser-local case/reporter persistence and visual design.
 | Patient and reporter | Explicit participation/A1 and no-patient consistency delivered in PR197/199; age/weight/race native paths exist. Broader sex representation and international reporter/profile/address remain. |
 | Clinical narrative and context | B5-B7 context and narrative continuation exist (PR158/160, issue190). Whole-list context scope is implemented in issue159. Independent general Additional comments are implemented in issue202, including shared B6 continuation. Source omissions and faithful field-linked exception support remain. |
 | Product details and categories | Native purchase date/seller/address/website are implemented (issues183/188), alongside NDC, expiry, duration and cosmetic choice. Explicit hemp/Other D5 selections and field-linked qualifier context are implemented in issue205. Partial dates/durations and unsupported wording still need faithful representation. |
-| Devices, concomitants and capacity | One suspect-device path exists. Additional D/E copies, multiple devices, full concomitant rows and test/product overflow remain. |
+| Devices, concomitants and capacity | The retained third non-device suspect now exports on an additional native D-only Form3500 copy (issue208). One suspect-device path exists; additional E copies, multiple devices, full concomitant rows and broader test/product capacity remain. |
 | Pictures and portable export | Narrative attachments exist. Actual picture/file lifecycle, complete export package, portable glyphs and remaining field-linked supplements are unfinished. |
 | Integrity and final acceptance | Preserve accepted/pending/conflict/source/history, draft/resume and one-case controls in every slice. Neutral optional-comment withdrawal (#204) remains separate. Semantic correction issue150 stays paused; current cross-category, hosted/keyboard/accessibility and bounded live first-response acceptance remain. |
 
@@ -246,7 +246,8 @@ literal contradiction without interpreting clinical context. Keep the question
 open with its official-source evidence; never infer causality or force a report
 classification. PR195's general prompt experiment remains unmerged.
 
-The next shared dependency is additional Section D/E copies (approved row E02):
-multiple suspect products/devices and category combinations must retain their
-identity, reviewed details and linked context across overflow pages. D07 native
-selections do not solve this capacity or combination-component work (X01).
+Approved row E02 is sequenced vertically: issue208 delivers a third suspect on
+a complete additional native D-only form within the existing three-product
+case bound. The next boundary is additional native E copies for multiple devices.
+Both preserve stable identity/order, reviewed details and linked context; broader
+retained-product capacity and combination-component work (X01) remain.

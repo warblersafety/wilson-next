@@ -18,7 +18,7 @@ import { capacityProductIds, capacityProductNames, correctCapacityProduct, produ
 const formSource = () => readFile("assets/fda/form-fda-3500-09-2025.pdf");
 const cases = [
   { label: "two suspects and one concomitant", roles: ["suspect", "suspect", "concomitant"], types: ["drug-or-biologic", "drug-or-biologic", "drug-or-biologic"], issue: undefined },
-  { label: "three non-device suspects", roles: ["suspect", "suspect", "suspect"], types: ["drug-or-biologic", "drug-or-biologic", "other"], issue: "too-many-suspect-products" },
+  { label: "three non-device suspects", roles: ["suspect", "suspect", "suspect"], types: ["drug-or-biologic", "drug-or-biologic", "other"], issue: undefined },
   { label: "two concomitants", roles: ["suspect", "concomitant", "concomitant"], types: ["drug-or-biologic", "drug-or-biologic", "drug-or-biologic"], issue: "too-many-concomitant-products" },
   { label: "device plus two non-device suspects", roles: ["suspect", "suspect", "suspect"], types: ["device", "drug-or-biologic", "drug-or-biologic"], issue: undefined },
   { label: "device, non-device suspect and concomitant", roles: ["suspect", "suspect", "concomitant"], types: ["device", "drug-or-biologic", "drug-or-biologic"], issue: undefined },
@@ -40,20 +40,21 @@ describe("product capacity readiness and actual export", () => {
     if (issue) {
       expect(snapshot.outputIssues).toEqual([expect.objectContaining({ code: issue })]);
       if (issue.startsWith("too-many")) {
-        const expectedIds = issue === "too-many-suspect-products" ? [...capacityProductIds] : capacityProductIds.slice(1);
+        const expectedIds = capacityProductIds.slice(1);
         expect(snapshot.outputIssues[0]).toMatchObject({ entityIds: expectedIds, targets: expectedIds.map(id => `product:${id}:role`) });
         const projection = projectForm3500(current);
-        expect(issue === "too-many-suspect-products" ? projection.sections.D.suspectProducts : projection.sections.F.concomitantProducts).toHaveLength(expectedIds.length);
+        expect(projection.sections.F.concomitantProducts).toHaveLength(expectedIds.length);
         await expect(fillForm3500Projection(new Uint8Array(await formSource()), projection)).rejects.toThrow("supports at most");
       }
     } else {
       const { output } = await fillForm3500Projection(new Uint8Array(await formSource()), snapshot.projection);
       const dir = await mkdtemp(join(tmpdir(), "wilson-capacity-")), file = join(dir, "supported.pdf");
       await writeFile(file, output);
-      const { stdout } = await promisify(execFile)(process.env.PYPDF_PYTHON ?? "python3", ["tools/pdf/independent_readback.py", file, "--named"]);
+      const { stdout } = await promisify(execFile)(process.env.PYPDF_PYTHON ?? "python3", ["tools/pdf/independent_readback.py", file, "--named", "--page-text"]);
       const named = JSON.parse(stdout).namedFields;
       const values = Object.values(named);
-      for (const name of capacityProductNames) expect(values).toContain(name);
+      for (const name of capacityProductNames) expect([...values, ...JSON.parse(stdout).pageTexts].join("\n")).toContain(name);
+      if (roles.every(r => r === "suspect") && types.every(t => t !== "device")) { expect(JSON.parse(stdout).pageCount).toBe(16); expect(JSON.parse(stdout).pageTexts[11]).toContain(capacityProductNames[2]); }
       // Independently read the actual FDA sections, not the adapter's readback.
       const suspects = roles.flatMap((role, i) => role === "suspect" && types[i] !== "device" ? [capacityProductNames[i]] : []);
       expect(named["topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]"]).toBe(suspects[0]);
@@ -66,7 +67,7 @@ describe("product capacity readiness and actual export", () => {
   });
 
   it.each(["preview", "download"] as const)("returns a truthful pre-export 409 for over-capacity %s requests without changing state", async (mode) => {
-    for (const [index, role, code] of [[2, "suspect", "too-many-suspect-products"], [1, "concomitant", "too-many-concomitant-products"]] as const) {
+    for (const [index, role, code] of [[1, "concomitant", "too-many-concomitant-products"]] as const) {
       const current = correctCapacityProduct(productCapacityCase(), index, { role: { kind: "known", value: role } });
       const state = { version: browserStateVersion, stage: "output", case: current, unrepresented: [] };
       const before = structuredClone(state);
@@ -83,7 +84,7 @@ describe("product capacity readiness and actual export", () => {
     const initial = productCapacityCase(), repository = new InMemoryCaseRepository({ initialCase: initial });
     const third = initial.products[2];
     const correctRole = (value: "suspect" | "concomitant") => performJourneyAction(repository, initial.id, { action: "set-fact", target: `product:${third.id}:role`, value: { kind: "known", value } }, fixedJourneyModel);
-    expect((await correctRole("suspect")).outputIssues[0].code).toBe("too-many-suspect-products");
+    expect((await correctRole("suspect")).downloadReady).toBe(true);
     expect((await correctRole("concomitant")).downloadReady).toBe(true);
     const restored = (await repository.load(initial.id))!;
     expect(restored.products.slice(0, 2)).toEqual(initial.products.slice(0, 2));

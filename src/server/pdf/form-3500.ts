@@ -1,5 +1,5 @@
 import { isOtherProductTypes, type OtherProductType } from "../../domain/case/other-product-types";
-import { planNarrativeContinuations, appendNarrativeContinuations } from "./narrative-continuation";
+import { planNarrativeContinuations, appendNarrativeContinuations, form3500ReportReference } from "./narrative-continuation";
 import {purchaseDetailFields,purchaseCountryLabel} from "../../domain/case/purchase-details";
 import {purchaseNativeGeometry,purchaseDetailLimitation} from "./purchase-details";
 import { isTreatmentDuration, durationNativeUnits, durationNativeLabels } from "../../domain/case/duration";
@@ -10,8 +10,8 @@ import { isCompleteBirthDate } from "../../domain/case/birth-date";
 import { patientAgeParts, type PatientAge } from "../../domain/case/age";
 import { patientAgeLimitation } from "./patient-age";
 import { createHash } from "node:crypto";
-import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts } from "../../domain/case/limits";
-import { PDFDocument, PDFName } from "@cantoo/pdf-lib";
+import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts, nativeForm3500SuspectSlots } from "../../domain/case/limits";
+import { PDFDocument, PDFName, StandardFonts } from "@cantoo/pdf-lib";
 import { encodeForm3500Frequency, encodeForm3500Route, productTextLimitation } from "./product-text";
 import { testHistoryLimitations } from "./test-history";
 import { quantityParts, quantityLimitation, eventNarrativeLimitation } from "./quantity";
@@ -247,17 +247,48 @@ export async function fillRepresentativeForm(
   };
 }
 
-export async function fillForm3500Projection(
+/** Additional suspects use a real FDA form copy, only D filled, never a text substitute. */
+export async function fillForm3500Projection(source: Uint8Array, projection: Form3500Projection): Promise<Form3500ProjectionFillResult> {
+  if (projection.sections.D.suspectProducts.length > maximumForm3500SuspectProducts) throw new Error(`The approved Form 3500 adapter supports at most ${maximumForm3500SuspectProducts} suspect products`);
+  const products = projection.sections.D.suspectProducts;
+  if (products.length <= nativeForm3500SuspectSlots) { const {output, readback} = await fillNativeForm3500Projection(source, projection); return {output, readback}; }
+  const initial = await fillNativeForm3500Projection(source, { ...projection, sections: { ...projection.sections, D: { suspectProducts: products.slice(0, nativeForm3500SuspectSlots) } } }, projection);
+  const document = initial.document;
+  const reference = form3500ReportReference(projection);
+  const linkFont = await document.embedFont(StandardFonts.Helvetica);
+  document.getPages()[3].drawText(`Report ${reference} - additional Section D form copy 1 follows this report.`, {x:44,y:776,size:8,font:linkFont});
+  document.getPages()[3].drawText("Suspect products #1-2 are in this form; #3 is in the additional native copy.", {x:44,y:763,size:8,font:linkFont});
+  const additionalReadback: typeof initial.readback.sections.D.suspectProducts = [];
+  for (const [index, product] of products.slice(nativeForm3500SuspectSlots).entries()) {
+    const extraProjection: Form3500Projection = { ...projection, sections: { A: {}, B: { relevantTests: [] }, C: {}, D: { suspectProducts: [product] }, E: {}, F: { concomitantProducts: [] }, G: { reporter: {} } } };
+    const extra = await fillNativeForm3500Projection(source, extraProjection, projection);
+    const copy = extra.document;
+    // Supported pdf-lib workflow: freeze the generated native appearances before copying.
+    // Avoid duplicate AcroForm field names across copies; the original report stays editable.
+    copy.getForm().flatten({ updateFieldAppearances: false });
+    const font = await copy.embedFont(StandardFonts.Helvetica);
+    const page = copy.getPages()[3];
+    page.drawText(`Additional FDA form copy ${index+1} - Section D only; report ${reference}`, { x:44, y:776, size:8, font });
+    page.drawText(`Suspect product #${nativeForm3500SuspectSlots+index+1} uses this copy's first block; context is in the main report B5.`, { x:44, y:763, size:8, font });
+    for (const copied of await document.copyPages(copy, copy.getPageIndices())) document.addPage(copied);
+    additionalReadback.push(...extra.readback.sections.D.suspectProducts);
+  }
+  return { output: await document.save(), readback: { ...initial.readback, pageCount: document.getPageCount(), sections: { ...initial.readback.sections, D: { suspectProducts: [...initial.readback.sections.D.suspectProducts, ...additionalReadback] } } } };
+}
+
+async function fillNativeForm3500Projection(
   source: Uint8Array,
   projection: Form3500Projection,
-): Promise<Form3500ProjectionFillResult> {
+  reportNarrative: Form3500Projection = projection,
+): Promise<Form3500ProjectionFillResult & {document: PDFDocument}> {
   await assertApprovedFormSource(source);
-  const narrativeLimitation = await eventNarrativeLimitation(projection);
+  // D-only copies carry quantity context in the linked main report, never duplicate B5.
+  const narrativeLimitation = await eventNarrativeLimitation(reportNarrative);
   if (narrativeLimitation) throw new Error(`The reviewed B5 event description ${narrativeLimitation}`);
   const testHistoryIssues = await testHistoryLimitations(projection);
   if (testHistoryIssues.length) throw new Error(`The reviewed B6/B7 text ${testHistoryIssues[0].limitation}`);
-  if (projection.sections.D.suspectProducts.length > maximumForm3500SuspectProducts) {
-    throw new Error(`The approved Form 3500 adapter supports at most ${maximumForm3500SuspectProducts} suspect products`);
+  if (projection.sections.D.suspectProducts.length > nativeForm3500SuspectSlots) {
+    throw new Error(`The approved Form 3500 adapter supports at most ${nativeForm3500SuspectSlots} native suspect slots`);
   }
   if (projection.sections.F.concomitantProducts.length > maximumForm3500ConcomitantProducts) {
     throw new Error(`The approved Form 3500 adapter supports at most ${maximumForm3500ConcomitantProducts} concomitant product`);
@@ -266,7 +297,7 @@ export async function fillForm3500Projection(
     throw new Error("The approved Form 3500 adapter supports at most eight relevant tests");
   }
 
-  const continuations = await planNarrativeContinuations(projection);
+  const continuations = await planNarrativeContinuations(projection, reportNarrative);
   const document = await loadForm(source);
   const form = document.getForm();
   const { A, B, C, D, E, F } = projection.sections;
@@ -474,6 +505,7 @@ export async function fillForm3500Projection(
   return {
     output: await document.save(),
     readback: readProjectionForm(document, projection),
+    document,
   };
 }
 

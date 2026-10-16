@@ -1,0 +1,71 @@
+{
+  "focusedMockBrowserJourneys": 3,
+  "fullMockBrowserGate": "136 passed before header-only clarification; latest focused3 and PDF4 passed; exact-headCI required",
+  "liveApplicationModelRequests": 0,
+  "PDFs": [
+    {
+      "file": "third-conversation.pdf",
+      "sha256": "2201512780e8f5ec5412793fb6531b5b36123dbe64994acc9f874189810fafb1",
+      "pages": 16
+    },
+    {
+      "file": "third-repaired.pdf",
+      "sha256": "22adbf4e54557a72bae0556c12296ba9b2974b73c259c79e13e9b84ab2514e70",
+      "pages": 16
+    },
+    {
+      "file": "third-reallocated.pdf",
+      "sha256": "b2d488d010671ad0c0f2602f0109d25e73694fdf1f6f10b0fe0891f3e0311e79",
+      "pages": 8
+    },
+    {
+      "file": "third-device-route.pdf",
+      "sha256": "6361e8a8bf5878bea7b89db52eddaa0c294029cd8031c07fbe2018234b8ca330",
+      "pages": 8
+    },
+    {
+      "file": "third-long-context.pdf",
+      "sha256": "588c9e59c1d49cc46f046eff8bd09dc6c15ef645b944c572951c98c38eee3f77",
+      "pages": 19
+    },
+    {
+      "file": "third-initial.pdf",
+      "sha256": "2201512780e8f5ec5412793fb6531b5b36123dbe64994acc9f874189810fafb1",
+      "pages": 16
+    }
+  ],
+  "unitTests": 874,
+  "unitFiles": 86,
+  "typecheck": "pass",
+  "build": "pass",
+  "independentRender": {
+    "renderer": "macOS PDFKit 2x",
+    "pages": [
+      1,
+      4,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "inspection": "pass: all8 copied pages9-16 inspected, only D filled; Reset Form matches printable original page1 (/F=4), not a newly printed hidden control"
+  },
+  "postClarificationFocusedMockBrowserJourneys": 3,
+  "postClarificationPDFTests": 4,
+  "longContextRender": {
+    "pages": [
+      9,
+      15
+    ],
+    "status": "pass: readable/unclipped continuation and linked native D fields; matching report reference"
+  },
+  "reviewRemediation": {
+    "F1": "final readback pageCount now taken after appending pages; targeted PDF4/typecheck passed",
+    "F2": "all copy pages rendered/inspected; source annotation flag inspection confirms printable native pushbuttons",
+    "FDAIdentifierPremise": "official general instructions specify only D filled on additional product copy; no added A1 requirement found; linked report references retained"
+  }
+}

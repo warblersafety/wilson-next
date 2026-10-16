@@ -5,5 +5,8 @@ export const maximumRelevantTests = 8;
 export const maximumAskedNeeds = 24;
 
 // Bounded Form 3500 output capacity, distinct from retained case capacity.
-export const maximumForm3500SuspectProducts = 2;
+export const nativeForm3500SuspectSlots = 2;
+export const maximumForm3500SuspectProducts = 3;
+/** Extra D-only copies use the first original native block. */
+export const form3500SuspectSlot = (index: number): 0 | 1 => index === 1 ? 1 : 0;
 export const maximumForm3500ConcomitantProducts = 1;

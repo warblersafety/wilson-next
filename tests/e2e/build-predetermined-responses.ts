@@ -1,3 +1,4 @@
+import {nativeDCopyScenario} from "../fixtures/native-d-copy";
 import { d5OtherScenario } from "../fixtures/d5-other";
 import { additionalCommentsScenario } from "../fixtures/additional-comments";
 import { listContextScenario } from "../fixtures/list-context";
@@ -643,5 +644,6 @@ export const predeterminedResponseScenarios = {
   listContext: listContextScenario,
   additionalComments: additionalCommentsScenario,
   d5Other: d5OtherScenario,
+  nativeDCopy: nativeDCopyScenario,
 };
 export const predeterminedModelResponses = Object.values(predeterminedResponseScenarios).flat();

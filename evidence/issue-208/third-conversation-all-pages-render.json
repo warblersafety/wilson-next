@@ -1,0 +1,44 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 1,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-208\/third-conversation-page-1.png"
+    },
+    {
+      "page" : 9,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-208\/third-conversation-page-9.png"
+    },
+    {
+      "page" : 10,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-208\/third-conversation-page-10.png"
+    },
+    {
+      "page" : 11,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-208\/third-conversation-page-11.png"
+    },
+    {
+      "page" : 15,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-208\/third-conversation-page-15.png"
+    },
+    {
+      "page" : 16,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-208\/third-conversation-page-16.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "Original FDA native layout and page identities retained; header metadata does not overlap",
+    "Initial D block links the same report reference to additional copy",
+    "Additional copy native D contains only third suspect values, exact units\/dates\/purchase fields",
+    "Original printable Reset Form\/button controls match initial native form; all template print flags checked",
+    "Every added-copy page inspected; A\/B\/C and reporter sections contain no copied clinical\/reporter facts"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-208\/third-conversation.pdf"
+}

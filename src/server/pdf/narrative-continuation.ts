@@ -47,7 +47,11 @@ export function wrapContinuationText(text: string, font: PDFFont): ContinuationL
   return lines;
 }
 
-export async function planNarrativeContinuations(projection: Form3500Projection): Promise<NarrativeContinuation[]> {
+export function form3500ReportReference(projection: Form3500Projection): string {
+  return `W-${createHash("sha256").update(JSON.stringify([projection.caseId, projection.sections])).digest("hex").slice(0, 20)}`;
+}
+
+export async function planNarrativeContinuations(projection: Form3500Projection, referenceProjection: Form3500Projection = projection): Promise<NarrativeContinuation[]> {
   const font = await fontPromise;
   const plans: NarrativeContinuation[] = [];
   for (const field of Object.keys(narrativeBlocks) as NarrativeField[]) {
@@ -60,7 +64,7 @@ export async function planNarrativeContinuations(projection: Form3500Projection)
     for (let start = 0; start < lines.length; start += count) pages.push(lines.slice(start, start + count));
     plans.push({ field, block: geometry.block, label: geometry.label, marker: "", reportReference: "", pages });
   }
-  const reportReference = `W-${createHash("sha256").update(JSON.stringify([projection.caseId, projection.sections])).digest("hex").slice(0, 20)}`;
+  const reportReference = form3500ReportReference(referenceProjection);
   let pageNumber = 1;
   for (const plan of plans) {
     const last = pageNumber + plan.pages.length - 1;
