@@ -1,0 +1,126 @@
+import { expect, it } from 'vitest';
+import { readFile, writeFile, mkdtemp } from 'node:fs/promises';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { eventDateCase, eventDates } from '../fixtures/event-date-precision';
+import { setContextFact, contextSource } from '../fixtures/reviewed-context';
+import { eventDateFields } from '../../src/domain/case/date-precision';
+import { projectForm3500, hasBaseEventDescription } from '../../src/domain/case/projection';
+import { form3500ReportReference } from '../../src/server/pdf/narrative-continuation';
+import { fillForm3500Projection } from '../../src/server/pdf/form-3500';
+import { parseBrowserJourneyState, browserStateVersion } from '../../src/server/case/browser-state';
+import { getJourneySnapshot } from '../../src/server/journey/service';
+import { InMemoryCaseRepository } from '../../src/server/case/repository';
+async function pdf(c = eventDateCase()) {
+    const projection = projectForm3500(c), r = await fillForm3500Projection(new Uint8Array(await readFile('assets/fda/form-fda-3500-09-2025.pdf')), projection), path = join(await mkdtemp(join(tmpdir(), 'wilson227-')), 'event-dates.pdf');
+    await writeFile(path, r.output);
+    const x = JSON.parse((await promisify(execFile)(process.env.PYPDF_PYTHON ?? 'python3', ['tools/pdf/independent_readback.py', path, '--named', '--page-text'])).stdout);
+    return { x, projection, path };
+}
+it.each(eventDateFields)('%s keeps exact precision/context/source in B5 without invented dates or unrelated changes', async (field) => {
+    const c = setContextFact(eventDateCase(), `event:event:${field}`, { kind: 'known', value: eventDates[field], qualifier: 'Supplied date transcription uncertain' }), before = structuredClone(c), { x, projection } = await pdf(c);
+    expect(x.pageCount).toBe(8);
+    expect(Object.values(x.namedFields).join('\n')).toContain(eventDates[field].wording);
+    expect(projection.sections.B.eventDescription).toContain('Supplied date transcription uncertain');
+    expect(c).toEqual(before);
+    expect((await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: c }), c.id)).downloadReady).toBe(true);
+    expect(projection.sourceTrace['sections.B.eventDescription']).toEqual(expect.arrayContaining(c.event.facts[field].resolvedValue!.sourceIds));
+    if (field !== 'dischargeDate') {
+        expect(Object.values(x.namedFields)).toContain('B5 wording');
+        expect(projection.sections.B[field === 'onsetDate' ? 'eventDate' : 'deathDate']).toBeUndefined();
+    }
+});
+it('complete dates retain native formatting and existing discharge prose; full-date qualifiers stay linked to B3/B2', async () => {
+    const c = setContextFact(eventDateCase(), 'event:event:onsetDate', { kind: 'known', value: '2028-01-12', qualifier: 'Date estimated by reporter' }), { x, projection } = await pdf(c);
+    expect(Object.values(x.namedFields)).toContain('12-JAN-2028');
+    expect(Object.values(x.namedFields)).toContain('12-MAR-2029');
+    expect(projection.sections.B.eventDescription).toContain('Discharged 12-Feb-2028.');
+    expect(projection.sections.B.eventDescription).toContain('B3 event onset date context: Date estimated by reporter');
+    expect(Object.values(x.namedFields)).not.toContain('B5 wording');
+});
+it('explicit death prerequisite suppresses retained partial death date without inference and restoring it prints only the current date', async () => {
+    let c = setContextFact(eventDateCase(), 'event:event:deathDate', { kind: 'known', value: eventDates.deathDate, qualifier: 'Death date context' });
+    const before = structuredClone(c);
+    c = setContextFact(c, 'event:event:death', { kind: 'known', value: false });
+    let p = projectForm3500(c);
+    expect(p.sections.B.deathDateInDescription).toBeUndefined();
+    expect(p.sections.B.eventDescription).not.toContain(eventDates.deathDate.wording);
+    expect(p.notIncluded.join('\n')).toContain('Death date remains');
+    expect(c.event.facts.deathDate).toEqual(before.event.facts.deathDate);
+    c = setContextFact(c, 'event:event:deathDate', { kind: 'known', value: { precision: 'year', year: '2030', wording: 'Death date during 2030' } });
+    c = setContextFact(c, 'event:event:death', { kind: 'known', value: true });
+    p = projectForm3500(c);
+    expect(p.sections.B.eventDescription).toContain('Death date during 2030');
+    expect(p.sections.B.eventDescription).not.toContain(eventDates.deathDate.wording);
+    expect((await pdf(c)).x.pageCount).toBe(8);
+});
+it.each(eventDateFields)('%s correction/status invalidates content and reference without resurrecting old wording or changing other facts', async (field) => {
+    const c = setContextFact(eventDateCase(), `event:event:${field}`, { kind: 'known', value: eventDates[field] }), key = async (s: typeof c) => (await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: s }), s.id)).reportContentKey, base = await key(c);
+    for (const value of [{ kind: 'known' as const, value: { precision: 'year' as const, year: '2031', wording: 'Explicit corrected date during 2031' }, qualifier: 'Current context' }, ...(['unknown', 'declined', 'inapplicable', 'explicitly-absent'] as const).map(kind => ({ kind }))]) {
+        const after = setContextFact(c, `event:event:${field}`, value);
+        expect(await key(after)).not.toBe(base);
+        expect(form3500ReportReference(projectForm3500(after))).not.toBe(form3500ReportReference(projectForm3500(c)));
+        expect(projectForm3500(after).sections.B.eventDescription ?? '').not.toContain(eventDates[field].wording);
+        expect(after.products).toEqual(c.products);
+        expect(after.patient).toEqual(c.patient);
+        expect(after.relevantTests).toEqual(c.relevantTests);
+        expect(after.event.facts.death).toEqual(c.event.facts.death);
+        expect(after.event.facts[field].supersededValues).toContainEqual(c.event.facts[field].resolvedValue);
+    }
+});
+it('genuine v28 resumes losslessly; falsely labelled partials reject and invalid legacy complete values stay retained and block output', async () => {
+    const c = eventDateCase(), s = { version: 'wilson-browser-state-v28', stage: 'output', case: c, unrepresented: [] };
+    expect(parseBrowserJourneyState(s)).toEqual({ ...s, version: browserStateVersion });
+    const partial = setContextFact(c, 'event:event:onsetDate', { kind: 'known', value: eventDates.onsetDate });
+    expect(() => parseBrowserJourneyState({ ...s, case: partial })).toThrow();
+    expect(parseBrowserJourneyState({ ...s, version: browserStateVersion, case: partial }).case).toEqual(partial);
+    const invalid = structuredClone(c);
+    invalid.event.facts.onsetDate.resolvedValue!.value = { kind: 'known', value: '2026-02-30' };
+    expect(parseBrowserJourneyState({ ...s, case: invalid }).case).toEqual(invalid);
+    expect((await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: invalid }), c.id)).downloadReady).toBe(false);
+});
+it('new onset/death supplemental dates do not satisfy the substantive narrative gate; date glyph issues target the actual field', async () => {
+    let c = setContextFact(eventDateCase(), 'event:event:onsetDate', { kind: 'known', value: eventDates.onsetDate });
+    for (const field of ['symptoms', 'problemDescription', 'treatments', 'outcome', 'dischargeDate'] as const)
+        c = setContextFact(c, `event:event:${field}`, { kind: 'unknown' });
+    for (let i = 0; i < c.products.length; i++)
+        c = setContextFact(c, `product:${c.products[i].id}:stopped`, { kind: 'unknown' });
+    expect(projectForm3500(c).sections.B.eventDescription).toContain(eventDates.onsetDate.wording);
+    expect(hasBaseEventDescription(c)).toBe(false);
+    const glyph = setContextFact(eventDateCase(), 'event:event:onsetDate', { kind: 'known', value: { ...eventDates.onsetDate, wording: 'Event onset in January 2028 漢' } }), snapshot = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: glyph }), glyph.id);
+    expect(snapshot.downloadReady).toBe(false);
+    expect(snapshot.outputIssues.some(i => i.targets.includes('event:event:onsetDate'))).toBe(true);
+});
+it('dense date wording uses existing B5 pagination/reference; adapter rejects a dangling B3/B2 pointer', async () => {
+    const wording = Array.from({ length: 110 }, (_, i) => `Fictional onset date line ${i + 1}: during 2028, exact day unknown.`).join('\n'), c = setContextFact(eventDateCase(), 'event:event:onsetDate', { kind: 'known', value: { precision: 'year', year: '2028', wording } }), { x } = await pdf(c);
+    expect(x.pageCount).toBeGreaterThan(9);
+    expect(x.pageTexts.slice(8).join('\n')).toContain('Fictional onset date line 110');
+    const ref = form3500ReportReference(projectForm3500(c));
+    for (const page of x.pageTexts.slice(8))
+        expect(page).toContain(ref);
+    const p = projectForm3500(eventDateCase());
+    p.sections.B.eventDate = undefined;
+    p.sections.B.eventDateInDescription = true;
+    await expect(fillForm3500Projection(new Uint8Array(await readFile('assets/fda/form-fda-3500-09-2025.pdf')), p)).rejects.toThrow('B3 partial event date requires');
+});
+it.each(eventDateFields)('%s pending/conflicting alternatives print no partial wording until explicit resolution', async (field) => {
+    const { applyCaseCommand } = await import('../../src/domain/case/commands');
+    let c = eventDateCase();
+    const source = contextSource(`event-${field}`, 'Explicit date in 2028 or during 2029, records disagree.');
+    c = applyCaseCommand(c, { type: 'attach-grounded-proposals', commandId: `attach-${field}`, expectedRevision: c.revision, products: [], sources: [source], proposals: [{ precision: 'year' as const, year: '2028', wording: 'Explicit date in 2028' }, { precision: 'year' as const, year: '2029', wording: 'during 2029' }].map((value, i) => ({ proposalId: `date-${i}`, groupId: 'event-date-options', intent: 'alternative' as const, target: { entity: 'event' as const, entityId: 'event' as const, field }, value: { kind: 'known' as const, value }, sourceIds: [source.id] })) }).case;
+    expect(projectForm3500(c).sections.B.eventDescription ?? '').not.toContain('Explicit date in 2028');
+    c = applyCaseCommand(c, { type: 'review-proposal-groups', commandId: 'review-dates', expectedRevision: c.revision, decisions: [{ groupId: 'event-date-options', action: 'accept' }] }).case;
+    expect(c.event.facts[field].state).toBe('conflicted');
+    expect(projectForm3500(c).sections.B.eventDescription ?? '').not.toContain('during 2029');
+    c = applyCaseCommand(c, { type: 'resolve-conflict', commandId: 'select-date', expectedRevision: c.revision, target: { entity: 'event', entityId: 'event', field }, chosenValueId: 'date-1', source: contextSource('select-event-date') }).case;
+    expect(projectForm3500(c).sections.B.eventDescription).toContain('during 2029');
+    expect(c.event.facts[field].supersededValues.some(v => v.id === 'date-0')).toBe(true);
+});
+it('B2 adapter rejects partial pointer without explicit death, with a complete date, or without linked wording', async () => {
+    const c = setContextFact(eventDateCase(), 'event:event:deathDate', { kind: 'known', value: eventDates.deathDate }), p = projectForm3500(c);
+    const source = new Uint8Array(await readFile('assets/fda/form-fda-3500-09-2025.pdf'));
+    for (const B of [{ ...p.sections.B, death: false }, { ...p.sections.B, deathDate: '2029-03-12' }, { ...p.sections.B, eventDescription: 'Symptoms only' }])
+        await expect(fillForm3500Projection(source, { ...p, sections: { ...p.sections, B } })).rejects.toThrow('B2 partial death date requires');
+});

@@ -1,0 +1,18 @@
+import { emptyFact } from '../../src/domain/case/internal';
+import { contextCase, setContextFact } from './reviewed-context';
+export const eventDates = { onsetDate: { precision: 'month' as const, year: '2028', month: '01', wording: 'Event first began in January 2028' }, deathDate: { precision: 'year' as const, year: '2029', wording: 'Death reported during 2029' }, dischargeDate: { precision: 'month' as const, year: '2028', month: '02', wording: 'Discharge recorded in February 2028' } };
+export function eventDateCase() {
+    let c = contextCase();
+    for (const [field, value] of Object.entries({ death: { kind: 'known', value: true }, onsetDate: { kind: 'known', value: '2028-01-12' }, deathDate: { kind: 'known', value: '2029-03-12' }, dischargeDate: { kind: 'known', value: '2028-02-12' } }))
+        c = setContextFact(c, `event:event:${field}`, value as {
+            kind: 'known';
+            value: string | boolean;
+        });
+    return c;
+}
+export function missingDeathDateCase() {
+    const c = structuredClone(eventDateCase());
+    c.event.facts.deathDate = emptyFact();
+    c.askedNeeds = c.askedNeeds.filter(n => n.key !== 'death-date');
+    return c;
+}

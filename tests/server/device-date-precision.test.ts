@@ -6,9 +6,9 @@ it.each(deviceDateFields)('grounds explicit %s without deriving another fact; fa
  if(value.wording==='Invented wording'||value.wording==='02/28')expect(r.unrepresented).toContainEqual(expect.objectContaining({field,reason:'evidence-not-found'}));else{expect(r.unrepresented).toEqual([]);expect(r.proposals.map(p=>p.target.field)).toEqual(['name',field]);expect(r.proposals[1].value).toEqual({kind:'known',value,qualifier:'Supplied uncertainty'});}
  }
 });
-it('rejects malformed supplied precision and does not broaden clinical event/test date contracts',()=>{
+it('rejects malformed supplied precision and does not broaden report/return date contracts',()=>{
  for(const field of deviceDateFields)for(const value of [{...month,month:'13'},{...month,year:'0000'},{...month,day:'01'},{...month,wording:''},'2028-02','2026-02-30'])expect(knownValueMismatch({entity:'product',entityId:'x',field},{kind:'known',value})).toBeTruthy();
- expect(knownValueMismatch({entity:'event',entityId:'event',field:'dischargeDate'},{kind:'known',value:month})).toBeTruthy();expect(knownValueMismatch({entity:'event',entityId:'event',field:'onsetDate'},{kind:'known',value:month})).toBeTruthy();
+ expect(knownValueMismatch({entity:'event',entityId:'event',field:'productReturnDate'},{kind:'known',value:month})).toBeTruthy();expect(knownValueMismatch({entity:'event',entityId:'event',field:'reportDate'},{kind:'known',value:month})).toBeTruthy();
 });
 
 it('device follow-up accepts distinct partial dates with readable source and no inferred implantation/status or model call',async()=>{

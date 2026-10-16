@@ -1,0 +1,32 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 1,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-227\/dense-event-date-page-1.png"
+    },
+    {
+      "page" : 2,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-227\/dense-event-date-page-2.png"
+    },
+    {
+      "page" : 9,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-227\/dense-event-date-page-9.png"
+    },
+    {
+      "page" : 11,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-227\/dense-event-date-page-11.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "Native supplied calendar dates remain readable in their existing fields",
+    "No date components calculated or repaired",
+    "Independent pypdf native-field readback accompanies render inspection"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-227\/dense-event-date.pdf"
+}

@@ -1,4 +1,4 @@
-import {deviceDateFields,productDateFields,productDateLabels,isPartialDate,suppliedDateText,type ProductDateField} from "./date-precision";
+import {eventDateLabels,deviceDateFields,productDateFields,productDateLabels,isPartialDate,suppliedDateText,type ProductDateField} from "./date-precision";
 import {isPartialExpiration,expirationText,type PartialExpiration} from "./expiration";
 import { isCalendarDateTarget, knownValueMismatch } from "./value-contract";
 import { isCompleteCalendarDate } from "./calendar-date";
@@ -38,10 +38,12 @@ export interface Form3500Projection {
       reportType?: ReportType;
       reportDate?: string;
       eventDate?: string;
+      eventDateInDescription?: boolean;
       eventDescription?: string;
       hospitalized?: boolean;
       death?: boolean;
       deathDate?: string;
+      deathDateInDescription?: boolean;
       lifeThreatening?: boolean;
       disability?: boolean;
       requiredIntervention?: boolean;
@@ -208,15 +210,20 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   if (suppliedSex?.qualifier) projection.sections.A.sexContext = suppliedSex.qualifier;
   assign(projection, "sections.A.weight", "patient weight", "patient:patient:weight", caseState.patient.facts.weight, projection.sections.A, "weight");
   assign(projection, "sections.B.reportType", "report type", "event:event:reportType", caseState.event.facts.reportType, projection.sections.B, "reportType");
-  assign(projection, "sections.B.eventDate", "event date", "event:event:onsetDate", caseState.event.facts.onsetDate, projection.sections.B, "eventDate");
+  const onset=known(caseState.event.facts.onsetDate);
+  if(onset&&isPartialDate(onset.value)) projection.sections.B.eventDateInDescription=true;
+  else assign(projection, "sections.B.eventDate", "event date", "event:event:onsetDate", caseState.event.facts.onsetDate, projection.sections.B, "eventDate", value=>value as string);
   assign(projection, "sections.B.reportDate", "date of this report", "event:event:reportDate", caseState.event.facts.reportDate, projection.sections.B, "reportDate");
   assign(projection, "sections.B.hospitalized", "hospitalization outcome", "event:event:hospitalized", caseState.event.facts.hospitalized, projection.sections.B, "hospitalized");
   for (const field of ["death", "lifeThreatening", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious"] as const) {
     assign(projection, `sections.B.${field}`, `${field} outcome`, `event:event:${field}`, caseState.event.facts[field], projection.sections.B, field);
   }
   if (known(caseState.event.facts.death)?.value === true) {
-    assign(projection, "sections.B.deathDate", "death date", "event:event:deathDate", caseState.event.facts.deathDate, projection.sections.B, "deathDate");
+    const deathDate=known(caseState.event.facts.deathDate);
+    if(deathDate&&isPartialDate(deathDate.value))projection.sections.B.deathDateInDescription=true;
+    else assign(projection, "sections.B.deathDate", "death date", "event:event:deathDate", caseState.event.facts.deathDate, projection.sections.B, "deathDate", value=>value as string);
   }
+  if(known(caseState.event.facts.death)?.value!==true && known(caseState.event.facts.deathDate)){projection.notIncluded.push("Death date remains in the case but is not printed because B2 death is not explicitly selected.");projection.omissions.push({concept:"death date",target:"event:event:deathDate",reason:"inapplicable",sourceIds:caseState.event.facts.deathDate.sourceIds});}
   assign(projection, "sections.B.relevantHistory", "relevant medical history", "event:event:relevantHistory", caseState.event.facts.relevantHistory, projection.sections.B, "relevantHistory", value => known(caseState.event.facts.relevantHistory)?.qualifier ? `${value}\nHistory context: ${known(caseState.event.facts.relevantHistory)!.qualifier}` : value, true);
   assign(projection, "sections.C.productAvailability", "product availability", "event:event:productAvailability", caseState.event.facts.productAvailability, projection.sections.C, "productAvailability");
   if (known(caseState.event.facts.productAvailability)?.value === "returned-to-manufacturer") {
@@ -346,7 +353,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       if(f>=0) projection.sections.F.concomitantProducts[f].fieldContext=projection.sections.F.concomitantProducts[f].fieldContext?.filter(c=>c.field!==field);
     }
   }
-  const quantityContext = [...quantityContextEntries(projection.sections.D.suspectProducts), ...d5OtherTypeContextEntries(caseState, projection), ...deviceContextEntries(caseState, projection)];
+  const quantityContext = [...quantityContextEntries(projection.sections.D.suspectProducts), ...d5OtherTypeContextEntries(caseState, projection), ...deviceContextEntries(caseState, projection), ...eventDateContextEntries(caseState)];
   if (quantityContext.length) {
     projection.sections.B.eventDescription = [projection.sections.B.eventDescription, ...quantityContext.map(entry => entry.text)].filter(Boolean).join("\n");
     projection.sourceTrace["sections.B.eventDescription"] = [...new Set([
@@ -370,6 +377,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   for (const entry of deviceContextEntries(caseState, projection)) carriedQualifierTargets.add(entry.target);
   for (const product of projection.sections.F.concomitantProducts) for (const context of product.fieldContext ?? []) carriedQualifierTargets.add(`product:${product.productId}:${context.field}`);
   for (const context of projection.sections.G.reporter.fieldContext??[]) carriedQualifierTargets.add(`reporter:reporter:${context.field}`);
+  for (const entry of eventDateContextEntries(caseState))carriedQualifierTargets.add(entry.target);
   for (const entry of relevantTestContextEntries(caseState)) carriedQualifierTargets.add(entry.target);
   for(const note of projection.productDateNotes??[])carriedQualifierTargets.add(`product:${note.productId}:${note.field}`);
   for(const note of projection.expirationNotes??[])carriedQualifierTargets.add(`product:${note.productId}:expirationDate`);
@@ -571,7 +579,7 @@ function buildEventDescription(caseState: SemanticCase): { value?: string; sourc
   append(caseState.event.facts.symptoms, (value) => `Symptoms: ${listWithContext(value.join(" and "), known(caseState.event.facts.symptoms)?.qualifier, "Symptoms list context")}.`);
   append(caseState.event.facts.treatments, (value) => `Treatment: ${listWithContext(value.join("; "), known(caseState.event.facts.treatments)?.qualifier, "Treatment list context")}.`);
   append(caseState.event.facts.outcome, (value) => `Outcome: ${qualifiedText(value, known(caseState.event.facts.outcome)?.qualifier)}.`);
-  append(caseState.event.facts.dischargeDate, (value) => `Discharged ${qualifiedText(displayDate(value), known(caseState.event.facts.dischargeDate)?.qualifier)}.`);
+  append(caseState.event.facts.dischargeDate, (value) => isPartialDate(value)?`B5 discharge date wording:\n${suppliedDateText(value,"discharge date",known(caseState.event.facts.dischargeDate)?.qualifier)}`:`Discharged ${qualifiedText(displayDate(value), known(caseState.event.facts.dischargeDate)?.qualifier)}.`);
   const stopped = caseState.products.filter(({ state }) => state === "resolved").flatMap((product) => {
     const name = known(product.facts.name);
     const wasStopped = known(product.facts.stopped);
@@ -669,4 +677,9 @@ export function deviceContextEntries(caseState: SemanticCase, projection: Form35
       return value?.qualifier ? [{ text: `Suspect device #${index+1} Section E ${humanizeProductField(field)} context: ${value.qualifier}`, target: `product:${product.id}:${field}`, sourceIds: value.sourceIds }] : [];
     }) : [];
   });
+}
+
+/** Supplemental date wording does not replace substantive event description. */
+export function eventDateContextEntries(caseState:SemanticCase){
+ return (["onsetDate","deathDate"] as const).flatMap(field=>{const fact=known(caseState.event.facts[field]);if(!fact||(field==="deathDate"&&known(caseState.event.facts.death)?.value!==true))return [];const block=field==="onsetDate"?"B3":"B2";return isPartialDate(fact.value)||fact.qualifier?[{text:isPartialDate(fact.value)?`${block} ${eventDateLabels[field].toLowerCase()} wording:\n${suppliedDateText(fact.value,eventDateLabels[field].toLowerCase(),fact.qualifier)}`:`${block} ${eventDateLabels[field].toLowerCase()} context: ${fact.qualifier}`,target:`event:event:${field}`,sourceIds:fact.sourceIds}]:[];});
 }

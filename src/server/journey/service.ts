@@ -1,4 +1,4 @@
-import {isProductDateField,productDateLabels,suppliedDateText} from "../../domain/case/date-precision";
+import {isEventDateField,eventDateLabels,isProductDateField,productDateLabels,suppliedDateText} from "../../domain/case/date-precision";
 import {isPartialExpiration,expirationText} from "../../domain/case/expiration";
 import {productDateTextIssues} from "../pdf/product-date-continuation";
 import {isCalendarDateTarget,knownValueMismatch} from "../../domain/case/value-contract";
@@ -27,7 +27,7 @@ import { completionQuestions } from "../../domain/case/completion-policy";
 import { createSemanticCase } from "../../domain/case/create";
 import { allFacts, getFact, targetFromKey, targetKey } from "../../domain/case/facts";
 import { productDisplayLabel } from "../../domain/case/product-label";
-import { projectForm3500, quantityContextEntries, hasBaseEventDescription, baseEventDescription, baseEventDescriptionTargets, additionalCommentsEntries, d5OtherTypeContextEntries, deviceContextEntries } from "../../domain/case/projection";
+import { projectForm3500, quantityContextEntries, hasBaseEventDescription, baseEventDescription, baseEventDescriptionTargets, additionalCommentsEntries, d5OtherTypeContextEntries, deviceContextEntries, eventDateContextEntries } from "../../domain/case/projection";
 import type { CaseValue, Fact, FactTarget, ProductFactKey, ReporterFactKey, SemanticCase, Source } from "../../domain/case/types";
 import {
   createClarificationView,
@@ -135,7 +135,7 @@ export async function getJourneySnapshot(
   const baseLimitation = await narrativeTextLimitation(baseEventDescription(caseState));
   const narrativeLimitation = baseLimitation ?? await eventNarrativeLimitation(projection);
   if (narrativeLimitation) {
-    const contextEntries = [...quantityContextEntries(projection.sections.D.suspectProducts), ...d5OtherTypeContextEntries(caseState, projection), ...deviceContextEntries(caseState, projection)];
+    const contextEntries = [...quantityContextEntries(projection.sections.D.suspectProducts), ...d5OtherTypeContextEntries(caseState, projection), ...deviceContextEntries(caseState, projection),...eventDateContextEntries(caseState)];
     const unsupportedContext = (await Promise.all(contextEntries.map(async entry => ({ entry, unsupported: await narrativeGlyphLimitation(entry.text, "B5 context") })))).filter(item => item.unsupported).map(item => item.entry);
     const targets = baseLimitation ? baseEventDescriptionTargets(caseState) : (unsupportedContext.length ? unsupportedContext : contextEntries).map(entry => entry.target);
     outputIssues.push({
@@ -316,8 +316,8 @@ export async function performJourneyAction(
           expectedRevision: current.revision,
           source: fullSource(
             intent === "correction" ? "correction" : "answer",
-            ((target.entity === "test" && target.field === "date") || (target.entity === "product" && (target.field === "expirationDate" || isProductDateField(target.field))))
-              ? `Clinician supplied ${target.entity === "test" ? "test date" : target.field === "expirationDate" ? "expiration" : isProductDateField(target.field) ? productDateLabels[target.field].toLowerCase() : "date"} information: ${displayValue(action.value, target)}${action.value.kind === "known" && !isPartialExpiration(action.value.value) && action.value.qualifier ? `; context: ${action.value.qualifier}` : ""}.`
+            ((target.entity === "event" && isEventDateField(target.field)) || (target.entity === "test" && target.field === "date") || (target.entity === "product" && (target.field === "expirationDate" || isProductDateField(target.field))))
+              ? `Clinician supplied ${target.entity === "event" && isEventDateField(target.field) ? eventDateLabels[target.field].toLowerCase() : target.entity === "test" ? "test date" : target.field === "expirationDate" ? "expiration" : isProductDateField(target.field) ? productDateLabels[target.field].toLowerCase() : "date"} information: ${displayValue(action.value, target)}${action.value.kind === "known" && !isPartialExpiration(action.value.value) && action.value.qualifier ? `; context: ${action.value.qualifier}` : ""}.`
               : target.entity === "patient" && target.field === "raceEthnicity"
               ? `Clinician supplied the patient race and/or ethnicity: ${displayValue(action.value, target)}${action.value.kind === "known" && action.value.qualifier ? `; context: ${action.value.qualifier}` : ""}.`
               : `Clinician ${intent === "correction" ? "corrected this value directly" : "added this value directly"}.`,
@@ -410,7 +410,7 @@ export async function performJourneyAction(
           type: "record-clinician-facts",
           commandId: commandId("answer-death-date"),
           expectedRevision: current.revision,
-          source: fullSource("answer", `Death date: ${displayValue(action.value)}.`),
+          source: fullSource("answer", `Death date: ${displayValue(action.value,{entity:"event",entityId:"event",field:"deathDate"})}${action.value.kind === "known" && !isPartialExpiration(action.value.value) && action.value.qualifier ? `; context: ${action.value.qualifier}` : ""}.`),
           answersNeed: "death-date",
           facts: [{ id: valueId("death-date"), target: { entity: "event", entityId: "event", field: "deathDate" }, intent: "fact", value: action.value }],
         });
@@ -864,6 +864,7 @@ function displayValue(value: CaseValue<unknown>, target?: FactTarget): string {
   if (target?.entity === "patient" && target.field === "ageYears" && isPatientAge(value.value)) { const age = patientAgeParts(value.value); return `${age.value} ${age.unit}`; }
   if (target?.entity === "patient" && target.field === "a2Value" && value.value === "date-of-birth") return "date of birth";
   if (target?.entity === "patient" && target.field === "raceEthnicity" && Array.isArray(value.value)) return value.value.map(item => raceEthnicityOptions.find(option => option.value === item)?.label ?? String(item)).join(" and ");
+  if (isPartialExpiration(value.value) && target?.entity === "event" && isEventDateField(target.field))return suppliedDateText(value.value,eventDateLabels[target.field].toLowerCase(),value.qualifier);
   if (isPartialExpiration(value.value) && target?.entity === "test" && target.field === "date") return suppliedDateText(value.value,"test date",value.qualifier);
   if (isPartialExpiration(value.value)) return target?.entity === "product" && isProductDateField(target.field) ? suppliedDateText(value.value,productDateLabels[target.field].toLowerCase(),value.qualifier) : expirationText(value.value,value.qualifier);
   if (Array.isArray(value.value)) return value.value.join(" and ");

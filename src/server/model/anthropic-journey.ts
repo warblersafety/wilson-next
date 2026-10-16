@@ -20,8 +20,8 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-test-date-precision-v27";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v35-test-date-precision";
+export const MODEL_PROMPT_REVISION = "wilson-event-date-precision-v28";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v36-event-date-precision";
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
 export const MODEL_MAX_RETRIES = 0;
 
@@ -99,7 +99,8 @@ Rules:
 - Product expirationDate is an explicitly supplied expiration/best-by/use-by date. Complete dates use YYYY-MM-DD. For explicitly supplied month/year only use {precision:"month",year:"YYYY",month:"MM",wording:"exact supplied expiration statement"}; for year only use {precision:"year",year:"YYYY",wording:"exact supplied expiration statement"}. Retain the precise supplied wording in wording and cite its passage; preserve uncertainty with qualifier. Propose partial expiration facts for human review rather than omitting them. Do not parse unrelated numbers into dates. Keep it with the identified product, separate from startDate, stopDate, return or explant dates. Never infer a missing day/month or judge whether the product was expired.
 - medicationType contains only explicitly supplied brand, generic-biosimilar, otc or compounded labels; preserve combinations. A generic molecule name alone does not establish generic-biosimilar or brand. Never infer product-label subtype from the product category.
 - A medicine or other product named only as treatment administered in response to the adverse event belongs in event.treatments. Propose it as a report product only when the clinician separately describes it as suspect, concomitant, or otherwise involved in the report.
-- Use normalized ISO dates (YYYY-MM-DD) for complete dates; supported partial product and test date values retain their explicit precision object and exact wording. Use "oral" for "by mouth". Otherwise preserve explicitly stated descriptive detail in known values; do not compress away modifiers that make a clinical statement more specific. Retain measurement values with their units.
+- Event onsetDate (B3), deathDate (B2) and dischargeDate (B5) independently support complete dates or explicitly supplied month/year/year-only precision objects with exact cited wording and explicit year. Keep uncertainty with the named date. Never derive a date or chronology from another date, DOB, tests, therapy, pregnancy descriptions or clinical conventions. A death date never establishes death=true or suspected association; discharge dates never establish hospitalization. Preserve outcome/status prerequisites separately for human review. Report date remains clinician-entered complete date; product return and DOB contracts are unchanged.
+- Use normalized ISO dates (YYYY-MM-DD) for complete dates; supported partial product, test and event date values retain their explicit precision object and exact wording. Use "oral" for "by mouth". Otherwise preserve explicitly stated descriptive detail in known values; do not compress away modifiers that make a clinical statement more specific. Retain measurement values with their units.
 - On opening input, declare each mentioned product once using arbitrary response-local productReference and groupReference values. Use those references for its proposals. Wilson—not you—assigns stable case identity.
 - On later input, declare no products. Refer to an existing product only by an exact application-supplied product ID from the reviewed-case context. A repeated name or alias does not create identity.
 - proposalReference and groupReference are response-local linkage values, not case IDs. Every declared test and product requires its own distinct groupReference; never reuse one group for different tests or products. All proposals for that entity use its declared groupReference. Keep later update groups within one existing case entity as well.

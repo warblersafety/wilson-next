@@ -361,9 +361,11 @@ async function fillNativeForm3500Projection(
   for (const field of ["death", "lifeThreatening", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious"] as const) {
     setChecked(form, fields[field], B[field] === true);
   }
-  setText(form, fields.deathDate, B.deathDate ? formatDate(B.deathDate) : undefined);
+  if(B.deathDateInDescription && (B.death!==true || B.deathDate || !B.eventDescription?.includes("B2 death date wording:\n")))throw new Error("B2 partial death date requires an explicit death outcome and linked B5 wording, not a complete native date");
+  if(B.eventDateInDescription && (B.eventDate || !B.eventDescription?.includes("B3 event onset date wording:\n")))throw new Error("B3 partial event date requires linked B5 wording, not a complete native date");
+  setText(form, fields.deathDate, B.deathDateInDescription?"B5 wording":B.deathDate ? formatDate(B.deathDate) : undefined);
   setText(form, fields.reportDate, B.reportDate ? formatDate(B.reportDate) : undefined);
-  setText(form, fields.eventDate, B.eventDate ? formatDate(B.eventDate) : undefined);
+  setText(form, fields.eventDate, B.eventDateInDescription?"B5 wording":B.eventDate ? formatDate(B.eventDate) : undefined);
   const narrativeText = (field: "eventDescription" | "relevantHistory" | "relevantTestContext") => continuations.find(plan => plan.field === field)?.marker ?? B[field];
   setText(form, fields.eventNarrative, narrativeText("eventDescription"));
   setText(form, fields.relevantHistory, narrativeText("relevantHistory"));
@@ -743,10 +745,12 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
             : form.getCheckBox(fields.productProblem).isChecked() ? "product-problem" : undefined,
         reportDate: parseDate(form.getTextField(fields.reportDate).getText()),
         eventDate: parseDate(form.getTextField(fields.eventDate).getText()),
+        eventDateInDescription:form.getTextField(fields.eventDate).getText()==="B5 wording"?true:undefined,
         eventDescription: form.getTextField(fields.eventNarrative).getText(),
         hospitalized: B.hospitalized === undefined ? undefined : form.getCheckBox(fields.hospitalized).isChecked(),
         death: B.death === undefined ? undefined : form.getCheckBox(fields.death).isChecked(),
         deathDate: parseDate(form.getTextField(fields.deathDate).getText()),
+        deathDateInDescription:form.getTextField(fields.deathDate).getText()==="B5 wording"?true:undefined,
         lifeThreatening: B.lifeThreatening === undefined ? undefined : form.getCheckBox(fields.lifeThreatening).isChecked(),
         disability: B.disability === undefined ? undefined : form.getCheckBox(fields.disability).isChecked(),
         requiredIntervention: B.requiredIntervention === undefined ? undefined : form.getCheckBox(fields.requiredIntervention).isChecked(),
@@ -834,7 +838,7 @@ function formatDate(value: string): string {
 }
 
 function parseDate(value: string | undefined): string | undefined {
-  if (!value || value === "D6 continued" || value === "E4 continued" || ["D1 cont.","D3 cont.","E6a cont.","E6b cont.","F1 cont.","B6 comments"].includes(value)) return undefined;
+  if (!value || value === "D6 continued" || value === "E4 continued" || ["D1 cont.","D3 cont.","E6a cont.","E6b cont.","F1 cont.","B6 comments","B5 wording"].includes(value)) return undefined;
   const match = /^(\d{2})-([A-Z]{3})-(\d{4})$/.exec(value);
   const month = match ? months.indexOf(match[2]) + 1 : 0;
   if (!match || month === 0) throw new Error(`Unreadable Form 3500 date ${value}`);

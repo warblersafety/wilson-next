@@ -361,7 +361,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await serverAction(page, () => page.getByRole("button", { name: "Confirm outcomes" }).click());
   await expect(page.getByRole("heading", { name: "What was the date of death?" })).toBeVisible();
   questionTrace.push({ journey: "layer1-death", question: "death date", reason: "death was accepted and its conditional date remained empty", answer: "7-Sep-2026" });
-  await page.locator("#death-date").fill("2026-09-07");
+  await page.getByLabel("Date of death", { exact: true }).fill("2026-09-07");
   await serverAction(page, () => page.getByRole("button", { name: "Add date" }).click());
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();

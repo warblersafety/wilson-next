@@ -96,7 +96,7 @@ export const journeyActionSchema = z.discriminatedUnion("action", [
     selected: z.array(z.enum(seriousOutcomeFields)),
     disposition: z.enum(["known", "unknown", "declined"]),
   }).strict(),
-  z.object({ action: z.literal("answer-death-date"), value: answerStringSchema }).strict(),
+  z.object({ action: z.literal("answer-death-date"), value: z.union([medicationDateSchema,z.object({kind:z.literal("explicitly-absent")}).strict()]) }).strict(),
   z.object({
     action: z.literal("answer-clinical-context"),
     test: z.discriminatedUnion("kind", [

@@ -50,9 +50,9 @@ export interface EventFacts {
   reportDate: Fact<string>;
   problemDescription: Fact<string>;
   symptoms: Fact<string[]>;
-  onsetDate: Fact<string>;
+  onsetDate: Fact<SuppliedDate>;
   death: Fact<boolean>;
-  deathDate: Fact<string>;
+  deathDate: Fact<SuppliedDate>;
   lifeThreatening: Fact<boolean>;
   hospitalized: Fact<boolean>;
   disability: Fact<boolean>;
@@ -64,7 +64,7 @@ export interface EventFacts {
   additionalComments: Fact<string>;
   treatments: Fact<string[]>;
   outcome: Fact<string>;
-  dischargeDate: Fact<string>;
+  dischargeDate: Fact<SuppliedDate>;
   productAvailability: Fact<"available" | "not-available" | "returned-to-manufacturer">;
   productReturnDate: Fact<string>;
 }
