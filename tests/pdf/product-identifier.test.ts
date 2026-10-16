@@ -68,7 +68,7 @@ it("keeps identifier with its product on withdrawal and discloses concomitant om
   expect(productCardFields("device", {})).not.toContain("ndcOrUniqueId");
   const device = correctCapacityProduct(original, 0, { productType: { kind: "known", value: "device" }, udi: { kind: "known", value: "(01)00000000000000" } });
   const deviceProjection = projectForm3500(device);
-  expect(deviceProjection.sections.E.suspectDevice?.udi).toBe("(01)00000000000000");
+  expect(deviceProjection.sections.E.suspectDevices[0]?.udi).toBe("(01)00000000000000");
   expect(deviceProjection.notIncluded.join(" ")).toContain("NDC number or Unique ID remains in reviewed knowledge but is not included in Section E");
   expect(device.products[0].facts.ndcOrUniqueId).toEqual(original.products[0].facts.ndcOrUniqueId);
 });

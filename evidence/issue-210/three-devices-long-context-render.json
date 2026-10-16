@@ -1,0 +1,28 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 9,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-long-context-page-9.png"
+    },
+    {
+      "page" : 17,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-long-context-page-17.png"
+    },
+    {
+      "page" : 25,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-long-context-page-25.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "Main E and each native E-only copy have matching report reference and correct device ordinal",
+    "Beta and Gamma have distinct exact native fields and explicit operator\/reprocessing\/service marks",
+    "Main B5 context identifies each field\/device exactly, without clipping",
+    "All16 copied pages inspected; non-E facts remain blank, original printable controls\/layout preserved"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-long-context.pdf"
+}

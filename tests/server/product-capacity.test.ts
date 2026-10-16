@@ -22,7 +22,7 @@ const cases = [
   { label: "two concomitants", roles: ["suspect", "concomitant", "concomitant"], types: ["drug-or-biologic", "drug-or-biologic", "drug-or-biologic"], issue: "too-many-concomitant-products" },
   { label: "device plus two non-device suspects", roles: ["suspect", "suspect", "suspect"], types: ["device", "drug-or-biologic", "drug-or-biologic"], issue: undefined },
   { label: "device, non-device suspect and concomitant", roles: ["suspect", "suspect", "concomitant"], types: ["device", "drug-or-biologic", "drug-or-biologic"], issue: undefined },
-  { label: "two suspect devices", roles: ["suspect", "suspect", "concomitant"], types: ["device", "device", "drug-or-biologic"], issue: "multiple-suspect-devices" },
+  { label: "two suspect devices", roles: ["suspect", "suspect", "concomitant"], types: ["device", "device", "drug-or-biologic"], issue: undefined },
   { label: "concomitant device", roles: ["suspect", "suspect", "concomitant"], types: ["drug-or-biologic", "drug-or-biologic", "device"], issue: "unsupported-concomitant-device" },
 ] as const;
 

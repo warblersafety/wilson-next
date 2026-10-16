@@ -1,0 +1,103 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 2,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-2.png"
+    },
+    {
+      "page" : 6,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-6.png"
+    },
+    {
+      "page" : 9,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-9.png"
+    },
+    {
+      "page" : 10,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-10.png"
+    },
+    {
+      "page" : 11,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-11.png"
+    },
+    {
+      "page" : 12,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-12.png"
+    },
+    {
+      "page" : 13,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-13.png"
+    },
+    {
+      "page" : 14,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-14.png"
+    },
+    {
+      "page" : 15,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-15.png"
+    },
+    {
+      "page" : 16,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-16.png"
+    },
+    {
+      "page" : 17,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-17.png"
+    },
+    {
+      "page" : 18,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-18.png"
+    },
+    {
+      "page" : 19,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-19.png"
+    },
+    {
+      "page" : 20,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-20.png"
+    },
+    {
+      "page" : 21,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-21.png"
+    },
+    {
+      "page" : 22,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-22.png"
+    },
+    {
+      "page" : 23,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-23.png"
+    },
+    {
+      "page" : 24,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected-page-24.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "Main E and each native E-only copy have matching report reference and correct device ordinal",
+    "Beta and Gamma have distinct exact native fields and explicit operator\/reprocessing\/service marks",
+    "Main B5 context identifies each field\/device exactly, without clipping",
+    "All16 copied pages inspected; non-E facts remain blank, original printable controls\/layout preserved"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-210\/three-devices-corrected.pdf"
+}

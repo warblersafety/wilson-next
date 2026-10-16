@@ -173,7 +173,7 @@ describe("pure case views and semantic Form 3500 projection", () => {
     clearFact(apixaban.facts.productType);
     const missingProjection = projectForm3500(missingType);
     expect(missingProjection.sections.D.suspectProducts.map(({ productId }) => productId)).not.toContain(apixaban.id);
-    expect(missingProjection.sections.E.suspectDevice).toBeUndefined();
+    expect(missingProjection.sections.E.suspectDevices).toEqual([]);
     expect(missingProjection.omissions).toContainEqual(expect.objectContaining({
       target: `product:${apixaban.id}:productType`, reason: "empty",
     }));
@@ -182,7 +182,7 @@ describe("pure case views and semantic Form 3500 projection", () => {
     const changedProduct = changedToDevice.products.find(({ id }) => id === "product-apixaban")!;
     changedProduct.facts.productType.resolvedValue!.value = { kind: "known", value: "device" };
     const deviceProjection = projectForm3500(changedToDevice);
-    expect(deviceProjection.sections.E.suspectDevice?.productId).toBe(changedProduct.id);
+    expect(deviceProjection.sections.E.suspectDevices[0]?.productId).toBe(changedProduct.id);
     expect(deviceProjection.sections.D.suspectProducts.map(({ productId }) => productId)).not.toContain(changedProduct.id);
     expect(deviceProjection.notIncluded).toContainEqual(expect.stringContaining("apixaban — Dose remains in reviewed knowledge but is not included in Section E"));
 

@@ -20,7 +20,7 @@ import type {
 } from "./journey-model";
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
-export const MODEL_PROMPT_REVISION = "wilson-d5-other-types-v22";
+export const MODEL_PROMPT_REVISION = "wilson-native-e-copies-v23";
 export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v30-d5-other-types";
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
 export const MODEL_MAX_RETRIES = 0;
@@ -68,11 +68,11 @@ export interface AnthropicStreamingClient {
   };
 }
 
-const SYSTEM_PROMPT = `You extract grounded semantic proposals from one synthetic clinician input for Wilson's bounded medication, single-device adverse-event or product-problem, and non-device product-quality scope.
+const SYSTEM_PROMPT = `You extract grounded semantic proposals from one synthetic clinician input for Wilson's bounded medication, suspect-device adverse-event or product-problem, and non-device product-quality scope.
 
 Rules:
 - Propose only facts explicitly supported by the current clinician input. Do not diagnose, infer causality, classify, fill gaps, or establish truth.
-- The supported targets are the patient, event or product problem, relevant-test, medication or non-device product, and single suspect-device fields represented by the response schema. Preserve uncertainty, negation, correction, alternatives, unknown, explicitly absent, inapplicable, and declined meanings.
+- The supported targets are the patient, event or product problem, relevant-test, medication or non-device product, and suspect-device fields for each explicitly identified retained device represented by the response schema. Preserve uncertainty, negation, correction, alternatives, unknown, explicitly absent, inapplicable, and declined meanings.
 - event.additionalComments holds only explicitly supplied general additional comments for the report, preserving exact wording, uncertainty and source. It is optional and independent of symptoms, product problems, treatment, outcome, tests, history and reporter/product details. Do not automatically move omitted/unrepresented source text or copy structured facts here, infer clinical meaning or fill unmentioned comments. When the clinician explicitly supplies text as general comments, preserve it even if it overlaps another fact, without changing that fact. Explicit corrections change only the named comments and require review.
 - event.symptoms holds the reported patient manifestations, including signs, symptoms and stated clinical events or diagnoses. event.problemDescription holds an actual product-quality complaint, defect or malfunction, not a general account of the adverse event. An adverse reaction while using a suspect product does not itself establish a product defect. If both are reported, keep the product complaint in problemDescription and the patient manifestations in symptoms; do not duplicate the manifestations into problemDescription. Omit only unmentioned product complaints. If the clinician explicitly denies a product-quality complaint or states that none was reported, preserve problemDescription as explicitly-absent, including when patient symptoms are present. If the existence of a product problem is explicitly unknown, preserve unknown; an uncertain described concern remains qualified, not confirmed or absent. Preserve stated uncertainty and negation; never invent a diagnosis or convert uncertain manifestations to confirmed ones.
 - A symptoms value describes the whole reported list. Combine compatible positive manifestations and specific denials in one array, keeping each denial or uncertainty in the wording of its own item. Denial of one manifestation does not mean all symptoms are explicitly absent. Do not emit separate competing symptoms facts for compatible items or turn a specific denial into field-wide absence. Use explicitly-absent for symptoms only when the input explicitly says there were no patient manifestations at all. Genuine incompatible accounts remain alternatives for review, never silently combined or resolved.

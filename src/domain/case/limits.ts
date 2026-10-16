@@ -10,3 +10,5 @@ export const maximumForm3500SuspectProducts = 3;
 /** Extra D-only copies use the first original native block. */
 export const form3500SuspectSlot = (index: number): 0 | 1 => index === 1 ? 1 : 0;
 export const maximumForm3500ConcomitantProducts = 1;
+
+export const maximumForm3500SuspectDevices = 3;

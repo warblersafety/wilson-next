@@ -1,0 +1,414 @@
+{
+  "source": "assets/fda/form-fda-3500-09-2025.pdf",
+  "page": 6,
+  "reader": "pypdf",
+  "widgets": {
+    "BrandName[0]": {
+      "rect": [
+        43.784,
+        662.23,
+        277.308,
+        676.324
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "CommName[0]": {
+      "rect": [
+        343.148,
+        662.105,
+        574.285,
+        676.199
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Procode[0]": {
+      "rect": [
+        283.286,
+        661.952,
+        335.441,
+        676.046
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": 3,
+      "multiline": false
+    },
+    "ManuName[0]": {
+      "rect": [
+        43.784,
+        633.668,
+        573.948,
+        647.762
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "ModelNum[0]": {
+      "rect": [
+        43.784,
+        605.58,
+        163.536,
+        619.674
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "LotNum[0]": {
+      "rect": [
+        169.784,
+        605.58,
+        308.531,
+        619.674
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "CatNum[0]": {
+      "rect": [
+        313.299,
+        605.58,
+        573.939,
+        619.674
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "ExpDate[0]": {
+      "rect": [
+        43.784,
+        577.4,
+        180.286,
+        591.494
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "SerialNum[0]": {
+      "rect": [
+        187.328,
+        577.4,
+        573.948,
+        591.494
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "CharCounter[0]": {
+      "rect": [
+        547.611,
+        562.229,
+        573.945,
+        573.534
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "UDInum[0]": {
+      "rect": [
+        43.784,
+        435.659,
+        573.948,
+        563.142
+      ],
+      "DA": "/ArialMT 8.00 Tf 0 g",
+      "maxLength": 1000,
+      "multiline": true
+    },
+    "ImplantDate[0]": {
+      "rect": [
+        287.493,
+        394.739,
+        409.133,
+        408.833
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "ExplantDate[0]": {
+      "rect": [
+        430.611,
+        394.809,
+        561.464,
+        408.903
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "ReprocInfo[0]": {
+      "rect": [
+        175.618,
+        346.763,
+        434.257,
+        376.515
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": true
+    },
+    "Prod1[0]": {
+      "rect": [
+        67.906,
+        284.757,
+        266.672,
+        298.483
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Start1[0]": {
+      "rect": [
+        269.506,
+        284.757,
+        417.872,
+        298.483
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "End1[0]": {
+      "rect": [
+        420.706,
+        284.757,
+        569.072,
+        298.483
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Prod2[0]": {
+      "rect": [
+        67.906,
+        268.197,
+        266.672,
+        281.923
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Start2[0]": {
+      "rect": [
+        269.506,
+        268.197,
+        417.872,
+        281.923
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "End2[0]": {
+      "rect": [
+        420.706,
+        268.197,
+        569.072,
+        281.923
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Prod3[0]": {
+      "rect": [
+        67.906,
+        251.637,
+        266.672,
+        265.363
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Start3[0]": {
+      "rect": [
+        269.506,
+        251.637,
+        417.872,
+        265.363
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Cell4[0]": {
+      "rect": [
+        420.706,
+        135.717,
+        569.072,
+        149.443
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Prod4[0]": {
+      "rect": [
+        67.906,
+        235.077,
+        266.672,
+        248.803
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Start4[0]": {
+      "rect": [
+        269.506,
+        235.077,
+        417.872,
+        248.803
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Prod5[0]": {
+      "rect": [
+        67.906,
+        218.517,
+        266.672,
+        232.243
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Start5[0]": {
+      "rect": [
+        269.506,
+        218.517,
+        417.872,
+        232.243
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Prod6[0]": {
+      "rect": [
+        67.906,
+        201.957,
+        266.672,
+        215.683
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Start6[0]": {
+      "rect": [
+        269.506,
+        201.957,
+        417.872,
+        215.683
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Prod7[0]": {
+      "rect": [
+        67.906,
+        185.397,
+        266.672,
+        199.123
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Start7[0]": {
+      "rect": [
+        269.506,
+        185.397,
+        417.872,
+        199.123
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Prod8[0]": {
+      "rect": [
+        67.906,
+        168.837,
+        266.672,
+        182.563
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Start8[0]": {
+      "rect": [
+        269.506,
+        168.837,
+        417.872,
+        182.563
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Prod9[0]": {
+      "rect": [
+        67.906,
+        152.277,
+        266.672,
+        166.003
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Start9[0]": {
+      "rect": [
+        269.506,
+        152.277,
+        417.872,
+        166.003
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Prod10[0]": {
+      "rect": [
+        67.906,
+        135.717,
+        266.672,
+        149.443
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    },
+    "Start10[0]": {
+      "rect": [
+        269.506,
+        135.717,
+        417.872,
+        149.443
+      ],
+      "DA": "/ArialMT 8.50 Tf 0 g",
+      "maxLength": null,
+      "multiline": false
+    }
+  }
+}

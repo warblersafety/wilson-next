@@ -1,3 +1,4 @@
+import {deviceTextFields, deviceTextLimitation} from "../pdf/device-text";
 import { narrativeGlyphLimitation } from "../pdf/narrative-continuation";
 import { seriousOutcomeLabels } from "../../domain/case/serious-outcomes";
 import { hasReservedNoPatientIdentifier, noPatientConflictingTargets, noPatientOutcomeConflictingTargets } from "../../domain/case/patient-involvement";
@@ -19,7 +20,7 @@ import { completionQuestions } from "../../domain/case/completion-policy";
 import { createSemanticCase } from "../../domain/case/create";
 import { allFacts, getFact, targetFromKey, targetKey } from "../../domain/case/facts";
 import { productDisplayLabel } from "../../domain/case/product-label";
-import { projectForm3500, quantityContextEntries, hasBaseEventDescription, baseEventDescription, baseEventDescriptionTargets, additionalCommentsEntries, d5OtherTypeContextEntries } from "../../domain/case/projection";
+import { projectForm3500, quantityContextEntries, hasBaseEventDescription, baseEventDescription, baseEventDescriptionTargets, additionalCommentsEntries, d5OtherTypeContextEntries, deviceContextEntries } from "../../domain/case/projection";
 import type { CaseValue, Fact, FactTarget, ProductFactKey, ReporterFactKey, SemanticCase, Source } from "../../domain/case/types";
 import {
   createClarificationView,
@@ -113,10 +114,16 @@ export async function getJourneySnapshot(
   const caseState = await ensureJourneyCase(repository, caseId);
   const projection = projectForm3500(caseState);
   const outputIssues = outputReadinessIssues(caseState, projection);
+  for (const device of projection.sections.E.suspectDevices) for (const field of deviceTextFields) {
+    const value = device[field.projected];
+    if (value === undefined) continue;
+    const limitation = await deviceTextLimitation(field.projected,value);
+    if (limitation) outputIssues.push({code:"unsupported-product-text",message:`${productLabel(caseState,device.productId)}: the reviewed Section E ${field.label} ${limitation}. The wording is retained; no new PDF is generated.`,targets:[`product:${device.productId}:${field.fact}`],entityIds:[device.productId]});
+  }
   const baseLimitation = await narrativeTextLimitation(baseEventDescription(caseState));
   const narrativeLimitation = baseLimitation ?? await eventNarrativeLimitation(projection);
   if (narrativeLimitation) {
-    const contextEntries = [...quantityContextEntries(projection.sections.D.suspectProducts), ...d5OtherTypeContextEntries(caseState, projection)];
+    const contextEntries = [...quantityContextEntries(projection.sections.D.suspectProducts), ...d5OtherTypeContextEntries(caseState, projection), ...deviceContextEntries(caseState, projection)];
     const unsupportedContext = (await Promise.all(contextEntries.map(async entry => ({ entry, unsupported: await narrativeGlyphLimitation(entry.text, "B5 context") })))).filter(item => item.unsupported).map(item => item.entry);
     const targets = baseLimitation ? baseEventDescriptionTargets(caseState) : (unsupportedContext.length ? unsupportedContext : contextEntries).map(entry => entry.target);
     outputIssues.push({
@@ -768,17 +775,6 @@ export function outputReadinessIssues(
         ids,
       );
     }
-  }
-  const suspectDevices = caseState.products.filter((product) => product.state === "resolved"
-    && knownValue(product.facts.role) === "suspect"
-    && knownValue(product.facts.productType) === "device");
-  if (suspectDevices.length > 1) {
-    issue(
-      "multiple-suspect-devices",
-      "This bounded path supports one suspect medical device. Change a Role or withdraw a device before output.",
-      suspectDevices.map(({ id }) => `product:${id}:role`),
-      suspectDevices.map(({ id }) => id),
-    );
   }
   const concomitantDevices = caseState.products.filter((product) => product.state === "resolved"
     && knownValue(product.facts.role) === "concomitant"

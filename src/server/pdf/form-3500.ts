@@ -1,3 +1,4 @@
+import {deviceTextFields, deviceTextLimitation} from "./device-text";
 import { isOtherProductTypes, type OtherProductType } from "../../domain/case/other-product-types";
 import { planNarrativeContinuations, appendNarrativeContinuations, form3500ReportReference } from "./narrative-continuation";
 import {purchaseDetailFields,purchaseCountryLabel} from "../../domain/case/purchase-details";
@@ -10,7 +11,7 @@ import { isCompleteBirthDate } from "../../domain/case/birth-date";
 import { patientAgeParts, type PatientAge } from "../../domain/case/age";
 import { patientAgeLimitation } from "./patient-age";
 import { createHash } from "node:crypto";
-import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts, nativeForm3500SuspectSlots } from "../../domain/case/limits";
+import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts, nativeForm3500SuspectSlots, maximumForm3500SuspectDevices } from "../../domain/case/limits";
 import { PDFDocument, PDFName, StandardFonts } from "@cantoo/pdf-lib";
 import { encodeForm3500Frequency, encodeForm3500Route, productTextLimitation } from "./product-text";
 import { testHistoryLimitations } from "./test-history";
@@ -250,17 +251,25 @@ export async function fillRepresentativeForm(
 /** Additional suspects use a real FDA form copy, only D filled, never a text substitute. */
 export async function fillForm3500Projection(source: Uint8Array, projection: Form3500Projection): Promise<Form3500ProjectionFillResult> {
   if (projection.sections.D.suspectProducts.length > maximumForm3500SuspectProducts) throw new Error(`The approved Form 3500 adapter supports at most ${maximumForm3500SuspectProducts} suspect products`);
-  const products = projection.sections.D.suspectProducts;
-  if (products.length <= nativeForm3500SuspectSlots) { const {output, readback} = await fillNativeForm3500Projection(source, projection); return {output, readback}; }
-  const initial = await fillNativeForm3500Projection(source, { ...projection, sections: { ...projection.sections, D: { suspectProducts: products.slice(0, nativeForm3500SuspectSlots) } } }, projection);
+  const products = projection.sections.D.suspectProducts, devices = projection.sections.E.suspectDevices;
+  if (devices.length > maximumForm3500SuspectDevices) throw new Error(`The approved Form 3500 adapter supports at most ${maximumForm3500SuspectDevices} suspect devices`);
+  if (products.length <= nativeForm3500SuspectSlots && devices.length <= 1) { const {output, readback} = await fillNativeForm3500Projection(source, projection); return {output, readback}; }
+  const initial = await fillNativeForm3500Projection(source, { ...projection, sections: { ...projection.sections, D: { suspectProducts: products.slice(0, nativeForm3500SuspectSlots) }, E: { suspectDevices: devices.slice(0,1) } } }, projection);
   const document = initial.document;
   const reference = form3500ReportReference(projection);
   const linkFont = await document.embedFont(StandardFonts.Helvetica);
+  if (products.length > nativeForm3500SuspectSlots) {
   document.getPages()[3].drawText(`Report ${reference} - additional Section D form copy 1 follows this report.`, {x:44,y:776,size:8,font:linkFont});
   document.getPages()[3].drawText("Suspect products #1-2 are in this form; #3 is in the additional native copy.", {x:44,y:763,size:8,font:linkFont});
+  }
+  if (devices.length > 1) {
+    document.getPages()[5].drawText(`Report ${reference} - additional Section E form ${devices.length === 2 ? "copy follows" : "copies follow"} this report.`, {x:44,y:776,size:8,font:linkFont});
+    document.getPages()[5].drawText(`Suspect device #1 is below; ${devices.length === 2 ? "device #2 uses an additional native copy" : `devices #2-${devices.length} use additional native copies`}.`, {x:44,y:763,size:8,font:linkFont});
+  }
   const additionalReadback: typeof initial.readback.sections.D.suspectProducts = [];
+  const deviceReadback: typeof initial.readback.sections.E.suspectDevices = [];
   for (const [index, product] of products.slice(nativeForm3500SuspectSlots).entries()) {
-    const extraProjection: Form3500Projection = { ...projection, sections: { A: {}, B: { relevantTests: [] }, C: {}, D: { suspectProducts: [product] }, E: {}, F: { concomitantProducts: [] }, G: { reporter: {} } } };
+    const extraProjection: Form3500Projection = { ...projection, sections: { A: {}, B: { relevantTests: [] }, C: {}, D: { suspectProducts: [product] }, E: { suspectDevices: [] }, F: { concomitantProducts: [] }, G: { reporter: {} } } };
     const extra = await fillNativeForm3500Projection(source, extraProjection, projection);
     const copy = extra.document;
     // Supported pdf-lib workflow: freeze the generated native appearances before copying.
@@ -273,7 +282,18 @@ export async function fillForm3500Projection(source: Uint8Array, projection: For
     for (const copied of await document.copyPages(copy, copy.getPageIndices())) document.addPage(copied);
     additionalReadback.push(...extra.readback.sections.D.suspectProducts);
   }
-  return { output: await document.save(), readback: { ...initial.readback, pageCount: document.getPageCount(), sections: { ...initial.readback.sections, D: { suspectProducts: [...initial.readback.sections.D.suspectProducts, ...additionalReadback] } } } };
+  for (const [index, device] of devices.slice(1).entries()) {
+    const extraProjection: Form3500Projection = { ...projection, sections: { A: {}, B: { relevantTests: [] }, C: {}, D: { suspectProducts: [] }, E: { suspectDevices: [device] }, F: { concomitantProducts: [] }, G: { reporter: {} } } };
+    const extra = await fillNativeForm3500Projection(source, extraProjection, projection);
+    const copy = extra.document;
+    copy.getForm().flatten({updateFieldAppearances:false});
+    const font = await copy.embedFont(StandardFonts.Helvetica);
+    copy.getPages()[5].drawText(`Additional FDA form copy - Section E only; report ${reference}`, {x:44,y:776,size:8,font});
+    copy.getPages()[5].drawText(`Suspect device #${index+2}; field context is in the main report B5.`, {x:44,y:763,size:8,font});
+    for (const page of await document.copyPages(copy, copy.getPageIndices())) document.addPage(page);
+    deviceReadback.push(...extra.readback.sections.E.suspectDevices);
+  }
+  return { output: await document.save(), readback: { ...initial.readback, pageCount: document.getPageCount(), sections: { ...initial.readback.sections, D: { suspectProducts: [...initial.readback.sections.D.suspectProducts, ...additionalReadback] }, E: { suspectDevices: [...initial.readback.sections.E.suspectDevices, ...deviceReadback] } } } };
 }
 
 async function fillNativeForm3500Projection(
@@ -282,6 +302,7 @@ async function fillNativeForm3500Projection(
   reportNarrative: Form3500Projection = projection,
 ): Promise<Form3500ProjectionFillResult & {document: PDFDocument}> {
   await assertApprovedFormSource(source);
+  if (projection.sections.E.suspectDevices.length > 1) throw new Error("Native form supports one suspect device slot");
   // D-only copies carry quantity context in the linked main report, never duplicate B5.
   const narrativeLimitation = await eventNarrativeLimitation(reportNarrative);
   if (narrativeLimitation) throw new Error(`The reviewed B5 event description ${narrativeLimitation}`);
@@ -440,8 +461,9 @@ async function fillNativeForm3500Projection(
     }
   });
 
-  const device = E.suspectDevice;
+  const device = E.suspectDevices[0];
   if (device) {
+    for (const field of deviceTextFields) { const value = device[field.projected]; if (value !== undefined) { const limit = await deviceTextLimitation(field.projected,value); if (limit) throw new Error(`Unsupported Section E ${field.label}: ${limit}`); } }
     setText(form, fields.deviceBrandName, device.brandName);
     setText(form, fields.deviceCommonName, device.commonName);
     setText(form, fields.deviceProcode, device.procode);
@@ -739,8 +761,8 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
       D: {
         suspectProducts: projection.sections.D.suspectProducts.map((product, index) => readSuspect(product, index, suspectNames[index])),
       },
-      E: { suspectDevice: projection.sections.E.suspectDevice ? compact({
-        productId: projection.sections.E.suspectDevice.productId,
+      E: { suspectDevices: projection.sections.E.suspectDevices.map(device => compact({
+        productId: device.productId,
         brandName: form.getTextField(fields.deviceBrandName).getText(),
         commonName: form.getTextField(fields.deviceCommonName).getText(),
         procode: form.getTextField(fields.deviceProcode).getText(),
@@ -756,13 +778,13 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
             : form.getCheckBox(fields.deviceOperatorOther).isChecked() ? "other" as const : undefined,
         implantDate: parseDate(form.getTextField(fields.deviceImplantDate).getText()),
         explantDate: parseDate(form.getTextField(fields.deviceExplantDate).getText()),
-        reprocessedSingleUse: projection.sections.E.suspectDevice.reprocessedSingleUse === undefined ? undefined
+        reprocessedSingleUse: device.reprocessedSingleUse === undefined ? undefined
           : form.getCheckBox(fields.deviceReprocessedYes).isChecked(),
         reprocessor: form.getTextField(fields.deviceReprocessor).getText(),
         servicedByThirdParty: form.getCheckBox(fields.deviceServicedYes).isChecked() ? "yes" as const
           : form.getCheckBox(fields.deviceServicedNo).isChecked() ? "no" as const
             : form.getCheckBox(fields.deviceServicedUnknown).isChecked() ? "unknown" as const : undefined,
-      }) : undefined },
+      })) },
       F: { concomitantProducts },
       G: { reporter: compact({
         lastName: form.getTextField(fields.reporterLastName).getText(),

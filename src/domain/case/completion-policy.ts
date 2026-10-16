@@ -113,11 +113,8 @@ export function completionQuestions(caseState: SemanticCase): CompletionQuestion
     questions.push(...medicationQuestions(caseState));
   }
 
-  const deviceDetails = ordinaryQuestion(caseState, "device-details", () => {
-    const device = caseState.products.find((product) => product.state === "resolved"
-      && knownString(product.facts.productType) === "device"
-      && knownString(product.facts.role) === "suspect");
-    if (!device) return null;
+  for (const device of caseState.products) {
+    if (device.state !== "resolved" || knownString(device.facts.productType) !== "device" || knownString(device.facts.role) !== "suspect") continue;
     const askImplantDate = knownBoolean(device.facts.implanted) === true && device.facts.implantDate.state === "empty";
     const askExplantDate = knownBoolean(device.facts.implanted) === true && device.facts.explantDate.state === "empty";
     const askReprocessor = knownBoolean(device.facts.reprocessedSingleUse) === true && device.facts.reprocessor.state === "empty";
@@ -126,9 +123,11 @@ export function completionQuestions(caseState: SemanticCase): CompletionQuestion
       ...(askExplantDate ? [`product:${device.id}:explantDate`] : []),
       ...(askReprocessor ? [`product:${device.id}:reprocessor`] : []),
     ];
-    if (targetIds.length === 0) return null;
+    if (targetIds.length === 0) continue;
+    const existing = caseState.askedNeeds.find(need => need.key === "device-details" && need.status === "open" && need.targetIds.some(target => target.startsWith(`product:${device.id}:`)));
     const name = displayLabel(caseState, device);
-    return {
+    questions.push({
+      key: "device-details", status: existing ? "open" : "new",
       kind: "device-details" as const,
       deviceId: device.id,
       targetIds,
@@ -137,9 +136,8 @@ export function completionQuestions(caseState: SemanticCase): CompletionQuestion
       askReprocessor,
       question: `Add the applicable device details for ${name}`,
       reason: "Implant timing and reprocessor identity are asked only when accepted device facts make them applicable to Section E.",
-    };
-  });
-  if (deviceDetails) questions.push(deviceDetails);
+    });
+  }
 
   const reporter = ordinaryQuestion(caseState, "reporter-details", () => ({
     kind: "reporter" as const,

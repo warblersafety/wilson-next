@@ -20,7 +20,7 @@ describe("report completeness PDF", () => {
         D: { suspectProducts: [
           { productId: "tablets", name: "Fictional tablets", dose: { value: "500 mg" }, strength: { value: "250 mg" } },
           { productId: "liquid", name: "Fictional liquid", dose: { value: "10 mL" }, strength: { value: "250 mg/5 mL" } },
-        ] }, E: {}, F: { concomitantProducts: [] }, G: { reporter: {} },
+        ] }, E: { suspectDevices: [] }, F: { concomitantProducts: [] }, G: { reporter: {} },
       }, sourceTrace: {}, omissions: [], notIncluded: [],
     };
     const source = new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf"));
