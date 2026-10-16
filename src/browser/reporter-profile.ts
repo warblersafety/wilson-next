@@ -1,18 +1,24 @@
 import { z } from "zod";
 
 export const reporterProfileSchema = z.object({
-  values: z.object({ firstName: z.string(), lastName: z.string(), address: z.string(), city: z.string(), state: z.string(), postalCode: z.string(), country: z.enum(["", "UNITED STATES", "CANADA"]), phone: z.string(), email: z.string(), occupation: z.enum(["", "Physician", "Nurse", "Nurse Practitioner", "Pharmacist", "Physician Assistant", "Other Health Professional", "Non-Health Professional"]) }).strict(),
+  values: z.object({ firstName: z.string(), lastName: z.string(), address: z.string(), city: z.string(), state: z.string(), postalCode: z.string(), country: z.string(), phone: z.string(), email: z.string(), occupation: z.enum(["", "Physician", "Nurse", "Nurse Practitioner", "Pharmacist", "Physician Assistant", "Other Health Professional", "Non-Health Professional"]) }).strict(),
   healthProfessional: z.boolean(),
 }).strict();
 export type ReporterProfile = z.infer<typeof reporterProfileSchema>;
 const generationSchema = z.uuid();
-const recordSchema = z.object({ version: z.literal(1), generation: generationSchema.nullable(), profile: reporterProfileSchema.nullable() }).strict().refine(value => value.profile === null || value.generation !== null);
+const recordSchema = z.object({ version: z.literal(2), generation: generationSchema.nullable(), profile: reporterProfileSchema.nullable() }).strict().refine(value => value.profile === null || value.generation !== null);
 export type ReporterProfileRecord = z.infer<typeof recordSchema>;
 export class ReporterProfileError extends Error {
   constructor(readonly code: "incompatible" | "corrupt" | "unavailable" | "blocked" | "storage-failed" | "stale-writer" | "invalid-input", message: string) { super(message); this.name = "ReporterProfileError"; }
 }
 export function decodeReporterProfileRecord(raw: unknown): ReporterProfileRecord {
-  if (raw && typeof raw === "object" && "version" in raw && raw.version !== 1) throw new ReporterProfileError("incompatible", "Remembered details need a compatible version of Wilson. They have not been replaced.");
+  if (raw && typeof raw === "object" && "version" in raw && raw.version !== 1 && raw.version !== 2) throw new ReporterProfileError("incompatible", "Remembered details need a compatible version of Wilson. They have not been replaced.");
+  const legacySchema = z.object({version:z.literal(1),generation:generationSchema.nullable(),profile:reporterProfileSchema.nullable()}).strict().refine(value=>value.profile===null||value.generation!==null);
+  const legacy = legacySchema.safeParse(raw);
+  if (legacy.success) {
+    if (legacy.data.profile && !["", "UNITED STATES", "CANADA"].includes(legacy.data.profile.values.country)) throw new ReporterProfileError("corrupt", "Remembered details could not be read. They have not been replaced.");
+    return {...legacy.data,version:2};
+  }
   const parsed = recordSchema.safeParse(raw);
   if (!parsed.success) throw new ReporterProfileError("corrupt", "Remembered details could not be read. They have not been replaced.");
   return parsed.data;
@@ -54,10 +60,10 @@ export class ReporterProfileStore {
         const store = tx.objectStore("reporter"), read = store.getAll("remembered");
         read.onsuccess = () => {
           try {
-            const current = read.result.length === 0 ? { version: 1 as const, generation: null, profile: null } : decodeReporterProfileRecord(read.result[0]);
+            const current = read.result.length === 0 ? { version: 2 as const, generation: null, profile: null } : decodeReporterProfileRecord(read.result[0]);
             if (!write) { outcome = current; return; }
             if (current.generation !== write.expectedGeneration) { abort(new ReporterProfileError("stale-writer", "Remembered details changed in another tab. Reload them before making another change.")); return; }
-            outcome = { version: 1, generation: crypto.randomUUID(), profile: write.profile };
+            outcome = { version: 2, generation: crypto.randomUUID(), profile: write.profile };
             store.put(outcome, "remembered");
           } catch (reason) { abort(reason); }
         };

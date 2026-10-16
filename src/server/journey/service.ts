@@ -1,3 +1,4 @@
+import {reporterTextIssues,reporterTextLabels} from "../pdf/reporter-text";
 import {concomitantTextIssues,concomitantFieldLabel} from "../pdf/concomitant";
 import {deviceTextFields, deviceTextLimitation} from "../pdf/device-text";
 import { narrativeGlyphLimitation } from "../pdf/narrative-continuation";
@@ -121,6 +122,7 @@ export async function getJourneySnapshot(
     if (limitation) outputIssues.push({code:"unsupported-product-text",message:`${productLabel(caseState,device.productId)}: the reviewed Section E ${field.label} ${limitation}. The wording is retained; no new PDF is generated.`,targets:[`product:${device.productId}:${field.fact}`],entityIds:[device.productId]});
   }
   for (const problem of await concomitantTextIssues(projection)) outputIssues.push({code:"unsupported-product-text", message:`${productLabel(caseState,problem.productId)}: the reviewed Section F ${concomitantFieldLabel(problem.field)} ${problem.limitation}. The wording is retained; no new PDF is generated.`, targets:[`product:${problem.productId}:${problem.field}`], entityIds:[problem.productId]});
+  for (const problem of await reporterTextIssues(projection)) outputIssues.push({code:"unsupported-product-text",message:`The reviewed reporter ${reporterTextLabels[problem.field]} ${problem.limitation}. The wording is retained; no new PDF is generated.`,targets:[`reporter:reporter:${problem.field}`],entityIds:["reporter"]});
   const baseLimitation = await narrativeTextLimitation(baseEventDescription(caseState));
   const narrativeLimitation = baseLimitation ?? await eventNarrativeLimitation(projection);
   if (narrativeLimitation) {
@@ -505,7 +507,12 @@ export async function performJourneyAction(
         const facts = reporterFacts(action.reporter).flatMap((entry) => {
           const fact = getFact(current, entry.target);
           if (fact.state === "conflicted" || fact.proposedValues.length > 0) throw new Error("Resolve reporter changes before saving details");
-          if (JSON.stringify(fact.resolvedValue?.value) === JSON.stringify(entry.value)) return [];
+          // The panel edits base values. Preserve existing context when that base
+          // is unchanged. This base-value panel has no reporter context editor.
+          const currentValue = fact.resolvedValue?.value;
+          if (currentValue?.kind === "known" && entry.value.kind === "known"
+            && JSON.stringify(currentValue.value) === JSON.stringify(entry.value.value)) return [];
+          if (JSON.stringify(currentValue) === JSON.stringify(entry.value)) return [];
           return [{ ...entry, intent: fact.resolvedValue ? "correction" as const : "fact" as const }];
         });
         if (facts.length > 0) await applyCommand({

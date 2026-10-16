@@ -13,10 +13,10 @@ describe("separate reusable reporter boundary", () => {
     }
   });
   it("retains corrupt and future data unchanged rather than normalizing it", () => {
-    for (const raw of [undefined, null, {}, { version: 2, profile }, { version: 1, generation: null, profile }, { version: 1, generation: "bad", profile }, { version: 1, generation: null, profile: null, extra: true }]) {
+    for (const raw of [undefined, null, {}, { version: 3, profile }, { version: 1, generation: null, profile }, { version: 1, generation: "bad", profile }, { version: 1, generation: null, profile: null, extra: true }]) {
       const before = structuredClone(raw); expect(() => decodeReporterProfileRecord(raw)).toThrow(); expect(raw).toEqual(before);
     }
-    expect(() => decodeReporterProfileRecord({ version: 2 })).toThrow(expect.objectContaining({ code: "incompatible" }));
+    expect(() => decodeReporterProfileRecord({ version: 3 })).toThrow(expect.objectContaining({ code: "incompatible" }));
   });
   it("supports empty and forgotten tombstone records", () => {
     expect(decodeReporterProfileRecord({ version: 1, generation: null, profile: null }).profile).toBeNull();
@@ -24,10 +24,12 @@ describe("separate reusable reporter boundary", () => {
   });
   it("rejects unsupported form choices and invalid writes before opening storage", async () => {
     expect(reporterProfileSchema.safeParse({ ...profile, healthProfessional: "false" }).success).toBe(false);
-    expect(reporterProfileSchema.safeParse({ ...profile, values: { ...profile.values, country: "unsupported" } }).success).toBe(false);
+    expect(reporterProfileSchema.safeParse({ ...profile, values: { ...profile.values, country: 123 } }).success).toBe(false);
     const store = new ReporterProfileStore();
     await expect(store.save({ ...profile, reportDate: "forbidden" } as never, null)).rejects.toMatchObject({ code: "invalid-input" });
     await expect(store.save(null, "bad")).rejects.toMatchObject({ code: "invalid-input" });
     await expect(store.load()).rejects.toMatchObject({ code: "unavailable" });
   });
 });
+
+it("reads genuine v1 without mutating it and writes international values only in v2 records",()=>{const legacy={version:1,generation:"11111111-1111-4111-8111-111111111111",profile},before=structuredClone(legacy);expect(decodeReporterProfileRecord(legacy)).toEqual({...legacy,version:2});expect(legacy).toEqual(before);for(const country of["FRANCE","Japan","Country as stated"])expect(decodeReporterProfileRecord({...legacy,version:2,profile:{...profile,values:{...profile.values,country,address:"12 Fictional Lane\nUnit 3",postalCode:"012345678901"}}}).profile?.values.country).toBe(country);expect(()=>decodeReporterProfileRecord({...legacy,profile:{...profile,values:{...profile.values,country:"FRANCE"}}})).toThrow();});

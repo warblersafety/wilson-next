@@ -1,4 +1,5 @@
 "use client";
+import {purchaseCountrySuggestions} from "../src/domain/case/purchase-details";
 
 import { listWithContext } from "../src/domain/case/list-context";
 
@@ -703,7 +704,7 @@ function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate, continueCl
   const saved = (field: string) => accepted[field]?.resolved;
   const text = (field: string, fallback = "") => knownString(saved(field)) ?? (saved(field) ? "" : fallback);
   const [draft, setDraft] = useCaseDraft("reporter", "case", reporterDraftKey(snapshot), () => {
-    const values = { firstName: text("firstName"), lastName: text("lastName"), address: text("address"), city: text("city"), state: text("state"), postalCode: text("postalCode"), country: text("country", "UNITED STATES"), phone: text("phone"), email: text("email"), occupation: text("occupation", "Physician") };
+    const values = { firstName: text("firstName"), lastName: text("lastName"), address: text("address"), city: text("city"), state: text("state"), postalCode: text("postalCode"), country: text("country"), phone: text("phone"), email: text("email"), occupation: text("occupation", "Physician") };
     const existing = snapshot.understanding.event.reportDate.resolved;
     const today = new Date();
     const reportDate = existing ? existing.kind === "known" ? String(existing.value) : "" : `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
@@ -760,11 +761,11 @@ function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate, continueCl
       <label>Last name <input aria-label="Reporter last name" value={values.lastName} onChange={(event) => set("lastName", event.target.value)} /></label>
       <label>Phone <input aria-label="Reporter phone" value={values.phone} onChange={(event) => set("phone", event.target.value)} /></label>
       <label>Email <input aria-label="Reporter email" type="email" value={values.email} onChange={(event) => set("email", event.target.value)} /></label>
-      <label>Address (optional) <input aria-label="Reporter address" value={values.address} onChange={(event) => set("address", event.target.value)} /></label>
+      <label>Address (optional) <textarea aria-label="Reporter address" value={values.address} onChange={(event) => set("address", event.target.value)} /></label>
       <label>City (optional) <input aria-label="Reporter city" value={values.city} onChange={(event) => set("city", event.target.value)} /></label>
-      <label>State (optional) <input aria-label="Reporter state" value={values.state} onChange={(event) => set("state", event.target.value)} /></label>
+      <label>State/province/region (optional) <input aria-label="Reporter state" value={values.state} onChange={(event) => set("state", event.target.value)} /></label>
       <label>ZIP/postal code (optional) <input aria-label="Reporter postal code" value={values.postalCode} onChange={(event) => set("postalCode", event.target.value)} /></label>
-      <label>Country <select aria-label="Reporter country" value={values.country} onChange={(event) => set("country", event.target.value)}><option value="">Not provided</option><option>UNITED STATES</option><option>CANADA</option></select></label>
+      <label>Country <input aria-label="Reporter country" list="reporter-country-options" value={values.country} onChange={(event) => set("country", event.target.value)} /><datalist id="reporter-country-options">{purchaseCountrySuggestions.map(country=><option key={country} value={country}/>)}</datalist><span className={styles.hint}>Use the supplied country wording or a suggestion. Unlisted wording is retained in the G1 supplement; no country is inferred.</span></label>
     </fieldset>
     <fieldset disabled={busy} aria-labelledby="reporter-professional-title" className={`${styles.answerGroup} ${styles.reporterChoices}`}><h2 id="reporter-professional-title">Professional details</h2>
       <label>Are you a health professional? <select aria-label="Health professional" value={String(healthProfessional)} onChange={(event) => setHealthProfessional(event.target.value === "true")}><option value="true">Yes</option><option value="false">No</option></select></label>
@@ -882,6 +883,7 @@ function OutputComposition({ snapshot, pdf, caseId, busy, generating, error, gen
   const exceedsCapacity = productCapacityIssues(snapshot).length > 0;
   const omittedContext = hasOmittedQualifierContext(snapshot);
   const representationLimited = snapshot.outputIssues.some(({ code }) => code === "unsupported-patient-age" || code === "unsupported-patient-sex" || code === "unsupported-product-route" || code === "unsupported-product-text" || code === "unsupported-event-narrative" || code === "unsupported-test-history");
+  const reporterRepresentationLimited = snapshot.outputIssues.some(issue => issue.code === "unsupported-product-text" && issue.targets.some(target => target.startsWith("reporter:reporter:")));
   const artifact = pdf?.caseId === caseId ? pdf : undefined;
   const current = Boolean(artifact && artifact.contentKey === snapshot.reportContentKey && snapshot.downloadReady);
   return <>
@@ -893,7 +895,7 @@ function OutputComposition({ snapshot, pdf, caseId, busy, generating, error, gen
     {reporterDirty && <p className={styles.notice}>You have unsaved reporter details. {canSaveReporter(snapshot) ? "Save them in Reporter details to include those changes in the report." : "Your draft is retained. Finish the clinical review below, then return to Reporter details to save it."}</p>}
     {snapshot.projection.sections.E.suspectDevices.length > 1 && <p className={styles.notice}>Each additional suspect device uses a native FDA form copy with only Section E filled. Field context stays linked in main B5. Correct details in Wilson and regenerate.</p>}
     {snapshot.projection.sections.D.suspectProducts.length > 2 && <p className={styles.notice}>Exporting three suspects adds a native FDA form copy for suspect product #3; only its Section D is filled. Product context stays linked in the main report.</p>}
-    {snapshot.outputIssues.length > 0 && <section className={styles.invitation}><h2>{representationLimited ? "This PDF cannot represent every reviewed value" : exceedsCapacity ? "This case exceeds the preview’s PDF capacity" : "The form needs more reviewed information"}</h2><PendingReview snapshot={snapshot} /><ClinicalNeeds snapshot={snapshot} /><ul>{snapshot.outputIssues.filter(({ code }) => code !== "pending-proposal-review" && code !== "open-clarification").map((issue, index) => <li key={index}>{issue.message}</li>)}</ul>{snapshot.stage === "clarify" && snapshot.clarification?.kind === "reporter" ? <><p>Clinical questions are complete. Save reporter details or explicitly choose not to provide them.</p><button className={styles.primaryButton} disabled={busy} onClick={() => navigate("reporter")}>Go to reporter details</button></> : <button className={styles.primaryButton} disabled={busy} onClick={continueClinicalReview}>{nextClinicalAction(snapshot)?.label ?? "Review case details"}</button>}</section>}
+    {snapshot.outputIssues.length > 0 && <section className={styles.invitation}><h2>{representationLimited ? "This PDF cannot represent every reviewed value" : exceedsCapacity ? "This case exceeds the preview’s PDF capacity" : "The form needs more reviewed information"}</h2><PendingReview snapshot={snapshot} /><ClinicalNeeds snapshot={snapshot} /><ul>{snapshot.outputIssues.filter(({ code }) => code !== "pending-proposal-review" && code !== "open-clarification").map((issue, index) => <li key={index}>{issue.message}</li>)}</ul>{((snapshot.stage === "clarify" && snapshot.clarification?.kind === "reporter") || reporterRepresentationLimited) ? <><p>{reporterRepresentationLimited ? "Correct the listed reporter details to prepare a current PDF." : "Clinical questions are complete. Save reporter details or explicitly choose not to provide them."}</p><button className={styles.primaryButton} disabled={busy} onClick={() => navigate("reporter")}>Go to reporter details</button></> : <button className={styles.primaryButton} disabled={busy} onClick={continueClinicalReview}>{nextClinicalAction(snapshot)?.label ?? "Review case details"}</button>}</section>}
     <div className={styles.pdfToolbar}><div><h2>Form FDA 3500</h2><p role="status" aria-atomic="true">{generating ? <><span className={styles.spinner} aria-hidden="true" />{artifact ? "Updating the PDF from accepted details… The earlier PDF remains below until the update is ready." : "Preparing the PDF from accepted details…"}</> : error ? "PDF generation failed. Accepted details are retained. Try generating it again." : current ? omittedContext ? "PDF ready — supported values are included; some reviewed context is omitted." : "PDF ready — it reflects the accepted report contents." : artifact ? "Earlier PDF — it does not include changes awaiting review or generation." : "Generate the PDF after completing review and reporter details."}</p></div>
       {current ? <a className={styles.primaryLink} href={artifact!.url} download={artifact!.filename}>Save PDF</a> : <button disabled={busy || !snapshot.downloadReady} onClick={() => void generatePdf()}>{artifact ? "Generate updated PDF" : "Generate PDF"}</button>}
     </div>

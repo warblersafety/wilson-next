@@ -1,0 +1,27 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 7,
+      "rendered" : true,
+      "screenshot" : "evidence\/issue-214\/mixed-e-g-page-7.png"
+    },
+    {
+      "page" : 9,
+      "rendered" : true,
+      "screenshot" : "evidence\/issue-214\/mixed-e-g-page-9.png"
+    },
+    {
+      "page" : 15,
+      "rendered" : true,
+      "screenshot" : "evidence\/issue-214\/mixed-e-g-page-15.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "G1 native values and continuation pointers are readable",
+    "G1 field labels, exact context and report reference remain visible",
+    "Mixed E copies contain no duplicated reporter facts"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "evidence\/issue-214\/mixed-e-g.pdf"
+}
