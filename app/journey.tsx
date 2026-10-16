@@ -308,7 +308,7 @@ export function JourneyBody() {
         </section>
         <section data-screen="details" hidden={screen !== "details"}>
           <h1>Review the case details</h1>
-          <details className={styles.caseCard} open={sourceAccountOpen} onToggle={e=>setSourceAccountOpen(e.currentTarget.open)}><summary>Your supplied account and date wording</summary>{sourceAccountOpen && screen === "details" && <div><p>Compare your complete submitted words with the proposed details. If purchase, therapy or expiration wording was missed, add its stated precision and exact wording in the corresponding product date field. Wilson does not detect every omission automatically.</p>{uiDrafts.conversation.length ? uiDrafts.conversation.map(input=><p className={styles.originalAccount} key={input.id}>{input.text}</p>) : <><p>Only retained source records are available for this earlier case; the complete account was not stored. Direct edits are recorded as clinician-entry summaries, not verbatim conversation.</p>{browserState?.case.sources.filter(s=>["narrative","correction","answer"].includes(s.inputType)).map(s=><p className={styles.originalAccount} key={s.id}>{s.excerpt}</p>)}</>}</div>}</details>
+          <details className={styles.caseCard} open={sourceAccountOpen} onToggle={e=>setSourceAccountOpen(e.currentTarget.open)}><summary>Your supplied account and date wording</summary>{sourceAccountOpen && screen === "details" && <div><p>Compare your complete submitted words with the proposed details. If purchase, therapy, device implant/explant or expiration wording was missed, add its stated precision and exact wording in the corresponding product date field. Wilson does not detect every omission automatically.</p>{uiDrafts.conversation.length ? uiDrafts.conversation.map(input=><p className={styles.originalAccount} key={input.id}>{input.text}</p>) : <><p>Only retained source records are available for this earlier case; the complete account was not stored. Direct edits are recorded as clinician-entry summaries, not verbatim conversation.</p>{browserState?.case.sources.filter(s=>["narrative","correction","answer"].includes(s.inputType)).map(s=><p className={styles.originalAccount} key={s.id}>{s.excerpt}</p>)}</>}</div>}</details>
           {representationLimited && <p className={styles.notice} role="status">This PDF cannot represent every reviewed value. Your reviewed details are retained. Review & save explains the limitation.</p>}
           {capacityIssues.length > 0 && <p className={styles.notice} role="status">This case exceeds the preview’s PDF capacity. Your reviewed details are retained. Review & save explains the supported limits.</p>}
           {clinicalAction?.kind === "proposals" && <p className={styles.lead}>Check each proposed group. Change incorrect values before accepting.</p>}
@@ -608,7 +608,7 @@ function ClinicalContextTask({ snapshot, busy, act }: {
   const testComplete = !question?.askTests || (testChoice && (testChoice !== "known" || Boolean(testName.trim() || testResult.trim())));
   const historyComplete = !question?.askHistory || (historyChoice && (historyChoice !== "known" || Boolean(history.trim())));
   const contextValue = (choice: ContextChoice | undefined, text: string): ClinicalHistoryValue => choice === "known"
-    ? { kind: "known", value: text.trim() }
+    ? { kind: "known", value: typeof text==="string"?text.trim():text }
     : choice ? { kind: choice } : undefined;
   return <>
     <h1 id="task-title">{question?.question}</h1>
@@ -659,13 +659,13 @@ function DeviceDetailsTask({ snapshot, busy, act }: {
   const setImplantDate = draftFieldSetter(setDraft, "implantDate");
   const setExplantDate = draftFieldSetter(setDraft, "explantDate");
   const setReprocessor = draftFieldSetter(setDraft, "reprocessor");
-  const completeChoice = (asked: boolean | undefined, choice: DeviceDetailChoice | undefined, value: string) => !asked
-    || Boolean(choice && (choice !== "known" || value.trim()));
-  const complete = completeChoice(question?.askImplantDate, implantChoice, implantDate)
+  const completeChoice = (asked: boolean | undefined, choice: DeviceDetailChoice | undefined, value: SuppliedDate) => !asked
+    || Boolean(choice && (choice !== "known" || (typeof value==="string"?Boolean(value.trim()):isExpirationValue(value))));
+  const complete = (!question?.askImplantDate || implantChoice!=="known" || isExpirationValue(implantDate)) && (!question?.askExplantDate || explantChoice!=="known" || isExpirationValue(explantDate)) && completeChoice(question?.askImplantDate, implantChoice, implantDate)
     && completeChoice(question?.askExplantDate, explantChoice, explantDate)
     && completeChoice(question?.askReprocessor, reprocessorChoice, reprocessor);
-  const value = (choice: DeviceDetailChoice | undefined, text: string): DeviceDetailValue => choice === "known"
-    ? { kind: "known", value: text.trim() }
+  const value = (choice: DeviceDetailChoice | undefined, text: SuppliedDate): DeviceDetailValue => choice === "known"
+    ? { kind: "known", value: typeof text==="string"?text.trim():text }
     : choice ? { kind: choice } : undefined;
   const choices = (name: string, choice: DeviceDetailChoice | undefined, setChoice: (choice: DeviceDetailChoice) => void, allowInapplicable: boolean) => <>
     <label><input type="radio" name={name} checked={choice === "known"} onChange={() => setChoice("known")} /> Known</label>
@@ -679,12 +679,12 @@ function DeviceDetailsTask({ snapshot, busy, act }: {
     {question?.askImplantDate && <fieldset disabled={busy} className={styles.answerGroup}>
       <legend>Implant date</legend>
       {choices("implant-date-choice", implantChoice, setImplantChoice, false)}
-      {implantChoice === "known" && <input aria-label="Device implant date" type="date" value={implantDate} onChange={(event) => setImplantDate(event.target.value)} />}
+      {implantChoice === "known" && <DatePrecisionEditor label="Device implant date" completeLabel="Device implant date" value={implantDate} onChange={setImplantDate}/>}
     </fieldset>}
     {question?.askExplantDate && <fieldset disabled={busy} className={styles.answerGroup}>
       <legend>Explant date</legend>
       {choices("explant-date-choice", explantChoice, setExplantChoice, true)}
-      {explantChoice === "known" && <input aria-label="Device explant date" type="date" value={explantDate} onChange={(event) => setExplantDate(event.target.value)} />}
+      {explantChoice === "known" && <DatePrecisionEditor label="Device explant date" completeLabel="Device explant date" value={explantDate} onChange={setExplantDate}/>}
     </fieldset>}
     {question?.askReprocessor && <fieldset disabled={busy} className={styles.answerGroup}>
       <legend>Reprocessor</legend>
@@ -695,7 +695,7 @@ function DeviceDetailsTask({ snapshot, busy, act }: {
       action: "answer-device-details",
       implantDate: question?.askImplantDate ? value(implantChoice, implantDate) : undefined,
       explantDate: question?.askExplantDate ? value(explantChoice, explantDate) : undefined,
-      reprocessor: question?.askReprocessor ? value(reprocessorChoice, reprocessor) : undefined,
+      reprocessor: question?.askReprocessor ? reprocessorChoice === "known" ? {kind:"known",value:reprocessor.trim()} : reprocessorChoice ? {kind:reprocessorChoice} : undefined : undefined,
     })}>Add device details</button>
   </>;
 }

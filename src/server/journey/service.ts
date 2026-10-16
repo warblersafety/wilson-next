@@ -492,7 +492,7 @@ export async function performJourneyAction(
         const device = current.products.find(({ id }) => id === question.deviceId);
         const name = knownValue(device?.facts.name) ?? "suspect device";
         const labels = { implantDate: "implant date", explantDate: "explant date", reprocessor: "reprocessor" } as const;
-        const sourceText = fields.map((field) => `${labels[field]}: ${displayValue(values[field]!)}.`).join(" ");
+        const sourceText = fields.map((field) => `${labels[field]}: ${displayValue(values[field]!, {entity:"product",entityId:question.deviceId,field})}.`).join(" ");
         await applyCommand({
           type: "record-clinician-facts",
           commandId: commandId("answer-device-details"),

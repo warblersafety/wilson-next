@@ -217,7 +217,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await expect(page.getByRole("heading", { name: "Add the applicable device details for Acme PulseLine" })).toBeVisible();
   const implantGroup = page.getByRole("group", { name: "Implant date" });
   await implantGroup.getByLabel("Known", { exact: true }).check();
-  await page.getByLabel("Device implant date").fill("2026-08-12");
+  await page.getByLabel("Device implant date", {exact:true}).fill("2026-08-12");
   const explantGroup = page.getByRole("group", { name: "Explant date" });
   await explantGroup.getByLabel("Not applicable", { exact: true }).check();
   const reprocessorGroup = page.getByRole("group", { name: "Reprocessor" });

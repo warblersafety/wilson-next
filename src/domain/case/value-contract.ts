@@ -139,8 +139,8 @@ export const caseValueContracts = {
       mismatch: "deviceOperator requires a supported operator",
     },
     implanted: { shape: "boolean" },
-    implantDate: { shape: "iso-date" },
-    explantDate: { shape: "iso-date" },
+    implantDate: { shape: "product-date" },
+    explantDate: { shape: "product-date" },
     reprocessedSingleUse: { shape: "boolean" },
     reprocessor: { shape: "string" },
     servicedByThirdParty: {

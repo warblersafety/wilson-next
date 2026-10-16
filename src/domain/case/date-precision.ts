@@ -2,9 +2,10 @@ import {isCompleteCalendarDate} from './calendar-date';
 export interface PartialDate {precision:'month'|'year';year:string;month?:string;wording:string}
 export type SuppliedDate=string|PartialDate;
 export const productDateFields=['purchaseDate','startDate','stopDate','doseReductionDate'] as const;
-export type ProductDateField=typeof productDateFields[number];
-export const productDateLabels={purchaseDate:'Purchase date',startDate:'Therapy start date',stopDate:'Therapy stop date',doseReductionDate:'Dose-reduction date'} as const;
-export const isProductDateField=(field:string):field is ProductDateField=>(productDateFields as readonly string[]).includes(field);
+export const deviceDateFields=['implantDate','explantDate'] as const;
+export type ProductDateField=typeof productDateFields[number]|typeof deviceDateFields[number];
+export const productDateLabels={purchaseDate:'Purchase date',startDate:'Therapy start date',stopDate:'Therapy stop date',doseReductionDate:'Dose-reduction date',implantDate:'Implant date',explantDate:'Explant date'} as const;
+export const isProductDateField=(field:string):field is ProductDateField=>([...productDateFields,...deviceDateFields] as readonly string[]).includes(field);
 export function isPartialDate(value:unknown):value is PartialDate {
  if(!value||typeof value!=='object'||Array.isArray(value))return false;
  const v=value as Record<string,unknown>;
