@@ -31,7 +31,7 @@ it("carries course context while disclosing other omitted text/date/number conte
     current = setContextFact(current, target, { ...value, qualifier: i === 0 ? assayContext : `Fictional context ${i}: attribution remains uncertain` });
   }
   const projection = projectForm3500(current);
-  const carried = new Set(["test:test-hemoglobin:testResult", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate"]);
+  const carried = new Set(["patient:patient:sex", "test:test-hemoglobin:testResult", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate"]);
   for (const target of targets) {
     const fact = getFact(current, targetFromKey(current, target));
     if (carried.has(target)) { expect(projection.omissions.some(omission => omission.target === target)).toBe(false); continue; }
@@ -107,7 +107,7 @@ it("covers every active known qualifier, including routing and medication prereq
     if (fact.state === "resolved" && value?.kind === "known") current = setContextFact(current, targetKey(target), { ...value, qualifier: "explicit context" });
   }
   const projection = projectForm3500(current), omissions = projection.omissions.filter(({ reason }) => reason === "qualifier-not-included");
-  const carried = new Set(["event:event:symptoms", "event:event:problemDescription", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate", "event:event:relevantHistory", ...current.relevantTests.filter(test => test.state === "resolved").flatMap(test => ["testName", "testResult", "lowRange", "highRange", "date"].map(field => `test:${test.id}:${field}`)), ...projection.sections.D.suspectProducts.flatMap(p => [`product:${p.productId}:dose`, `product:${p.productId}:strength`])]);
+  const carried = new Set(["patient:patient:sex", "event:event:symptoms", "event:event:problemDescription", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate", "event:event:relevantHistory", ...current.relevantTests.filter(test => test.state === "resolved").flatMap(test => ["testName", "testResult", "lowRange", "highRange", "date"].map(field => `test:${test.id}:${field}`)), ...projection.sections.D.suspectProducts.flatMap(p => [`product:${p.productId}:dose`, `product:${p.productId}:strength`])]);
   for (const p of projection.sections.F.concomitantProducts) for (const context of p.fieldContext ?? []) carried.add(`product:${p.productId}:${context.field}`);
   for (const context of projection.sections.G.reporter.fieldContext??[]) carried.add(`reporter:reporter:${context.field}`);
   for (const { target, fact } of allFacts(current)) {

@@ -1,3 +1,4 @@
+import {sexTextLimitation} from "../pdf/patient-sex";
 import {reporterTextIssues,reporterTextLabels} from "../pdf/reporter-text";
 import {concomitantTextIssues,concomitantFieldLabel} from "../pdf/concomitant";
 import {deviceTextFields, deviceTextLimitation} from "../pdf/device-text";
@@ -115,6 +116,8 @@ export async function getJourneySnapshot(
   const caseState = await ensureJourneyCase(repository, caseId);
   const projection = projectForm3500(caseState);
   const outputIssues = outputReadinessIssues(caseState, projection);
+  const sexLimit = await sexTextLimitation(projection);
+  if (sexLimit) outputIssues.push({code:"unsupported-patient-sex",message:`The reviewed patient sex context ${sexLimit}. It is retained; no new PDF is generated.`,targets:["patient:patient:sex"],entityIds:["patient"]});
   for (const device of projection.sections.E.suspectDevices) for (const field of deviceTextFields) {
     const value = device[field.projected];
     if (value === undefined) continue;
@@ -749,13 +752,6 @@ export function outputReadinessIssues(
   }
   const ageLimit = patientAgeLimitation(projection.sections.A.ageYears);
   if (ageLimit) issue("unsupported-patient-age", `The reviewed age ${ageLimit}. It is retained, but the PDF cannot represent it; no new PDF is generated.`, ["patient:patient:ageYears"], ["patient"]);
-  if (projection.sections.A.sex === "intersex") {
-    issue(
-      "unsupported-patient-sex",
-      "The current FDA PDF offers only Male and Female checkboxes for sex. Your reviewed value is retained, but this PDF cannot represent it; no new PDF is generated.",
-      ["patient:patient:sex"], ["patient"],
-    );
-  }
   for (const product of projection.sections.D.suspectProducts) {
     for (const field of ["route", "frequency", "dose", "strength", "ndcOrUniqueId"] as const) {
       const limitation = field === "dose" || field === "strength" ? quantityLimitation(field, product[field])

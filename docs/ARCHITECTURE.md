@@ -935,16 +935,34 @@ silently normalize supplied wording to fit. Native field flags stay unchanged.
 [Issue153](https://github.com/warblersafety/wilson-next/issues/153) owns faithful
 support beyond these controls; this temporary limitation is not full support.
 
-The pinned native A3 controls offer only Male/Female. A reviewed intersex value
-stays accepted and projected, but a structured unsupported-patient-sex readiness
-issue blocks preview/download before the adapter's retained guard. The existing
-review/output surfaces explain that limitation, including when an earlier PDF
-exists. This is not a request to substitute a different value, not full support,
-and not clinical inference. [Issue151](https://github.com/warblersafety/wilson-next/issues/151)
-owns the remaining faithful supplemental-representation decision. Broader field
-coverage, continuation and qualifier fidelity remain separate. Current official
-form/instructions, local verification and limits are recorded in
-[issue128 evidence](../evidence/issue-128/README.md).
+The pinned native A3 controls offer only Male/Female. Issue151 supersedes the
+unconditional intersex export block with a field-linked Section A/block A3
+supplement for the existing explicitly reviewed `intersex` value. Both native
+boxes remain off; the exact supplied value and current known qualifier print at
+fixed10pt on numbered continuation pages. A pointer uses the A3 heading line, away from Male/Female labels. A clearly
+labelled opaque report reference uses the blank page-1 area below Section B;
+both are8.5pt. Native male/female
+values keep their existing sole checkbox; their current known qualifiers also
+travel in this A3 supplement. Unknown, declined, inapplicable, explicitly absent
+and unanswered values leave both boxes off without inventing a value or carrying
+a former qualifier. Fresh generation removes obsolete pages and pointers.
+
+FDA's A3 instructions request sex at birth. This representation preserves the
+existing `sex` fact and enum; it does not relabel that fact, infer sex at birth
+from identity/diagnosis/other facts, classify gender, or add arbitrary vocabulary.
+The intersex supplement explicitly identifies the reviewed value and explains
+that the native choices are unselected without a sex-at-birth inference. The
+normal conversation/review/correction and persisted-v24 state remain unchanged;
+resume re-derives readiness without mutating accepted facts, sources or history.
+
+Only known current sex context is carried, with normal source trace and no
+duplicate qualifier-omission disclosure. Unsupported A3 context glyphs stay
+retained and raise the existing exact `patient:patient:sex` readiness/adapter
+block; #154 portable-font work is not included. All writing remains before the
+outer single save; D/E-only copies have no A facts and acquire no duplicate A3
+supplement. Current official form/instructions, tests and independent readback/
+render evidence are in [issue151 evidence](../evidence/issue-151/README.md).
+
 
 ## Application and data boundary
 
@@ -1784,3 +1802,7 @@ reporter qualifier editing; the reporter has no Review details card. Qualifiers
 from validated imported/API state remain preserved rather than being silently
 cleared by an unrelated panel save. Reporter entry does not preset a country;
 accepted facts or explicitly remembered defaults may prefill it.
+
+Issue217 separately tracks the pre-existing Sex control/birth-basis guidance
+premise. Issue151 does not relabel stored facts or select a new demographic
+contract while providing faithful output for the existing reviewed values.

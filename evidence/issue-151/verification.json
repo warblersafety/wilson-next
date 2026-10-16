@@ -1,0 +1,36 @@
+{
+  "unitTests": 931,
+  "unitFiles": 90,
+  "typecheck": "passed",
+  "build": "passed",
+  "focusedBrowserJourneys": 4,
+  "fullMockBrowserJourneys": {
+    "previousFullRun": 149,
+    "previousStatus": "passed",
+    "repeatExpected": 149,
+    "repeatStatus": "running"
+  },
+  "liveApplicationModelProviderCalls": 0,
+  "newDependencies": 0,
+  "PDFs": 9,
+  "PDFKitRenders": 19,
+  "independentReader": "pypdf 6.16.2",
+  "actualOpusReview": {
+    "run": "issue151-20261016T144510-55b15129",
+    "model": "claude-opus-5-5",
+    "completed": true,
+    "blockingFindings": 0,
+    "F1": "current-artifact notice gate; glyph regression passed",
+    "F2": "existing premise tracked in217; no new demographic contract",
+    "F3": "pointer/reference layout fixed and evidence regenerated",
+    "recheck": "pending",
+    "raw": "https://github.com/warblersafety/wilson-next/pull/216#issuecomment-6218195471"
+  },
+  "notes": [
+    "Known intersex uses A3 supplement with native boxes off",
+    "Native male/female plus qualifiers retain existing native base mapping",
+    "Unknown/unanswered distinctions and current-only context verified",
+    "Mixed E copy A3 blank; no duplicate value/context",
+    "A3 heading-line pointer and labelled reference below B visually verified; no false checkbox"
+  ]
+}

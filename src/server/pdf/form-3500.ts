@@ -1,3 +1,4 @@
+import {appendSexContinuations, sexTextLimitation} from "./patient-sex";
 import {reporterGeometry,reporterNativeText,appendReporterContinuations,reporterTextIssues,reporterCountryLabel} from "./reporter-text";
 import {concomitantRowFields, concomitantNativeName, appendConcomitantContinuations, concomitantTextIssues} from "./concomitant";
 import {deviceTextFields, deviceTextLimitation} from "./device-text";
@@ -345,7 +346,8 @@ async function fillNativeForm3500Projection(
   if (age?.unit === "months" || form.getCheckBox(fields.ageMonths).isChecked()) setChecked(form, fields.ageMonths, age?.unit === "months");
   if (age?.unit === "days" || form.getCheckBox(fields.ageDays).isChecked()) setChecked(form, fields.ageDays, age?.unit === "days");
   if (age?.unit === "weeks" || form.getCheckBox(fields.ageWeeks).isChecked()) setChecked(form, fields.ageWeeks, age?.unit === "weeks");
-  if (A.sex === "intersex") throw new Error("The fixed Form 3500 adapter does not support intersex sex projection");
+  const sexLimit = await sexTextLimitation(projection);
+  if (sexLimit) throw new Error(`The reviewed patient sex context ${sexLimit}`);
   setChecked(form, fields.sexMale, A.sex === "male");
   setChecked(form, fields.sexFemale, A.sex === "female");
   setText(form, fields.weightValue, A.weight?.value.toString());
@@ -524,6 +526,7 @@ async function fillNativeForm3500Projection(
     dropdown.acroField.dict.set(PDFName.of("V"), option.value);
   }
   await appendNarrativeContinuations(document, continuations);
+  await appendSexContinuations(document,projection,reportNarrative);
   await appendConcomitantContinuations(document,projection,reportNarrative);
   await appendReporterContinuations(document,projection,reportNarrative);
   // Save only after the outer writer assembles all headings/copies. Reusing an
