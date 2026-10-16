@@ -1,0 +1,94 @@
+{
+  "status": "FROZEN_AWAITING_REVIEW_CI_AND_TEMPORARY_ALIAS_EXPERIMENT",
+  "candidateLabel": "general-material-context-v1",
+  "candidateSha256": "f8f08082e9a982a59ce35e39daf5beb52601976be6b546a7ce646d2d052cafc5",
+  "baseCommit": "ce1a0faff50f94220d3d53159653245abd22def6",
+  "basePrompt": "wilson-test-time-context-v19",
+  "schema": "wilson-grounded-proposals-v27-purchase-details",
+  "model": "claude-sonnet-5",
+  "onlyRequestDifference": "Append frozen candidate paragraph to system text; all other request fields/model/schema/code paths identical. Labels/hashes recorded externally, never treated as deployed prompt revision.",
+  "newRequestCap": 12,
+  "newEstimatedBudgetUsd": 2,
+  "priorCumulativeRequests": 16,
+  "newMaximumCumulativeIfAllRun": 28,
+  "priorCumulativeEstimatedUsd": 0.854474,
+  "newRequestsExecuted": 0,
+  "conditions": [
+    {
+      "id": "P1",
+      "input": "Entirely fictional product-problem report: an unopened bottle of Example Meadow lotion, explicitly a cosmetic sold on a retail basis, lot FICTION-17, contained visible foreign particles. It was not used and no patient or adverse event was involved. I identify this cosmetic as the suspect product. It was purchased on 12 August 2026 from Fictional Seller Alpha,1 Example Lane,Example City,region Example Region,postal 00 A 001,country United Kingdom. The purchase website supplied on the receipt is https://seller.example.invalid. This is seller information, not manufacturer information. The bottle is available for evaluation.",
+      "kind": "opening",
+      "reportType": "product-problem",
+      "purpose": "Frozen ordinary natural cosmetic failure; material unused/no-patient context, unopened graded as quality circumstance",
+      "expectedBaseline": "16typedproposals; context missing in3identical existing samples",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "sourceSha256": "91e0682123dabf2aaf02d9d0ce857cdcca36430bb0bc1f496080027f14438885"
+    },
+    {
+      "id": "P2",
+      "input": "Fictional product-problem report. An unopened bottle of Example Meadow lotion, a retail cosmetic, lot FICTION-17, contained visible foreign particles. It was not used and no patient or adverse event was involved. It is the suspect product and is available for evaluation. Bought 12 August 2026 from Fictional Seller Alpha, address 1 Example Lane, city Example City, region Example Region, postal code 00 A 001, country United Kingdom. Receipt website https://seller.example.invalid. These are seller details, not manufacturer details.",
+      "kind": "opening",
+      "reportType": "product-problem",
+      "purpose": "Frozen concise cosmetic failure; core15facts and source context",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "sourceSha256": "e017a53aed4ededa82eed4d307a6c6fb1f6321593f462b3cef293034d158295e"
+    },
+    {
+      "id": "P3",
+      "input": "Entirely fictional patient ORD-42 is a 42-year-old man. He developed a rash on 03 September 2026 while taking ExampleMed, explicitly a medication, 5 mg by mouth daily from 01 September 2026 for headache. I identify ExampleMed as suspect. He was not hospitalized and no other serious outcomes applied. ExampleMed was stopped on 04 September 2026 and was never restarted. The rash resolved. No relevant tests or medical history apply.",
+      "kind": "opening",
+      "reportType": "adverse-event",
+      "purpose": "Ordinary supplied positive and negative medication case; no guessed strength/manufacturer/cause/date",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "sourceSha256": "72657f75d4316c2465f2cfba6059faf9e18279d854c78db2b343622ac6e3791d"
+    },
+    {
+      "id": "P4",
+      "input": "Fictional adverse-event report. INR was 4.8 on 03 September 2026 with reference limits 0.8 and 1.2. ALT was 67 U/L on 03 September 2026 with reference limits 7 and 56. The INR collection time was not recorded.",
+      "kind": "opening",
+      "reportType": "adverse-event",
+      "purpose": "Frozen already-working2-test baseline; all10facts, INRtimecontext, noALTspill",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "sourceSha256": "b6045c5a773d51139ca6d75741e008f69c2f875f4ae0dd907be1d3f4737fdd5b"
+    },
+    {
+      "id": "P5",
+      "input": "Correction to this fictional case: only the INR result collected 03 September 2026 was 4.3, not 4.8. Leave ALT 67 U/L and its 03 September 2026 date unchanged. The exact INR collection time is still unknown.",
+      "kind": "correction",
+      "stateSource": "Exact accepted live v19 response8, no edits; hash below",
+      "purpose": "Already-working named INR4.8->4.3 correction; sameIDs/ALT/products/day/context/history and explicitreview",
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "sourceSha256": "7e38c23ce6f1bf76fc51bda64ddebcbce6e7aeceed2d0e5927a1f88866409bca"
+    },
+    {
+      "id": "P6",
+      "input": "Fictional product-problem report. An unopened bottle of Example Meadow lotion, a retail cosmetic, lot FICTION-17, contained visible foreign particles. It was not used and no patient or adverse event was involved. It is the suspect product and is available for evaluation. Bought August 2026; the exact purchase day is unknown from Fictional Seller Alpha, address 1 Example Lane, city Example City, region Example Region, postal code 00 A 001, country United Kingdom. Receipt website https://seller.example.invalid. These are seller details, not manufacturer details.",
+      "kind": "opening",
+      "reportType": "product-problem",
+      "purpose": "Frozen partial-date no-invention guard; not scored as a prompt-fixable native representation gap",
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "sourceSha256": "c0293f1643d10820f398aca91c79efb90c79668ae97073f7a4e8471242448625"
+    }
+  ],
+  "correctionStateFileSha256": "072794e7ed73d0d4ffbaeb7714f0a29c9dabe14ad6511daff81d79046b4e3d9b",
+  "evaluation": "Paired baseline/candidate. Materialfact/negation/entity fidelity separate from immaterial wording changes. No source repairs. First2pairs pilot: stop if neither candidate improves materialcontext or any clear materialregression. If promising, check ordinary/lab/correction/unsupportedguards; stop before >$2 projected additional cost. Metrics unavailable ->pause. No merge/promote merely on experiment.",
+  "route": "Authorized temporary retarget of existing single alias; retain grant/expiry/protection and restore stable deployment afterward. No merge."
+}
