@@ -47,7 +47,7 @@ it('unsupported A3 context remains accepted and blocks with the precise sex targ
 it('A3 stays on main report when extra native E copies are attached',async()=>{
  const c=setContextFact(nativeECase(2),'patient:patient:sex',{kind:'known',value:'intersex',qualifier:'MAIN-A3-CONTEXT'}),{x}=await inspect(c);expect(x.pageCount).toBe(17);expect(x.pageTexts[8]).toContain('MAIN-A3-CONTEXT');expect(x.pageTexts.slice(9).join('\n')).not.toContain('MAIN-A3-CONTEXT');expect(x.pageTexts[14]).toContain('Fictional device Beta');expect(x.pageTexts[9]).not.toContain('A3 continued');expect(new Set(x.pageTexts.join('\n').match(/W-[0-9a-f]{20}/g)).size).toBe(1);
 });
-it('pinned A3 marker and widest opaque reference fit the unused native space at no less than eight points',async()=>{
- const font=await (await PDFDocument.create()).embedFont(StandardFonts.Helvetica);expect(98+font.widthOfTextAtSize('W-'+ '8'.repeat(20),8)).toBeLessThan(201);expect(105+font.widthOfTextAtSize('A3 continued',8.5)).toBeLessThan(201);
+it('A3 heading pointer and labelled page reference fit at readable size without changing native controls',async()=>{
+ const font=await (await PDFDocument.create()).embedFont(StandardFonts.Helvetica);expect(42+font.widthOfTextAtSize('Section A, block A3 supplement - report reference: W-'+ '8'.repeat(20),8.5)).toBeLessThan(570);expect(105+font.widthOfTextAtSize('A3 continued',8.5)).toBeLessThan(201);
  const script="from pypdf import PdfReader; import json; r=PdfReader('assets/fda/form-fda-3500-09-2025.pdf'); print(json.dumps({str(a.get_object().get('/T')):list(a.get_object().get('/Rect')) for a in r.pages[0]['/Annots'] if 'Sex' in str(a.get_object().get('/T'))}))",meta=JSON.parse((await promisify(execFile)(process.env.PYPDF_PYTHON??'python3',['-c',script])).stdout);expect(meta['SexM[0]']).toEqual([51.942,514.702,62.612,525.372]);expect(meta['SexF[0]']).toEqual([51.942,500.274,62.612,510.944]);
 });

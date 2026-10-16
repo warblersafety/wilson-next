@@ -939,8 +939,9 @@ The pinned native A3 controls offer only Male/Female. Issue151 supersedes the
 unconditional intersex export block with a field-linked Section A/block A3
 supplement for the existing explicitly reviewed `intersex` value. Both native
 boxes remain off; the exact supplied value and current known qualifier print at
-fixed10pt on numbered continuation pages. A pointer and matching opaque report
-reference use the unused right side of native A3 at8.5/8pt. Native male/female
+fixed10pt on numbered continuation pages. A pointer uses the A3 heading line, away from Male/Female labels. A clearly
+labelled opaque report reference uses the blank page-1 area below Section B;
+both are8.5pt. Native male/female
 values keep their existing sole checkbox; their current known qualifiers also
 travel in this A3 supplement. Unknown, declined, inapplicable, explicitly absent
 and unanswered values leave both boxes off without inventing a value or carrying
@@ -1801,3 +1802,7 @@ reporter qualifier editing; the reporter has no Review details card. Qualifiers
 from validated imported/API state remain preserved rather than being silently
 cleared by an unrelated panel save. Reporter entry does not preset a country;
 accepted facts or explicitly remembered defaults may prefill it.
+
+Issue217 separately tracks the pre-existing Sex control/birth-basis guidance
+premise. Issue151 does not relabel stored facts or select a new demographic
+contract while providing faithful output for the existing reviewed values.

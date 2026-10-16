@@ -22,10 +22,10 @@ export async function appendSexContinuations(document: PDFDocument, projection: 
   if (text === undefined) return;
   const font = await document.embedFont(StandardFonts.Helvetica);
   const reference = form3500ReportReference(referenceProjection);
-  // Pinned A3 box: its unused right side ends before Weight at x201.
-  // At 8pt even the widest W- + 20 hex characters fit between x98 and x198.
-  document.getPages()[0].drawText("A3 continued", { x: 105, y: 518, size: 8.5, font });
-  document.getPages()[0].drawText(reference, { x: 98, y: 503, size: 8, font });
+  // Keep the pointer on the A3 heading line, away from both value labels.
+  // The fixed page-1 blank area below B carries the full labelled reference.
+  document.getPages()[0].drawText("A3 continued", { x: 105, y: 531, size: 8.5, font });
+  document.getPages()[0].drawText(`Section A, block A3 supplement - report reference: ${reference}`, { x: 42, y: 185, size: 8.5, font });
   const lines = wrapContinuationText(text, font);
   const count = Math.floor((continuationGeometry.bodyTop - continuationGeometry.bodyBottom) / continuationGeometry.lineHeight) + 1;
   const total = Math.ceil(lines.length / count);

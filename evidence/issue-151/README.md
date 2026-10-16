@@ -2,8 +2,8 @@
 
 Fictional data only. The existing explicitly reviewed intersex value now prints
 in a numbered Section A/block A3 supplement, with both native Male/Female boxes
-unselected. Native A3 has an8.5pt continuation pointer and8pt matching opaque
-report reference in its unused right side, clear of labels, checkboxes and Weight.
+unselected. An8.5pt pointer is on the A3 heading line, away from the value labels;
+a matching labelled8.5pt report reference is in the blank page-1 area below B.
 The supplement uses fixed10pt/14pt leading and repeats A3/value/report identity
 on every page. Current known sex qualifiers travel verbatim; male/female retain
 the existing native base mapping. No new clinical vocabulary, demographic
@@ -31,3 +31,13 @@ not pretend an unchecked native box contains intersex.
 931 unit tests/90 files, typecheck/build and four focused browser journeys pass.
 Full149 mocked browser journeys, actual Opus review/recheck and exact-headCI are
 pending at this checkpoint. No live application-model calls or new dependency.
+
+Actual Opus full review found no blocking findings. F1 is fixed: the inclusion
+notice requires a current generated PDF, and a browser glyph-context regression
+asserts it is absent beside an unready/older artifact. F3 is fixed: the pointer
+is on the A3 heading line and the full labelled report reference is below B,
+clear of Male/Female labels. Current PDFs/readbacks/renders are regenerated and
+visually checked. F2 is the existing birth-basis guidance premise, separately
+tracked as #217 without relabelling facts in this slice. Review fixes pass931
+units, typecheck/build and four focused browser journeys. The earlier full149
+run passed; the repeat full149 run and same-session recheck are pending.
