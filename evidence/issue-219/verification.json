@@ -8,12 +8,16 @@
   "build": "passed",
   "PDFs": 8,
   "PDFKitRenders": 18,
-  "fullBrowser155": "pending",
-  "actualOpus": "pending",
+  "fullBrowser155": "Fresh full repeat pending after navigation duplicate fix; initial16 failures included mock queue cascade",
+  "actualOpus": "BLOCKED existing subscription session limit; no completed report; reset2026-10-16T18:40:00Z",
   "exactHeadCI": "pending",
   "mainCI": "pending",
   "newDependencies": 0,
   "liveApplicationModelCalls": 0,
   "ZIP": "pending approval; no work",
-  "sourceVisibility": "case-specific retained full account plus explicit ordinary expiration recovery; no universal omission detection claim"
+  "sourceVisibility": "case-specific retained full account plus explicit ordinary expiration recovery; no universal omission detection claim",
+  "focusedRegressionBrowserJourneys": 4,
+  "sourcePanelFix": "Only render source account when expanded in active Details; unfinished precision has readable text",
+  "reviewRun": "issue219-20261016T164653-31894ea1",
+  "reviewRetryAttempted": false
 }

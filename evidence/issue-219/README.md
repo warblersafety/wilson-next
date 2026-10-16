@@ -32,3 +32,11 @@ exact-head/mainCI gates are being
 recorded on this slice PR. No new dependencies, ZIP work, auth/grants or live
 application-model calls. Other date fields/source gaps remain under #180; broad
 semantic correction #150 and glyph/capacity #154 remain separate.
+
+The first full run found hidden duplicate source nodes affecting navigation; the
+source panel now renders words only while expanded in active Details. Existing
+navigation regressions plus both new journeys pass (four focused checks). The
+fresh155-run is pending. An actual Opus attempt stopped at the existing session
+limit without a completed review report (run issue219-20261016T164653-31894ea1,
+stated reset18:40UTC on2026-10-16). No retry/fallback was attempted. Review and
+recheck remain mandatory; this draft is not merge-ready based on tests alone.

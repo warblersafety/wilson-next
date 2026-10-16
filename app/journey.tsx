@@ -72,6 +72,7 @@ export function JourneyBody() {
   const [boundaryNotice, setBoundaryNotice] = useState<string>();
   const [reviewNotice, setReviewNotice] = useState("");
   const [draftDisclosureOpen, setDraftDisclosureOpen] = useState(false);
+  const [sourceAccountOpen,setSourceAccountOpen]=useState(false);
   const [resetNotice, setResetNotice] = useState(false);
   const previousTask = useRef<string | undefined>(undefined);
   const [clinicalNavigation, setClinicalNavigation] = useState(0);
@@ -305,7 +306,7 @@ export function JourneyBody() {
         </section>
         <section data-screen="details" hidden={screen !== "details"}>
           <h1>Review the case details</h1>
-          <details className={styles.caseCard}><summary>Your supplied account and date wording</summary><p>Compare your complete submitted words with the proposed details. If expiration wording was missed, add its stated precision and exact wording in that product’s Expiration date field. Wilson does not detect every omission automatically.</p>{uiDrafts.conversation.length ? uiDrafts.conversation.map(input=><p className={styles.originalAccount} key={input.id}>{input.text}</p>) : <><p>Only retained source excerpts are available for this earlier case; the complete account was not stored.</p>{browserState?.case.sources.filter(s=>["narrative","correction","answer"].includes(s.inputType)).map(s=><p className={styles.originalAccount} key={s.id}>{s.excerpt}</p>)}</>}</details>
+          <details className={styles.caseCard} open={sourceAccountOpen} onToggle={e=>setSourceAccountOpen(e.currentTarget.open)}><summary>Your supplied account and date wording</summary>{sourceAccountOpen && screen === "details" && <div><p>Compare your complete submitted words with the proposed details. If expiration wording was missed, add its stated precision and exact wording in that product’s Expiration date field. Wilson does not detect every omission automatically.</p>{uiDrafts.conversation.length ? uiDrafts.conversation.map(input=><p className={styles.originalAccount} key={input.id}>{input.text}</p>) : <><p>Only retained source excerpts are available for this earlier case; the complete account was not stored.</p>{browserState?.case.sources.filter(s=>["narrative","correction","answer"].includes(s.inputType)).map(s=><p className={styles.originalAccount} key={s.id}>{s.excerpt}</p>)}</>}</div>}</details>
           {representationLimited && <p className={styles.notice} role="status">This PDF cannot represent every reviewed value. Your reviewed details are retained. Review & save explains the limitation.</p>}
           {capacityIssues.length > 0 && <p className={styles.notice} role="status">This case exceeds the preview’s PDF capacity. Your reviewed details are retained. Review & save explains the supported limits.</p>}
           {clinicalAction?.kind === "proposals" && <p className={styles.lead}>Check each proposed group. Change incorrect values before accepting.</p>}
@@ -1278,7 +1279,10 @@ function formatFactValue(value: CaseValue<unknown> | undefined, control?: FactCo
     declined: "Prefer not to answer",
   }[value.kind];
   if (control?.shape === "age" && typeof value.value === "number") return `${value.value} years`;
-  if (isPartialExpiration(value.value)) return `${value.value.wording} (${value.value.precision === "month" ? value.value.year+"-"+value.value.month : value.value.year}; ${value.value.precision === "month" ? "month and year only" : "year only"})`;
+  if (typeof value.value === "object" && value.value && "precision" in value.value) {
+    const raw=value.value as Record<string,unknown>;
+    return `${String(raw.wording??"") || "Expiration wording unfinished"} (${raw.precision === "month" ? (String(raw.year??"")||"year unfinished")+"-"+(String(raw.month??"")||"month unfinished") : String(raw.year??"")||"year unfinished"}; ${raw.precision === "month" ? "month and year only" : "year only"})`;
+  }
   if (Array.isArray(value.value)) return value.value
     .map((item) => control?.options?.find((option) => option.value === item)?.label ?? item)
     .join(" and ");
