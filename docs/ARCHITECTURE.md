@@ -315,6 +315,18 @@ retaining all combined legacy result text and its history verbatim. It never
 splits that text into inferred clinical facts. New direct entries offer separate
 identity/result controls and permit partial information.
 
+Issue192 adds prompt v19 guidance for explicitly supplied collection-time
+context on an identified observation. A known calendar date remains known;
+its existing qualifier carries the exact supplied time wording, with both
+passages cited. If no known date is supplied, context may qualify a supplied
+known test name or result while an explicitly unavailable date remains unknown.
+Never fabricate a date or timestamp, infer a collection time, or transfer the
+context to another observation. The existing B6 row/field context projection
+prints reviewed qualifiers in Additional comments. This is a bounded extraction
+instruction, not runtime omission detection or verified general model coverage.
+The captured provider omission and authored expected-response regressions remain
+separate; live efficacy requires its own bounded evidence on the PR preview.
+
 ### Stable entity identity
 
 The application owns stable opaque case entity IDs. On opening input, the model
