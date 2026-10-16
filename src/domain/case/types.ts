@@ -1,3 +1,4 @@
+import type {SuppliedDate} from "./date-precision";
 import type { RaceEthnicity } from "./race-ethnicity";
 import type { PatientAge } from "./age";
 export type EntityState = "proposed" | "resolved" | "rejected" | "withdrawn";
@@ -103,8 +104,8 @@ export interface ProductFacts {
   strength: Fact<string>;
   frequency: Fact<string>;
   route: Fact<string>;
-  startDate: Fact<string>;
-  stopDate: Fact<string>;
+  startDate: Fact<SuppliedDate>;
+  stopDate: Fact<SuppliedDate>;
   therapyOngoing: Fact<boolean>;
   indication: Fact<string>;
   stopped: Fact<boolean>;
@@ -112,7 +113,7 @@ export interface ProductFacts {
   otherProductTypes: Fact<import("./other-product-types").OtherProductType[]>;
   medicationType: Fact<Array<"brand" | "generic-biosimilar" | "otc" | "compounded">>;
   doseReduced: Fact<boolean>;
-  doseReductionDate: Fact<string>;
+  doseReductionDate: Fact<SuppliedDate>;
   treatmentDuration: Fact<import("./duration").TreatmentDuration>;
   d3Value: Fact<"dates" | "duration">;
   improvedAfterChange: Fact<boolean>;
@@ -123,7 +124,7 @@ export interface ProductFacts {
   modelNumber: Fact<string>;
   catalogNumber: Fact<string>;
   expirationDate: Fact<import("./expiration").ExpirationValue>;
-  purchaseDate: Fact<string>;
+  purchaseDate: Fact<SuppliedDate>;
   purchaseSellerName: Fact<string>;
   purchaseSellerAddress: Fact<string>;
   purchaseSellerCity: Fact<string>;

@@ -13,6 +13,7 @@ export type FactControlShape =
   | "text"
   | "age"
   | "expiration"
+  | "product-date"
   | "birth-date"
   | "duration"
   | "date"
@@ -94,8 +95,8 @@ const product = {
   strength: { label: "Product strength", shape: "text", help: "Amount per tablet/capsule or liquid concentration from the product label (for example, 250 mg or 250 mg/5 mL). A dose does not establish strength." },
   frequency: { label: "Frequency", shape: "text" },
   route: { label: "Route", shape: "text" },
-  startDate: { label: "Started", shape: "date", completeDate: true },
-  stopDate: { label: "Stopped date", shape: "date", completeDate: true },
+  startDate: { label: "Started", shape: "product-date" },
+  stopDate: { label: "Stopped date", shape: "product-date" },
   therapyOngoing: { label: "Therapy/usage still ongoing", shape: "boolean", help: "Use only the explicitly supplied current status. A missing stop date does not mean ongoing. Historical stopping or restarting and supplied dates stay separate." },
   indication: { label: "Used for", shape: "text" },
   stopped: { label: "Stopped or removed", shape: "boolean" },
@@ -111,8 +112,8 @@ const product = {
   purchaseSellerPostalCode: { label: "Purchase postal code", shape: "text", },
   purchaseSellerCountry: { label: "Purchase country", shape: "text", options: purchaseCountrySuggestions.map(value=>({value,label:value.toLowerCase().replace(/(^|\s)\S/g,c=>c.toUpperCase())})), help: "Enter the explicitly supplied country or select a suggested native option. Only case/outer-space formatting matches a native label; no aliases or country inference. Use Unknown status for unknown information; unmatched wording is retained with a PDF limitation.", },
   purchaseWebsite: { label: "Purchase website", shape: "text", },
-  purchaseDate: { label: "Purchase date", shape: "date", completeDate: true, help: "Enter the explicitly supplied complete purchase date as YYYY-MM-DD. Partial or impossible dates stay unfinished. Wilson never infers a purchase date from other dates." },
-  doseReductionDate: { label: "Dose reduced on", shape: "date", completeDate: true, help: "Enter the explicitly supplied complete date as YYYY-MM-DD. Partial or impossible dates stay unfinished. Wilson never infers a dose reduction or its date." },
+  purchaseDate: { label: "Purchase date", shape: "product-date", help: "Choose the supplied complete date or month/year/year-only precision and exact purchase wording. Wilson never infers a purchase date from other dates." },
+  doseReductionDate: { label: "Dose reduced on", shape: "product-date", help: "Choose the supplied complete date or month/year/year-only precision and exact wording. Wilson never infers a dose reduction or its date." },
   doseReduced: { label: "Dose reduced", shape: "boolean" },
   improvedAfterChange: { label: "Improved after stopping or reducing", shape: "boolean" },
   restarted: { label: "Restarted", shape: "boolean" },

@@ -1,0 +1,22 @@
+{
+  "issue": 221,
+  "parent": 180,
+  "units": 1023,
+  "unitFiles": 96,
+  "typecheck": "passed",
+  "build": "passed",
+  "focusedBrowserJourneys": 7,
+  "fullBrowser158": "fresh repeat running after three stale copy assertions corrected",
+  "repoPDFs": 8,
+  "PDFKitCaptures": 23,
+  "additionalDensePDF": 1,
+  "additionalDenseCaptures": 2,
+  "independentReadback": "pypdf, every retained PDF",
+  "actualIndependentReview": "pending",
+  "exactHeadCI": "pending",
+  "hosted": "pending; shared preview unchanged at PR220",
+  "mainCI": "pending",
+  "liveApplicationModelCalls": 0,
+  "newDependencies": 0,
+  "fflate": "approval pending; not installed"
+}

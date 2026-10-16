@@ -1,3 +1,4 @@
+import {isSuppliedDate} from "./date-precision";
 import {isExpirationValue} from "./expiration";
 import { isOtherProductTypes } from "./other-product-types";
 import { isTreatmentDuration } from "./duration";
@@ -19,6 +20,7 @@ import { targetKey } from "./facts";
 export type KnownValueContract =
   | { shape: "patient-age" }
   | { shape: "expiration" }
+  | { shape: "product-date" }
   | { shape: "birth-date" }
   | { shape: "calendar-date" }
   | { shape: "duration" }
@@ -100,8 +102,8 @@ export const caseValueContracts = {
     strength: { shape: "string" },
     frequency: { shape: "string" },
     route: { shape: "string" },
-    startDate: { shape: "iso-date" },
-    stopDate: { shape: "iso-date" },
+    startDate: { shape: "product-date" },
+    stopDate: { shape: "product-date" },
     therapyOngoing: { shape: "boolean" },
     indication: { shape: "string" },
     stopped: { shape: "boolean" },
@@ -109,7 +111,7 @@ export const caseValueContracts = {
     cosmeticUse: { shape: "enum", values: ["professional-use-only", "retail"], mismatch: "cosmeticUse requires exactly one explicitly supplied cosmetic product type" },
     medicationType: { shape: "enum-array", values: ["brand", "generic-biosimilar", "otc", "compounded"], mismatch: "medicationType requires supported medication labels" },
     doseReduced: { shape: "boolean" },
-    purchaseDate: { shape: "calendar-date" },
+    purchaseDate: { shape: "product-date" },
     purchaseSellerName: { shape: "string" },
     purchaseSellerAddress: { shape: "string" },
     purchaseSellerCity: { shape: "string" },
@@ -118,7 +120,7 @@ export const caseValueContracts = {
     purchaseSellerCountry: { shape: "string" },
     purchaseWebsite: { shape: "string" },
 
-    doseReductionDate: { shape: "calendar-date" },
+    doseReductionDate: { shape: "product-date" },
     treatmentDuration: { shape: "duration" },
     d3Value: { shape: "enum", values: ["dates", "duration"], mismatch: "D3 print choice requires dates or duration" },
     improvedAfterChange: { shape: "boolean" },
@@ -188,6 +190,7 @@ export function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>
   const actual = value.value;
 
   switch (contract.shape) {
+    case "product-date": return isSuppliedDate(actual) ? undefined : `${target.field} requires a complete valid calendar date or explicit supplied precision and exact wording`;
     case "expiration": return isExpirationValue(actual) ? undefined : "expirationDate requires a complete valid ISO calendar date or explicit month/year or year-only precision with exact supplied wording";
     case "duration": return isTreatmentDuration(actual) ? undefined : "treatmentDuration requires an explicit positive decimal string amount and supported unit";
     case "calendar-date": return isCompleteCalendarDate(actual) ? undefined : `${target.field} requires a complete valid ISO calendar date (YYYY-MM-DD), year 0001–9999`;
@@ -265,6 +268,7 @@ export function modelKnownValueGuidance(): string {
 
 function describeContract(contract: KnownValueContract): string {
   switch (contract.shape) {
+    case "product-date": return "a complete valid Gregorian YYYY-MM-DD string, or explicit {precision: month,year: YYYY,month: MM,wording: exact supplied text} or {precision: year,year: YYYY,wording: exact supplied text}; never infer missing components or stopping/reduction/ongoing status";
     case "expiration": return "a complete valid Gregorian YYYY-MM-DD string, or {precision: month,year: YYYY,month: MM,wording: exact supplied text} or {precision: year,year: YYYY,wording: exact supplied text}; never invent day/month or judge expiry";
     case "duration": return "an object {value: positive plain decimal string, unit: minutes|hours|days|weeks|months|years}, preserving spelling; never calculate from dates or invent units";
     case "calendar-date": return "a complete valid Gregorian ISO calendar date YYYY-MM-DD, year 0001–9999; never infer or repair a supplied date";
@@ -299,5 +303,5 @@ function omit<const T extends Record<string, KnownValueContract>, const K extend
 
 /** Includes legacy shape-only date contracts; storage deliberately retains their old values. */
 export function isCalendarDateTarget(target: FactTarget): boolean {
-  return ["iso-date", "calendar-date", "birth-date", "expiration"].includes(contractForTarget(target).shape);
+  return ["iso-date", "calendar-date", "birth-date", "expiration", "product-date"].includes(contractForTarget(target).shape);
 }

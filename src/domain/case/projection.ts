@@ -1,3 +1,4 @@
+import {productDateFields,productDateLabels,isPartialDate,suppliedDateText,type ProductDateField} from "./date-precision";
 import {isPartialExpiration,expirationText,type PartialExpiration} from "./expiration";
 import { isCalendarDateTarget, knownValueMismatch } from "./value-contract";
 import { isCompleteCalendarDate } from "./calendar-date";
@@ -59,6 +60,7 @@ export interface Form3500Projection {
     F: { concomitantProducts: ProjectedConcomitantProduct[] };
     G: { reporter: ProjectedReporter };
   };
+  productDateNotes?: {productId:string;field:ProductDateField;block:"D1"|"D3"|"F1";ordinal:number;text:string;sourceIds:string[]}[];
   expirationNotes?: {productId:string;block:"D6"|"E4"|"F1";ordinal:number;text:string;sourceIds:string[]}[];
   invalidCalendarDates?: { target: string; value: string }[];
   sourceTrace: Record<string, string[]>;
@@ -166,14 +168,15 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
         ? [{target: targetKey(target), value: String(value)}] : [];
     }),
     expirationNotes: [],
+    productDateNotes: [],
     sourceTrace: {},
     omissions: [],
     notIncluded: [
       "Patient fractional or compound ages and partial date of birth",
       "Patient race/ethnicity detail outside the seven A5 categories",
       "Section C product pictures",
-      "Expiration precision outside complete dates or explicit month/year and year-only wording; partial purchase dates and purchase wording outside native country/glyph/line/capacity limits",
-      "Section D partial dose-reduction dates; dose-count, compound and range treatment durations",
+      "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
+      "Product date wording outside complete dates or explicit month/year/year-only precision; dose-count, compound and range treatment durations",
     ],
   };
 
@@ -324,6 +327,21 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     if(d>=0){delete projection.sections.D.suspectProducts[d].expirationDate;delete projection.sourceTrace[`sections.D.suspectProducts.${d}.expirationDate`];}
     if(e>=0){delete projection.sections.E.suspectDevices[e].expirationDate;delete projection.sourceTrace[`sections.E.suspectDevices.${e}.expirationDate`];}
   }
+  for(const product of caseState.products.filter(p=>p.state==="resolved")) {
+    const d=projection.sections.D.suspectProducts.findIndex(p=>p.productId===product.id),f=projection.sections.F.concomitantProducts.findIndex(p=>p.productId===product.id);
+    for(const field of productDateFields) {
+      const value=known(product.facts[field]);if(!value||!isPartialDate(value.value))continue;
+      const destination=d>=0?projection.sections.D.suspectProducts[d]:f>=0?projection.sections.F.concomitantProducts[f]:undefined;
+      // The native projection already applied D3 print-choice/applicability. Never restore a suppressed alternative.
+      if(!destination || !(field in destination))continue;
+      const block=d>=0?(field==='purchaseDate'?'D1':'D3'):'F1',ordinal=(d>=0?d:f)+1;
+      const note={productId:product.id,field,block: block as "D1"|"D3"|"F1",ordinal,text:suppliedDateText(value.value,productDateLabels[field].toLowerCase(),value.qualifier),sourceIds:value.sourceIds};
+      const i=projection.productDateNotes!.push(note)-1;projection.sourceTrace[`productDateNotes.${i}`]=value.sourceIds;
+      delete (destination as unknown as Record<string,unknown>)[field];delete projection.sourceTrace[`sections.${d>=0?'D.suspectProducts':'F.concomitantProducts'}.${d>=0?d:f}.${field}`];
+      projection.omissions=projection.omissions.filter(o=>o.target!==`product:${product.id}:${field}`);
+      if(f>=0) projection.sections.F.concomitantProducts[f].fieldContext=projection.sections.F.concomitantProducts[f].fieldContext?.filter(c=>c.field!==field);
+    }
+  }
   const quantityContext = [...quantityContextEntries(projection.sections.D.suspectProducts), ...d5OtherTypeContextEntries(caseState, projection), ...deviceContextEntries(caseState, projection)];
   if (quantityContext.length) {
     projection.sections.B.eventDescription = [projection.sections.B.eventDescription, ...quantityContext.map(entry => entry.text)].filter(Boolean).join("\n");
@@ -349,6 +367,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   for (const product of projection.sections.F.concomitantProducts) for (const context of product.fieldContext ?? []) carriedQualifierTargets.add(`product:${product.productId}:${context.field}`);
   for (const context of projection.sections.G.reporter.fieldContext??[]) carriedQualifierTargets.add(`reporter:reporter:${context.field}`);
   for (const entry of relevantTestContextEntries(caseState)) carriedQualifierTargets.add(entry.target);
+  for(const note of projection.productDateNotes??[])carriedQualifierTargets.add(`product:${note.productId}:${note.field}`);
   for(const note of projection.expirationNotes??[])carriedQualifierTargets.add(`product:${note.productId}:expirationDate`);
   const disclosed = new Set(projection.omissions.filter(({ reason }) => reason === "qualifier-not-included").map(({ target }) => target));
   for (const { target, fact } of allFacts(caseState)) {
