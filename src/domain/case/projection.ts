@@ -29,7 +29,7 @@ export interface Form3500Projection {
   caseId: string;
   revision: number;
   sections: {
-    A: { patientIdentifier?: string; ageYears?: PatientAge; dateOfBirth?: string; raceEthnicity?: RaceEthnicity[]; sex?: "female" | "male" | "intersex"; weight?: { value: number; unit: "kg" | "lb" } };
+    A: { patientIdentifier?: string; ageYears?: PatientAge; dateOfBirth?: string; raceEthnicity?: RaceEthnicity[]; sex?: "female" | "male" | "intersex"; sexContext?: string; weight?: { value: number; unit: "kg" | "lb" } };
     B: {
       reportType?: ReportType;
       reportDate?: string;
@@ -186,7 +186,9 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     for (const item of projection.omissions) if (item.target === `patient:patient:${unselected}` && item.reason === "qualifier-not-included") item.baseValueIncluded = false;
   }
   assign(projection, "sections.A.raceEthnicity", "patient race and/or ethnicity", "patient:patient:raceEthnicity", caseState.patient.facts.raceEthnicity, projection.sections.A, "raceEthnicity", values => raceEthnicityOptions.filter(option => values.includes(option.value)).map(option => option.value));
-  assign(projection, "sections.A.sex", "patient sex", "patient:patient:sex", caseState.patient.facts.sex, projection.sections.A, "sex");
+  assign(projection, "sections.A.sex", "patient sex", "patient:patient:sex", caseState.patient.facts.sex, projection.sections.A, "sex", value => value, true);
+  const suppliedSex = known(caseState.patient.facts.sex);
+  if (suppliedSex?.qualifier) projection.sections.A.sexContext = suppliedSex.qualifier;
   assign(projection, "sections.A.weight", "patient weight", "patient:patient:weight", caseState.patient.facts.weight, projection.sections.A, "weight");
   assign(projection, "sections.B.reportType", "report type", "event:event:reportType", caseState.event.facts.reportType, projection.sections.B, "reportType");
   assign(projection, "sections.B.eventDate", "event date", "event:event:onsetDate", caseState.event.facts.onsetDate, projection.sections.B, "eventDate");
@@ -315,7 +317,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
 
   // Completeness boundary: selectors, prerequisites and unsupported whole facts
   // can bypass assign(). Their current context must still never disappear.
-  const carriedQualifierTargets = new Set(["event:event:symptoms", "event:event:problemDescription", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate", "event:event:relevantHistory", "event:event:additionalComments"]);
+  const carriedQualifierTargets = new Set(["patient:patient:sex", "event:event:symptoms", "event:event:problemDescription", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate", "event:event:relevantHistory", "event:event:additionalComments"]);
   for (const product of projection.sections.D.suspectProducts) {
     for (const field of ["dose", "strength"]) carriedQualifierTargets.add(`product:${product.productId}:${field}`);
   }

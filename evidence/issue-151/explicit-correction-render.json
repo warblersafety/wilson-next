@@ -1,0 +1,17 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 1,
+      "rendered" : true,
+      "screenshot" : "evidence\/issue-151\/explicit-correction-page-1.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "A3 pointer\/reference fit unused native space; correct native boxes only",
+    "Exact A3 value\/context is readable, field-linked and case-linked",
+    "No duplicated A3 value or qualifier on extra copies; unknown\/correction removes prior notes"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "evidence\/issue-151\/explicit-correction.pdf"
+}

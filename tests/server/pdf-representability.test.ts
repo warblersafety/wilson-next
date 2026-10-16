@@ -33,22 +33,24 @@ describe("reviewed sex and native PDF representability", () => {
     expect(snapshot.projection.sections.D.suspectProducts[0][field]).toBe(value);
     await expect(fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), snapshot.projection)).rejects.toThrow("reviewed");
   });
-  it("retains a reviewed unrepresentable value and blocks readiness before the adapter", async () => {
+  it("retains reviewed intersex and supports a faithful A3 supplement without changing knowledge", async () => {
     const current = correctReportedSex(productCapacityCase(), { kind: "known", value: "intersex" }), before = structuredClone(current);
     const repository = new InMemoryCaseRepository({ initialCase: current });
     const snapshot = await getJourneySnapshot(repository, current.id);
-    expect(snapshot.downloadReady).toBe(false);
-    expect(snapshot.outputIssues).toContainEqual({ code: "unsupported-patient-sex", message: expect.stringContaining("reviewed value is retained"), targets: ["patient:patient:sex"], entityIds: ["patient"] });
+    expect(snapshot.downloadReady).toBe(true);
+    expect(snapshot.outputIssues.some(i => i.code === "unsupported-patient-sex")).toBe(false);
     expect(snapshot.projection.sections.A.sex).toBe("intersex"); expect(await repository.load(current.id)).toEqual(before);
-    await expect(fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), snapshot.projection)).rejects.toThrow("does not support intersex");
+    const filled=await fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")),snapshot.projection);
+    expect(filled.readback.sections.A.sex).toBeUndefined();
+
   });
-  it.each(["preview", "download"] as const)("returns a truthful pre-export409 for %s without changing accepted knowledge", async mode => {
+  it.each(["preview", "download"] as const)("exports a supported intersex supplement for %s without changing accepted knowledge", async mode => {
     const current = correctReportedSex(productCapacityCase(), { kind: "known", value: "intersex" });
     const state = { version: browserStateVersion, stage: "output", case: current, unrepresented: [] }, before = structuredClone(state);
     const response = await pdfPost(new NextRequest("http://wilson.test/api/case/pdf", { method: "POST", headers: { host: "wilson.test", origin: "http://wilson.test", "content-type": "application/json" }, body: JSON.stringify({ mode, state }) }));
-    expect(response.status).toBe(409); expect(await response.json()).toMatchObject({ code: "pdf-not-ready", error: expect.stringContaining("reviewed value is retained") }); expect(state).toEqual(before);
+    expect(response.status).toBe(200); expect(response.headers.get("content-type")).toBe("application/pdf"); expect((await response.arrayBuffer()).byteLength).toBeGreaterThan(0); expect(state).toEqual(before);
   });
-  it("restores readiness only after an explicit fictional correction, preserving prior value/history", async () => {
+  it("explicit fictional correction changes native selection while preserving prior value/history", async () => {
     const initial = correctReportedSex(productCapacityCase(), { kind: "known", value: "intersex" });
     const corrected = correctReportedSex(initial, { kind: "known", value: "female" });
     const snapshot = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: corrected }), corrected.id);

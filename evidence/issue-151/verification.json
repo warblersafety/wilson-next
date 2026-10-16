@@ -1,0 +1,24 @@
+{
+  "unitTests": 931,
+  "unitFiles": 90,
+  "typecheck": "passed",
+  "build": "passed",
+  "focusedBrowserJourneys": 4,
+  "fullMockBrowserJourneys": {
+    "expected": 149,
+    "status": "running"
+  },
+  "liveApplicationModelProviderCalls": 0,
+  "newDependencies": 0,
+  "PDFs": 9,
+  "PDFKitRenders": 19,
+  "independentReader": "pypdf 6.16.2",
+  "actualOpusReview": "pending",
+  "notes": [
+    "Known intersex uses A3 supplement with native boxes off",
+    "Native male/female plus qualifiers retain existing native base mapping",
+    "Unknown/unanswered distinctions and current-only context verified",
+    "Mixed E copy A3 blank; no duplicate value/context",
+    "A3 pointer/reference measured and visually checked in unused native space"
+  ]
+}
