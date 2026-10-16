@@ -237,7 +237,7 @@ review/correction, browser-local case/reporter persistence and visual design.
 | Product details and categories | Native purchase date/seller/address/website are implemented (issues183/188), alongside NDC, expiry, duration and cosmetic choice. Hemp/Other D5, partial dates/durations and unsupported wording still need faithful representation. |
 | Devices, concomitants and capacity | One suspect-device path exists. Additional D/E copies, multiple devices, full concomitant rows and test/product overflow remain. |
 | Pictures and portable export | Narrative attachments exist. Actual picture/file lifecycle, complete export package, portable glyphs and remaining field-linked supplements are unfinished. |
-| Integrity and final acceptance | Preserve accepted/pending/conflict/source/history, draft/resume and one-case controls in every slice. Semantic correction issue150 stays paused; current cross-category, hosted/keyboard/accessibility and bounded live first-response acceptance remain. |
+| Integrity and final acceptance | Preserve accepted/pending/conflict/source/history, draft/resume and one-case controls in every slice. Neutral optional-comment withdrawal (#204) remains separate. Semantic correction issue150 stays paused; current cross-category, hosted/keyboard/accessibility and bounded live first-response acceptance remain. |
 
 Issue200's proposed blanket B1/B2 gate is not implemented: FDA's life-threatening
 criterion includes prospective continued-use risk, and product-problem reporting

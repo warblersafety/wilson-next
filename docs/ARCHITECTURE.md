@@ -1559,7 +1559,9 @@ context, followed by a separate "Additional comments" statement and, if present,
 source IDs remain separate in authority and combined truthfully for export.
 Known comments alone print normally even when no tests were supplied. Unresolved
 or current non-known comments omit only their text and retain/disclose status;
-prior comments never reappear. Generic unsupported-field wording is removed
+prior comments never reappear. These are literal clinician-selected statuses,
+not a neutral withdrawal action; optional comment withdrawal is tracked separately
+in issue204. Generic unsupported-field wording is removed
 only for the newly supported general comments, not Section C pictures.
 
 Shared B6 glyph/fit planning and section-linked continuation carry the entire

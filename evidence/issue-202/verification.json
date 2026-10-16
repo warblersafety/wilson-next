@@ -56,5 +56,13 @@
     "authoredScenarios": 45,
     "distinctIdentityScopes": 72
   },
-  "finalFreshBuildAndFocusedGate": "pass; four journeys, final clinician help text"
+  "finalFreshBuildAndFocusedGate": "pass; four journeys, final clinician help text",
+  "actualReview": {
+    "run": "issue202-20261016T074946-2366bcd2",
+    "model": "claude-opus-5-5",
+    "effort": "high",
+    "blockingFindings": 0,
+    "followup": "Low severity neutral withdrawal tracked #204; evidence precisely states explicit Unknown/Declined corrections. No new lifecycle inferred. Targeted recheck pending."
+  },
+  "statusCorrectionEvidence": "comments-unknown.pdf is explicit Unknown; comments-continuation-removed.pdf is explicit Declined. These are not neutral withdrawal."
 }

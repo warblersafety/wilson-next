@@ -36,16 +36,20 @@ field/contract, not a general prompt-completeness experiment.
 journeys passed. All129 full mock browser journeys passed; fresh PDF hashes match all eight retained originals. Eight retained actual
 browser PDFs have independent pypdf readbacks (including continuation text,
 positions and fonts); checks cover native accepted/corrected/conflicted/chosen/
-unknown comments, lossless v22 resume, full aggregate continuation and explicit
-removal without losing test context. Native page3 and representative attachment
+unknown comments, lossless v22 resume, full aggregate continuation and an explicit
+Declined-status correction that stops printing comments without losing test context. Native page3 and representative attachment
 page9 were independently rendered by PDFKit2x and visually inspected readable/
 unclipped with exact comments/context and linked native marker. Source/history,
 question budget, all unrelated native fields, non-known states and unsupported
 glyph PDF409 paths have targeted unit/PDF coverage. Hashes in verification.json.
 
 No live application-model calls or new verification batch were used. Actual
-Opus review/recheck where needed, final exact-headCI and guarded merge/mainCI/tree
-comparison remain required. Product maintains six macro completion categories;
+Opus full review found no blockers and one low-severity follow-up: neutral comment
+withdrawal is not equivalent to the existing explicit Unknown/Declined/absence
+status corrections. The tests name the actual selected statuses; no neutral
+withdrawal action is claimed. That lifecycle question is tracked in issue204.
+Targeted actual recheck of this documentation disposition and final exact-headCI,
+guarded merge/mainCI/tree comparison remain required. Product maintains six macro completion categories;
 B06 is a bounded field delivery, not full Wilson or general extraction completion.
 Issue200's evidence/boundary, unmerged PR195, paused150, private originals and
 the existing preview grant/protection/original expiry remain preserved.
