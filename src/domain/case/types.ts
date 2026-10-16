@@ -32,6 +32,7 @@ export interface Fact<T> {
 }
 
 export interface PatientFacts {
+  involvement: Fact<"present" | "none">;
   identifier: Fact<string>;
   ageYears: Fact<PatientAge>;
   dateOfBirth: Fact<string>;

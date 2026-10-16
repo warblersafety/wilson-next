@@ -38,6 +38,7 @@ type CaseValueContracts = {
 
 export const caseValueContracts = {
   patient: {
+    involvement: { shape: "enum", values: ["present", "none"], mismatch: "Patient involvement requires explicit present or none" },
     identifier: { shape: "string" },
     ageYears: { shape: "patient-age" },
     dateOfBirth: { shape: "birth-date" },

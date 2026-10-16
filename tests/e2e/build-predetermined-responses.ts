@@ -1,3 +1,4 @@
+import { patientInvolvementScenario } from "../fixtures/patient-involvement";
 import { timeScenario } from "../fixtures/test-time-context";
 import { continuationScenario } from "../fixtures/narrative-continuation";
 import { serialCorrectionText, mixedSerialText, serialOutput } from "../fixtures/serial-test-correction";
@@ -635,5 +636,6 @@ export const predeterminedResponseScenarios = {
   updateGrouping: [{ identityScope: "issue109-update", turn: "correction" as const, output: preservedGroupingOutput as import("../../src/domain/case/model-boundary").ModelProposalOutput }],
   narrativeContinuation: continuationScenario,
   testTimeContext: timeScenario,
+  patientInvolvement: patientInvolvementScenario,
 };
 export const predeterminedModelResponses = Object.values(predeterminedResponseScenarios).flat();

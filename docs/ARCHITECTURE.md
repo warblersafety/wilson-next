@@ -1438,3 +1438,51 @@ reviewed field-linked exception notes, general additional comments, test-grid
 row overflow, required extraD/E copies, pictures and the broader115/151/153
 representation gaps remain unfinished. No broad release-completion claim follows
 from capacity support alone. No new font/dependency or live-model route is added.
+
+### Explicit patient involvement and A1 (issue196)
+
+Patient `involvement` is a reviewed semantic fact, separate from identity and
+demographics: known `present` means explicitly involved; known `none` means
+explicitly no patient involved. Unknown, declined, inapplicable, explicitly
+absent wrapper status and unmentioned/empty remain distinct; none of those
+wrappers asserts no patient. Do not infer participation from identifier, missing
+demographics, product type/report type, unused packaging or absent symptoms.
+FDA's A1 instruction requires literal `none` when no patient was involved:
+https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500
+Only accepted explicit no-patient status can produce downloadable A1 `none`;
+unknown/missing participation does not replace a known identifier. Literal
+`none` retained in the identifier (including legacy cases) is not reinterpreted
+as involvement: output blocks for explicit correction of identity/participation.
+
+Prompt v20 (`wilson-patient-involvement-v20`) and schema v28 add this one target
+to the stable v19 base; the unmerged PR195 general prompt candidate is excluded.
+Conversation, ordinary proposal/update review, direct field correction, source
+trace, history, conflicts and saved drafts use existing contracts. Native A1
+`none` is traced to involvement's accepted source, never a fictional identifier.
+A1 otherwise preserves an accepted known identifier. Qualifiers retain existing
+exact omitted-context disclosure; this slice adds no generic context carrier.
+
+FDA B1 adverse-event reporting describes an adverse outcome in a patient.
+Accepted no-patient status plus an explicit report type including adverse event
+also blocks for human correction, without changing either selection. This checks
+only two explicit statuses, never infers participation from clinical details.
+
+No-patient status plus current known identifier, age, DOB, race/ethnicity, sex or
+weight is a deterministic output contradiction, including known alternatives
+in conflicted demographics. All facts stay visible and
+retained; no inferred status, auto-clearing, hidden demographics or guessed
+clinical resolution. Correct participation or the explicitly identified facts
+through existing controls. Pending or conflicted involvement cannot establish none. Pending proposals
+block output; existing conflicted involvement remains disclosed partial output
+without an A1 no-patient claim. Known conflicting demographics block that claim. Positive patient
+involvement with unknown identifier remains a patient with unknown identity.
+
+Browser state v22 strictly validates genuine v7-v21 before adding only an empty
+involvement fact. Earlier accepted/pending/history/source/revision and unfinished
+field drafts remain unchanged; no source reinterpretation or model replay on
+resume. A genuine captured fictional v21 product-problem state is retained in
+tests, including source no-patient wording that must not be inferred on migration.
+Mocked conversation and actual PDF readback/render evidence verify the paths;
+no new live application-model efficacy evidence or completeness claim is made.
+Other narrative omissions remain ordinary clinician review/correction, and
+native unsupported context/partial dates remain separate release-cut work.
