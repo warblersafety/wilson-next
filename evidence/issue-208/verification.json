@@ -41,12 +41,18 @@
   "independentRender": {
     "renderer": "macOS PDFKit 2x",
     "pages": [
+      1,
       4,
+      9,
+      10,
+      11,
       12,
       13,
-      14
+      14,
+      15,
+      16
     ],
-    "inspection": "pass: updated header explicitly links main B5, original layout legible, third-product native values and flags faithful; other D/E/F blank"
+    "inspection": "pass: all8 copied pages9-16 inspected, only D filled; Reset Form matches printable original page1 (/F=4), not a newly printed hidden control"
   },
   "postClarificationFocusedMockBrowserJourneys": 3,
   "postClarificationPDFTests": 4,
@@ -56,5 +62,10 @@
       15
     ],
     "status": "pass: readable/unclipped continuation and linked native D fields; matching report reference"
+  },
+  "reviewRemediation": {
+    "F1": "final readback pageCount now taken after appending pages; targeted PDF4/typecheck passed",
+    "F2": "all copy pages rendered/inspected; source annotation flag inspection confirms printable native pushbuttons",
+    "FDAIdentifierPremise": "official general instructions specify only D filled on additional product copy; no added A1 requirement found; linked report references retained"
   }
 }

@@ -1,0 +1,53 @@
+{
+  "templateSha256": "1147d7c86bb002cba7fb9352ca8e3402524d8fa0236916b7bf7e5dcdcf88bf9c",
+  "annotationFlagCounts": {
+    "4": 228,
+    "68": 11,
+    "0": 2
+  },
+  "pushbuttons": [
+    {
+      "page": 1,
+      "field": "ResetForm[0]",
+      "annotationFlags": 4,
+      "print": true,
+      "hidden": false
+    },
+    {
+      "page": 7,
+      "field": "T97[0]",
+      "annotationFlags": 4,
+      "print": true,
+      "hidden": false
+    },
+    {
+      "page": 7,
+      "field": "T113[0]",
+      "annotationFlags": 4,
+      "print": true,
+      "hidden": false
+    },
+    {
+      "page": 7,
+      "field": "T97[0]",
+      "annotationFlags": 4,
+      "print": true,
+      "hidden": false
+    },
+    {
+      "page": 7,
+      "field": "T118[0]",
+      "annotationFlags": 4,
+      "print": true,
+      "hidden": false
+    },
+    {
+      "page": 7,
+      "field": "Button1[0]",
+      "annotationFlags": 4,
+      "print": true,
+      "hidden": false
+    }
+  ],
+  "meaning": "PDF annotation flag4=Print, flag2=Hidden; independently inspected original and copied Reset Form render"
+}

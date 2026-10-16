@@ -38,14 +38,20 @@ clarification, all three focused browser journeys and four PDF tests passed agai
 with fresh build/typecheck. Final exact-headCI will exercise the complete suite.
 Five latest actual browser PDFs and a long-context unit PDF have independent
 pypdf readbacks including serialized native-copy text. PDFKit2x renders of initial
-page4 and added-copy pages12/13/14 were inspected for native values, checkmarks,
+pages1/4 and all eight added-copy pages9–16 were inspected for native values, checkmarks,
 layout, matching references and blank non-D fields. Tests separately cover full
 long qualifier continuation with one report reference and fourth-projection
 rejection. Semantic readback before flatten/copy is not the sole evidence.
 
 The existing generated-PDF residual encryption marker prevents this library
 reloading its output. Native copying stays in memory; no encryption bypass or
-mutation was introduced. Zero live application-model calls. Actual Opus review/
-recheck, final exact-headCI, guarded merge/mainCI/tree/clean and protected hosted
+mutation was introduced. Zero live application-model calls. Actual Opus full review found no blockers and two follow-ups. Final readback
+page count was fixed to use the final document and independently asserted for
+16/19-page outputs. All eight copied pages were rendered and inspected. Reset
+Form is printable (/F=4) in the approved template and visible on original page1
+as well as copied page9; it is not a newly exposed hidden control. The cited FDA
+general instructions specify only D filled on additional product copies; no
+additional A1 requirement was found, so matching report-reference linkage stays.
+Targeted actual recheck, final exact-headCI, guarded merge/mainCI/tree/clean and protected hosted
 checkpoint remain required. Six macro categories remain; this is one genuine
 capacity vertical, not full Wilson completion.

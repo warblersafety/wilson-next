@@ -273,7 +273,7 @@ export async function fillForm3500Projection(source: Uint8Array, projection: For
     for (const copied of await document.copyPages(copy, copy.getPageIndices())) document.addPage(copied);
     additionalReadback.push(...extra.readback.sections.D.suspectProducts);
   }
-  return { output: await document.save(), readback: { ...initial.readback, sections: { ...initial.readback.sections, D: { suspectProducts: [...initial.readback.sections.D.suspectProducts, ...additionalReadback] } } } };
+  return { output: await document.save(), readback: { ...initial.readback, pageCount: document.getPageCount(), sections: { ...initial.readback.sections, D: { suspectProducts: [...initial.readback.sections.D.suspectProducts, ...additionalReadback] } } } };
 }
 
 async function fillNativeForm3500Projection(
