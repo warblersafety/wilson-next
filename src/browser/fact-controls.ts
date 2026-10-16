@@ -25,6 +25,7 @@ export interface FactControl {
   label: string;
   shape: FactControlShape;
   help?: string;
+  multiline?: boolean;
   preference?: boolean;
   preferenceHelp?: string;
   requireSelection?: boolean;
@@ -67,6 +68,7 @@ const event = {
   otherSerious: { label: "Other serious event", shape: "boolean" },
   relevantTestsAvailable: { label: "Relevant tests available", shape: "boolean" },
   relevantHistory: { label: "Relevant history", shape: "text" },
+  additionalComments: { label: "Additional comments", shape: "text", multiline: true, help: "Optional general comments for the report. Use the other fields for tests, history and product details." },
   treatments: { label: "Treatment", shape: "list" },
   outcome: { label: "Outcome", shape: "text" },
   dischargeDate: { label: "Discharged", shape: "date" },

@@ -1537,3 +1537,47 @@ FDA B5 requests event/clinical-course/treatment detail, and general instructions
 allow section-linked narrative continuation. Authority checked 2026-10-16:
 https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500
 This is presentation fidelity, with no judgment about medical attribution.
+
+
+### Independent general Additional comments (issue202; completion row B06)
+
+An optional event additionalComments text fact holds explicitly supplied general
+report comments independently of symptoms, product problems, treatment/outcome,
+B6 tests, B7 history and reporter/product facts. Existing conversation/update
+review, correction/conflict, source/history and non-known states apply. No new
+mandatory question is added. The existing card provides a multiline editor and
+preserves line breaks in review, unsaved edits and history. Nothing is inferred,
+automatically copied from other facts or recovered from unrepresented source
+text; an explicitly requested overlapping comment still retains its wording.
+Comments never satisfy the separate base event-description requirement.
+
+FDA B6 permits other information in the Additional comments box. The existing
+projection field relevantTestContext remains the PDF-owned legacy aggregate
+name: native AdditionalComments now combines existing labelled per-row test
+context, followed by a separate "Additional comments" statement and, if present,
+"Additional comments context". Raw text/qualifier, test order and all contributors'
+source IDs remain separate in authority and combined truthfully for export.
+Known comments alone print normally even when no tests were supplied. Unresolved
+or current non-known comments omit only their text and retain/disclose status;
+prior comments never reappear. Generic unsupported-field wording is removed
+only for the newly supported general comments, not Section C pictures.
+
+Shared B6 glyph/fit planning and section-linked continuation carry the entire
+aggregate. General comments do not overwrite table context or move into B5/B7.
+Overflow uses the existing numbered attachment/reference convention; no arbitrary
+truncation, font shrinking or clinical summary. Unsupported glyphs retain facts
+and block fresh PDF; diagnostic targets identify offending B6 contributors,
+including the independent comments fact. Wider portable glyph support remains
+separate. Native field values/readback shape are unchanged for cases without comments.
+The B6 continuation heading now names both general comments and test context;
+cases without general comments gain no comment text.
+
+Browser statev23 strictly validates genuine v22 before adding only an empty
+comments fact. Earlier versions retain the existing strict staged migrations;
+source, history, revision, statuses and compatible unfinished edits are unchanged,
+with no model replay or automatic acceptance. Older declared case versions reject
+new comments fields; malformed current states do not masquerade as legacy input.
+Promptv21/schemav29 add only the explicit comments field/contract, with no general
+source-accounting or completeness mechanism. Existing accepted legacy dates and
+all unrelated field validation remain unchanged. FDA authority checked2026-10-16:
+https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500

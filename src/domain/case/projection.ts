@@ -151,7 +151,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     notIncluded: [
       "Patient fractional or compound ages and partial date of birth",
       "Patient race/ethnicity detail outside the seven A5 categories",
-      "Section C product pictures and general additional comments",
+      "Section C product pictures",
       "Additional suspect medical devices beyond the first",
       "Section D partial expiration dates, partial purchase dates, cannabinoid/Other product-type categories and purchase wording outside native country/glyph/line/capacity limits",
       "Section D partial dose-reduction dates; dose-count, compound and range treatment durations",
@@ -216,7 +216,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     }
     projection.sections.B.relevantTests.push(result);
   }
-  const testContext = relevantTestContextEntries(caseState);
+  const testContext = additionalCommentsEntries(caseState);
   if (testContext.length) {
     projection.sections.B.relevantTestContext = testContext.map(entry => entry.text).join("\n");
     projection.sourceTrace["sections.B.relevantTestContext"] = [...new Set(testContext.flatMap(entry => entry.sourceIds))];
@@ -233,9 +233,9 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     });
   }
 
-  // B5 can contain the other narrative facts even when one of these is not
+  // Narrative boxes can contain other facts even when one of these is not
   // carried. Disclose that individual omission, including unresolved conflict.
-  for (const [field, concept] of [["symptoms", "symptoms"], ["problemDescription", "product problem"], ["treatments", "treatment"], ["outcome", "event outcome"], ["dischargeDate", "discharge date"]] as const) {
+  for (const [field, concept] of [["symptoms", "symptoms"], ["problemDescription", "product problem"], ["treatments", "treatment"], ["outcome", "event outcome"], ["dischargeDate", "discharge date"], ["additionalComments", "additional comments"]] as const) {
     const fact = caseState.event.facts[field];
     if (!known<unknown>(fact)) projection.omissions.push({ concept, target: `event:event:${field}`, reason: omissionReason(fact), sourceIds: fact.sourceIds });
   }
@@ -317,7 +317,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
 
   // Completeness boundary: selectors, prerequisites and unsupported whole facts
   // can bypass assign(). Their current context must still never disappear.
-  const carriedQualifierTargets = new Set(["event:event:symptoms", "event:event:problemDescription", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate", "event:event:relevantHistory"]);
+  const carriedQualifierTargets = new Set(["event:event:symptoms", "event:event:problemDescription", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate", "event:event:relevantHistory", "event:event:additionalComments"]);
   for (const product of projection.sections.D.suspectProducts) {
     for (const field of ["dose", "strength"]) carriedQualifierTargets.add(`product:${product.productId}:${field}`);
   }
@@ -578,4 +578,13 @@ export function relevantTestContextEntries(caseState: SemanticCase) {
       const fact = known(test.facts[field]);
       return fact?.qualifier ? [{ text: `B6 table row ${index + 1} - ${labels[field]} context: ${fact.qualifier}`, target: `test:${test.id}:${field}`, sourceIds: fact.sourceIds, testId: test.id }] : [];
     }));
+}
+
+/** Native AdditionalComments combines labelled general comments with independent test context. */
+export function additionalCommentsEntries(caseState: SemanticCase) {
+  const comment = known(caseState.event.facts.additionalComments);
+  return [
+    ...relevantTestContextEntries(caseState),
+    ...(comment ? [{ text: `Additional comments: ${comment.value}${comment.qualifier ? `\nAdditional comments context: ${comment.qualifier}` : ""}`, target: "event:event:additionalComments", sourceIds: comment.sourceIds, testId: undefined }] : []),
+  ];
 }

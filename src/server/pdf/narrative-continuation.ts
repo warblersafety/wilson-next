@@ -5,7 +5,7 @@ import { multilineTextLimitation, type NativeMultilineGeometry } from "./multili
 
 export const narrativeBlocks = {
   eventDescription: { block: "B5", label: "Event, problem or product use error", width: 531.102, height: 520.574, fontSize: 8.5, maxLength: 4000 },
-  relevantTestContext: { block: "B6", label: "Relevant tests - additional context", width: 528.001, height: 197.008, fontSize: 8, maxLength: 2000 },
+  relevantTestContext: { block: "B6", label: "Additional comments and relevant test context", width: 528.001, height: 197.008, fontSize: 8, maxLength: 2000 },
   relevantHistory: { block: "B7", label: "Other relevant history", width: 528.001, height: 201.838, fontSize: 8, maxLength: 2000 },
 } as const;
 export type NarrativeField = keyof typeof narrativeBlocks;

@@ -233,7 +233,7 @@ review/correction, browser-local case/reporter persistence and visual design.
 | Completion category | Current coverage and remaining work |
 |---|---|
 | Patient and reporter | Explicit participation/A1 and no-patient consistency delivered in PR197/199; age/weight/race native paths exist. Broader sex representation and international reporter/profile/address remain. |
-| Clinical narrative and context | B5-B7 context and narrative continuation exist (PR158/160, issue190). Whole-list context scope is implemented in issue159; general additional comments, source omissions and faithful field-linked exception support remain. |
+| Clinical narrative and context | B5-B7 context and narrative continuation exist (PR158/160, issue190). Whole-list context scope is implemented in issue159. Independent general Additional comments are implemented in issue202, including shared B6 continuation. Source omissions and faithful field-linked exception support remain. |
 | Product details and categories | Native purchase date/seller/address/website are implemented (issues183/188), alongside NDC, expiry, duration and cosmetic choice. Hemp/Other D5, partial dates/durations and unsupported wording still need faithful representation. |
 | Devices, concomitants and capacity | One suspect-device path exists. Additional D/E copies, multiple devices, full concomitant rows and test/product overflow remain. |
 | Pictures and portable export | Narrative attachments exist. Actual picture/file lifecycle, complete export package, portable glyphs and remaining field-linked supplements are unfinished. |

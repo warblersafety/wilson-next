@@ -1,3 +1,4 @@
+import { narrativeGlyphLimitation } from "../pdf/narrative-continuation";
 import { seriousOutcomeLabels } from "../../domain/case/serious-outcomes";
 import { hasReservedNoPatientIdentifier, noPatientConflictingTargets, noPatientOutcomeConflictingTargets } from "../../domain/case/patient-involvement";
 import {purchaseDetailFields,purchaseDetailLabels} from "../../domain/case/purchase-details";
@@ -18,7 +19,7 @@ import { completionQuestions } from "../../domain/case/completion-policy";
 import { createSemanticCase } from "../../domain/case/create";
 import { allFacts, getFact, targetFromKey, targetKey } from "../../domain/case/facts";
 import { productDisplayLabel } from "../../domain/case/product-label";
-import { projectForm3500, quantityContextEntries, hasBaseEventDescription, baseEventDescription, baseEventDescriptionTargets, relevantTestContextEntries } from "../../domain/case/projection";
+import { projectForm3500, quantityContextEntries, hasBaseEventDescription, baseEventDescription, baseEventDescriptionTargets, additionalCommentsEntries } from "../../domain/case/projection";
 import type { CaseValue, Fact, FactTarget, ProductFactKey, ReporterFactKey, SemanticCase, Source } from "../../domain/case/types";
 import {
   createClarificationView,
@@ -125,7 +126,11 @@ export async function getJourneySnapshot(
     });
   }
   for (const { field, limitation } of await testHistoryLimitations(projection)) {
-    const targets = field === "relevantHistory" ? ["event:event:relevantHistory"] : relevantTestContextEntries(caseState).map(entry => entry.target);
+    const entries = additionalCommentsEntries(caseState);
+    const unsupportedEntries = field === "relevantTestContext"
+      ? (await Promise.all(entries.map(async entry => ({ entry, unsupported: await narrativeGlyphLimitation(entry.text, "B6 additional comments") })))).filter(item => item.unsupported).map(item => item.entry)
+      : [];
+    const targets = field === "relevantHistory" ? ["event:event:relevantHistory"] : (unsupportedEntries.length ? unsupportedEntries : entries).map(entry => entry.target);
     outputIssues.push({ code: "unsupported-test-history", message: `The reviewed ${field === "relevantHistory" ? "B7 history" : "B6 additional comments"} ${limitation}. The wording is retained, but no new PDF is generated.`, targets, entityIds: [...new Set(targets.map(target => targetFromKey(caseState, target).entityId))] });
   }
   return {

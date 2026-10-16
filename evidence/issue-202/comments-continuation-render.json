@@ -1,0 +1,22 @@
+{
+  "capturedPages": [
+    {
+      "page": 3,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-202/comments-continuation-page-3.png"
+    },
+    {
+      "page": 9,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-202/comments-continuation-page-9.png"
+    }
+  ],
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-202/comments-continuation.pdf",
+  "manualInspectionCompleted": [
+    "Native page3 has Section B6 attachment reference ending continued",
+    "Attachment page9 header identifies Section B, block B6 and report reference",
+    "Attachment body exact comments and test context readable/unclipped with numbered pages"
+  ]
+}

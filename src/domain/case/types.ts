@@ -60,6 +60,7 @@ export interface EventFacts {
   otherSerious: Fact<boolean>;
   relevantTestsAvailable: Fact<boolean>;
   relevantHistory: Fact<string>;
+  additionalComments: Fact<string>;
   treatments: Fact<string[]>;
   outcome: Fact<string>;
   dischargeDate: Fact<string>;

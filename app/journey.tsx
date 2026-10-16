@@ -860,7 +860,7 @@ function UpdateReview({ snapshot, busy, act }: {
         <h3 id={updateGroupAnchor(groupId)} tabIndex={-1}>{title}</h3>
         <div className={styles.updateFacts}>{items.map((item) => <div key={item.target}>
           <h4>{fieldOnly ? controlForTarget(item.target)?.label ?? targetLabel(snapshot, item.target) : targetLabel(snapshot, item.target)}</h4>
-          <p>{formatFact(item.values[0]?.value, controlForTarget(item.target))}</p>
+          <p style={controlForTarget(item.target)?.multiline ? { whiteSpace: "pre-wrap" } : undefined}>{formatFact(item.values[0]?.value, controlForTarget(item.target))}</p>
         </div>)}</div>
         {evidence.size > 0 && <details className={styles.evidence}><summary>View source evidence for this group</summary>
           {[...evidence].map(([excerpt, labels]) => <div key={excerpt}><p className={styles.hint}>{joinList(labels)}</p><blockquote>“{excerpt}”</blockquote></div>)}
@@ -923,7 +923,7 @@ function ConflictCard({ snapshot, item, busy, act }: {
   return <fieldset className={styles.conflictChoice} data-conflict-review tabIndex={-1}>
     <legend>{targetLabel(snapshot, item.target)}</legend>
     {item.values.map((value) => <div className={styles.conflictOption} key={value.id}>
-      <strong>{formatFact(value.value, controlForTarget(item.target))}</strong>
+      <strong style={controlForTarget(item.target)?.multiline ? { whiteSpace: "pre-wrap" } : undefined}>{formatFact(value.value, controlForTarget(item.target))}</strong>
       <Evidence excerpt={value.evidence} expanded />
       <button disabled={busy} onClick={() => void act({ action: "resolve-conflict", target: item.target, chosenValueId: value.id })}>Use {formatFact(value.value, controlForTarget(item.target))}</button>
     </div>)}
@@ -947,7 +947,7 @@ function CaseCards({ snapshot, busy, act }: {
   if (snapshot.revision === 0) return <p className={styles.emptyCase}>Proposed case details will appear here after you submit a description.</p>;
   return <div className={styles.cards}>
     <CaseCard pendingUpdates={updatesFor("patient", "patient")} domId="case-card-patient" title="Patient" entity="patient" entityId="patient" entityState="resolved" groupId="patient" facts={understanding.patient} fields={["involvement", "identifier", "ageYears", "dateOfBirth", "a2Value", "raceEthnicity", "sex", "weight"]} allowOpeningReview={openingReview && snapshot.openingGroups.includes("patient")} allowDirectEdit={directEdit} busy={busy} act={act} />
-    <CaseCard pendingUpdates={updatesFor("event", "event")} domId="case-card-event" title="Event" entity="event" entityId="event" entityState="resolved" groupId="event" facts={understanding.event} fields={["reportType", "reportDate", "problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate", "relevantHistory"]} allowOpeningReview={openingReview && snapshot.openingGroups.includes("event")} allowDirectEdit={directEdit} busy={busy} act={act} />
+    <CaseCard pendingUpdates={updatesFor("event", "event")} domId="case-card-event" title="Event" entity="event" entityId="event" entityState="resolved" groupId="event" facts={understanding.event} fields={["reportType", "reportDate", "problemDescription", "symptoms", "onsetDate", "death", "deathDate", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious", "relevantTestsAvailable", "treatments", "outcome", "dischargeDate", "productAvailability", "productReturnDate", "relevantHistory", "additionalComments"]} allowOpeningReview={openingReview && snapshot.openingGroups.includes("event")} allowDirectEdit={directEdit} busy={busy} act={act} />
     {understanding.relevantTests.map((test, index) => <CaseCard pendingUpdates={updatesFor("test", test.id)} domId={`case-card-test-${index + 1}`} key={test.id} title={testDisplayLabel(test, index + 1)} eyebrow="Test or laboratory result" entity="test" entityId={test.id} entityState={test.state} groupId={test.proposalGroupId} facts={test.facts} fields={["testName", "testResult", "lowRange", "highRange", "date"]} reviewBlocked={snapshot.stage === "review-update" && test.state === "proposed"} allowOpeningReview={openingReview && test.state === "proposed"} allowDirectEdit={directEdit && test.state === "resolved"} allowRemove={openingReview && test.state === "proposed"} allowWithdraw={entityWithdrawal && test.state === "resolved"} busy={busy} act={act} />)}
     {understanding.products.map((product) => {
       const name = productViewLabel(product);
@@ -1069,9 +1069,9 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
       const dirty = draft !== undefined && draftChanged(field, draft);
       return <div key={field} data-field={field} data-additional-start={field === orderedFields.find(additionalField) || undefined} className={additionalField(field) ? styles.additionalField : undefined}>
         <dt>{control.label}</dt>
-        <dd>{fact.state === "conflicted" ? "Unresolved conflict" : formatFact(value, control)}{!fact.resolved && fact.proposals.some(({ groupId }) => !updateIds.has(groupId)) && <span className={styles.proposed}>Proposed</span>}</dd>
-        {dirty && <dd className={styles.hint}>Unsaved edit: {formatFact(draft, control)}</dd>}
-        {fact.history.map((history, index) => <dd key={index} className={styles.history}>Earlier: {formatFact(history.value, control)}</dd>)}
+        <dd style={control.multiline ? { whiteSpace: "pre-wrap" } : undefined}>{fact.state === "conflicted" ? "Unresolved conflict" : formatFact(value, control)}{!fact.resolved && fact.proposals.some(({ groupId }) => !updateIds.has(groupId)) && <span className={styles.proposed}>Proposed</span>}</dd>
+        {dirty && <dd className={styles.hint} style={control.multiline ? { whiteSpace: "pre-wrap" } : undefined}>Unsaved edit: {formatFact(draft, control)}</dd>}
+        {fact.history.map((history, index) => <dd key={index} className={styles.history} style={control.multiline ? { whiteSpace: "pre-wrap" } : undefined}>Earlier: {formatFact(history.value, control)}</dd>)}
         {editable && (editing !== field || reviewBlocked) && fact.state !== "conflicted" && <button ref={(button) => { editButtons.current[field] = button; }} className={styles.inlineAction} disabled={busy || reviewBlocked} onClick={() => {
           setEditing(field);
           const initial = drafts[field] ?? editableInitialValue(value, control);
@@ -1125,7 +1125,8 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQ
     <label>{label} status<select aria-label={`${label} status`} value={value.kind} onChange={(event) => onChange(event.target.value === "known" ? editableInitialValue(undefined, control) : { kind: event.target.value as Exclude<EditableCaseValue["kind"], "known"> })}>
       <option value="known">Known</option><option value="unknown">Unknown</option><option value="explicitly-absent">{control.explicitAbsentLabel ?? "Not present"}</option><option value="inapplicable">Not applicable</option><option value="declined">Prefer not to answer</option>
     </select></label>
-    {value.kind === "known" && control.shape === "text" && <><input aria-label={`New ${label}`} list={control.options ? suggestionsId : undefined} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />{control.options && <datalist id={suggestionsId}>{control.options.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</datalist>}</>}
+    {value.kind === "known" && control.shape === "text" && control.multiline && <textarea aria-label={`New ${label}`} rows={4} value={String(known ?? "")} onChange={event => onChange({ kind: "known", value: event.target.value })} />}
+    {value.kind === "known" && control.shape === "text" && !control.multiline && <><input aria-label={`New ${label}`} list={control.options ? suggestionsId : undefined} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />{control.options && <datalist id={suggestionsId}>{control.options.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</datalist>}</>}
     {value.kind === "known" && control.shape === "age" && <div className={styles.measurement}>
       <input aria-label={`New ${label}`} type="number" min="0" step="1" max={typeof known === "number" ? 150 : undefined} value={String(typeof known === "number" ? known : typeof known === "object" && known && "value" in known ? known.value : "")} onChange={(event) => onChange({ kind: "known", value: typeof known === "object" && known && "unit" in known && (known.unit === "months" || known.unit === "weeks" || known.unit === "days") ? { value: Number(event.target.value), unit: known.unit } : Number(event.target.value) })} />
       <select aria-label={`${label} unit`} value={typeof known === "number" ? "years" : typeof known === "object" && known && "unit" in known ? known.unit : "years"} onChange={(event) => {

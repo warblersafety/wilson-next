@@ -67,6 +67,7 @@ export const caseValueContracts = {
     otherSerious: { shape: "boolean" },
     relevantTestsAvailable: { shape: "boolean" },
     relevantHistory: { shape: "string" },
+    additionalComments: { shape: "string" },
     treatments: { shape: "string-array" },
     outcome: { shape: "string" },
     dischargeDate: { shape: "iso-date" },
@@ -188,6 +189,7 @@ export function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>
     case "birth-date": return isCompleteBirthDate(actual) ? undefined : "dateOfBirth requires a complete valid ISO calendar date (YYYY-MM-DD), year 0001–9999";
     case "patient-age": return isPatientAge(actual) ? undefined : `${target.field} requires a valid age: whole years 0–150, or an explicit nonnegative whole number with unit months, weeks or days`;
     case "string":
+      if (target.entity === "event" && target.field === "additionalComments" && typeof actual === "string" && !actual.trim()) return "additionalComments requires explicitly supplied nonblank text";
       return typeof actual === "string" ? undefined : `${target.field} requires a string`;
     case "iso-date":
       return typeof actual === "string" && /^\d{4}-\d{2}-\d{2}$/.test(actual)
