@@ -1,4 +1,4 @@
-import {concomitantTextIssues} from "../pdf/concomitant";
+import {concomitantTextIssues,concomitantFieldLabel} from "../pdf/concomitant";
 import {deviceTextFields, deviceTextLimitation} from "../pdf/device-text";
 import { narrativeGlyphLimitation } from "../pdf/narrative-continuation";
 import { seriousOutcomeLabels } from "../../domain/case/serious-outcomes";
@@ -120,7 +120,7 @@ export async function getJourneySnapshot(
     const limitation = await deviceTextLimitation(field.projected,value);
     if (limitation) outputIssues.push({code:"unsupported-product-text",message:`${productLabel(caseState,device.productId)}: the reviewed Section E ${field.label} ${limitation}. The wording is retained; no new PDF is generated.`,targets:[`product:${device.productId}:${field.fact}`],entityIds:[device.productId]});
   }
-  for (const problem of await concomitantTextIssues(projection)) outputIssues.push({code:"unsupported-product-text", message:`${productLabel(caseState,problem.productId)}: the reviewed Section F ${problem.field} ${problem.limitation}. The wording is retained; no new PDF is generated.`, targets:[`product:${problem.productId}:${problem.field}`], entityIds:[problem.productId]});
+  for (const problem of await concomitantTextIssues(projection)) outputIssues.push({code:"unsupported-product-text", message:`${productLabel(caseState,problem.productId)}: the reviewed Section F ${concomitantFieldLabel(problem.field)} ${problem.limitation}. The wording is retained; no new PDF is generated.`, targets:[`product:${problem.productId}:${problem.field}`], entityIds:[problem.productId]});
   const baseLimitation = await narrativeTextLimitation(baseEventDescription(caseState));
   const narrativeLimitation = baseLimitation ?? await eventNarrativeLimitation(projection);
   if (narrativeLimitation) {

@@ -6,6 +6,9 @@ import {continuationGeometry, form3500ReportReference, narrativeGlyphLimitation,
 
 /** Pinned09/2025 native F controls: all ten rows share this width/font. */
 export const concomitantNameGeometry={width:198.766,fontSize:8.5};
+export function concomitantFieldLabel(field:"name"|"startDate"|"stopDate") {
+  return field==="name"?"Name":field==="startDate"?"Therapy start date":"Therapy end date";
+}
 export function concomitantRowFields(index:number) {
   if(!Number.isInteger(index)||index<0||index>=maximumForm3500ConcomitantProducts)throw new Error("Invalid native Section F row");
   const n=index+1,prefix=`topmostSubform[0].Page6[0].SecF_Other[0].Table1[0].Row${n}[0].`;
@@ -16,8 +19,8 @@ export function concomitantNativeName(name:string|undefined,index:number) {
 }
 export function concomitantSupplementEntries(projection:Form3500Projection) {
   return projection.sections.F.concomitantProducts.flatMap((product,index)=>[
-    ...(product.name!==undefined&&concomitantNativeName(product.name,index)!==product.name?[{index,field:"name" as const,heading:`Concomitant #${index+1} - Name`,text:`Concomitant #${index+1} Section F Name: ${product.name}`}]:[]),
-    ...(product.fieldContext??[]).map(context=>({index,field:context.field,heading:`Concomitant #${index+1} - ${context.field==="name"?"Name":context.field==="startDate"?"Therapy start date":"Therapy end date"} context`,text:`Concomitant #${index+1} Section F ${context.field==="name"?"Name":context.field==="startDate"?"Therapy start date":"Therapy end date"} context: ${context.text}`})),
+    ...(product.name!==undefined&&concomitantNativeName(product.name,index)!==product.name?[{index,field:"name" as const,heading:`F row ${index+1} - Name`,text:`F row ${index+1} Name: ${product.name}`}]:[]),
+    ...(product.fieldContext??[]).map(context=>({index,field:context.field,heading:`F row ${index+1} - ${concomitantFieldLabel(context.field)} context`,text:`F row ${index+1} ${concomitantFieldLabel(context.field)} context: ${context.text}`})),
   ]);
 }
 export async function concomitantTextIssues(projection:Form3500Projection) {

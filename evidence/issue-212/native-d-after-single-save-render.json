@@ -1,0 +1,32 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 4,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-212\/native-d-after-single-save-page-4.png"
+    },
+    {
+      "page" : 5,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-212\/native-d-after-single-save-page-5.png"
+    },
+    {
+      "page" : 12,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-212\/native-d-after-single-save-page-12.png"
+    },
+    {
+      "page" : 13,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-212\/native-d-after-single-save-page-13.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "Main native D slots contain the first two exact products with readable controls",
+    "Added D-only copy first slot contains product3; second slot remains blank",
+    "Main\/copy headings share the correct report reference after single-save assembly"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-212\/native-d-after-single-save.pdf"
+}

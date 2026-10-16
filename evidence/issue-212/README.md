@@ -38,9 +38,10 @@ other bypass. The mixed test checks the main heading in actual pypdf page text.
 pass on the final writer, including the three dedicated F journeys. Earlier
 local runs were explicitly interrupted after renders exposed required fixes,
 not counted as final passes. All browser PDFs/state are refreshed from the final
-run. Eight retained8/9/11/17-page variants have independent pypdf readbacks.
-Fifteen PDFKit2x captures were visually inspected: corrected6/9, overflow6/9,
-withdrawn6/9, unknown6, repaired6, ten-row6, dense9/10/11 and mixed6/9/15. Native
+run. Ten retained8/9/11/16/17-page variants have independent pypdf readbacks.
+Twenty-one PDFKit2x captures were visually inspected: corrected6/9, overflow6/9,
+withdrawn6/9, unknown6/9, before-unknown9, repaired6, ten-row6, dense9/10/11,
+mixed6/9/15 and D-copy4/5/12/13. Native
 cells and pointers are readable/unclipped; exact context/row identity and report
 references agree. All ten native end dates are visible. Dense last-page line100
 and repeated row/field headers are readable. Mixed main E/F references coexist,
@@ -51,7 +52,14 @@ Withdrawal reallocates Gamma and its exact context to native F row1.
 No persistence version/shape or prompt/schema change. Existing product cards and
 editors remain, with truthful concomitant-device labels and empty therapy-date
 editors. No clinical inference or broad completeness machinery. Zero application-
-model calls. Actual Opus full/recheck, exact-headCI, protected hosted checkpoint,
+model calls. Actual Opus full review found no blockers and three follow-ups, all
+fixed here: human field labels, consistent F row N pointer/supplement labels, and
+genuine qualified-before/non-known-after tests plus supplement renders. The
+browser and unit assertions now prove prior context existed in actual PDF output
+before confirming its absence. Fresh D main/copy renders cover the reviewer
+limitation on single-save D-copy appearances, including the blank second slot.
+All904/144 gates above passed again after remediation. Same-session targeted
+Opus recheck, exact-headCI, protected hosted checkpoint,
 guarded merge/delete/tree/mainCI/clean gates remain required. Preserve the one
 existing share grant/protection/original expiry. The concrete remaining practical
 cut is in docs/REMAINING-PRACTICAL-CUT.md; no broader completeness claim.
