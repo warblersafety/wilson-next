@@ -106,7 +106,7 @@ export const journeyActionSchema = z.discriminatedUnion("action", [
         testResult: z.string().trim().min(1).optional(),
         lowRange: z.string().trim().optional(),
         highRange: z.string().trim().optional(),
-        date: z.iso.date().optional(),
+        date: z.union([z.string(),z.object({precision:z.enum(["month","year"]),year:z.string(),month:z.string().optional(),wording:z.string()}).strict()]).refine(isSuppliedDate).optional(),
       }).strict().refine((test) => Boolean(test.testName || test.testResult), "A test identity or result is required"),
       z.object({ kind: z.literal("explicitly-absent") }).strict(),
       z.object({ kind: z.literal("unknown") }).strict(),

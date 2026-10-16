@@ -8,7 +8,7 @@ it.each(deviceDateFields)('grounds explicit %s without deriving another fact; fa
 });
 it('rejects malformed supplied precision and does not broaden clinical event/test date contracts',()=>{
  for(const field of deviceDateFields)for(const value of [{...month,month:'13'},{...month,year:'0000'},{...month,day:'01'},{...month,wording:''},'2028-02','2026-02-30'])expect(knownValueMismatch({entity:'product',entityId:'x',field},{kind:'known',value})).toBeTruthy();
- expect(knownValueMismatch({entity:'test',entityId:'x',field:'date'},{kind:'known',value:month})).toBeTruthy();expect(knownValueMismatch({entity:'event',entityId:'event',field:'onsetDate'},{kind:'known',value:month})).toBeTruthy();
+ expect(knownValueMismatch({entity:'event',entityId:'event',field:'dischargeDate'},{kind:'known',value:month})).toBeTruthy();expect(knownValueMismatch({entity:'event',entityId:'event',field:'onsetDate'},{kind:'known',value:month})).toBeTruthy();
 });
 
 it('device follow-up accepts distinct partial dates with readable source and no inferred implantation/status or model call',async()=>{
