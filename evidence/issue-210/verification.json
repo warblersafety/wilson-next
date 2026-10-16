@@ -1,0 +1,78 @@
+{
+  "fullMockBrowserGate": "139 passed before narrow prompt/help scope wording update; final exact-headCI required",
+  "focusedBrowserJourneys": 3,
+  "applicationModelRequests": 0,
+  "PDFs": [
+    {
+      "file": "three-devices-corrected.pdf",
+      "sha256": "a336d35c62bb6a2b4d4f9f897d8b6b82cbaf4f5987dc47e28dbeea5ab066b22e",
+      "pages": 24
+    },
+    {
+      "file": "two-devices-mixed.pdf",
+      "sha256": "82014eeb490d6ba5297743e94981942d8011d7513abc1c19c737bf2f426f87dc",
+      "pages": 16
+    },
+    {
+      "file": "one-device-reallocated.pdf",
+      "sha256": "673e9367c0ea00fb8d32ecfc8ae682fcf01b42c72818c0177c935c89d91431b6",
+      "pages": 8
+    },
+    {
+      "file": "three-devices-unknown.pdf",
+      "sha256": "3f88dca8fe298722c4c1176a2c2ec491187aba21975cb4be7cce24424db97400",
+      "pages": 24
+    },
+    {
+      "file": "three-devices-recovered.pdf",
+      "sha256": "ab844e5a9e787d9f29900eb5c91466d1fcfd81aefe62b83e55d63f81741e9d23",
+      "pages": 24
+    },
+    {
+      "file": "three-devices-long-context.pdf",
+      "sha256": "e63598ead7df39e11459cdb18bc80db9bed73f5304677f1c4530460ee768fd38",
+      "pages": 27
+    }
+  ],
+  "unitTests": 884,
+  "unitFiles": 87,
+  "typecheck": "pass",
+  "build": "pass",
+  "independentRender": {
+    "renderer": "macOS PDFKit2x",
+    "pages": [
+      2,
+      6,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+    ],
+    "inspection": "pass: main/E-copy device fields, flags and linked context legible/unclipped;7 blank non-E page pairs independently byte-identical and one of each pair visually inspected"
+  },
+  "fullSuitePDFHashesMatchRetainedOriginals": true,
+  "postScopePromptTests": 12,
+  "postScopeFocusedBrowserJourneys": 3,
+  "promptRevision": "wilson-native-e-copies-v23",
+  "longContextRender": {
+    "pages": [
+      9,
+      17,
+      25
+    ],
+    "inspection": "pass: readable exact linked context and native E fields, matching report reference"
+  },
+  "postScopePDFHashesMatchRetainedOriginals": true
+}

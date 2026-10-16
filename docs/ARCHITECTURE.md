@@ -611,7 +611,8 @@ with the bounded PDF's two non-device suspect slots
 and one concomitant slot. Exceeding either blocks export with an explicit
 capacity notice while retaining every product, fact, source and history entry.
 Readiness and the adapter share these output limits; the adapter guards remain.
-The existing one-suspect-device and unsupported-concomitant-device rules remain.
+Issue210 supersedes the one-suspect-device export block with native E-only
+copies; the unsupported-concomitant-device rule remains.
 Only an explicit clinician change can alter roles or withdraw products; capacity
 checks never make those changes. This is limitation disclosure, not continuation
 pages or complete overflow support.
@@ -1661,7 +1662,39 @@ removal, bypass, dependency or credential change was introduced.
 
 Retained case capacity stays three. PDF D capacity is now three through actual
 native copies; a fourth projected suspect is rejected. Multiple suspect devices,
-concomitant capacity and test overflow keep their current truthful gates. Next
-E02 vertical is multiple devices with native E-only copies, not an arbitrary
+concomitant capacity and test overflow keep their current truthful gates. Issue210 now delivers multiple devices with native E-only copies within three
+retained entities. Broader capacity remains a separate vertical, not an arbitrary
 capacity bump or unconnected collection. No persisted structures, migrations,
 model/prompt changes, automatic category attribution or component inference.
+
+
+### Multiple native Section E copies (issue210 / E02 next vertical)
+
+FDA general instructions require one additional form with only E filled for each
+suspect device beyond the first. E.suspectDevices is an ordered derived array,
+replacing the former singular projection which discarded subsequent devices.
+Each item retains its stable productId and indexed source trace. No case fact,
+persisted shape/version, source/history or compatible saved draft changes.
+
+The existing complete native E writer prints the first device in the main form;
+each further device uses its own complete native eight-page form, only E filled.
+The supported in-memory flatten/copyPages foundation preserves fixed appearances
+and avoids field identity collisions; first E stays editable. Correct additional
+copy details in Wilson and regenerate. Matching report reference/global device
+ordinal above each filled E block links it to the main report and any narrative
+continuation. All other fields remain blank on each additional E-only form.
+
+Explicit qualifiers for supported E fields print exactly as field/device-linked
+main B5 context, with source trace and shared continuation. Pending/conflicting/
+non-known/superseded values are never reused. Context never satisfies the base
+event-description gate. Unsupported context glyphs block fresh output at the
+actual device-field contributor. Withdrawals and explicit category/role changes
+recompute arrays, copy allocation, ordinals and context without pruning history
+or inventing attribution. Native D-copy support continues to work in mixed cases.
+
+The case still retains at most three products; the adapter rejects a fourth
+projected device. Concomitant devices and excess F rows/test capacity remain
+separate. The opening help text also reflects multiple devices within the case bound.
+The prompt adjustment removes two stale single-device scope
+phrases and bumps its identifier to wilson-native-e-copies-v23; schema/grounding and all other rules remain,
+including deferred unmerged PR195. No live extraction-completeness claim.

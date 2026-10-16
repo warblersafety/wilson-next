@@ -52,7 +52,7 @@ export interface Form3500Projection {
       productReturnDate?: string;
     };
     D: { suspectProducts: ProjectedProduct[] };
-    E: { suspectDevice?: ProjectedDevice };
+    E: { suspectDevices: ProjectedDevice[] };
     F: { concomitantProducts: ProjectedConcomitantProduct[] };
     G: { reporter: ProjectedReporter };
   };
@@ -147,14 +147,13 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   const projection: Form3500Projection = {
     caseId: caseState.id,
     revision: caseState.revision,
-    sections: { A: {}, B: { relevantTests: [] }, C: {}, D: { suspectProducts: [] }, E: {}, F: { concomitantProducts: [] }, G: { reporter: {} } },
+    sections: { A: {}, B: { relevantTests: [] }, C: {}, D: { suspectProducts: [] }, E: { suspectDevices: [] }, F: { concomitantProducts: [] }, G: { reporter: {} } },
     sourceTrace: {},
     omissions: [],
     notIncluded: [
       "Patient fractional or compound ages and partial date of birth",
       "Patient race/ethnicity detail outside the seven A5 categories",
       "Section C product pictures",
-      "Additional suspect medical devices beyond the first",
       "Section D partial expiration dates, partial purchase dates and purchase wording outside native country/glyph/line/capacity limits",
       "Section D partial dose-reduction dates; dose-count, compound and range treatment durations",
     ],
@@ -281,12 +280,8 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     if (ongoingNotice) projection.notIncluded.push(`${productLabel(caseState, product)} — ${ongoingNotice}`);
     if (role.value === "suspect") {
       if (productType.value === "device") {
-        if (!projection.sections.E.suspectDevice) {
-          projection.sections.E.suspectDevice = projectDevice(product, projection);
-          recordNonCarriedProductFacts(caseState, product, sectionEProductFields, "Section E", projection);
-        } else {
-          projection.notIncluded.push(`${productLabel(caseState, product)} is not included because this bounded path supports one suspect medical device.`);
-        }
+        projection.sections.E.suspectDevices.push(projectDevice(product, projection, projection.sections.E.suspectDevices.length));
+        recordNonCarriedProductFacts(caseState, product, sectionEProductFields, "Section E", projection);
       } else {
         const target = projection.sections.D.suspectProducts;
         target.push(projectProduct(product, projection, target.length, productLabel(caseState, product)));
@@ -304,7 +299,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     }
   }
 
-  const quantityContext = [...quantityContextEntries(projection.sections.D.suspectProducts), ...d5OtherTypeContextEntries(caseState, projection)];
+  const quantityContext = [...quantityContextEntries(projection.sections.D.suspectProducts), ...d5OtherTypeContextEntries(caseState, projection), ...deviceContextEntries(caseState, projection)];
   if (quantityContext.length) {
     projection.sections.B.eventDescription = [projection.sections.B.eventDescription, ...quantityContext.map(entry => entry.text)].filter(Boolean).join("\n");
     projection.sourceTrace["sections.B.eventDescription"] = [...new Set([
@@ -324,6 +319,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     for (const field of ["dose", "strength"]) carriedQualifierTargets.add(`product:${product.productId}:${field}`);
   }
   for (const entry of d5OtherTypeContextEntries(caseState, projection)) carriedQualifierTargets.add(entry.target);
+  for (const entry of deviceContextEntries(caseState, projection)) carriedQualifierTargets.add(entry.target);
   for (const entry of relevantTestContextEntries(caseState)) carriedQualifierTargets.add(entry.target);
   const disclosed = new Set(projection.omissions.filter(({ reason }) => reason === "qualifier-not-included").map(({ target }) => target));
   for (const { target, fact } of allFacts(caseState)) {
@@ -432,7 +428,7 @@ function humanizeProductField(field: ProductFactKey): string {
   return `${spaced[0].toUpperCase()}${spaced.slice(1)}`;
 }
 
-function projectDevice(product: ProductEntity, projection: Form3500Projection): ProjectedDevice {
+function projectDevice(product: ProductEntity, projection: Form3500Projection, index: number): ProjectedDevice {
   const result: ProjectedDevice = { productId: product.id };
   const mappings = [
     ["name", "brandName"], ["commonName", "commonName"], ["procode", "procode"],
@@ -443,7 +439,7 @@ function projectDevice(product: ProductEntity, projection: Form3500Projection): 
     ["reprocessor", "reprocessor"], ["servicedByThirdParty", "servicedByThirdParty"],
   ] as const;
   for (const [field, output] of mappings) {
-    assign<unknown>(projection, `sections.E.suspectDevice.${output}`, `${output} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field] as Fact<unknown>, result, output);
+    assign<unknown>(projection, `sections.E.suspectDevices.${index}.${output}`, `${output} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field] as Fact<unknown>, result, output, value => value, true);
   }
   return result;
 }
@@ -603,5 +599,16 @@ export function d5OtherTypeContextEntries(caseState: SemanticCase, projection: F
       text: `Suspect product #${index + 1} D5 Other product types context: ${value.qualifier}`,
       target: `product:${product.productId}:otherProductTypes`, sourceIds: value.sourceIds,
     }] : [];
+  });
+}
+
+/** Exact field-linked context for current native E devices; never a clinical inference. */
+export function deviceContextEntries(caseState: SemanticCase, projection: Form3500Projection) {
+  return projection.sections.E.suspectDevices.flatMap((device, index) => {
+    const product = caseState.products.find(p => p.id === device.productId);
+    return product ? sectionEProductFields.flatMap(field => {
+      const value = known(product.facts[field] as Fact<unknown>);
+      return value?.qualifier ? [{ text: `Suspect device #${index+1} Section E ${humanizeProductField(field)} context: ${value.qualifier}`, target: `product:${product.id}:${field}`, sourceIds: value.sourceIds }] : [];
+    }) : [];
   });
 }

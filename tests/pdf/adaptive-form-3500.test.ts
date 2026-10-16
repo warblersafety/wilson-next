@@ -20,7 +20,7 @@ describe("adaptive Form FDA 3500 projection fields", () => {
       sections: {
         A: {}, B: { relevantTests: [] }, C: {},
         D: { suspectProducts: [{ productId: "product-acetaminophen", name: "acetaminophen", frequency: "every six hours" }] },
-        E: {}, F: { concomitantProducts: [] }, G: { reporter: {} },
+        E: { suspectDevices: [] }, F: { concomitantProducts: [] }, G: { reporter: {} },
       },
       sourceTrace: {}, omissions: [], notIncluded: [],
     };
@@ -49,12 +49,12 @@ describe("adaptive Form FDA 3500 projection fields", () => {
         B: { reportType: "adverse-event", eventDescription: "Problem detail: Pump alarm failed. Symptoms: hypotension.", relevantTests: [] },
         C: { productAvailability: "available" },
         D: { suspectProducts: [] },
-        E: { suspectDevice: {
+        E: { suspectDevices: [{
           productId: "device-flowguard", brandName: "Acme FlowGuard", commonName: "infusion pump",
           manufacturer: "Acme Medical, Reno, Nevada", modelNumber: "FG-200", lotNumber: "L-904",
           serialNumber: "SN-7721", udi: "(01)00812345000017(21)SN7721", operator: "health-professional",
           reprocessedSingleUse: false, servicedByThirdParty: "no",
-        } },
+        }] },
         F: { concomitantProducts: [] }, G: { reporter: {} },
       },
       sourceTrace: {}, omissions: [], notIncluded: [],
@@ -86,7 +86,7 @@ describe("adaptive Form FDA 3500 projection fields", () => {
         A: {}, B: { reportType: "product-problem", eventDescription: "Problem detail: Visible particles.", relevantTests: [] },
         C: { productAvailability: "available" },
         D: { suspectProducts: [{ productId: "product-tablets", name: "Cardiovex 20 mg tablets", lotNumber: "CV-442" }] },
-        E: {}, F: { concomitantProducts: [] }, G: { reporter: {} },
+        E: { suspectDevices: [] }, F: { concomitantProducts: [] }, G: { reporter: {} },
       },
       sourceTrace: {}, omissions: [], notIncluded: [],
     };
@@ -116,10 +116,10 @@ describe("adaptive Form FDA 3500 projection fields", () => {
         A: { patientIdentifier: "TEST-67" },
         B: { reportType: "adverse-event-and-product-problem", eventDescription: "Problem detail: Device overheated. Symptoms: blistering burn.", relevantTests: [] },
         C: { productAvailability: "available" }, D: { suspectProducts: [] },
-        E: { suspectDevice: {
+        E: { suspectDevices: [{
           productId: "device-combined", brandName: "Acme ThermoPatch", serialNumber: "SN-8804",
           implantDate: "2026-08-12", reprocessedSingleUse: true, reprocessor: "ReNew Medical LLC",
-        } },
+        }] },
         F: { concomitantProducts: [] }, G: { reporter: {} },
       },
       sourceTrace: {}, omissions: [], notIncluded: [],
@@ -164,7 +164,7 @@ describe("adaptive Form FDA 3500 projection fields", () => {
         },
         C: {},
         D: { suspectProducts: [] },
-        E: {}, F: { concomitantProducts: [] },
+        E: { suspectDevices: [] }, F: { concomitantProducts: [] },
         G: { reporter: {
           firstName: "Avery", lastName: "Chen", address: "100 Test Avenue", city: "Seattle", state: "WA", postalCode: "98101",
           country: "UNITED STATES", email: "avery.chen@example.test", healthProfessional: true, occupation: "Physician",

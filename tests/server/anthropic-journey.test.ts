@@ -50,6 +50,8 @@ describe("Anthropic production model boundary", () => {
     const request = createAnthropicRequest("opening", openingText);
     const requestText = `${request.system}\n${request.messages[0].content}`;
     const schema = JSON.stringify(request.output_config.format.schema);
+    expect(String(request.system)).not.toContain("single-device");
+    expect(String(request.system)).toContain("each explicitly identified retained device");
 
     expect(request).toMatchObject({
       model: ANTHROPIC_MODEL_ID,
@@ -71,7 +73,7 @@ describe("Anthropic production model boundary", () => {
     expect(schema).toContain("weeks");
     expect(requestText).toContain("Never place gestational age, gestation at birth, or corrected/postmenstrual age in ageYears");
     expect(requestText).toContain("Do not infer chronological age from them");
-    expect(MODEL_PROMPT_REVISION).toBe("wilson-d5-other-types-v22");
+    expect(MODEL_PROMPT_REVISION).toBe("wilson-native-e-copies-v23");
     expect(schema).toContain("raceEthnicity");
     expect(schema).toContain("therapyOngoing");
     expect(schema).toContain("doseReductionDate");

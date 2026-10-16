@@ -206,7 +206,8 @@ describe("state-driven journey service", () => {
       product.facts.productType.resolvedValue!.value = { kind: "known", value: "device" };
     }
     const deviceSnapshot = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: devices }), devices.id);
-    expect(deviceSnapshot.outputIssues.map(({ code }) => code)).toContain("multiple-suspect-devices");
+    expect(deviceSnapshot.outputIssues.map(({ code }) => code)).not.toContain("multiple-suspect-devices");
+    expect(deviceSnapshot.projection.sections.E.suspectDevices.map(d => d.productId)).toEqual(devices.products.slice(0,2).map(d => d.id));
 
     const concomitantDevice = structuredClone(completeResolvedCase());
     const lisinopril = concomitantDevice.products.find(({ id }) => id === "product-lisinopril")!;
