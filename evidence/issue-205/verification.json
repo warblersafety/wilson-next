@@ -2,7 +2,7 @@
   "unitTests": 870,
   "unitFiles": 85,
   "focusedMockBrowserJourneys": 5,
-  "fullMockBrowserGate": "pending",
+  "fullMockBrowserGate": "134 passed",
   "typecheck": "pass",
   "build": "pass",
   "liveApplicationModelRequests": 0,
@@ -56,5 +56,6 @@
       5
     ],
     "inspection": "pass: exact product2 whole-set B5 context readable/unclipped; slot1 hemp only, slot2 both; independent drug/cosmetic marks retained"
-  }
+  },
+  "fullSuitePDFHashesMatchRetainedOriginals": true
 }

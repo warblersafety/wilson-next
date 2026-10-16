@@ -32,7 +32,8 @@ identifier edits survive migration. Invalid current sets and older-field
 smuggling remain errors. Promptv22/schemav30 add only this explicit target.
 
 870 unit tests /85 files, typecheck/build and five focused mock browser journeys
-passed. Full mock suite is pending. Eight retained actual browser PDFs have
+passed. All134 full mock browser journeys passed; fresh PDF hashes match all
+eight retained originals. Eight retained actual browser PDFs have
 independent pypdf native-field readbacks; native pages2/4/5 were independently
 rendered with macOS PDFKit2x and visually inspected. Exact qualifier continuation,
 unsupported glyph targets, all non-known states and route independence have unit/
