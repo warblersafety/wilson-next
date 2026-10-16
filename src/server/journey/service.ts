@@ -410,7 +410,7 @@ export async function performJourneyAction(
           type: "record-clinician-facts",
           commandId: commandId("answer-death-date"),
           expectedRevision: current.revision,
-          source: fullSource("answer", `Death date: ${displayValue(action.value,{entity:"event",entityId:"event",field:"deathDate"})}.`),
+          source: fullSource("answer", `Death date: ${displayValue(action.value,{entity:"event",entityId:"event",field:"deathDate"})}${action.value.kind === "known" && !isPartialExpiration(action.value.value) && action.value.qualifier ? `; context: ${action.value.qualifier}` : ""}.`),
           answersNeed: "death-date",
           facts: [{ id: valueId("death-date"), target: { entity: "event", entityId: "event", field: "deathDate" }, intent: "fact", value: action.value }],
         });
