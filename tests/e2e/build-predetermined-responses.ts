@@ -1,3 +1,4 @@
+import { timeScenario } from "../fixtures/test-time-context";
 import { continuationScenario } from "../fixtures/narrative-continuation";
 import { serialCorrectionText, mixedSerialText, serialOutput } from "../fixtures/serial-test-correction";
 import { preservedGroupingOutput } from "../fixtures/grouping-failure";
@@ -633,5 +634,6 @@ export const predeterminedResponseScenarios = {
   usability: usabilityScenario,
   updateGrouping: [{ identityScope: "issue109-update", turn: "correction" as const, output: preservedGroupingOutput as import("../../src/domain/case/model-boundary").ModelProposalOutput }],
   narrativeContinuation: continuationScenario,
+  testTimeContext: timeScenario,
 };
 export const predeterminedModelResponses = Object.values(predeterminedResponseScenarios).flat();

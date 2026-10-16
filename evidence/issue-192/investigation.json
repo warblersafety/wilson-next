@@ -1,0 +1,42 @@
+{
+  "origin": "Existing live synthetic request, no additional model calls during investigation",
+  "actualProviderModel": "claude-sonnet-5",
+  "usage": {
+    "model": "claude-sonnet-5",
+    "promptRevision": "wilson-purchase-details-v18",
+    "schemaRevision": "wilson-grounded-proposals-v27-purchase-details",
+    "inputTokens": 10575,
+    "outputTokens": 8877,
+    "latencyMs": 71643,
+    "estimatedCostUsd": 0.10992
+  },
+  "costBasis": "Application estimator: input including cache creation/read at USD2 per million plus output at USD10 per million; not invoice or verified current provider pricing. Existing response caches both zero. Output8877 includes4694 thinking tokens.",
+  "providerTextOutput": "actual-model-output.json",
+  "rawProviderReasoningIncluded": false,
+  "source": "synthetic-input.txt",
+  "rawOutputProposals": 47,
+  "rawOutputQualifiers": 0,
+  "uncertaintyPassage": "p8",
+  "uncertaintyOnlyCitedFor": "event.relevantTestsAvailable",
+  "knownInrDateEvidence": [
+    "p7"
+  ],
+  "cause": "Provider text JSON omitted explicit collection-time context; domain parser copies proposal values unchanged. No projection/UI/persistence loss demonstrated.",
+  "mitigation": "Prompt instruction only; deterministic tests use clearly marked authored expected responses. Live efficacy pending; issue192 remains open.",
+  "cumulativeApplicationModelRequests": 1,
+  "cap": 20,
+  "sha256": {
+    "actual-model-output.json": "c95ff60bb216c6baf4b32e19364fc037e65c94497e229c79558ee37f34382447",
+    "synthetic-input.txt": "0bc50ea1da59499d3f0dc703ef06453c421578956d543d3402fc9242fb2e7ede",
+    "time-context-corrected-page-3.png": "8ad9fada4561595c95bd6e14228e5650bcd67be8ade636cc0c2cf9aa31de950b",
+    "time-context-corrected-render.json": "745169b8532de49ad82c2f97a463bc766576da8bf82efc89eef419871dd29fef",
+    "time-context-corrected.pdf": "e3663f349731b897564154674497b2655019f6d12e795d2087dc854b68211275",
+    "time-context-corrected.png": "c01a9bd15205e75fef8c3b9434e5896b1515225bad88b5c829985deb5969bf17",
+    "time-context-page-3.png": "a672309916cc5ad578900e58907161034fdfef49d4cca157612a87752632fa24",
+    "time-context-render.json": "02f2d83816abaf81bc92baa6fd9ad23af9b03621b7d92ed22b6084dcbf3298ec",
+    "time-context.pdf": "0699bd9c2758764d68b52bbf0445449ef9a9d79f7bf2fc07d9b9735fd7557f14",
+    "independent-b6-readback.json": "1785db7a5ad79ee822134671d0e969057b2f92ef41411bc2b6cb06ac68930cb7"
+  },
+  "originalInputMatchesPreRunCasePack": true,
+  "subsequentVerification": "live-v19-verification.json"
+}

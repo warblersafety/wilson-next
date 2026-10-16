@@ -1,0 +1,10 @@
+{
+  "differentFields": [
+    {
+      "field": "topmostSubform[0].Page3[0].AdditionalComments[0]",
+      "mock": "B6 table row 1 - Test date context: The INR collection time was not recorded.",
+      "live": "B6 table row 1 - Test date context: Collection time was not recorded"
+    }
+  ],
+  "allOtherNamedFieldsEqual": true
+}
