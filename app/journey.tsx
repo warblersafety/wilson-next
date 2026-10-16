@@ -1276,7 +1276,7 @@ function formatFactValue(value: CaseValue<unknown> | undefined, control?: FactCo
   if (control?.shape === "age" && typeof value.value === "number") return `${value.value} years`;
   if (typeof value.value === "object" && value.value && "precision" in value.value) {
     const raw=value.value as Record<string,unknown>;
-    return `${String(raw.wording??"") || "Expiration wording unfinished"} (${raw.precision === "month" ? (String(raw.year??"")||"year unfinished")+"-"+(String(raw.month??"")||"month unfinished") : String(raw.year??"")||"year unfinished"}; ${raw.precision === "month" ? "month and year only" : "year only"})`;
+    return `${String(raw.wording??"") || "Date wording unfinished"} (${raw.precision === "month" ? (String(raw.year??"")||"year unfinished")+"-"+(String(raw.month??"")||"month unfinished") : String(raw.year??"")||"year unfinished"}; ${raw.precision === "month" ? "month and year only" : "year only"})`;
   }
   if (Array.isArray(value.value)) return value.value
     .map((item) => control?.options?.find((option) => option.value === item)?.label ?? item)

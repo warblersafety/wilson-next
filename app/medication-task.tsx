@@ -32,7 +32,10 @@ export function MedicationTask({ snapshot, busy, act }: {
   };
   const fields = applicableMedicationFields(boolean("stopped"), boolean("doseReduced"), boolean("restarted"))
     .filter((field) => product.facts[field].state === "empty");
+  const stopDraft=answers.stopDate;
+  const unfinishedStopDate=stopDraft?.kind === "known" && (typeof stopDraft.value !== "string" || Boolean(stopDraft.value.trim()) || Boolean(stopDraft.qualifier?.trim())) && !isSuppliedDate(stopDraft.value);
   const submit = (disposition?: "unknown" | "declined") => {
+    if (disposition && unfinishedStopDate) return;
     const selected = Object.fromEntries(fields.map((field) => {
       const value = answers[field];
       const answered = value && !(field === "stopDate" && value.kind === "known" && !isSuppliedDate(value.value));
@@ -70,7 +73,8 @@ export function MedicationTask({ snapshot, busy, act }: {
       </fieldset>;
     })}
     <button disabled={busy || fields.some((field) => !answers[field] || (field === "stopDate" && answers.stopDate?.kind === "known" && !isSuppliedDate(answers.stopDate.value)))} onClick={() => submit()}>Add medication answers</button>
-    <button disabled={busy} onClick={() => submit("unknown")}>These remaining details are unknown</button>
-    <button disabled={busy} onClick={() => submit("declined")}>Prefer not to answer these details</button>
+    {unfinishedStopDate && <p role="status">Complete or explicitly clear the unfinished stop-date edit before marking remaining details unknown or declined. Your edit is retained.</p>}
+    <button disabled={busy || unfinishedStopDate} onClick={() => submit("unknown")}>These remaining details are unknown</button>
+    <button disabled={busy || unfinishedStopDate} onClick={() => submit("declined")}>Prefer not to answer these details</button>
   </>;
 }

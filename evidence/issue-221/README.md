@@ -42,3 +42,7 @@ precision, without weakening validity, persistence or contradiction checks.
 A fresh full158 run is active; independent review, exact-headCI, protected hosted
 validation and merge/mainCI remain pending at this dated checkpoint. No live
 application-model calls, dependencies, ZIP install or auth/grant changes.
+
+Review checkpoint: actual Opus5.5 full review on a76480a found no blocking code defects and three follow-ups. F1 bulk status buttons now protect non-empty unfinished stop dates; an actual UI regression proves raw draft/reload retention and explicit completion without unrelated changes. F2 adapter independently rejects duration with partial D3 notes. F3 unfinished-date labels are generic, mixed copy headers mention both expiration/product dates, and the coverage checklist reflects delivered scope. Raw report: https://github.com/warblersafety/wilson-next/pull/222#issuecomment-6223995225.
+
+The fresh pre-review158-journey run passed (6.9m). Remediation1025 units/96 files, typecheck/build and all3 focused date journeys pass. A fresh159 run and actual targeted recheck are pending, as are final exact-headCI/hosted/merge/mainCI. Mixed-copy18-page independent readback and native-page12 render add targeted evidence (PDF retained outside checkout). Total repo PDFKit captures24; the8 repo PDFs are unchanged. The safeguard screenshot will be retained outside checkout from the final full run.
