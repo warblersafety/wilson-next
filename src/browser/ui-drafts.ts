@@ -5,6 +5,7 @@ import type { JsonObject } from "./active-case-store";
 import { DraftDecodeError } from "./draft-error";
 import { decodeJourneyTextDrafts, initialJourneyTextDrafts, journeyTextDraftSchema, reduceJourneyTextDrafts, type TextDraftAction } from "./journey-text-drafts";
 
+const rawSuppliedDate=z.union([z.string(),z.object({precision:z.enum(["month","year"]),year:z.string(),month:z.string().optional(),wording:z.string()}).strict()]);
 const choice = z.enum(["known", "unknown", "declined"]);
 const deviceChoice = z.enum(["known", "unknown", "inapplicable", "declined"]);
 const nonKnown = z.union([z.object({ kind: z.literal("unknown") }).strict(), z.object({ kind: z.literal("declined") }).strict(), z.object({ kind: z.literal("inapplicable") }).strict(), z.object({ kind: z.literal("explicitly-absent") }).strict()]);
@@ -18,7 +19,7 @@ export const componentDraftSchemas = {
   "serious-outcomes": z.object({ selected: z.array(z.enum(["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious"])) }).strict(),
   "death-date": z.object({ date: z.string() }).strict(),
   "clinical-context": z.object({ testChoice: z.enum(["known", "explicitly-absent", "unknown", "declined"]).optional(), historyChoice: z.enum(["known", "explicitly-absent", "unknown", "declined"]).optional(), testName: z.string(), testResult: z.string(), lowRange: z.string(), highRange: z.string(), testDate: z.string(), history: z.string() }).strict(),
-  "device-details": z.object({ implantChoice: deviceChoice.optional(), explantChoice: deviceChoice.optional(), reprocessorChoice: choice.optional(), implantDate: z.string(), explantDate: z.string(), reprocessor: z.string() }).strict(),
+  "device-details": z.object({ implantChoice: deviceChoice.optional(), explantChoice: deviceChoice.optional(), reprocessorChoice: choice.optional(), implantDate: rawSuppliedDate, explantDate: rawSuppliedDate, reprocessor: z.string() }).strict(),
   "medication-history": z.object({ answers: z.object({ stopped: booleanAnswer.optional(), doseReduced: booleanAnswer.optional(), stopDate: z.union([nonKnown,z.object({kind:z.literal("known"),value:z.union([z.string(),z.object({precision:z.enum(["month","year"]),year:z.string(),month:z.string().optional(),wording:z.string()}).strict()]),qualifier:z.string().optional()}).strict()]).optional(), improvedAfterChange: booleanAnswer.optional(), restarted: booleanAnswer.optional(), recurred: booleanAnswer.optional() }).strict() }).strict(),
   reporter: z.object({ values: reporterValues, reportDate: z.string(), healthProfessional: z.boolean(), reportedTo: z.array(z.enum(["manufacturer", "user-facility", "distributor-importer", "packer"])), doNotDiscloseIdentity: z.boolean(), baseline: z.string() }).strict(),
   card: z.object({ showMore: z.boolean(), showOutcomes: z.boolean(), editing: z.string().optional(), drafts: z.record(z.string(), editableValue), qualifierControls: z.record(z.string(), z.boolean()), factVersions: z.record(z.string(), z.string()) }).strict(),

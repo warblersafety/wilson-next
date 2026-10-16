@@ -1,0 +1,13 @@
+# Issue223 — supplied device date precision
+
+Fictional data only. Scope is device implant E6a and explant E6b. The pinned FDA3500 (09/2025) page6 and official instructions explicitly distinguish these from E7 reprocessing. Official instructions allow month/year or year-only when components are unknown: https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500
+
+Explicit complete dates retain native formatting. Partial notes retain exact supplied wording/context/source; no missing day/month, implantation/removal status, chronology, duration, clinical outcome or causality is inferred. E6a/E6b continuations have copy-local native pointers, global device ordinal and report reference. Extra E copy retains the correct identity even for same-named devices. Non-device/F roles retain facts with non-carried notices.
+
+Browser v27 accepts current precision and validates genuine v26 against its frozen schema before lossless migration. Invalid legacy full dates remain retained and block fresh output. Device-detail raw drafts survive reload; malformed partial drafts cannot become accepted facts. Model boundary requires exact cited wording and explicit year; this is structural/mock evidence, not a claim of broad live interpretation reliability.
+
+Verification records below will identify final local tests, independent review and CI checkpoints. No new dependencies or live application-model calls.
+
+Local verification: 1,038 unit tests/98 files, typecheck/build and two focused mocked browser journeys passed. A full161-journey run passed before review follow-ups; the final header/evidence remediation is rerunning the full suite. Six retained PDFs/17 PDFKit captures and independent pypdf readbacks cover implant/explant native pointers, exact separate wording, mixed expiration on an additional E copy, conversational correction and Unknown removal. Additional-copy headers keep the main B5 context pointer. Browser correction changes no native fields until Unknown clears only ImplantDate; each partial export has one distinct report reference, with obsolete wording absent.
+
+Actual Opus full review found no blockers and F1–F3 follow-ups: distinct explant fixture wording, the B5 header pointer and product checklist drift. These are fixed in the final candidate; targeted recheck, exact-headCI, protected hosted verification, merge/tree/mainCI remain pending at this dated snapshot. Raw review is linked from PR224. Reviewer runs no tests; execution evidence is separate. The owning release matrix remains bounded: other date/source families and unsupported expressions still need #180 work.

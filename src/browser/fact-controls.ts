@@ -130,8 +130,8 @@ const product = {
     ["health-professional", "Health professional"], ["patient-consumer", "Patient or consumer"], ["other", "Other operator"],
   ) },
   implanted: { label: "Implanted device", shape: "boolean" },
-  implantDate: { label: "Implant date", shape: "date", completeDate: true },
-  explantDate: { label: "Explant date", shape: "date", completeDate: true },
+  implantDate: { label: "Implant date", shape: "product-date" },
+  explantDate: { label: "Explant date", shape: "product-date" },
   reprocessedSingleUse: { label: "Reprocessed single-use device", shape: "boolean" },
   reprocessor: { label: "Reprocessor", shape: "text" },
   servicedByThirdParty: { label: "Third-party serviced", shape: "choice", options: choices(

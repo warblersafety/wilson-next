@@ -56,6 +56,8 @@ const medicationDateSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("declined") }).strict(),
 ]);
 
+const deviceDateSchema=z.union([medicationDateSchema,z.object({kind:z.literal("inapplicable")}).strict()]);
+
 export const journeyActionSchema = z.discriminatedUnion("action", [
   z.object({
     action: z.literal("submit-opening"),
@@ -123,8 +125,8 @@ export const journeyActionSchema = z.discriminatedUnion("action", [
   }).strict(),
   z.object({
     action: z.literal("answer-device-details"),
-    implantDate: deviceAnswerStringSchema.optional(),
-    explantDate: deviceAnswerStringSchema.optional(),
+    implantDate: deviceDateSchema.optional(),
+    explantDate: deviceDateSchema.optional(),
     reprocessor: deviceAnswerStringSchema.optional(),
   }).strict(),
   z.object({

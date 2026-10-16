@@ -137,8 +137,8 @@ export interface ProductFacts {
   udi: Fact<string>;
   deviceOperator: Fact<"health-professional" | "patient-consumer" | "other">;
   implanted: Fact<boolean>;
-  implantDate: Fact<string>;
-  explantDate: Fact<string>;
+  implantDate: Fact<SuppliedDate>;
+  explantDate: Fact<SuppliedDate>;
   reprocessedSingleUse: Fact<boolean>;
   reprocessor: Fact<string>;
   servicedByThirdParty: Fact<"yes" | "no" | "unknown">;

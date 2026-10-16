@@ -1,4 +1,4 @@
-import {productDateFields,productDateLabels,isPartialDate,suppliedDateText,type ProductDateField} from "./date-precision";
+import {deviceDateFields,productDateFields,productDateLabels,isPartialDate,suppliedDateText,type ProductDateField} from "./date-precision";
 import {isPartialExpiration,expirationText,type PartialExpiration} from "./expiration";
 import { isCalendarDateTarget, knownValueMismatch } from "./value-contract";
 import { isCompleteCalendarDate } from "./calendar-date";
@@ -60,7 +60,7 @@ export interface Form3500Projection {
     F: { concomitantProducts: ProjectedConcomitantProduct[] };
     G: { reporter: ProjectedReporter };
   };
-  productDateNotes?: {productId:string;field:ProductDateField;block:"D1"|"D3"|"F1";ordinal:number;text:string;sourceIds:string[]}[];
+  productDateNotes?: {productId:string;field:ProductDateField;block:"D1"|"D3"|"E6a"|"E6b"|"F1";ordinal:number;text:string;sourceIds:string[]}[];
   expirationNotes?: {productId:string;block:"D6"|"E4"|"F1";ordinal:number;text:string;sourceIds:string[]}[];
   invalidCalendarDates?: { target: string; value: string }[];
   sourceTrace: Record<string, string[]>;
@@ -328,16 +328,16 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     if(e>=0){delete projection.sections.E.suspectDevices[e].expirationDate;delete projection.sourceTrace[`sections.E.suspectDevices.${e}.expirationDate`];}
   }
   for(const product of caseState.products.filter(p=>p.state==="resolved")) {
-    const d=projection.sections.D.suspectProducts.findIndex(p=>p.productId===product.id),f=projection.sections.F.concomitantProducts.findIndex(p=>p.productId===product.id);
-    for(const field of productDateFields) {
+    const e=projection.sections.E.suspectDevices.findIndex(p=>p.productId===product.id),d=projection.sections.D.suspectProducts.findIndex(p=>p.productId===product.id),f=projection.sections.F.concomitantProducts.findIndex(p=>p.productId===product.id);
+    for(const field of [...productDateFields,...deviceDateFields]) {
       const value=known(product.facts[field]);if(!value||!isPartialDate(value.value))continue;
-      const destination=d>=0?projection.sections.D.suspectProducts[d]:f>=0?projection.sections.F.concomitantProducts[f]:undefined;
+      const destination=e>=0?projection.sections.E.suspectDevices[e]:d>=0?projection.sections.D.suspectProducts[d]:f>=0?projection.sections.F.concomitantProducts[f]:undefined;
       // The native projection already applied D3 print-choice/applicability. Never restore a suppressed alternative.
       if(!destination || !(field in destination))continue;
-      const block=d>=0?(field==='purchaseDate'?'D1':'D3'):'F1',ordinal=(d>=0?d:f)+1;
-      const note={productId:product.id,field,block: block as "D1"|"D3"|"F1",ordinal,text:suppliedDateText(value.value,productDateLabels[field].toLowerCase(),value.qualifier),sourceIds:value.sourceIds};
+      const block=e>=0?(field==='implantDate'?'E6a':'E6b'):d>=0?(field==='purchaseDate'?'D1':'D3'):'F1',ordinal=(e>=0?e:d>=0?d:f)+1;
+      const note={productId:product.id,field,block: block as "D1"|"D3"|"E6a"|"E6b"|"F1",ordinal,text:suppliedDateText(value.value,productDateLabels[field].toLowerCase(),value.qualifier),sourceIds:value.sourceIds};
       const i=projection.productDateNotes!.push(note)-1;projection.sourceTrace[`productDateNotes.${i}`]=value.sourceIds;
-      delete (destination as unknown as Record<string,unknown>)[field];delete projection.sourceTrace[`sections.${d>=0?'D.suspectProducts':'F.concomitantProducts'}.${d>=0?d:f}.${field}`];
+      delete (destination as unknown as Record<string,unknown>)[field];delete projection.sourceTrace[`sections.${e>=0?'E.suspectDevices':d>=0?'D.suspectProducts':'F.concomitantProducts'}.${e>=0?e:d>=0?d:f}.${field}`];
       projection.omissions=projection.omissions.filter(o=>o.target!==`product:${product.id}:${field}`);
       if(f>=0) projection.sections.F.concomitantProducts[f].fieldContext=projection.sections.F.concomitantProducts[f].fieldContext?.filter(c=>c.field!==field);
     }
@@ -660,7 +660,7 @@ export function deviceContextEntries(caseState: SemanticCase, projection: Form35
     const product = caseState.products.find(p => p.id === device.productId);
     return product ? sectionEProductFields.flatMap(field => {
       const value = known(product.facts[field] as Fact<unknown>);
-      if(field === "expirationDate" && value && isPartialExpiration(value.value)) return [];
+      if(value && isPartialExpiration(value.value) && (field === "expirationDate" || deviceDateFields.includes(field as typeof deviceDateFields[number]))) return [];
       return value?.qualifier ? [{ text: `Suspect device #${index+1} Section E ${humanizeProductField(field)} context: ${value.qualifier}`, target: `product:${product.id}:${field}`, sourceIds: value.sourceIds }] : [];
     }) : [];
   });
