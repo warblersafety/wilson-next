@@ -3,7 +3,7 @@
   "unitFiles": 88,
   "typecheck": "pass",
   "build": "pass",
-  "fullMockBrowserGate": "final144 running after actual render fixes; earlier interrupted runs do not count",
+  "fullMockBrowserGate": "144 passed after repeated-field headers and single-save integration fixes",
   "applicationModelRequests": 0,
   "PDFs": [
     {
@@ -13,7 +13,7 @@
     },
     {
       "file": "f-corrected.pdf",
-      "sha256": "0ca6134af72ad94326d60fb420835cce7443e17075be074fee9e8375942fbe07",
+      "sha256": "2cf96889dc200a400e7d75a16d691d3768f7f44d1f64eacd1347a9a66f315de5",
       "pages": 9
     },
     {
@@ -23,22 +23,22 @@
     },
     {
       "file": "f-unknown.pdf",
-      "sha256": "1ea53bf64674d46e6efc4d3ac4cc904b88575fcb2da7f132c5b3783300062005",
+      "sha256": "8c8d570082584d43e7dabdcaff219b32a88e98fb5a6a6d5016b2f08e475d93fd",
       "pages": 9
     },
     {
       "file": "f-withdrawn.pdf",
-      "sha256": "8a88c7deaaf8aa6b8727cdd10ef23d3b103f79fcd0b04664019196f951604284",
+      "sha256": "ff1bea19204548f9e006be72786e498fe7b9aab2511a53f1d7040655e3b45fbe",
       "pages": 9
     },
     {
       "file": "f-overflow.pdf",
-      "sha256": "582c2aa061b422bea8ac5e17f0d59a287eca5f64148803fb8fe0741e073013f6",
+      "sha256": "dc20971172408169cc375fb17d7b027d64f193f4ae9eba921da2da2ec2946543",
       "pages": 9
     },
     {
       "file": "f-repaired.pdf",
-      "sha256": "29c91e40164041b323fc162157aff6afd5ce6824839f2beabfce6c1bcd89b199",
+      "sha256": "5c54c596f550280d6219686967f0fb6638c8700159778aa8f09f92dca63da9c8",
       "pages": 9
     },
     {
@@ -50,6 +50,11 @@
   "retainedCaseLimit": 3,
   "nativeAdapterRows": 10,
   "independentNativeGeometry": "native-f-widget-geometry.json",
-  "render": "PDFKit2x; low-level ten-row/dense/mixed refreshed and visually checked; browser variants refresh pending",
-  "serializationFix": "assemble all native headings/copies before single save; actual main E heading asserted"
+  "render": {
+    "renderer": "PDFKit2x",
+    "captures": 15,
+    "inspection": "pass: all native rows/dates, pointers, exact row-linked context, dense repeated fields/line100, mixed main E/F headings and blank extra-copy F; all readable/unclipped"
+  },
+  "serializationFix": "assemble all native headings/copies before single save; actual main E heading asserted",
+  "fullSuiteBrowserPDFsRetained": true
 }
