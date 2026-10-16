@@ -883,7 +883,7 @@ function OutputComposition({ snapshot, pdf, caseId, busy, generating, error, gen
   const exceedsCapacity = productCapacityIssues(snapshot).length > 0;
   const omittedContext = hasOmittedQualifierContext(snapshot);
   const representationLimited = snapshot.outputIssues.some(({ code }) => code === "unsupported-patient-age" || code === "unsupported-patient-sex" || code === "unsupported-product-route" || code === "unsupported-product-text" || code === "unsupported-event-narrative" || code === "unsupported-test-history");
-  const reporterRepresentationLimited = snapshot.outputIssues.some(issue => issue.targets.some(target => target.startsWith("reporter:reporter:")));
+  const reporterRepresentationLimited = snapshot.outputIssues.some(issue => issue.code === "unsupported-product-text" && issue.targets.some(target => target.startsWith("reporter:reporter:")));
   const artifact = pdf?.caseId === caseId ? pdf : undefined;
   const current = Boolean(artifact && artifact.contentKey === snapshot.reportContentKey && snapshot.downloadReady);
   return <>

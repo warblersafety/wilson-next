@@ -68,7 +68,7 @@ test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery an
   await expect(page.getByLabel("Clinical update", { exact: true })).toBeHidden();
   await page.screenshot({ path: info.outputPath("pending-review-desktop.png"), fullPage: true });
   await goTo(page, "Reporter details");
-  for (const [label, value] of [["Reporter first name", "Casey"], ["Reporter last name", "Reed"], ["Reporter email", "casey.reed@example.test"]]) await page.getByLabel(label, { exact: true }).fill(value);
+  for (const [label, value] of [["Reporter first name", "Casey"], ["Reporter last name", "Reed"], ["Reporter email", "casey.reed@example.test"], ["Reporter country", "UNITED STATES"]]) await page.getByLabel(label, { exact: true }).fill(value);
   await page.getByLabel("Reporter occupation", { exact: true }).selectOption("Physician");
   await page.getByLabel("Health professional", { exact: true }).selectOption("true");
   await page.getByLabel("Date of this report", { exact: true }).fill("2026-09-23");
@@ -138,6 +138,7 @@ test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery an
   await page.getByRole("button", { name: "Confirm outcomes", exact: true }).click();
   await goTo(page, "Review & save");
   await expect(page.getByRole("button", { name: "Generate PDF", exact: true })).toBeDisabled();
+  await expect(page.getByText("Clinical questions are complete. Save reporter details or explicitly choose not to provide them.", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Go to reporter details", exact: true }).click();
   await page.getByRole("button", { name: "Add reporter details", exact: true }).click();
   const file = info.outputPath("accepted.pdf");

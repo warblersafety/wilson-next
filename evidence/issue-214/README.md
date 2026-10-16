@@ -42,3 +42,10 @@ All 275 native country export/display pairs are retained independently in
 `native-g-country-options.json`; every pair is equal. Review fixes pass 919
 unit tests, typecheck and build; the expanded 148-journey full mock run and
 same-session Opus recheck are pending at this checkpoint.
+
+Same-session recheck R1 was repaired by requiring the representation error code
+as well as a reporter target. Normal reporter clarification retains its explicit
+save/decline guidance; the existing flow journey now asserts it. The US-baseline
+fixture explicitly enters its intended country rather than relying on the removed
+default, preserving the same expected PDF. All five focused regression journeys
+pass. The full 148-journey run, final actual recheck and exact-head CI are pending.
