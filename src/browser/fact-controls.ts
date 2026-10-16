@@ -26,6 +26,7 @@ export interface FactControl {
   shape: FactControlShape;
   help?: string;
   multiline?: boolean;
+  arrayContextLabel?: string;
   preference?: boolean;
   preferenceHelp?: string;
   requireSelection?: boolean;
@@ -98,6 +99,7 @@ const product = {
   indication: { label: "Used for", shape: "text" },
   stopped: { label: "Stopped or removed", shape: "boolean" },
   cosmeticUse: { label: "Cosmetic product type", shape: "choice", requireSelection: true, options: choices(["professional-use-only", "Cosmetics for professional use only"], ["retail", "Cosmetics sold on a retail basis"]), help: "D5 cosmetics: select one explicitly supplied answer. This does not change the product category or medication labels. Do not guess from the product name." },
+  otherProductTypes: { label: "Other D5 product types", shape: "choices", requireSelection: true, arrayContextLabel: "Context for these selections", options: choices(["cannabinoid-hemp", "Cannabinoid hemp products"], ["other", "Other"]), help: "Select only explicitly supplied D5 answers. These choices do not determine the reporting section or drug/cosmetic labels. Do not guess from a CBD name or missing labels." },
   medicationType: { label: "Medication label type", shape: "choices", options: choices(["brand", "Brand"], ["generic-biosimilar", "Generic or biosimilar"], ["otc", "Over-the-counter"], ["compounded", "Compounded"]) },
   treatmentDuration: { label: "Treatment duration", shape: "duration", options: durationUnits.map(value => ({value, label: value[0].toUpperCase()+value.slice(1)})), help: "Enter the explicitly supplied positive amount and its unit. Wilson never calculates duration from dates, converts units, or invents a unit." },
   d3Value: { label: "D3 value to print", shape: "choice", preference: true, options: choices(["dates", "Treatment dates"], ["duration", "Duration"]), preferenceHelp: "D3 asks for dates OR duration. No print preference uses the sole known alternative, or leaves D3 blank if neither is known. If both are known, explicitly choose one. Clearing this preference preserves all facts and unfinished edits." },

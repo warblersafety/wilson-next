@@ -19,7 +19,7 @@ import { completionQuestions } from "../../domain/case/completion-policy";
 import { createSemanticCase } from "../../domain/case/create";
 import { allFacts, getFact, targetFromKey, targetKey } from "../../domain/case/facts";
 import { productDisplayLabel } from "../../domain/case/product-label";
-import { projectForm3500, quantityContextEntries, hasBaseEventDescription, baseEventDescription, baseEventDescriptionTargets, additionalCommentsEntries } from "../../domain/case/projection";
+import { projectForm3500, quantityContextEntries, hasBaseEventDescription, baseEventDescription, baseEventDescriptionTargets, additionalCommentsEntries, d5OtherTypeContextEntries } from "../../domain/case/projection";
 import type { CaseValue, Fact, FactTarget, ProductFactKey, ReporterFactKey, SemanticCase, Source } from "../../domain/case/types";
 import {
   createClarificationView,
@@ -116,8 +116,9 @@ export async function getJourneySnapshot(
   const baseLimitation = await narrativeTextLimitation(baseEventDescription(caseState));
   const narrativeLimitation = baseLimitation ?? await eventNarrativeLimitation(projection);
   if (narrativeLimitation) {
-    const quantityTargets = quantityContextEntries(projection.sections.D.suspectProducts).map(entry => entry.target);
-    const targets = baseLimitation || !quantityTargets.length ? baseEventDescriptionTargets(caseState) : quantityTargets;
+    const contextEntries = [...quantityContextEntries(projection.sections.D.suspectProducts), ...d5OtherTypeContextEntries(caseState, projection)];
+    const unsupportedContext = (await Promise.all(contextEntries.map(async entry => ({ entry, unsupported: await narrativeGlyphLimitation(entry.text, "B5 context") })))).filter(item => item.unsupported).map(item => item.entry);
+    const targets = baseLimitation ? baseEventDescriptionTargets(caseState) : (unsupportedContext.length ? unsupportedContext : contextEntries).map(entry => entry.target);
     outputIssues.push({
       code: "unsupported-event-narrative",
       message: `The reviewed B5 event description ${narrativeLimitation}. The wording is retained, but no new PDF is generated. Review the contributing narrative details.`,

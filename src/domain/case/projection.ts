@@ -1,3 +1,4 @@
+import { otherProductTypeValues, type OtherProductType } from "./other-product-types";
 import { listWithContext } from "./list-context";
 import { noPatientConflictingTargets, noPatientOutcomeConflictingTargets } from "./patient-involvement";
 import {purchaseDetailFields,purchaseDetailLabels,purchaseCountryLabel} from "./purchase-details";
@@ -9,7 +10,7 @@ import { doseReductionDateNotice, ongoingTherapyNotice, isSettled, restartApplic
 import { productDisplayLabel } from "./product-label";
 import type { Fact, ProductEntity, ProductFactKey, ReportType, SemanticCase } from "./types";
 
-const sectionDProductFields = ["name", "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "purchaseDate", ...purchaseDetailFields, "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "doseReductionDate", "treatmentDuration", "indication", "medicationType", "cosmeticUse"] as const satisfies readonly ProductFactKey[];
+const sectionDProductFields = ["name", "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "purchaseDate", ...purchaseDetailFields, "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "doseReductionDate", "treatmentDuration", "indication", "medicationType", "cosmeticUse", "otherProductTypes"] as const satisfies readonly ProductFactKey[];
 const sectionEProductFields = ["name", "commonName", "procode", "manufacturer", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const satisfies readonly ProductFactKey[];
 const sectionFProductFields = ["name", "startDate", "stopDate"] as const satisfies readonly ProductFactKey[];
 const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "role", "stopped"]);
@@ -109,6 +110,7 @@ export interface ProjectedProduct {
   treatmentDuration?: TreatmentDuration;
   indication?: string;
   cosmeticUse?: "professional-use-only" | "retail";
+  otherProductTypes?: OtherProductType[];
   medicationType?: Array<"brand" | "generic-biosimilar" | "otc" | "compounded">;
   improvedAfterChange?: boolean | "inapplicable";
   recurred?: boolean | "inapplicable";
@@ -153,7 +155,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       "Patient race/ethnicity detail outside the seven A5 categories",
       "Section C product pictures",
       "Additional suspect medical devices beyond the first",
-      "Section D partial expiration dates, partial purchase dates, cannabinoid/Other product-type categories and purchase wording outside native country/glyph/line/capacity limits",
+      "Section D partial expiration dates, partial purchase dates and purchase wording outside native country/glyph/line/capacity limits",
       "Section D partial dose-reduction dates; dose-count, compound and range treatment durations",
     ],
   };
@@ -302,12 +304,12 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     }
   }
 
-  const quantityContext = quantityContextEntries(projection.sections.D.suspectProducts);
+  const quantityContext = [...quantityContextEntries(projection.sections.D.suspectProducts), ...d5OtherTypeContextEntries(caseState, projection)];
   if (quantityContext.length) {
     projection.sections.B.eventDescription = [projection.sections.B.eventDescription, ...quantityContext.map(entry => entry.text)].filter(Boolean).join("\n");
     projection.sourceTrace["sections.B.eventDescription"] = [...new Set([
       ...(projection.sourceTrace["sections.B.eventDescription"] ?? []),
-      ...quantityContext.flatMap(entry => projection.sourceTrace[entry.path] ?? []),
+      ...quantityContext.flatMap(entry => "path" in entry ? projection.sourceTrace[entry.path] ?? [] : entry.sourceIds),
     ])];
   }
 
@@ -321,6 +323,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   for (const product of projection.sections.D.suspectProducts) {
     for (const field of ["dose", "strength"]) carriedQualifierTargets.add(`product:${product.productId}:${field}`);
   }
+  for (const entry of d5OtherTypeContextEntries(caseState, projection)) carriedQualifierTargets.add(entry.target);
   for (const entry of relevantTestContextEntries(caseState)) carriedQualifierTargets.add(entry.target);
   const disclosed = new Set(projection.omissions.filter(({ reason }) => reason === "qualifier-not-included").map(({ target }) => target));
   for (const { target, fact } of allFacts(caseState)) {
@@ -346,9 +349,10 @@ function projectProduct(
   const prefix = `sections.D.suspectProducts.${index}`;
   for (const field of sectionDProductFields) {
     assign<unknown>(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field] as Fact<unknown>, result, field, (value) => field === "medicationType" ? ["brand", "generic-biosimilar", "otc", "compounded"].filter((label) => (value as string[]).includes(label))
+      : field === "otherProductTypes" ? otherProductTypeValues.filter(label => (value as string[]).includes(label))
       : field === "purchaseSellerCountry" ? purchaseCountryLabel(String(value)) ?? value
       : field === "dose" || field === "strength" ? { value: String(value), ...(known(product.facts[field])?.qualifier !== undefined ? { qualifier: known(product.facts[field])!.qualifier } : {}) }
-        : value, field === "dose" || field === "strength");
+        : value, field === "dose" || field === "strength" || field === "otherProductTypes");
   }
   const choice = known(product.facts.d3Value);
   if (choice) {
@@ -420,6 +424,7 @@ function productLabel(caseState: SemanticCase, product: ProductEntity): string {
 function humanizeProductField(field: ProductFactKey): string {
   if (field === "ndcOrUniqueId") return "NDC number or Unique ID";
   if ((purchaseDetailFields as readonly string[]).includes(field)) return purchaseDetailLabels[field as keyof typeof purchaseDetailLabels];
+  if (field === "otherProductTypes") return "Other D5 product types";
   if (field === "cosmeticUse") return "Cosmetic product type";
   if (field === "udi") return "UDI";
   if (field === "procode") return "Procode";
@@ -587,4 +592,16 @@ export function additionalCommentsEntries(caseState: SemanticCase) {
     ...relevantTestContextEntries(caseState),
     ...(comment ? [{ text: `Additional comments: ${comment.value}${comment.qualifier ? `\nAdditional comments context: ${comment.qualifier}` : ""}`, target: "event:event:additionalComments", sourceIds: comment.sourceIds, testId: undefined }] : []),
   ];
+}
+
+/** Exact accepted D5 list context, linked to the current stable product/native slot. */
+export function d5OtherTypeContextEntries(caseState: SemanticCase, projection: Form3500Projection) {
+  return projection.sections.D.suspectProducts.flatMap((product, index) => {
+    const fact = caseState.products.find(p => p.id === product.productId)?.facts.otherProductTypes;
+    const value = fact && known(fact);
+    return product.otherProductTypes && value?.qualifier ? [{
+      text: `Suspect product #${index + 1} D5 Other product types context: ${value.qualifier}`,
+      target: `product:${product.productId}:otherProductTypes`, sourceIds: value.sourceIds,
+    }] : [];
+  });
 }

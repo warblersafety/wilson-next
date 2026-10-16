@@ -1,3 +1,4 @@
+import { isOtherProductTypes, type OtherProductType } from "../../domain/case/other-product-types";
 import { planNarrativeContinuations, appendNarrativeContinuations } from "./narrative-continuation";
 import {purchaseDetailFields,purchaseCountryLabel} from "../../domain/case/purchase-details";
 import {purchaseNativeGeometry,purchaseDetailLimitation} from "./purchase-details";
@@ -388,6 +389,11 @@ export async function fillForm3500Projection(
       const selected = product.therapyOngoing === answer;
       if (selected || form.getCheckBox(name).isChecked()) setChecked(form, name, selected);
     }
+    if (product.otherProductTypes !== undefined && !isOtherProductTypes(product.otherProductTypes)) throw new Error("D5 Other Product Types requires nonempty unique supported selections");
+    for (const [choice, name] of otherProductTypeNativeFields(index)) {
+      const selected = product.otherProductTypes?.includes(choice) === true;
+      if (selected || form.getCheckBox(name).isChecked()) setChecked(form, name, selected);
+    }
     if (product.cosmeticUse !== undefined && !["professional-use-only", "retail"].includes(product.cosmeticUse)) throw new Error("D5 cosmetic product type requires one supported choice");
     for (const [choice, name] of cosmeticNativeFields(index)) {
       const selected = product.cosmeticUse === choice;
@@ -560,6 +566,11 @@ function writeSuspectProduct(
   setText(form, names.indication, product.indication);
 }
 
+function otherProductTypeNativeFields(index: number): Array<[OtherProductType, string]> {
+  const parent = `topmostSubform[0].Page${index+4}[0].Prod${index+1}[0].`;
+  return [["cannabinoid-hemp", parent+(index===0?"Prod1Cannabi[0]":"Pdt2Cannabi[0]")], ["other", parent+(index===0?"Prod1PdtOther[0]":"Pdt2PdtOther[0]")]];
+}
+
 function cosmeticNativeFields(index: number): Array<["professional-use-only" | "retail", string]> {
   const parent = `topmostSubform[0].Page${index+4}[0].Prod${index+1}[0].`;
   return [["professional-use-only", parent+(index===0?"Prod1CosmProf[0]":"pdt2CosmProf[0]")], ["retail", parent+(index===0?"Prod1CosRetail[0]":"Pdt2CosRetail[0]")]];
@@ -612,6 +623,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
     productId: expected.productId,
     therapyOngoing: readOngoing(index),
     treatmentDuration: readDuration(index),
+    otherProductTypes: (() => { const selected = otherProductTypeNativeFields(index).filter(([,name])=>form.getCheckBox(name).isChecked()).map(([choice])=>choice); return selected.length ? selected : undefined; })(),
     cosmeticUse: (() => { const selected = cosmeticNativeFields(index).filter(([,name])=>form.getCheckBox(name).isChecked()); if (selected.length>1) throw new Error("D5 cosmetics has multiple selected choices"); return selected[0]?.[0]; })(),
     ...Object.fromEntries(purchaseDetailFields.map(field=>{const name=purchaseNativeGeometry[index][field].name;const raw=field==="purchaseSellerCountry"?form.getDropdown(name).getSelected()[0]:form.getTextField(name).getText();return [field,field==="purchaseSellerCountry"&&!raw?.trim()?undefined:raw];})),
     purchaseDate: parseDate(form.getTextField(`topmostSubform[0].Page${index + 4}[0].Prod${index + 1}[0].${index === 0 ? "Prod1" : "Pdt2"}PurchaseDate[0]`).getText()),

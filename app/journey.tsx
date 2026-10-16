@@ -1227,7 +1227,7 @@ function joinList(values: string[]): string {
 
 function formatFact(value: CaseValue<unknown> | undefined, control?: FactControl): string {
   const text = formatFactValue(value, control);
-  if (value?.kind === "known" && Array.isArray(value.value) && control?.shape === "list") return listWithContext(text, value.qualifier);
+  if (value?.kind === "known" && Array.isArray(value.value) && (control?.shape === "list" || control?.arrayContextLabel)) return listWithContext(text, value.qualifier, control?.arrayContextLabel);
   return value?.kind === "known" && value.qualifier ? `${text} (${value.qualifier})` : text;
 }
 
