@@ -8,6 +8,7 @@ import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { getJourneySnapshot } from "../../src/server/journey/service";
 
 const samples: { [K in DraftKind]: DraftData<K> } = {
+  "legacy-date-recovery": {drafts:{"legacy-proposal":{kind:"known",value:"2026-02",qualifier:"supplied uncertainty"}},qualifierControls:{"legacy-proposal":true}},
   indications: { choices: { "product-fictional": "known" }, texts: { "product-fictional": "  Unfinished indication " } },
   "serious-outcomes": { selected: [] },
   "death-date": { date: "" },

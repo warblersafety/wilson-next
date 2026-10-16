@@ -224,6 +224,7 @@ function diagnosticAction(action: JourneyAction): unknown {
 
 function safeClientError(error: unknown): string {
   if (!(error instanceof Error)) return "The case could not be updated";
+  if (error.message.includes("requires a complete valid ISO calendar date")) return "The selected date is not a valid complete calendar date. Correct the named date in review using supplied information; no date was accepted or repaired.";
   const allowed = [
     "This action is not available during",
     "The proposed value is no longer available",

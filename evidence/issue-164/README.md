@@ -1,24 +1,41 @@
 # Calendar validity — fictional evidence
 
-Scope #164: reject new impossible complete dates at all existing date contracts;
-retain legacy browser cases unchanged; block fresh output for a current impossible
-date with the target shown; explicit correction/nonknown status preserves history.
-Date editors retain partial/impossible text drafts across reload. No repair, date
-arithmetic, missing components, model calls, dependency, or ZIP work.
+Scope #164: all new known dates require a complete real Gregorian calendar date.
+Legacy shape-only cases restore unchanged, including pending/conflict/history.
+A current invalid date blocks fresh PDF output with the target named. Explicit
+correction or a supplied nonknown status retains history; no date is repaired,
+calculated or inferred. Partial/impossible text drafts survive reload.
 
-`calendar-leap-fields.pdf` independently reads native 29-FEB-2028 in B3, B6,
-D3 and D6. PDFKit renders cover pages1,2,3,4. Browser correction/unknown PDFs and the invalid-date review screenshot are retained.
-Both browser PDFs independently read as eight pages; corrected B3 is29-FEB-2028
-and Unknown clears only B3. Six PDFKit page renders accompany three PDFs.
-973 unit tests/92 files, typecheck/build, all150 mocked browser journeys, and
-a focused repeat passed. Actual Opus review and final CI gates remain pending. No invalid PDF is
-created: service/readiness and adapter tests reject before output.
+Legacy opening proposals cannot be accepted unchanged. Later mixed groups accept
+their other facts alongside an explicit supplied date correction. Invalid conflict
+alternatives cannot be selected; supplied date/status correction retains every
+alternative in history. Typed case-owned recovery drafts persist across reload
+and retain earlier edits separately if the review changes. General semantic
+correction #150 remains paused.
 
-Official semantics checked 2026-10-16:
+Four PDFs and seven PDFKit renders cover native B3/B6/D3/D6 leap dates, browser
+accepted-date correction/Unknown, and all-invalid conflict correction. Independent
+pypdf readback verifies native29-FEB-2028. Corrected/Unknown browser PDFs differ
+only in native B3. Three UI screenshots show accepted-date, pending-update and
+conflict recovery. No invalid PDF was generated; readiness/adapter rejection is
+tested before output.
+
+After Opus B1 remediation:976 unit tests/92 files, typecheck/build, and all four
+focused mock browser journeys passed. Before remediation the150-journey full
+suite passed twice. The expanded153-journey repeat, actual Opus same-session
+recheck and exact-head/main CI are pending; final results are recorded on PR218.
+`verification.json` records the dated scope/evidence status without claiming
+these pending gates passed.
+
+Official semantics checked2026-10-16:
 https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500
 General instructions call for DD-MMM-YYYY and best supplied estimates. Wilson
-retains explicit estimates/qualifiers and does not infer any missing component.
-Pinned 09/2025 form unchanged SHA256
+retains explicit estimates/qualifiers without filling missing components.
+Pinned09/2025 form SHA256 unchanged:
 1147d7c86bb002cba7fb9352ca8e3402524d8fa0236916b7bf7e5dcdcf88bf9c.
-Partial-date field-linked output and case-specific upstream omission/source
-visibility remain required under #180; calendar validity alone does not close them.
+Model schema revision `wilson-grounded-proposals-v31-calendar-validity` records
+the changed Gregorian-date guidance. No live application-model calls, new
+dependency, ZIP work, credentials, grant or provider change.
+
+#180 remains required: field-linked partial-date output and case-specific
+upstream source omission/visibility. Calendar validity alone does not close it.

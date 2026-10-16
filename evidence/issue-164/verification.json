@@ -1,0 +1,28 @@
+{
+  "reviewedInitialHead": "ad08bf276b325d296d98ac9d7a58a770847d7bc1",
+  "initialUnits": 973,
+  "initialUnitFiles": 92,
+  "initialFullMockBrowserJourneys": 150,
+  "initialFocusedBrowser": "passed",
+  "initialTypecheck": "passed",
+  "initialBuild": "passed",
+  "PDFs": 4,
+  "PDFKitRenders": 7,
+  "actualOpusRun": "issue164-20261016T153535-fcb68b46",
+  "reviewResult": "B1 explicit pending/conflict recovery implemented with persistent typed drafts; F1 v31 revision updated; F2 evidence recorded",
+  "finalRecoveryValidation": "focused passed; full153 repeat and Opus recheck pending",
+  "liveApplicationModelCalls": 0,
+  "newDependencies": 0,
+  "remaining": [
+    "recovery tests",
+    "actual Opus recheck",
+    "exact-head CI",
+    "merge/tree/mainCI/cleanup"
+  ],
+  "unitTests": 976,
+  "unitFiles": 92,
+  "focusedRecoveryBrowserJourneys": 4,
+  "recoveryTypecheck": "passed",
+  "recoveryBuild": "passed",
+  "UIRecoveryScreenshots": 3
+}

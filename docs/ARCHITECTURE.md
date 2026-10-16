@@ -1817,3 +1817,14 @@ explicit clinician correction preserves the old value in history. The PDF adapte
 also checks dates before native formatting. Date fact editors retain unfinished
 partial/impossible text drafts. This is calendar validity only: #180 remains the
 required field-linked representation and source-visibility path for partial dates.
+
+Legacy invalid pending date proposals can be corrected during their existing group
+review without discarding other supplied details. Invalid original proposals are
+retained in history. Invalid conflict alternatives cannot be selected; an explicit
+supplied date/status correction can resolve only this invalid-date exception and
+keeps every alternative in history. Recovery drafts have a typed case-owned UI
+record, preserve unfinished text on reload, and become retained earlier edits if
+their review changes; they never become clinical authority automatically. This
+does not reopen general semantic correction #150. Model schema description
+revision is `wilson-grounded-proposals-v31-calendar-validity`; no provider or live
+model call is introduced.

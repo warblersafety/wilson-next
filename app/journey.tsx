@@ -845,12 +845,16 @@ function UpdateReview({ snapshot, busy, act }: {
   snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
 }) {
   const groups = groupAttention(snapshot.review.attention.filter(({ kind, groupId }) => kind !== "conflict" && !snapshot.openingGroups.includes(groupId ?? "")));
+  const [dateDraft, setDateDraft] = useCaseDraft("legacy-date-recovery", "updates", "legacy-date-update-recovery", () => ({drafts:{},qualifierControls:{}}));
   return <>
     <h2 id="update-review-title" tabIndex={-1} className={styles.updateReviewTitle}>Review the proposed update</h2>
     <p>Accept or discard each group separately. Accepted details stay unchanged until you accept a correction.</p>
     {clinicalNeedParts(snapshot).some(({ recheckAfterReview }) => recheckAfterReview) && <p className={styles.hint}>Remaining treatment questions will be checked after these proposals are reviewed.</p>}
     <details><summary>How update review works</summary><p>An accepted incompatible alternative stays unresolved until you choose a value. Unresolved values are not printed; some contradictions block export until corrected.</p></details>
     {groups.map(({ groupId, items }) => {
+      const invalidDates = items.filter(item => invalidDateValue(item.values[0]?.value,controlForTarget(item.target)));
+      const dateCorrections = invalidDates.flatMap(item => dateDraft.drafts[item.values[0].id] ? [{proposalId:item.values[0].id,value:editValueForSubmission(dateDraft.drafts[item.values[0].id])}] : []);
+      const invalidDateRemains = invalidDates.some(item => !dateDraft.drafts[item.values[0].id] || !validEditableValue(dateDraft.drafts[item.values[0].id],controlForTarget(item.target)!));
       const title = reviewGroupTitle(snapshot, items);
       const fieldOnly = singleEntityGroup(items.map(({ target }) => target));
       const evidence = new Map<string, string[]>();
@@ -862,12 +866,13 @@ function UpdateReview({ snapshot, busy, act }: {
         <div className={styles.updateFacts}>{items.map((item) => <div key={item.target}>
           <h4>{fieldOnly ? controlForTarget(item.target)?.label ?? targetLabel(snapshot, item.target) : targetLabel(snapshot, item.target)}</h4>
           <p style={controlForTarget(item.target)?.multiline ? { whiteSpace: "pre-wrap" } : undefined}>{formatFact(item.values[0]?.value, controlForTarget(item.target))}</p>
+          {invalidDateValue(item.values[0]?.value,controlForTarget(item.target)) && <><p role="status">This retained proposal is not a valid complete date. Supply a correction or its stated status before accepting this group; other proposed details stay unchanged.</p><FactValueEditor label={targetLabel(snapshot,item.target)} control={controlForTarget(item.target)!} value={dateDraft.drafts[item.values[0].id] ?? item.values[0].value as EditableCaseValue} hasQualifierControl={dateDraft.qualifierControls[item.values[0].id] ?? Boolean(item.values[0].value.kind === "known" && item.values[0].value.qualifier)} onRevealQualifier={() => setDateDraft(d => ({...d,qualifierControls:{...d.qualifierControls,[item.values[0].id]:true}}))} onChange={value => setDateDraft(d => ({...d,drafts:{...d.drafts,[item.values[0].id]:value}}))}/></>}
         </div>)}</div>
         {evidence.size > 0 && <details className={styles.evidence}><summary>View source evidence for this group</summary>
           {[...evidence].map(([excerpt, labels]) => <div key={excerpt}><p className={styles.hint}>{joinList(labels)}</p><blockquote>“{excerpt}”</blockquote></div>)}
         </details>}
         <div className={styles.decisionActions}>
-          <button disabled={busy} onClick={() => void act({ action: "review-update-group", groupId, decision: "accept" })}>Accept these changes</button>
+          <button disabled={busy || invalidDateRemains} onClick={() => void act({ action: "review-update-group", groupId, decision: "accept", ...(dateCorrections.length ? {dateCorrections} : {}) })}>Accept these changes</button>
           <button disabled={busy} onClick={() => void act({ action: "review-update-group", groupId, decision: "reject" })}>Discard these changes</button>
         </div>
       </article>;
@@ -930,12 +935,23 @@ function ConflictCard({ snapshot, item, busy, act }: {
     {item.values.map((value) => <div className={styles.conflictOption} key={value.id}>
       <strong style={controlForTarget(item.target)?.multiline ? { whiteSpace: "pre-wrap" } : undefined}>{formatFact(value.value, controlForTarget(item.target))}</strong>
       <Evidence excerpt={value.evidence} expanded />
-      <button disabled={busy} onClick={() => void act({ action: "resolve-conflict", target: item.target, chosenValueId: value.id })}>Use {formatFact(value.value, controlForTarget(item.target))}</button>
+      {invalidDateValue(value.value,controlForTarget(item.target)) && <p role="status">This retained alternative is not a valid complete calendar date and cannot be selected.</p>}
+      <button disabled={busy || invalidDateValue(value.value,controlForTarget(item.target))} onClick={() => void act({ action: "resolve-conflict", target: item.target, chosenValueId: value.id })}>Use {formatFact(value.value, controlForTarget(item.target))}</button>
     </div>)}
+    {item.values.some(v => invalidDateValue(v.value,controlForTarget(item.target))) && <LegacyDateConflictCorrection snapshot={snapshot} item={item} busy={busy} act={act}/>}
     <p className={styles.hint}>{snapshot.outputIssues.some(issue => (issue.code === "no-patient-outcomes-conflict" || issue.code === "no-patient-demographics-conflict") && issue.targets.includes(item.target))
       ? "This disagreement conflicts with No patient involved. Review this detail and Patient involvement before exporting. A choice that still conflicts with No patient involved keeps export blocked. All alternatives stay retained."
       : "You may leave this unresolved. Neither alternative will be put in the form."}</p>
   </fieldset>;
+}
+
+function invalidDateValue(value: CaseValue<unknown> | undefined, control: FactControl | undefined): boolean {
+  return Boolean(value?.kind === "known" && control && (control.shape === "date" || control.shape === "birth-date") && !isCompleteBirthDate(value.value));
+}
+function LegacyDateConflictCorrection({snapshot,item,busy,act}:{snapshot:JourneySnapshot;item:ReviewAttentionItem;busy:boolean;act:(a:JourneyAction)=>Promise<boolean>}) {
+  const [draft,setDraft] = useCaseDraft("legacy-date-recovery", `conflict:${item.target}`, JSON.stringify(item.values), () => ({drafts:{},qualifierControls:{}}));
+  const control=controlForTarget(item.target)!,invalid=item.values.find(v=>invalidDateValue(v.value,control))!;
+  return <div><p>Supply the corrected date or its stated status. Applying this correction resolves this date conflict and keeps every alternative in history.</p><FactValueEditor label={targetLabel(snapshot,item.target)} control={control} value={draft.drafts.date ?? {kind:"known",value:""}} hasQualifierControl={draft.qualifierControls.date ?? false} onRevealQualifier={()=>setDraft(d=>({...d,qualifierControls:{date:true}}))} onChange={value=>setDraft(d=>({...d,drafts:{date:value}}))}/><button disabled={busy || (!draft.drafts.date || !validEditableValue(draft.drafts.date,control))} onClick={()=>void act({action:"resolve-conflict",target:item.target,chosenValueId:invalid.id,dateCorrection:editValueForSubmission(draft.drafts.date)})}>Apply supplied date correction</button></div>;
 }
 
 function CaseCards({ snapshot, busy, act }: {
@@ -1075,6 +1091,7 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
       return <div key={field} data-field={field} data-additional-start={field === orderedFields.find(additionalField) || undefined} className={additionalField(field) ? styles.additionalField : undefined}>
         <dt>{control.label}</dt>
         <dd style={control.multiline ? { whiteSpace: "pre-wrap" } : undefined}>{fact.state === "conflicted" ? "Unresolved conflict" : formatFact(value, control)}{!fact.resolved && fact.proposals.some(({ groupId }) => !updateIds.has(groupId)) && <span className={styles.proposed}>Proposed</span>}</dd>
+        {invalidDateValue(value,control) && <dd role="status">This retained date is not a valid complete calendar date. Correct it using supplied information before acceptance.</dd>}
         {dirty && <dd className={styles.hint} style={control.multiline ? { whiteSpace: "pre-wrap" } : undefined}>Unsaved edit: {formatFact(draft, control)}</dd>}
         {fact.history.map((history, index) => <dd key={index} className={styles.history} style={control.multiline ? { whiteSpace: "pre-wrap" } : undefined}>Earlier: {formatFact(history.value, control)}</dd>)}
         {editable && (editing !== field || reviewBlocked) && fact.state !== "conflicted" && <button ref={(button) => { editButtons.current[field] = button; }} className={styles.inlineAction} disabled={busy || reviewBlocked} onClick={() => {
@@ -1103,7 +1120,7 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
       if (showMore && editingAdditional) finishEdit(editing!, false);
       setShowMore(!showMore);
     }}>{showMore ? "Show fewer fields" : "Show more fields"}{!showMore && fields.some((field) => additionalField(field) && drafts[field] && draftChanged(field, drafts[field])) ? " — unsaved edits retained" : ""}</button>}
-    {(allowOpeningReview || reviewBlocked) && <div className={styles.decisionActions}><button className={styles.groupReview} disabled={busy || reviewBlocked || Object.entries(drafts).some(([field, value]) => !validEditableValue(value, factControl(entity, field)!))} onClick={() => void act({ action: "review-opening-group", groupId, corrections: groupCorrections })}>
+    {(allowOpeningReview || reviewBlocked) && <div className={styles.decisionActions}><button className={styles.groupReview} disabled={busy || reviewBlocked || orderedFields.some(field => invalidDateValue(drafts[field] ?? cardValue(facts[field]),factControl(entity,field))) || Object.entries(drafts).some(([field, value]) => !validEditableValue(value, factControl(entity, field)!))} onClick={() => void act({ action: "review-opening-group", groupId, corrections: groupCorrections })}>
       Accept {acceptanceLabel}{groupCorrections.length > 0 ? ` with ${groupCorrections.length} ${groupCorrections.length === 1 ? "change" : "changes"}` : ""}
     </button>
     {!allowRemove && !reviewBlocked && <button disabled={busy} onClick={() => void act({ action: "reject-group", groupId })}>Discard proposed {acceptanceLabel}</button>}</div>}

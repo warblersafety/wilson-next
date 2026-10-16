@@ -153,11 +153,13 @@ export const journeyActionSchema = z.discriminatedUnion("action", [
     action: z.literal("review-update-group"),
     groupId: z.string().min(1),
     decision: z.enum(["accept", "reject"]),
+    dateCorrections: z.array(z.object({proposalId:z.string().min(1),value:caseValueSchema}).strict()).optional(),
   }).strict(),
   z.object({
     action: z.literal("resolve-conflict"),
     target: z.string().min(1),
     chosenValueId: z.string().min(1),
+    dateCorrection: caseValueSchema.optional(),
   }).strict(),
 ]);
 

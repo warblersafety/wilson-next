@@ -3,7 +3,7 @@ import { createSemanticCase } from "../../src/domain/case/create";
 import { productCapacityCase } from "../fixtures/product-capacity";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { getJourneySnapshot } from "../../src/server/journey/service";
-import { journeyResponse } from "../../src/server/case/browser-state";
+import { journeyResponse, browserStateVersion } from "../../src/server/case/browser-state";
 import { acknowledgeWorkspaceDrafts, assertResponseContinuation, decodeWorkspaceData, hasWorkspaceWork, reconcileWorkspace, workspaceInput, type WorkspaceData } from "../../src/browser/workspace-state";
 import { draftRecordKey, initialUiDrafts, factVersions, reporterDraftKey } from "../../src/browser/ui-drafts";
 async function fixture() {
@@ -100,4 +100,10 @@ it("treats retained unfinished text as work even when the current clinical case 
   const blank = { ...state, stage: "describe" as const, case: createSemanticCase(state.case.id) };
   expect(hasWorkspaceWork(blank, initialUiDrafts(state.case.id))).toBe(false);
   expect(hasWorkspaceWork(blank, initialUiDrafts(state.case.id), 1)).toBe(true);
+});
+it('legacy date recovery drafts survive current pending review, acknowledge only submitted corrections and retain stale edits visibly',async()=>{
+ const {legacyPendingCalendar}=await import('../fixtures/legacy-calendar');const c=legacyPendingCalendar(),snapshot=await getJourneySnapshot(new InMemoryCaseRepository({initialCase:c}),c.id),state:import('../../src/server/case/browser-state').BrowserJourneyState={version:browserStateVersion,stage:'review-update',case:c,unrepresented:[]};
+ const {initialUiDrafts,draftRecordKey}=await import('../../src/browser/ui-drafts');const ui=initialUiDrafts(c.id),key=draftRecordKey('legacy-date-recovery','updates');ui.records[key]={kind:'legacy-date-recovery',scope:'updates',dependency:'legacy-date-update-recovery',data:{drafts:{'legacy-date-proposal':{kind:'known',value:'2026-02'},'other-draft':{kind:'unknown'}},qualifierControls:{}}};const data:WorkspaceData={version:1,ui,retained:[],provenance:{stateVersion:browserStateVersion,release:null}};
+ const restored=reconcileWorkspace(data,state,snapshot);expect(restored.ui.records[key]).toEqual(ui.records[key]);const acknowledged=acknowledgeWorkspaceDrafts(ui,{action:'review-update-group',groupId:'legacy-date-update',decision:'accept',dateCorrections:[{proposalId:'legacy-date-proposal',value:{kind:'known',value:'2028-02-29'}}]},snapshot);expect(acknowledged.records[key].kind==='legacy-date-recovery'&&acknowledged.records[key].data.drafts).toEqual({'other-draft':{kind:'unknown'}});
+ const changed=structuredClone(snapshot);changed.review.attention=[];const retained=reconcileWorkspace(data,state,changed);expect(retained.ui.records[key]).toBeUndefined();expect(retained.retained).toContainEqual(expect.objectContaining({record:ui.records[key]}));expect(ui.records[key].kind==='legacy-date-recovery'&&ui.records[key].data.drafts['legacy-date-proposal']).toEqual({kind:'known',value:'2026-02'});
 });

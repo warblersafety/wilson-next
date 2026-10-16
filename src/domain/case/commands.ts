@@ -27,7 +27,7 @@ import type {
 import { nextCompletionQuestion, remainingNeedTargets } from "./completion-policy";
 import { isSettled, medicationAnswerFields, restartApplicability, withdrawalApplicability } from "./medication";
 import {
-  assertCaseValueMatchesTarget as assertValueMatchesTarget,
+  assertCaseValueMatchesTarget as assertValueMatchesTarget, isCalendarDateTarget, knownValueMismatch,
 } from "./value-contract";
 import {
   maximumAskedNeeds,
@@ -108,7 +108,7 @@ export function applyCaseCommand(
       break;
     case "resolve-conflict":
       addSource(next, command.source);
-      resolveConflict(next, command.target, command.chosenValueId, command.source, change);
+      resolveConflict(next, command.target, command.chosenValueId, command.source, change, command.dateCorrection);
       break;
     case "withdraw-case-entity":
       addSource(next, command.source);
@@ -237,6 +237,7 @@ function reviewProposalGroups(
             addSource(caseState, correction.source);
             change.sourceIds.push(correction.source.id);
             appliedCorrections.add(correction.proposalId);
+            if (isCalendarDateTarget(target) && knownValueMismatch(target, proposal.value)) fact.supersededValues.push(proposal);
             applyAcceptedValue(fact, {
               id: correction.replacementId,
               groupId: decision.groupId,
@@ -444,18 +445,22 @@ function resolveConflict(
   chosenValueId: string,
   resolutionSource: Source,
   change: Change,
+  dateCorrection?: import("./types").CaseValue<unknown>,
 ): void {
   if (!chosenValueId.trim()) throw new Error("Conflict resolution choice is required");
   const fact = getFact(caseState, target);
   if (fact.state !== "conflicted") throw new Error(`${targetKey(target)} is not conflicted`);
   const chosen = fact.conflictingValues.find(({ id }) => id === chosenValueId);
   if (!chosen) throw new Error(`Conflict has no alternative ${chosenValueId}`);
-  assertValueMatchesTarget(target, chosen.value);
+  if (dateCorrection !== undefined && (!isCalendarDateTarget(target) || !knownValueMismatch(target, chosen.value))) throw new Error("Only a retained invalid date alternative can be corrected here");
+  assertValueMatchesTarget(target, dateCorrection ?? chosen.value);
 
-  const inactive = fact.conflictingValues.filter(({ id }) => id !== chosen.id);
+  const inactive = fact.conflictingValues.filter(({ id }) => dateCorrection !== undefined || id !== chosen.id);
   fact.supersededValues.push(...inactive);
   fact.resolvedValue = {
     ...chosen,
+    value: dateCorrection ?? chosen.value,
+    intent: dateCorrection !== undefined ? "correction" : chosen.intent,
     id: `${chosen.id}:resolved`,
     groupId: resolutionSource.inputId,
     sourceIds: unique([...chosen.sourceIds, resolutionSource.id]),

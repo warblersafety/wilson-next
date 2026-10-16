@@ -4,7 +4,7 @@ import type { JourneySnapshot } from "../src/server/journey/service";
 import { factControl, type FactControlEntity } from "./fact-controls";
 import styles from "./page.module.css";
 
-const titles = { card: "Earlier field edits", reporter: "Earlier reporter details", indications: "Earlier medicine indications", "serious-outcomes": "Earlier serious outcomes", "death-date": "Earlier date of death", "clinical-context": "Earlier tests and history", "device-details": "Earlier device answers", "medication-history": "Earlier medication answers" };
+const titles = { "legacy-date-recovery": "Earlier supplied date corrections", card: "Earlier field edits", reporter: "Earlier reporter details", indications: "Earlier medicine indications", "serious-outcomes": "Earlier serious outcomes", "death-date": "Earlier date of death", "clinical-context": "Earlier tests and history", "device-details": "Earlier device answers", "medication-history": "Earlier medication answers" };
 const labels: Record<string, string> = {
   firstName: "First name", lastName: "Last name", address: "Address", city: "City", state: "State", postalCode: "ZIP/postal code", country: "Country", phone: "Phone", email: "Email", occupation: "Occupation", reportDate: "Date of this report", healthProfessional: "Health professional", reportedTo: "Also reported to", doNotDiscloseIdentity: "Do not disclose identity",
   testChoice: "Test information", historyChoice: "History information", testName: "Test name", testResult: "Test result", lowRange: "Low range", highRange: "High range", testDate: "Test date", history: "Relevant history", implantChoice: "Implant date information", explantChoice: "Explant date information", reprocessorChoice: "Reprocessor information", implantDate: "Implant date", explantDate: "Explant date", reprocessor: "Reprocessor", stopped: "Stopped", doseReduced: "Dose reduced", stopDate: "Stop date", improvedAfterChange: "Improved after change", restarted: "Restarted", recurred: "Recurred", date: "Date", selected: "Selected outcomes",
@@ -27,6 +27,7 @@ function valueText(value: unknown, options?: ReadonlyArray<{ value: string; labe
 }
 function rows(item: RetainedDraft, snapshot: JourneySnapshot): Array<[string, string]> {
   const record = item.record;
+  if (record.kind === "legacy-date-recovery") return Object.values(record.data.drafts).map(value => ["Earlier supplied date or status",valueText(value)]);
   if (record.kind === "card") {
     let entity: FactControlEntity | undefined;
     try { const scope = JSON.parse(record.scope); if (["patient", "event", "product", "test", "reporter"].includes(scope[0])) entity = scope[0]; } catch { /* No internal identity is displayed. */ }
