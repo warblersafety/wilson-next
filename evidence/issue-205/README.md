@@ -40,7 +40,11 @@ unsupported glyph targets, all non-known states and route independence have unit
 PDF coverage. Empty Known choices disable Apply; this was caught by the focused
 browser test and fixed before the full gate. No live application-model calls.
 
-Actual Opus review, final exact-headCI, guarded merge/mainCI/tree comparison and
+Actual Opus full review found no blocking findings. Its documentation typo was
+fixed; the existing order-sensitive equality of multi-select arrays is tracked
+as nonblocking issue207. Explicit conflict selection remains the current recovery;
+no general equality or paused semantic-correction scope was changed. Targeted
+actual recheck, final exact-headCI, guarded merge/mainCI/tree comparison and
 protected hosted checkpoint remain required. Six macro completion categories
 remain; D07 is a bounded field delivery, not overall Wilson completion. Existing
 private originals, paused150, unmerged195 and the preview grant/expiry remain.
