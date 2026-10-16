@@ -509,8 +509,9 @@ export async function performJourneyAction(
           if (fact.state === "conflicted" || fact.proposedValues.length > 0) throw new Error("Resolve reporter changes before saving details");
           // The panel edits base values. Preserve existing context when that base
           // is unchanged; explicit context editing remains in Review details.
-          const currentValue=fact.resolvedValue?.value;
-          if(currentValue?.kind==="known"&&entry.value.kind==="known"&&JSON.stringify(currentValue.value)===JSON.stringify(entry.value.value))return [];
+          const currentValue = fact.resolvedValue?.value;
+          if (currentValue?.kind === "known" && entry.value.kind === "known"
+            && JSON.stringify(currentValue.value) === JSON.stringify(entry.value.value)) return [];
           if (JSON.stringify(currentValue) === JSON.stringify(entry.value)) return [];
           return [{ ...entry, intent: fact.resolvedValue ? "correction" as const : "fact" as const }];
         });

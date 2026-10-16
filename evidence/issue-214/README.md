@@ -28,6 +28,6 @@ for readable full labels/text, shared report reference and unclipped markers.
 The mixed E copy also retains its device on page 15.
 
 Local verification: 919 unit tests across 89 files, typecheck and production
-build pass. Full 147 mocked-browser journeys and actual Opus review are pending
-at this checkpoint. No application-model calls were made. Current glyph and
+build pass. All 147 mocked-browser journeys pass, including three new reporter paths.
+Actual Opus review and exact-head CI remain pending at this checkpoint. No application-model calls were made. Current glyph and
 native occupation exceptions remain bounded follow-up scope.

@@ -1,0 +1,19 @@
+{
+  "unitTests": 919,
+  "unitFiles": 89,
+  "typecheck": "passed",
+  "build": "passed",
+  "fullMockBrowserJourneys": 147,
+  "newReporterJourneys": 3,
+  "applicationModelCalls": 0,
+  "pdfs": 7,
+  "pdfKitRenders": 15,
+  "independentReader": "pypdf",
+  "review": "pending",
+  "notes": [
+    "Native country geometry/options checked against pinned source",
+    "G1 values and context remain exact",
+    "No profile defaults become accepted facts",
+    "Only formatting changed after full local verification; exact-head CI will rerun all checks"
+  ]
+}
