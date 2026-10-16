@@ -2,7 +2,7 @@
 
 All source and cases are fictional. This is a model-extraction mitigation, not
 proof of general interpretation reliability or a completed live acceptance pass.
-Issue192 remains open for bounded verification of the changed prompt.
+A subsequent single live opening verifies retention for this case only; see below.
 
 ## Observed cause
 
@@ -47,8 +47,7 @@ The form's date column remains a calendar date; no new timestamp control is used
 `tests/fixtures/test-time-context.ts` labels its expected corrected outputs as
 AUTHORED mocks, separate from the captured failing response. Tests prove that
 such a response survives the application, not that Sonnet follows v19. Never
-report those fixtures as actual live repaired output. Keep issue192 open until
-a bounded live verification; stop if the targeted instruction fails rather than
+report those fixtures as actual live repaired output. Before live verification, keep issue192 open; stop if the targeted instruction fails rather than
 layering heuristic repairs. No broader omission-detection claim is made.
 
 ## Verification
@@ -67,3 +66,31 @@ INR/ALT names, results, ranges and 03-SEP-2026 dates align; full exact before/af
 INR row 1 context is readable and unclipped in Additional comments, with no
 context attached to ALT and no guessed time. The corrected browser screenshot
 is also retained. These are mock-path artifacts, not live repaired artifacts.
+
+## Subsequent actual v19 verification (Opus F1)
+
+After cause/strategy were established and Opus reviewed the production change,
+one additional live opening ran on the protected PR193 post-PR preview at
+a42d610. Actual Sonnet5 returned the known INR date with qualifier
+"Collection time was not recorded" and p7/p8 citations. This is shorter than the
+original sentence (subject/punctuation removed), so it is NOT a verbatim full-
+sentence pass. It retains the supplied unavailable-time meaning on the identified
+INR observation with exact original source; ALT has no qualifier or invented time.
+Every other one of the 47 proposal values exactly matches the original response.
+No authored expectation was substituted for the actual response.
+
+After checking all proposals against the source, explicit acceptance and reporter
+declination reached actual output. Both pending and accepted reloads matched
+their server-returned cases exactly. The actual downloaded PDF independently
+reads the complete returned INR qualifier in B6 row 1 date context, with both dates
+03-SEP-2026. Every other named field matches the authored expected mock PDF.
+The actual PDFKit 2x B6 render was inspected readable and unclipped.
+
+`live-v19-model-output.json` and its regression test replay the ACTUAL returned
+wording, separately from the authored full-sentence expectation. The mock test
+assertions remain unchanged. `live-v19-verification.json` records measured usage
+and limitations. No live conversational correction or remaining two cases ran.
+One new application-model call, zero retries; cumulative 2 of 20 used, estimated
+USD 0.206956 (v19 USD 0.097036). This verifies one targeted response, not general
+faithful extraction, verbatim rendering of source sentences or whole-release
+acceptance. No further live calls are planned in this slice.

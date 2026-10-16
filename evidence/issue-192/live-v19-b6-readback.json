@@ -1,0 +1,14 @@
+{
+  "topmostSubform[0].Page3[0].AdditionalComments[0]": "B6 table row 1 - Test date context: Collection time was not recorded",
+  "topmostSubform[0].Page3[0].TestDataTable[0].EvalNo[0]": "/1",
+  "topmostSubform[0].Page3[0].TestDataTable[0].EvalRetd[0]": "/Off",
+  "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/Off",
+  "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TDate1[0]": "03-SEP-2026",
+  "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].THighRange1[0]": "1.2",
+  "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TLowRange1[0]": "0.8",
+  "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TestData1[0]": "INR: 4.8",
+  "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TDate2[0]": "03-SEP-2026",
+  "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].THighRange2[0]": "56",
+  "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TLowRange2[0]": "7",
+  "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TestData2[0]": "ALT: 67 U/L"
+}

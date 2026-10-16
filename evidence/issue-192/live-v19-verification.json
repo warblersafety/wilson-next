@@ -1,0 +1,70 @@
+{
+  "status": "One bounded live opening retained field-linked uncertainty; no general reliability or verbatim-full-sentence claim",
+  "servedCommit": "a42d610c0ac57eba4509f20ce39fdecee42c6a76",
+  "reviewedProductionCommit": "36beee54ba6e658b462418e72d146bf7ba63e43e",
+  "productionChangeAfterReview": false,
+  "provider": {
+    "model": "claude-sonnet-5",
+    "promptRevision": "wilson-test-time-context-v19",
+    "schemaRevision": "wilson-grounded-proposals-v27-purchase-details",
+    "inputTokens": 10833,
+    "outputTokens": 7537,
+    "latencyMs": 55284,
+    "estimatedCostUsd": 0.097036
+  },
+  "cacheCreationTokens": 0,
+  "cacheReadTokens": 0,
+  "thinkingOutputTokens": 3326,
+  "appEstimateBasis": "USD2/input-million + USD10/output-million; not invoice or independently verified current tariff",
+  "applicationModelRequestsThisVerification": 1,
+  "applicationModelRequestsCumulative": 2,
+  "cumulativeEstimatedUsd": 0.206956,
+  "cap": 20,
+  "retries": 0,
+  "originalSentence": "The INR collection time was not recorded.",
+  "actualQualifier": "Collection time was not recorded",
+  "verbatimFullSentence": false,
+  "sourceSentenceRetainedExactly": true,
+  "dateEvidenceReferences": [
+    "p7",
+    "p8"
+  ],
+  "beforeAfterProposals": {
+    "oldProposals": 47,
+    "newProposals": 47,
+    "differences": [
+      {
+        "target": [
+          "test",
+          "INR",
+          "date"
+        ],
+        "old": {
+          "kind": "known",
+          "value": "2026-09-03"
+        },
+        "new": {
+          "kind": "known",
+          "value": "2026-09-03",
+          "qualifier": "Collection time was not recorded"
+        }
+      }
+    ]
+  },
+  "pendingResumeExact": true,
+  "acceptedResumeExact": true,
+  "actualReviewedPdf": "live-v19-reviewed.pdf",
+  "independentPdfReadbackAndVisualB6Inspection": "passed; full returned qualifier readable/unclipped, known dates unchanged, no ALT qualifier or timestamp",
+  "liveConversationalCorrection": "not run; authored mock journey verifies correction/history/export",
+  "otherTwoLiveCases": "not run",
+  "singleSharedLink": "unchanged URL, retargeted same grant using POST /v2/deployments/{id}/aliases; no new grants/protection changes",
+  "shareExpiryUtc": "2026-10-22T02:17:33Z",
+  "sha256": {
+    "live-v19-versus-mock-pdf.json": "d38838861ff0d20e4c4270311349ece038c0bcd9bc85093627a0d994c758fa98",
+    "live-v19-reviewed-page-3.png": "258504126c97661bab8fb2cb7350ad0517d594bbbdc83c9b9eb4f1b17cc94b85",
+    "live-v19-model-output.json": "2096a3604caa1f6019fa896cdd4ab9b02d176d8b5394c997d0eb6515194bb925",
+    "live-v19-reviewed-render.json": "b74bfa91c727f8fb121f80c5007f1e7f2b667fccda15ef15f9c63de3d0a8976c",
+    "live-v19-b6-readback.json": "0d12ace7c9275b1f2ca9708268f0dd48b61d12a0f863f843f18fc8ca5a25acb0",
+    "live-v19-reviewed.pdf": "33f925418f9d883d678aab56ffc969ad95ff8863b1cd7e08cecbb1ddd7c5c7fd"
+  }
+}

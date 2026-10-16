@@ -37,5 +37,6 @@
     "time-context.pdf": "0699bd9c2758764d68b52bbf0445449ef9a9d79f7bf2fc07d9b9735fd7557f14",
     "independent-b6-readback.json": "1785db7a5ad79ee822134671d0e969057b2f92ef41411bc2b6cb06ac68930cb7"
   },
-  "originalInputMatchesPreRunCasePack": true
+  "originalInputMatchesPreRunCasePack": true,
+  "subsequentVerification": "live-v19-verification.json"
 }

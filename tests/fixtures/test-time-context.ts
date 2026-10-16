@@ -22,3 +22,6 @@ export const timeScenario = [
  { identityScope: "test-time", turn: "opening" as const, output: expectedTimeOutput() },
  { identityScope: "test-time-update", turn: "correction" as const, output: expectedTimeCorrection("test-test-time-test1") },
 ];
+
+/** Actual v19 response captured from the single bounded verification call. */
+export const verifiedTimeOutput: ModelProposalOutput = JSON.parse(readFileSync(new URL("../../evidence/issue-192/live-v19-model-output.json", import.meta.url), "utf8"));
