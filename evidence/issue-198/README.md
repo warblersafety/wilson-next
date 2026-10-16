@@ -17,15 +17,17 @@ schema, prompt, model parameters or browser-state version changes. Existing
 v22 cases resume losslessly with consistency readiness recomputed. One shared
 native B2 field list keeps completion/action validation/domain checks aligned.
 
-802 unit tests / 80 files, typecheck/build and all3focused synthetic browser
-journeys pass. Five actual browser-downloaded PDFs/readbacks are retained and
+802 unit tests / 80 files, typecheck/build, all3focused and all121full mock
+Chromium browser journeys pass. Five actual browser-downloaded PDFs/readbacks are retained and
 hashed in verification.json: no-patient baseline; explicit patient-present with
 positive hospitalization; explicit false hospitalization repair; disputed
 true/false outcome resolved to false; and explicit unknown participation with
 positive death retained. Tests also prove PDF HTTP409 blocking, no automatic
 fact removal, correction via either side, historical positive retention and
-lossless v22 resume. Full121mock browser gate, independent render inspection,
-actual subscription Opus review and exact-headCI remain required before merge.
+lossless v22 resume. PDFKit2x render outputs are retained; the representative hospitalization page
+was visually inspected readable/unclipped with blank A1 and B2 hospitalization
+checked. Fresh full-run PDF readbacks match all retained originals. Actual
+subscription Opus review and exact-headCI remain required before merge.
 
 No live application-model calls are used for this issue. The separately
 completed2call participation verification is recorded on PR197 and is not a

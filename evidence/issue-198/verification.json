@@ -2,7 +2,7 @@
   "unitTests": 802,
   "unitFiles": 80,
   "focusedBrowserJourneys": 3,
-  "fullBrowserGate": "pending121",
+  "fullBrowserGate": "121 full synthetic/mock Chromium journeys passed",
   "typecheck": "pass",
   "build": "pass",
   "modelCallsForIssue198": 0,
@@ -42,5 +42,6 @@
       "death": "/1",
       "sha256": "21b13d78f7dab34e513aa22eb6f5548bc4bc7b509c585f29c34339c73fade364"
     }
-  ]
+  ],
+  "independentRender": "PDFKit2x outputs retained; representative full hospitalization page visually inspected readable/unclipped, A1blank and B2hospitalization checked"
 }
