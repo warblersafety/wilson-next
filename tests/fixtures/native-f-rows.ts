@@ -1,0 +1,6 @@
+import {correctCapacityProduct,productCapacityCase} from "./product-capacity";
+import {referenceFixture} from "./source-references";
+export const concomitantNames=["Fictional Beta device","Fictional Gamma medicine"];
+export function nativeFCase(){let c=productCapacityCase();for(let i=1;i<3;i++)c=correctCapacityProduct(c,i,{role:{kind:"known",value:"concomitant"},productType:{kind:"known",value:i===1?"device":"drug-or-biologic"},name:{kind:"known",value:concomitantNames[i-1],qualifier:`Fictional identity ${i} remains unverified`},startDate:{kind:"known",value:`2026-08-${i===1?"01":"02"}`,qualifier:`Fictional therapy start ${i} supplied`},stopDate:{kind:"known",value:`2026-08-${i===1?"20":"21"}`}});return c;}
+export const nativeFUpdate="Correction for Fictional Beta device only: therapy started on 03-Aug-2026; the supplied date is uncertain. Keep both products concomitant and all other fields unchanged.";
+export const nativeFScenario=[{identityScope:"native-f-correction",turn:"correction"as const,output:referenceFixture(nativeFUpdate,{products:[],proposals:[{proposalReference:"beta-therapy-start",groupReference:"beta-therapy-start",intent:"correction",target:{entity:"product",productReference:"product-naproxen",field:"startDate"},value:{kind:"known",value:"2026-08-03",qualifier:"the supplied date is uncertain"},evidenceQuote:nativeFUpdate}]})}];

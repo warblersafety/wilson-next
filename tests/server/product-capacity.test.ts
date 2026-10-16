@@ -19,11 +19,11 @@ const formSource = () => readFile("assets/fda/form-fda-3500-09-2025.pdf");
 const cases = [
   { label: "two suspects and one concomitant", roles: ["suspect", "suspect", "concomitant"], types: ["drug-or-biologic", "drug-or-biologic", "drug-or-biologic"], issue: undefined },
   { label: "three non-device suspects", roles: ["suspect", "suspect", "suspect"], types: ["drug-or-biologic", "drug-or-biologic", "other"], issue: undefined },
-  { label: "two concomitants", roles: ["suspect", "concomitant", "concomitant"], types: ["drug-or-biologic", "drug-or-biologic", "drug-or-biologic"], issue: "too-many-concomitant-products" },
+  { label: "two concomitants", roles: ["suspect", "concomitant", "concomitant"], types: ["drug-or-biologic", "drug-or-biologic", "drug-or-biologic"], issue: undefined },
   { label: "device plus two non-device suspects", roles: ["suspect", "suspect", "suspect"], types: ["device", "drug-or-biologic", "drug-or-biologic"], issue: undefined },
   { label: "device, non-device suspect and concomitant", roles: ["suspect", "suspect", "concomitant"], types: ["device", "drug-or-biologic", "drug-or-biologic"], issue: undefined },
   { label: "two suspect devices", roles: ["suspect", "suspect", "concomitant"], types: ["device", "device", "drug-or-biologic"], issue: undefined },
-  { label: "concomitant device", roles: ["suspect", "suspect", "concomitant"], types: ["drug-or-biologic", "drug-or-biologic", "device"], issue: "unsupported-concomitant-device" },
+  { label: "concomitant device", roles: ["suspect", "suspect", "concomitant"], types: ["drug-or-biologic", "drug-or-biologic", "device"], issue: undefined },
 ] as const;
 
 describe("product capacity readiness and actual export", () => {
@@ -37,16 +37,7 @@ describe("product capacity readiness and actual export", () => {
     expect(await repository.load(current.id)).toEqual(before);
     expect(snapshot.understanding.products.map(({ id }) => id)).toEqual([...capacityProductIds]);
     expect(snapshot.downloadReady).toBe(!issue);
-    if (issue) {
-      expect(snapshot.outputIssues).toEqual([expect.objectContaining({ code: issue })]);
-      if (issue.startsWith("too-many")) {
-        const expectedIds = capacityProductIds.slice(1);
-        expect(snapshot.outputIssues[0]).toMatchObject({ entityIds: expectedIds, targets: expectedIds.map(id => `product:${id}:role`) });
-        const projection = projectForm3500(current);
-        expect(projection.sections.F.concomitantProducts).toHaveLength(expectedIds.length);
-        await expect(fillForm3500Projection(new Uint8Array(await formSource()), projection)).rejects.toThrow("supports at most");
-      }
-    } else {
+    {
       const { output } = await fillForm3500Projection(new Uint8Array(await formSource()), snapshot.projection);
       const dir = await mkdtemp(join(tmpdir(), "wilson-capacity-")), file = join(dir, "supported.pdf");
       await writeFile(file, output);
@@ -61,23 +52,15 @@ describe("product capacity readiness and actual export", () => {
       expect(named["topmostSubform[0].Page5[0].Prod2[0].Prod2Name[0]"]).toBe(suspects[1]);
       const concomitant = roles.findIndex(role => role === "concomitant");
       expect(named["topmostSubform[0].Page6[0].SecF_Other[0].Table1[0].Row1[0].Prod1[0]"]).toBe(concomitant < 0 ? undefined : capacityProductNames[concomitant]);
-      const device = types.findIndex(type => type === "device");
+      const device = types.findIndex((type,i) => type === "device" && roles[i] === "suspect");
       expect(named["topmostSubform[0].Page6[0].SecE_Device[0].BrandName[0]"]).toBe(device < 0 ? undefined : capacityProductNames[device]);
     }
   });
 
-  it.each(["preview", "download"] as const)("returns a truthful pre-export 409 for over-capacity %s requests without changing state", async (mode) => {
-    for (const [index, role, code] of [[1, "concomitant", "too-many-concomitant-products"]] as const) {
-      const current = correctCapacityProduct(productCapacityCase(), index, { role: { kind: "known", value: role } });
-      const state = { version: browserStateVersion, stage: "output", case: current, unrepresented: [] };
-      const before = structuredClone(state);
-      expect(parseBrowserJourneyState(state).case).toEqual(current);
-      const response = await pdfPost(new NextRequest("http://wilson.test/api/case/pdf", { method: "POST", headers: { host: "wilson.test", origin: "http://wilson.test", "content-type": "application/json" }, body: JSON.stringify({ mode, state }) }));
-      expect(response.status).toBe(409);
-      expect(await response.json()).toMatchObject({ code: "pdf-not-ready", error: expect.stringContaining("retained") });
-      expect(state).toEqual(before);
-      expect((await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: current }), current.id)).outputIssues[0].code).toBe(code);
-    }
+  it.each(["preview", "download"] as const)("returns a truthful pre-export 409 for unsupported F glyphs in %s without changing facts",async mode=>{
+    const current=correctCapacityProduct(productCapacityCase(),2,{name:{kind:"known",value:"β fictional concomitant"}}),state={version:browserStateVersion,stage:"output",case:current,unrepresented:[]},before=structuredClone(state);
+    const response=await pdfPost(new NextRequest("http://wilson.test/api/case/pdf",{method:"POST",headers:{host:"wilson.test",origin:"http://wilson.test","content-type":"application/json"},body:JSON.stringify({mode,state})}));
+    expect(response.status).toBe(409);expect(await response.json()).toMatchObject({code:"pdf-not-ready"});expect(state).toEqual(before);
   });
 
   it("recomputes readiness after explicit role corrections, retaining identity, other facts and correction history", async () => {

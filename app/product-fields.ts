@@ -29,7 +29,7 @@ export function productCardFields(
   const retained = productCardFieldUniverse.filter((field) => hasKnowledge(facts[field]));
   const role = facts.role?.resolved;
   const supportsD3 = role?.kind === "known" && role.value === "suspect" && (productType === "drug-or-biologic" || productType === "other");
-  return unique([...productIdentityFields, ...primary, ...retained]).filter(field => field !== "d3Value" || supportsD3);
+  return unique([...productIdentityFields, ...primary, ...(role?.kind === "known" && role.value === "concomitant" ? ["startDate", "stopDate"] as const : []), ...retained]).filter(field => field !== "d3Value" || supportsD3);
 }
 
 function hasKnowledge(fact: FactView | undefined): boolean {

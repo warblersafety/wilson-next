@@ -138,6 +138,8 @@ export interface ProjectedDevice {
 
 export interface ProjectedConcomitantProduct {
   productId: string;
+  /** Exact current field qualifiers; rendered in labelled Section F continuation. */
+  fieldContext?: {field: "name" | "startDate" | "stopDate"; text: string}[];
   name?: string;
   startDate?: string;
   stopDate?: string;
@@ -288,11 +290,6 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
         recordNonCarriedProductFacts(caseState, product, [...sectionDProductFields, "d3Value", "doseReduced", "restarted", "improvedAfterChange", "recurred"], "Section D", projection);
       }
     } else {
-      if (productType.value === "device") {
-        projection.notIncluded.push(`${productLabel(caseState, product)} is a concomitant medical device and is not included because that reporting path is unsupported.`);
-        recordNonCarriedProductFacts(caseState, product, [], "the unsupported concomitant-device path", projection);
-        continue;
-      }
       const target = projection.sections.F.concomitantProducts;
       target.push(projectConcomitantProduct(product, projection, target.length));
       recordNonCarriedProductFacts(caseState, product, sectionFProductFields, "Section F", projection);
@@ -320,6 +317,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   }
   for (const entry of d5OtherTypeContextEntries(caseState, projection)) carriedQualifierTargets.add(entry.target);
   for (const entry of deviceContextEntries(caseState, projection)) carriedQualifierTargets.add(entry.target);
+  for (const product of projection.sections.F.concomitantProducts) for (const context of product.fieldContext ?? []) carriedQualifierTargets.add(`product:${product.productId}:${context.field}`);
   for (const entry of relevantTestContextEntries(caseState)) carriedQualifierTargets.add(entry.target);
   const disclosed = new Set(projection.omissions.filter(({ reason }) => reason === "qualifier-not-included").map(({ target }) => target));
   for (const { target, fact } of allFacts(caseState)) {
@@ -452,7 +450,9 @@ function projectConcomitantProduct(
   const result: ProjectedConcomitantProduct = { productId: product.id };
   const prefix = `sections.F.concomitantProducts.${index}`;
   for (const field of ["name", "startDate", "stopDate"] as const) {
-    assign(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field], result, field);
+    assign(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field], result, field, value => value, true);
+    const value = known(product.facts[field]);
+    if (value?.qualifier) (result.fieldContext ??= []).push({field, text:value.qualifier});
   }
   return result;
 }

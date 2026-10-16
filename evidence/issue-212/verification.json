@@ -1,0 +1,79 @@
+{
+  "unitTests": 904,
+  "unitFiles": 88,
+  "typecheck": "pass",
+  "build": "pass",
+  "fullMockBrowserGate": "144 passed after all3 actual Opus follow-up fixes",
+  "applicationModelRequests": 0,
+  "PDFs": [
+    {
+      "file": "mixed-e-f.pdf",
+      "sha256": "ba4c24b9163e0293519b01e6c2814c990fc8cf63e8aead7fcc52605dcc9d5b3d",
+      "pages": 17
+    },
+    {
+      "file": "f-corrected.pdf",
+      "sha256": "89378ea6233f37e9cca4abecd99b78d2287297a372aa3106e7d25f0f2f2f10b2",
+      "pages": 9
+    },
+    {
+      "file": "dense-f-context.pdf",
+      "sha256": "ad24016ff5615da1eb98afd38e2f589182da0ceeca79d48efa167eb28bd24463",
+      "pages": 11
+    },
+    {
+      "file": "f-unknown.pdf",
+      "sha256": "3896e70b55050d19e27a051140762e8d56670f8486bd6c02bb5d5ceaec75c603",
+      "pages": 9
+    },
+    {
+      "file": "f-withdrawn.pdf",
+      "sha256": "434e922ef7f62d3205ced3b04110c56efa91724afea4754f42b4a19490721f4b",
+      "pages": 9
+    },
+    {
+      "file": "f-overflow.pdf",
+      "sha256": "7ea6a478bb1c2fb9b00a9257affe9cb362f06e2eb3347cf3a1d45da28e977697",
+      "pages": 9
+    },
+    {
+      "file": "native-d-after-single-save.pdf",
+      "sha256": "b39382e848d66154c084c6f16cf4e66968ae7dd1ee8d395979dd6d0c5e6df1d6",
+      "pages": 16
+    },
+    {
+      "file": "f-repaired.pdf",
+      "sha256": "ef7785e3642afd995fa272402209711fc3b58694242a464ccce674506177bbfa",
+      "pages": 9
+    },
+    {
+      "file": "f-before-unknown.pdf",
+      "sha256": "9b736f2085f9dd5507543565c09b096d23ce47544af538c0b7af2afcafce4d0c",
+      "pages": 9
+    },
+    {
+      "file": "ten-native-rows.pdf",
+      "sha256": "7973cefcbaa33cae86f9f1bf0acfe65039448113cdc947b66a7656c4bcf57c0d",
+      "pages": 8
+    }
+  ],
+  "retainedCaseLimit": 3,
+  "nativeAdapterRows": 10,
+  "independentNativeGeometry": "native-f-widget-geometry.json",
+  "render": {
+    "renderer": "PDFKit2x",
+    "captures": 21,
+    "inspection": "pass:13 changed/new captures viewed after remediation;8 unchanged native captures byte-identical to inspected full-review head; D main4/5, extra12 and blank13 readable; before/unknown context and repeated F row labels correct"
+  },
+  "serializationFix": "assemble all native headings/copies before single save; actual main E heading asserted",
+  "fullSuiteBrowserPDFsRetained": true,
+  "remediationUnitTests": 904,
+  "remediationUnitFiles": 88,
+  "remediationTypecheck": "pass",
+  "remediationBuild": "pass",
+  "reviewRemediation": {
+    "1": "human F labels in messages; assertion checks Name/Therapy start date",
+    "2": "F row N consistent across native pointers, supplement headings and body; exact text retained",
+    "3": "qualified end-date actual PDF before/non-known after, browser qualified start before/unknown after and both supplement captures; no stale context"
+  }
+}

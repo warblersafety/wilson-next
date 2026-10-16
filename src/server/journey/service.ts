@@ -1,3 +1,4 @@
+import {concomitantTextIssues,concomitantFieldLabel} from "../pdf/concomitant";
 import {deviceTextFields, deviceTextLimitation} from "../pdf/device-text";
 import { narrativeGlyphLimitation } from "../pdf/narrative-continuation";
 import { seriousOutcomeLabels } from "../../domain/case/serious-outcomes";
@@ -78,7 +79,6 @@ export type OutputReadinessIssueCode =
   | "too-many-suspect-products"
   | "too-many-concomitant-products"
   | "multiple-suspect-devices"
-  | "unsupported-concomitant-device"
   | "no-patient-report-type-conflict"
   | "reserved-no-patient-identifier"
   | "no-patient-outcomes-conflict"
@@ -120,6 +120,7 @@ export async function getJourneySnapshot(
     const limitation = await deviceTextLimitation(field.projected,value);
     if (limitation) outputIssues.push({code:"unsupported-product-text",message:`${productLabel(caseState,device.productId)}: the reviewed Section E ${field.label} ${limitation}. The wording is retained; no new PDF is generated.`,targets:[`product:${device.productId}:${field.fact}`],entityIds:[device.productId]});
   }
+  for (const problem of await concomitantTextIssues(projection)) outputIssues.push({code:"unsupported-product-text", message:`${productLabel(caseState,problem.productId)}: the reviewed Section F ${concomitantFieldLabel(problem.field)} ${problem.limitation}. The wording is retained; no new PDF is generated.`, targets:[`product:${problem.productId}:${problem.field}`], entityIds:[problem.productId]});
   const baseLimitation = await narrativeTextLimitation(baseEventDescription(caseState));
   const narrativeLimitation = baseLimitation ?? await eventNarrativeLimitation(projection);
   if (narrativeLimitation) {
@@ -767,7 +768,7 @@ export function outputReadinessIssues(
   ] as const) {
     if (products.length > maximum) {
       const ids = products.map(({ productId }) => productId);
-      const limitLabel = code === "too-many-concomitant-products" && maximum === 1 ? "concomitant product" : label;
+      const limitLabel = label;
       issue(
         code,
         `This preview can include at most ${maximum} ${limitLabel} in the PDF. All ${products.length} reviewed ${label} are retained, but this case exceeds the supported PDF capacity.`,
@@ -775,17 +776,6 @@ export function outputReadinessIssues(
         ids,
       );
     }
-  }
-  const concomitantDevices = caseState.products.filter((product) => product.state === "resolved"
-    && knownValue(product.facts.role) === "concomitant"
-    && knownValue(product.facts.productType) === "device");
-  for (const product of concomitantDevices) {
-    issue(
-      "unsupported-concomitant-device",
-      `${productLabel(caseState, product.id)} is a concomitant medical device, which this bounded path cannot report. Restore a supported Role, withdraw the product, or use New case.`,
-      [`product:${product.id}:role`, `product:${product.id}:productType`],
-      [product.id],
-    );
   }
   return issues;
 }
