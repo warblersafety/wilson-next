@@ -26,7 +26,7 @@ export function removeReductionDateFields(c: { products?: Array<{ facts: unknown
 export function removePurchaseDetailsFields(c: {event?: {facts: unknown}; patient?: {facts: unknown}; products?: Array<{facts: unknown}>}): void {
  if(c.event)delete (c.event.facts as Record<string,unknown>).additionalComments;
  if(c.patient)delete (c.patient.facts as Record<string,unknown>).involvement;
- for(const p of c.products??[])for(const f of ["purchaseSellerName", "purchaseSellerAddress", "purchaseSellerCity", "purchaseSellerRegion", "purchaseSellerPostalCode", "purchaseSellerCountry", "purchaseWebsite"])delete (p.facts as Record<string,unknown>)[f];
+ for(const p of c.products??[])for(const f of ["otherProductTypes", "purchaseSellerName", "purchaseSellerAddress", "purchaseSellerCity", "purchaseSellerRegion", "purchaseSellerPostalCode", "purchaseSellerCountry", "purchaseWebsite"])delete (p.facts as Record<string,unknown>)[f];
 }
 
 export function removeCosmeticUseFields(c: {event?: {facts: unknown}; patient?: {facts: unknown}; products?: Array<{facts: unknown}>}): void {

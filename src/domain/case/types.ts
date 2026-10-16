@@ -109,6 +109,7 @@ export interface ProductFacts {
   indication: Fact<string>;
   stopped: Fact<boolean>;
   cosmeticUse: Fact<"professional-use-only" | "retail">;
+  otherProductTypes: Fact<import("./other-product-types").OtherProductType[]>;
   medicationType: Fact<Array<"brand" | "generic-biosimilar" | "otc" | "compounded">>;
   doseReduced: Fact<boolean>;
   doseReductionDate: Fact<string>;

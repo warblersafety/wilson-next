@@ -18,7 +18,7 @@ describe("explicit patient participation", () => {
   const input=structuredClone(oldState),before=structuredClone(input);const parsed=parseBrowserJourneyState(input);
   expect(parsed.version).toBe(browserStateVersion);const {involvement,...facts}=parsed.case.patient.facts;
   expect(involvement).toEqual({state:"empty",proposedValues:[],conflictingValues:[],sourceIds:[],supersededValues:[]});
-  const {additionalComments,...eventFacts}=parsed.case.event.facts;expect(additionalComments.state).toBe("empty");expect({...parsed.case,patient:{...parsed.case.patient,facts},event:{...parsed.case.event,facts:eventFacts}}).toEqual(oldState.case);expect(input).toEqual(before);
+  const {additionalComments,...eventFacts}=parsed.case.event.facts;expect(additionalComments.state).toBe("empty");expect({...parsed.case,products:parsed.case.products.map(p=>{const {otherProductTypes,...facts}=p.facts;expect(otherProductTypes.state).toBe("empty");return {...p,facts};}),patient:{...parsed.case.patient,facts},event:{...parsed.case.event,facts:eventFacts}}).toEqual(oldState.case);expect(input).toEqual(before);
   expect(projectForm3500(parsed.case).sections.A.patientIdentifier).toBeUndefined();
   expect(()=>parseBrowserJourneyState({...parsed,version:"wilson-browser-state-v21"})).toThrow();
   const missing=structuredClone(parsed) as any;delete missing.case.patient.facts.involvement;expect(()=>parseBrowserJourneyState(missing)).toThrow();

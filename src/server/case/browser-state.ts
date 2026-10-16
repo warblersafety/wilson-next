@@ -1,3 +1,4 @@
+import { isOtherProductTypes, otherProductTypeValues } from "../../domain/case/other-product-types";
 import { isTreatmentDuration } from "../../domain/case/duration";
 import { isCompleteCalendarDate } from "../../domain/case/calendar-date";
 import { isRaceEthnicitySelections, raceEthnicityValues } from "../../domain/case/race-ethnicity";
@@ -12,7 +13,7 @@ import {
 import type { JourneySnapshot, JourneyStage } from "../journey/service";
 import { InMemoryCaseRepository, validateRestoredCase } from "./repository";
 
-export const browserStateVersion = "wilson-browser-state-v23";
+export const browserStateVersion = "wilson-browser-state-v24";
 
 export interface BrowserJourneyState {
   version: typeof browserStateVersion;
@@ -230,7 +231,9 @@ const caseSchema = z.object({
 // Keep the v21 case shape frozen for strict legacy validation; only v22 adds involvement.
 const v22CaseSchema = caseSchema.extend({ patient: caseSchema.shape.patient.extend({ facts: patientFactsSchema.extend({ involvement: factSchema(z.enum(["present", "none"])) }) }) });
 
-const currentCaseSchema = v22CaseSchema.extend({ event: v22CaseSchema.shape.event.extend({ facts: eventFactsSchema.extend({ additionalComments: factSchema(z.string().refine(value => value.trim().length > 0)) }) }) });
+const v23CaseSchema = v22CaseSchema.extend({ event: v22CaseSchema.shape.event.extend({ facts: eventFactsSchema.extend({ additionalComments: factSchema(z.string().refine(value => value.trim().length > 0)) }) }) });
+
+const currentCaseSchema = v23CaseSchema.extend({ products: z.array(v23CaseSchema.shape.products.element.extend({ facts: productFactsSchema.extend({ otherProductTypes: factSchema(z.array(z.enum(otherProductTypeValues)).refine(isOtherProductTypes)) }) })).max(maximumCaseProducts) });
 
 const prePurchaseDetailsProductFactsSchema = productFactsSchema.omit({purchaseSellerName: true, purchaseSellerAddress: true, purchaseSellerCity: true, purchaseSellerRegion: true, purchaseSellerPostalCode: true, purchaseSellerCountry: true, purchaseWebsite: true});
 const v20CaseSchema = caseSchema.extend({products:z.array(caseSchema.shape.products.element.extend({facts:prePurchaseDetailsProductFactsSchema})).max(maximumCaseProducts)});
@@ -315,7 +318,7 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
   if (!version.success) {
     throw new BrowserStateError("The saved synthetic preview state is malformed", "malformed-browser-state");
   }
-  if (![browserStateVersion, "wilson-browser-state-v22", "wilson-browser-state-v21", "wilson-browser-state-v20", "wilson-browser-state-v19", "wilson-browser-state-v18", "wilson-browser-state-v17", "wilson-browser-state-v16", "wilson-browser-state-v15", "wilson-browser-state-v14", "wilson-browser-state-v13", "wilson-browser-state-v12", "wilson-browser-state-v11", "wilson-browser-state-v10", "wilson-browser-state-v9", "wilson-browser-state-v8", "wilson-browser-state-v7"].includes(version.data.version)) {
+  if (![browserStateVersion, "wilson-browser-state-v23", "wilson-browser-state-v22", "wilson-browser-state-v21", "wilson-browser-state-v20", "wilson-browser-state-v19", "wilson-browser-state-v18", "wilson-browser-state-v17", "wilson-browser-state-v16", "wilson-browser-state-v15", "wilson-browser-state-v14", "wilson-browser-state-v13", "wilson-browser-state-v12", "wilson-browser-state-v11", "wilson-browser-state-v10", "wilson-browser-state-v9", "wilson-browser-state-v8", "wilson-browser-state-v7"].includes(version.data.version)) {
     throw new BrowserStateError("The saved synthetic preview state is incompatible", "incompatible-browser-state");
   }
   const envelope = stateSchema.safeParse(input);
@@ -354,7 +357,7 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
       ...product, facts: { ...product.facts, ndcOrUniqueId: emptyAddedFact() },
     })) };
   }
-  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v22" && version.data.version !== "wilson-browser-state-v21" && version.data.version !== "wilson-browser-state-v20" && version.data.version !== "wilson-browser-state-v19" && version.data.version !== "wilson-browser-state-v18" && version.data.version !== "wilson-browser-state-v17" && version.data.version !== "wilson-browser-state-v16" && version.data.version !== "wilson-browser-state-v15" && version.data.version !== "wilson-browser-state-v14" && version.data.version !== "wilson-browser-state-v12" && version.data.version !== "wilson-browser-state-v13") {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v23" && version.data.version !== "wilson-browser-state-v22" && version.data.version !== "wilson-browser-state-v21" && version.data.version !== "wilson-browser-state-v20" && version.data.version !== "wilson-browser-state-v19" && version.data.version !== "wilson-browser-state-v18" && version.data.version !== "wilson-browser-state-v17" && version.data.version !== "wilson-browser-state-v16" && version.data.version !== "wilson-browser-state-v15" && version.data.version !== "wilson-browser-state-v14" && version.data.version !== "wilson-browser-state-v12" && version.data.version !== "wilson-browser-state-v13") {
     const legacy = v11CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = legacy.data; // Numeric years and all fact/draft target identities stay unchanged.
@@ -364,55 +367,60 @@ export function parseBrowserJourneyState(input: unknown): BrowserJourneyState {
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = legacy.data; // Existing atomic months/days and their full history remain unchanged.
   }
-  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v22" && version.data.version !== "wilson-browser-state-v21" && version.data.version !== "wilson-browser-state-v20" && version.data.version !== "wilson-browser-state-v19" && version.data.version !== "wilson-browser-state-v18" && version.data.version !== "wilson-browser-state-v17" && version.data.version !== "wilson-browser-state-v16" && version.data.version !== "wilson-browser-state-v15" && version.data.version !== "wilson-browser-state-v14") {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v23" && version.data.version !== "wilson-browser-state-v22" && version.data.version !== "wilson-browser-state-v21" && version.data.version !== "wilson-browser-state-v20" && version.data.version !== "wilson-browser-state-v19" && version.data.version !== "wilson-browser-state-v18" && version.data.version !== "wilson-browser-state-v17" && version.data.version !== "wilson-browser-state-v16" && version.data.version !== "wilson-browser-state-v15" && version.data.version !== "wilson-browser-state-v14") {
     const legacy = v13CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = { ...legacy.data, patient: { ...legacy.data.patient, facts: { ...legacy.data.patient.facts, dateOfBirth: emptyAddedFact(), a2Value: emptyAddedFact() } } };
   }
-  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v22" && version.data.version !== "wilson-browser-state-v21" && version.data.version !== "wilson-browser-state-v20" && version.data.version !== "wilson-browser-state-v19" && version.data.version !== "wilson-browser-state-v18" && version.data.version !== "wilson-browser-state-v17" && version.data.version !== "wilson-browser-state-v16" && version.data.version !== "wilson-browser-state-v15") {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v23" && version.data.version !== "wilson-browser-state-v22" && version.data.version !== "wilson-browser-state-v21" && version.data.version !== "wilson-browser-state-v20" && version.data.version !== "wilson-browser-state-v19" && version.data.version !== "wilson-browser-state-v18" && version.data.version !== "wilson-browser-state-v17" && version.data.version !== "wilson-browser-state-v16" && version.data.version !== "wilson-browser-state-v15") {
     const legacy = v14CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = { ...legacy.data, patient: { ...legacy.data.patient, facts: { ...legacy.data.patient.facts, raceEthnicity: emptyAddedFact() } } };
   }
-  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v22" && version.data.version !== "wilson-browser-state-v21" && version.data.version !== "wilson-browser-state-v20" && version.data.version !== "wilson-browser-state-v19" && version.data.version !== "wilson-browser-state-v18" && version.data.version !== "wilson-browser-state-v17" && version.data.version !== "wilson-browser-state-v16") {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v23" && version.data.version !== "wilson-browser-state-v22" && version.data.version !== "wilson-browser-state-v21" && version.data.version !== "wilson-browser-state-v20" && version.data.version !== "wilson-browser-state-v19" && version.data.version !== "wilson-browser-state-v18" && version.data.version !== "wilson-browser-state-v17" && version.data.version !== "wilson-browser-state-v16") {
     const legacy = v15CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = { ...legacy.data, products: legacy.data.products.map(product => ({ ...product, facts: { ...product.facts, therapyOngoing: emptyAddedFact() } })) };
   }
-  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v22" && version.data.version !== "wilson-browser-state-v21" && version.data.version !== "wilson-browser-state-v20" && version.data.version !== "wilson-browser-state-v19" && version.data.version !== "wilson-browser-state-v18" && version.data.version !== "wilson-browser-state-v17") {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v23" && version.data.version !== "wilson-browser-state-v22" && version.data.version !== "wilson-browser-state-v21" && version.data.version !== "wilson-browser-state-v20" && version.data.version !== "wilson-browser-state-v19" && version.data.version !== "wilson-browser-state-v18" && version.data.version !== "wilson-browser-state-v17") {
     const legacy = v16CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = { ...legacy.data, products: legacy.data.products.map(product => ({ ...product, facts: { ...product.facts, doseReductionDate: emptyAddedFact() } })) };
   }
-  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v22" && version.data.version !== "wilson-browser-state-v21" && version.data.version !== "wilson-browser-state-v20" && version.data.version !== "wilson-browser-state-v19" && version.data.version !== "wilson-browser-state-v18") {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v23" && version.data.version !== "wilson-browser-state-v22" && version.data.version !== "wilson-browser-state-v21" && version.data.version !== "wilson-browser-state-v20" && version.data.version !== "wilson-browser-state-v19" && version.data.version !== "wilson-browser-state-v18") {
     const legacy = v17CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = {...legacy.data, products: legacy.data.products.map(p => ({...p, facts:{...p.facts,treatmentDuration:emptyAddedFact(),d3Value:emptyAddedFact()}}))};
   }
-  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v22" && version.data.version !== "wilson-browser-state-v21" && version.data.version !== "wilson-browser-state-v20" && version.data.version !== "wilson-browser-state-v19") {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v23" && version.data.version !== "wilson-browser-state-v22" && version.data.version !== "wilson-browser-state-v21" && version.data.version !== "wilson-browser-state-v20" && version.data.version !== "wilson-browser-state-v19") {
     const legacy = v18CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = {...legacy.data, products: legacy.data.products.map(p => ({...p,facts:{...p.facts,purchaseDate:emptyAddedFact()}}))};
   }
-  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v22" && version.data.version !== "wilson-browser-state-v21" && version.data.version !== "wilson-browser-state-v20") {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v23" && version.data.version !== "wilson-browser-state-v22" && version.data.version !== "wilson-browser-state-v21" && version.data.version !== "wilson-browser-state-v20") {
     const legacy = v19CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = {...legacy.data, products: legacy.data.products.map(p => ({...p,facts:{...p.facts,cosmeticUse:emptyAddedFact()}}))};
   }
-  if(version.data.version!==browserStateVersion && version.data.version!=="wilson-browser-state-v22" && version.data.version!=="wilson-browser-state-v21"){
+  if(version.data.version!==browserStateVersion && version.data.version!=="wilson-browser-state-v23" && version.data.version!=="wilson-browser-state-v22" && version.data.version!=="wilson-browser-state-v21"){
     const legacy=v20CaseSchema.safeParse(candidate);
     if(!legacy.success)throw new BrowserStateError("The saved synthetic preview case is malformed","malformed-browser-state");
     candidate={...legacy.data,products:legacy.data.products.map(p=>({...p,facts:{...p.facts,purchaseSellerName:emptyAddedFact(),purchaseSellerAddress:emptyAddedFact(),purchaseSellerCity:emptyAddedFact(),purchaseSellerRegion:emptyAddedFact(),purchaseSellerPostalCode:emptyAddedFact(),purchaseSellerCountry:emptyAddedFact(),purchaseWebsite:emptyAddedFact()}}))};
   }
-  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v22") {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v23" && version.data.version !== "wilson-browser-state-v22") {
     const legacy = caseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = { ...legacy.data, patient: { ...legacy.data.patient, facts: { ...legacy.data.patient.facts, involvement: emptyAddedFact() } } };
   }
-  if (version.data.version !== browserStateVersion) {
+  if (version.data.version !== browserStateVersion && version.data.version !== "wilson-browser-state-v23") {
     const legacy = v22CaseSchema.safeParse(candidate);
     if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
     candidate = { ...legacy.data, event: { ...legacy.data.event, facts: { ...legacy.data.event.facts, additionalComments: emptyAddedFact() } } };
+  }
+  if (version.data.version !== browserStateVersion) {
+    const legacy = v23CaseSchema.safeParse(candidate);
+    if (!legacy.success) throw new BrowserStateError("The saved synthetic preview case is malformed", "malformed-browser-state");
+    candidate = { ...legacy.data, products: legacy.data.products.map(product => ({ ...product, facts: { ...product.facts, otherProductTypes: emptyAddedFact() } })) };
   }
   const parsedCase = currentCaseSchema.safeParse(candidate);
   if (!parsedCase.success) {

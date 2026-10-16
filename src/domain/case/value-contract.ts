@@ -1,3 +1,4 @@
+import { isOtherProductTypes } from "./other-product-types";
 import { isTreatmentDuration } from "./duration";
 import { isRaceEthnicitySelections, raceEthnicityValues } from "./race-ethnicity";
 import { isCompleteCalendarDate } from "./calendar-date";
@@ -102,6 +103,7 @@ export const caseValueContracts = {
     therapyOngoing: { shape: "boolean" },
     indication: { shape: "string" },
     stopped: { shape: "boolean" },
+    otherProductTypes: { shape: "enum-array", values: ["cannabinoid-hemp", "other"], mismatch: "otherProductTypes requires nonempty unique explicitly supplied D5 selections" },
     cosmeticUse: { shape: "enum", values: ["professional-use-only", "retail"], mismatch: "cosmeticUse requires exactly one explicitly supplied cosmetic product type" },
     medicationType: { shape: "enum-array", values: ["brand", "generic-biosimilar", "otc", "compounded"], mismatch: "medicationType requires supported medication labels" },
     doseReduced: { shape: "boolean" },
@@ -218,7 +220,7 @@ export function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>
     case "enum":
       return contract.values.includes(actual as string) ? undefined : contract.mismatch;
     case "enum-array":
-      return (target.field !== "raceEthnicity" || isRaceEthnicitySelections(actual)) && Array.isArray(actual) && (target.field !== "medicationType" || (actual.length > 0 && new Set(actual).size === actual.length)) && actual.every((item) => contract.values.includes(String(item)))
+      return (target.field !== "otherProductTypes" || isOtherProductTypes(actual)) && (target.field !== "raceEthnicity" || isRaceEthnicitySelections(actual)) && Array.isArray(actual) && (target.field !== "medicationType" || (actual.length > 0 && new Set(actual).size === actual.length)) && actual.every((item) => contract.values.includes(String(item)))
         ? undefined
         : contract.mismatch;
   }

@@ -103,6 +103,7 @@ export function emptyProductFacts(): ProductFacts {
     indication: emptyFact(),
     stopped: emptyFact(),
     cosmeticUse: emptyFact(),
+    otherProductTypes: emptyFact(),
     medicationType: emptyFact(),
     doseReduced: emptyFact(),
     doseReductionDate: emptyFact(),

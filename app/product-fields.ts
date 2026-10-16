@@ -4,7 +4,7 @@ import type { FactView } from "../src/domain/case/views";
 export const productIdentityFields = ["name", "productType", "role"] as const satisfies readonly ProductFactKey[];
 
 export const nonDeviceProductFields = [
-  "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "purchaseDate", "purchaseSellerName", "purchaseSellerAddress", "purchaseSellerCity", "purchaseSellerRegion", "purchaseSellerPostalCode", "purchaseSellerCountry", "purchaseWebsite", "dose", "strength", "frequency", "route", "startDate", "stopped", "stopDate", "therapyOngoing", "doseReduced", "doseReductionDate", "treatmentDuration", "d3Value", "improvedAfterChange", "restarted", "recurred", "medicationType", "cosmeticUse", "indication",
+  "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "purchaseDate", "purchaseSellerName", "purchaseSellerAddress", "purchaseSellerCity", "purchaseSellerRegion", "purchaseSellerPostalCode", "purchaseSellerCountry", "purchaseWebsite", "dose", "strength", "frequency", "route", "startDate", "stopped", "stopDate", "therapyOngoing", "doseReduced", "doseReductionDate", "treatmentDuration", "d3Value", "improvedAfterChange", "restarted", "recurred", "medicationType", "cosmeticUse", "otherProductTypes", "indication",
 ] as const satisfies readonly ProductFactKey[];
 
 export const deviceProductFields = [

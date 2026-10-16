@@ -139,7 +139,7 @@ integration, the Issue #129 restore contract below supersedes that preview-only
 compatibility limit: retain migrations for every state version actually persisted
 by supported releases, preserving accepted facts and history.
 
-The existing coverage checklist distinguishes implemented Section D complete expiration dates (PR163), NDC/Unique ID (PR166), explicit ongoing status (PR177), complete dose-reduction dates (PR179), explicit native-time durations (issue181), and complete purchase dates (issue183), and explicit D5 cosmetic professional-use/retail choice (issue185) from remaining cannabinoid/Other D5, purchase wording outside native country/glyph/line/capacity limits, partial purchase/expiration/reduction-date and dose-count/compound/range duration gaps. Warnings and no-destination disclosures preserve visibility; they are not completed field support.
+The existing coverage checklist distinguishes implemented Section D complete expiration dates (PR163), NDC/Unique ID (PR166), explicit ongoing status (PR177), complete dose-reduction dates (PR179), explicit native-time durations (issue181), and complete purchase dates (issue183), and explicit D5 cosmetic professional-use/retail choice (issue185) from explicit cannabinoid/Other D5 (issue205) from remaining purchase wording outside native country/glyph/line/capacity limits, partial purchase/expiration/reduction-date and dose-count/compound/range duration gaps. Warnings and no-destination disclosures preserve visibility; they are not completed field support.
 Download readiness remains the supported-path condition, not a claim of
 complete FDA-form coverage.
 
@@ -1349,7 +1349,7 @@ facts; compatible existing and unselected cosmetic drafts survive reload.
 Promptv16/schemav26 add the explicit proposal target. Mock tests establish only
 mock behavior, not live-model compliance.
 
-D5 cannabinoid hemp and Other controls, purchase place/address/website, partial
+D5 cannabinoid hemp and Other controls are now implemented in issue205; purchase place/address/website in issue188. Partial
 dates (#180 visibility), wider category/detail coverage and all prior inventory
 gaps remain unfinished. This is not full cosmetic or Form3500 functionality.
 
@@ -1583,3 +1583,40 @@ Promptv21/schemav29 add only the explicit comments field/contract, with no gener
 source-accounting or completeness mechanism. Existing accepted legacy dates and
 all unrelated field validation remain unchanged. FDA authority checked2026-10-16:
 https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500
+
+
+### Explicit D5 Other product types (issue205 / approved D07)
+
+The pinned FDA Form3500 (09/2025), pages4–5, labels D5 Check all that apply;
+only its cosmetics subgroup says Select One. Independent otherProductTypes
+accepts a nonempty unique set of cannabinoid-hemp and/or other, explicitly
+supplied by the clinician. Routing productType, role, drug labels and the
+single cosmeticUse selection remain independent. A CBD name, ingredient,
+generic Other routing, missing labels or unselected boxes never supplies this
+fact. No clinical classification or automatic combination-component split.
+
+The existing conversation proposal/review, direct correction, conflict choice,
+history and saved-draft paths expose these choices. An empty Known selection
+is unfinished; Unknown, Not present, Not applicable and Declined keep their
+literal statuses. Whole-set qualifiers are labelled Context for these selections.
+Current known qualifiers print exactly as Suspect product #N D5 Other product
+types context in B5 through the shared continuation foundation. Source IDs and
+stable product identity follow current slot allocation; context cannot satisfy
+the separate base event-description gate. Unsupported glyphs identify the
+actual D5 contributor and block fresh PDF without deleting accepted knowledge.
+
+Native mapping explicitly handles the asymmetric Prod1Cannabi/Prod1PdtOther and
+Pdt2Cannabi/Pdt2PdtOther checkbox names. Both D slots clear unselected checkboxes;
+no prior/conflicted/pending selection resurfaces. Device/concomitant/unknown
+routes retain facts and truthful existing no-destination/classification gates,
+without printing stray D5 context. Third suspects still exceed native capacity;
+explicit withdrawal reallocates by identity, including linked context ordinals.
+Additional D/E copies (E02) and combination components (X01) remain unfinished.
+
+Browser statev24 strictly validates genuine v23 and earlier before adding only
+empty product otherProductTypes facts; existing known comments, source/history,
+revision and compatible unfinished drafts survive without model replay or
+reinterpretation. A genuine pre-change v23 fixture provides migration evidence.
+Older-version fixtures remove the new field rather than weakening validation.
+Promptv22/schemav30 add only the explicit fact and independence constraints.
+Synthetic/mock verification is not live extraction-completeness acceptance.

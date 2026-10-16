@@ -1,0 +1,60 @@
+{
+  "unitTests": 870,
+  "unitFiles": 85,
+  "focusedMockBrowserJourneys": 5,
+  "fullMockBrowserGate": "pending",
+  "typecheck": "pass",
+  "build": "pass",
+  "liveApplicationModelRequests": 0,
+  "actualPDFs": [
+    {
+      "file": "d5-known-correction.pdf",
+      "sha256": "cfdee9ae814502780e801ba62401623cf9f25f70145657e9565eb61a4ab3f172",
+      "pages": 8
+    },
+    {
+      "file": "d5-unknown.pdf",
+      "sha256": "45184362f86d755b3d8a8e2febab633d347fc5082e302c69d4455cbf6eceac27",
+      "pages": 8
+    },
+    {
+      "file": "d5-v23-empty.pdf",
+      "sha256": "732af5160bb44f90989ed77c9bd2517d90aa5d9bb27b5431cd8bff8ae3bf0981",
+      "pages": 8
+    },
+    {
+      "file": "d5-unresolved.pdf",
+      "sha256": "361b7d41e0a88ccf11d57cb05ff6fe40c2871ea4be45adb471c46072e594814d",
+      "pages": 8
+    },
+    {
+      "file": "d5-resolved.pdf",
+      "sha256": "a2572cceef8526b1a059587b2c5a488b7059cb42520fcdb4c30e24d6ba75aadb",
+      "pages": 8
+    },
+    {
+      "file": "d5-combinations.pdf",
+      "sha256": "65ef3f38bad0f637124f3049cc1ea7eb4ad045e71de47ec45f1fb9d49369e958",
+      "pages": 8
+    },
+    {
+      "file": "d5-separate.pdf",
+      "sha256": "cfdee9ae814502780e801ba62401623cf9f25f70145657e9565eb61a4ab3f172",
+      "pages": 8
+    },
+    {
+      "file": "d5-reallocated.pdf",
+      "sha256": "7704bb24dec63cf640677643ae3fd323fd5c26711e266d91ac9b37e96544fdf5",
+      "pages": 8
+    }
+  ],
+  "independentRender": {
+    "renderer": "macOS PDFKit 2x",
+    "pages": [
+      2,
+      4,
+      5
+    ],
+    "inspection": "pass: exact product2 whole-set B5 context readable/unclipped; slot1 hemp only, slot2 both; independent drug/cosmetic marks retained"
+  }
+}
