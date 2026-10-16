@@ -283,7 +283,7 @@ export async function fillForm3500Projection(source: Uint8Array, projection: For
     const font = await copy.embedFont(StandardFonts.Helvetica);
     const page = copy.getPages()[3];
     page.drawText(`Additional FDA form copy ${index+1} - Section D only; report ${reference}`, { x:44, y:776, size:8, font });
-    page.drawText((projection.productDateNotes??[]).some(n=>n.productId===product.productId) ? `Suspect product #${nativeForm3500SuspectSlots+index+1} uses this copy's first block; product date${(projection.expirationNotes??[]).some(n=>n.productId===product.productId)?' and expiration':''} wording follows this copy.` : (projection.expirationNotes??[]).some(n=>n.productId===product.productId) ? `Suspect product #${nativeForm3500SuspectSlots+index+1} uses this copy's first block; expiration wording follows this copy.` : `Suspect product #${nativeForm3500SuspectSlots+index+1} uses this copy's first block; context is in the main report B5.`, { x:44, y:763, size:8, font });
+    page.drawText((projection.productDateNotes??[]).some(n=>n.productId===product.productId) ? `Suspect product #${nativeForm3500SuspectSlots+index+1}; product date${(projection.expirationNotes??[]).some(n=>n.productId===product.productId)?' and expiration':''} wording follows this copy; other context: main B5.` : (projection.expirationNotes??[]).some(n=>n.productId===product.productId) ? `Suspect product #${nativeForm3500SuspectSlots+index+1} uses this copy's first block; expiration wording follows this copy.` : `Suspect product #${nativeForm3500SuspectSlots+index+1} uses this copy's first block; context is in the main report B5.`, { x:44, y:763, size:8, font });
     for (const copied of await document.copyPages(copy, copy.getPageIndices())) document.addPage(copied);
     additionalReadback.push(...extra.readback.sections.D.suspectProducts);
   }
@@ -294,7 +294,7 @@ export async function fillForm3500Projection(source: Uint8Array, projection: For
     copy.getForm().flatten({updateFieldAppearances:false});
     const font = await copy.embedFont(StandardFonts.Helvetica);
     copy.getPages()[5].drawText(`Additional FDA form copy - Section E only; report ${reference}`, {x:44,y:776,size:8,font});
-    copy.getPages()[5].drawText((projection.productDateNotes??[]).some(n=>n.productId===device.productId) ? `Suspect device #${index+2}; implant/explant${(projection.expirationNotes??[]).some(n=>n.productId===device.productId)?' and expiration':''} wording follows this copy.` : (projection.expirationNotes??[]).some(n=>n.productId===device.productId) ? `Suspect device #${index+2}; expiration wording follows this copy; other context is in main B5.` : `Suspect device #${index+2}; field context is in the main report B5.`, {x:44,y:763,size:8,font});
+    copy.getPages()[5].drawText((projection.productDateNotes??[]).some(n=>n.productId===device.productId) ? `Suspect device #${index+2}; implant/explant${(projection.expirationNotes??[]).some(n=>n.productId===device.productId)?' and expiration':''} wording follows this copy; other context: main B5.` : (projection.expirationNotes??[]).some(n=>n.productId===device.productId) ? `Suspect device #${index+2}; expiration wording follows this copy; other context is in main B5.` : `Suspect device #${index+2}; field context is in the main report B5.`, {x:44,y:763,size:8,font});
     for (const page of await document.copyPages(copy, copy.getPageIndices())) document.addPage(page);
     deviceReadback.push(...extra.readback.sections.E.suspectDevices);
   }
