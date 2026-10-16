@@ -33,7 +33,7 @@ const narrative = "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]";
 it("preserves the retained symptom uncertainty and denied symptom through actual PDF without changing the accepted fact", async () => {
   const state = replay(count, "count-without-total"); const before = structuredClone(state);
   const projection = projectForm3500(state);
-  const text = "Symptoms: prickly skin and no rash (patient is unsure whether the prickly feeling was a reaction to the medicine).";
+  const text = "Symptoms: prickly skin and no rash. Symptoms list context: patient is unsure whether the prickly feeling was a reaction to the medicine.";
   expect(projection.sections.B.eventDescription).toBe(text);
   expect(projection.sourceTrace["sections.B.eventDescription"]).toEqual(state.event.facts.symptoms.resolvedValue!.sourceIds);
   expect((await independentFields(projection))[narrative]).toBe(text);

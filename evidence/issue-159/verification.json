@@ -1,0 +1,52 @@
+{
+  "unitTests": 815,
+  "unitFiles": 81,
+  "typecheck": "pass",
+  "build": "pass",
+  "focusedMockBrowserJourneys": 2,
+  "fullMockBrowser": "125 passed",
+  "liveApplicationModelRequests": 0,
+  "actualPDFs": [
+    {
+      "file": "reviewed-lists.pdf",
+      "sha256": "ff0d62c7efc8e155c4a1dd205d256431e42c968be06652bd78441a4a820b4265"
+    },
+    {
+      "file": "unresolved-list.pdf",
+      "sha256": "5b3656cebd91daae645e115e7f60e071eb5c6f298c1ec66b7930c10175bfecd0"
+    },
+    {
+      "file": "resolved-list.pdf",
+      "sha256": "14ed30071edea27dde49b990c105144871edcbd215d359291b6af928155dcacb"
+    },
+    {
+      "file": "symptoms-removed.pdf",
+      "sha256": "5d2d87cf4d326033efcb2602f33f9f4ca4a04e99fd566573964897c3acc355b7"
+    },
+    {
+      "file": "treatments-removed.pdf",
+      "sha256": "b9e8b60e6060962a2940cc5b0f0c26df5e60e56aa464add5251d78d0872907d8"
+    },
+    {
+      "file": "list-after-edit.pdf",
+      "sha256": "ff0d62c7efc8e155c4a1dd205d256431e42c968be06652bd78441a4a820b4265"
+    }
+  ],
+  "independentRender": "PDFKit2x page2; visually inspected readable/unclipped with Symptoms list context and Treatment list context",
+  "mockQueue": {
+    "responses": 75,
+    "authoredScenarios": 44,
+    "distinctIdentityScopes": 70
+  },
+  "freshFullRunPDFHashes": "all six match retained focused outputs",
+  "issueSpecificMockBrowserJourneys": 3,
+  "retainedDraftCheck": "Earlier unfinished list context labelled; two reloads; no Apply/Accept; accepted case and independently read PDF fields unchanged",
+  "review": {
+    "run": "issue159-20261016T064831-d319d8ee",
+    "model": "claude-opus-5-5",
+    "effort": "high",
+    "blockingFindings": 0,
+    "followup": "F1 retained-draft display fixed and browser-covered; targeted recheck pending",
+    "report": "https://github.com/warblersafety/wilson-next/pull/201#issuecomment-6209878512"
+  }
+}

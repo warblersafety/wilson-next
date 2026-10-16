@@ -42,7 +42,7 @@ test("retained symptom/dose proposals have separate acceptance and visible uncer
 
   await seedStoredState(page, await pending(count, "count-without-total"));
   await page.reload(); await goTo(page, "Review details");
-  const qualified = "prickly skin and no rash (patient is unsure whether the prickly feeling was a reaction to the medicine)";
+  const qualified = "prickly skin and no rash. Context for this list: patient is unsure whether the prickly feeling was a reaction to the medicine";
   await expect(page.locator("dd").filter({ hasText: qualified })).toBeVisible();
   await page.screenshot({ path: info.outputPath("visible-symptom-uncertainty.png"), fullPage: true });
   await page.getByRole("button", { name: "Accept event details", exact: true }).click();
@@ -56,13 +56,13 @@ test("retained symptom/dose proposals have separate acceptance and visible uncer
   await page.getByLabel("New Symptoms", { exact: true }).fill("prickly forearm skin\nno rash");
   await expect(page.getByLabel("Uncertainty or context for Symptoms", { exact: true })).toHaveValue("patient is unsure whether the prickly feeling was a reaction to the medicine");
   await page.getByRole("button", { name: "Apply correction", exact: true }).click();
-  await expect(symptomRow.locator("dd").first()).toContainText("prickly forearm skin and no rash (patient is unsure");
+  await expect(symptomRow.locator("dd").first()).toContainText("prickly forearm skin and no rash. Context for this list: patient is unsure");
   await symptomRow.getByRole("button", { name: "Change", exact: true }).click();
   await page.getByLabel("Uncertainty or context for Symptoms", { exact: true }).fill("");
   await expect(page.getByLabel("Uncertainty or context for Symptoms", { exact: true })).toBeVisible();
   await page.getByLabel("Uncertainty or context for Symptoms", { exact: true }).pressSequentially("patient remains unsure");
   await page.getByRole("button", { name: "Apply correction", exact: true }).click();
-  await expect(symptomRow.locator("dd").first()).toContainText("(patient remains unsure)");
+  await expect(symptomRow.locator("dd").first()).toContainText("Context for this list: patient remains unsure");
   await symptomRow.getByRole("button", { name: "Change", exact: true }).click();
   await page.getByLabel("Uncertainty or context for Symptoms", { exact: true }).fill("");
   await page.getByRole("button", { name: "Apply correction", exact: true }).click();

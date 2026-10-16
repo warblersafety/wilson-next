@@ -23,7 +23,7 @@ test("clinical-course context reaches the PDF and survives explicit correction/r
   }
   const first = await readPdf("course.pdf");
   for (const text of Object.values(courseContext)) expect(first[narrative]).toContain(text);
-  expect(first[narrative]).toContain(`Treatment: oral fluids reported first; second treatment reported later (${courseContext.treatments}).`);
+  expect(first[narrative]).toContain(`Treatment: oral fluids reported first; second treatment reported later. Treatment list context: ${courseContext.treatments}.`);
   expect(first[narrative]).toContain(`Discharged 21-Aug-2026 (${courseContext.dischargeDate}).`);
   const output = page.locator('[data-screen="save"]');
   for (const label of ["Treatment", "Outcome", "Discharged"]) await expect(output).not.toContainText(`${label}: base value included; reviewed uncertainty or context not included`);

@@ -1,5 +1,7 @@
 "use client";
 
+import { listWithContext } from "../src/domain/case/list-context";
+
 import { useEffect, useRef, useState, useId } from "react";
 import { isCompleteBirthDate } from "../src/domain/case/birth-date";
 import { isPatientAge } from "../src/domain/case/age";
@@ -1224,6 +1226,7 @@ function joinList(values: string[]): string {
 
 function formatFact(value: CaseValue<unknown> | undefined, control?: FactControl): string {
   const text = formatFactValue(value, control);
+  if (value?.kind === "known" && Array.isArray(value.value) && control?.shape === "list") return listWithContext(text, value.qualifier);
   return value?.kind === "known" && value.qualifier ? `${text} (${value.qualifier})` : text;
 }
 

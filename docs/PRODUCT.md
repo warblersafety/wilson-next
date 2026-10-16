@@ -223,3 +223,25 @@ category list into product code. FDA describes Form 3500 as the voluntary form
 for health professionals and separately supports consumer reporting through
 Form 3500B. Wilson's clinical focus is a product choice, not a claim that only
 clinicians may report.
+
+## Practical completion checklist — 16 October 2026
+
+This tracks the approved artificial-data release cut by category. A bounded
+implementation is not final integrated acceptance. Keep existing conversation,
+review/correction, browser-local case/reporter persistence and visual design.
+
+| Completion category | Current coverage and remaining work |
+|---|---|
+| Patient and reporter | Explicit participation/A1 and no-patient consistency delivered in PR197/199; age/weight/race native paths exist. Broader sex representation and international reporter/profile/address remain. |
+| Clinical narrative and context | B5-B7 context and narrative continuation exist (PR158/160, issue190). Whole-list context scope is implemented in issue159; general additional comments, source omissions and faithful field-linked exception support remain. |
+| Product details and categories | Native purchase date/seller/address/website are implemented (issues183/188), alongside NDC, expiry, duration and cosmetic choice. Hemp/Other D5, partial dates/durations and unsupported wording still need faithful representation. |
+| Devices, concomitants and capacity | One suspect-device path exists. Additional D/E copies, multiple devices, full concomitant rows and test/product overflow remain. |
+| Pictures and portable export | Narrative attachments exist. Actual picture/file lifecycle, complete export package, portable glyphs and remaining field-linked supplements are unfinished. |
+| Integrity and final acceptance | Preserve accepted/pending/conflict/source/history, draft/resume and one-case controls in every slice. Semantic correction issue150 stays paused; current cross-category, hosted/keyboard/accessibility and bounded live first-response acceptance remain. |
+
+Issue200's proposed blanket B1/B2 gate is not implemented: FDA's life-threatening
+criterion includes prospective continued-use risk, and product-problem reporting
+also includes dangerous malfunctions. Current booleans cannot establish a universal
+literal contradiction without interpreting clinical context. Keep the question
+open with its official-source evidence; never infer causality or force a report
+classification. PR195's general prompt experiment remains unmerged.
