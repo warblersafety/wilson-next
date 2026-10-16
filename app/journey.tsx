@@ -925,7 +925,9 @@ function ConflictCard({ snapshot, item, busy, act }: {
       <Evidence excerpt={value.evidence} expanded />
       <button disabled={busy} onClick={() => void act({ action: "resolve-conflict", target: item.target, chosenValueId: value.id })}>Use {formatFact(value.value, controlForTarget(item.target))}</button>
     </div>)}
-    <p className={styles.hint}>You may leave this unresolved. Neither alternative will be put in the form.</p>
+    <p className={styles.hint}>{snapshot.outputIssues.some(issue => (issue.code === "no-patient-outcomes-conflict" || issue.code === "no-patient-demographics-conflict") && issue.targets.includes(item.target))
+      ? "This disagreement conflicts with No patient involved. Resolve this detail or correct Patient involvement before exporting. All alternatives stay retained."
+      : "You may leave this unresolved. Neither alternative will be put in the form."}</p>
   </fieldset>;
 }
 

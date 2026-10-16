@@ -1,0 +1,46 @@
+{
+  "unitTests": 802,
+  "unitFiles": 80,
+  "focusedBrowserJourneys": 3,
+  "fullBrowserGate": "pending121",
+  "typecheck": "pass",
+  "build": "pass",
+  "modelCallsForIssue198": 0,
+  "actualPDFs": [
+    {
+      "file": "none-before-outcome.pdf",
+      "a1": "none",
+      "hospital": "/Off",
+      "death": "/Off",
+      "sha256": "6799d86de5033af64f3618482fa9e936c51c0cc923e496fab001df2bf51bac45"
+    },
+    {
+      "file": "present-positive-hospitalization.pdf",
+      "a1": null,
+      "hospital": "/1",
+      "death": "/Off",
+      "sha256": "0963dea1492431c1754aa02e51d60e5064bec355736e7a08abe8edb2cffe0386"
+    },
+    {
+      "file": "none-explicit-negative-outcome.pdf",
+      "a1": "none",
+      "hospital": "/Off",
+      "death": "/Off",
+      "sha256": "6799d86de5033af64f3618482fa9e936c51c0cc923e496fab001df2bf51bac45"
+    },
+    {
+      "file": "resolved-negative-outcome.pdf",
+      "a1": "none",
+      "hospital": "/Off",
+      "death": "/Off",
+      "sha256": "6799d86de5033af64f3618482fa9e936c51c0cc923e496fab001df2bf51bac45"
+    },
+    {
+      "file": "unknown-participation-positive-death.pdf",
+      "a1": null,
+      "hospital": "/Off",
+      "death": "/1",
+      "sha256": "21b13d78f7dab34e513aa22eb6f5548bc4bc7b509c585f29c34339c73fade364"
+    }
+  ]
+}

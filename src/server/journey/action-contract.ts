@@ -1,14 +1,7 @@
+import { seriousOutcomeFields } from "../../domain/case/serious-outcomes";
 import { z } from "zod";
 
-export const seriousOutcomeFields = [
-  "death",
-  "lifeThreatening",
-  "hospitalized",
-  "disability",
-  "requiredIntervention",
-  "congenitalAnomaly",
-  "otherSerious",
-] as const;
+export { seriousOutcomeFields };
 
 export type SeriousOutcomeField = typeof seriousOutcomeFields[number];
 
