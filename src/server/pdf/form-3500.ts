@@ -1,3 +1,4 @@
+import {reporterGeometry,reporterNativeText,appendReporterContinuations,reporterTextIssues,reporterCountryLabel} from "./reporter-text";
 import {concomitantRowFields, concomitantNativeName, appendConcomitantContinuations, concomitantTextIssues} from "./concomitant";
 import {deviceTextFields, deviceTextLimitation} from "./device-text";
 import { isOtherProductTypes, type OtherProductType } from "../../domain/case/other-product-types";
@@ -497,15 +498,11 @@ async function fillNativeForm3500Projection(
     setText(form, row.stopDate, concomitant.stopDate ? formatDate(concomitant.stopDate) : undefined);
   }
   const reporter = projection.sections.G.reporter;
-  setText(form, fields.reporterLastName, reporter.lastName);
-  setText(form, fields.reporterFirstName, reporter.firstName);
-  setText(form, fields.reporterAddress, reporter.address);
-  setText(form, fields.reporterCity, reporter.city);
-  setText(form, fields.reporterState, reporter.state);
-  setText(form, fields.reporterPostalCode, reporter.postalCode);
-  if (reporter.country) form.getDropdown(fields.reporterCountry).select(reporter.country);
-  setText(form, fields.reporterPhone, reporter.phone);
-  setText(form, fields.reporterEmail, reporter.email);
+  const reporterIssues=await reporterTextIssues(projection);
+  if(reporterIssues.length)throw new Error(`Unsupported reporter ${reporterIssues[0].field}: ${reporterIssues[0].limitation}`);
+  for(const field of Object.keys(reporterGeometry) as Array<keyof typeof reporterGeometry>)setText(form,`topmostSubform[0].Page7[0].SecG_Reporter[0].${reporterGeometry[field].widget}[0]`,reporterNativeText(field,reporter[field]));
+  const country=reporter.country&&reporterCountryLabel(reporter.country);
+  if(country)form.getDropdown(fields.reporterCountry).select(country);
   setChecked(form, fields.reporterProfessionalYes, reporter.healthProfessional === true);
   setChecked(form, fields.reporterProfessionalNo, reporter.healthProfessional === false);
   if (reporter.occupation) form.getDropdown(fields.reporterOccupation).select(reporter.occupation);
@@ -528,6 +525,7 @@ async function fillNativeForm3500Projection(
   }
   await appendNarrativeContinuations(document, continuations);
   await appendConcomitantContinuations(document,projection,reportNarrative);
+  await appendReporterContinuations(document,projection,reportNarrative);
   // Save only after the outer writer assembles all headings/copies. Reusing an
   // already serialized page content stream can discard later drawing commands.
   return {

@@ -1,0 +1,17 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 7,
+      "rendered" : true,
+      "screenshot" : "evidence\/issue-214\/native-japan-page-7.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "G1 native values and continuation pointers are readable",
+    "G1 field labels, exact context and report reference remain visible",
+    "Mixed E copies contain no duplicated reporter facts"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "evidence\/issue-214\/native-japan.pdf"
+}

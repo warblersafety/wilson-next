@@ -1,4 +1,6 @@
-import { mkdtemp, rm } from "node:fs/promises";
+import {execFile} from "node:child_process";
+import {promisify} from "node:util";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { chromium, expect, test, type Page } from "@playwright/test";
@@ -10,7 +12,7 @@ import { getJourneySnapshot } from "../../src/server/journey/service";
 import { journeyResponse } from "../../src/server/case/browser-state";
 import { initialUiDrafts } from "../../src/browser/ui-drafts";
 import { workspaceInput } from "../../src/browser/workspace-state";
-import { goTo, storedState } from "./draft4-helpers";
+import { goTo, storedState, savePdf } from "./draft4-helpers";
 import { draftOwnerHarnessHtml } from "./ui-draft-harness";
 const profile = { values: { firstName: "Casey", lastName: "Reed", address: "101 Fictional Way", city: "Fictional City", state: "CA", postalCode: "00000", country: "CANADA", phone: "202-555-0142", email: "casey@example.test", occupation: "Nurse" }, healthProfessional: false };
 const saved = (page: Page) => expect(page.getByRole("region", { name: "Browser saving" }).getByRole("status")).toHaveText("Saved in this browser");
@@ -32,7 +34,7 @@ async function prepareCase(page: Page, accepted = false) {
 }
 async function fill(page: Page) {
   for (const [field, label] of [["firstName", "first name"], ["lastName", "last name"], ["address", "address"], ["city", "city"], ["state", "state"], ["postalCode", "postal code"], ["phone", "phone"], ["email", "email"]] as const) await page.getByLabel(`Reporter ${label}`, { exact: true }).fill(profile.values[field]);
-  await page.getByLabel("Reporter country", { exact: true }).selectOption(profile.values.country);
+  await page.getByLabel("Reporter country", { exact: true }).fill(profile.values.country);
   await page.getByLabel("Reporter occupation", { exact: true }).selectOption(profile.values.occupation);
   await page.getByLabel("Health professional", { exact: true }).selectOption("false");
 }
@@ -129,7 +131,7 @@ test("existing accepted case and dirty pending reporter work are never automatic
 
 test("future and corrupt profile records stay untouched while normal reporter entry and case saving work", async ({ page }) => {
   await page.goto("/"); await saved(page); await prepareCase(page, true);
-  for (const raw of [{ version: 2, generation: "future", profile }, { version: 1, damaged: true }]) {
+  for (const raw of [{ version: 3, generation: "future", profile }, { version: 1, damaged: true }]) {
     await profileRecord(page, raw); await page.reload(); await saved(page);
     await expect(remembered(page).getByRole("button", { name: "Reload remembered details", exact: true })).toBeVisible();
     await expect(remembered(page).getByRole("button", { name: "Remember these fictional details", exact: true })).toBeDisabled();
@@ -178,11 +180,11 @@ test("native reporter transactions reject competing stale writers, preserve tomb
     return { competing: competing.map(v => v.status), current, forgotten, stale, final: await probe.load() };
   }, profile);
   expect(result.competing.sort()).toEqual(["fulfilled", "rejected"]); expect(result.current.profile).not.toBeNull(); expect(result.forgotten.generation).not.toBe(result.current.generation); expect(result.final.profile).toBeNull(); expect(result.stale).toBe("stale-writer");
-  for (const raw of [{ version: 2, opaque: "retained future" }, { version: 1, corrupt: true }]) {
+  for (const raw of [{ version: 3, opaque: "retained future" }, { version: 1, corrupt: true }]) {
     await native(page, "wilson-profile-adapter-probe", "reporter", "remembered", raw);
     expect(await page.evaluate(async profile => {
       try { await (window as any).profileProbe.save(profile, null); return "unexpected success"; } catch (e) { return (e as any).code; }
-    }, profile)).toBe(raw.version === 2 ? "incompatible" : "corrupt");
+    }, profile)).toBe(raw.version === 3 ? "incompatible" : "corrupt");
     expect(await native(page, "wilson-profile-adapter-probe", "reporter", "remembered")).toEqual(raw);
   }
 });
@@ -321,4 +323,17 @@ test("case-only reload cannot silently advance a failed profile intent's compari
   await remembered(page).getByRole("button", { name: "Retry remembering details", exact: true }).click();
   await expect(remembered(page)).toContainText("Remembered details changed in another tab.");
   expect(await profileRecord(page)).toEqual(external);
+});
+
+test("international reporter profile stays separate from accepted facts; multiline address and postal wording survive resume and native G1 export",async({page},info)=>{
+ let modelCalls=0;await page.route('**/api/case',async r=>{if(['submit-opening','submit-update'].includes(r.request().postDataJSON()?.action?.action)){modelCalls++;await r.abort();}else await r.continue();});
+ await page.goto('/');await saved(page);await prepareCase(page,true);await fill(page);await page.getByLabel('Reporter country',{exact:true}).fill('France');await page.getByLabel('Reporter address',{exact:true}).fill('12 Fictional Lane\nBuilding Two, Suite 030');await page.getByLabel('Reporter state',{exact:true}).fill('Fictional region');await page.getByLabel('Reporter postal code',{exact:true}).fill('01234-5678901');const before=await storedState(page);
+ await remembered(page).getByRole('button',{name:'Remember these fictional details',exact:true}).click();await expect(remembered(page)).toContainText('Fictional reporter details remembered');expect(await storedState(page)).toEqual(before);expect((await profileRecord(page)).version).toBe(2);expect((await profileRecord(page)).profile.values.country).toBe('France');await saved(page);await page.reload();await saved(page);await expect(page.getByLabel('Reporter address',{exact:true})).toHaveValue('12 Fictional Lane\nBuilding Two, Suite 030');await saveReporter(page);const accepted=await storedState(page);expect(accepted.case.patient).toEqual(before.case.patient);expect(accepted.case.products).toEqual(before.case.products);for(const field of Object.keys(before.case.event.facts) as Array<keyof typeof before.case.event.facts>)if(field!=='reportDate')expect(accepted.case.event.facts[field]).toEqual(before.case.event.facts[field]);expect(accepted.case.event.facts.reportDate.resolvedValue?.value.kind).toBe('known');expect(accepted.case.reporter.facts.country.resolvedValue?.value).toEqual({kind:'known',value:'France'});
+ const d=await savePdf(page),file=info.outputPath('international-reporter.pdf');await d.saveAs(file);const x=JSON.parse((await promisify(execFile)(process.env.PYPDF_PYTHON??'python3',['tools/pdf/independent_readback.py',file,'--named','--page-text'])).stdout);expect(x.namedFields['topmostSubform[0].Page7[0].SecG_Reporter[0].Country[0]']).toBe('FRANCE');expect(x.namedFields['topmostSubform[0].Page7[0].SecG_Reporter[0].Address[0]']).toBe('Continued');expect(x.pageTexts.slice(8).join('\n')).toContain('G1 ZIP/postal code: 01234-5678901');await writeFile(info.outputPath('international-state.json'),JSON.stringify(await storedState(page)));await goTo(page,'Reporter details');await page.getByLabel('Reporter country',{exact:true}).fill('GERMANY');await saveReporter(page);expect((await profileRecord(page)).profile.values.country).toBe('France');expect((await storedState(page)).case.reporter.facts.country.supersededValues.some(v=>v.value.kind==='known'&&v.value.value==='France')).toBe(true);expect(modelCalls).toBe(0);
+});
+test("unmatched country remains exact in G1 supplement; clearing address removes its prior output without changing remembered defaults",async({page},info)=>{
+ await page.goto('/');await saved(page);await prepareCase(page,true);await fill(page);await page.getByLabel('Reporter country',{exact:true}).fill('Territory wording as stated');await page.getByLabel('Reporter address',{exact:true}).fill('Fictional long address\nSecond explicit line');await saveReporter(page);const first=await savePdf(page),file=info.outputPath('unmatched-country.pdf');await first.saveAs(file);const x=JSON.parse((await promisify(execFile)(process.env.PYPDF_PYTHON??'python3',['tools/pdf/independent_readback.py',file,'--named','--page-text'])).stdout);expect(x.namedFields['topmostSubform[0].Page7[0].SecG_Reporter[0].Country[0]']).toBeUndefined();expect(x.pageTexts.slice(8).join('\n')).toContain('G1 Country: Territory wording as stated');await goTo(page,'Reporter details');await page.getByLabel('Reporter address',{exact:true}).fill('');await saveReporter(page);const d=await savePdf(page),last=info.outputPath('address-cleared.pdf');await d.saveAs(last);const y=JSON.parse((await promisify(execFile)(process.env.PYPDF_PYTHON??'python3',['tools/pdf/independent_readback.py',last,'--named','--page-text'])).stdout);expect(y.pageTexts.slice(8).join('\n')).not.toContain('Second explicit line');expect((await storedState(page)).case.reporter.facts.address.resolvedValue?.value.kind).toBe('explicitly-absent');
+});
+test("genuine legacy reporter profile loads unchanged; international remembering writes v2 without accepting case facts",async({page})=>{
+ await page.goto('/');await saved(page);const fixture=await prepareCase(page,true),generation=randomUUID(),legacy={version:1,generation,profile};await profileRecord(page,legacy);await page.reload();await saved(page);expect(await profileRecord(page)).toEqual(legacy);const before=await storedState(page);const acceptReplacement=(dialog:import('@playwright/test').Dialog)=>void dialog.accept();page.on('dialog',acceptReplacement);await remembered(page).getByRole('button',{name:'Use remembered details',exact:true}).click();page.off('dialog',acceptReplacement);await page.getByLabel('Reporter country',{exact:true}).fill('NEW ZEALAND');await remembered(page).getByRole('button',{name:'Update remembered details',exact:true}).click();await expect(remembered(page)).toContainText('Fictional reporter details remembered');const current=await profileRecord(page);expect(current.version).toBe(2);expect(current.generation).not.toBe(generation);expect(current.profile.values.country).toBe('NEW ZEALAND');expect(await storedState(page)).toEqual(before);await newCase(page);await makeFreshReporterVisible(page);await expect(page.getByLabel('Reporter country',{exact:true})).toHaveValue('NEW ZEALAND');expect((await storedState(page)).case.reporter.facts.country.resolvedValue).toBeUndefined();
 });

@@ -69,7 +69,10 @@ export interface ProjectedRelevantTest {
   date?: string;
 }
 
+export const reporterTextFields = ["lastName","firstName","address","city","state","postalCode","country","phone","email"] as const;
+export type ReporterTextField = typeof reporterTextFields[number];
 export interface ProjectedReporter {
+  fieldContext?: {field:ReporterTextField;text:string}[];
   lastName?: string; firstName?: string; address?: string; city?: string; state?: string;
   postalCode?: string; country?: string; phone?: string; email?: string;
   healthProfessional?: boolean; occupation?: string;
@@ -306,7 +309,8 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   }
 
   for (const field of ["lastName", "firstName", "address", "city", "state", "postalCode", "country", "phone", "email", "healthProfessional", "occupation", "reportedTo", "doNotDiscloseIdentity"] as const) {
-    assign<unknown>(projection, `sections.G.reporter.${field}`, `reporter ${field}`, `reporter:reporter:${field}`, caseState.reporter.facts[field] as Fact<unknown>, projection.sections.G.reporter, field);
+    assign<unknown>(projection, `sections.G.reporter.${field}`, `reporter ${field}`, `reporter:reporter:${field}`, caseState.reporter.facts[field] as Fact<unknown>, projection.sections.G.reporter, field, value=>value, (reporterTextFields as readonly string[]).includes(field));
+    if ((reporterTextFields as readonly string[]).includes(field)) { const value=known(caseState.reporter.facts[field] as Fact<unknown>); if(value?.qualifier)(projection.sections.G.reporter.fieldContext??=[]).push({field:field as ReporterTextField,text:value.qualifier}); }
   }
 
   // Completeness boundary: selectors, prerequisites and unsupported whole facts
@@ -318,6 +322,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   for (const entry of d5OtherTypeContextEntries(caseState, projection)) carriedQualifierTargets.add(entry.target);
   for (const entry of deviceContextEntries(caseState, projection)) carriedQualifierTargets.add(entry.target);
   for (const product of projection.sections.F.concomitantProducts) for (const context of product.fieldContext ?? []) carriedQualifierTargets.add(`product:${product.productId}:${context.field}`);
+  for (const context of projection.sections.G.reporter.fieldContext??[]) carriedQualifierTargets.add(`reporter:reporter:${context.field}`);
   for (const entry of relevantTestContextEntries(caseState)) carriedQualifierTargets.add(entry.target);
   const disclosed = new Set(projection.omissions.filter(({ reason }) => reason === "qualifier-not-included").map(({ target }) => target));
   for (const { target, fact } of allFacts(caseState)) {

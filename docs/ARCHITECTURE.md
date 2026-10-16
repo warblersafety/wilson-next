@@ -1745,3 +1745,38 @@ Only the outer writer saves after adding every D/E heading/copy and F note: an
 intermediate save cached a page6 content stream and dropped subsequent E headings
 when F had already drawn there. Independent mixed E/F readback/render covers the
 actual main cross-reference, not only the extra copy header.
+
+### International reporter country/address and defaults (issue214)
+
+The existing reporter panel uses editable native-country suggestions, a neutral
+state/province/region label and multiline address entry. Raw stated country
+wording survives draft/profile/case storage. Only case and outer-space display
+equivalence selects a pinned native country label; no aliases or geography are
+inferred. Unmatched country wording prints exactly in a G1 supplement with the
+native country unselected. G's275 options equal the274 purchase options plus
+blank; UNKNOWN is a missing-value option, not an inferred country choice.
+
+The eight G1 text controls have independently pinned widths/font/max lengths.
+Fitting values stay native; long/multiline or max-length-exceeding values use a
+capacity-safe Continued marker and exact10pt G1 continuation. Every page repeats
+the current field and shared report reference. Current known G1 qualifiers print
+as field context; non-known/conflicted/pending/superseded values do not. The
+adapter readback reports native markers/canonical country labels honestly; actual
+supplemental wording is independently read/rendered. Unsupported glyphs retain
+facts with precise field limitations; portable-font work154 remains separate.
+Only the main report carries reporter facts/supplements; native D/E copies stay
+blank there, using the existing single-save assembly.
+
+Reporter-profile record v2 permits raw country strings. Genuine v1 US/Canada/
+blank records and tombstones decode in memory with the same generation, without
+an eager write. An explicit remember/update/forget writes v2 with a fresh
+generation. Older applications see v2 as incompatible and preserve it; existing
+stale-writer, failed-intent and one-tab guards remain. IndexedDB's database version
+stays1; case/browser-state v24 and existing reporter drafts are unchanged.
+Remember/use/new-case prefilling establishes draft defaults only. Explicit Save
+reporter details separately accepts case facts; date/destinations/disclosure stay
+case-specific. Corrections retain history; no account or credential management.
+
+Reporter panel saves preserve a current known qualifier when its base value is
+unchanged. A base-value correction retains prior context in history and does not
+attach it to the new value. Explicit context editing remains in Review details.

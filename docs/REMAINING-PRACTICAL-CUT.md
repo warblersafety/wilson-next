@@ -12,7 +12,7 @@ still get separate PRs. Existing containment is not faithful representation.
 
 | Remaining functional work | Concrete acceptance / matrix linkage |
 |---|---|
-| International reporter entry and reuse | Full native countries, exact occupation/address/phone/postal text, saved-profile/draft compatibility; G01/G02. Direct entry is acceptable. |
+| Reporter exceptions beyond current native choices | International country/address entry, continuation and profile compatibility are delivered in issue214. Exact occupation wording outside native choices and portable glyphs remain; G01/G02/#154. Direct entry/review is acceptable. |
 | Actual pictures and complete export package | Attach, replace/remove, save/resume and export fictional images; C2 says Yes only when actual files accompany the report. Complete package includes every required form/continuation/file; C02/X04/X05. |
 | Portable readable glyphs | Common clinical/reporter symbols and non-Latin text survive stored values, appearance streams, printing and a second viewer. No `?` replacement or forced fact edits; #154/X04. Native E/F guards only prevent corruption. |
 | Sex outside native boxes | Exact reviewed value on a field-linked supplement, no false Male/Female selection; #151/A03. Representation decision must be explicit. |
@@ -24,9 +24,9 @@ still get separate PRs. Existing containment is not faithful representation.
 | Cross-category and explicit combination coverage | Ordinary blood/tissue/biologic/cosmetic/hemp/Other and mixed-category journeys with source-reviewed category/role. Combination-component representation needs an explicit decision; do not invent an entity schema or infer classification; X01/X06. |
 | Final integrated acceptance | Current candidate across all categories, exception/attachment/overflow/recovery paths, keyboard/assistive technology, protected same-origin upgrade/rollback and authorized varied live first responses. #169/#187/#143/#108 are acceptance work, not proven by mocked fixtures. Real-data/physician use stays separately gated; X07. |
 
-Next independent candidate after F: international reporter entry/reuse, or a
-single field family of faithful supplementary representation. Neither requires
-unpausing #150. Larger capacity and combination representation must not be hacked
+Next independent candidate after international reporter support: one bounded
+field family of faithful supplementary representation, such as long route/frequency
+(#153), or the picture lifecycle. Neither requires unpausing #150. Larger capacity and combination representation must not be hacked
 around if their resource/component decision blocks them.
 
 Deferred polish outside this functional cut: restoring the decorative header bird
@@ -37,3 +37,15 @@ required functional fixes. The proposed blanket B1/B2 consistency rule (#200)
 remains an unresolved semantic question, not a valid inferred clinical gate.
 PR195's general prompt experiment stays unmerged. Unlimited language perfection,
 accounts/login, cross-device cases and real-patient-data production are excluded.
+
+Practical boundary for the remaining cut: calendar work must prevent fabricated
+or malformed dates and preserve explicitly supplied precision; it need not infer
+clinical chronology or resolve every ambiguous date expression automatically.
+Quantity work needs faithful stated values/units and exact reviewed exceptions;
+it does not require automatic interpretation of every compound sentence. Neutral
+withdrawal work is the explicit removal of an optional additional-comment note
+without inventing unknown/absent clinical knowledge; it is not a general history
+editor. Ordinary clinician clarification and exact source review are acceptable.
+Rare automatic interpretation failures with a clear faithful manual path are
+bounded acceptance limitations; silent loss, false values or unusable export are
+functional blockers. This checklist does not expand the approved product cut.

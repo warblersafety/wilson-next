@@ -1,4 +1,5 @@
 "use client";
+import {purchaseCountrySuggestions} from "../src/domain/case/purchase-details";
 
 import { listWithContext } from "../src/domain/case/list-context";
 
@@ -760,11 +761,11 @@ function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate, continueCl
       <label>Last name <input aria-label="Reporter last name" value={values.lastName} onChange={(event) => set("lastName", event.target.value)} /></label>
       <label>Phone <input aria-label="Reporter phone" value={values.phone} onChange={(event) => set("phone", event.target.value)} /></label>
       <label>Email <input aria-label="Reporter email" type="email" value={values.email} onChange={(event) => set("email", event.target.value)} /></label>
-      <label>Address (optional) <input aria-label="Reporter address" value={values.address} onChange={(event) => set("address", event.target.value)} /></label>
+      <label>Address (optional) <textarea aria-label="Reporter address" value={values.address} onChange={(event) => set("address", event.target.value)} /></label>
       <label>City (optional) <input aria-label="Reporter city" value={values.city} onChange={(event) => set("city", event.target.value)} /></label>
-      <label>State (optional) <input aria-label="Reporter state" value={values.state} onChange={(event) => set("state", event.target.value)} /></label>
+      <label>State/province/region (optional) <input aria-label="Reporter state" value={values.state} onChange={(event) => set("state", event.target.value)} /></label>
       <label>ZIP/postal code (optional) <input aria-label="Reporter postal code" value={values.postalCode} onChange={(event) => set("postalCode", event.target.value)} /></label>
-      <label>Country <select aria-label="Reporter country" value={values.country} onChange={(event) => set("country", event.target.value)}><option value="">Not provided</option><option>UNITED STATES</option><option>CANADA</option></select></label>
+      <label>Country <input aria-label="Reporter country" list="reporter-country-options" value={values.country} onChange={(event) => set("country", event.target.value)} /><datalist id="reporter-country-options">{purchaseCountrySuggestions.map(country=><option key={country} value={country}/>)}</datalist><span className={styles.hint}>Use the supplied country wording or a suggestion. Unlisted wording is retained in the G1 supplement; no country is inferred.</span></label>
     </fieldset>
     <fieldset disabled={busy} aria-labelledby="reporter-professional-title" className={`${styles.answerGroup} ${styles.reporterChoices}`}><h2 id="reporter-professional-title">Professional details</h2>
       <label>Are you a health professional? <select aria-label="Health professional" value={String(healthProfessional)} onChange={(event) => setHealthProfessional(event.target.value === "true")}><option value="true">Yes</option><option value="false">No</option></select></label>
