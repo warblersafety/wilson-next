@@ -1,0 +1,22 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 6,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-212\/f-overflow-page-6.png"
+    },
+    {
+      "page" : 9,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-212\/f-overflow-page-9.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "Native F row names\/dates or explicit supplement pointers are readable and unclipped",
+    "Exact Section F names\/context remain linked to correct native row ordinal and report reference",
+    "Mixed E copies contain no duplicated F facts or field context; unknown\/withdrawal output is faithful"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-212\/f-overflow.pdf"
+}

@@ -1,3 +1,4 @@
+import {concomitantRowFields, concomitantNativeName, appendConcomitantContinuations, concomitantTextIssues} from "./concomitant";
 import {deviceTextFields, deviceTextLimitation} from "./device-text";
 import { isOtherProductTypes, type OtherProductType } from "../../domain/case/other-product-types";
 import { planNarrativeContinuations, appendNarrativeContinuations, form3500ReportReference } from "./narrative-continuation";
@@ -253,7 +254,7 @@ export async function fillForm3500Projection(source: Uint8Array, projection: For
   if (projection.sections.D.suspectProducts.length > maximumForm3500SuspectProducts) throw new Error(`The approved Form 3500 adapter supports at most ${maximumForm3500SuspectProducts} suspect products`);
   const products = projection.sections.D.suspectProducts, devices = projection.sections.E.suspectDevices;
   if (devices.length > maximumForm3500SuspectDevices) throw new Error(`The approved Form 3500 adapter supports at most ${maximumForm3500SuspectDevices} suspect devices`);
-  if (products.length <= nativeForm3500SuspectSlots && devices.length <= 1) { const {output, readback} = await fillNativeForm3500Projection(source, projection); return {output, readback}; }
+  if (products.length <= nativeForm3500SuspectSlots && devices.length <= 1) { const {document, readback} = await fillNativeForm3500Projection(source, projection); return {output:await document.save(), readback}; }
   const initial = await fillNativeForm3500Projection(source, { ...projection, sections: { ...projection.sections, D: { suspectProducts: products.slice(0, nativeForm3500SuspectSlots) }, E: { suspectDevices: devices.slice(0,1) } } }, projection);
   const document = initial.document;
   const reference = form3500ReportReference(projection);
@@ -300,7 +301,7 @@ async function fillNativeForm3500Projection(
   source: Uint8Array,
   projection: Form3500Projection,
   reportNarrative: Form3500Projection = projection,
-): Promise<Form3500ProjectionFillResult & {document: PDFDocument}> {
+): Promise<{document: PDFDocument; readback: Form3500ProjectionFillResult["readback"]}> {
   await assertApprovedFormSource(source);
   if (projection.sections.E.suspectDevices.length > 1) throw new Error("Native form supports one suspect device slot");
   // D-only copies carry quantity context in the linked main report, never duplicate B5.
@@ -487,11 +488,13 @@ async function fillNativeForm3500Projection(
     setChecked(form, fields.deviceServicedUnknown, device.servicedByThirdParty === "unknown");
   }
 
-  const concomitant = F.concomitantProducts[0];
-  if (concomitant) {
-    setText(form, fields.concomitantOneName, concomitant.name);
-    setText(form, fields.concomitantOneStartDate, concomitant.startDate ? formatDate(concomitant.startDate) : undefined);
-    setText(form, fields.concomitantOneStopDate, concomitant.stopDate ? formatDate(concomitant.stopDate) : undefined);
+  const concomitantIssues = await concomitantTextIssues(projection);
+  if (concomitantIssues.length) throw new Error(`Unsupported Section F ${concomitantIssues[0].field}: ${concomitantIssues[0].limitation}`);
+  for (const [index, concomitant] of F.concomitantProducts.entries()) {
+    const row = concomitantRowFields(index);
+    setText(form, row.name, concomitantNativeName(concomitant.name,index));
+    setText(form, row.startDate, concomitant.startDate ? formatDate(concomitant.startDate) : undefined);
+    setText(form, row.stopDate, concomitant.stopDate ? formatDate(concomitant.stopDate) : undefined);
   }
   const reporter = projection.sections.G.reporter;
   setText(form, fields.reporterLastName, reporter.lastName);
@@ -524,8 +527,10 @@ async function fillNativeForm3500Projection(
     dropdown.acroField.dict.set(PDFName.of("V"), option.value);
   }
   await appendNarrativeContinuations(document, continuations);
+  await appendConcomitantContinuations(document,projection,reportNarrative);
+  // Save only after the outer writer assembles all headings/copies. Reusing an
+  // already serialized page content stream can discard later drawing commands.
   return {
-    output: await document.save(),
     readback: readProjectionForm(document, projection),
     document,
   };
@@ -703,11 +708,11 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
     { name: fields.productOneName, manufacturer: fields.productOneManufacturer, lotNumber: fields.productOneLot, ndcOrUniqueId: fields.productOneIdentifier, expirationDate: fields.productOneExpiration, dose: fields.productOneDose, doseUnit: fields.productOneDoseUnit, strength: fields.productOneStrength, strengthUnit: fields.productOneStrengthUnit, frequency: fields.productOneFrequency, otherFrequency: fields.productOneOtherFrequency, route: fields.productOneRoute, otherRoute: fields.productOneOtherRoute, startDate: fields.productOneStartDate, stopDate: fields.productOneStopDate, indication: fields.productOneIndication },
     { name: fields.productTwoName, manufacturer: fields.productTwoManufacturer, lotNumber: fields.productTwoLot, ndcOrUniqueId: fields.productTwoIdentifier, expirationDate: fields.productTwoExpiration, dose: fields.productTwoDose, doseUnit: fields.productTwoDoseUnit, strength: fields.productTwoStrength, strengthUnit: fields.productTwoStrengthUnit, frequency: fields.productTwoFrequency, otherFrequency: fields.productTwoOtherFrequency, route: fields.productTwoRoute, otherRoute: fields.productTwoOtherRoute, startDate: fields.productTwoStartDate, stopDate: fields.productTwoStopDate, indication: fields.productTwoIndication },
   ];
-  const concomitantProducts = projection.sections.F.concomitantProducts.map((expected): ProjectedConcomitantProduct => compact({
+  const concomitantProducts = projection.sections.F.concomitantProducts.map((expected,index): ProjectedConcomitantProduct => compact({
     productId: expected.productId,
-    name: form.getTextField(fields.concomitantOneName).getText(),
-    startDate: parseDate(form.getTextField(fields.concomitantOneStartDate).getText()),
-    stopDate: parseDate(form.getTextField(fields.concomitantOneStopDate).getText()),
+    name: form.getTextField(concomitantRowFields(index).name).getText(),
+    startDate: parseDate(form.getTextField(concomitantRowFields(index).startDate).getText()),
+    stopDate: parseDate(form.getTextField(concomitantRowFields(index).stopDate).getText()),
   }));
 
   return {

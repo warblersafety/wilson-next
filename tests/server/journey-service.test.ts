@@ -213,11 +213,8 @@ describe("state-driven journey service", () => {
     const lisinopril = concomitantDevice.products.find(({ id }) => id === "product-lisinopril")!;
     lisinopril.facts.productType.resolvedValue!.value = { kind: "known", value: "device" };
     const unsupportedSnapshot = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: concomitantDevice }), concomitantDevice.id);
-    expect(unsupportedSnapshot.outputIssues).toContainEqual(expect.objectContaining({
-      code: "unsupported-concomitant-device",
-      targets: [`product:${lisinopril.id}:role`, `product:${lisinopril.id}:productType`],
-    }));
-    expect(unsupportedSnapshot.projection.sections.F.concomitantProducts.map(({ productId }) => productId)).not.toContain(lisinopril.id);
+    expect(unsupportedSnapshot.downloadReady).toBe(true);
+    expect(unsupportedSnapshot.projection.sections.F.concomitantProducts.map(({productId})=>productId)).toContain(lisinopril.id);
 
     const unclassifiedConcomitant = structuredClone(completeResolvedCase());
     const unclassified = unclassifiedConcomitant.products.find(({ id }) => id === "product-lisinopril")!;

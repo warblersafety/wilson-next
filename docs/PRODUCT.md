@@ -235,7 +235,7 @@ review/correction, browser-local case/reporter persistence and visual design.
 | Patient and reporter | Explicit participation/A1 and no-patient consistency delivered in PR197/199; age/weight/race native paths exist. Broader sex representation and international reporter/profile/address remain. |
 | Clinical narrative and context | B5-B7 context and narrative continuation exist (PR158/160, issue190). Whole-list context scope is implemented in issue159. Independent general Additional comments are implemented in issue202, including shared B6 continuation. Source omissions and faithful field-linked exception support remain. |
 | Product details and categories | Native purchase date/seller/address/website are implemented (issues183/188), alongside NDC, expiry, duration and cosmetic choice. Explicit hemp/Other D5 selections and field-linked qualifier context are implemented in issue205. Partial dates/durations and unsupported wording still need faithful representation. |
-| Devices, concomitants and capacity | The retained third non-device suspect now exports on an additional native D-only Form3500 copy (issue208). Up to three suspect devices now use a main E block plus additional native E-only copies (issue210), with explicit field-linked context. Full concomitant rows and broader test/product capacity remain. |
+| Devices, concomitants and capacity | The retained third non-device suspect now exports on an additional native D-only Form3500 copy (issue208). Up to three suspect devices now use a main E block plus additional native E-only copies (issue210), with explicit field-linked context. Native F rows include concomitant devices and linked name/context continuation within that bound (issue212). Broader test/product capacity remains. |
 | Pictures and portable export | Narrative attachments exist. Actual picture/file lifecycle, complete export package, portable glyphs and remaining field-linked supplements are unfinished. |
 | Integrity and final acceptance | Preserve accepted/pending/conflict/source/history, draft/resume and one-case controls in every slice. Neutral optional-comment withdrawal (#204) remains separate. Semantic correction issue150 stays paused; current cross-category, hosted/keyboard/accessibility and bounded live first-response acceptance remain. |
 
@@ -252,5 +252,6 @@ case bound. Issue210 delivers additional native E copies for multiple devices wi
 Both preserve stable identity/order, reviewed details and linked context; broader
 retained-product capacity and combination-component work (X01) remain.
 
-Next useful bounded coverage is native concomitant rows within the retained-case
-bound; broader case capacity and test overflow still need connected support.
+Native concomitant rows within the retained-case bound are implemented in issue212.
+Broader case capacity and test overflow still need connected support. See the
+[concrete remaining practical-cut work](REMAINING-PRACTICAL-CUT.md).

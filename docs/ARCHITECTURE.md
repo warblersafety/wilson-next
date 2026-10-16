@@ -612,7 +612,7 @@ and one concomitant slot. Exceeding either blocks export with an explicit
 capacity notice while retaining every product, fact, source and history entry.
 Readiness and the adapter share these output limits; the adapter guards remain.
 Issue210 supersedes the one-suspect-device export block with native E-only
-copies; the unsupported-concomitant-device rule remains.
+copies. Issue212 below supersedes the concomitant-device and single-F-row gates.
 Only an explicit clinician change can alter roles or withdraw products; capacity
 checks never make those changes. This is limitation disclosure, not continuation
 pages or complete overflow support.
@@ -623,9 +623,8 @@ least one complete suspect product whose name, role, and category are known.
 Every retained incomplete product is named in the readiness explanation and
 navigable for repair. A direct repair that makes a clarification newly
 applicable returns the case to clarification with an explicit transition
-notice; it does not call the model or bypass the command boundary. Multiple
-suspect devices and a device in the concomitant role are outside the supported
-projection and therefore block output explicitly.
+notice; it does not call the model or bypass the command boundary. Native E copies support multiple suspect devices (issue210). Native F rows
+include concomitant devices (issue212), without repurposing implant dates.
 
 A missing product category is never treated as implicitly non-device. The
 projection omits category-dependent Section D, E, and F fields until category is
@@ -1708,3 +1707,41 @@ widget geometry, font size, multiline flags and max lengths. Readiness reports
 the exact device/field; the adapter repeats the checks before flattening. Values
 are retained for explicit correction, never silently truncated or substituted.
 The two-device reference is singular; three-device references retain the range.
+
+### Native Section F rows and exact field continuation (issue212)
+
+FDA F1 explicitly includes devices alongside drugs/biologics used at the time of
+the event, excluding products used to treat the event. Only explicit clinician
+role/category/therapy dates determine F output; implant/explant dates never
+become therapy dates. All ten pinned native F rows have distinct field mappings
+(rows3–10 end dates are Cell4). The retained-case limit stays3; native adapter
+capacity is10. More retained products and beyond-ten row continuation remain
+separate scope. No case facts, browser-state version or reporter schema change.
+
+F projection retains stable ordered productId, indexed field provenance and exact
+current fieldContext. Unknown/conflicted/pending/superseded values do not print.
+Native fields carry fitting names and supplied complete therapy dates. Overlong
+or multiline names print an explicit native row pointer; their full text and
+qualifiers print on a labelled Section F continuation at fixed10pt, using the
+existing exact wrapping primitive. A report reference and native row ordinals
+link every supplement. Every continuation page repeats its starting row/field
+so a detached dense page remains attributable. No shortening, font shrinking, date inference or role
+change occurs. F context does not replace or satisfy the base B5 description.
+Native name fit uses independently verified198.766pt width/8.5pt appearance.
+Unsupported glyphs retain facts and block output at the precise field, both in
+readiness and the adapter. Portable fonts remain issue154.
+
+The adapter readback honestly reports native F pointer text when a name is in a
+supplement; it does not echo the semantic full name as though it read a widget.
+Independent pypdf/readback and PDFKit inspection verify the actual supplemental
+text. Existing native D/E copies contain no duplicated F facts/supplements.
+Concomitant-device cards use the existing therapy-date editors, including empty
+fields; all other accepted device details remain retained with truthful omission
+disclosure for their current F role. All correction/review/draft/withdrawal
+operations use the existing authority boundaries.
+
+The native writer now returns the in-memory document without serializing it.
+Only the outer writer saves after adding every D/E heading/copy and F note: an
+intermediate save cached a page6 content stream and dropped subsequent E headings
+when F had already drawn there. Independent mixed E/F readback/render covers the
+actual main cross-reference, not only the extra copy header.

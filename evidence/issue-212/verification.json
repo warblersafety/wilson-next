@@ -1,0 +1,55 @@
+{
+  "unitTests": 904,
+  "unitFiles": 88,
+  "typecheck": "pass",
+  "build": "pass",
+  "fullMockBrowserGate": "final144 running after actual render fixes; earlier interrupted runs do not count",
+  "applicationModelRequests": 0,
+  "PDFs": [
+    {
+      "file": "mixed-e-f.pdf",
+      "sha256": "0981383c7585c4d7fbdc4a4a9ee44c7b3d3b7a7d7dc9e21f8b6aeee4492c6701",
+      "pages": 17
+    },
+    {
+      "file": "f-corrected.pdf",
+      "sha256": "0ca6134af72ad94326d60fb420835cce7443e17075be074fee9e8375942fbe07",
+      "pages": 9
+    },
+    {
+      "file": "dense-f-context.pdf",
+      "sha256": "cfaf2f966b5a4b8fc6b1288acd2d4129a6255f5ac3b04df9bb0a91d8e4984b1f",
+      "pages": 11
+    },
+    {
+      "file": "f-unknown.pdf",
+      "sha256": "1ea53bf64674d46e6efc4d3ac4cc904b88575fcb2da7f132c5b3783300062005",
+      "pages": 9
+    },
+    {
+      "file": "f-withdrawn.pdf",
+      "sha256": "8a88c7deaaf8aa6b8727cdd10ef23d3b103f79fcd0b04664019196f951604284",
+      "pages": 9
+    },
+    {
+      "file": "f-overflow.pdf",
+      "sha256": "582c2aa061b422bea8ac5e17f0d59a287eca5f64148803fb8fe0741e073013f6",
+      "pages": 9
+    },
+    {
+      "file": "f-repaired.pdf",
+      "sha256": "29c91e40164041b323fc162157aff6afd5ce6824839f2beabfce6c1bcd89b199",
+      "pages": 9
+    },
+    {
+      "file": "ten-native-rows.pdf",
+      "sha256": "7973cefcbaa33cae86f9f1bf0acfe65039448113cdc947b66a7656c4bcf57c0d",
+      "pages": 8
+    }
+  ],
+  "retainedCaseLimit": 3,
+  "nativeAdapterRows": 10,
+  "independentNativeGeometry": "native-f-widget-geometry.json",
+  "render": "PDFKit2x; low-level ten-row/dense/mixed refreshed and visually checked; browser variants refresh pending",
+  "serializationFix": "assemble all native headings/copies before single save; actual main E heading asserted"
+}

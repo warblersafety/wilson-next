@@ -1,3 +1,4 @@
+import {nativeFScenario} from "../fixtures/native-f-rows";
 import {nativeEScenario} from "../fixtures/native-e-copies";
 import {nativeDCopyScenario} from "../fixtures/native-d-copy";
 import { d5OtherScenario } from "../fixtures/d5-other";
@@ -647,5 +648,6 @@ export const predeterminedResponseScenarios = {
   d5Other: d5OtherScenario,
   nativeDCopy: nativeDCopyScenario,
   nativeECopies: nativeEScenario,
+  nativeFRows: nativeFScenario,
 };
 export const predeterminedModelResponses = Object.values(predeterminedResponseScenarios).flat();
