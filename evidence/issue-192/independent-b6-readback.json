@@ -1,0 +1,32 @@
+{
+  "time-context": {
+    "topmostSubform[0].Page3[0].AdditionalComments[0]": "B6 table row 1 - Test date context: The INR collection time was not recorded.",
+    "topmostSubform[0].Page3[0].TestDataTable[0].EvalNo[0]": "/1",
+    "topmostSubform[0].Page3[0].TestDataTable[0].EvalRetd[0]": "/Off",
+    "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/Off",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TDate1[0]": "03-SEP-2026",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].THighRange1[0]": "1.2",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TLowRange1[0]": "0.8",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TestData1[0]": "INR: 4.8",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TDate2[0]": "03-SEP-2026",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].THighRange2[0]": "56",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TLowRange2[0]": "7",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TestData2[0]": "ALT: 67 U/L",
+    "pdfSha256": "0699bd9c2758764d68b52bbf0445449ef9a9d79f7bf2fc07d9b9735fd7557f14"
+  },
+  "time-context-corrected": {
+    "topmostSubform[0].Page3[0].AdditionalComments[0]": "B6 table row 1 - Test date context: The INR collection time is unavailable in the source record.",
+    "topmostSubform[0].Page3[0].TestDataTable[0].EvalNo[0]": "/1",
+    "topmostSubform[0].Page3[0].TestDataTable[0].EvalRetd[0]": "/Off",
+    "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/Off",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TDate1[0]": "03-SEP-2026",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].THighRange1[0]": "1.2",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TLowRange1[0]": "0.8",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TestData1[0]": "INR: 4.8",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TDate2[0]": "03-SEP-2026",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].THighRange2[0]": "56",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TLowRange2[0]": "7",
+    "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TestData2[0]": "ALT: 67 U/L",
+    "pdfSha256": "e3663f349731b897564154674497b2655019f6d12e795d2087dc854b68211275"
+  }
+}

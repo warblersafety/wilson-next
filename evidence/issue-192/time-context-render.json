@@ -1,0 +1,18 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "time-context.pdf",
+  "capturedPages": [
+    {
+      "page": 3,
+      "screenshot": "time-context-page-3.png",
+      "rendered": true
+    }
+  ],
+  "visualInspection": {
+    "readableUnclipped": true,
+    "inrAndAltNamesResultsRangesDatesUnchanged": true,
+    "onlyInrRowOneDateContextInAdditionalComments": true,
+    "noTimestampInvented": true
+  }
+}
