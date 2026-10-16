@@ -1,0 +1,37 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 5,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-221\/second-product-dates-page-5.png"
+    },
+    {
+      "page" : 9,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-221\/second-product-dates-page-9.png"
+    },
+    {
+      "page" : 10,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-221\/second-product-dates-page-10.png"
+    },
+    {
+      "page" : 11,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-221\/second-product-dates-page-11.png"
+    },
+    {
+      "page" : 12,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-221\/second-product-dates-page-12.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "Native supplied calendar dates remain readable in their existing fields",
+    "No date components calculated or repaired",
+    "Independent pypdf native-field readback accompanies render inspection"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-221\/second-product-dates.pdf"
+}

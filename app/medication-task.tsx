@@ -1,3 +1,5 @@
+import {DatePrecisionEditor} from "./date-precision-editor";
+import {isSuppliedDate} from "../src/domain/case/date-precision";
 import { useCaseDraft, draftFieldSetter } from "./journey-drafts";
 import { clinicalDraftKey } from "../src/browser/ui-drafts";
 import { applicableMedicationFields, type MedicationAnswerField } from "../src/domain/case/medication";
@@ -30,10 +32,13 @@ export function MedicationTask({ snapshot, busy, act }: {
   };
   const fields = applicableMedicationFields(boolean("stopped"), boolean("doseReduced"), boolean("restarted"))
     .filter((field) => product.facts[field].state === "empty");
+  const stopDraft=answers.stopDate;
+  const unfinishedStopDate=stopDraft?.kind === "known" && (typeof stopDraft.value !== "string" || Boolean(stopDraft.value.trim()) || Boolean(stopDraft.qualifier?.trim())) && !isSuppliedDate(stopDraft.value);
   const submit = (disposition?: "unknown" | "declined") => {
+    if (disposition && unfinishedStopDate) return;
     const selected = Object.fromEntries(fields.map((field) => {
       const value = answers[field];
-      const answered = value && !(field === "stopDate" && value.kind === "known" && !value.value);
+      const answered = value && !(field === "stopDate" && value.kind === "known" && !isSuppliedDate(value.value));
       return [field, answered ? value : disposition ? { kind: disposition } : undefined];
     })) as Answers;
     void act({ action: "answer-medication-history", productId: product.id, answers: selected });
@@ -63,11 +68,13 @@ export function MedicationTask({ snapshot, busy, act }: {
           <option value="unknown">Unknown</option>
           <option value="declined">Prefer not to answer</option>
         </select>
-        {field === "stopDate" && value?.kind === "known" && <label>Stop date<input type="date" value={String(value.value)} onChange={(event) => setAnswers({ ...answers, stopDate: { kind: "known", value: event.target.value } })} /></label>}
+        {field === "stopDate" && value?.kind === "known" && <DatePrecisionEditor label="Stop date" completeLabel="Stop date" value={answers.stopDate?.kind === "known" ? answers.stopDate.value : ""} onChange={next=>setAnswers({...answers,stopDate:{...(answers.stopDate?.kind === "known" ? answers.stopDate : {kind:"known" as const}),value:next}})}/>}
+
       </fieldset>;
     })}
-    <button disabled={busy || fields.some((field) => !answers[field] || (field === "stopDate" && answers.stopDate?.kind === "known" && !answers.stopDate.value))} onClick={() => submit()}>Add medication answers</button>
-    <button disabled={busy} onClick={() => submit("unknown")}>These remaining details are unknown</button>
-    <button disabled={busy} onClick={() => submit("declined")}>Prefer not to answer these details</button>
+    <button disabled={busy || fields.some((field) => !answers[field] || (field === "stopDate" && answers.stopDate?.kind === "known" && !isSuppliedDate(answers.stopDate.value)))} onClick={() => submit()}>Add medication answers</button>
+    {unfinishedStopDate && <p role="status">Complete or explicitly clear the unfinished stop-date edit before marking remaining details unknown or declined. Your edit is retained.</p>}
+    <button disabled={busy || unfinishedStopDate} onClick={() => submit("unknown")}>These remaining details are unknown</button>
+    <button disabled={busy || unfinishedStopDate} onClick={() => submit("declined")}>Prefer not to answer these details</button>
   </>;
 }

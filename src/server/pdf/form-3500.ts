@@ -1,4 +1,4 @@
-import {appendExpirationContinuations} from "./expiration";
+import {appendProductDateContinuations} from "./product-date-continuation";
 import {appendSexContinuations, sexTextLimitation} from "./patient-sex";
 import {reporterGeometry,reporterNativeText,appendReporterContinuations,reporterTextIssues,reporterCountryLabel} from "./reporter-text";
 import {concomitantRowFields, concomitantNativeName, appendConcomitantContinuations, concomitantTextIssues} from "./concomitant";
@@ -283,7 +283,7 @@ export async function fillForm3500Projection(source: Uint8Array, projection: For
     const font = await copy.embedFont(StandardFonts.Helvetica);
     const page = copy.getPages()[3];
     page.drawText(`Additional FDA form copy ${index+1} - Section D only; report ${reference}`, { x:44, y:776, size:8, font });
-    page.drawText((projection.expirationNotes??[]).some(n=>n.productId===product.productId) ? `Suspect product #${nativeForm3500SuspectSlots+index+1} uses this copy's first block; expiration wording follows this copy.` : `Suspect product #${nativeForm3500SuspectSlots+index+1} uses this copy's first block; context is in the main report B5.`, { x:44, y:763, size:8, font });
+    page.drawText((projection.productDateNotes??[]).some(n=>n.productId===product.productId) ? `Suspect product #${nativeForm3500SuspectSlots+index+1} uses this copy's first block; product date${(projection.expirationNotes??[]).some(n=>n.productId===product.productId)?' and expiration':''} wording follows this copy.` : (projection.expirationNotes??[]).some(n=>n.productId===product.productId) ? `Suspect product #${nativeForm3500SuspectSlots+index+1} uses this copy's first block; expiration wording follows this copy.` : `Suspect product #${nativeForm3500SuspectSlots+index+1} uses this copy's first block; context is in the main report B5.`, { x:44, y:763, size:8, font });
     for (const copied of await document.copyPages(copy, copy.getPageIndices())) document.addPage(copied);
     additionalReadback.push(...extra.readback.sections.D.suspectProducts);
   }
@@ -418,7 +418,7 @@ async function fillNativeForm3500Projection(
     const ordinal = index + 1;
     const prefix = `topmostSubform[0].Page${index + 4}[0].Prod${ordinal}[0].Prod${ordinal}`;
     if (product.treatmentDuration !== undefined && (!isTreatmentDuration(product.treatmentDuration) || durationLimitation(product.treatmentDuration))) throw new Error("Unsupported D3 treatment duration");
-    if (product.treatmentDuration && [product.startDate,product.stopDate,product.doseReductionDate].some(v => v !== undefined)) throw new Error("D3 requires an explicit dates or duration print choice");
+    if (product.treatmentDuration && ([product.startDate,product.stopDate,product.doseReductionDate].some(v => v !== undefined) || (projection.productDateNotes??[]).some(n=>n.productId===product.productId&&n.block==="D3"))) throw new Error("D3 requires an explicit dates or duration print choice");
     const durationName = `${prefix}TherapyDuration[0]`, durationUnitName = `${prefix}TherapyDurUnit[0]`;
     if (product.treatmentDuration || form.getTextField(durationName).getText()) setText(form,durationName,product.treatmentDuration?.value ?? "");
     const durationUnit = form.getDropdown(durationUnitName);
@@ -516,7 +516,7 @@ async function fillNativeForm3500Projection(
   setChecked(form, fields.reporterPacker, reporter.reportedTo?.includes("packer") === true);
   setChecked(form, fields.reporterIdentityNo, reporter.doNotDiscloseIdentity === true);
 
-  await appendExpirationContinuations(document,projection,reportNarrative);
+  await appendProductDateContinuations(document,projection,reportNarrative);
   form.updateFieldAppearances();
   // pdf-lib selects display labels. Preserve the generated label appearance,
   // but store the original FDA option's export value for other PDF readers.
@@ -832,7 +832,7 @@ function formatDate(value: string): string {
 }
 
 function parseDate(value: string | undefined): string | undefined {
-  if (!value || value === "D6 continued" || value === "E4 continued") return undefined;
+  if (!value || value === "D6 continued" || value === "E4 continued" || ["D1 cont.","D3 cont.","F1 cont."].includes(value)) return undefined;
   const match = /^(\d{2})-([A-Z]{3})-(\d{4})$/.exec(value);
   const month = match ? months.indexOf(match[2]) + 1 : 0;
   if (!match || month === 0) throw new Error(`Unreadable Form 3500 date ${value}`);

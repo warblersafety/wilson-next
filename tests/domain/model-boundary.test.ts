@@ -446,6 +446,7 @@ function validKnownValue(contract: KnownValueContract): unknown {
   switch (contract.shape) {
     case "string": return "value";
     case "duration": return {value:"1.50",unit:"hours"};
+    case "product-date":
     case "expiration":
     case "calendar-date":
     case "birth-date": return "2024-02-29";

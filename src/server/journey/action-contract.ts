@@ -1,3 +1,4 @@
+import {isSuppliedDate} from "../../domain/case/date-precision";
 import { seriousOutcomeFields } from "../../domain/case/serious-outcomes";
 import { z } from "zod";
 
@@ -50,7 +51,7 @@ const medicationBooleanSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("declined") }).strict(),
 ]);
 const medicationDateSchema = z.discriminatedUnion("kind", [
-  z.object({ kind: z.literal("known"), value: z.iso.date() }).strict(),
+  z.object({ kind: z.literal("known"), value: z.union([z.string(),z.object({precision:z.enum(["month","year"]),year:z.string(),month:z.string().optional(),wording:z.string()}).strict()]).refine(isSuppliedDate), qualifier:z.string().optional() }).strict(),
   z.object({ kind: z.literal("unknown") }).strict(),
   z.object({ kind: z.literal("declined") }).strict(),
 ]);

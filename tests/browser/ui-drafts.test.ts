@@ -14,7 +14,7 @@ const samples: { [K in DraftKind]: DraftData<K> } = {
   "death-date": { date: "" },
   "clinical-context": { testChoice: "known", testName: "  ", testResult: "", lowRange: "0", highRange: "", testDate: "", history: "Unfinished history" },
   "device-details": { implantChoice: "unknown", explantChoice: "inapplicable", reprocessorChoice: "declined", implantDate: "", explantDate: "", reprocessor: " Unsent device details " },
-  "medication-history": { answers: { stopped: { kind: "known", value: false }, doseReduced: { kind: "unknown" }, stopDate: { kind: "known", value: "" }, recurred: { kind: "declined" } } },
+  "medication-history": { answers: { stopped: { kind: "known", value: false }, doseReduced: { kind: "unknown" }, stopDate: { kind: "known", value: {precision:"month",year:"2028",month:"13",wording:"Stopped February 2028"} }, recurred: { kind: "declined" } } },
   reporter: { values: { firstName: "Fictional", lastName: "", address: "", city: "", state: "", postalCode: "", country: "", phone: "", email: "unfinished@", occupation: "" }, reportDate: "", healthProfessional: false, reportedTo: [], doNotDiscloseIdentity: false, baseline: "original baseline before editing" },
   card: { showMore: true, showOutcomes: true, editing: "symptoms", drafts: { symptoms: { kind: "known", value: [], qualifier: "" }, ageYears: { kind: "known", value: 0 }, weight: { kind: "known", value: { value: 0, unit: "kg" } }, history: { kind: "explicitly-absent" } }, qualifierControls: { symptoms: true }, factVersions: { symptoms: "before edit" } },
 };

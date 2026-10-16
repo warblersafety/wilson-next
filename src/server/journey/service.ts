@@ -1,5 +1,6 @@
+import {isProductDateField,productDateLabels,suppliedDateText} from "../../domain/case/date-precision";
 import {isPartialExpiration,expirationText} from "../../domain/case/expiration";
-import {expirationTextIssues} from "../pdf/expiration";
+import {productDateTextIssues} from "../pdf/product-date-continuation";
 import {isCalendarDateTarget,knownValueMismatch} from "../../domain/case/value-contract";
 import {sexTextLimitation} from "../pdf/patient-sex";
 import {reporterTextIssues,reporterTextLabels} from "../pdf/reporter-text";
@@ -120,7 +121,7 @@ export async function getJourneySnapshot(
   const caseState = await ensureJourneyCase(repository, caseId);
   const projection = projectForm3500(caseState);
   const outputIssues = outputReadinessIssues(caseState, projection);
-  for(const problem of await expirationTextIssues(projection)) outputIssues.push({code:"unsupported-product-text",message:`The reviewed expiration wording ${problem.limitation}. It is retained; no new PDF is generated.`,targets:[`product:${problem.productId}:expirationDate`],entityIds:[problem.productId]});
+  for(const problem of await productDateTextIssues(projection)) outputIssues.push({code:"unsupported-product-text",message:`The reviewed ${problem.field === "expirationDate" ? "expiration wording" : productDateLabels[problem.field]} ${problem.limitation}. It is retained; no new PDF is generated.`,targets:[`product:${problem.productId}:${problem.field}`],entityIds:[problem.productId]});
   const sexLimit = await sexTextLimitation(projection);
   if (sexLimit) outputIssues.push({code:"unsupported-patient-sex",message:`The reviewed patient sex context ${sexLimit}. It is retained; no new PDF is generated.`,targets:["patient:patient:sex"],entityIds:["patient"]});
   for (const device of projection.sections.E.suspectDevices) for (const field of deviceTextFields) {
@@ -161,7 +162,7 @@ export async function getJourneySnapshot(
     projection,
     downloadReady: outputIssues.length === 0,
     clinicalNeeds: completionQuestions(caseState).filter(({ kind }) => kind !== "reporter"),
-    reportContentKey: createHash("sha256").update(JSON.stringify({sections:projection.sections,expirationNotes:projection.expirationNotes?.map(({block,ordinal,text})=>({block,ordinal,text}))}, (key, value) =>
+    reportContentKey: createHash("sha256").update(JSON.stringify({sections:projection.sections,productDateNotes:projection.productDateNotes?.map(({field,block,ordinal,text})=>({field,block,ordinal,text})),expirationNotes:projection.expirationNotes?.map(({block,ordinal,text})=>({block,ordinal,text}))}, (key, value) =>
       ["productId", "testId"].includes(key) ? undefined
         : ["reportedTo", "medicationType"].includes(key) && Array.isArray(value) ? [...value].sort() : value)).digest("hex"),
     outputIssues,
@@ -315,8 +316,8 @@ export async function performJourneyAction(
           expectedRevision: current.revision,
           source: fullSource(
             intent === "correction" ? "correction" : "answer",
-            target.entity === "product" && target.field === "expirationDate"
-              ? `Clinician supplied expiration information: ${displayValue(action.value, target)}.`
+            target.entity === "product" && (target.field === "expirationDate" || isProductDateField(target.field))
+              ? `Clinician supplied ${target.field === "expirationDate" ? "expiration" : isProductDateField(target.field) ? productDateLabels[target.field].toLowerCase() : "date"} information: ${displayValue(action.value, target)}${action.value.kind === "known" && !isPartialExpiration(action.value.value) && action.value.qualifier ? `; context: ${action.value.qualifier}` : ""}.`
               : target.entity === "patient" && target.field === "raceEthnicity"
               ? `Clinician supplied the patient race and/or ethnicity: ${displayValue(action.value, target)}${action.value.kind === "known" && action.value.qualifier ? `; context: ${action.value.qualifier}` : ""}.`
               : `Clinician ${intent === "correction" ? "corrected this value directly" : "added this value directly"}.`,
@@ -462,7 +463,7 @@ export async function performJourneyAction(
         const labels: Record<string, string> = { stopped: "stopped", doseReduced: "dose reduced", stopDate: "stop date", improvedAfterChange: "improved after stopping or reducing", restarted: "restarted", recurred: "event returned after restarting" };
         await applyCommand({
           type: "record-clinician-facts", commandId: commandId("answer-medication-history"), expectedRevision: current.revision,
-          source: fullSource("answer", `${knownValue(product.facts.name) ?? "Suspect medication"}: ${entries.map(([field, value]) => `${labels[field]}: ${displayValue(value)}`).join("; ")}.`),
+          source: fullSource("answer", `${knownValue(product.facts.name) ?? "Suspect medication"}: ${entries.map(([field, value]) => `${labels[field]}: ${displayValue(value,{entity:"product",entityId:action.productId,field})}`).join("; ")}.`),
           answersNeed: "medication-history",
           facts: entries.map(([field, value]) => ({ id: valueId(`medication-${field}`), target: { entity: "product" as const, entityId: action.productId, field }, intent: "fact" as const, value })),
         });
@@ -863,7 +864,7 @@ function displayValue(value: CaseValue<unknown>, target?: FactTarget): string {
   if (target?.entity === "patient" && target.field === "ageYears" && isPatientAge(value.value)) { const age = patientAgeParts(value.value); return `${age.value} ${age.unit}`; }
   if (target?.entity === "patient" && target.field === "a2Value" && value.value === "date-of-birth") return "date of birth";
   if (target?.entity === "patient" && target.field === "raceEthnicity" && Array.isArray(value.value)) return value.value.map(item => raceEthnicityOptions.find(option => option.value === item)?.label ?? String(item)).join(" and ");
-  if (isPartialExpiration(value.value)) return expirationText(value.value,value.qualifier);
+  if (isPartialExpiration(value.value)) return target?.entity === "product" && isProductDateField(target.field) ? suppliedDateText(value.value,productDateLabels[target.field].toLowerCase(),value.qualifier) : expirationText(value.value,value.qualifier);
   if (Array.isArray(value.value)) return value.value.join(" and ");
   return String(value.value);
 }
