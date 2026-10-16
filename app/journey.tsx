@@ -846,7 +846,7 @@ function UpdateReview({ snapshot, busy, act }: {
     <h2 id="update-review-title" tabIndex={-1} className={styles.updateReviewTitle}>Review the proposed update</h2>
     <p>Accept or discard each group separately. Accepted details stay unchanged until you accept a correction.</p>
     {clinicalNeedParts(snapshot).some(({ recheckAfterReview }) => recheckAfterReview) && <p className={styles.hint}>Remaining treatment questions will be checked after these proposals are reviewed.</p>}
-    <details><summary>How update review works</summary><p>An accepted incompatible alternative remains visibly unresolved and is omitted from the form.</p></details>
+    <details><summary>How update review works</summary><p>An accepted incompatible alternative stays unresolved until you choose a value. Unresolved values are not printed; some contradictions block export until corrected.</p></details>
     {groups.map(({ groupId, items }) => {
       const title = reviewGroupTitle(snapshot, items);
       const fieldOnly = singleEntityGroup(items.map(({ target }) => target));
@@ -926,7 +926,7 @@ function ConflictCard({ snapshot, item, busy, act }: {
       <button disabled={busy} onClick={() => void act({ action: "resolve-conflict", target: item.target, chosenValueId: value.id })}>Use {formatFact(value.value, controlForTarget(item.target))}</button>
     </div>)}
     <p className={styles.hint}>{snapshot.outputIssues.some(issue => (issue.code === "no-patient-outcomes-conflict" || issue.code === "no-patient-demographics-conflict") && issue.targets.includes(item.target))
-      ? "This disagreement conflicts with No patient involved. Resolve this detail or correct Patient involvement before exporting. All alternatives stay retained."
+      ? "This disagreement conflicts with No patient involved. Review this detail and Patient involvement before exporting. A choice that still conflicts with No patient involved keeps export blocked. All alternatives stay retained."
       : "You may leave this unresolved. Neither alternative will be put in the form."}</p>
   </fieldset>;
 }

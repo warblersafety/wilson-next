@@ -17,17 +17,19 @@ schema, prompt, model parameters or browser-state version changes. Existing
 v22 cases resume losslessly with consistency readiness recomputed. One shared
 native B2 field list keeps completion/action validation/domain checks aligned.
 
-802 unit tests / 80 files, typecheck/build, all3focused and all121full mock
-Chromium browser journeys pass. Five actual browser-downloaded PDFs/readbacks are retained and
+802 unit tests / 80 files, typecheck/build, all4focused and all122full mock
+Chromium browser journeys pass. Six actual browser-downloaded PDFs/readbacks are retained and
 hashed in verification.json: no-patient baseline; explicit patient-present with
 positive hospitalization; explicit false hospitalization repair; disputed
 true/false outcome resolved to false; and explicit unknown participation with
-positive death retained. Tests also prove PDF HTTP409 blocking, no automatic
+positive death retained; and disputed hospitalization resolved positive, still blocked until explicit participation correction. These PDFs establish A1/B2 preservation; the independent B2 versus B1/report-type consistency gap remains issue200. Tests also prove PDF HTTP409 blocking, no automatic
 fact removal, correction via either side, historical positive retention and
 lossless v22 resume. PDFKit2x render outputs are retained; the representative hospitalization page
 was visually inspected readable/unclipped with blank A1 and B2 hospitalization
 checked. Fresh full-run PDF readbacks match all retained originals. Actual
-subscription Opus review and exact-headCI remain required before merge.
+subscription Opus full review found no blockers; its wording follow-up is corrected
+and covered in both outcome and demographic browser cases. The raw review is
+published on PR199; targeted recheck and final exact-headCI remain required before merge.
 
 No live application-model calls are used for this issue. The separately
 completed2call participation verification is recorded on PR197 and is not a

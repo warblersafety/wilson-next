@@ -1502,7 +1502,10 @@ sides, their exact source/history and all other facts remain retained. The B2
 values are not cleared or reclassified. Existing controls let the clinician
 explicitly correct participation, correct an outcome or resolve its conflict.
 Conflict guidance names this requirement rather than suggesting the blocked
-case may export unresolved. Known false, unknown, declined, inapplicable,
+case may export unresolved. The output warning names the positive outcomes;
+choosing a still-conflicting value keeps export blocked. The same accurate
+conflict hint covers known demographic disagreements. Independent B2 versus B1
+report-type consistency is tracked separately in issue200. Known false, unknown, declined, inapplicable,
 explicitly-absent, unmentioned and historical positives never imply a patient
 or activate the guard. Unaccepted proposals retain the ordinary review gate.
 

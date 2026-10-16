@@ -1,3 +1,4 @@
+import { seriousOutcomeLabels } from "../../src/domain/case/serious-outcomes";
 import { expect, it } from "vitest";
 import { NextRequest } from "next/server";
 import { POST as postPdf } from "../../app/api/case/pdf/route";
@@ -11,7 +12,7 @@ import { setContextFact } from "../fixtures/reviewed-context";
 const inspect=(c:ReturnType<typeof explicitNoPatientCase>)=>getJourneySnapshot(new InMemoryCaseRepository({initialCase:c,maxCases:1}),c.id);
 it.each(seriousOutcomeFields)("blocks explicit no-patient versus known-true %s without deleting or reclassifying facts", async field => {
  const c=setContextFact(explicitNoPatientCase(),`event:event:${field}`,{kind:"known",value:true}),before=structuredClone(c);const s=await inspect(c);
- expect(noPatientOutcomeConflictingTargets(c)).toEqual([`event:event:${field}`]);expect(s.downloadReady).toBe(false);expect(s.projection.sections.A.patientIdentifier).toBeUndefined();expect(s.projection.sections.B[field]).toBe(true);expect(s.outputIssues).toContainEqual(expect.objectContaining({code:"no-patient-outcomes-conflict",targets:["patient:patient:involvement",`event:event:${field}`]}));expect(c).toEqual(before);expect(parseBrowserJourneyState({version:browserStateVersion,stage:"output",case:c,unrepresented:[]}).case).toEqual(c);
+ expect(noPatientOutcomeConflictingTargets(c)).toEqual([`event:event:${field}`]);expect(s.downloadReady).toBe(false);expect(s.projection.sections.A.patientIdentifier).toBeUndefined();expect(s.projection.sections.B[field]).toBe(true);expect(s.outputIssues).toContainEqual(expect.objectContaining({code:"no-patient-outcomes-conflict",targets:["patient:patient:involvement",`event:event:${field}`]}));expect(s.outputIssues.find(i=>i.code==="no-patient-outcomes-conflict")?.message).toContain(seriousOutcomeLabels[field]);expect(c).toEqual(before);expect(parseBrowserJourneyState({version:browserStateVersion,stage:"output",case:c,unrepresented:[]}).case).toEqual(c);
 });
 it.each(seriousOutcomeFields)("known-positive disputed %s cannot bypass the guard; unaccepted alternatives do not become outcomes",async field=>{
  const {pending,accepted}=disputedOutcome(field);expect(noPatientOutcomeConflictingTargets(pending)).toEqual([]);expect((await inspect(pending)).downloadReady).toBe(false);expect(accepted.event.facts[field].state).toBe("conflicted");expect(noPatientOutcomeConflictingTargets(accepted)).toEqual([`event:event:${field}`]);expect((await inspect(accepted)).downloadReady).toBe(false);expect(projectForm3500(accepted).sections.A.patientIdentifier).toBeUndefined();expect(accepted.event.facts[field].conflictingValues.map(v=>v.value)).toEqual([{kind:"known",value:true},{kind:"known",value:false}]);
