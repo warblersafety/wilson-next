@@ -1486,3 +1486,33 @@ Mocked conversation and actual PDF readback/render evidence verify the paths;
 no new live application-model efficacy evidence or completeness claim is made.
 Other narrative omissions remain ordinary clinician review/correction, and
 native unsupported context/partial dates remain separate release-cut work.
+
+### Explicit no-patient versus B2 outcomes (issue198)
+
+FDA B2 records outcomes attributed to an adverse event, and A1 none means no
+patient was involved. The same explicit consistency check now covers death,
+life-threatening, hospitalized, disability, required intervention, congenital
+anomaly and other serious outcome answers. The native B2 field list is shared
+by completion, action validation and this domain guard.
+
+Only current accepted known no-patient status activates the check. A current
+known true outcome, or a known true alternative in an unresolved outcome
+conflict, blocks export and suppresses the definitive A1 none projection. Both
+sides, their exact source/history and all other facts remain retained. The B2
+values are not cleared or reclassified. Existing controls let the clinician
+explicitly correct participation, correct an outcome or resolve its conflict.
+Conflict guidance names this requirement rather than suggesting the blocked
+case may export unresolved. The output warning names the positive outcomes;
+choosing a still-conflicting value keeps export blocked. The same accurate
+conflict hint covers known demographic disagreements. Independent B2 versus B1
+report-type consistency is tracked separately in issue200. Known false, unknown, declined, inapplicable,
+explicitly-absent, unmentioned and historical positives never imply a patient
+or activate the guard. Unaccepted proposals retain the ordinary review gate.
+
+This checks typed answers, never risk/clinical narrative or severity/causality;
+no automatic patient selection, clinical judgment or broad consistency engine.
+Patient-present and unknown participation remain distinct from no-patient, and
+ordinary native B2 printing otherwise stays unchanged. Schema/prompt/browser
+state versions are unchanged; existing v22 cases resume with all facts intact
+and readiness recomputed, not silently repaired. FDA authority checked2026-10-16:
+https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500

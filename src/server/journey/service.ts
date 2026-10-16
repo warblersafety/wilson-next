@@ -1,4 +1,5 @@
-import { hasReservedNoPatientIdentifier, noPatientConflictingTargets } from "../../domain/case/patient-involvement";
+import { seriousOutcomeLabels } from "../../domain/case/serious-outcomes";
+import { hasReservedNoPatientIdentifier, noPatientConflictingTargets, noPatientOutcomeConflictingTargets } from "../../domain/case/patient-involvement";
 import {purchaseDetailFields,purchaseDetailLabels} from "../../domain/case/purchase-details";
 import {purchaseDetailLimitation} from "../pdf/purchase-details";
 import { d3ChoiceIssue, d3Eligible, isTreatmentDuration } from "../../domain/case/duration";
@@ -78,6 +79,7 @@ export type OutputReadinessIssueCode =
   | "unsupported-concomitant-device"
   | "no-patient-report-type-conflict"
   | "reserved-no-patient-identifier"
+  | "no-patient-outcomes-conflict"
   | "no-patient-demographics-conflict"
   | "patient-a2-choice-required"
   | "unsupported-patient-age"
@@ -708,6 +710,8 @@ export function outputReadinessIssues(
   if (knownValue(caseState.patient.facts.involvement) === "none" && (reportType === "adverse-event" || reportType === "adverse-event-and-product-problem")) issue("no-patient-report-type-conflict", "No patient involved conflicts with a report type that includes an adverse event. Review Patient involvement and Report type; neither has been changed automatically.", ["patient:patient:involvement", "event:event:reportType"], ["patient", "event"]);
   const noPatientConflicts = noPatientConflictingTargets(caseState);
   if (noPatientConflicts.length) issue("no-patient-demographics-conflict", "No patient involved conflicts with retained known patient details. Correct Patient involvement or explicitly correct those details before export. Nothing has been cleared automatically.", ["patient:patient:involvement", ...noPatientConflicts], ["patient"]);
+  const noPatientOutcomes = noPatientOutcomeConflictingTargets(caseState);
+  if (noPatientOutcomes.length) issue("no-patient-outcomes-conflict", `No patient involved conflicts with explicitly reported serious outcomes: ${seriousOutcomeFields.filter(field => noPatientOutcomes.includes(`event:event:${field}`)).map(field => seriousOutcomeLabels[field]).join(", ")}. Correct Patient involvement or these outcomes before export. Nothing has been cleared automatically.`, ["patient:patient:involvement", ...noPatientOutcomes], ["patient", "event"]);
   const a2Issue = patientA2ChoiceIssue(caseState);
   if (a2Issue) issue("patient-a2-choice-required", a2Issue, ["patient:patient:a2Value", "patient:patient:dateOfBirth", "patient:patient:ageYears"], ["patient"]);
   for (const product of caseState.products.filter(p => p.state === "resolved" && d3Eligible(p.facts))) {

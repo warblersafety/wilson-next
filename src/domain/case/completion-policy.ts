@@ -1,3 +1,4 @@
+import { seriousOutcomeFields } from "./serious-outcomes";
 import { allFacts, getFact, targetFromKey } from "./facts";
 import { isSettled, medicationAnswerFields, medicationFieldApplies, missingMedicationFields } from "./medication";
 import type { AskedNeed, Fact, ProductEntity, SemanticCase, SemanticNeedKey } from "./types";
@@ -26,15 +27,7 @@ interface BaseQuestion<K extends SemanticNeedKey> {
   reason: string;
 }
 
-const seriousOutcomeFields = [
-  "death",
-  "lifeThreatening",
-  "hospitalized",
-  "disability",
-  "requiredIntervention",
-  "congenitalAnomaly",
-  "otherSerious",
-] as const;
+
 
 const reporterCompletionFields = [
   "lastName",
