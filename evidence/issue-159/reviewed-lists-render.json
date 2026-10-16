@@ -1,0 +1,19 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 2,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-159\/reviewed-lists-page-2.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "No password prompt, corruption, or displaced form content is visible",
+    "FDA, MedWatch, Form 3500, OMB expiry, and page identity are preserved",
+    "A1 blank for explicitly present participation; hospitalization checked, no other demographics invented",
+    "Other native fields remain consistent with the reviewed fictional product-problem case",
+    "Reporter is explicitly declined; no identity invented"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-159\/reviewed-lists.pdf"
+}

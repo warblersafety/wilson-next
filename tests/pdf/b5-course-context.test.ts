@@ -30,7 +30,7 @@ async function inspect(current: ReturnType<typeof courseContextCase>) {
 }
 it("carries exact course qualifiers in their own B5 statements with supplied order, date and sources", async () => {
   const current = courseContextCase(), { fields, projection } = await inspect(current);
-  expect(fields[narrative]).toContain(`Treatment: oral fluids reported first; second treatment reported later (${courseContext.treatments}).`);
+  expect(fields[narrative]).toContain(`Treatment: oral fluids reported first; second treatment reported later. Treatment list context: ${courseContext.treatments}.`);
   expect(fields[narrative]).toContain(`Outcome: improved but not back to baseline (${courseContext.outcome}).`);
   expect(fields[narrative]).toContain(`Discharged 21-Aug-2026 (${courseContext.dischargeDate}).`);
   const text = fields[narrative];

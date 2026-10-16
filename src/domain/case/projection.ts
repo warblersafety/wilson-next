@@ -1,3 +1,4 @@
+import { listWithContext } from "./list-context";
 import { noPatientConflictingTargets, noPatientOutcomeConflictingTargets } from "./patient-involvement";
 import {purchaseDetailFields,purchaseDetailLabels,purchaseCountryLabel} from "./purchase-details";
 import { d3DateFields, type TreatmentDuration } from "./duration";
@@ -511,8 +512,8 @@ function buildEventDescription(caseState: SemanticCase): { value?: string; sourc
     }
   };
   append(caseState.event.facts.problemDescription, (value) => `Problem detail: ${qualifiedText(value, known(caseState.event.facts.problemDescription)?.qualifier)}.`);
-  append(caseState.event.facts.symptoms, (value) => `Symptoms: ${qualifiedText(value.join(" and "), known(caseState.event.facts.symptoms)?.qualifier)}.`);
-  append(caseState.event.facts.treatments, (value) => `Treatment: ${qualifiedText(value.join("; "), known(caseState.event.facts.treatments)?.qualifier)}.`);
+  append(caseState.event.facts.symptoms, (value) => `Symptoms: ${listWithContext(value.join(" and "), known(caseState.event.facts.symptoms)?.qualifier, "Symptoms list context")}.`);
+  append(caseState.event.facts.treatments, (value) => `Treatment: ${listWithContext(value.join("; "), known(caseState.event.facts.treatments)?.qualifier, "Treatment list context")}.`);
   append(caseState.event.facts.outcome, (value) => `Outcome: ${qualifiedText(value, known(caseState.event.facts.outcome)?.qualifier)}.`);
   append(caseState.event.facts.dischargeDate, (value) => `Discharged ${qualifiedText(displayDate(value), known(caseState.event.facts.dischargeDate)?.qualifier)}.`);
   const stopped = caseState.products.filter(({ state }) => state === "resolved").flatMap((product) => {

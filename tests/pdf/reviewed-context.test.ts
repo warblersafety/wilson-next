@@ -51,7 +51,7 @@ it("does not falsely flag the four already carried qualifier shapes as omitted",
   }
   const projection = projectForm3500(current);
   expect(projection.omissions.filter(({ reason }) => reason === "qualifier-not-included")).toEqual([]);
-  expect((await fields(current))[narrative]).toContain("Symptoms: rash (reported, uncertain).");
+  expect((await fields(current))[narrative]).toContain("Symptoms: rash. Symptoms list context: reported, uncertain.");
 });
 it.each(["unknown", "declined", "explicitly-absent", "inapplicable"] as const)("discloses %s narrative answers individually without inventing a B5 statement", async kind => {
   let current = contextCase();

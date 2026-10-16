@@ -1,3 +1,4 @@
+import { listContextScenario } from "../fixtures/list-context";
 import { patientInvolvementScenario } from "../fixtures/patient-involvement";
 import { timeScenario } from "../fixtures/test-time-context";
 import { continuationScenario } from "../fixtures/narrative-continuation";
@@ -637,5 +638,6 @@ export const predeterminedResponseScenarios = {
   narrativeContinuation: continuationScenario,
   testTimeContext: timeScenario,
   patientInvolvement: patientInvolvementScenario,
+  listContext: listContextScenario,
 };
 export const predeterminedModelResponses = Object.values(predeterminedResponseScenarios).flat();

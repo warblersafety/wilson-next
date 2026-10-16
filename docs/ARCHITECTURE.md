@@ -1516,3 +1516,22 @@ ordinary native B2 printing otherwise stays unchanged. Schema/prompt/browser
 state versions are unchanged; existing v22 cases resume with all facts intact
 and readiness recomputed, not silently repaired. FDA authority checked2026-10-16:
 https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500
+
+
+### Whole-list context scope (issue159)
+
+Symptoms and treatments each store one qualifier on the entire list fact, not
+on individual items. Review, pending updates, conflict choices, unsaved edits
+and history now label that text as "Context for this list". B5 uses a separate
+"Symptoms list context" or "Treatment list context" statement after the list.
+The exact qualifier and item order are unchanged. Even context mentioning only
+one item is never parsed, redistributed or expanded into inferred item claims.
+Unqualified list wording is unchanged; scalar and native-choice qualifiers keep
+their existing display. Pending/accepted/conflicted/non-known/history semantics,
+projection provenance, omission notices and PDF glyph/capacity/continuation
+checks are unchanged. No schema, browser version, prompt or question changes.
+
+FDA B5 requests event/clinical-course/treatment detail, and general instructions
+allow section-linked narrative continuation. Authority checked 2026-10-16:
+https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500
+This is presentation fidelity, with no judgment about medical attribution.
