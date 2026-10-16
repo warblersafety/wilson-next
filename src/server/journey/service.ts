@@ -14,7 +14,7 @@ import { testHistoryLimitations } from "../pdf/test-history";
 import { productTextLimitation } from "../pdf/product-text";
 import { quantityLimitation, eventNarrativeLimitation, narrativeTextLimitation } from "../pdf/quantity";
 import type { UnrepresentedModelProposal } from "../../domain/case/model-boundary";
-import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts } from "../../domain/case/limits";
+import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts, form3500SuspectSlot } from "../../domain/case/limits";
 import { completionQuestions } from "../../domain/case/completion-policy";
 import { createSemanticCase } from "../../domain/case/create";
 import { allFacts, getFact, targetFromKey, targetKey } from "../../domain/case/facts";
@@ -729,7 +729,7 @@ export function outputReadinessIssues(
     if (limit) issue("unsupported-treatment-duration",`${productLabel(caseState,product.productId)}: the reviewed duration ${limit}; no new PDF is generated.`,[`product:${product.productId}:treatmentDuration`],[product.productId]);
   }
   for(const [index,product] of projection.sections.D.suspectProducts.slice(0,maximumForm3500SuspectProducts).entries())for(const field of purchaseDetailFields){
-    const value=product[field];if(value===undefined)continue;const limit=purchaseDetailLimitation(field,value,index);
+    const value=product[field];if(value===undefined)continue;const limit=purchaseDetailLimitation(field,value,form3500SuspectSlot(index));
     if(limit)issue("unsupported-purchase-detail",`${productLabel(caseState,product.productId)}: the reviewed ${purchaseDetailLabels[field]} ${limit}. It is retained; no new PDF is generated.`,[`product:${product.productId}:${field}`],[product.productId]);
   }
   const ageLimit = patientAgeLimitation(projection.sections.A.ageYears);

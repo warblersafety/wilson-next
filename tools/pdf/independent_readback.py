@@ -29,6 +29,8 @@ def main() -> None:
             for name, field in fields.items()
             if field.get("/V") not in (None, "")
         }
+    if "--page-text" in sys.argv:
+        result["pageTexts"] = [page.extract_text() for page in reader.pages]
     if "--laboratory-rows" in sys.argv:
         # Read visual rows from widget coordinates, independently of the app's
         # field-name table (the FDA suffixes do not follow visible row order).

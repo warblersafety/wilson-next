@@ -73,8 +73,8 @@ it("does not offer native UNKNOWN as a known country or conflate an unknown stat
  expect(purchaseCountryOptions).toContain("UNKNOWN");expect(purchaseCountrySuggestions).not.toContain("UNKNOWN");expect(purchaseCountryLabel("Unknown")).toBeUndefined();
  let c=productCapacityCase();c=setContextFact(c,`product:${c.products[0].id}:purchaseSellerCountry`,{kind:"unknown"});const r=await inspect(c);expect(r.fields[purchaseNativeGeometry[0].purchaseSellerCountry.name]??"").toBe("");expect(r.projection.omissions).toContainEqual(expect.objectContaining({reason:"unknown",target:`product:${c.products[0].id}:purchaseSellerCountry`}));
 });
-it("three retained suspects with all seller details remain recoverable with capacity notice across snapshot and resume",async()=>{
+it("three retained suspects with all seller details are exportable across snapshot and resume",async()=>{
  let c=productCapacityCase();const id=c.products[2].id;c=setContextFact(c,`product:${id}:role`,{kind:"known",value:"suspect"});for(const f of purchaseDetailFields)c=setContextFact(c,`product:${id}:${f}`,{kind:"known",value:purchaseDetailsA[f]});const before=structuredClone(c);
  const state=parseBrowserJourneyState({version:browserStateVersion,stage:"output",case:c,unrepresented:[]}),snapshot=await getJourneySnapshot(new InMemoryCaseRepository({initialCase:state.case}),c.id);
- expect(snapshot.downloadReady).toBe(false);expect(snapshot.outputIssues).toContainEqual(expect.objectContaining({code:"too-many-suspect-products"}));expect(snapshot.outputIssues.some(i=>i.code==="unsupported-purchase-detail")).toBe(false);expect(c).toEqual(before);expect(state.case).toEqual(c);
+ expect(snapshot.downloadReady).toBe(true);expect(snapshot.outputIssues.some(i=>i.code==="too-many-suspect-products")).toBe(false);expect(snapshot.outputIssues.some(i=>i.code==="unsupported-purchase-detail")).toBe(false);expect(c).toEqual(before);expect(state.case).toEqual(c);
 });

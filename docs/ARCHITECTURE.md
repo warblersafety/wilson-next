@@ -605,7 +605,9 @@ rejected during opening review. A reviewed product or test may be withdrawn
 only after the case reaches output; it remains visible as inactive history and
 is omitted from subsequent projection and PDF generation.
 
-Issue #126 aligns readiness with the bounded PDF's two non-device suspect slots
+Issue208 below supersedes the third-non-device-suspect block with an actual
+additional native form copy. The original issue126 contract aligned readiness
+with the bounded PDF's two non-device suspect slots
 and one concomitant slot. Exceeding either blocks export with an explicit
 capacity notice while retaining every product, fact, source and history entry.
 Readiness and the adapter share these output limits; the adapter guards remain.
@@ -1394,10 +1396,11 @@ No live application-model evidence is claimed.
 
 
 Actual issue188 Opus B1 exposed third-suspect seller details indexing beyond the
-two native slots during readiness. The seller geometry checks now inspect only
-available native positions; the existing over-capacity notice still blocks
+two native slots during readiness. The original seller checks inspected only
+available native positions; its over-capacity notice blocked
 output, retains every third-product fact and permits explicit repair/resume.
-This does not expand capacity or silently move/drop metadata. F1/F2 clarification
+Issue208 now checks the third product against its actual extra-copy native slot
+and exports it rather than relying on that capacity notice. F1/F2 clarification
 adds only country display-format equivalence and distinct unknown status.
 
 ### Shared B5-B7 narrative continuation (issue190)
@@ -1609,9 +1612,10 @@ Native mapping explicitly handles the asymmetric Prod1Cannabi/Prod1PdtOther and
 Pdt2Cannabi/Pdt2PdtOther checkbox names. Both D slots clear unselected checkboxes;
 no prior/conflicted/pending selection resurfaces. Device/concomitant/unknown
 routes retain facts and truthful existing no-destination/classification gates,
-without printing stray D5 context. Third suspects still exceed native capacity;
-explicit withdrawal reallocates by identity, including linked context ordinals.
-Additional D/E copies (E02) and combination components (X01) remain unfinished.
+without printing stray D5 context. Issue208 adds a native copy for the third D
+suspect. Explicit withdrawal reallocates by identity, including linked context
+ordinals. Additional E copies and broader capacity (E02), plus combination
+components (X01), remain unfinished.
 
 Browser statev24 strictly validates genuine v23 and earlier before adding only
 empty product otherProductTypes facts; existing known comments, source/history,
@@ -1620,3 +1624,44 @@ reinterpretation. A genuine pre-change v23 fixture provides migration evidence.
 Older-version fixtures remove the new field rather than weakening validation.
 Promptv22/schemav30 add only the explicit fact and independence constraints.
 Synthetic/mock verification is not live extraction-completeness acceptance.
+
+
+### Third suspect on an additional native Section D form copy (issue208 / E02 first vertical)
+
+FDA general instructions require an additional Form3500 copy with only SectionD
+filled for each suspect beyond the first two. This slice connects the existing
+third retained product to a complete additional copy of the pinned09/2025 native
+form (eight pages), using its first D block. Initial two D blocks remain native
+and editable. Additional copy fields use the same validated native writer and
+fixed generated appearances, then the library's documented flatten/copyPages
+workflow to avoid duplicate AcroForm identities. Correct the third product in
+Wilson and regenerate. Native FDA artwork/labels/controls remain; no generic
+supplement replaces the required form. Non-D fields and the second D block of
+the added copy remain blank. No source facts are duplicated into those sections.
+
+Matching nonclinical report references link the initial native D page, added
+copy and any B5-B7 narrative attachments. Export metadata explicitly identifies
+global suspect#3 as the extra copy's first native block and directs quantity/
+D5 context to the main report B5. Exact qualifiers remain field/product linked
+there, including shared continuation; they cannot satisfy the separate base
+clinical-description gate. Copy ordering follows retained resolved suspect
+identity/order. Role/category correction and withdrawal recompute copies,
+ordinals, fields and content identity without deleting facts/history/drafts.
+
+The native writer receives the full report narrative for quantity-context
+validation while writing blank B fields on the D-only copy. Purchase limits use
+the actual local native slot (slot1 for the extra copy), so invalid country,
+glyph or line/width limits still identify the third product and block new output.
+All existing quantity/date/duration/category validation applies to the copy.
+Independent serialized PDF text/positions and PDFKit renders verify actual copied
+appearances; the adapter's pre-copy semantic readback alone is not sufficient.
+The generated-PDF residual encryption marker prevents this library reloading
+its own output; copying stays within approved in-memory documents. No encryption
+removal, bypass, dependency or credential change was introduced.
+
+Retained case capacity stays three. PDF D capacity is now three through actual
+native copies; a fourth projected suspect is rejected. Multiple suspect devices,
+concomitant capacity and test overflow keep their current truthful gates. Next
+E02 vertical is multiple devices with native E-only copies, not an arbitrary
+capacity bump or unconnected collection. No persisted structures, migrations,
+model/prompt changes, automatic category attribution or component inference.

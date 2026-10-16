@@ -7,7 +7,6 @@ import { capacityProductIds, capacityProductNames, correctCapacityProduct, produ
 import { goTo, savePdf, storedState } from "./draft4-helpers";
 
 for (const scenario of [
-  { name: "three suspect products", index: 2, excessRole: "suspect", supportedRole: "concomitant", limit: "at most 2 suspect medicines or other non-device products" },
   { name: "two concomitant products", index: 1, excessRole: "concomitant", supportedRole: "suspect", limit: "at most 1 concomitant product" },
 ] as const) {
   test(`capacity: ${scenario.name} stays visible and recovers through explicit correction`, async ({ page }, info) => {

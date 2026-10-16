@@ -1,0 +1,24 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 9,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-208\/third-long-context-page-9.png"
+    },
+    {
+      "page" : 15,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-208\/third-long-context-page-15.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "Original FDA native layout and page identities retained; header metadata does not overlap",
+    "B5 continuation and additional native D block carry the same report reference",
+    "Additional copy native D contains only third suspect values, exact units\/dates\/purchase fields",
+    "Drug brand\/OTC, retail cosmetic, hemp\/Other and reaction responses reflect explicit selections",
+    "Long exact third-product context continues in main report attachments; native-copy B5 stays blank"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-208\/third-long-context.pdf"
+}
