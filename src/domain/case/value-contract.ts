@@ -194,10 +194,7 @@ export function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>
       if (target.entity === "event" && target.field === "additionalComments" && typeof actual === "string" && !actual.trim()) return "additionalComments requires explicitly supplied nonblank text";
       return typeof actual === "string" ? undefined : `${target.field} requires a string`;
     case "iso-date":
-      return typeof actual === "string" && /^\d{4}-\d{2}-\d{2}$/.test(actual)
-        && (target.field !== "reportDate" || (Number.isFinite(Date.parse(actual)) && new Date(actual).toISOString().slice(0, 10) === actual))
-        ? undefined
-        : `${target.field} requires an ISO calendar date`;
+      return isCompleteCalendarDate(actual) ? undefined : `${target.field} requires a complete valid ISO calendar date (YYYY-MM-DD), year 0001–9999`;
     case "integer":
       return Number.isInteger(actual) && (actual as number) >= contract.minimum && (actual as number) <= contract.maximum
         ? undefined
@@ -270,7 +267,7 @@ function describeContract(contract: KnownValueContract): string {
     case "birth-date": return "a complete valid Gregorian ISO calendar date YYYY-MM-DD, year 0001–9999; never invent missing components or derive age";
     case "patient-age": return "an integer 0–150 for years, or an object {value: nonnegative safe integer, unit: months, weeks or days} for explicit non-year patient age (legacy target ageYears)";
     case "string": return "a string";
-    case "iso-date": return "an ISO date (YYYY-MM-DD)";
+    case "iso-date": return "a complete valid Gregorian ISO calendar date YYYY-MM-DD, year 0001–9999; never infer missing components or repair an impossible date";
     case "integer": return `an integer from ${contract.minimum} through ${contract.maximum}`;
     case "boolean": return "a boolean";
     case "string-array": return "an array of strings";
@@ -294,4 +291,9 @@ function omit<const T extends Record<string, KnownValueContract>, const K extend
   const copy = { ...value };
   delete copy[key];
   return copy;
+}
+
+/** Includes legacy shape-only date contracts; storage deliberately retains their old values. */
+export function isCalendarDateTarget(target: FactTarget): boolean {
+  return ["iso-date", "calendar-date", "birth-date"].includes(contractForTarget(target).shape);
 }

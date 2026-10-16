@@ -1806,3 +1806,28 @@ accepted facts or explicitly remembered defaults may prefill it.
 Issue217 separately tracks the pre-existing Sex control/birth-basis guidance
 premise. Issue151 does not relabel stored facts or select a new demographic
 contract while providing faithful output for the existing reviewed values.
+
+Calendar validity (#164): new known date facts use the shared complete Gregorian
+validator at the model and authoritative command boundaries, including conflict
+selection. No date arithmetic, repair, or missing component inference is performed.
+Legacy shape-only date fields retain their existing browser-state schemas: current,
+pending, conflicting and historical values restore without rewriting the case.
+A resolved invalid date on a retained entity produces a targeted export blocker;
+explicit clinician correction preserves the old value in history. The PDF adapter
+also checks dates before native formatting. Date fact editors retain unfinished
+partial/impossible text drafts. This is calendar validity only: #180 remains the
+required field-linked representation and source-visibility path for partial dates.
+
+Legacy invalid pending date proposals can be corrected during their existing group
+review without discarding other supplied details. Invalid original proposals are
+retained in history. Invalid conflict alternatives cannot be selected; an explicit
+supplied date/status correction can resolve only this invalid-date exception and
+keeps every alternative in history. Recovery drafts have a typed case-owned UI
+record, preserve unfinished text on reload, and become retained earlier edits if
+their review changes; they never become clinical authority automatically. This
+does not reopen general semantic correction #150. Model schema description
+revision is `wilson-grounded-proposals-v31-calendar-validity`; no provider or live
+model call is introduced.
+A newly supplied invalid-date conflict correction cites only its clinician
+correction source. The impossible alternatives keep their original sources in
+history; those sources are not presented as support for the new date/status.

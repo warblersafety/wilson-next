@@ -1,3 +1,5 @@
+import { isCalendarDateTarget } from "./value-contract";
+import { isCompleteCalendarDate } from "./calendar-date";
 import { otherProductTypeValues, type OtherProductType } from "./other-product-types";
 import { listWithContext } from "./list-context";
 import { noPatientConflictingTargets, noPatientOutcomeConflictingTargets } from "./patient-involvement";
@@ -56,6 +58,7 @@ export interface Form3500Projection {
     F: { concomitantProducts: ProjectedConcomitantProduct[] };
     G: { reporter: ProjectedReporter };
   };
+  invalidCalendarDates?: { target: string; value: string }[];
   sourceTrace: Record<string, string[]>;
   omissions: ProjectionOmission[];
   notIncluded: string[];
@@ -153,6 +156,13 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     caseId: caseState.id,
     revision: caseState.revision,
     sections: { A: {}, B: { relevantTests: [] }, C: {}, D: { suspectProducts: [] }, E: { suspectDevices: [] }, F: { concomitantProducts: [] }, G: { reporter: {} } },
+    invalidCalendarDates: allFacts(caseState).flatMap(({target, fact}) => {
+      if (target.entity === "product" && !caseState.products.some(p => p.id === target.entityId && p.state === "resolved")) return [];
+      if (target.entity === "test" && !caseState.relevantTests.some(t => t.id === target.entityId && t.state === "resolved")) return [];
+      const value = known(fact)?.value;
+      return isCalendarDateTarget(target) && value !== undefined && !isCompleteCalendarDate(value)
+        ? [{target: targetKey(target), value: String(value)}] : [];
+    }),
     sourceTrace: {},
     omissions: [],
     notIncluded: [
@@ -536,6 +546,7 @@ function buildEventDescription(caseState: SemanticCase): { value?: string; sourc
 }
 
 function displayDate(value: string): string {
+  if (!isCompleteCalendarDate(value)) return value;
   const [year, month, day] = value.split("-");
   const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][Number(month) - 1];
   return `${Number(day)}-${monthName}-${year}`;

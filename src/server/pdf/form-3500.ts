@@ -253,6 +253,7 @@ export async function fillRepresentativeForm(
 
 /** Additional suspects use a real FDA form copy, only D filled, never a text substitute. */
 export async function fillForm3500Projection(source: Uint8Array, projection: Form3500Projection): Promise<Form3500ProjectionFillResult> {
+  if (projection.invalidCalendarDates?.length) throw new Error("Retained invalid calendar dates require explicit correction before PDF export");
   if (projection.sections.D.suspectProducts.length > maximumForm3500SuspectProducts) throw new Error(`The approved Form 3500 adapter supports at most ${maximumForm3500SuspectProducts} suspect products`);
   const products = projection.sections.D.suspectProducts, devices = projection.sections.E.suspectDevices;
   if (devices.length > maximumForm3500SuspectDevices) throw new Error(`The approved Form 3500 adapter supports at most ${maximumForm3500SuspectDevices} suspect devices`);
@@ -820,6 +821,7 @@ function compact<T extends object>(value: T): T {
 const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
 function formatDate(value: string): string {
+  if (!isCompleteCalendarDate(value)) throw new Error(`Unsupported Form 3500 calendar date ${value}`);
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
   if (!match) throw new Error(`Unsupported Form 3500 date ${value}`);
   const month = months[Number(match[2]) - 1];

@@ -312,6 +312,7 @@ export interface ResolveConflictCommand extends CommandEnvelope {
   type: "resolve-conflict";
   target: FactTarget;
   chosenValueId: string;
+  dateCorrection?: CaseValue<unknown>;
   source: Source;
 }
 

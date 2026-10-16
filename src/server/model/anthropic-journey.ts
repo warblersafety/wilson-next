@@ -21,7 +21,7 @@ import type {
 
 export const ANTHROPIC_MODEL_ID = "claude-sonnet-5";
 export const MODEL_PROMPT_REVISION = "wilson-native-e-copies-v23";
-export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v30-d5-other-types";
+export const MODEL_SCHEMA_REVISION = "wilson-grounded-proposals-v31-calendar-validity";
 export const PROVIDER_MAX_OUTPUT_TOKENS = 128_000;
 export const MODEL_MAX_RETRIES = 0;
 

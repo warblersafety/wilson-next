@@ -13,6 +13,7 @@ const booleanAnswer = z.union([nonKnown, z.object({ kind: z.literal("known"), va
 const dateAnswer = z.union([nonKnown, z.object({ kind: z.literal("known"), value: z.string(), qualifier: z.string().optional() }).strict()]);
 const reporterValues = z.object({ firstName: z.string(), lastName: z.string(), address: z.string(), city: z.string(), state: z.string(), postalCode: z.string(), country: z.string(), phone: z.string(), email: z.string(), occupation: z.string() }).strict();
 export const componentDraftSchemas = {
+  "legacy-date-recovery": z.object({drafts:z.record(z.string(),editableValue),qualifierControls:z.record(z.string(),z.boolean())}).strict(),
   indications: z.object({ choices: z.record(z.string(), choice), texts: z.record(z.string(), z.string()) }).strict(),
   "serious-outcomes": z.object({ selected: z.array(z.enum(["death", "lifeThreatening", "hospitalized", "disability", "requiredIntervention", "congenitalAnomaly", "otherSerious"])) }).strict(),
   "death-date": z.object({ date: z.string() }).strict(),
@@ -33,6 +34,7 @@ export type DraftKind = keyof typeof componentDraftSchemas;
 export type DraftData<K extends DraftKind> = z.infer<(typeof componentDraftSchemas)[K]>;
 export type ComponentDraft = { [K in DraftKind]: { kind: K; scope: string; dependency: string; data: DraftData<K> } }[DraftKind];
 const recordSchema = z.discriminatedUnion("kind", [
+  z.object({kind:z.literal("legacy-date-recovery"),scope:z.string(),dependency:z.string(),data:componentDraftSchemas["legacy-date-recovery"]}).strict(),
   z.object({ kind: z.literal("indications"), scope: z.string(), dependency: z.string(), data: componentDraftSchemas.indications }).strict(),
   z.object({ kind: z.literal("serious-outcomes"), scope: z.string(), dependency: z.string(), data: componentDraftSchemas["serious-outcomes"] }).strict(),
   z.object({ kind: z.literal("death-date"), scope: z.string(), dependency: z.string(), data: componentDraftSchemas["death-date"] }).strict(),
@@ -116,7 +118,7 @@ export function reduceUiDrafts(state: UiDraftSnapshot, action: DraftAction): UiD
   if (action.type === "response") {
     const base = state.caseId && state.caseId !== action.caseId ? initialUiDrafts(action.caseId) : { ...state, caseId: action.caseId };
     const q = action.snapshot.clarification;
-    const records = Object.fromEntries(Object.entries(base.records).filter(([, record]) => record.kind === "card"
+    const records = Object.fromEntries(Object.entries(base.records).filter(([, record]) => (record.kind === "card" || record.kind === "legacy-date-recovery")
       || (record.kind === "reporter" ? record.dependency === reporterDraftKey(action.snapshot)
         : q && q.kind === record.kind && q.key === record.scope && record.dependency === clinicalDraftKey(action.snapshot))));
     return { ...base, records };

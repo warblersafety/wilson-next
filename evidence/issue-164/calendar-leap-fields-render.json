@@ -1,0 +1,32 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 1,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-164\/calendar-leap-fields-page-1.png"
+    },
+    {
+      "page" : 2,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-164\/calendar-leap-fields-page-2.png"
+    },
+    {
+      "page" : 3,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-164\/calendar-leap-fields-page-3.png"
+    },
+    {
+      "page" : 4,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-164\/calendar-leap-fields-page-4.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "Native supplied calendar dates remain readable in their existing fields",
+    "No date components calculated or repaired",
+    "Independent pypdf native-field readback accompanies render inspection"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-164\/calendar-leap-fields.pdf"
+}

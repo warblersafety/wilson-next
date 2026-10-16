@@ -50,6 +50,15 @@ export function reconcileWorkspace(data: WorkspaceData, state: BrowserJourneySta
   const retained = [...data.retained];
   const records: UiDraftSnapshot["records"] = {};
   for (const [key, record] of Object.entries(data.ui.records)) {
+    if (record.kind === "legacy-date-recovery") {
+      const attention = snapshot.review.attention;
+      const applicable = record.scope === "updates" && record.dependency === "legacy-date-update-recovery"
+        ? attention.some(item => item.kind !== "conflict")
+        : record.scope.startsWith("conflict:") && attention.some(item => item.kind === "conflict" && record.scope === `conflict:${item.target}` && record.dependency === JSON.stringify(item.values));
+      if (applicable) records[key] = record;
+      else if (hasDraftWork(record)) retained.push({reason:"These unfinished date corrections refer to a review that has changed; they were not applied.",record});
+      continue;
+    }
     if (record.kind !== "card") {
       const applicable = record.kind === "reporter"
         ? record.scope === "case" && record.dependency === reporterDraftKey(snapshot)
@@ -95,7 +104,7 @@ export function reconcileWorkspace(data: WorkspaceData, state: BrowserJourneySta
 
 export function hasWorkspaceWork(state: BrowserJourneyState | undefined, ui: UiDraftSnapshot, retainedCount = 0): boolean {
   return Boolean(retainedCount > 0 || (state?.case.revision ?? 0) > 0 || ui.text.opening || ui.text.update || ui.text.reportType !== "adverse-event"
-    || Object.values(ui.records).some(record => record.kind === "card" ? Object.keys(record.data.drafts).length > 0
+    || Object.values(ui.records).some(record => (record.kind === "card" || record.kind === "legacy-date-recovery") ? Object.keys(record.data.drafts).length > 0
       : record.kind === "reporter" && JSON.stringify([record.data.values, record.data.reportDate, record.data.healthProfessional, record.data.reportedTo, record.data.doNotDiscloseIdentity]) !== record.data.baseline));
 }
 
@@ -122,6 +131,7 @@ function editableTarget(entity: string, field: string, value: CaseValue<unknown>
 export function hasDraftWork(record: ComponentDraft): boolean {
   const data = record.data;
   switch (record.kind) {
+    case "legacy-date-recovery":
     case "card": return Object.keys(record.data.drafts).length > 0;
     case "reporter": return JSON.stringify([record.data.values, record.data.reportDate, record.data.healthProfessional, record.data.reportedTo, record.data.doNotDiscloseIdentity]) !== record.data.baseline;
     case "indications": return Object.keys(record.data.choices).length > 0 || Object.values(record.data.texts).some(Boolean);
@@ -141,6 +151,14 @@ export function acknowledgeWorkspaceDrafts(ui: UiDraftSnapshot, action: JourneyA
   for (const [key, record] of Object.entries(result.records)) {
     if (record.kind === taskKinds[action.action] && (record.kind === "reporter" ? record.scope === "case" : record.scope === snapshot.clarification?.key && record.dependency === clinicalDraftKey(snapshot))) {
       delete result.records[key]; continue;
+    }
+    if (record.kind === "legacy-date-recovery") {
+      if (action.action === "resolve-conflict" && action.dateCorrection !== undefined && record.scope === `conflict:${action.target}`) { delete result.records[key]; continue; }
+      if (action.action === "review-update-group" && action.decision === "accept" && record.scope === "updates") {
+        const ids = new Set((action.dateCorrections ?? []).map(c => c.proposalId));
+        record.data = {...record.data,drafts:Object.fromEntries(Object.entries(record.data.drafts).filter(([id]) => !ids.has(id))),qualifierControls:Object.fromEntries(Object.entries(record.data.qualifierControls).filter(([id]) => !ids.has(id)))};
+      }
+      continue;
     }
     if (record.kind !== "card") continue;
     let scope: unknown;

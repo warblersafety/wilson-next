@@ -1,3 +1,4 @@
+import {isCalendarDateTarget,knownValueMismatch} from "../../domain/case/value-contract";
 import {sexTextLimitation} from "../pdf/patient-sex";
 import {reporterTextIssues,reporterTextLabels} from "../pdf/reporter-text";
 import {concomitantTextIssues,concomitantFieldLabel} from "../pdf/concomitant";
@@ -70,6 +71,7 @@ export interface JourneySnapshot {
 }
 
 export type OutputReadinessIssueCode =
+  | "invalid-calendar-date"
   | "product-d3-choice-required" | "unsupported-treatment-duration" | "unsupported-purchase-detail"
   | "pending-proposal-review"
   | "open-clarification"
@@ -548,15 +550,22 @@ export async function performJourneyAction(
         });
         break;
       }
-      case "review-update-group":
+      case "review-update-group": {
         requireStage(expectedStage, "review-update");
+        const dateCorrections = action.dateCorrections ?? [];
+        for (const correction of dateCorrections) {
+          const entry = allFacts(current).find(({fact}) => fact.proposedValues.some(p => p.id === correction.proposalId && p.groupId === action.groupId));
+          const proposal = entry?.fact.proposedValues.find(p => p.id === correction.proposalId);
+          if (!entry || !proposal || !isCalendarDateTarget(entry.target) || !knownValueMismatch(entry.target,proposal.value)) throw new Error("Only retained invalid date proposals can be corrected in this review");
+        }
         await applyCommand({
           type: "review-proposal-groups",
           commandId: commandId("review-update"),
           expectedRevision: current.revision,
-          decisions: [{ groupId: action.groupId, action: action.decision }],
+          decisions: [action.decision === "reject" ? {groupId:action.groupId,action:"reject"} : {groupId:action.groupId,action:"accept",corrections:dateCorrections.map(c => ({...c,replacementId:valueId("corrected-date"),source:fullSource("correction","Clinician supplied this date correction during legacy update review.")}))}],
         });
         break;
+      }
       case "resolve-conflict": {
         requireStage(expectedStage, "output");
         const target = targetFromKey(current, action.target);
@@ -569,7 +578,8 @@ export async function performJourneyAction(
           expectedRevision: current.revision,
           target,
           chosenValueId: action.chosenValueId,
-          source: fullSource("resolution", `Use ${displayValue(chosen.value, target)} as ${targetStatement(current, target)}.`),
+          dateCorrection: action.dateCorrection,
+          source: fullSource("resolution", action.dateCorrection !== undefined ? `Clinician supplied ${displayValue(action.dateCorrection,target)} to correct this retained invalid date conflict.` : `Use ${displayValue(chosen.value, target)} as ${targetStatement(current, target)}.`),
         });
         break;
       }
@@ -668,6 +678,9 @@ export function outputReadinessIssues(
   const issue = (code: OutputReadinessIssueCode, message: string, targets: string[] = [], entityIds: string[] = []) => {
     issues.push({ code, message, targets, entityIds });
   };
+  for (const {target, value} of projection.invalidCalendarDates ?? []) {
+    issue("invalid-calendar-date", `The retained date ${value} is not a valid complete calendar date. It has not been changed. Correct this date in Review details using the supplied date, or explicitly record Unknown, Declined, or another supplied status; Wilson does not repair or infer components. No new PDF is generated.`, [target], [targetFromKey(caseState, target).entityId]);
+  }
   if (hasPendingProposals(caseState)) {
     issue(
       "pending-proposal-review",
