@@ -115,6 +115,7 @@ export interface ProjectedProduct {
   expirationDate?: string;
   dose?: ProjectedQuantity;
   strength?: ProjectedQuantity;
+  d2Context?: Array<{ field: "route" | "frequency"; text: string }>;
   frequency?: string;
   route?: string;
   startDate?: string;
@@ -381,7 +382,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   // can bypass assign(). Their current context must still never disappear.
   const carriedQualifierTargets = new Set(["patient:patient:sex", "event:event:symptoms", "event:event:problemDescription", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate", "event:event:relevantHistory", "event:event:additionalComments"]);
   for (const product of projection.sections.D.suspectProducts) {
-    for (const field of ["dose", "strength"]) carriedQualifierTargets.add(`product:${product.productId}:${field}`);
+    for (const field of ["dose", "strength", "route", "frequency"]) carriedQualifierTargets.add(`product:${product.productId}:${field}`);
   }
   for (const entry of d5OtherTypeContextEntries(caseState, projection)) carriedQualifierTargets.add(entry.target);
   for (const entry of deviceContextEntries(caseState, projection)) carriedQualifierTargets.add(entry.target);
@@ -420,7 +421,11 @@ function projectProduct(
       : field === "otherProductTypes" ? otherProductTypeValues.filter(label => (value as string[]).includes(label))
       : field === "purchaseSellerCountry" ? purchaseCountryLabel(String(value)) ?? value
       : field === "dose" || field === "strength" ? { value: String(value), ...(known(product.facts[field])?.qualifier !== undefined ? { qualifier: known(product.facts[field])!.qualifier } : {}) }
-        : value, field === "dose" || field === "strength" || field === "otherProductTypes");
+        : value, field === "dose" || field === "strength" || field === "otherProductTypes" || field === "route" || field === "frequency");
+  }
+  for (const field of ["route", "frequency"] as const) {
+    const value = known(product.facts[field]);
+    if (value?.qualifier) (result.d2Context ??= []).push({ field, text: value.qualifier });
   }
   const choice = known(product.facts.d3Value);
   if (choice) {

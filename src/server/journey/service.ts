@@ -1,3 +1,4 @@
+import {d2TextIssues} from "../pdf/d2-continuation";
 import {isEventDateField,eventDateLabels,isProductDateField,productDateLabels,suppliedDateText} from "../../domain/case/date-precision";
 import {isPartialExpiration,expirationText} from "../../domain/case/expiration";
 import {productDateTextIssues} from "../pdf/product-date-continuation";
@@ -130,6 +131,7 @@ export async function getJourneySnapshot(
     const limitation = await deviceTextLimitation(field.projected,value);
     if (limitation) outputIssues.push({code:"unsupported-product-text",message:`${productLabel(caseState,device.productId)}: the reviewed Section E ${field.label} ${limitation}. The wording is retained; no new PDF is generated.`,targets:[`product:${device.productId}:${field.fact}`],entityIds:[device.productId]});
   }
+  for (const problem of await d2TextIssues(projection)) outputIssues.push({code:"unsupported-product-text",message:`${productLabel(caseState,problem.productId)}: the reviewed D2 ${problem.field} ${problem.limitation}. The wording is retained; no new PDF is generated.`,targets:[`product:${problem.productId}:${problem.field}`],entityIds:[problem.productId]});
   for (const problem of await concomitantTextIssues(projection)) outputIssues.push({code:"unsupported-product-text", message:`${productLabel(caseState,problem.productId)}: the reviewed Section F ${concomitantFieldLabel(problem.field)} ${problem.limitation}. The wording is retained; no new PDF is generated.`, targets:[`product:${problem.productId}:${problem.field}`], entityIds:[problem.productId]});
   for (const problem of await reporterTextIssues(projection)) outputIssues.push({code:"unsupported-product-text",message:`The reviewed reporter ${reporterTextLabels[problem.field]} ${problem.limitation}. The wording is retained; no new PDF is generated.`,targets:[`reporter:reporter:${problem.field}`],entityIds:["reporter"]});
   const baseLimitation = await narrativeTextLimitation(baseEventDescription(caseState));

@@ -1,0 +1,22 @@
+{
+  "capturedPages" : [
+    {
+      "page" : 12,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-233\/third-route-page-12.png"
+    },
+    {
+      "page" : 17,
+      "rendered" : true,
+      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-233\/third-route-page-17.png"
+    }
+  ],
+  "manualInspectionRequired" : [
+    "Native supplied calendar dates remain readable in their existing fields",
+    "No date components calculated or repaired",
+    "Independent pypdf native-field readback accompanies render inspection"
+  ],
+  "renderer" : "macOS PDFKit",
+  "scale" : 2,
+  "source" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-233\/third-route.pdf"
+}

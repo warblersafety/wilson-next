@@ -255,3 +255,9 @@ retained-product capacity and combination-component work (X01) remain.
 Native concomitant rows within the retained-case bound are implemented in issue212.
 Broader case capacity and test overflow still need connected support. See the
 [concrete remaining practical-cut work](REMAINING-PRACTICAL-CUT.md).
+
+D2 route and frequency preserve exact long/multiline wording and uncertainty in
+product/field-linked readable supplements (#233, bounded #153), including review,
+correction and browser resume. Native wording that fits keeps existing output.
+No clinical normalization, inference or shortened wording is used. Broader glyph
+support remains #154; unsupported characters remain explicit export limitations.
