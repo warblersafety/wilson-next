@@ -1,27 +1,27 @@
 {
-  "capturedPages" : [
+  "capturedPages": [
     {
-      "page" : 4,
-      "rendered" : true,
-      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-233\/d2-conversation-page-4.png"
+      "page": 4,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-233/d2-conversation-page-4.png"
     },
     {
-      "page" : 5,
-      "rendered" : true,
-      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-233\/d2-conversation-page-5.png"
+      "page": 5,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-233/d2-conversation-page-5.png"
     },
     {
-      "page" : 10,
-      "rendered" : true,
-      "screenshot" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-233\/d2-conversation-page-10.png"
+      "page": 10,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-233/d2-conversation-page-10.png"
     }
   ],
-  "manualInspectionRequired" : [
-    "Native supplied calendar dates remain readable in their existing fields",
-    "No date components calculated or repaired",
-    "Independent pypdf native-field readback accompanies render inspection"
+  "manualInspectionRequired": [
+    "Exact route/frequency text and uncertainty readable at fixed size",
+    "Native pointer and link do not overlap form header",
+    "Global product ordinal, field, reference and pagination intact"
   ],
-  "renderer" : "macOS PDFKit",
-  "scale" : 2,
-  "source" : "\/Users\/sofa-claude\/code\/warblersafety\/wilson-next\/evidence\/issue-233\/d2-conversation.pdf"
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-233/d2-conversation.pdf"
 }
