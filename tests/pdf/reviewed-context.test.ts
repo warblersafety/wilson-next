@@ -109,6 +109,7 @@ it("covers every active known qualifier, including routing and medication prereq
   const projection = projectForm3500(current), omissions = projection.omissions.filter(({ reason }) => reason === "qualifier-not-included");
   const carried = new Set(["patient:patient:sex", "event:event:symptoms", "event:event:problemDescription", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate", "event:event:relevantHistory", ...current.relevantTests.filter(test => test.state === "resolved").flatMap(test => ["testName", "testResult", "lowRange", "highRange", "date"].map(field => `test:${test.id}:${field}`)), ...projection.sections.D.suspectProducts.flatMap(p => [`product:${p.productId}:dose`, `product:${p.productId}:strength`, `product:${p.productId}:route`, `product:${p.productId}:frequency`])]);
   for (const p of projection.sections.F.concomitantProducts) for (const context of p.fieldContext ?? []) carried.add(`product:${p.productId}:${context.field}`);
+  for(const detail of projection.concomitantMedicationNotes??[])carried.add(`product:${detail.productId}:${detail.field}`);
   for (const context of projection.sections.G.reporter.fieldContext??[]) carried.add(`reporter:reporter:${context.field}`);
   for (const { target, fact } of allFacts(current)) {
     const value = fact.resolvedValue?.value, key = targetKey(target);

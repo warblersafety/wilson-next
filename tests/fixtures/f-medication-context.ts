@@ -1,0 +1,4 @@
+import{readFileSync}from'node:fs';import type{SemanticCase}from'../../src/domain/case/types';import{referenceFixture}from'./source-references';
+export function originalFCase():SemanticCase{return JSON.parse(readFileSync('evidence/live-acceptance-241/artifacts/A07/before-regimen-recovery-final.json','utf8')).state.case;}
+export const fMedicationUpdate='Correction for Acetaminophen only: the dose was 325 mg. The reported amount remains uncertain. Keep its concomitant role and all other facts unchanged.';
+export const fMedicationScenario=[{identityScope:'f-medication-context',turn:'correction'as const,output:referenceFixture(fMedicationUpdate,{products:[],proposals:[{proposalReference:'f-dose-correction',groupReference:'f-dose-correction',intent:'correction',target:{entity:'product',productReference:originalFCase().products[1].id,field:'dose'},value:{kind:'known',value:'325 mg',qualifier:'The reported amount remains uncertain'},evidenceQuote:fMedicationUpdate}]})}];

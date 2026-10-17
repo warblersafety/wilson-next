@@ -148,11 +148,12 @@ describe("pure case views and semantic Form 3500 projection", () => {
         name: "lisinopril",
       },
     ]);
-    expect(resolved.notIncluded).toEqual(expect.arrayContaining([
-      expect.stringContaining("lisinopril — Dose remains in reviewed knowledge but is not included in Section F"),
-      expect.stringContaining("lisinopril — Frequency remains in reviewed knowledge but is not included in Section F"),
-      expect.stringContaining("lisinopril — Route remains in reviewed knowledge but is not included in Section F"),
+    expect(resolved.concomitantMedicationNotes).toEqual(expect.arrayContaining([
+      expect.objectContaining({productId:"product-lisinopril",field:"dose",text:"10 mg"}),
+      expect.objectContaining({productId:"product-lisinopril",field:"frequency",text:"daily"}),
+      expect.objectContaining({productId:"product-lisinopril",field:"route",text:"oral"}),
     ]));
+    expect(resolved.notIncluded.some(text=>text.includes("lisinopril — Dose remains"))).toBe(false);
     expect(resolved.sourceTrace["sections.D.suspectProducts.0.startDate"]).toEqual(expect.arrayContaining([
       "source-input-correction-p2",
       "source-date-resolution",

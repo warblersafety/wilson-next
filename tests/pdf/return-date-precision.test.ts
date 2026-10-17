@@ -24,7 +24,7 @@ async function pdf(c = returnDateCase()) {
 }
 it.each([monthReturnDate, { precision: 'year' as const, year: '2029', wording: 'Return recorded during 2029' }])('C1 preserves supplied precision %j and qualifier/source in linked Additional comments with no inferred date or facts', async (value) => {
     const c = setContextFact(returnDateCase(), 'event:event:productReturnDate', { kind: 'known', value, qualifier: 'Return day uncertain' }), before = structuredClone(c), { x, p } = await pdf(c);
-    expect(x.pageCount).toBe(8);
+    expect(x.pageCount).toBe(9);
     expect(x.namedFields[date]).toBe('B6 comments');
     expect(x.namedFields[comments]).toContain('C1 product return date wording:');
     expect(x.namedFields[comments]).toContain(value.wording);
@@ -111,10 +111,10 @@ it('pending/conflicted dates do not print until explicit resolution; no new test
 it('dense C1 wording shares comments pagination/reference with other context; glyph issues target actual return date', async () => {
     const wording = Array.from({ length: 110 }, (_, i) => `Fictional return date line ${i + 1}: during 2028; day not supplied.`).join('\n'), base = returnDateCase(), c = setContextFact(setContextFact(setContextFact(base, `test:${base.relevantTests[0].id}:lowRange`, { kind: 'known', value: '4.0', qualifier: 'Fictional assay limit context' }), 'event:event:additionalComments', { kind: 'known', value: 'Fictional independent comment' }), 'event:event:productReturnDate', { kind: 'known', value: { precision: 'year', year: '2028', wording } }), { x } = await pdf(c);
     expect(x.pageCount).toBeGreaterThan(9);
-    expect(x.pageTexts.slice(8).join('\n')).toContain('Fictional return date line 110');
-    expect(x.pageTexts.slice(8).join('\n')).toContain('Fictional independent comment');
-    expect(x.pageTexts.slice(8).join('\n')).toContain('Fictional assay limit context');
-    for (const page of x.pageTexts.slice(8))
+    expect(x.pageTexts.slice(8).filter((text:string)=>!text.startsWith("Form FDA 3500 (09/2025) - Section F continuation")).join('\n')).toContain('Fictional return date line 110');
+    expect(x.pageTexts.slice(8).filter((text:string)=>!text.startsWith("Form FDA 3500 (09/2025) - Section F continuation")).join('\n')).toContain('Fictional independent comment');
+    expect(x.pageTexts.slice(8).filter((text:string)=>!text.startsWith("Form FDA 3500 (09/2025) - Section F continuation")).join('\n')).toContain('Fictional assay limit context');
+    for (const page of x.pageTexts.slice(8).filter((text:string)=>!text.startsWith("Form FDA 3500 (09/2025) - Section F continuation")))
         expect(page).toContain(form3500ReportReference(projectForm3500(c)));
     const glyph = setContextFact(c, 'event:event:productReturnDate', { kind: 'known', value: { ...monthReturnDate, wording: 'Return during February 2028 漢' } }), snap = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: glyph }), glyph.id);
     expect(snap.downloadReady).toBe(false);

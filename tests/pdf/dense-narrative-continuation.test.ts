@@ -28,7 +28,7 @@ async function inspect(c:ReturnType<typeof denseCase>,stem?:string){
  const directory=process.env.WILSON_CONTINUATION_EVIDENCE??await mkdtemp(join(tmpdir(),"wilson190-dense-")),path=join(directory,`${stem??"dense"}.pdf`);await writeFile(path,filled.output);
  const {stdout}=await promisify(execFile)(process.env.PYPDF_PYTHON??"python3",["tools/pdf/continuation_readback.py",path]);
  if(stem&&process.env.WILSON_CONTINUATION_EVIDENCE)await writeFile(join(directory,`${stem}-readback.json`),stdout);
- const r=JSON.parse(stdout);return{...r,projection,body:r.pages.flatMap((p:any)=>p.runs.filter((r:any)=>r.y>=56&&r.y<=700).map((r:any)=>r.text)).join("")};
+ const r=JSON.parse(stdout);r.pages=r.pages.filter((p:any)=>p.runs.some((r:any)=>r.text.includes("Narrative continuation")));return{...r,projection,body:r.pages.flatMap((p:any)=>p.runs.filter((r:any)=>r.y>=56&&r.y<=700).map((r:any)=>r.text)).join("")};
 }
 it("six reviewed serial tests export dense field/row-linked context exactly; withdrawal reflows correct current rows without obsolete context",async()=>{
  const c=denseCase(),before=structuredClone(c),restored=parseBrowserJourneyState(JSON.parse(JSON.stringify({version:browserStateVersion,stage:"output",case:c,unrepresented:[]}))).case;
@@ -39,5 +39,5 @@ it("six reviewed serial tests export dense field/row-linked context exactly; wit
 });
 it.each(["unknown","declined","explicitly-absent","inapplicable"]as const)("long prior history is not resurrected by continuation after current %s",async kind=>{
  let c=testHistoryContextCase();const wording="Earlier fictional history. ".repeat(150);c=setContextFact(c,"event:event:relevantHistory",{kind:"known",value:wording});expect((await inspect(c)).body).toContain("Earlier fictional history.");
- c=setContextFact(c,"event:event:relevantHistory",{kind});const r=await inspect(c);expect(r.pageCount).toBe(8);expect(r.pages).toEqual([]);expect(r.fields["topmostSubform[0].Page3[0].Sec6Data[0].OtherHistory[0]"]??"").toBe("");expect(c.event.facts.relevantHistory.supersededValues.some(v=>v.value.kind==="known"&&v.value.value===wording)).toBe(true);
+ c=setContextFact(c,"event:event:relevantHistory",{kind});const r=await inspect(c);expect(r.pageCount).toBe(9);expect(r.pages).toEqual([]);expect(r.fields["topmostSubform[0].Page3[0].Sec6Data[0].OtherHistory[0]"]??"").toBe("");expect(c.event.facts.relevantHistory.supersededValues.some(v=>v.value.kind==="known"&&v.value.value===wording)).toBe(true);
 });

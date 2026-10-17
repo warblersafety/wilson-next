@@ -22,7 +22,7 @@ async function inspect(projection: ReturnType<typeof projectForm3500>, stem?: st
  const path=join(directory,`${stem??"continuation"}.pdf`);await writeFile(path,result.output);
  const {stdout}=await promisify(execFile)(process.env.PYPDF_PYTHON??"python3",["tools/pdf/continuation_readback.py",path]);
  if(stem&&process.env.WILSON_CONTINUATION_EVIDENCE)await writeFile(join(directory,`${stem}-readback.json`),stdout);
- return {result,...JSON.parse(stdout)} as {result:typeof result;pageCount:number;fields:Record<string,string>;pages:Array<{pdfPage:number;width:number;height:number;runs:Array<{text:string;x:number;y:number;size:number;font:string}>}>};
+ const parsed=JSON.parse(stdout);parsed.pages=parsed.pages.filter((p:any)=>p.runs.some((r:any)=>r.text.includes("Narrative continuation")));return {result,...parsed} as {result:typeof result;pageCount:number;fields:Record<string,string>;pages:Array<{pdfPage:number;width:number;height:number;runs:Array<{text:string;x:number;y:number;size:number;font:string}>}>};
 }
 it("wraps exactly without discarding spaces/newlines or splitting Unicode, including empty paragraphs and long tokens",async()=>{
  const font=await (await PDFDocument.create()).embedFont(StandardFonts.Helvetica);
@@ -31,13 +31,13 @@ it("wraps exactly without discarding spaces/newlines or splitting Unicode, inclu
  for(const line of wrapped)expect(font.widthOfTextAtSize(line.text,10)).toBeLessThanOrEqual(528);
  }
 });
-it("keeps native-fitting output unchanged and creates no attachment pages",async()=>{
- const p=projectForm3500(testHistoryContextCase()),r=await inspect(p);expect(r.pageCount).toBe(8);expect(r.pages).toEqual([]);expect(await planNarrativeContinuations(p)).toEqual([]);for(const field of Object.keys(native)as Array<keyof typeof native>)expect(r.fields[native[field]]).toBe(p.sections.B[field]);
+it("keeps native-fitting narrative unchanged while retaining the separate F medication supplement",async()=>{
+ const p=projectForm3500(testHistoryContextCase()),r=await inspect(p);expect(r.pageCount).toBe(9);expect(r.pages).toEqual([]);expect(await planNarrativeContinuations(p)).toEqual([]);for(const field of Object.keys(native)as Array<keyof typeof native>)expect(r.fields[native[field]]).toBe(p.sections.B[field]);
 });
 it("exports all current B5-B7 content across correctly labelled numbered attachments with native cross-references and unchanged other fields",async()=>{
  const p=projectForm3500(testHistoryContextCase()),before=structuredClone(p),baseline=await inspect(p);
  p.sections.B.eventDescription=lines("B5 account",100);p.sections.B.relevantTestContext=lines("B6 table row 1 - Result context",65);p.sections.B.relevantHistory=lines("B7 history",60);
- const expected=structuredClone(p),plans=await planNarrativeContinuations(p),r=await inspect(p,"all-blocks");expect(p).toEqual(expected);expect(plans.map(p=>p.block)).toEqual(["B5","B6","B7"]);expect(r.pageCount).toBe(8+plans.reduce((n,p)=>n+p.pages.length,0));
+ const expected=structuredClone(p),plans=await planNarrativeContinuations(p),r=await inspect(p,"all-blocks");expect(p).toEqual(expected);expect(plans.map(p=>p.block)).toEqual(["B5","B6","B7"]);expect(r.pageCount).toBe(9+plans.reduce((n,p)=>n+p.pages.length,0));
  let attachment=0;
  for(const plan of plans){expect(r.fields[native[plan.field]]).toBe(plan.marker);expect(plan.marker.endsWith("continued")).toBe(true);const actual:string[]=[];
  for(const pageLines of plan.pages){const page=r.pages[attachment++];expect(page.width).toBe(612);expect(page.height).toBe(792);expect(page.runs.some(r=>r.text===`Section B, block ${plan.block} - ${plan.label}`)).toBe(true);expect(page.runs.some(r=>r.text===`Report reference: ${plan.reportReference}`)).toBe(true);expect(r.fields[native[plan.field]]).toContain(`Report reference: ${plan.reportReference}`);expect(page.runs.some(run=>run.text===`Attachment page ${attachment} of ${r.pages.length}`)).toBe(true);const body=page.runs.filter(run=>run.y>=56&&run.y<=700);expect(body.map(r=>r.text)).toEqual(pageLines.filter(l=>l.text).map(l=>l.text));for(const run of body){expect(run.size).toBe(10);expect(run.font).toBe("/Helvetica");expect(run.x).toBe(42);}actual.push(...body.map(r=>r.text));}

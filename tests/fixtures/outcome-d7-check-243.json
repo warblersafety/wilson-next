@@ -1,0 +1,33 @@
+{
+  "status": "FROZEN BEFORE EXECUTION; original PR242 failures unchanged",
+  "cases": [
+    {
+      "id": "A03",
+      "opening": "Entirely fictional evaluation. Patient TEST-51 is a 51-year-old woman. She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia. On 05-Sep-2026 she developed muscle pain and weakness. ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. No serious outcomes applied. No other relevant medical history applies. Atorvastatin was stopped, and she was improving. I suspect atorvastatin.",
+      "reportType": "adverse-event",
+      "expected": "General improving/resolved outcome retained independently; no unqualified D7 Yes inferred only from stopped-and-outcome co-occurrence. An explicit uncertain/clarification proposal remains reviewable."
+    },
+    {
+      "id": "A04",
+      "opening": "Entirely fictional evaluation. Patient TEST-47 is a 47-year-old man. He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026. Warfarin is suspect; acetaminophen is concomitant. On 08-Aug-2026 he developed epistaxis and easy bruising. INR was 4.8 on 08-Aug-2026. No serious outcomes applied. No other relevant medical history applies. Warfarin was stopped and the symptoms resolved.",
+      "reportType": "adverse-event",
+      "expected": "General improving/resolved outcome retained independently; no unqualified D7 Yes inferred only from stopped-and-outcome co-occurrence. An explicit uncertain/clarification proposal remains reviewable."
+    },
+    {
+      "id": "A11",
+      "opening": "Entirely fictional evaluation. Entirely fictional case LIVE-MULTI-57: a 57-year-old man weighing 70 kg developed a rash on 03 September 2026. He took warfarin 5 mg by mouth daily from 01 August 2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours from 01 September 2026 for pain. Warfarin is suspect; acetaminophen is concomitant. Warfarin was stopped on 04 September 2026, the rash improved after stopping, and warfarin was never restarted. Acetaminophen was not stopped or reduced. He was hospitalized; no other serious outcomes apply. INR was 4.8 on 03 September 2026 with reference limits 0.8 and 1.2; ALT was 67 U/L on 03 September 2026 with reference limits 7 and 56. The INR collection time was not recorded. No additional relevant history applies. This is an adverse-event report, and the product is not available for evaluation. These two products are explicitly medications.",
+      "reportType": "adverse-event",
+      "expected": "Explicit improved-after-stopping supports D7 Yes; no stronger causal/clinical claim, date calculation or invented outcome. INR uncertainty retained only on INR."
+    }
+  ],
+  "model": "claude-sonnet-5",
+  "prompt": "wilson-duration-wording-v31",
+  "schema": "wilson-grounded-proposals-v39-duration-wording",
+  "maximumCalls": 3,
+  "automaticRetries": 0,
+  "estimateCeilingUsd": 3,
+  "nextCallReserveUsd": 1.7,
+  "route": "existing single protected preview actual browser form; release verified before each call",
+  "failureDisposition": "Preserve substantive failure, diagnose source/schema/prompt/projection boundary; report, no unbounded fixes or expectation changes",
+  "retainStructuredProviderTextWithoutThinking": true
+}

@@ -21,7 +21,7 @@ async function pdf(c = eventDateCase()) {
 }
 it.each(eventDateFields)('%s keeps exact precision/context/source in B5 without invented dates or unrelated changes', async (field) => {
     const c = setContextFact(eventDateCase(), `event:event:${field}`, { kind: 'known', value: eventDates[field], qualifier: 'Supplied date transcription uncertain' }), before = structuredClone(c), { x, projection } = await pdf(c);
-    expect(x.pageCount).toBe(8);
+    expect(x.pageCount).toBe(9);
     expect(Object.values(x.namedFields).join('\n')).toContain(eventDates[field].wording);
     expect(projection.sections.B.eventDescription).toContain('Supplied date transcription uncertain');
     expect(c).toEqual(before);
@@ -54,7 +54,7 @@ it('explicit death prerequisite suppresses retained partial death date without i
     p = projectForm3500(c);
     expect(p.sections.B.eventDescription).toContain('Death date during 2030');
     expect(p.sections.B.eventDescription).not.toContain(eventDates.deathDate.wording);
-    expect((await pdf(c)).x.pageCount).toBe(8);
+    expect((await pdf(c)).x.pageCount).toBe(9);
 });
 it.each(eventDateFields)('%s correction/status invalidates content and reference without resurrecting old wording or changing other facts', async (field) => {
     const c = setContextFact(eventDateCase(), `event:event:${field}`, { kind: 'known', value: eventDates[field] }), key = async (s: typeof c) => (await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: s }), s.id)).reportContentKey, base = await key(c);
@@ -96,9 +96,9 @@ it('new onset/death supplemental dates do not satisfy the substantive narrative 
 it('dense date wording uses existing B5 pagination/reference; adapter rejects a dangling B3/B2 pointer', async () => {
     const wording = Array.from({ length: 110 }, (_, i) => `Fictional onset date line ${i + 1}: during 2028, exact day unknown.`).join('\n'), c = setContextFact(eventDateCase(), 'event:event:onsetDate', { kind: 'known', value: { precision: 'year', year: '2028', wording } }), { x } = await pdf(c);
     expect(x.pageCount).toBeGreaterThan(9);
-    expect(x.pageTexts.slice(8).join('\n')).toContain('Fictional onset date line 110');
+    expect(x.pageTexts.slice(8).filter((text:string)=>!text.startsWith("Form FDA 3500 (09/2025) - Section F continuation")).join('\n')).toContain('Fictional onset date line 110');
     const ref = form3500ReportReference(projectForm3500(c));
-    for (const page of x.pageTexts.slice(8))
+    for (const page of x.pageTexts.slice(8).filter((text:string)=>!text.startsWith("Form FDA 3500 (09/2025) - Section F continuation")))
         expect(page).toContain(ref);
     const p = projectForm3500(eventDateCase());
     p.sections.B.eventDate = undefined;

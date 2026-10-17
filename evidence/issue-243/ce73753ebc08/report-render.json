@@ -1,0 +1,14 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "report.pdf",
+  "inspectedPages": [
+    9
+  ],
+  "checks": [
+    "Native F name and supplement pointer readable (A07 page 6)",
+    "Exact accepted medication details and qualifiers readable at fixed 10pt",
+    "Dense continuation page boundaries and final line 100 visible; no overlap/clipping"
+  ],
+  "limitation": "Only listed pages visually inspected; all PDF pages independently parsed by pypdf."
+}

@@ -67,7 +67,7 @@ it("strictly upgrades genuine v16 with only empty reduction-date facts and does 
  const malformed=structuredClone(expected);malformed.case=structuredClone(setContextFact(c,`product:${c.products[0].id}:doseReductionDate`,{kind:"known",value:"2026-09-18"}));malformed.case.products[0].facts.doseReductionDate.resolvedValue!.value={kind:"known",value:"2026-02-31"};expect(()=>parseBrowserJourneyState(malformed)).toThrow();
 });
 it("discloses accepted date knowledge with no native destination after device/concomitant routing",()=>{
- let c=productCapacityCase();const id=c.products[0].id;c=setContextFact(c,`product:${id}:doseReductionDate`,{kind:"known",value:"2026-09-18"});c=setContextFact(c,`product:${id}:role`,{kind:"known",value:"concomitant"});expect(projectForm3500(c).notIncluded.join(" ")).toContain("Dose reduction date remains in reviewed knowledge");
+ let c=productCapacityCase();const id=c.products[0].id;c=setContextFact(c,`product:${id}:doseReductionDate`,{kind:"known",value:"2026-09-18"});c=setContextFact(c,`product:${id}:role`,{kind:"known",value:"concomitant"});expect(projectForm3500(c).concomitantMedicationNotes).toContainEqual(expect.objectContaining({productId:id,field:"doseReductionDate",text:"2026-09-18"}));
  c=setContextFact(c,`product:${id}:role`,{kind:"known",value:"suspect"});c=setContextFact(c,`product:${id}:productType`,{kind:"known",value:"device"});expect(projectForm3500(c).notIncluded.join(" ")).toContain("Dose reduction date remains in reviewed knowledge");
 });
 it("rejects partial direct API acceptance without mutation or model calls",async()=>{

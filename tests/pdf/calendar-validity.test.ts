@@ -22,5 +22,5 @@ it('native adapter independently rejects an impossible direct projected date eve
 it('valid leap dates print unchanged in B3, D3/D6, and B6 with independent PDF reader',async()=>{
  let c=productCapacityCase();for(const target of ['event:event:onsetDate','product:product-apixaban:startDate','product:product-apixaban:expirationDate','test:test-hemoglobin:date'])c=setContextFact(c,target,{kind:'known',value:'2028-02-29'});
  const result=await fillForm3500Projection(await source(),projectForm3500(c)),file=join(await mkdtemp(join(tmpdir(),'wilson164-')),'calendar.pdf');await writeFile(file,result.output);const pdf=JSON.parse((await promisify(execFile)(process.env.PYPDF_PYTHON??'python3',['tools/pdf/independent_readback.py',file,'--named','--page-text'])).stdout);
- expect(pdf.pageCount).toBe(8);expect(Object.values(pdf.namedFields).filter(v=>v==='29-FEB-2028').length).toBeGreaterThanOrEqual(4);expect(pdf.pageTexts.join('\n')).not.toContain('30-FEB');
+ expect(pdf.pageCount).toBe(9);expect(Object.values(pdf.namedFields).filter(v=>v==='29-FEB-2028').length).toBeGreaterThanOrEqual(4);expect(pdf.pageTexts.join('\n')).not.toContain('30-FEB');
 });

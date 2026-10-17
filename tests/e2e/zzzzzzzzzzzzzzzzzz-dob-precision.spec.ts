@@ -67,7 +67,7 @@ test('A2 conversational partial DOB stays pending until review, resumes exactly 
             expect(before.patient.facts[f as keyof typeof c.patient.facts]).toEqual(c.patient.facts[f as keyof typeof c.patient.facts]);
     await writeFile(info.outputPath('dob-partial-state.json'), JSON.stringify(await storedState(page)));
     let x = await pdf(page, info.outputPath('dob-partial-dates.pdf'));
-    expect(x.pageCount).toBe(8);
+    expect(x.pageCount).toBe(9);
     expect(x.namedFields[date]).toBe('B6 comments');
     expect(x.namedFields[comments]).toContain(monthDob.wording);
     let row = await edit(page);

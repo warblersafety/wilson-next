@@ -35,7 +35,7 @@ async function correct(page: Page, selector: string, label: string, value: strin
   expect((await response).ok()).toBe(true);
   await expect(row.getByRole("button", { name: "Change", exact: true })).toBeVisible();
 }
-async function readPdf(page: Page, file: string, pages=8) {
+async function readPdf(page: Page, file: string, pages=9) {
   const download = await savePdf(page); await download.saveAs(file);
   const { stdout } = await promisify(execFile)(process.env.PYPDF_PYTHON ?? "python3", ["tools/pdf/independent_readback.py", file, "--named"]);
   const result = JSON.parse(stdout); expect(result.pageCount).toBe(pages);
@@ -79,11 +79,11 @@ test("reviewed intersex exports without false boxes, survives resume and explici
  await correct(page,'#case-card-patient [data-field="sex"]','New Sex','intersex',true);
  const changed=await storedState(page);expect(changed.case.patient.facts.sex.resolvedValue?.value).toEqual({kind:'known',value:'intersex'});
  for(const key of ['products','event','reporter','relevantTests']as const)expect(changed.case[key]).toEqual(baseline.case[key]);
- const file=info.outputPath('intersex.pdf'),native=await readPdf(page,file,9);
+ const file=info.outputPath('intersex.pdf'),native=await readPdf(page,file,10);
  expect(native['topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]']).toBe('/Off');expect(native['topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]']).toBe('/Off');
  const x=JSON.parse((await promisify(execFile)(process.env.PYPDF_PYTHON??'python3',['tools/pdf/independent_readback.py',file,'--page-text'])).stdout);expect(x.pageTexts[8]).toContain('A3 Sex (reviewed value): intersex');
  await expect(page.getByText('The reviewed sex value is included in an A3-linked supplement.',{exact:false})).toBeVisible();
- await expect(page.getByRole('region',{name:'Browser saving'}).getByRole('status')).toHaveText('Saved in this browser');await writeFile(info.outputPath('sex-state.json'),JSON.stringify(await storedState(page)));await page.reload();await expect(page.getByRole('button',{name:'New case',exact:true})).toBeEnabled();expect((await storedState(page)).case).toEqual(changed.case);await readPdf(page,info.outputPath('resumed-intersex.pdf'),9);
+ await expect(page.getByRole('region',{name:'Browser saving'}).getByRole('status')).toHaveText('Saved in this browser');await writeFile(info.outputPath('sex-state.json'),JSON.stringify(await storedState(page)));await page.reload();await expect(page.getByRole('button',{name:'New case',exact:true})).toBeEnabled();expect((await storedState(page)).case).toEqual(changed.case);await readPdf(page,info.outputPath('resumed-intersex.pdf'),10);
  await correct(page,'#case-card-patient [data-field="sex"]','New Sex','female',true);const restored=await storedState(page);expect(restored.case.patient.facts.sex.supersededValues.some(v=>v.value.kind==='known'&&v.value.value==='intersex')).toBe(true);
  const corrected=await readPdf(page,info.outputPath('explicit-correction.pdf'));expect(corrected['topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]']).toBe('/1');expect(corrected['topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]']).toBe('/Off');
  for(const field of Object.keys(baseline.case.patient.facts)as Array<keyof typeof baseline.case.patient.facts>)if(field!=='sex')expect(restored.case.patient.facts[field]).toEqual(baseline.case.patient.facts[field]);
@@ -102,7 +102,7 @@ test("explicit conversational sex proposal stays pending until review; qualified
  await expect(page.getByRole('heading',{name:'Review the proposed update',exact:true})).toBeVisible();expect((await storedState(page)).case.patient.facts.sex.resolvedValue).toEqual(baseline.case.patient.facts.sex.resolvedValue);
  await expect(page.getByText('Supplied account; not independently confirmed',{exact:false}).first()).toBeVisible();await page.getByRole('button',{name:'Accept these changes',exact:true}).click();await expect(page.getByRole('button',{name:'New case',exact:true})).toBeEnabled();
  const accepted=await storedState(page);expect(accepted.case.patient.facts.sex.resolvedValue?.sourceIds).toContain('sex-source-151');for(const key of ['products','event','reporter','relevantTests']as const)expect(accepted.case[key]).toEqual(baseline.case[key]);
- const file=info.outputPath('qualified-intersex.pdf');await readPdf(page,file,9);const x=JSON.parse((await promisify(execFile)(process.env.PYPDF_PYTHON??'python3',['tools/pdf/independent_readback.py',file,'--page-text'])).stdout);expect(x.pageTexts[8]).toContain('A3 Sex context: Supplied account; not independently confirmed');
+ const file=info.outputPath('qualified-intersex.pdf');await readPdf(page,file,10);const x=JSON.parse((await promisify(execFile)(process.env.PYPDF_PYTHON??'python3',['tools/pdf/independent_readback.py',file,'--page-text'])).stdout);expect(x.pageTexts[8]).toContain('A3 Sex context: Supplied account; not independently confirmed');
  await goTo(page,'Review details');const row=page.locator('#case-card-patient [data-field="sex"]');await row.getByRole('button',{name:'Change',exact:true}).click();await row.getByLabel('Uncertainty or context for Sex',{exact:true}).fill('Supplied β context');await row.getByRole('button',{name:'Apply correction',exact:true}).click();await expect(row.getByRole('button',{name:'Change',exact:true})).toBeVisible();await goTo(page,'Review & save');await expect(page.getByRole('heading',{name:'This PDF cannot represent every reviewed value',exact:true})).toBeVisible();await expect(page.getByText('The reviewed sex value is included in an A3-linked supplement.',{exact:false})).toHaveCount(0);await expect(page.getByRole('link',{name:'Save PDF',exact:true})).toHaveCount(0);expect((await storedState(page)).case.patient.facts.sex.resolvedValue?.value).toEqual({kind:'known',value:'intersex',qualifier:'Supplied β context'});
  await goTo(page,'Review details');await row.getByRole('button',{name:'Change',exact:true}).click();await row.getByLabel('Sex status',{exact:true}).selectOption('unknown');await row.getByRole('button',{name:'Apply correction',exact:true}).click();await expect(row.getByRole('button',{name:'Change',exact:true})).toBeVisible();
  expect((await storedState(page)).case.patient.facts.sex.resolvedValue?.value).toEqual({kind:'unknown'});const blank=await readPdf(page,info.outputPath('sex-unknown.pdf'));expect(blank['topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]']).toBe('/Off');expect(blank['topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]']).toBe('/Off');noInterpretations();
@@ -121,7 +121,7 @@ test("representability: oversized route/frequency survive reload and print exact
     expect(retained.case.products[1]).toEqual(baseline.case.products[1]); expect(retained.case.products[2]).toEqual(baseline.case.products[2]);
     await page.reload(); await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
     expect((await storedState(page)).case).toEqual(retained.case);
-    const supplemented = await readPdf(page, info.outputPath(`long-${field}.pdf`),9);
+    const supplemented = await readPdf(page, info.outputPath(`long-${field}.pdf`),10);
     expect(supplemented[`${prefix[0]}${field === "route" ? "RouteOther" : "FreqOther"}[0]`]).toBe("D2 supplement");
     await correct(page, `#case-card-product-1 [data-field="${field}"]`, label, replacement);
     expect((await storedState(page)).case.products[0].facts[field].supersededValues.map(v => v.value)).toContainEqual({ kind: "known", value: long });

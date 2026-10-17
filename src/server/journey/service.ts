@@ -165,7 +165,7 @@ export async function getJourneySnapshot(
     projection,
     downloadReady: outputIssues.length === 0,
     clinicalNeeds: completionQuestions(caseState).filter(({ kind }) => kind !== "reporter"),
-    reportContentKey: createHash("sha256").update(JSON.stringify({sections:projection.sections,quantitySupplements:d2SupplementEntries(projection).some(e=>e.field==="dose"||e.field==="strength")?d2SupplementEntries(projection).filter(e=>e.field==="dose"||e.field==="strength"):undefined,productDateNotes:projection.productDateNotes?.map(({field,block,ordinal,text})=>({field,block,ordinal,text})),expirationNotes:projection.expirationNotes?.map(({block,ordinal,text})=>({block,ordinal,text}))}, (key, value) =>
+    reportContentKey: createHash("sha256").update(JSON.stringify({sections:projection.sections,concomitantMedicationNotes:projection.concomitantMedicationNotes?.map(({ordinal,field,text})=>({ordinal,field,text})),quantitySupplements:d2SupplementEntries(projection).some(e=>e.field==="dose"||e.field==="strength")?d2SupplementEntries(projection).filter(e=>e.field==="dose"||e.field==="strength"):undefined,productDateNotes:projection.productDateNotes?.map(({field,block,ordinal,text})=>({field,block,ordinal,text})),expirationNotes:projection.expirationNotes?.map(({block,ordinal,text})=>({block,ordinal,text}))}, (key, value) =>
       ["productId", "testId"].includes(key) ? undefined
         : ["reportedTo", "medicationType"].includes(key) && Array.isArray(value) ? [...value].sort() : value)).digest("hex"),
     outputIssues,

@@ -1,0 +1,540 @@
+{
+  "caseId": "case-a726d825-fad9-48b2-a86c-e222e6f520e1",
+  "revision": 10,
+  "sections": {
+    "A": {
+      "ageYears": 57,
+      "sex": "male",
+      "weight": {
+        "value": 70,
+        "unit": "kg"
+      }
+    },
+    "B": {
+      "relevantTests": [
+        {
+          "testId": "test-c570a949-acc7-4cf8-95b1-2a1b08be8f21",
+          "testResult": "INR: 4.3",
+          "lowRange": "0.8",
+          "highRange": "1.2",
+          "date": "2026-09-03"
+        },
+        {
+          "testId": "test-f94a98a1-edf4-4ad5-a9f8-4a4f7e830809",
+          "testResult": "ALT: 67 U/L",
+          "lowRange": "7",
+          "highRange": "56",
+          "date": "2026-09-03"
+        }
+      ],
+      "reportType": "adverse-event",
+      "eventDate": "2026-09-03",
+      "reportDate": "2026-10-17",
+      "hospitalized": true,
+      "death": false,
+      "lifeThreatening": false,
+      "disability": false,
+      "requiredIntervention": false,
+      "congenitalAnomaly": false,
+      "otherSerious": false,
+      "relevantTestContext": "B6 table row 1 - Test date context: collection time was not recorded",
+      "eventDescription": "Symptoms: rash. Products stopped: warfarin."
+    },
+    "C": {
+      "productAvailability": "not-available"
+    },
+    "D": {
+      "suspectProducts": [
+        {
+          "productId": "product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+          "name": "warfarin",
+          "dose": {
+            "value": "5 mg"
+          },
+          "frequency": "daily",
+          "route": "oral",
+          "startDate": "2026-08-01",
+          "stopDate": "2026-09-04",
+          "indication": "atrial fibrillation",
+          "improvedAfterChange": true,
+          "recurred": "inapplicable"
+        }
+      ]
+    },
+    "E": {
+      "suspectDevices": []
+    },
+    "F": {
+      "concomitantProducts": [
+        {
+          "productId": "product-1a877467-bc4f-4d24-8356-8b3bf8cb247d",
+          "name": "acetaminophen",
+          "startDate": "2026-09-01"
+        }
+      ]
+    },
+    "G": {
+      "reporter": {
+        "lastName": "Fiction",
+        "firstName": "Alex",
+        "email": "alex.fiction@example.invalid",
+        "healthProfessional": true,
+        "occupation": "Physician",
+        "reportedTo": [],
+        "doNotDiscloseIdentity": true
+      }
+    }
+  },
+  "invalidCalendarDates": [],
+  "expirationNotes": [],
+  "productDateNotes": [],
+  "sourceTrace": {
+    "sections.A.ageYears": [
+      "source-d237898c-375a-478e-9579-09decf5752f2"
+    ],
+    "sections.A.sex": [
+      "source-d237898c-375a-478e-9579-09decf5752f2"
+    ],
+    "sections.A.weight": [
+      "source-d237898c-375a-478e-9579-09decf5752f2"
+    ],
+    "sections.B.reportType": [
+      "source-80a88474-53ac-40aa-8f6d-19648a7fb05b"
+    ],
+    "sections.B.eventDate": [
+      "source-d237898c-375a-478e-9579-09decf5752f2"
+    ],
+    "sections.B.reportDate": [
+      "source-45471959-6348-4204-8159-137131a9e1d5"
+    ],
+    "sections.B.hospitalized": [
+      "source-5294740e-a438-458f-b7b9-41a403601a60"
+    ],
+    "sections.B.death": [
+      "source-5294740e-a438-458f-b7b9-41a403601a60"
+    ],
+    "sections.B.lifeThreatening": [
+      "source-5294740e-a438-458f-b7b9-41a403601a60"
+    ],
+    "sections.B.disability": [
+      "source-5294740e-a438-458f-b7b9-41a403601a60"
+    ],
+    "sections.B.requiredIntervention": [
+      "source-5294740e-a438-458f-b7b9-41a403601a60"
+    ],
+    "sections.B.congenitalAnomaly": [
+      "source-5294740e-a438-458f-b7b9-41a403601a60"
+    ],
+    "sections.B.otherSerious": [
+      "source-5294740e-a438-458f-b7b9-41a403601a60"
+    ],
+    "sections.C.productAvailability": [
+      "source-2fe95877-c041-4a58-a06a-9b109a3abeea"
+    ],
+    "sections.B.relevantTests.0.testResult": [
+      "source-0bb1e490-2a94-4993-a066-a82083b2bfcb",
+      "source-01c20683-f485-4875-b477-48c07ed11caf"
+    ],
+    "sections.B.relevantTests.0.lowRange": [
+      "source-0bb1e490-2a94-4993-a066-a82083b2bfcb"
+    ],
+    "sections.B.relevantTests.0.highRange": [
+      "source-0bb1e490-2a94-4993-a066-a82083b2bfcb"
+    ],
+    "sections.B.relevantTests.0.date": [
+      "source-0bb1e490-2a94-4993-a066-a82083b2bfcb",
+      "source-9ba377ff-03b0-4679-b9b6-01d7e499fb1d"
+    ],
+    "sections.B.relevantTests.1.testResult": [
+      "source-0bb1e490-2a94-4993-a066-a82083b2bfcb"
+    ],
+    "sections.B.relevantTests.1.lowRange": [
+      "source-0bb1e490-2a94-4993-a066-a82083b2bfcb"
+    ],
+    "sections.B.relevantTests.1.highRange": [
+      "source-0bb1e490-2a94-4993-a066-a82083b2bfcb"
+    ],
+    "sections.B.relevantTests.1.date": [
+      "source-0bb1e490-2a94-4993-a066-a82083b2bfcb"
+    ],
+    "sections.B.relevantTestContext": [
+      "source-0bb1e490-2a94-4993-a066-a82083b2bfcb",
+      "source-9ba377ff-03b0-4679-b9b6-01d7e499fb1d"
+    ],
+    "sections.B.eventDescription": [
+      "source-d237898c-375a-478e-9579-09decf5752f2",
+      "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7",
+      "source-7454cecd-ef89-4f5b-a130-20bd82b1ee7b"
+    ],
+    "sections.D.suspectProducts.0.name": [
+      "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+    ],
+    "sections.D.suspectProducts.0.dose": [
+      "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+    ],
+    "sections.D.suspectProducts.0.frequency": [
+      "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+    ],
+    "sections.D.suspectProducts.0.route": [
+      "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+    ],
+    "sections.D.suspectProducts.0.startDate": [
+      "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+    ],
+    "sections.D.suspectProducts.0.stopDate": [
+      "source-7454cecd-ef89-4f5b-a130-20bd82b1ee7b"
+    ],
+    "sections.D.suspectProducts.0.indication": [
+      "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+    ],
+    "sections.D.suspectProducts.0.improvedAfterChange": [
+      "source-7454cecd-ef89-4f5b-a130-20bd82b1ee7b"
+    ],
+    "sections.D.suspectProducts.0.recurred": [
+      "source-7454cecd-ef89-4f5b-a130-20bd82b1ee7b"
+    ],
+    "sections.F.concomitantProducts.0.name": [
+      "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+    ],
+    "sections.F.concomitantProducts.0.startDate": [
+      "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+    ],
+    "concomitantMedicationNotes.0": [
+      "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+    ],
+    "concomitantMedicationNotes.1": [
+      "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+    ],
+    "concomitantMedicationNotes.2": [
+      "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+    ],
+    "concomitantMedicationNotes.3": [
+      "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+    ],
+    "concomitantMedicationNotes.4": [
+      "source-157e5899-8217-4705-b7ef-34c20007fcbf"
+    ],
+    "concomitantMedicationNotes.5": [
+      "source-157e5899-8217-4705-b7ef-34c20007fcbf"
+    ],
+    "sections.G.reporter.lastName": [
+      "source-1cfbf594-a9f3-42c6-b975-3f2305a87dad"
+    ],
+    "sections.G.reporter.firstName": [
+      "source-1cfbf594-a9f3-42c6-b975-3f2305a87dad"
+    ],
+    "sections.G.reporter.email": [
+      "source-1cfbf594-a9f3-42c6-b975-3f2305a87dad"
+    ],
+    "sections.G.reporter.healthProfessional": [
+      "source-1cfbf594-a9f3-42c6-b975-3f2305a87dad"
+    ],
+    "sections.G.reporter.occupation": [
+      "source-1cfbf594-a9f3-42c6-b975-3f2305a87dad"
+    ],
+    "sections.G.reporter.reportedTo": [
+      "source-1cfbf594-a9f3-42c6-b975-3f2305a87dad"
+    ],
+    "sections.G.reporter.doNotDiscloseIdentity": [
+      "source-1cfbf594-a9f3-42c6-b975-3f2305a87dad"
+    ]
+  },
+  "omissions": [
+    {
+      "concept": "patient identifier",
+      "target": "patient:patient:identifier",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "patient involvement",
+      "target": "patient:patient:involvement",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "patient date of birth",
+      "target": "patient:patient:dateOfBirth",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "patient race and/or ethnicity",
+      "target": "patient:patient:raceEthnicity",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "relevant medical history",
+      "target": "event:event:relevantHistory",
+      "reason": "explicitly-absent",
+      "sourceIds": [
+        "source-81011d37-f636-4de3-ba2d-fc43bddf144b"
+      ]
+    },
+    {
+      "concept": "product problem",
+      "target": "event:event:problemDescription",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "treatment",
+      "target": "event:event:treatments",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "event outcome",
+      "target": "event:event:outcome",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "discharge date",
+      "target": "event:event:dischargeDate",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "additional comments",
+      "target": "event:event:additionalComments",
+      "reason": "explicitly-absent",
+      "sourceIds": [
+        "source-cf780db0-0a83-41db-bf55-73ffd12b901b",
+        "context-source-9-event:event:additionalComments"
+      ]
+    },
+    {
+      "concept": "manufacturer for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:manufacturer",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "lotNumber for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:lotNumber",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "ndcOrUniqueId for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:ndcOrUniqueId",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "expirationDate for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:expirationDate",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "purchaseDate for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:purchaseDate",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "purchaseSellerName for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:purchaseSellerName",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "purchaseSellerAddress for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:purchaseSellerAddress",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "purchaseSellerCity for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:purchaseSellerCity",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "purchaseSellerRegion for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:purchaseSellerRegion",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "purchaseSellerPostalCode for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:purchaseSellerPostalCode",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "purchaseSellerCountry for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:purchaseSellerCountry",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "purchaseWebsite for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:purchaseWebsite",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "strength for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:strength",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "therapyOngoing for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:therapyOngoing",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "doseReductionDate for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:doseReductionDate",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "treatmentDuration for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:treatmentDuration",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "medicationType for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:medicationType",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "cosmeticUse for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:cosmeticUse",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "otherProductTypes for product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd",
+      "target": "product:product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd:otherProductTypes",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "stopDate for product-1a877467-bc4f-4d24-8356-8b3bf8cb247d",
+      "target": "product:product-1a877467-bc4f-4d24-8356-8b3bf8cb247d:stopDate",
+      "reason": "empty",
+      "sourceIds": []
+    },
+    {
+      "concept": "reporter address",
+      "target": "reporter:reporter:address",
+      "reason": "explicitly-absent",
+      "sourceIds": [
+        "source-1cfbf594-a9f3-42c6-b975-3f2305a87dad"
+      ]
+    },
+    {
+      "concept": "reporter city",
+      "target": "reporter:reporter:city",
+      "reason": "explicitly-absent",
+      "sourceIds": [
+        "source-1cfbf594-a9f3-42c6-b975-3f2305a87dad"
+      ]
+    },
+    {
+      "concept": "reporter state",
+      "target": "reporter:reporter:state",
+      "reason": "explicitly-absent",
+      "sourceIds": [
+        "source-1cfbf594-a9f3-42c6-b975-3f2305a87dad"
+      ]
+    },
+    {
+      "concept": "reporter postalCode",
+      "target": "reporter:reporter:postalCode",
+      "reason": "explicitly-absent",
+      "sourceIds": [
+        "source-1cfbf594-a9f3-42c6-b975-3f2305a87dad"
+      ]
+    },
+    {
+      "concept": "reporter country",
+      "target": "reporter:reporter:country",
+      "reason": "explicitly-absent",
+      "sourceIds": [
+        "source-1cfbf594-a9f3-42c6-b975-3f2305a87dad"
+      ]
+    },
+    {
+      "concept": "reporter phone",
+      "target": "reporter:reporter:phone",
+      "reason": "explicitly-absent",
+      "sourceIds": [
+        "source-1cfbf594-a9f3-42c6-b975-3f2305a87dad"
+      ]
+    }
+  ],
+  "notIncluded": [
+    "Patient fractional or compound ages and partial date of birth",
+    "Patient race/ethnicity detail outside the seven A5 categories",
+    "Section C product pictures",
+    "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
+    "Product date wording outside complete dates or explicit month/year/year-only precision"
+  ],
+  "concomitantMedicationNotes": [
+    {
+      "productId": "product-1a877467-bc4f-4d24-8356-8b3bf8cb247d",
+      "ordinal": 1,
+      "field": "dose",
+      "text": "650 mg",
+      "sourceIds": [
+        "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+      ]
+    },
+    {
+      "productId": "product-1a877467-bc4f-4d24-8356-8b3bf8cb247d",
+      "ordinal": 1,
+      "field": "frequency",
+      "text": "every six hours",
+      "sourceIds": [
+        "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+      ]
+    },
+    {
+      "productId": "product-1a877467-bc4f-4d24-8356-8b3bf8cb247d",
+      "ordinal": 1,
+      "field": "route",
+      "text": "oral",
+      "sourceIds": [
+        "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+      ]
+    },
+    {
+      "productId": "product-1a877467-bc4f-4d24-8356-8b3bf8cb247d",
+      "ordinal": 1,
+      "field": "indication",
+      "text": "pain",
+      "sourceIds": [
+        "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+      ]
+    },
+    {
+      "productId": "product-1a877467-bc4f-4d24-8356-8b3bf8cb247d",
+      "ordinal": 1,
+      "field": "stopped",
+      "text": "No",
+      "sourceIds": [
+        "source-157e5899-8217-4705-b7ef-34c20007fcbf"
+      ]
+    },
+    {
+      "productId": "product-1a877467-bc4f-4d24-8356-8b3bf8cb247d",
+      "ordinal": 1,
+      "field": "doseReduced",
+      "text": "No",
+      "sourceIds": [
+        "source-157e5899-8217-4705-b7ef-34c20007fcbf"
+      ]
+    }
+  ]
+}

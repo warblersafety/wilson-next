@@ -72,7 +72,7 @@ test('event dates preserve exact wording through conversational review, resume, 
             expect(before.event.facts[field as keyof typeof c.event.facts]).toEqual(c.event.facts[field as keyof typeof c.event.facts]);
     await writeFile(info.outputPath('event-partial-state.json'), JSON.stringify(await storedState(page)));
     let x = await pdf(page, info.outputPath('event-partial-dates.pdf'));
-    expect(x.pageCount).toBe(8);
+    expect(x.pageCount).toBe(9);
     expect(x.namedFields[onset]).toBe('B5 wording');
     expect(x.namedFields[death]).toBe('B5 wording');
     for (const d of Object.values(eventDates))

@@ -22,7 +22,7 @@ async function seed(page: Page, current: ReturnType<typeof contextCase>) {
 async function pdf(page: Page, file: string) {
   const download = await savePdf(page); await download.saveAs(file);
   const { stdout } = await promisify(execFile)(process.env.PYPDF_PYTHON ?? "python3", ["tools/pdf/independent_readback.py", file, "--named"]);
-  const output = JSON.parse(stdout); expect(output.pageCount).toBe(8); return output.namedFields as Record<string, string>;
+  const output = JSON.parse(stdout); expect(output.pageCount).toBe(9); return output.namedFields as Record<string, string>;
 }
 async function apply(page: Page, click: () => Promise<unknown>, action = "set-fact") {
   const response = page.waitForResponse(r => r.url().endsWith("/api/case") && r.request().method() === "POST" && r.request().postDataJSON()?.action?.action === action);
