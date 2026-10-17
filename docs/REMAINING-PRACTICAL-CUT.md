@@ -47,7 +47,9 @@ accounts/login, cross-device cases and real-patient-data production are excluded
 #235 closes unqualified dose/strength native overflow/line-break loss within the
 existing glyph set using exact D1/D2 supplements; qualified B5 behavior is retained.
 Remaining quantity/duration work includes dose-count/compound/range duration and
-unusual age/weight wording. Broader portable glyphs #154 require separately
-approved font/dependency work; no installation is authorized by this slice.
+unusual age/weight wording. Broader portable glyphs #154 remain separate. A custom-font/dependency path
+requires approval; an existing Symbol-font subset is not ruled out, but still
+needs a mixed-text appearance/metrics/fidelity contract. No installation is
+authorized by this slice.
 #180 integrated source/readback/manual-recovery acceptance and attachments/package
 lifecycle (fflate unapproved) remain outstanding. Overall release is not ready.
