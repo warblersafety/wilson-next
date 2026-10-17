@@ -123,6 +123,7 @@ export interface ProjectedProduct {
   therapyOngoing?: boolean;
   doseReductionDate?: string;
   treatmentDuration?: TreatmentDuration;
+  durationContext?: string;
   indication?: string;
   cosmeticUse?: "professional-use-only" | "retail";
   otherProductTypes?: OtherProductType[];
@@ -181,7 +182,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       "Patient race/ethnicity detail outside the seven A5 categories",
       "Section C product pictures",
       "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
-      "Product date wording outside complete dates or explicit month/year/year-only precision; dose-count, compound and range treatment durations",
+      "Product date wording outside complete dates or explicit month/year/year-only precision",
     ],
   };
 
@@ -383,6 +384,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   const carriedQualifierTargets = new Set(["patient:patient:sex", "event:event:symptoms", "event:event:problemDescription", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate", "event:event:relevantHistory", "event:event:additionalComments"]);
   for (const product of projection.sections.D.suspectProducts) {
     for (const field of ["dose", "strength", "route", "frequency"]) carriedQualifierTargets.add(`product:${product.productId}:${field}`);
+    if(product.treatmentDuration)carriedQualifierTargets.add(`product:${product.productId}:treatmentDuration`);
   }
   for (const entry of d5OtherTypeContextEntries(caseState, projection)) carriedQualifierTargets.add(entry.target);
   for (const entry of deviceContextEntries(caseState, projection)) carriedQualifierTargets.add(entry.target);
@@ -421,7 +423,7 @@ function projectProduct(
       : field === "otherProductTypes" ? otherProductTypeValues.filter(label => (value as string[]).includes(label))
       : field === "purchaseSellerCountry" ? purchaseCountryLabel(String(value)) ?? value
       : field === "dose" || field === "strength" ? { value: String(value), ...(known(product.facts[field])?.qualifier !== undefined ? { qualifier: known(product.facts[field])!.qualifier } : {}) }
-        : value, field === "dose" || field === "strength" || field === "otherProductTypes" || field === "route" || field === "frequency");
+        : value, field === "dose" || field === "strength" || field === "otherProductTypes" || field === "route" || field === "frequency" || field === "treatmentDuration");
   }
   for (const field of ["route", "frequency"] as const) {
     const value = known(product.facts[field]);
@@ -437,6 +439,7 @@ function projectProduct(
       for (const item of projection.omissions) if (item.target === `product:${product.id}:${field}` && item.reason === "qualifier-not-included") item.baseValueIncluded = false;
     }
   }
+  if(result.treatmentDuration) {const value=known(product.facts.treatmentDuration);if(value?.qualifier)result.durationContext=value.qualifier;}
   for (const [field, applies, prerequisites] of [
     ["improvedAfterChange", withdrawalApplicability(product.facts), [product.facts.stopped, product.facts.doseReduced]],
     ["recurred", restartApplicability(product.facts), [product.facts.restarted]],

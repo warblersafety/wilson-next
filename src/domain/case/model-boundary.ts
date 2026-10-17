@@ -1,3 +1,4 @@
+import {isStatedDuration} from "./duration";
 import {isEventDateField,isProductDateField} from "./date-precision";
 import {isPartialExpiration} from "./expiration";
 import { z } from "zod";
@@ -25,7 +26,7 @@ const modelTargetSchema = z.discriminatedUnion("entity", [
 const caseValueSchema = z.discriminatedUnion("kind", [
   z.object({
     kind: z.literal("known"),
-    value: z.union([z.object({precision:z.enum(["month","year"]),year:z.string(),month:z.string().optional(),wording:z.string()}).strict(),z.string(), z.number(), z.boolean(), z.array(z.string()), z.object({ value: z.number().positive(), unit: z.enum(["kg", "lb"]) }).strict(), z.object({ value: z.number(), unit: z.enum(["months", "weeks", "days"]) }).strict(), z.object({ value: z.string(), unit: z.string() }).strict()])
+    value: z.union([z.object({precision:z.enum(["month","year"]),year:z.string(),month:z.string().optional(),wording:z.string()}).strict(),z.string(), z.number(), z.boolean(), z.array(z.string()), z.object({ value: z.number().positive(), unit: z.enum(["kg", "lb"]) }).strict(), z.object({ value: z.number(), unit: z.enum(["months", "weeks", "days"]) }).strict(), z.object({ wording:z.string().min(1) }).strict(),z.object({ value: z.string(), unit: z.string() }).strict()])
       .describe(`${modelKnownValueGuidance()} Preserve explicitly stated descriptive detail; normalize only conventions defined by the model instructions.`),
     qualifier: z.string().min(1).optional(),
   }).strict(),
@@ -242,6 +243,9 @@ export function parseModelProposalEnvelope(
     if (!evidence) {
       unrepresented.push(quarantineProposal(rawProposal, "invalid-source-reference"));
       continue;
+    }
+    if(target.entity==="product" && target.field==="treatmentDuration" && proposal.value.kind==="known" && isStatedDuration(proposal.value.value) && !evidence.some(p=>input.text.slice(p.start,p.end).includes(proposal.value.kind==="known"&&isStatedDuration(proposal.value.value)?proposal.value.value.wording:""))) {
+      unrepresented.push(quarantineProposal(rawProposal,"evidence-not-found"));continue;
     }
     if(((target.entity==="patient"&&target.field==="dateOfBirth") || (target.entity==="event"&&isEventDateField(target.field)) || (target.entity==="test"&&target.field==="date") || (target.entity==="product" && (target.field==="expirationDate" || isProductDateField(target.field)))) && proposal.value.kind==="known" && isPartialExpiration(proposal.value.value) && !evidence.some(p=>input.text.slice(p.start,p.end).includes(proposal.value.kind==="known" && isPartialExpiration(proposal.value.value)?proposal.value.value.wording:""))) {
       unrepresented.push(quarantineProposal(rawProposal,"evidence-not-found"));continue;

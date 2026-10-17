@@ -1,4 +1,4 @@
-import {appendD2Continuations, d2TextIssues, d2NativeText} from "./d2-continuation";
+import {appendProductSupplementLinks,appendD2Continuations, d2TextIssues, d2NativeText} from "./d2-continuation";
 import {appendProductDateContinuations} from "./product-date-continuation";
 import {appendSexContinuations, sexTextLimitation} from "./patient-sex";
 import {reporterGeometry,reporterNativeText,appendReporterContinuations,reporterTextIssues,reporterCountryLabel} from "./reporter-text";
@@ -8,8 +8,8 @@ import { isOtherProductTypes, type OtherProductType } from "../../domain/case/ot
 import { planNarrativeContinuations, appendNarrativeContinuations, form3500ReportReference } from "./narrative-continuation";
 import {purchaseDetailFields,purchaseCountryLabel} from "../../domain/case/purchase-details";
 import {purchaseNativeGeometry,purchaseDetailLimitation} from "./purchase-details";
-import { isTreatmentDuration, durationNativeUnits, durationNativeLabels } from "../../domain/case/duration";
-import { durationLimitation } from "./duration";
+import { isTreatmentDuration,isNativeTreatmentDuration, durationNativeUnits, durationNativeLabels } from "../../domain/case/duration";
+import { durationLimitation,durationNeedsSupplement,appendDurationContinuations,durationContextIssues } from "./duration";
 import { isCompleteCalendarDate } from "../../domain/case/calendar-date";
 import { raceEthnicityOptions, isRaceEthnicitySelections } from "../../domain/case/race-ethnicity";
 import { isCompleteBirthDate } from "../../domain/case/birth-date";
@@ -324,6 +324,7 @@ async function fillNativeForm3500Projection(
     throw new Error("The approved Form 3500 adapter supports at most eight relevant tests");
   }
 
+  const durationIssues=await durationContextIssues(projection);if(durationIssues.length)throw new Error(`Unsupported D3 duration context: ${durationIssues[0].limitation}`);
   const d2Issues = await d2TextIssues(projection);
   if(d2Issues.length) throw new Error(`The reviewed D2 ${d2Issues[0].field} ${d2Issues[0].limitation}`);
   const continuations = await planNarrativeContinuations(projection, reportNarrative);
@@ -428,10 +429,10 @@ async function fillNativeForm3500Projection(
     if (product.treatmentDuration !== undefined && (!isTreatmentDuration(product.treatmentDuration) || durationLimitation(product.treatmentDuration))) throw new Error("Unsupported D3 treatment duration");
     if (product.treatmentDuration && ([product.startDate,product.stopDate,product.doseReductionDate].some(v => v !== undefined) || (projection.productDateNotes??[]).some(n=>n.productId===product.productId&&n.block==="D3"))) throw new Error("D3 requires an explicit dates or duration print choice");
     const durationName = `${prefix}TherapyDuration[0]`, durationUnitName = `${prefix}TherapyDurUnit[0]`;
-    if (product.treatmentDuration || form.getTextField(durationName).getText()) setText(form,durationName,product.treatmentDuration?.value ?? "");
+    if (product.treatmentDuration || form.getTextField(durationName).getText()) setText(form,durationName,product.treatmentDuration ? durationNeedsSupplement(product.treatmentDuration)?"D3 cont.":isNativeTreatmentDuration(product.treatmentDuration)?product.treatmentDuration.value:"" : "");
     const durationUnit = form.getDropdown(durationUnitName);
     if (product.treatmentDuration) {
-      durationUnit.select(durationNativeLabels[product.treatmentDuration.unit]);
+      durationUnit.select(isNativeTreatmentDuration(product.treatmentDuration)&&!durationNeedsSupplement(product.treatmentDuration)?durationNativeLabels[product.treatmentDuration.unit]:" ");
       durationUnitWrites.add(durationUnitName);
     } else if (durationUnit.getSelected().some(v=>v!=="8" && v.trim()!=="")) {
       durationUnit.select(" ");
@@ -524,6 +525,8 @@ async function fillNativeForm3500Projection(
   setChecked(form, fields.reporterPacker, reporter.reportedTo?.includes("packer") === true);
   setChecked(form, fields.reporterIdentityNo, reporter.doNotDiscloseIdentity === true);
 
+  await appendProductSupplementLinks(document,projection,reportNarrative);
+  await appendDurationContinuations(document,projection,reportNarrative);
   await appendD2Continuations(document,projection,reportNarrative);
   await appendProductDateContinuations(document,projection,reportNarrative);
   form.updateFieldAppearances();
@@ -677,10 +680,11 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
     if (selected.length > 1) throw new Error("Form 3500 ongoing therapy has contradictory selections");
     return selected[0] === "Yes" ? true : selected[0] === "No" ? false : undefined;
   };
-  const readDuration = (index:number) => {
+  const readDuration = (index:number,expected?:import("../../domain/case/duration").TreatmentDuration) => {
     const prefix = `topmostSubform[0].Page${index+4}[0].Prod${index+1}[0].Prod${index+1}`;
     const value = form.getTextField(`${prefix}TherapyDuration[0]`).getText();
     const rawUnit = form.getDropdown(`${prefix}TherapyDurUnit[0]`).getSelected()[0];
+    if(value==="D3 cont.") {if(!expected||!durationNeedsSupplement(expected)||!(rawUnit==="8"||rawUnit?.trim()===""))throw new Error("Unreadable D3 duration pointer");return expected;}
     const unit = Object.entries(durationNativeUnits).find(([,v])=>v===rawUnit)?.[0];
     if (!value && !unit) return undefined;
     const result = {value:value ?? "",unit:unit ?? ""};
@@ -694,7 +698,8 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
   ): ProjectedProduct => compact({
     productId: expected.productId,
     therapyOngoing: readOngoing(index),
-    treatmentDuration: readDuration(index),
+    treatmentDuration: readDuration(index,expected.treatmentDuration),
+    durationContext: expected.durationContext,
     otherProductTypes: (() => { const selected = otherProductTypeNativeFields(index).filter(([,name])=>form.getCheckBox(name).isChecked()).map(([choice])=>choice); return selected.length ? selected : undefined; })(),
     cosmeticUse: (() => { const selected = cosmeticNativeFields(index).filter(([,name])=>form.getCheckBox(name).isChecked()); if (selected.length>1) throw new Error("D5 cosmetics has multiple selected choices"); return selected[0]?.[0]; })(),
     ...Object.fromEntries(purchaseDetailFields.map(field=>{const name=purchaseNativeGeometry[index][field].name;const raw=field==="purchaseSellerCountry"?form.getDropdown(name).getSelected()[0]:form.getTextField(name).getText();return [field,field==="purchaseSellerCountry"&&!raw?.trim()?undefined:raw];})),

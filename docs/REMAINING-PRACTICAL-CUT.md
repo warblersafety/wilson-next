@@ -53,3 +53,11 @@ needs a mixed-text appearance/metrics/fidelity contract. No installation is
 authorized by this slice.
 #180 integrated source/readback/manual-recovery acceptance and attachments/package
 lifecycle (fflate unapproved) remain outstanding. Overall release is not ready.
+
+#237 implements the bounded exact supplied dose-count/range/compound duration
+path using D3 supplements, preserving uncertainty, dates/duration print choice,
+conversation review/correction and v31-to-v32 resume without inference. Broader
+language perfection is not part of this cut. Remaining necessary priorities are
+unusual stated age/weight, portable glyph representation#154, integrated
+source/readback/manual-recovery acceptance#180, and actual attachments/export
+packaging (fflate unapproved). Overall release is not ready;#150 stays paused.

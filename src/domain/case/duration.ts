@@ -1,15 +1,21 @@
 import type { ProductFacts } from "./types";
 export const durationUnits = ["minutes", "hours", "days", "weeks", "months", "years"] as const;
 export const durationNativeLabels = { minutes: "Minute(s)", hours: "Hour(s)", days: "Day(s)", weeks: "Week(s)", months: "Month(s)", years: "Year(s)" } as const;
-export type TreatmentDuration = { value: string; unit: typeof durationUnits[number] };
+export type NativeTreatmentDuration = { value: string; unit: typeof durationUnits[number] };
+export type TreatmentDuration = NativeTreatmentDuration | { wording: string };
 export const durationNativeUnits = { minutes: "7", hours: "6", days: "5", weeks: "4", months: "3", years: "2" } as const;
 /** Keep the supplied positive decimal spelling; no numeric coercion or conversion. */
-export function isTreatmentDuration(value: unknown): value is TreatmentDuration {
+export function isNativeTreatmentDuration(value: unknown): value is NativeTreatmentDuration {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   const v = value as Record<string,unknown>;
   return Object.keys(v).length === 2 && typeof v.value === "string" && /^(?:\d+)(?:\.\d+)?$/.test(v.value) && /[1-9]/.test(v.value)
-    && typeof v.unit === "string" && durationUnits.includes(v.unit as TreatmentDuration["unit"]);
+    && typeof v.unit === "string" && durationUnits.includes(v.unit as NativeTreatmentDuration["unit"]);
 }
+export function isStatedDuration(value: unknown): value is {wording:string} {
+  return Boolean(value && typeof value === "object" && !Array.isArray(value) && Object.keys(value).length===1 && "wording" in value && typeof value.wording==="string" && value.wording.trim());
+}
+export function isTreatmentDuration(value:unknown): value is TreatmentDuration {return isNativeTreatmentDuration(value)||isStatedDuration(value);}
+export function durationText(value:TreatmentDuration):string{return isStatedDuration(value)?value.wording:`${value.value} ${value.unit}`;}
 function known<T>(fact: import("./types").Fact<T>): T | undefined {
   return fact.state === "resolved" && fact.resolvedValue?.value.kind === "known" ? fact.resolvedValue.value.value : undefined;
 }
