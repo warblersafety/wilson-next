@@ -1,0 +1,22 @@
+{
+  "capturedPages": [
+    {
+      "page": 12,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-235/third-dose-page-12.png"
+    },
+    {
+      "page": 17,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-235/third-dose-page-17.png"
+    }
+  ],
+  "manualInspectionRequired": [
+    "Exact quantity wording readable at fixed size;no inferred totals or units",
+    "Strength linked to D1 and dose to D2;native links do not overlap header",
+    "Global product ordinal,report reference and pagination preserved"
+  ],
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-235/third-dose.pdf"
+}

@@ -1913,3 +1913,20 @@ limitations at both readiness and adapter boundaries; broader glyphs stay #154.
 #153 is only complete for long/multiline wording within current glyph support.
 #180 ordinary precision implementation is complete; integrated source/readback/
 manual-recovery acceptance remains pending. This is not overall release readiness.
+
+### Unqualified quantity appearance fidelity (Issue #235)
+
+Dose/strength stay literal reviewed strings. Existing formatting-only native
+amount/unit pairs and qualified B5 preservation remain unchanged. Unqualified
+amount text that exceeds the actual pinned native width or contains line breaks
+uses a readable `D1 supplement` for strength or `D2 supplement` for dose amount pointer with blank native unit; the full
+literal value appears on the existing fixed-size, global-product/field-linked
+D1/D2 continuation. No compound/range meaning is split or converted and no unit is
+inferred. Dose/strength review/display/history/raw-draft controls support lines.
+Actual native appearances contain the pointer, independently checked alongside
+stored values and continuation text. Unsupported output glyphs/control characters
+are explicit readiness and adapter blocks, preserving facts for correction.
+Quantity supplement entries participate in content keys so an older clipped
+artifact cannot remain current. No font/dependency or system asset is added.
+Broader glyphs #154, non-native duration shapes, unusual age/weight wording,
+#180 integrated acceptance and attachments/package lifecycle remain outstanding.

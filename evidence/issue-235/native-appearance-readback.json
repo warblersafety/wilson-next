@@ -1,0 +1,42 @@
+{
+  "source": "combined-quantities.pdf",
+  "reader": "pypdf ContentStream actual AP/N operations",
+  "fields": [
+    {
+      "nativeField": "Prod1Strength[0]",
+      "storedValue": "D1 supplement",
+      "appearanceTextRuns": [
+        "D1 supplement"
+      ],
+      "native8_5pt": true,
+      "correctFDABlock": "D1"
+    },
+    {
+      "nativeField": "Prod1Dose[0]",
+      "storedValue": "D2 supplement",
+      "appearanceTextRuns": [
+        "D2 supplement"
+      ],
+      "native8_5pt": true,
+      "correctFDABlock": "D2"
+    },
+    {
+      "nativeField": "Prod2Strength[0]",
+      "storedValue": "D1 supplement",
+      "appearanceTextRuns": [
+        "D1 supplement"
+      ],
+      "native8_5pt": true,
+      "correctFDABlock": "D1"
+    },
+    {
+      "nativeField": "Prod2Dose[0]",
+      "storedValue": "D2 supplement",
+      "appearanceTextRuns": [
+        "D2 supplement"
+      ],
+      "native8_5pt": true,
+      "correctFDABlock": "D2"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "units": 1126,
+  "unitFiles": 108,
+  "typecheck": "passed",
+  "build": "passed",
+  "focusedNewBrowser": 2,
+  "existingQualifiedBrowser": 2,
+  "fullBrowser": "173 running",
+  "PDFs": 12,
+  "PDFKitCaptures": 33,
+  "actualNativeAPTextRunChecks": 4,
+  "strengthBlock": "D1",
+  "doseBlock": "D2",
+  "unitsInferred": false,
+  "qualifiedB5Unchanged": true,
+  "fontOrDependencyAdded": false,
+  "liveAppModelCalls": 0,
+  "reviewHostedCIMergeMain": "pending;canonical PR comments provide final outcome"
+}

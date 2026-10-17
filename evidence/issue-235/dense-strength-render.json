@@ -1,0 +1,32 @@
+{
+  "capturedPages": [
+    {
+      "page": 4,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-235/dense-strength-page-4.png"
+    },
+    {
+      "page": 5,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-235/dense-strength-page-5.png"
+    },
+    {
+      "page": 9,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-235/dense-strength-page-9.png"
+    },
+    {
+      "page": 11,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-235/dense-strength-page-11.png"
+    }
+  ],
+  "manualInspectionRequired": [
+    "Exact quantity wording readable at fixed size;no inferred totals or units",
+    "Strength linked to D1 and dose to D2;native links do not overlap header",
+    "Global product ordinal,report reference and pagination preserved"
+  ],
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-235/dense-strength.pdf"
+}
