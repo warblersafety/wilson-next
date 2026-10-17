@@ -1,0 +1,300 @@
+{
+  "outcome": {
+    "state": "empty",
+    "proposedValues": [],
+    "conflictingValues": [],
+    "sourceIds": [],
+    "supersededValues": []
+  },
+  "products": [
+    {
+      "id": "product-998117fb-907d-4383-b1bd-16ef33e5356c",
+      "name": {
+        "state": "proposed",
+        "proposedValues": [
+          {
+            "id": "proposal-0c73ed65-d97f-4fa2-9ca3-1bcad6b598ec",
+            "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453",
+            "intent": "fact",
+            "value": {
+              "kind": "known",
+              "value": "warfarin"
+            },
+            "sourceIds": [
+              "source-2e263655-e4f7-4b83-a483-43e719fafe6e"
+            ]
+          }
+        ],
+        "conflictingValues": [],
+        "sourceIds": [
+          "source-2e263655-e4f7-4b83-a483-43e719fafe6e"
+        ],
+        "supersededValues": []
+      },
+      "role": {
+        "state": "proposed",
+        "proposedValues": [
+          {
+            "id": "proposal-173fe502-cad5-4b6a-aa5f-2f6fff205a4b",
+            "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453",
+            "intent": "fact",
+            "value": {
+              "kind": "known",
+              "value": "suspect"
+            },
+            "sourceIds": [
+              "source-fb70c717-c925-4b98-a96e-c68e16a7d14e"
+            ]
+          }
+        ],
+        "conflictingValues": [],
+        "sourceIds": [
+          "source-fb70c717-c925-4b98-a96e-c68e16a7d14e"
+        ],
+        "supersededValues": []
+      },
+      "stopped": {
+        "state": "proposed",
+        "proposedValues": [
+          {
+            "id": "proposal-7aaf27c3-4450-43d8-a0be-6faffcb0c7d7",
+            "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453",
+            "intent": "fact",
+            "value": {
+              "kind": "known",
+              "value": true
+            },
+            "sourceIds": [
+              "source-30f319d5-7b69-44cc-a9d5-7f29583f715a"
+            ]
+          }
+        ],
+        "conflictingValues": [],
+        "sourceIds": [
+          "source-30f319d5-7b69-44cc-a9d5-7f29583f715a"
+        ],
+        "supersededValues": []
+      },
+      "improvedAfterChange": {
+        "state": "proposed",
+        "proposedValues": [
+          {
+            "id": "proposal-9b019669-948d-4691-9dbf-58d87ba30d18",
+            "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453",
+            "intent": "fact",
+            "value": {
+              "kind": "known",
+              "value": true
+            },
+            "sourceIds": [
+              "source-30f319d5-7b69-44cc-a9d5-7f29583f715a"
+            ]
+          }
+        ],
+        "conflictingValues": [],
+        "sourceIds": [
+          "source-30f319d5-7b69-44cc-a9d5-7f29583f715a"
+        ],
+        "supersededValues": []
+      }
+    },
+    {
+      "id": "product-ef6d0c5b-1cfb-445f-90e6-ca69eb8910d0",
+      "name": {
+        "state": "proposed",
+        "proposedValues": [
+          {
+            "id": "proposal-ecca70fd-ee07-4d1f-97b8-5adaa6760883",
+            "groupId": "group-3f6dd073-e436-4af9-adf3-e313a71df3aa",
+            "intent": "fact",
+            "value": {
+              "kind": "known",
+              "value": "acetaminophen"
+            },
+            "sourceIds": [
+              "source-2e263655-e4f7-4b83-a483-43e719fafe6e"
+            ]
+          }
+        ],
+        "conflictingValues": [],
+        "sourceIds": [
+          "source-2e263655-e4f7-4b83-a483-43e719fafe6e"
+        ],
+        "supersededValues": []
+      },
+      "role": {
+        "state": "proposed",
+        "proposedValues": [
+          {
+            "id": "proposal-f542ae63-af28-4889-b449-236844f1f886",
+            "groupId": "group-3f6dd073-e436-4af9-adf3-e313a71df3aa",
+            "intent": "fact",
+            "value": {
+              "kind": "known",
+              "value": "concomitant"
+            },
+            "sourceIds": [
+              "source-fb70c717-c925-4b98-a96e-c68e16a7d14e"
+            ]
+          }
+        ],
+        "conflictingValues": [],
+        "sourceIds": [
+          "source-fb70c717-c925-4b98-a96e-c68e16a7d14e"
+        ],
+        "supersededValues": []
+      },
+      "stopped": {
+        "state": "proposed",
+        "proposedValues": [
+          {
+            "id": "proposal-6ab08727-918b-438d-8893-8c90d39bff29",
+            "groupId": "group-3f6dd073-e436-4af9-adf3-e313a71df3aa",
+            "intent": "fact",
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "sourceIds": [
+              "source-cfe2ea4e-5d71-4144-8feb-2fc6e25c446b"
+            ]
+          }
+        ],
+        "conflictingValues": [],
+        "sourceIds": [
+          "source-cfe2ea4e-5d71-4144-8feb-2fc6e25c446b"
+        ],
+        "supersededValues": []
+      },
+      "improvedAfterChange": {
+        "state": "empty",
+        "proposedValues": [],
+        "conflictingValues": [],
+        "sourceIds": [],
+        "supersededValues": []
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "source-f474da8b-5d77-4340-b82d-101128c16aec",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "Entirely fictional case LIVE-MULTI-57: a 57-year-old man weighing 70 kg developed a rash on 03 September 2026. ",
+      "start": 31,
+      "end": 142,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-c12c427f-289e-4dec-b32a-42239f0ee508",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "He was hospitalized; no other serious outcomes apply. ",
+      "start": 510,
+      "end": 564,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-3ab4fe23-e182-4bda-8db0-7253e1ad5a28",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "No additional relevant history applies. ",
+      "start": 742,
+      "end": 782,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-398579c8-6ae2-4929-b6db-c2e34b9bc1a2",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "This is an adverse-event report, and the product is not available for evaluation. ",
+      "start": 782,
+      "end": 864,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-2e263655-e4f7-4b83-a483-43e719fafe6e",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "He took warfarin 5 mg by mouth daily from 01 August 2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours from 01 September 2026 for pain. ",
+      "start": 142,
+      "end": 306,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-b6793929-714a-430c-9eb9-420a065a8d71",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "These two products are explicitly medications.",
+      "start": 864,
+      "end": 910,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-fb70c717-c925-4b98-a96e-c68e16a7d14e",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "Warfarin is suspect; acetaminophen is concomitant. ",
+      "start": 306,
+      "end": 357,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-30f319d5-7b69-44cc-a9d5-7f29583f715a",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "Warfarin was stopped on 04 September 2026, the rash improved after stopping, and warfarin was never restarted. ",
+      "start": 357,
+      "end": 468,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-cfe2ea4e-5d71-4144-8feb-2fc6e25c446b",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "Acetaminophen was not stopped or reduced. ",
+      "start": 468,
+      "end": 510,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-448fb16f-59ec-4ef4-9226-b69e00f65e33",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "INR was 4.8 on 03 September 2026 with reference limits 0.8 and 1.2; ALT was 67 U/L on 03 September 2026 with reference limits 7 and 56. ",
+      "start": 564,
+      "end": 700,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-e656fc89-fd96-4d04-8064-2416ec55edcb",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "The INR collection time was not recorded. ",
+      "start": 700,
+      "end": 742,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-efdcbe22-d392-4c9f-b19f-f55090252e15",
+      "inputId": "input-7d324af0-a817-480b-a284-3e3f08b1026e",
+      "inputType": "selection",
+      "excerpt": "Adverse event",
+      "start": 0,
+      "end": 13,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.247Z"
+    }
+  ]
+}

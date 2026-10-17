@@ -1,0 +1,1714 @@
+{
+  "version": "wilson-browser-state-v32",
+  "stage": "understanding",
+  "case": {
+    "id": "case-3105bdb7-c5cf-4f07-ac14-c7ac06eb5013",
+    "revision": 2,
+    "patient": {
+      "id": "patient",
+      "state": "proposed",
+      "facts": {
+        "identifier": {
+          "state": "proposed",
+          "proposedValues": [
+            {
+              "id": "proposal-9148b112-2154-429f-b01a-b238f77f5001",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "TEST-47"
+              },
+              "sourceIds": [
+                "source-beb67817-d4ab-4f7c-8504-dbfe87db97fe"
+              ]
+            }
+          ],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-beb67817-d4ab-4f7c-8504-dbfe87db97fe"
+          ],
+          "supersededValues": []
+        },
+        "ageYears": {
+          "state": "proposed",
+          "proposedValues": [
+            {
+              "id": "proposal-9f8fc7b7-9b06-44b5-a82c-f70678d9977b",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": 47
+              },
+              "sourceIds": [
+                "source-beb67817-d4ab-4f7c-8504-dbfe87db97fe"
+              ]
+            }
+          ],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-beb67817-d4ab-4f7c-8504-dbfe87db97fe"
+          ],
+          "supersededValues": []
+        },
+        "raceEthnicity": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "dateOfBirth": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "a2Value": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "sex": {
+          "state": "proposed",
+          "proposedValues": [
+            {
+              "id": "proposal-25eebc3c-13b6-4b80-b83b-2392333305d2",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "male"
+              },
+              "sourceIds": [
+                "source-beb67817-d4ab-4f7c-8504-dbfe87db97fe"
+              ]
+            }
+          ],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-beb67817-d4ab-4f7c-8504-dbfe87db97fe"
+          ],
+          "supersededValues": []
+        },
+        "weight": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "involvement": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        }
+      }
+    },
+    "event": {
+      "id": "event",
+      "state": "proposed",
+      "facts": {
+        "reportType": {
+          "state": "resolved",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-0224ae33-83d9-4dda-9e53-52c4634a4ee6"
+          ],
+          "supersededValues": [],
+          "resolvedValue": {
+            "id": "value-report-type-cc1e1d39-ce59-482e-9d68-45214ed548e1",
+            "groupId": "command-record-report-type-71ce336c-ced1-4c5c-9021-e44e2b0b6617",
+            "intent": "fact",
+            "value": {
+              "kind": "known",
+              "value": "adverse-event"
+            },
+            "sourceIds": [
+              "source-0224ae33-83d9-4dda-9e53-52c4634a4ee6"
+            ]
+          }
+        },
+        "reportDate": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "problemDescription": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "symptoms": {
+          "state": "proposed",
+          "proposedValues": [
+            {
+              "id": "proposal-a72b6dae-58e3-4141-b761-1def2c6db8c7",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": [
+                  "epistaxis",
+                  "easy bruising"
+                ]
+              },
+              "sourceIds": [
+                "source-292f3ec0-6fb9-42f7-8da4-cbd91a108938"
+              ]
+            }
+          ],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-292f3ec0-6fb9-42f7-8da4-cbd91a108938"
+          ],
+          "supersededValues": []
+        },
+        "onsetDate": {
+          "state": "proposed",
+          "proposedValues": [
+            {
+              "id": "proposal-08c817a2-ceea-4b7d-b7d4-a98808d9fb11",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "2026-08-08"
+              },
+              "sourceIds": [
+                "source-292f3ec0-6fb9-42f7-8da4-cbd91a108938"
+              ]
+            }
+          ],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-292f3ec0-6fb9-42f7-8da4-cbd91a108938"
+          ],
+          "supersededValues": []
+        },
+        "death": {
+          "state": "proposed",
+          "proposedValues": [
+            {
+              "id": "proposal-a05c8c2e-c323-4280-a3af-fdf997083e4d",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "sourceIds": [
+                "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+              ]
+            }
+          ],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+          ],
+          "supersededValues": []
+        },
+        "deathDate": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "lifeThreatening": {
+          "state": "proposed",
+          "proposedValues": [
+            {
+              "id": "proposal-5ebaf203-50a6-4a88-beae-67f863995845",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "sourceIds": [
+                "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+              ]
+            }
+          ],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+          ],
+          "supersededValues": []
+        },
+        "hospitalized": {
+          "state": "proposed",
+          "proposedValues": [
+            {
+              "id": "proposal-bd2c6bbe-78e4-4b27-b92c-56eda5547966",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "sourceIds": [
+                "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+              ]
+            }
+          ],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+          ],
+          "supersededValues": []
+        },
+        "disability": {
+          "state": "proposed",
+          "proposedValues": [
+            {
+              "id": "proposal-b3d7a5c1-13fd-4cdc-b538-2ca6ed8bd585",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "sourceIds": [
+                "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+              ]
+            }
+          ],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+          ],
+          "supersededValues": []
+        },
+        "requiredIntervention": {
+          "state": "proposed",
+          "proposedValues": [
+            {
+              "id": "proposal-76f7b0e0-8d82-4a22-b0ed-569181fdc538",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "sourceIds": [
+                "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+              ]
+            }
+          ],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+          ],
+          "supersededValues": []
+        },
+        "congenitalAnomaly": {
+          "state": "proposed",
+          "proposedValues": [
+            {
+              "id": "proposal-25e9e34e-c50f-4f52-8325-88c64acddeb7",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "sourceIds": [
+                "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+              ]
+            }
+          ],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+          ],
+          "supersededValues": []
+        },
+        "otherSerious": {
+          "state": "proposed",
+          "proposedValues": [
+            {
+              "id": "proposal-bc3c6f5b-163e-4760-bea8-13fb7fa1afe8",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "sourceIds": [
+                "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+              ]
+            }
+          ],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+          ],
+          "supersededValues": []
+        },
+        "relevantTestsAvailable": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "relevantHistory": {
+          "state": "proposed",
+          "proposedValues": [
+            {
+              "id": "proposal-f12dc574-f88b-498c-b842-b98141c73183",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "explicitly-absent"
+              },
+              "sourceIds": [
+                "source-d213497e-f3f5-4e57-8cb5-862e1d4defca"
+              ]
+            }
+          ],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-d213497e-f3f5-4e57-8cb5-862e1d4defca"
+          ],
+          "supersededValues": []
+        },
+        "treatments": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "outcome": {
+          "state": "proposed",
+          "proposedValues": [
+            {
+              "id": "proposal-4655ed81-a715-4f01-8724-634e7171e6b3",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "resolved"
+              },
+              "sourceIds": [
+                "source-4f17b622-f7a9-43d2-a0f6-90f34276692f"
+              ]
+            }
+          ],
+          "conflictingValues": [],
+          "sourceIds": [
+            "source-4f17b622-f7a9-43d2-a0f6-90f34276692f"
+          ],
+          "supersededValues": []
+        },
+        "dischargeDate": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "productAvailability": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "productReturnDate": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "additionalComments": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        }
+      }
+    },
+    "products": [
+      {
+        "id": "product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d",
+        "proposalGroupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+        "state": "proposed",
+        "facts": {
+          "name": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-beed5050-7f70-4b79-b5fa-c9be50f1e9ef",
+                "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "warfarin"
+                },
+                "sourceIds": [
+                  "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+            ],
+            "supersededValues": []
+          },
+          "productType": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-6d46b7b7-e9e0-420b-9934-4a54a0d6fc74",
+                "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                },
+                "sourceIds": [
+                  "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+            ],
+            "supersededValues": []
+          },
+          "role": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-10b65138-8541-4779-b9f3-84bbecc04914",
+                "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "suspect"
+                },
+                "sourceIds": [
+                  "source-ac20f962-7b22-4b07-a875-fe32044cf559"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-ac20f962-7b22-4b07-a875-fe32044cf559"
+            ],
+            "supersededValues": []
+          },
+          "manufacturer": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "lotNumber": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "ndcOrUniqueId": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "dose": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-575ae3f4-5f30-4c85-9399-6cf5c787589a",
+                "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "5 mg"
+                },
+                "sourceIds": [
+                  "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+            ],
+            "supersededValues": []
+          },
+          "strength": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "frequency": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-6ae2ef74-6df9-456e-a500-ff4e823b16fc",
+                "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "daily"
+                },
+                "sourceIds": [
+                  "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+            ],
+            "supersededValues": []
+          },
+          "route": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-4f9e0379-76c0-4c68-8f82-a8d0d1c3da29",
+                "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "oral"
+                },
+                "sourceIds": [
+                  "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+            ],
+            "supersededValues": []
+          },
+          "startDate": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-4e7492fa-fd79-4dc4-95ef-a39ad9135754",
+                "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "2026-08-01"
+                },
+                "sourceIds": [
+                  "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+            ],
+            "supersededValues": []
+          },
+          "stopDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "therapyOngoing": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "indication": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-bd3cbc18-d096-4376-a24e-ab3bc5eedd6a",
+                "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "atrial fibrillation"
+                },
+                "sourceIds": [
+                  "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+            ],
+            "supersededValues": []
+          },
+          "stopped": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-9ab6e294-f753-410f-a70c-2fd4adeea1ad",
+                "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": true
+                },
+                "sourceIds": [
+                  "source-4f17b622-f7a9-43d2-a0f6-90f34276692f"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-4f17b622-f7a9-43d2-a0f6-90f34276692f"
+            ],
+            "supersededValues": []
+          },
+          "cosmeticUse": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "otherProductTypes": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "medicationType": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "doseReduced": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "doseReductionDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "treatmentDuration": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "d3Value": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "improvedAfterChange": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "restarted": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "recurred": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "commonName": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "procode": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "modelNumber": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "catalogNumber": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "expirationDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "purchaseDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "purchaseSellerName": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "purchaseSellerAddress": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "purchaseSellerCity": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "purchaseSellerRegion": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "purchaseSellerPostalCode": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "purchaseSellerCountry": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "purchaseWebsite": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "serialNumber": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "udi": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "deviceOperator": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "implanted": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "implantDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "explantDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "reprocessedSingleUse": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "reprocessor": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "servicedByThirdParty": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      {
+        "id": "product-a876a5bd-7cae-4229-8e6d-9331290e999c",
+        "proposalGroupId": "group-f2987d0a-09de-4430-bb61-d37b8d5217bc",
+        "state": "proposed",
+        "facts": {
+          "name": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-a9ba656c-f3f5-48ee-88b9-482927e23bca",
+                "groupId": "group-f2987d0a-09de-4430-bb61-d37b8d5217bc",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "acetaminophen"
+                },
+                "sourceIds": [
+                  "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+            ],
+            "supersededValues": []
+          },
+          "productType": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-df281976-488e-4c3f-b4a1-38ff10636d3f",
+                "groupId": "group-f2987d0a-09de-4430-bb61-d37b8d5217bc",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                },
+                "sourceIds": [
+                  "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+            ],
+            "supersededValues": []
+          },
+          "role": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-7ab362ab-544b-44e0-bedd-384adb1889cf",
+                "groupId": "group-f2987d0a-09de-4430-bb61-d37b8d5217bc",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "concomitant"
+                },
+                "sourceIds": [
+                  "source-ac20f962-7b22-4b07-a875-fe32044cf559"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-ac20f962-7b22-4b07-a875-fe32044cf559"
+            ],
+            "supersededValues": []
+          },
+          "manufacturer": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "lotNumber": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "ndcOrUniqueId": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "dose": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-0878f2d4-fd0a-4a8a-a068-0af5fdd16e7c",
+                "groupId": "group-f2987d0a-09de-4430-bb61-d37b8d5217bc",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "650 mg"
+                },
+                "sourceIds": [
+                  "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+            ],
+            "supersededValues": []
+          },
+          "strength": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "frequency": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-c1acd10b-b395-47a2-addd-05958d033422",
+                "groupId": "group-f2987d0a-09de-4430-bb61-d37b8d5217bc",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "every six hours"
+                },
+                "sourceIds": [
+                  "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+            ],
+            "supersededValues": []
+          },
+          "route": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-dcde5bcb-289b-4904-a5b0-9f926c147d11",
+                "groupId": "group-f2987d0a-09de-4430-bb61-d37b8d5217bc",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "oral"
+                },
+                "sourceIds": [
+                  "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+            ],
+            "supersededValues": []
+          },
+          "startDate": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-2d71b4c2-20a9-410b-8d9b-fafaa8f6a475",
+                "groupId": "group-f2987d0a-09de-4430-bb61-d37b8d5217bc",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "2026-08-02"
+                },
+                "sourceIds": [
+                  "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+            ],
+            "supersededValues": []
+          },
+          "stopDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "therapyOngoing": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "indication": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "stopped": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "cosmeticUse": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "otherProductTypes": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "medicationType": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "doseReduced": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "doseReductionDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "treatmentDuration": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "d3Value": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "improvedAfterChange": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "restarted": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "recurred": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "commonName": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "procode": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "modelNumber": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "catalogNumber": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "expirationDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "purchaseDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "purchaseSellerName": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "purchaseSellerAddress": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "purchaseSellerCity": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "purchaseSellerRegion": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "purchaseSellerPostalCode": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "purchaseSellerCountry": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "purchaseWebsite": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "serialNumber": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "udi": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "deviceOperator": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "implanted": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "implantDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "explantDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "reprocessedSingleUse": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "reprocessor": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "servicedByThirdParty": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      }
+    ],
+    "relevantTests": [
+      {
+        "id": "test-0d44503b-6d4b-4957-b154-328766a9762f",
+        "proposalGroupId": "group-66f72867-c306-4cc9-bfc2-b1e09affae8f",
+        "state": "proposed",
+        "facts": {
+          "testName": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-df86b406-9fc5-44cf-a1f5-9d3f849b6d8f",
+                "groupId": "group-66f72867-c306-4cc9-bfc2-b1e09affae8f",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "INR"
+                },
+                "sourceIds": [
+                  "source-4dfb2f90-96a8-4dac-a08a-eeb672932ae5"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-4dfb2f90-96a8-4dac-a08a-eeb672932ae5"
+            ],
+            "supersededValues": []
+          },
+          "testResult": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-debee44d-1748-4d85-994a-20fb028b5de5",
+                "groupId": "group-66f72867-c306-4cc9-bfc2-b1e09affae8f",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "4.8"
+                },
+                "sourceIds": [
+                  "source-4dfb2f90-96a8-4dac-a08a-eeb672932ae5"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-4dfb2f90-96a8-4dac-a08a-eeb672932ae5"
+            ],
+            "supersededValues": []
+          },
+          "lowRange": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "highRange": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "date": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-7c679e74-fb0c-4bda-8da5-e00ec5f3ea53",
+                "groupId": "group-66f72867-c306-4cc9-bfc2-b1e09affae8f",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "2026-08-08"
+                },
+                "sourceIds": [
+                  "source-4dfb2f90-96a8-4dac-a08a-eeb672932ae5"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-4dfb2f90-96a8-4dac-a08a-eeb672932ae5"
+            ],
+            "supersededValues": []
+          }
+        }
+      }
+    ],
+    "reporter": {
+      "id": "reporter",
+      "facts": {
+        "lastName": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "firstName": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "address": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "city": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "state": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "postalCode": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "country": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "phone": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "email": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "healthProfessional": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "occupation": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "reportedTo": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        },
+        "doNotDiscloseIdentity": {
+          "state": "empty",
+          "proposedValues": [],
+          "conflictingValues": [],
+          "sourceIds": [],
+          "supersededValues": []
+        }
+      }
+    },
+    "askedNeeds": [],
+    "sources": [
+      {
+        "id": "source-beb67817-d4ab-4f7c-8504-dbfe87db97fe",
+        "inputId": "input-0635f5c4-5547-47f0-b35d-5440080828ad",
+        "inputType": "narrative",
+        "excerpt": "Patient TEST-47 is a 47-year-old man. ",
+        "start": 31,
+        "end": 69,
+        "actor": "clinician",
+        "recordedAt": "2026-10-17T17:46:01.216Z"
+      },
+      {
+        "id": "source-042e133e-cc3a-4701-9ba2-f273bd9aadda",
+        "inputId": "input-0635f5c4-5547-47f0-b35d-5440080828ad",
+        "inputType": "narrative",
+        "excerpt": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026. ",
+        "start": 69,
+        "end": 212,
+        "actor": "clinician",
+        "recordedAt": "2026-10-17T17:46:01.216Z"
+      },
+      {
+        "id": "source-ac20f962-7b22-4b07-a875-fe32044cf559",
+        "inputId": "input-0635f5c4-5547-47f0-b35d-5440080828ad",
+        "inputType": "narrative",
+        "excerpt": "Warfarin is suspect; acetaminophen is concomitant. ",
+        "start": 212,
+        "end": 263,
+        "actor": "clinician",
+        "recordedAt": "2026-10-17T17:46:01.216Z"
+      },
+      {
+        "id": "source-4f17b622-f7a9-43d2-a0f6-90f34276692f",
+        "inputId": "input-0635f5c4-5547-47f0-b35d-5440080828ad",
+        "inputType": "narrative",
+        "excerpt": "Warfarin was stopped and the symptoms resolved.",
+        "start": 420,
+        "end": 467,
+        "actor": "clinician",
+        "recordedAt": "2026-10-17T17:46:01.216Z"
+      },
+      {
+        "id": "source-292f3ec0-6fb9-42f7-8da4-cbd91a108938",
+        "inputId": "input-0635f5c4-5547-47f0-b35d-5440080828ad",
+        "inputType": "narrative",
+        "excerpt": "On 08-Aug-2026 he developed epistaxis and easy bruising. ",
+        "start": 263,
+        "end": 320,
+        "actor": "clinician",
+        "recordedAt": "2026-10-17T17:46:01.216Z"
+      },
+      {
+        "id": "source-9c4270b6-4834-4c50-a7f3-d9affc641e79",
+        "inputId": "input-0635f5c4-5547-47f0-b35d-5440080828ad",
+        "inputType": "narrative",
+        "excerpt": "No serious outcomes applied. ",
+        "start": 348,
+        "end": 377,
+        "actor": "clinician",
+        "recordedAt": "2026-10-17T17:46:01.216Z"
+      },
+      {
+        "id": "source-d213497e-f3f5-4e57-8cb5-862e1d4defca",
+        "inputId": "input-0635f5c4-5547-47f0-b35d-5440080828ad",
+        "inputType": "narrative",
+        "excerpt": "No other relevant medical history applies. ",
+        "start": 377,
+        "end": 420,
+        "actor": "clinician",
+        "recordedAt": "2026-10-17T17:46:01.216Z"
+      },
+      {
+        "id": "source-4dfb2f90-96a8-4dac-a08a-eeb672932ae5",
+        "inputId": "input-0635f5c4-5547-47f0-b35d-5440080828ad",
+        "inputType": "narrative",
+        "excerpt": "INR was 4.8 on 08-Aug-2026. ",
+        "start": 320,
+        "end": 348,
+        "actor": "clinician",
+        "recordedAt": "2026-10-17T17:46:01.216Z"
+      },
+      {
+        "id": "source-0224ae33-83d9-4dda-9e53-52c4634a4ee6",
+        "inputId": "input-db09cc89-6dc5-4aa3-b264-b7c5891c36bd",
+        "inputType": "selection",
+        "excerpt": "Adverse event",
+        "start": 0,
+        "end": 13,
+        "actor": "clinician",
+        "recordedAt": "2026-10-17T17:46:01.229Z"
+      }
+    ],
+    "changes": [
+      {
+        "commandId": "command-attach-opening-2dac03db-657b-4296-97b6-c1ce6200abf1",
+        "type": "attach-grounded-proposals",
+        "affectedTargets": [
+          "product:product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d",
+          "product:product-a876a5bd-7cae-4229-8e6d-9331290e999c",
+          "test:test-0d44503b-6d4b-4957-b154-328766a9762f",
+          "patient:patient:identifier",
+          "patient:patient:ageYears",
+          "patient:patient:sex",
+          "product:product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d:name",
+          "product:product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d:productType",
+          "product:product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d:role",
+          "product:product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d:dose",
+          "product:product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d:frequency",
+          "product:product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d:route",
+          "product:product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d:startDate",
+          "product:product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d:indication",
+          "product:product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d:stopped",
+          "product:product-a876a5bd-7cae-4229-8e6d-9331290e999c:name",
+          "product:product-a876a5bd-7cae-4229-8e6d-9331290e999c:productType",
+          "product:product-a876a5bd-7cae-4229-8e6d-9331290e999c:role",
+          "product:product-a876a5bd-7cae-4229-8e6d-9331290e999c:dose",
+          "product:product-a876a5bd-7cae-4229-8e6d-9331290e999c:frequency",
+          "product:product-a876a5bd-7cae-4229-8e6d-9331290e999c:route",
+          "product:product-a876a5bd-7cae-4229-8e6d-9331290e999c:startDate",
+          "event:event:symptoms",
+          "event:event:onsetDate",
+          "event:event:death",
+          "event:event:lifeThreatening",
+          "event:event:hospitalized",
+          "event:event:disability",
+          "event:event:requiredIntervention",
+          "event:event:congenitalAnomaly",
+          "event:event:otherSerious",
+          "event:event:relevantHistory",
+          "event:event:outcome",
+          "test:test-0d44503b-6d4b-4957-b154-328766a9762f:testName",
+          "test:test-0d44503b-6d4b-4957-b154-328766a9762f:testResult",
+          "test:test-0d44503b-6d4b-4957-b154-328766a9762f:date"
+        ],
+        "sourceIds": [
+          "source-beb67817-d4ab-4f7c-8504-dbfe87db97fe",
+          "source-042e133e-cc3a-4701-9ba2-f273bd9aadda",
+          "source-ac20f962-7b22-4b07-a875-fe32044cf559",
+          "source-4f17b622-f7a9-43d2-a0f6-90f34276692f",
+          "source-292f3ec0-6fb9-42f7-8da4-cbd91a108938",
+          "source-9c4270b6-4834-4c50-a7f3-d9affc641e79",
+          "source-d213497e-f3f5-4e57-8cb5-862e1d4defca",
+          "source-4dfb2f90-96a8-4dac-a08a-eeb672932ae5"
+        ],
+        "priorRevision": 0,
+        "resultingRevision": 1,
+        "supersessions": [],
+        "resolutions": []
+      },
+      {
+        "commandId": "command-record-report-type-71ce336c-ced1-4c5c-9021-e44e2b0b6617",
+        "type": "record-clinician-facts",
+        "affectedTargets": [
+          "event:event:reportType"
+        ],
+        "sourceIds": [
+          "source-0224ae33-83d9-4dda-9e53-52c4634a4ee6"
+        ],
+        "priorRevision": 1,
+        "resultingRevision": 2,
+        "supersessions": [],
+        "resolutions": []
+      }
+    ]
+  },
+  "unrepresented": []
+}

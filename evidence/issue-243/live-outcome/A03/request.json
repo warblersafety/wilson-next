@@ -1,0 +1,336 @@
+{
+  "operation": "act",
+  "state": {
+    "version": "wilson-browser-state-v32",
+    "stage": "describe",
+    "case": {
+      "id": "case-20aa40f1-a2a8-4ca2-bc05-6c8e790f060c",
+      "revision": 0,
+      "patient": {
+        "id": "patient",
+        "state": "proposed",
+        "facts": {
+          "involvement": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "identifier": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "ageYears": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "dateOfBirth": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "raceEthnicity": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "a2Value": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "sex": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "weight": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      "event": {
+        "id": "event",
+        "state": "proposed",
+        "facts": {
+          "reportType": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "reportDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "problemDescription": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "symptoms": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "onsetDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "death": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "deathDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "lifeThreatening": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "hospitalized": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "disability": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "requiredIntervention": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "congenitalAnomaly": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "otherSerious": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "relevantTestsAvailable": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "relevantHistory": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "additionalComments": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "treatments": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "outcome": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "dischargeDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "productAvailability": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "productReturnDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      "products": [],
+      "relevantTests": [],
+      "reporter": {
+        "id": "reporter",
+        "facts": {
+          "lastName": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "firstName": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "address": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "city": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "state": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "postalCode": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "country": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "phone": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "email": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "healthProfessional": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "occupation": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "reportedTo": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "doNotDiscloseIdentity": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      "askedNeeds": [],
+      "sources": [],
+      "changes": []
+    },
+    "unrepresented": []
+  },
+  "expectedRevision": 0,
+  "action": {
+    "action": "submit-opening",
+    "text": "Entirely fictional evaluation. Patient TEST-51 is a 51-year-old woman. She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia. On 05-Sep-2026 she developed muscle pain and weakness. ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. No serious outcomes applied. No other relevant medical history applies. Atorvastatin was stopped, and she was improving. I suspect atorvastatin.",
+    "reportType": "adverse-event"
+  },
+  "operationId": "2dda43ff-ebbb-4d5c-850a-a702ab7cb265",
+  "runId": "c3d1eca6-41c8-4ee9-917b-c9dce3016fcb"
+}

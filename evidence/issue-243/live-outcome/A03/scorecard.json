@@ -1,0 +1,13 @@
+{
+  "case": "A03",
+  "expectedFrozenCommit": "8530c088f4465276251d6f77c83024562d3faefd",
+  "servedRelease": "23da51d3d31bbfbe091b809bce1d9aef71f8ac5f",
+  "result": "FAIL substantive frozen outcome/D7 criteria",
+  "observations": [
+    "General event.outcome omitted from provider proposals and empty in parsed review state",
+    "Unqualified known true improvedAfterChange proposed from stopped-and-improving co-occurrence",
+    "Proposal remains unaccepted; no PDF was generated in this focused extraction-only check"
+  ],
+  "boundary": "Provider structured proposal generation; parsed boundary/UI preserve the provider proposal rather than creating or dropping a general outcome. Source citation presence is not target-specific temporal entailment validation.",
+  "disposition": "Preserve evidence and report. No model/prompt/schema or general semantic fix in this phase."
+}

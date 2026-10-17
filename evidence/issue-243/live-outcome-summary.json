@@ -1,0 +1,71 @@
+{
+  "frozenProtocolCommit": "8530c088f4465276251d6f77c83024562d3faefd",
+  "protocolSha256": "ad7303bfddd1ee01cd11b11dc4f8b8b2051d8f64fbc5b3096307d8cb8bd00a4b",
+  "servedRelease": "23da51d3d31bbfbe091b809bce1d9aef71f8ac5f",
+  "deployment": "dpl_2WkY1KKP41UDT5NHf9GQJFfDdyFj",
+  "actualBrowserOpenings": 3,
+  "automaticRetries": 0,
+  "transportInterruptions": 0,
+  "estimatedAppModelUsd": 0.266328,
+  "results": {
+    "A03": "FAIL substantive frozen outcome/D7 criteria",
+    "A04": "PASS targeted criteria",
+    "A11": "PASS narrow positive-control criteria"
+  },
+  "broaderTextMilestone": "NO-GO: A03 reproduced a substantive previously observed provider-output grounding/omission concern. No model fix attempted.",
+  "clinicianTesting": "Recommend limited supervised clinician usability testing with fictional data and explicit known failure disclosure; review every proposal and final PDF. Do not call this unrestricted ordinary-case readiness or full application completion.",
+  "boundedExportFix": "Separate accepted-F-context export gate passes; overall milestone failure is not silently reclassified as an F export defect or fixed by this PR.",
+  "operations": [
+    {
+      "id": "A03",
+      "status": "captured",
+      "release": "23da51d3d31bbfbe091b809bce1d9aef71f8ac5f",
+      "utc": "2026-10-17T17:43:52.925Z",
+      "operationId": "2dda43ff-ebbb-4d5c-850a-a702ab7cb265",
+      "runId": "c3d1eca6-41c8-4ee9-917b-c9dce3016fcb",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-duration-wording-v31",
+        "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+        "inputTokens": 13198,
+        "outputTokens": 4828,
+        "latencyMs": 35001,
+        "estimatedCostUsd": 0.074676
+      }
+    },
+    {
+      "id": "A04",
+      "status": "captured",
+      "release": "23da51d3d31bbfbe091b809bce1d9aef71f8ac5f",
+      "utc": "2026-10-17T17:45:10.468Z",
+      "operationId": "be1c01bc-7bdb-4e03-85ab-1dfe5c8478d7",
+      "runId": "256d8b92-e38a-463b-8ebd-dd2cb26e69c0",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-duration-wording-v31",
+        "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+        "inputTokens": 13167,
+        "outputTokens": 6347,
+        "latencyMs": 50591,
+        "estimatedCostUsd": 0.089804
+      }
+    },
+    {
+      "id": "A11",
+      "status": "captured",
+      "release": "23da51d3d31bbfbe091b809bce1d9aef71f8ac5f",
+      "utc": "2026-10-17T17:46:46.624Z",
+      "operationId": "122e3f54-4b3c-471d-b8ce-b967ffce31ad",
+      "runId": "d9f6831d-1784-4624-8db1-827ac3171cd2",
+      "metrics": {
+        "model": "claude-sonnet-5",
+        "promptRevision": "wilson-duration-wording-v31",
+        "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+        "inputTokens": 13349,
+        "outputTokens": 7515,
+        "latencyMs": 56430,
+        "estimatedCostUsd": 0.101848
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "runtimeHead": "23da51d3d31bbfbe091b809bce1d9aef71f8ac5f",
+  "unit": {
+    "files": 111,
+    "passed": 1154,
+    "failed": 0
+  },
+  "browser": {
+    "passed": 177,
+    "failed": 0,
+    "liveApplicationModelCalls": 0
+  },
+  "typecheck": "passed",
+  "productionBuild": "passed",
+  "newDetachedHeaderAssertions": "7 focused tests passed after addition",
+  "hostedF": "passed; live application-model calls blocked",
+  "liveOutcome": {
+    "calls": 3,
+    "retries": 0,
+    "A03": "FAIL",
+    "A04": "PASS",
+    "A11": "PASS narrow positive control",
+    "estimatedAppModelUsd": 0.266328
+  },
+  "review": "Actual Opus code/docs findings resolved on same-session recheck; final evidence/CI disposition recorded on issue243/PR244",
+  "exactHeadCI": "Mandatory on final evidence commit; final run and review recorded on issue243/PR244",
+  "scope": "One accepted F export fix; outcome failures report-only; no model or prompt changes"
+}
