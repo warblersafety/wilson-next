@@ -7,6 +7,11 @@
   "fullBrowser": "running167",
   "distinctPDFs": 7,
   "PDFKitCaptures": 9,
-  "review": "authorized independent Codex pending",
-  "liveApplicationModelProviderCalls": 0
+  "review": "authorized independent Codex full clear; recheck pending",
+  "liveApplicationModelProviderCalls": 0,
+  "reviewerTestLimitation": "Vite config write sandbox blocked before execution",
+  "partialCorrectionOnlyChangesComments": true,
+  "UnknownOnlyChangesC1DateAndComments": true,
+  "nativeCompleteBaselineVerified": true,
+  "dateWidgetActions": false
 }
