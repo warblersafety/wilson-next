@@ -172,16 +172,19 @@ prior migrations, preserving all facts/IDs/sources/history/revisions/targets and
 numeric unfinished drafts unchanged. Current UI draft codec additionally retains
 month/week/day pairs, including unfinished invalid quantities without promoting them.
 
-### Complete date of birth and A2 choice (Issue #172)
+### Date of birth and A2 choice (Issues #172 and #231)
 
-The official A2 alternative accepts the explicitly supplied complete birth date
-or age at event onset. Date of birth is a separate reviewed patient fact, never
-calculated from age or used to calculate age. The native DateBirth field receives
-DD-MMM-YYYY from the retained ISO components without timezone/date arithmetic.
-Only complete Gregorian calendar dates in years0001–9999 are accepted. Partial,
-impossible or ambiguous dates are unsupported; the text editor retains invalid
-unfinished words across reload and disables Apply. Global legacy date cleanup
-remains #164, without retrospective changes to accepted values.
+The official A2 alternative accepts date of birth or age at event onset using
+the most precise information available. Date of birth is a separate reviewed
+patient fact, never calculated from age or used to calculate age. Complete
+Gregorian dates in years 0001–9999 populate native DateBirth as DD-MMM-YYYY
+without timezone/date arithmetic. Issue #231 extends the initial complete-date
+path with explicit month/year and year-only precision: A2 points to B6 comments,
+where the exact supplied wording and qualifier appear under an A2 date-of-birth
+label. No missing day, month or age is inferred. Impossible dates and unsupported
+unstructured wording remain invalid; unfinished editor input survives reload
+without replacing the accepted fact. Global legacy date cleanup remains #164,
+without retrospective changes to accepted values.
 
 An explicit clinician-only A2 value-to-print fact chooses Age or Date of birth.
 The model can propose both supplied facts but cannot choose the print preference.
@@ -1888,3 +1891,5 @@ Issue225 adds only B6 observation-date precision using the existing supplied-dat
 Issue227 widens only onset/death/discharge date values to supplied precision; browser v29 validates frozen v28 before lossless migration. B3/B2 partial native dates point to labelled B5 context; complete dates remain native, including their separately carried qualifiers. B2 date output still requires explicit death=true; non-carried known dates remain disclosed. New onset/death supplements do not satisfy the substantive event-description gate. Discharge uses its existing B5 course path with labelled partial wording. Existing B5 pagination/content keys/references/glyph attribution apply. No death, hospitalization, chronology, age or missing components are inferred; report/return/DOB contracts stay unchanged.
 
 Issue229 widens only C1 productReturnDate to supplied precision; browser v30 strictly validates frozen v29 before lossless migration. Partial native C1 dates point to labelled C1 wording in existing Additional comments/B6 pagination, sharing content keys/references and field-specific glyph guards with independent tests/general comments. Full native dates remain formatted and their qualifiers carry labelled context. Return-date output requires explicit returned-to-manufacturer availability; other/unknown/disputed availability retains and discloses the date without printing it. No return, individual-product attribution, chronology, clinical narrative or test observation is inferred. DOB/A2 and B4 remain unchanged.
+
+Issue231 supports explicit month/year/year-only DOB using the existing birth-date editor and supplied-date contract. Browser v31 strictly validates frozen v30 before widening; invalid DOB remains rejected as before. A2 partial DOB points to labelled Additional comments/B6 pagination; complete dates and exact qualifier context remain linked. Explicit A2 age selection suppresses every DOB output/context without erasing it; both known without selection blocks, and selected-but-unavailable DOB never falls back to age. DOB/age/patient involvement/chronology are never derived. Shared content hashes, source trace, glyph attribution and conflict/status gates apply; no new note engine or questions.

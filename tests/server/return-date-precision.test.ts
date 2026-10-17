@@ -15,10 +15,10 @@ it.each([monthReturnDate, { precision: 'year', year: '2029', wording: 'Return re
     }
     expect(r.proposals.some(p => ['productAvailability', 'onsetDate', 'death', 'dateOfBirth'].includes(p.target.field))).toBe(false);
 });
-it('rejects invalid partials, arbitrary strings and malformed objects while DOB/report contracts stay unchanged', () => {
+it('rejects invalid partials, arbitrary strings and malformed objects while report contracts stay unchanged', () => {
     for (const value of [{ ...monthReturnDate, year: '0000' }, { ...monthReturnDate, month: '13' }, { ...monthReturnDate, wording: '' }, { ...monthReturnDate, day: '01' }, '2028-02', '2028-02-30', 'two weeks later'])
         expect(knownValueMismatch({ entity: 'event', entityId: 'event', field: 'productReturnDate' }, { kind: 'known', value })).toBeTruthy();
-    for (const target of [{ entity: 'patient' as const, entityId: 'patient' as const, field: 'dateOfBirth' as const }, { entity: 'event' as const, entityId: 'event' as const, field: 'reportDate' as const }])
+    for (const target of [{ entity: 'event' as const, entityId: 'event' as const, field: 'reportDate' as const }])
         expect(knownValueMismatch(target, { kind: 'known', value: monthReturnDate })).toBeTruthy();
 });
 it.each([{ kind: 'known' as const, value: monthReturnDate, qualifier: 'Fictional return date uncertain' }, { kind: 'known' as const, value: '2028-02-12', qualifier: 'Fictional return date uncertain' }])('direct date correction retains readable precision and qualifier source, changing no other facts %j', async (value) => {

@@ -243,10 +243,10 @@ export function parseModelProposalEnvelope(
       unrepresented.push(quarantineProposal(rawProposal, "invalid-source-reference"));
       continue;
     }
-    if(((target.entity==="event"&&isEventDateField(target.field)) || (target.entity==="test"&&target.field==="date") || (target.entity==="product" && (target.field==="expirationDate" || isProductDateField(target.field)))) && proposal.value.kind==="known" && isPartialExpiration(proposal.value.value) && !evidence.some(p=>input.text.slice(p.start,p.end).includes(proposal.value.kind==="known" && isPartialExpiration(proposal.value.value)?proposal.value.value.wording:""))) {
+    if(((target.entity==="patient"&&target.field==="dateOfBirth") || (target.entity==="event"&&isEventDateField(target.field)) || (target.entity==="test"&&target.field==="date") || (target.entity==="product" && (target.field==="expirationDate" || isProductDateField(target.field)))) && proposal.value.kind==="known" && isPartialExpiration(proposal.value.value) && !evidence.some(p=>input.text.slice(p.start,p.end).includes(proposal.value.kind==="known" && isPartialExpiration(proposal.value.value)?proposal.value.value.wording:""))) {
       unrepresented.push(quarantineProposal(rawProposal,"evidence-not-found"));continue;
     }
-    if(((target.entity==="event"&&isEventDateField(target.field)) || (target.entity==="test"&&target.field==="date") || (target.entity==="product" && (target.field==="expirationDate" || isProductDateField(target.field)))) && proposal.value.kind==="known" && isPartialExpiration(proposal.value.value) && !proposal.value.value.wording.includes(proposal.value.value.year)) {
+    if(((target.entity==="patient"&&target.field==="dateOfBirth") || (target.entity==="event"&&isEventDateField(target.field)) || (target.entity==="test"&&target.field==="date") || (target.entity==="product" && (target.field==="expirationDate" || isProductDateField(target.field)))) && proposal.value.kind==="known" && isPartialExpiration(proposal.value.value) && !proposal.value.value.wording.includes(proposal.value.value.year)) {
       unrepresented.push(quarantineProposal(rawProposal,"evidence-not-found"));continue;
     }
     prepared.push({ proposal, target, groupId, evidence });

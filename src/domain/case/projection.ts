@@ -33,7 +33,7 @@ export interface Form3500Projection {
   caseId: string;
   revision: number;
   sections: {
-    A: { patientIdentifier?: string; ageYears?: PatientAge; dateOfBirth?: string; raceEthnicity?: RaceEthnicity[]; sex?: "female" | "male" | "intersex"; sexContext?: string; weight?: { value: number; unit: "kg" | "lb" } };
+    A: { patientIdentifier?: string; ageYears?: PatientAge; dateOfBirth?: string; dateOfBirthInComments?: boolean; raceEthnicity?: RaceEthnicity[]; sex?: "female" | "male" | "intersex"; sexContext?: string; weight?: { value: number; unit: "kg" | "lb" } };
     B: {
       reportType?: ReportType;
       reportDate?: string;
@@ -194,13 +194,16 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     projection.sourceTrace["sections.A.patientIdentifier"] = known(caseState.patient.facts.involvement)!.sourceIds;
   }
   assign(projection, "sections.A.ageYears", "patient age", "patient:patient:ageYears", caseState.patient.facts.ageYears, projection.sections.A, "ageYears");
-  assign(projection, "sections.A.dateOfBirth", "patient date of birth", "patient:patient:dateOfBirth", caseState.patient.facts.dateOfBirth, projection.sections.A, "dateOfBirth");
+  const dob = known(caseState.patient.facts.dateOfBirth);
+  if(dob && isPartialDate(dob.value)){projection.sections.A.dateOfBirthInComments=true;projection.sourceTrace["sections.A.dateOfBirthInComments"]=dob.sourceIds;}
+  else assign(projection, "sections.A.dateOfBirth", "patient date of birth", "patient:patient:dateOfBirth", caseState.patient.facts.dateOfBirth, projection.sections.A, "dateOfBirth",value=>value as string,true);
   const a2Choice = known(caseState.patient.facts.a2Value);
   if (a2Choice) {
     projection.sourceTrace["sections.A.a2Value"] = a2Choice.sourceIds;
     const unselected = a2Choice.value === "age" ? "dateOfBirth" : "ageYears";
     const omitted = known<unknown>(caseState.patient.facts[unselected]);
     delete projection.sections.A[unselected];
+    if(unselected === "dateOfBirth"){delete projection.sections.A.dateOfBirthInComments;delete projection.sourceTrace["sections.A.dateOfBirthInComments"];}
     delete projection.sourceTrace[`sections.A.${unselected}`];
     if (omitted) projection.omissions.push({ concept: unselected === "ageYears" ? "patient age" : "patient date of birth", target: `patient:patient:${unselected}`, reason: "a2-alternative-not-selected", sourceIds: omitted.sourceIds });
     for (const item of projection.omissions) if (item.target === `patient:patient:${unselected}` && item.reason === "qualifier-not-included") item.baseValueIncluded = false;
@@ -385,6 +388,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   for (const product of projection.sections.F.concomitantProducts) for (const context of product.fieldContext ?? []) carriedQualifierTargets.add(`product:${product.productId}:${context.field}`);
   for (const context of projection.sections.G.reporter.fieldContext??[]) carriedQualifierTargets.add(`reporter:reporter:${context.field}`);
   for (const entry of eventDateContextEntries(caseState))carriedQualifierTargets.add(entry.target);
+  for (const entry of birthDateContextEntries(caseState))carriedQualifierTargets.add(entry.target);
   for (const entry of returnDateContextEntries(caseState))carriedQualifierTargets.add(entry.target);
   for (const entry of relevantTestContextEntries(caseState)) carriedQualifierTargets.add(entry.target);
   for(const note of projection.productDateNotes??[])carriedQualifierTargets.add(`product:${note.productId}:${note.field}`);
@@ -660,6 +664,7 @@ export function additionalCommentsEntries(caseState: SemanticCase) {
   return [
     ...relevantTestContextEntries(caseState),
     ...returnDateContextEntries(caseState),
+    ...birthDateContextEntries(caseState),
     ...(comment ? [{ text: `Additional comments: ${comment.value}${comment.qualifier ? `\nAdditional comments context: ${comment.qualifier}` : ""}`, target: "event:event:additionalComments", sourceIds: comment.sourceIds, testId: undefined }] : []),
   ];
 }
@@ -701,4 +706,14 @@ export function returnDateContextEntries(caseState: SemanticCase) {
     ? `C1 product return date wording:\n${suppliedDateText(date.value, "product return date", date.qualifier)}`
     : date.qualifier ? `C1 product return date context: ${date.qualifier}` : undefined;
   return text ? [{ text, target: "event:event:productReturnDate", sourceIds: date.sourceIds, testId: undefined }] : [];
+}
+
+/** A2 selection suppresses the unselected DOB, without deriving age or erasing facts. */
+export function birthDateContextEntries(caseState: SemanticCase) {
+  const date = known(caseState.patient.facts.dateOfBirth);
+  if (!date || known(caseState.patient.facts.a2Value)?.value === "age") return [];
+  const text = isPartialDate(date.value)
+    ? `A2 date of birth wording:\n${suppliedDateText(date.value, "date of birth", date.qualifier)}`
+    : date.qualifier ? `A2 date of birth context: ${date.qualifier}` : undefined;
+  return text ? [{ text, target: "patient:patient:dateOfBirth", sourceIds: date.sourceIds, testId: undefined }] : [];
 }
