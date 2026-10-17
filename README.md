@@ -1,97 +1,64 @@
 # Wilson Next
 
-Wilson Next is the clean implementation path for Wilson: a clinician-facing
-system that turns a natural account into reviewed, traceable case knowledge and
-a supported Form FDA 3500 projection.
+Wilson helps a healthcare professional describe a suspected adverse event,
+review and correct source-backed case knowledge, and download a faithful Form
+FDA 3500. Conversation is primary; the form is an output of reviewed knowledge.
+Wilson does not diagnose, judge causality, recommend treatment or submit reports.
 
-**Current status:** Experiment 1 completed on 2026-09-08 as a qualified
-technical success. Experiment 2 Stage 3 then replaced the fixed journey with a
-state-driven production seed and verified three medication journeys plus the
-Experiment 1 regression through browser and PDF in PR #52. The first protected
-live passes produced two viable journeys and one safely rejected rich journey,
-so Stage 4 is `Revise`. Steve reports that preliminary physician feedback
-already established strong preference for Wilson's approach if it works; Issue
-#53 refocused the experiment on that condition—reliable semantic and evidence
-behavior—rather than repeating a direct-form preference proxy. Experiment 2 now
-ends `Revise`, with remediation deferred; Issue #55 preserves the live-model
-limitation and its revisit triggers without making it the next product task.
-Issue #57 delivered deterministic adaptive completion for the supported adult
-medication adverse-event path in PR #58, including stable relevant-test
-knowledge, reporter entry that bypasses the model, and matching Sections A, B,
-and G projection. Issue #59 now tracks layered deterministic journey coverage
-with root-cause gates. Issue #60 / PR #61 completed its first cohort, stressing
-conditional death detail, multiple-test correction, and role-driven
-applicability. Issue #62 / PR #63 completed Layer 2 for one information-rich
-device adverse event and one sparse product-quality report. Issue #64 is the
-bounded Layer 3 cohort for combined device report types, conditionally
-applicable device details, and stable-device correction/uncertainty while
-retaining all earlier deterministic journeys. None of this campaign work calls
-or remediates the deferred live model in Issue #55.
+This is a protected **fictional-data-only development preview**, including
+fictional reporter identity/contact details. It is not a complete Form 3500
+replacement or a real-patient-data release. Browser-local save/resume supports
+one active case and separate reusable reporter details, without accounts.
+Successful mocked journeys do not establish live interpretation reliability.
+See [coverage and acceptance limits](docs/COVERAGE.md) before testing or making
+readiness claims. Preserve the existing conversation-first UI and visual design.
 
-Delivery's standing execution authority allows Codex to carry approved bounded
-work through objective, autonomous merge without repeated permission steps.
-Material premise changes, real data, destructive actions outside ordinary
-branch work, expanded review, and spend above the standing cap remain outside
-that authority. At Issue #42's 2026-09-08 stop-and-reconcile
-checkpoint, Steve explicitly required any further experiment both to answer its
-bounded questions and to replace the fixed journey with production-seed code
-for the supported adult medication adverse-event scope. `docs/EXPERIMENT-2.md`
-owns that quality bar and its non-production boundary; `docs/DELIVERY.md` owns
-the execution authority.
+## Current guidance
 
-## Active corpus
+| Guide | Owns |
+|---|---|
+| [Product](docs/PRODUCT.md) | Purpose, full-form artificial-data target, interaction contract and non-goals |
+| [Architecture](docs/ARCHITECTURE.md) | Semantic case, write/model boundaries, persistence and PDF contracts |
+| [Coverage](docs/COVERAGE.md) | Implemented boundaries, remaining scope, paused work and acceptance limits |
+| [Development](docs/DEVELOPMENT.md) | Local setup, mock tests and independent PDF checks |
+| [Operations](docs/OPERATIONS.md) | Protected-preview provenance, access and non-secret host procedures |
+| [Delivery](docs/DELIVERY.md) | Issues, review, authority, merge controls and durable evidence |
 
-The repository has six active documents. Each lasting decision has one owner;
-other documents link to it or apply it only where their narrower scope requires.
+Read Product, Architecture and Delivery for implementation; use the other guides
+for the selected task. Product governs user outcomes, Architecture governs
+semantic authority, and Delivery governs execution. Narrower task instructions
+still apply. Reconcile a material conflict in its owning guide before proceeding.
+Each lasting decision has one current owner; historical plans are evidence.
 
-1. [`docs/PRODUCT.md`](docs/PRODUCT.md) owns the product promise, scope,
-   interaction contract, and unacceptable outcomes.
-2. [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) owns the semantic case,
-   authoritative write boundary, model role, projections, and falsification
-   conditions proven in Experiment 1 plus the approved production-seed
-   amendments for Experiment 2.
-3. [`docs/EXPERIMENT-1.md`](docs/EXPERIMENT-1.md) owns the fixed journey,
-   supported and deferred scope, selected stack, implementation slices,
-   verification, deployment, and disposal contract.
-4. [`docs/EXPERIMENT-2.md`](docs/EXPERIMENT-2.md) owns the approved
-   operator-only generalization and conditional-reliability plan, including
-   each slice's evidence bounds.
-5. [`docs/DELIVERY.md`](docs/DELIVERY.md) owns issues, branches, pull requests,
-   execution authority, independent review, merge controls, and durable
-   traceability.
-6. [`docs/RECOVERY.md`](docs/RECOVERY.md) preserves the evidence and lessons
-   behind the active decisions. It is historical evidence, not a second
-   backlog or competing source of product authority.
+## Development entry point
 
-When documents interact, Product governs the user outcome, Architecture governs
-semantic and authority boundaries, each Experiment document narrows those
-decisions for its declared scope, and Delivery governs how changes reach
-`main`. A narrower document may specialize a higher-level decision within its
-declared scope; it may not contradict it. Stop and reconcile a material
-conflict in the owning document before continuing.
+Use the pinned runtime in [.node-version](.node-version) and the installed npm
+dependencies. [Development](docs/DEVELOPMENT.md) explains prerequisites and safe
+mock verification. The ordinary commands are:
 
-## Minimum reading path
+```sh
+npm run dev
+npm run typecheck
+npm test
+npm run build
+npm run test:e2e
+```
 
-- **Slice 0:** this README; the projection and adapter boundary in Architecture;
-  the Selected stack, Slice 0 PDF gate, CI and implementation order, and
-  Retention sections in Experiment 1; and Delivery.
-- **Slices 1–4B:** read Product, Architecture, Experiment 1, and Delivery in
-  full.
-- **Experiment 2 planning and slices:** read Product, Architecture, Experiment
-  2, and Delivery in full; use Experiment 1 as the evidence input named by
-  Experiment 2.
-- **Premise challenge or legacy reuse:** additionally read the relevant
-  evidence and policy in Recovery.
+Local development refuses live application-model construction; the deterministic
+browser suite uses authored responses. Do not export application credentials
+into an ordinary development or subscription-review shell.
 
-## Repository surfaces
+## Evidence and history
 
-- `docs/` contains the active corpus.
-- `.github/` contains the work-item and pull-request templates.
-- Application source, tests, package metadata, and CI arrive only in their
-  governed implementation slices.
+[Evidence navigation](evidence/README.md) distinguishes retained synthetic
+artifacts, reviews and historical results from current requirements. The pinned
+[FDA source](assets/fda/README.md) owns form provenance. Completed experiment
+plans, assessments and checkpoint instructions are available through pinned Git
+history, not mandatory current reading. Pre-cleanup originals are also preserved
+outside this checkout in the existing Mini-local Wilson archive; it is not a
+verified off-device backup. No private originals are published here.
 
-Wilson Next remains one application, not a monorepo. Documentation and code
-stay together so implementation evidence can correct its owning decision.
-Legacy Wilson is evidence and a selective donor, not the foundation to evolve.
-Nightjar remains excluded except as historical Wilson evidence recorded in
-Recovery.
+Wilson remains one modular Next.js application, not a monorepo. Legacy Wilson
+is read-only evidence and a selective donor requiring revalidation; it is not
+the foundation to evolve. Excluded external workflow tools supply no lifecycle
+or implementation authority; see [Architecture](docs/ARCHITECTURE.md#deferred-mechanisms-and-stop-conditions).
