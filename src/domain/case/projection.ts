@@ -182,7 +182,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       "Patient race/ethnicity detail outside the seven A5 categories",
       "Section C product pictures",
       "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
-      "Product date wording outside complete dates or explicit month/year/year-only precision; dose-count, compound and range treatment durations",
+      "Product date wording outside complete dates or explicit month/year/year-only precision",
     ],
   };
 
