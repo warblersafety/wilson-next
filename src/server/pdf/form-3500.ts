@@ -381,7 +381,8 @@ async function fillNativeForm3500Projection(
   setChecked(form, fields.productAvailableYes, C.productAvailability === "available");
   setChecked(form, fields.productAvailableNo, C.productAvailability === "not-available");
   setChecked(form, fields.productReturned, C.productAvailability === "returned-to-manufacturer");
-  setText(form, fields.productReturnDate, C.productReturnDate ? formatDate(C.productReturnDate) : undefined);
+  if(C.productReturnDateInComments&&(C.productAvailability!=="returned-to-manufacturer"||C.productReturnDate||!B.relevantTestContext?.includes("C1 product return date wording:\n")))throw new Error("C1 partial return date requires explicit return to manufacturer and linked Additional comments, not a complete native date");
+  setText(form, fields.productReturnDate, C.productReturnDateInComments?"B6 comments":C.productReturnDate ? formatDate(C.productReturnDate) : undefined);
 
   const durationUnitWrites = new Set<string>();
   const suspectFields = [
@@ -772,6 +773,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
           : form.getCheckBox(fields.productAvailableYes).isChecked() ? "available"
             : form.getCheckBox(fields.productAvailableNo).isChecked() ? "not-available" : undefined,
         productReturnDate: parseDate(form.getTextField(fields.productReturnDate).getText()),
+        productReturnDateInComments:form.getTextField(fields.productReturnDate).getText()==="B6 comments"?true:undefined,
       }),
       D: {
         suspectProducts: projection.sections.D.suspectProducts.map((product, index) => readSuspect(product, index, suspectNames[index])),

@@ -17,6 +17,6 @@ export function suppliedDateText(value:PartialDate,label:string,qualifier?:strin
 }
 
 export const eventDateFields=['onsetDate','deathDate','dischargeDate'] as const;
-export type EventDateField=typeof eventDateFields[number];
-export const eventDateLabels={onsetDate:'Event onset date',deathDate:'Death date',dischargeDate:'Discharge date'} as const;
-export const isEventDateField=(field:string):field is EventDateField=>(eventDateFields as readonly string[]).includes(field);
+export type EventDateField=typeof eventDateFields[number]|"productReturnDate";
+export const eventDateLabels={onsetDate:'Event onset date',deathDate:'Death date',dischargeDate:'Discharge date',productReturnDate:'Product return date'} as const;
+export const isEventDateField=(field:string):field is EventDateField=>([...eventDateFields,"productReturnDate"] as readonly string[]).includes(field);

@@ -66,7 +66,7 @@ export interface EventFacts {
   outcome: Fact<string>;
   dischargeDate: Fact<SuppliedDate>;
   productAvailability: Fact<"available" | "not-available" | "returned-to-manufacturer">;
-  productReturnDate: Fact<string>;
+  productReturnDate: Fact<SuppliedDate>;
 }
 
 export interface RelevantTestFacts {
