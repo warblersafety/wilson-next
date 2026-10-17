@@ -22,6 +22,13 @@ clinician input -> proposed facts and exact source references -> explicit review
   -> versioned PDF adapter -> bytes
 ```
 
+Model and PDF adapters are server-only; the provider key must never reach the
+browser. Runtime behavior must not recognize fixture text, scenario IDs, medicine
+names, expected values or predetermined sequences to choose facts, actions or
+stage. UI actions target only semantic targets in the current revision; stage
+is derived from case state, never a fixture or fixed turn number. Such coupling
+is a stop condition that reopens the production-seed premise.
+
 The clinician's knowledge is primary. PDF widget names/coordinates/encodings stay
 inside the adapter, never organizing upstream facts. The semantic projection
 knows form concepts and carries sources/omissions. Output failure leaves the case
@@ -55,7 +62,8 @@ A new test plus correction to its local reference in one response is unsupported
 retain its wording for restatement. This is containment, not proof of correct
 clinical matching or a solution to paused semantic-targeting work.
 
-Reviewed entities may be withdrawn, retaining IDs, sources/facts and history.
+A reviewed product or relevant test may be withdrawn only after the case reaches
+output, retaining IDs, sources/facts and history.
 Completion, model context and PDF exclude them. Rejecting an earlier product
 never renumbers later UI labels. Quarantined/incomplete reviewed products remain
 visible for repair; no automatic deletion or guessed category. With zero retained

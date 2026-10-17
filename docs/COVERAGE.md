@@ -24,6 +24,11 @@ general live-model reliability claim follows from passing deterministic tests.
 
 ## Acceptance boundary
 
+Supplied age months/weeks/days extend representation only: removing adult-only
+prompt wording does not introduce age-specific clinical rules or establish broader
+pediatric clinical validation. Original journey evidence used adults; mocked
+age-unit checks do not establish live age-unit interpretation fidelity (#169).
+
 Completed [Experiment 1](https://github.com/warblersafety/wilson-next/blob/4b7a82cff3028c2f1b5121087dcca5ebde95ede8/docs/EXPERIMENT-1.md)
 was a qualified technical success, not general reliability proof; its exact-source
 oracle was not fully satisfied. [Experiment 2](https://github.com/warblersafety/wilson-next/blob/4b7a82cff3028c2f1b5121087dcca5ebde95ede8/docs/EXPERIMENT-2.md)
