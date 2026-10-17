@@ -213,6 +213,7 @@ test("discard preserves accepted facts; subsequent questions and reporter drafts
   await page.getByRole("button",{name:"Add details in Clinical update",exact:true}).click();
   await expect(page.locator("#later-update")).toBeFocused();
   await clinicalAnswers(page,{action:"answer-clinical-context",history:{kind:"explicitly-absent"}});
+  await goTo(page,"Review details");
   await expect(page.getByRole("button", { name: "Continue to reporter details", exact: true })).toBeVisible();
   await goTo(page, "Reporter details");
   await expect(page.getByLabel("Reporter email", { exact: true })).toHaveValue("unsaved@example.test");
