@@ -1,3 +1,4 @@
+import {clinicalAnswers} from "./clinical-update-answers";
 import { seedStoredState } from "./draft4-helpers";
 import { acceptOpeningGroups, directAnswers, goTo, projectedText, savePdf, serverAction, showActiveTask, storedState } from "./draft4-helpers";
 import { execFile } from "node:child_process";
@@ -19,7 +20,7 @@ test("medication history: conversational grouped answer and two-product correcti
   };
   await page.goto("/");
   await opening(page, medicationSparseOpening);
-  await expect(page.getByRole("heading", { name: "Treatment history for amoxicillin" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Information still needed" })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("medication-question.png"), fullPage: true });
   const sparseDraft = await page.evaluate(() => sessionStorage.getItem("wilson-current-case-debug-v1")!);
   await update(page, medicationSparseUpdate);
@@ -52,24 +53,21 @@ test("medication history: conversational grouped answer and two-product correcti
   await expect(page.getByRole("status").filter({ hasText: "moved to history" })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("medication-correction.png"), fullPage: true });
   await update(page, medicationRestartedAgain);
-  await expect(page.getByRole("heading", { name: "Treatment history for amoxicillin" })).toBeVisible();
-  await expect(page.getByLabel("Did the event return after restarting it?", { exact: true })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Information still needed" })).toBeVisible();
   expect((await state(page)).products[0].facts.recurred.resolvedValue).toBeUndefined();
-  await page.getByLabel("Did the event return after restarting it?", { exact: true }).selectOption("false");
-  await serverAction(page, () => page.getByRole("button", { name: "Add medication answers", exact: true }).click());
+  await clinicalAnswers(page,{action:"answer-medication-history",productId:(await state(page)).products[0].id,answers:{recurred:{kind:"known",value:false}}});
   fields = await pdf("medication-two-final.pdf");
   expect(checked(fields, `${first}ReappearNo[0]`)).toBe(true);
   expect(checked(fields, `${first}ReappearYes[0]`)).toBe(false);
   expect(checked(fields, `${second}ReappearNA[0]`)).toBe(true);
   expect(checked(fields, `${second}AbatedNo[0]`)).toBe(true);
 
-  // Remaining-unknown preserves a clinician's already selected answer and
-  // answers newly revealed conditional fields in this one task (no model call).
+  // Explicit known and unknown words are proposed together, then accepted.
   await seedStoredState(page, JSON.parse(sparseDraft));
   await page.reload();
-  await directAnswers(page);
-  await page.getByLabel("Was this medication stopped?", { exact: true }).selectOption("true");
-  await serverAction(page, () => page.getByRole("button", { name: "These remaining details are unknown", exact: true }).click());
+  await expect.poll(async()=>(await storedState(page)).case.id).toBe(JSON.parse(sparseDraft).case.id);
+  await expect(page.getByRole("region",{name:"Browser saving"}).getByRole("status")).toHaveText("Saved in this browser");
+  await clinicalAnswers(page,{action:"answer-medication-history",productId:(await state(page)).products[0].id,answers:{stopped:{kind:"known",value:true},stopDate:{kind:"unknown"},improvedAfterChange:{kind:"unknown"},restarted:{kind:"unknown"}}});
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   const answered = await state(page);
   expect(answered.products[0].facts.stopped.resolvedValue.value).toEqual({ kind: "known", value: true });

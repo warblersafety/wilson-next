@@ -1,3 +1,4 @@
+import {clinicalAnswers} from "./clinical-update-answers";
 import { seedStoredState } from "./draft4-helpers";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -105,11 +106,11 @@ test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery an
   expect((await storedState(page)).case.relevantTests.map(({ state }) => state)).toEqual(["resolved", "proposed"]);
   await test2.getByRole("button", { name: "Accept Hemoglobin — 12-Sep-2026 (test 2)", exact: true }).click();
   await expect(test2.getByRole("button", { name: "Accept Hemoglobin — 12-Sep-2026 (test 2)", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("heading", { name: "Information still needed", exact: true })).toBeFocused();
-  await expect(details.getByRole("heading", { name: "Hospitalization is already recorded. Did any other serious outcomes apply?", exact: true })).toHaveCount(1);
-  await expect(page.locator("#clinical-question")).toContainText("Serious outcomes are a concise, material summary used directly in the supported report.");
+  await expect(page.locator("#later-update")).toBeFocused();
+  await expect(page.getByRole("region",{name:"Information still needed",exact:true})).toContainText("Other serious event");
+  await expect(page.getByRole("region",{name:"Information still needed",exact:true}).locator("input, select, button")).toHaveCount(0);
   await expect(invitation.getByLabel("Clinical update", { exact: true })).toHaveCount(0);
-  await expect(details.getByRole("button", { name: "Answer clinical questions", exact: true })).toHaveCount(0);
+  await expect(details.getByRole("button", { name: "Add details in Clinical update", exact: true })).toHaveCount(0);
   await expect(updatePanel.getByRole("button", { name: "How to dictate", exact: true })).toHaveAttribute("aria-expanded", "true");
   await expect(page.getByLabel("Clinical update", { exact: true })).toHaveValue("Unsent fictional draft; do not apply.");
   const beforeRecovery = await storedState(page);
@@ -121,21 +122,18 @@ test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery an
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await page.screenshot({ path: info.outputPath(`clinical-blocker-output-${width}.png`), fullPage: true });
   }
-  await page.getByRole("button", { name: "Answer clinical questions", exact: true }).click();
-  await expect(page.locator("#direct-clinical-question")).toBeVisible();
-  await expect(page.locator("#clinical-question")).toBeFocused();
-  await expect(page.getByRole("button", { name: "Confirm outcomes", exact: true })).toBeInViewport();
-  // Navigation must retain an in-progress direct answer too.
-  await page.getByLabel("Other serious or important medical event", { exact: true }).check();
+  await page.getByRole("button", { name: "Add details in Clinical update", exact: true }).click();
+  await expect(page.getByRole("region",{name:"Information still needed",exact:true})).toBeVisible();
+  await expect(page.locator("#later-update")).toBeFocused();
+  // One unsent conversational draft survives navigation; no competing answer draft.
+  await expect(page.locator("#later-update")).toBeInViewport();
   await goTo(page, "Reporter details");
   await expect(page.getByLabel("Reporter email", { exact: true })).toHaveValue("casey.reed@example.test");
   await expect(page.getByLabel("Do not disclose my identity to the manufacturer", { exact: true })).toBeChecked();
-  await page.getByRole("button", { name: "Answer clinical questions", exact: true }).click();
-  await expect(page.getByLabel("Other serious or important medical event", { exact: true })).toBeChecked();
+  await page.getByRole("button", { name: "Add details in Clinical update", exact: true }).click();
   await expect(page.getByLabel("Clinical update", { exact: true })).toHaveValue("Unsent fictional draft; do not apply.");
   expect(await storedState(page)).toEqual(beforeRecovery);
-  await page.getByLabel("Other serious or important medical event", { exact: true }).uncheck();
-  await page.getByRole("button", { name: "Confirm outcomes", exact: true }).click();
+  await clinicalAnswers(page,{action:"answer-serious-outcomes",disposition:"known",selected:[]});
   await goTo(page, "Review & save");
   await expect(page.getByRole("button", { name: "Generate PDF", exact: true })).toBeDisabled();
   await expect(page.getByText("Clinical questions are complete. Save reporter details or explicitly choose not to provide them.", { exact: true })).toBeVisible();
@@ -172,7 +170,7 @@ test("Draft 4 gaps: pending answers, separate tests, direct clinical recovery an
   expect(savedAgain.case.reporter.facts.doNotDiscloseIdentity).toEqual(reopened.case.reporter.facts.doNotDiscloseIdentity);
   await goTo(page, "Review & save");
   await expect(page.getByRole("button", { name: "Generate updated PDF", exact: true })).toBeDisabled();
-  await expect(page.getByRole("button", { name: "Answer clinical questions", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Add details in Clinical update", exact: true })).toBeVisible();
 });
 
 test("discard preserves accepted facts; subsequent questions and reporter drafts stay truthful", async ({ page }) => {
@@ -202,19 +200,19 @@ test("discard preserves accepted facts; subsequent questions and reporter drafts
   expect(remaining.case.relevantTests[0].state).toBe("rejected");
   expect(remaining.case.relevantTests[1]).toEqual(pending.case.relevantTests[1]);
   await remainingTest.getByRole("button", { name: "Accept Hemoglobin — 12-Sep-2026 (test 1)", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "Information still needed", exact: true })).toBeFocused();
+  await expect(page.locator("#later-update")).toBeFocused();
   await page.getByRole("button", { name: "Draft reporter details", exact: true }).click();
   await expect(page.getByRole("region", { name: "Before saving reporter details" })).toBeVisible();
   await page.getByLabel("Reporter email", { exact: true }).fill("unsaved@example.test");
   await goTo(page, "Review & save");
   await expect(page.getByRole("button", { name: "Generate PDF", exact: true })).toBeDisabled();
-  await page.getByRole("button", { name: "Answer clinical questions", exact: true }).click();
-  await expect(page.locator("#clinical-question")).toBeFocused();
-  await page.getByRole("button", { name: "Confirm outcomes", exact: true }).click();
-  await expect(page.locator("#clinical-question")).toBeFocused();
-  await expect(page.getByRole("group", { name: "Other relevant medical history", exact: true })).toBeInViewport();
-  await page.getByLabel("No relevant history to add", { exact: true }).check();
-  await page.getByRole("button", { name: "Add this context", exact: true }).click();
+  await page.getByRole("button", { name: "Add details in Clinical update", exact: true }).click();
+  await expect(page.locator("#later-update")).toBeFocused();
+  await clinicalAnswers(page,{action:"answer-serious-outcomes",disposition:"known",selected:[]});
+  await goTo(page,"Review & save");
+  await page.getByRole("button",{name:"Add details in Clinical update",exact:true}).click();
+  await expect(page.locator("#later-update")).toBeFocused();
+  await clinicalAnswers(page,{action:"answer-clinical-context",history:{kind:"explicitly-absent"}});
   await expect(page.getByRole("button", { name: "Continue to reporter details", exact: true })).toBeVisible();
   await goTo(page, "Reporter details");
   await expect(page.getByLabel("Reporter email", { exact: true })).toHaveValue("unsaved@example.test");

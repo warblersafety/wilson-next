@@ -1,3 +1,4 @@
+import {clinicalAnswers,clinicalQuestion,unknownMedicationAnswers} from "./clinical-update-answers";
 import { acceptOpeningGroups, directAnswers, goTo, projectedText, savePdf, serverAction, showActiveTask, storedState } from "./draft4-helpers";
 import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
@@ -73,7 +74,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await expect(productOrCaseCard(page, "Patient").getByText("Proposed", { exact: true })).toHaveCount(0);
   await expect(productOrCaseCard(page, "Event").getByText("Proposed", { exact: true }).first()).toBeVisible();
   await acceptOpeningGroups(page);
-  await serverAction(page, () => page.getByRole("button", { name: "Confirm outcomes" }).click());
+  await clinicalAnswers(page,{action:"answer-serious-outcomes",selected:[],disposition:"known"});
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   await expect(page.getByText("Reviewed", { exact: true })).toHaveCount(0);
@@ -121,27 +122,16 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await page.getByLabel("New Product type").selectOption("drug-or-biologic");
   await serverAction(page, () => typeRow.getByRole("button", { name: "Add fact" }).click());
 
-  await expect(page.getByRole("heading", { name: "What was amoxicillin being used for?" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Information still needed" })).toContainText("amoxicillin");
   await expect(page.getByRole("status").filter({ hasText: "another report detail applicable" })).toBeVisible();
-  const indicationGroup = page.getByRole("group", { name: "amoxicillin" });
-  const indicationControls = [
-    indicationGroup.getByLabel("Known", { exact: true }),
-    page.getByLabel("amoxicillin indication"),
-    indicationGroup.getByLabel("Unknown", { exact: true }),
-    indicationGroup.getByLabel("Prefer not to answer", { exact: true }),
-  ];
+  await page.getByLabel("Clinical update",{exact:true}).fill("Amoxicillin was used for sinusitis.");
   for (const viewport of [{ width: 1280, height: 800 }, { width: 1440, height: 900 }]) {
     await page.setViewportSize(viewport);
-    await assertTaskControlsOperable(page, indicationControls);
+    await assertTaskControlsOperable(page, [page.getByLabel("Clinical update", {exact:true}), page.getByRole("button", {name:"Prepare changes for review",exact:true})]);
     await expectNoDocumentOverflow(page);
     await retainViewportScreenshot(page, `issue78-indication-${viewport.width}x${viewport.height}.png`);
   }
-  await indicationGroup.getByLabel("Known", { exact: true }).check();
-  await page.getByLabel("amoxicillin indication").fill("sinusitis");
-  const addIndication = page.getByRole("button", { name: "Add these answers" });
-  await expect(addIndication).toBeEnabled();
-  await addIndication.click({ trial: true });
-  await serverAction(page, () => addIndication.click());
+  await clinicalAnswers(page, {action:"answer-indications", answers:[{productId:(await semanticCase(page)).products[0].id,value:{kind:"known",value:"sinusitis"}}]});
   await answerUnknownMedicationGroups(page);
   questionTrace.push({
     journey: "issue78-identity-recovery",
@@ -214,17 +204,10 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await expect(productCard(page, "Acme PulseLine")).toContainText("Implanted device");
   await expect(productCard(page, "Acme PulseLine")).toContainText("Reprocessed single-use device");
   await acceptOpeningGroups(page);
-  await expect(page.getByRole("heading", { name: "Add the applicable device details for Acme PulseLine" })).toBeVisible();
-  const implantGroup = page.getByRole("group", { name: "Implant date" });
-  await implantGroup.getByLabel("Known", { exact: true }).check();
-  await page.getByLabel("Device implant date", {exact:true}).fill("2026-08-12");
-  const explantGroup = page.getByRole("group", { name: "Explant date" });
-  await explantGroup.getByLabel("Not applicable", { exact: true }).check();
-  const reprocessorGroup = page.getByRole("group", { name: "Reprocessor" });
-  await reprocessorGroup.getByLabel("Known", { exact: true }).check();
-  await page.getByLabel("Device reprocessor").fill("ReNew Medical LLC");
-  questionTrace.push({ journey: "layer3-conditional", question: "applicable device details", reason: "accepted implanted and reprocessed-single-use states make implant timing and reprocessor identity material", answer: "implant date known; explant inapplicable; reprocessor known" });
-  await serverAction(page, () => page.getByRole("button", { name: "Add device details" }).click());
+  await expect(page.getByRole("region",{name:"Information still needed"})).toContainText("Implant date");
+  const conditionalDevice=(await semanticCase(page)).products.find(p=>p.facts.name.resolvedValue?.value.kind==="known"&&p.facts.name.resolvedValue.value.value==="Acme PulseLine")!;
+  await clinicalAnswers(page,{action:"answer-device-details",implantDate:{kind:"known",value:"2026-08-12"},explantDate:{kind:"inapplicable"},reprocessor:{kind:"known",value:"ReNew Medical LLC"}});
+  questionTrace.push({ journey: "layer3-conditional", question: "applicable device details", reason: "accepted implanted and reprocessed-single-use states", answer: "Clinical update: implant date known; explant inapplicable; reprocessor known" });
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   await fillReporter(page, { firstName: "Sam", lastName: "Ortiz", phone: "202-555-0194" });
@@ -355,14 +338,13 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await expect(productOrCaseCard(page, "Relevant test 1")).toContainText("Skin biopsy: full-thickness epidermal necrosis");
   await expect(productCard(page, "trimethoprim-sulfamethoxazole")).toContainText("urinary tract infection");
   await acceptOpeningGroups(page);
-  await expect(page.getByRole("heading", { name: "Which serious outcomes applied to this event?" })).toBeVisible();
-  await expect(page.getByLabel("Death — already recorded")).toBeChecked();
+  await expect(page.getByRole("region",{name:"Information still needed"})).toContainText("Still needs an answer");
+  expect((await semanticCase(page)).event.facts.death.resolvedValue?.value).toEqual({kind:"known",value:true});
   questionTrace.push({ journey: "layer1-death", question: "serious outcomes", reason: "preserve accepted death and resolve only the remaining outcome flags", answer: "no additional outcomes" });
-  await serverAction(page, () => page.getByRole("button", { name: "Confirm outcomes" }).click());
-  await expect(page.getByRole("heading", { name: "What was the date of death?" })).toBeVisible();
+  await clinicalAnswers(page,{action:"answer-serious-outcomes",selected:[],disposition:"known"});
+  await expect(page.getByRole("region",{name:"Information still needed"})).toContainText("Date of death");
   questionTrace.push({ journey: "layer1-death", question: "death date", reason: "death was accepted and its conditional date remained empty", answer: "7-Sep-2026" });
-  await page.getByLabel("Date of death", { exact: true }).fill("2026-09-07");
-  await serverAction(page, () => page.getByRole("button", { name: "Add date" }).click());
+  await clinicalAnswers(page,{action:"answer-death-date",value:{kind:"known",value:"2026-09-07"}});
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   questionTrace.push({ journey: "layer1-death", question: "reporter block", reason: "reporter identity must be entered directly", answer: "structured reporter details" });
@@ -443,12 +425,9 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await page.getByLabel("Clinical update").fill(layer1RoleUpdate);
   await serverAction(page, () => page.getByRole("button", { name: "Prepare changes for review" }).click());
   await serverAction(page, () => page.getByRole("article").filter({ hasText: "Suspect product" }).getByRole("button", { name: "Accept these changes" }).click());
-  await expect(page.getByRole("heading", { name: "What was acetaminophen being used for?" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Information still needed" })).toContainText("acetaminophen");
   questionTrace.push({ journey: "layer1-role", question: "newly applicable suspect indication", reason: "accepted role correction made only acetaminophen indication newly applicable", answer: "headache" });
-  const acetaminophenAnswer = page.getByRole("group", { name: "acetaminophen" });
-  await acetaminophenAnswer.getByLabel("Known", { exact: true }).check();
-  await page.getByLabel("acetaminophen indication").fill("headache");
-  await serverAction(page, () => page.getByRole("button", { name: "Add these answers" }).click());
+  await clinicalAnswers(page,{action:"answer-indications",answers:[{productId:"product-layer1-role-acetaminophen",value:{kind:"known",value:"headache"}}]});
   await answerUnknownMedicationGroups(page);
   expect((await storedState(page)).stage).toBe("output");
   const roleAfterCorrection = await semanticCase(page);
@@ -485,13 +464,13 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await richWeight.getByRole("button", { name: "Keep draft" }).click();
   await serverAction(page, () => richPatient.getByRole("button", { name: "Accept patient details with 2 changes" }).click());
   await acceptOpeningGroups(page);
-  await expect(page.getByRole("heading", { name: "Hospitalization is already recorded. Did any other serious outcomes apply?" })).toBeVisible();
-  await expect(page.getByLabel("Hospitalization (initial or prolonged) — already recorded")).toBeChecked();
-  await expect(page.getByLabel("Life-threatening — already recorded")).toBeChecked();
+  await expect(page.getByRole("region",{name:"Information still needed"})).toContainText("Still needs an answer");
+  expect((await semanticCase(page)).event.facts.hospitalized.resolvedValue?.value).toEqual({kind:"known",value:true});
+  expect((await semanticCase(page)).event.facts.lifeThreatening.resolvedValue?.value).toEqual({kind:"known",value:true});
   await expect(productOrCaseCard(page, "amoxicillin").getByRole("button", { name: "Withdraw amoxicillin" })).toHaveCount(0);
   await expect(productOrCaseCard(page, "Relevant test 1").getByRole("button", { name: /^Withdraw / })).toHaveCount(0);
   questionTrace.push({ journey: "adaptive-rich", question: "serious outcomes", reason: "confirm only outcomes not already accepted", answer: "no additional outcomes" });
-  await serverAction(page, () => page.getByRole("button", { name: "Confirm outcomes" }).click());
+  await clinicalAnswers(page,{action:"answer-serious-outcomes",selected:[],disposition:"known"});
   await answerUnknownMedicationGroups(page);
   await expect(page.getByRole("heading", { name: "Add the reporter details for this report" })).toBeVisible();
   await fillReporter(page, { firstName: "Avery", lastName: "Chen", email: "avery.chen@example.test", fullAddress: true });
@@ -553,15 +532,14 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await newCase(page);
   await submitOpening(page, adaptiveSparseOpening);
   await acceptOpeningGroups(page);
-  await page.getByRole("group", { name: "propranolol" }).getByLabel("Unknown", { exact: true }).check();
+
   questionTrace.push({ journey: "adaptive-sparse", question: "suspect indication", reason: "missing indication contributes directly to the report", answer: "unknown" });
-  await serverAction(page, () => page.getByRole("button", { name: "Add these answers" }).click());
-  await serverAction(page, () => page.getByRole("button", { name: "Confirm outcomes" }).click());
+  await clinicalAnswers(page,{action:"answer-indications",answers:(await semanticCase(page)).products.filter(p=>p.state!=="rejected").map(p=>({productId:p.id,value:{kind:"unknown"}}))});
+  await clinicalAnswers(page,{action:"answer-serious-outcomes",selected:[],disposition:"known"});
   questionTrace.push({ journey: "adaptive-sparse", question: "serious outcomes", reason: "no outcome was accepted from the narrative", answer: "none" });
-  await page.getByLabel("Unknown", { exact: true }).first().check();
-  await page.getByLabel("Prefer not to answer", { exact: true }).last().check();
+
   questionTrace.push({ journey: "adaptive-sparse", question: "tests and history", reason: "both relevant context categories were still unresolved", answer: "tests unknown; history declined" });
-  await serverAction(page, () => page.getByRole("button", { name: "Add this context" }).click());
+  await clinicalAnswers(page,{action:"answer-clinical-context",test:{kind:"unknown"},history:{kind:"declined"}});
   await fillReporter(page, { firstName: "Jordan", lastName: "Lee", phone: "202-555-0147" });
   questionTrace.push({ journey: "adaptive-sparse", question: "reporter block", reason: "reporter identity must be entered directly", answer: "minimal contact details" });
   await serverAction(page, () => page.getByRole("button", { name: "Add reporter details" }).click());
@@ -590,12 +568,8 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await newCase(page);
   await submitOpening(page, sparseOpening);
   await acceptOpeningGroups(page);
-  await expect(page.getByRole("heading", { name: "What was metformin being used for?" })).toBeVisible();
-  const metforminAnswer = page.getByRole("group", { name: "metformin" });
-  await expect(metforminAnswer.getByLabel("Unknown", { exact: true })).toBeVisible();
-  await expect(metforminAnswer.getByLabel("Prefer not to answer", { exact: true })).toBeVisible();
-  await metforminAnswer.getByLabel("Unknown", { exact: true }).check();
-  await serverAction(page, () => page.getByRole("button", { name: "Add these answers" }).click());
+  await expect(page.getByRole("region", { name: "Information still needed" })).toContainText("metformin");
+  await clinicalAnswers(page,{action:"answer-indications",answers:[{productId:(await semanticCase(page)).products[0].id,value:{kind:"unknown"}}]});
   await completeQuestions(page);
   expect((await storedState(page)).stage).toBe("output");
   await expect(productCard(page, "metformin")).toContainText("Unknown");
@@ -653,12 +627,7 @@ test("runs Draft 4 navigation with Issue 78 recovery and layout, Issue 66 direct
   await newCase(page);
   await submitOpening(page, regressionOpening);
   await acceptOpeningGroups(page);
-  for (const [name, value] of [["apixaban", "postoperative VTE prophylaxis after knee replacement"], ["naproxen", "postoperative pain"]] as const) {
-    const group = page.getByRole("group", { name });
-    await group.getByLabel("Known", { exact: true }).check();
-    await page.getByLabel(`${name} indication`).fill(value);
-  }
-  await serverAction(page, () => page.getByRole("button", { name: "Add these answers" }).click());
+  await clinicalAnswers(page,{action:"answer-indications",answers:(await semanticCase(page)).products.map((p,i)=>({productId:p.id,value:{kind:"known",value:i===0?"postoperative VTE prophylaxis after knee replacement":"postoperative pain"}}))});
   await completeQuestions(page);
   await page.getByLabel("Clinical update").fill(regressionUpdate);
   await serverAction(page, () => page.getByRole("button", { name: "Prepare changes for review" }).click());
@@ -819,38 +788,18 @@ async function semanticCase(page: Page): Promise<BrowserJourneyState["case"]> {
 }
 
 async function completeQuestions(page: Page) {
-  // Up to five existing groups plus one medication group per supported suspect.
-  for (let turn = 0; turn < 8; turn += 1) {
-    await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
-    if ((await storedState(page)).stage === "output") return;
-    if (await page.getByRole("button", { name: "These remaining details are unknown", exact: true }).isVisible().catch(() => false)) {
-      await serverAction(page, () => page.getByRole("button", { name: "These remaining details are unknown", exact: true }).click());
-      continue;
-    }
-    if (await page.getByRole("button", { name: "Confirm outcomes" }).isVisible().catch(() => false)) {
-      await serverAction(page, () => page.getByRole("button", { name: "Confirm outcomes" }).click());
-      continue;
-    }
-    if (await page.getByRole("button", { name: "Add this context" }).isVisible().catch(() => false)) {
-      const noTests = page.getByLabel("No relevant tests to add");
-      if (await noTests.isVisible().catch(() => false)) await noTests.check();
-      const noHistory = page.getByLabel("No relevant history to add");
-      if (await noHistory.isVisible().catch(() => false)) await noHistory.check();
-      await serverAction(page, () => page.getByRole("button", { name: "Add this context" }).click());
-      continue;
-    }
-    if (await page.getByRole("button", { name: "Prefer not to provide reporter details" }).isVisible().catch(() => false)) {
-      await page.getByLabel("Date of this report", { exact: true }).fill("2026-09-20");
-      await serverAction(page, () => page.getByRole("button", { name: "Prefer not to provide reporter details" }).click());
-      continue;
-    }
-    if (await page.getByRole("button", { name: "Unknown" }).isVisible().catch(() => false)) {
-      await serverAction(page, () => page.getByRole("button", { name: "Unknown" }).click());
-      continue;
-    }
-    throw new Error("Unexpected adaptive completion state");
-  }
-  throw new Error("Adaptive completion exceeded its bounded prompt count");
+ for(let turn=0;turn<12;turn++){
+  if((await storedState(page)).stage==="output")return;
+  const q=await clinicalQuestion(page);if(!q)throw Error("Unexpected missing completion task");
+  if(q.kind==="medication-history")await unknownMedicationAnswers(page);
+  else if(q.kind==="serious-outcomes")await clinicalAnswers(page,{action:"answer-serious-outcomes",selected:[],disposition:"known"});
+  else if(q.kind==="clinical-context")await clinicalAnswers(page,{action:"answer-clinical-context",...(q.askTests?{test:{kind:"explicitly-absent" as const}}:{}),...(q.askHistory?{history:{kind:"explicitly-absent" as const}}:{})});
+  else if(q.kind==="indications")await clinicalAnswers(page,{action:"answer-indications",answers:q.productIds.map(productId=>({productId,value:{kind:"unknown"}}))});
+  else if(q.kind==="death-date")await clinicalAnswers(page,{action:"answer-death-date",value:{kind:"unknown"}});
+  else if(q.kind==="device-details")await clinicalAnswers(page,{action:"answer-device-details",...(q.askImplantDate?{implantDate:{kind:"unknown" as const}}:{}),...(q.askExplantDate?{explantDate:{kind:"unknown" as const}}:{}),...(q.askReprocessor?{reprocessor:{kind:"unknown" as const}}:{})});
+  else {await goTo(page,"Reporter details");await page.getByLabel("Date of this report",{exact:true}).fill("2026-09-20");await serverAction(page,()=>page.getByRole("button",{name:"Prefer not to provide reporter details"}).click());}
+ }
+ throw Error("Adaptive completion exceeded bounded turns");
 }
 
 async function fillReporter(page: Page, input: { firstName: string; lastName: string; phone?: string; email?: string; fullAddress?: boolean }) {
@@ -918,12 +867,4 @@ function shouldRetain(journey: string): boolean {
   return true;
 }
 
-async function answerUnknownMedicationGroups(page: Page) {
-  await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
-  for (let count = 0; count < 3; count += 1) {
-    const button = page.getByRole("button", { name: "These remaining details are unknown", exact: true });
-    if (!await button.isVisible()) break;
-    await serverAction(page, () => button.click());
-    await expect(page.getByRole("button", { name: "New case", exact: true })).toBeEnabled();
-  }
-}
+async function answerUnknownMedicationGroups(page: Page) { await unknownMedicationAnswers(page); }

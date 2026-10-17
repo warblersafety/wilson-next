@@ -8,7 +8,7 @@ import { applyCaseCommand } from "../../src/domain/case/commands";
 import { InMemoryCaseRepository } from "../../src/server/case/repository";
 import { getJourneySnapshot, performJourneyAction } from "../../src/server/journey/service";
 import { journeyResponse } from "../../src/server/case/browser-state";
-import { draftRecordKey, initialUiDrafts } from "../../src/browser/ui-drafts";
+import { clinicalDraftKey, type ComponentDraft, draftRecordKey, initialUiDrafts } from "../../src/browser/ui-drafts";
 import { workspaceInput } from "../../src/browser/workspace-state";
 import { correctionAccount, openingAccount } from "../fixtures/fixed-inputs";
 import { draftOwnerHarnessHtml, readDraftLifecycle } from "./ui-draft-harness";
@@ -323,80 +323,31 @@ test("invalidated unfinished edits remain readable after resume and another relo
 });
 
 
-for (const kind of workspaceTaskKinds) {
-  test(`${kind} unfinished answers survive a real browser process restart without submitting`, async ({ baseURL }) => {
-    const profile = await mkdtemp(join(tmpdir(), `wilson-${kind}-profile-`));
-    let context = await chromium.launchPersistentContext(profile, { headless: true });
-    try {
-      let page = context.pages()[0]; await page.goto(baseURL!); await saved(page);
-      const fixture = await workspaceTaskCase(kind);
-      expect(fixture.snapshot.stage).toBe("clarify");
-      expect(fixture.snapshot.clarification?.kind).toBe(kind);
-      const input = workspaceInput(fixture.state, { version: 1, provenance: fixture.provenance, ui: { ...initialUiDrafts(fixture.state.case.id), screen: "details" }, retained: [] });
-      await putRecord(page, { version: 1, generation: randomUUID(), savedAt: new Date().toISOString(), payload: input });
-      await page.reload(); await saved(page);
-      const fill = async () => {
-        if (kind === "indications") await page.getByLabel("Fictional medicine indication", { exact: true }).fill("  Unfinished reason for this medicine ");
-        if (kind === "serious-outcomes") await page.locator("#clinical-question").getByRole("checkbox", { name: "Death", exact: true }).check();
-        if (kind === "death-date") await page.getByLabel("Date of death", { exact: true }).fill("2026-10-12");
-        if (kind === "clinical-context") {
-          await page.getByRole("radio", { name: "Add one relevant result", exact: true }).check();
-          await page.getByLabel("Test identity", { exact: true }).fill("  Unfinished fictional test ");
-          await page.getByLabel("Result and stated units", { exact: true }).fill(" 12. ");
-          await page.getByLabel("Low range", { exact: true }).fill("0");
-          await page.getByRole("radio", { name: "Add relevant history", exact: true }).check();
-          await page.getByLabel("Relevant medical history", { exact: true }).fill("  Unfinished fictional history ");
-        }
-        if (kind === "medication-history") {
-          await page.getByLabel("Was this medication stopped?", { exact: true }).selectOption("true");
-          await page.getByLabel("Did the event improve after stopping or reducing it?", { exact: true }).selectOption("false");
-          await page.getByLabel("When was it stopped?", { exact: true }).selectOption("known");
-          await page.getByLabel("Stop date", { exact: true }).fill("");
-        }
-        if (kind === "device-details") {
-          await page.getByRole("group", { name: "Implant date", exact: true }).getByRole("radio", { name: "Known", exact: true }).check();
-          await page.getByLabel("Device implant date", { exact: true }).fill("2026-10-01");
-          await page.getByRole("group", { name: "Explant date", exact: true }).getByRole("radio", { name: "Not applicable", exact: true }).check();
-          await page.getByRole("group", { name: "Reprocessor", exact: true }).getByRole("radio", { name: "Known", exact: true }).check();
-          await page.getByLabel("Device reprocessor", { exact: true }).fill("  Unfinished fictional reprocessor ");
-        }
-      };
-      await fill(); await saved(page);
-      const before = await record(page);
-      const key = draftRecordKey(kind, fixture.snapshot.clarification!.key);
-      expect(before.payload.drafts.data.ui.records[key].kind).toBe(kind);
-      const browser = context.browser(); await context.close(); expect(browser?.isConnected()).toBe(false);
-      context = await chromium.launchPersistentContext(profile, { headless: true });
-      page = context.pages()[0]; const operations: string[] = [];
-      page.on("request", r => { if (r.url().endsWith("/api/case") && r.method() === "POST") operations.push(r.postDataJSON().operation); });
-      await page.goto(baseURL!); await saved(page);
-      if (kind === "indications") await expect(page.getByLabel("Fictional medicine indication", { exact: true })).toHaveValue("  Unfinished reason for this medicine ");
-      if (kind === "serious-outcomes") await expect(page.locator("#clinical-question").getByRole("checkbox", { name: "Death", exact: true })).toBeChecked();
-      if (kind === "death-date") await expect(page.getByLabel("Date of death", { exact: true })).toHaveValue("2026-10-12");
-      if (kind === "clinical-context") {
-        await expect(page.getByLabel("Test identity", { exact: true })).toHaveValue("  Unfinished fictional test ");
-        await expect(page.getByLabel("Result and stated units", { exact: true })).toHaveValue(" 12. ");
-        await expect(page.getByLabel("Low range", { exact: true })).toHaveValue("0");
-        await expect(page.getByLabel("Relevant medical history", { exact: true })).toHaveValue("  Unfinished fictional history ");
-      }
-      if (kind === "medication-history") {
-        await expect(page.getByLabel("Was this medication stopped?", { exact: true })).toHaveValue("true");
-        await expect(page.getByLabel("Did the event improve after stopping or reducing it?", { exact: true })).toHaveValue("false");
-        await expect(page.getByLabel("When was it stopped?", { exact: true })).toHaveValue("known");
-        await expect(page.getByLabel("Stop date", { exact: true })).toHaveValue("");
-      }
-      if (kind === "device-details") {
-        await expect(page.getByLabel("Device implant date", { exact: true })).toHaveValue("2026-10-01");
-        await expect(page.getByRole("group", { name: "Explant date", exact: true }).getByRole("radio", { name: "Not applicable", exact: true })).toBeChecked();
-        await expect(page.getByLabel("Device reprocessor", { exact: true })).toHaveValue("  Unfinished fictional reprocessor ");
-      }
-      const after = await record(page);
-      expect(after.payload.state).toEqual(before.payload.state);
-      expect(after.payload.drafts.data.ui.records[key]).toEqual(before.payload.drafts.data.ui.records[key]);
-      expect(operations).toEqual(["resume"]);
-    } finally { await context.close(); await rm(profile, { recursive: true, force: true }); }
-  });
+function legacyTaskDraft(kind: typeof workspaceTaskKinds[number], fixture: Awaited<ReturnType<typeof workspaceTaskCase>>):ComponentDraft {
+ const data = {
+  indications:{choices:{[fixture.state.case.products[0].id]:"known"},texts:{[fixture.state.case.products[0].id]:"  Unfinished reason for this medicine "}},
+  "serious-outcomes":{selected:["death"]},
+  "death-date":{date:"2026-10-12"},
+  "clinical-context":{testChoice:"known",historyChoice:"known",testName:"  Unfinished fictional test ",testResult:" 12. ",lowRange:"0",highRange:"",testDate:"",history:"  Unfinished fictional history "},
+  "medication-history":{answers:{stopped:{kind:"known",value:true},improvedAfterChange:{kind:"known",value:false},stopDate:{kind:"known",value:""}}},
+  "device-details":{implantChoice:"known",explantChoice:"inapplicable",reprocessorChoice:"known",implantDate:"2026-10-01",explantDate:"",reprocessor:"  Unfinished fictional reprocessor "},
+ }[kind];
+ return {kind,scope:fixture.snapshot.clarification!.key,dependency:clinicalDraftKey(fixture.snapshot),data} as ComponentDraft;
 }
+for (const kind of workspaceTaskKinds) {
+ test(`${kind} legacy unfinished answers survive a real browser process restart as readable retained work`, async ({baseURL})=>{
+  const profile=await mkdtemp(join(tmpdir(),`wilson-${kind}-profile-`));let context=await chromium.launchPersistentContext(profile,{headless:true});
+  try{
+   let page=context.pages()[0];await page.goto(baseURL!);await saved(page);const fixture=await workspaceTaskCase(kind);expect(fixture.snapshot.clarification?.kind).toBe(kind);
+   const pending=legacyTaskDraft(kind,fixture),key=draftRecordKey(kind,pending.scope),ui={...initialUiDrafts(fixture.state.case.id),screen:"details" as const};ui.text.update="  Genuine unsent clinical words ";ui.records[key]=pending;
+   const input=workspaceInput(fixture.state,{version:1,provenance:fixture.provenance,ui,retained:[]});await putRecord(page,{version:1,generation:randomUUID(),savedAt:new Date().toISOString(),payload:input});
+   const browser=context.browser();await context.close();expect(browser?.isConnected()).toBe(false);context=await chromium.launchPersistentContext(profile,{headless:true});page=context.pages()[0];const operations:string[]=[];page.on("request",r=>{if(r.url().endsWith("/api/case")&&r.method()==="POST")operations.push(r.postDataJSON().operation);});await page.goto(baseURL!);await saved(page);
+   const retained=page.getByRole("complementary",{name:"Retained unfinished work"});await retained.getByText("Read earlier unfinished edits",{exact:true}).click();await expect(retained).toContainText("They have not been applied");await expect(retained.getByRole("button",{name:/^(Apply|Accept|Add|Use)\b/})).toHaveCount(0);await expect(page.getByLabel("Clinical update",{exact:true})).toHaveValue(ui.text.update);
+   const after=await record(page);expect(after.payload.state.case).toEqual(fixture.state.case);expect(after.payload.drafts.data.retained).toHaveLength(1);expect(after.payload.drafts.data.retained[0].record).toEqual(pending);expect(after.payload.drafts.data.ui.records).not.toHaveProperty(key);expect(operations).toEqual(["resume"]);await page.reload();await saved(page);expect((await record(page)).payload.drafts.data.retained).toEqual(after.payload.drafts.data.retained);
+  }finally{await context.close();await rm(profile,{recursive:true,force:true});}
+ });
+}
+
 
 
 test("incompatible success metadata retains the accepted response in memory and never retries an older save or action", async ({ page }) => {
@@ -431,15 +382,10 @@ test("incompatible success metadata retains the accepted response in memory and 
 test("a live prerequisite correction retains unfinished medication answers without applying or duplicating them", async ({ page }) => {
   await page.goto("/"); await saved(page);
   const fixture = await workspaceTaskCase("medication-history");
-  const input = workspaceInput(fixture.state, { version: 1, provenance: fixture.provenance, ui: { ...initialUiDrafts(fixture.state.case.id), screen: "details" }, retained: [] });
-  await putRecord(page, { version: 1, generation: randomUUID(), savedAt: new Date().toISOString(), payload: input });
-  await page.reload(); await saved(page);
-  await page.getByLabel("Was this medication stopped?", { exact: true }).selectOption("true");
-  await page.getByLabel("When was it stopped?", { exact: true }).selectOption("known");
-  await page.getByLabel("Stop date", { exact: true }).fill("2026-10-12");
-  await saved(page);
-  const before = await record(page), taskKey = draftRecordKey("medication-history", fixture.snapshot.clarification!.key);
-  const pending = before.payload.drafts.data.ui.records[taskKey];
+  const pending=legacyTaskDraft("medication-history",fixture);if(pending.kind!=="medication-history")throw Error("fixture");pending.data.answers.stopDate={kind:"known",value:"2026-10-12"};
+  const taskKey=draftRecordKey(pending.kind,pending.scope),ui={...initialUiDrafts(fixture.state.case.id),screen:"details" as const};ui.records[taskKey]=pending;
+  const input=workspaceInput(fixture.state,{version:1,provenance:fixture.provenance,ui,retained:[]});
+  await putRecord(page,{version:1,generation:randomUUID(),savedAt:new Date().toISOString(),payload:input});await page.reload();await saved(page);
   const type = page.locator('#case-card-product-1 [data-field="productType"]');
   await type.getByRole("button", { name: "Change", exact: true }).click();
   await type.getByLabel("New Product type", { exact: true }).selectOption("other");

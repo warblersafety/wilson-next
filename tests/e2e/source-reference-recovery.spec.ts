@@ -1,4 +1,5 @@
-import { acceptOpeningGroups, directAnswers, goTo, projectedText, savePdf, serverAction, showActiveTask, storedState } from "./draft4-helpers";
+import {clinicalAnswers,unknownMedicationAnswers} from "./clinical-update-answers";
+import { goTo, acceptOpeningGroups, directAnswers, projectedText, savePdf, serverAction, showActiveTask, storedState } from "./draft4-helpers";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { expect, test, type Page } from "@playwright/test";
@@ -69,10 +70,10 @@ test("corrects DEMO-91 conversationally before initial acceptance, downloads fiv
 async function state(page: Page) { return page.evaluate(() => JSON.parse(sessionStorage.getItem("wilson-current-case-debug-v1")!).case); }
 async function complete(page: Page) {
   await directAnswers(page);
-  await serverAction(page, () => page.getByRole("button", { name: "Confirm outcomes" }).click());
-  await page.getByLabel("No relevant history to add", { exact: true }).check();
-  await serverAction(page, () => page.getByRole("button", { name: "Add this context" }).click());
-  await serverAction(page, () => page.getByRole("button", { name: "These remaining details are unknown", exact: true }).click());
+  await clinicalAnswers(page,{action:"answer-serious-outcomes",disposition:"known",selected:[]});
+  await clinicalAnswers(page,{action:"answer-clinical-context",history:{kind:"explicitly-absent"}});
+  await unknownMedicationAnswers(page);
+  await goTo(page,"Reporter details");
   await page.getByLabel("Date of this report", { exact: true }).fill("2026-09-20");
   await serverAction(page, () => page.getByRole("button", { name: "Prefer not to provide reporter details" }).click());
   expect((await storedState(page)).stage).toBe("output");
