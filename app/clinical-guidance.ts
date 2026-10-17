@@ -37,7 +37,7 @@ export function nextClinicalAction(snapshot: JourneySnapshot) {
   if (snapshot.stage === "review-update") return { kind: "updates", label: "Review proposed changes" } as const;
   if (snapshot.stage === "understanding") return { kind: "proposals", label: "Review remaining details" } as const;
   if (snapshot.stage === "clarify" && snapshot.clarification?.kind !== "reporter") {
-    return { kind: "questions", label: "Answer clinical questions" } as const;
+    return { kind: "questions", label: "Add details in Clinical update" } as const;
   }
   return undefined;
 }

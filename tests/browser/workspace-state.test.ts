@@ -107,3 +107,13 @@ it('legacy date recovery drafts survive current pending review, acknowledge only
  const restored=reconcileWorkspace(data,state,snapshot);expect(restored.ui.records[key]).toEqual(ui.records[key]);const acknowledged=acknowledgeWorkspaceDrafts(ui,{action:'review-update-group',groupId:'legacy-date-update',decision:'accept',dateCorrections:[{proposalId:'legacy-date-proposal',value:{kind:'known',value:'2028-02-29'}}]},snapshot);expect(acknowledged.records[key].kind==='legacy-date-recovery'&&acknowledged.records[key].data.drafts).toEqual({'other-draft':{kind:'unknown'}});
  const changed=structuredClone(snapshot);changed.review.attention=[];const retained=reconcileWorkspace(data,state,changed);expect(retained.ui.records[key]).toBeUndefined();expect(retained.retained).toContainEqual(expect.objectContaining({record:ui.records[key]}));expect(ui.records[key].kind==='legacy-date-recovery'&&ui.records[key].data.drafts['legacy-date-proposal']).toEqual({kind:'known',value:'2026-02'});
 });
+
+
+it("preserves a matching legacy medication draft once as readable work without changing clinical authority or genuine unsent words",async()=>{
+ const {state,snapshot,data}=await fixture();
+ const record={kind:"medication-history" as const,scope:snapshot.clarification?.key??"medication-history",dependency:JSON.stringify(["legacy-question"]),data:{answers:{stopped:{kind:"known" as const,value:true},stopDate:{kind:"known" as const,value:"  exact unfinished date "}}}};
+ const key=draftRecordKey(record.kind,record.scope);data.ui.records[key]=record;
+ const before=structuredClone(state),first=reconcileWorkspace(data,state,snapshot);
+ expect(first.ui.records[key]).toBeUndefined();expect(first.retained).toHaveLength(1);expect(first.retained[0].record).toEqual(record);expect(first.retained[0].reason).toContain("Clinical update");expect(first.ui.text.update).toBe(" Unsent words ");expect(state).toEqual(before);
+ const decoded=decodeWorkspaceData(workspaceInput(state,first).drafts.data,state.case.id,state.version),again=reconcileWorkspace(decoded,state,snapshot);expect(again.retained).toEqual(first.retained);expect(again.ui.records[key]).toBeUndefined();expect(state).toEqual(before);
+});
