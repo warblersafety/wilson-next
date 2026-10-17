@@ -263,7 +263,7 @@ No clinical normalization, inference or shortened wording is used. Broader glyph
 support remains #154; unsupported characters remain explicit export limitations.
 
 Unqualified dose/strength wording that cannot fit native controls now prints
-exactly on D2 product/field-linked supplements (#235); existing qualified B5
+exactly on product/field-linked supplements: D1 for strength and D2 for dose (#235); existing qualified B5
 context and native quantity/unit formatting remain. Multiline edits/drafts resume
 without accepted-fact changes. No totals, clinical units or interpretations are
 inferred. Broader glyphs and non-native duration shapes remain separate work.
