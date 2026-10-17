@@ -33,8 +33,10 @@ of hiding a deviation here.
 - Stop-and-reconcile triggered: no / link
 - Known limitations or follow-ups:
 
-## Decision requested
+## Merge readiness and decisions
 
-State the outcome and remaining risk Steve is being asked to approve or reject
-at merge. Routine implementation, checks, reviews, model calls within the
-standing cap, and GitHub bookkeeping are not separate permission requests.
+State the delivered outcome, evidence, remaining risk and any material decision
+that still needs resolution. Apply `docs/DELIVERY.md` for autonomous merge once
+its objective controls pass. Routine implementation, checks, required reviews,
+model calls within the standing cap and GitHub bookkeeping are not separate
+permission requests.

@@ -1,1947 +1,549 @@
 # Wilson semantic architecture
 
-**Status:** Experiment 1 hypothesis completed with qualified technical success;
-Experiment 2's production-seed amendments were approved through Issue #42 and
-PR #43; Issue #57 adds the bounded adaptive-completion amendment after
-Experiment 2 concluded `Revise`; Issue #62 adds the bounded single-device and
-product-quality generalization; Issue #64 adds combined report types,
-semantic device-detail applicability, and stable-device correction/uncertainty
-without changing the deferred live-model risk; Issue #37 restores fail-closed
-live application-model selection for the protected Git-preview path; Issue #67
-keeps the provider wire simple and visibly quarantines proposal-local faults
-without weakening accepted case or output authority; Issue #66 makes the
-bounded supported facts directly correctable and preserves withdrawn reviewed
-products or tests as inactive history; Issue #78 retains incomplete reviewed
-products for direct repair, adds explicit output-readiness policy, and makes
-branch-dependent product facts and responsive operator controls truthful;
-Issue #83 adds one expiring, exact-deployment Shareable Link for a designated
-synthetic-only cofounder walkthrough without creating a production release;
-Issue #96 replaces model-copied quotations with code-owned source references
-and permits conversational correction and test recovery before initial acceptance;
-Issue #129 adds the bounded browser-local persistence foundation and the restore
-contract required before future save/resume integration.
+Owns current case knowledge, write/model authority, projections, browser recovery
+and data boundaries. [Product](PRODUCT.md) governs outcomes; [Coverage](COVERAGE.md)
+records remaining scope; [Delivery](DELIVERY.md) governs changes. This consolidates
+approved contracts rather than introducing an ontology or a new behavior.
 
-**Owns:** Semantic case, write authority, model boundary, projections,
-application shape, privacy boundary, and architectural falsification
+## Application shape and authority
 
-**Constrained by:** [`PRODUCT.md`](PRODUCT.md)
-
-## Decision
-
-Use a small semantic case representing what the clinician knows:
-the patient, event, products, uncertainty, conflicts, evidence, and accepted
-changes. Form FDA 3500 is projected from that case; its widget identifiers do
-not organize upstream knowledge.
-
-Model output remains proposed until clinician review. Every consequential case
-change passes through one server-side command boundary. Understanding, review,
-clarification, and Form 3500 output are synchronous views of the same case
-revision. For the synthetic Experiment 1 and approved Experiment 2 previews
-only, the browser may retain the latest server-returned case and interaction
-state between stateless requests; it does not gain a second mutation path.
-
-Implement this in one modular TypeScript application with model, PDF, and
-temporary storage behind narrow adapters. Accepted Experiment 2 runtime changes
-are production-seed code for its bounded scope, while browser-held storage,
-synthetic diagnostics, and preview protection remain explicitly temporary
-adapters. Do not introduce a generic knowledge graph, event store, distributed
-CQRS, microservices, server-side durable database, or framework-independent internal
-platform. Issue #129 permits a bounded browser-local IndexedDB adapter for the
-approved artificial-data target.
-
-The architecture must prove three things:
-
-1. Repeated entities, evidence, correction, and conflict are representable
-   without PDF widget identity.
-2. Every write path is forced through the same invariants.
-3. Conversation, review, and form output remain consistent in a real browser
-   journey.
-
-## Semantic case
+One modular TypeScript/Next.js application uses stateless routes and narrow model,
+PDF and browser-storage adapters. Domain code imports no model provider, PDF
+library, framework or deployment code. Next.js is the shell: explicit route
+handlers call commands/queries; no Server Actions, edge runtime, regeneration or
+framework cache substitutes for case authority. The browser supplies the complete
+versioned server-returned state with each request; there is no hosted case store,
+server revision anchor, process affinity or cookie-derived case identity.
 
 ```text
-Case
-  id
-  revision
-  patient
-  event
-  products[]        # stable ID, product category, and suspect/concomitant role
-  relevantTests[]   # stable ID; identity, result, ranges, and date stay together
-  reporter          # direct clinician entry; never model-proposed
-  askedNeeds[]      # small semantic follow-up history
-  sources[]         # clinician inputs and exact excerpts
-  changes[]         # accepted changes, supersession, and resolution
+clinician input -> proposed facts and exact source references -> explicit review
+  -> applyCaseCommand -> one case revision
+  -> understanding / gaps / review / semantic Form 3500 projection
+  -> versioned PDF adapter -> bytes
 ```
 
-Selected patient, event, and product fields use one small wrapper:
-
-```text
-Fact<T>
-  state: empty | proposed | resolved | conflicted
-  proposedValues[]
-  resolvedValue?        # at most one
-  conflictingValues[]
-  sourceIds[]
-  supersededValues[]
-```
-
-A resolved value is `known(value, optional precision or qualifier)`, `unknown`,
-`explicitly absent`, `inapplicable`, or `declined`. These meanings are mutually
-exclusive. No value means `empty`; it does not mean unknown. Whether Wilson has
-asked about an empty fact belongs to interaction history, not clinical truth.
-
-The implemented slices use explicit typed fields only for their selected
-patient, event or product-problem, product, relevant-test, and reporter facts.
-Product category and role are facts, and proposed products and tests remain
-proposed until group review. A reviewed product or relevant test may become
-`withdrawn` through one authoritative command; its stable identity, facts,
-sources, and change record remain, while completion, model context, and output
-exclude it from the active report. One bounded suspect-device shape shares the same
-stable product identity and fact invariants while projecting to Section E. Its
-explicit implanted fact determines whether implant and explant timing can earn
-a clarification turn but is not itself a Form 3500 field; non-device suspects
-continue to project to Section D.
-Reporter facts enter directly from the clinician through `applyCaseCommand` and
-never pass through the model. `Fact<T>` supplies consistent behavior without
-claiming a complete Form 3500 ontology.
-
-A reviewed product is not deleted merely because proposal-local quarantine
-leaves its name, role, or category incomplete. It remains in the semantic case,
-appears in the reviewed-case UI under a stable collection-ordinal label such as
-`Product 2`, and can be repaired through the same direct typed command path as
-other reviewed facts. Rejecting or withdrawing an earlier product does not
-renumber later products. Zero retained products is a distinct state whose
-operator action is to begin a new case, not to navigate to a nonexistent card.
-
-### Report metadata and medication quantities (Issue #90)
-
-The report date is a directly entered event fact, excluded from model targets.
-The reporter step visibly defaults it to the browser's local calendar date;
-submitting either provided or declined reporter identity also records the
-selected date through the command boundary. Clearing the date leaves it
-unsupplied. It is separately correctable, and PDF generation never updates it.
-Existing cases with no report date retain an empty fact, not an inferred date.
-
-Dose and product strength are independent reviewed text facts including their
-units. Dose describes the administered amount; strength describes the stated
-amount per dosage form or concentration. Neither is calculated from the other.
-The PDF adapter separates a simple numeric quantity and a recognized unit into
-FDA controls. Descriptive quantities, qualified quantities, compound expressions and unsupported
-units stay intact in the text control with the unit blank; no unit conversion
-or concentration arithmetic occurs. The adapter generates the selected unit's
-appearance and retains the FDA export value in the original dropdown options.
-
-Browser state v8 adds these facts. A narrowly validated v7 upgrade supplies only
-empty report-date and strength facts, preserving every existing fact, source,
-change, revision and interaction notice. Other incompatible or malformed state
-still fails visibly in the current disposable preview. For durable browser-local
-integration, the Issue #129 restore contract below supersedes that preview-only
-compatibility limit: retain migrations for every state version actually persisted
-by supported releases, preserving accepted facts and history.
-
-The existing coverage checklist distinguishes implemented Section D complete expiration dates (PR163), NDC/Unique ID (PR166), explicit ongoing status (PR177), complete dose-reduction dates (PR179), explicit native-time durations (issue181), and complete purchase dates (issue183), and explicit D5 cosmetic professional-use/retail choice (issue185), and explicit cannabinoid/Other D5 (issue205) from remaining purchase wording outside native country/glyph/line/capacity limits, partial purchase/reduction-date and dose-count/compound/range duration gaps. Warnings and no-destination disclosures preserve visibility; they are not completed field support.
-Download readiness remains the supported-path condition, not a claim of
-complete FDA-form coverage.
-
-### Patient age units (Issues #167, #170)
-
-The shared model prompt drops its adult-only scope wording solely to support
-explicitly supplied A2 age representation. This does not introduce age-specific
-clinical rules or establish broader pediatric clinical validation. The original
-completion evidence used adult cases; new month/week/day integration evidence is
-synthetic and mocked. Actual model unit preservation remains unverified (#169).
-
-A2 age remains one atomic fact: existing numeric0–150 values mean whole years;
-explicit whole months/weeks/days use `{value, unit}` with a nonnegative safe integer.
-The internal legacy `ageYears` target key is retained for source/history/change
-identity and old unfinished-draft compatibility; it does not coerce object ages
-to years. No DOB/date arithmetic, rounding or unit conversion. Changing the UI
-unit retains the number for explicit clinician correction, never calculates.
-The review shows units; the existing numeric years path and limits stay intact.
-No new follow-up question. Fractional/compound ages remain outside
-this slice and disclosed. Explicit weeks use the official native Week(s) control,
-without interpreting patient age as gestational age or the reverse. Gestation
-at birth and corrected/postmenstrual ages are outside this patient-age target;
-the model must not use them or calculate chronological age from them. Native PDF writes the exact
-value and exactly one Years/Months/Weeks/Days unit box; width is guarded at
-native27.621pt/Helvetica8.5pt without
-shrinking or truncation. Qualifiers retain explicit omission disclosure.
-Statev13 strictly checks v12 against its months/days contract and v7–v11 against
-their old numeric-years contract after
-prior migrations, preserving all facts/IDs/sources/history/revisions/targets and
-numeric unfinished drafts unchanged. Current UI draft codec additionally retains
-month/week/day pairs, including unfinished invalid quantities without promoting them.
-
-### Date of birth and A2 choice (Issues #172 and #231)
-
-The official A2 alternative accepts date of birth or age at event onset using
-the most precise information available. Date of birth is a separate reviewed
-patient fact, never calculated from age or used to calculate age. Complete
-Gregorian dates in years 0001–9999 populate native DateBirth as DD-MMM-YYYY
-without timezone/date arithmetic. Issue #231 extends the initial complete-date
-path with explicit month/year and year-only precision: A2 points to B6 comments,
-where the exact supplied wording and qualifier appear under an A2 date-of-birth
-label. No missing day, month or age is inferred. Impossible dates and unsupported
-unstructured wording remain invalid; unfinished editor input survives reload
-without replacing the accepted fact. Global legacy date cleanup remains #164,
-without retrospective changes to accepted values.
-
-An explicit clinician-only A2 value-to-print fact chooses Age or Date of birth.
-The model can propose both supplied facts but cannot choose the print preference.
-If only one is known and no choice is set, it prints that one. Both known without
-a choice block new PDF until explicit selection; a selected unavailable value
-also blocks rather than silently falling back. Switching changes projection
-only: both accepted facts/source/history and independent unfinished age/DOB
-edits remain retained. The unselected known alternative has explicit omission
-disclosure. Qualifier disclosure distinguishes omitted base values from selected
-base values. No comparison, age/date consistency judgment or new follow-up question.
-
-Statev14 strictly validates legacyv7–v13 contracts before adding only empty DOB
-and A2-choice facts. Prior facts, revisions, IDs, sources, history and draft
-identities are not rewritten. The existing Age UI remains unchanged; DOB and
-A2 choice use the same fact-card review/correction and save/resume machinery.
-The preference editor has no preselected Age, clinical status dropdown or new
-qualifier control. No print preference explicitly clears a previous choice;
-it uses the sole known value, permits blank A2 when neither is known, and still
-requires selection when both are known. Existing qualified preferences remain
-visible and can have context explicitly removed without silently losing it.
-All integration evidence is fictional and mocked; #169 live fidelity is open.
-
-### Patient-provided race and/or ethnicity (Issue #174)
-
-Current official09/2025 A5 is one combined select-all question with seven native
-categories, including Middle Eastern or North African. The raceEthnicity fact
-retains an explicitly supplied nonempty, unique list of exact supported values.
-No inference from names, appearance, geography, nationality, ancestry, language
-or other proxies. Unsupported identities never become guessed broader categories.
-The model proposes only clinician-supplied patient-reported responses for human
-review. Multiple categories and whole-list corrections retain source/history;
-the PDF uses canonical form order without rewriting the fact's supplied order.
-
-Not supplied stays empty. Explicit unknown, declined, inapplicable or none-of-the-
-listed-categories responses keep their distinct CaseValue states and disclosed
-omissions, with no checked boxes. A temporary empty known selection is an invalid
-unfinished draft, never a negative response. Unchecked boxes mean unselected,
-not explicitly denied. Known categories plus unknown/declined portions, negative
-statements or extra identity wording preserve that exact context as a qualifier;
-native positive checkboxes cannot encode it, so omission is explicit. Qualifiers
-apply to the whole list; #159 list-scope and #169 live fidelity remain unresolved.
-
-Statev15 checks originalv7–v14 schemas and adds only an empty raceEthnicity fact,
-without rewriting prior clinical values, IDs, sources/history, revisions or draft
-identities. The existing checkbox editor retains incomplete empty drafts across
-reload with Apply disabled. No default category, new question or redesign.
-Native A5 checks exactly the selected categories; untouched blank widgets stay
-unset on legacy paths. Partial/detailed identity semantics beyond the native
-categories remain bounded and never inferred. All integration evidence is mocked.
-
-### Product NDC number or Unique ID (Issue #165)
-
-A separate product ndcOrUniqueId text fact reaches each native Section D D1
-identifier control. Preserve supplied zeros, punctuation and spacing exactly;
-never infer, look up, numerically coerce or validate a regulatory identity. Lot,
-serial, catalog and device UDI remain distinct. Conversation, explicit review,
-correction and saved recovery use the established fact boundary; no new question.
-Browser state v11 strictly validates v7–v10 before adding only an empty identifier
-fact, retaining all prior migrations and existing facts/sources/history/revisions.
-Known blank, multiline, unsupported-glyph or oversized identifiers remain accepted
-with explicit pre-export limitation, using native145.196pt/Helvetica8.5pt controls.
-No truncation, substitution, font shrinking or silent omission. Qualifier context
-retains explicit omission disclosure; Section E/F do not carry this distinct field.
-Purchase details and wider category/representation support remain unfinished.
-
-### Product expiration dates (Issue #162)
-
-Complete product expiration dates reach native D6 and E4 without interpreting
-expiry status. Issue219 extends the same fact with explicit month/year and
-year-only precision plus exact supplied wording, preserving qualifier/source.
-Those partial values use D6/E4/F1-row-linked continuations and never a fabricated
-native full date; complete dates retain their existing behavior. Browser v25
-upgrades genuine v24 without rewriting case facts/history. See the issue219
-architecture contract below. Other partial dates and wider source visibility
-remain under #180.
-
-### Medication history (Issue #92)
-
-Suspect drug/biologic products receive a grouped task for missing stopping or
-reduction history, with conditional stop date, improvement, restart and
-recurrence answers. Reviewed supplied facts suppress questions. Partial
-conversational answers keep newly applicable details in that same task;
-unknown/declined answers close their needs without a loop. A later prerequisite
-correction can create a newly applicable question. Other product categories
-receive no new proactive medication questions.
-
-D5 accepts explicitly supplied brand, generic/biosimilar, OTC and compounded
-flags, including combinations. Category and medication label type are distinct;
-no label type is inferred from a molecule name or asked by default. D7 requires
-explicit improvement/no improvement after known stopping or reduction; known
-neither selects Doesn't apply. D8 requires known restart and explicit
-recurrence/no recurrence; never restarted selects Doesn't apply. Unresolved,
-pending or declined applicability/outcomes leave corresponding checkboxes blank
-with disclosures. These are temporal observations, not causality judgments.
-Explicitly supplied supported facts can also project for non-device other
-products. Issue243 adds only accepted concomitant medication regimen/history supplements; proactive medication questions remain unchanged.
-
-Authoritative acceptance invalidates a known outcome when its prerequisite
-becomes false/inapplicable, preserving it as superseded history. Unknown/declined
-outcomes remain. Changing the prerequisite back never resurrects old outcomes.
-Projection also checks applicability, and review surfaces an unresolved
-prerequisite for a supplied outcome. Grouped-need reconciliation uses settled
-facts (resolved with no pending proposals) across conversation and direct input.
-
-Browser state v10 adds five empty medication facts to validated v7-v9 drafts,
-preserving facts, sources, histories and revisions. Asked-need storage has 24
-entries: five ordinary groups, six medication groups, nine correction entries
-and four headroom entries. This finite storage bound is separate from the
-interaction budget; it does not authorize extra questions.
-
-### Laboratory observations
-
-Each relevant test has independent reviewed `testName` and `testResult` text
-facts, plus ranges and an explicitly supplied test date. Identity includes the
-stated specimen/context; result retains numeric or qualitative wording and any
-stated units. Partial observations remain representable even if identity or
-result is missing or rejected by the model boundary. No clinical vocabulary,
-unit, range or date is inferred. Unfamiliar dictated terms remain verbatim for
-source review; broad ambiguity detection is deferred, not a clinical validator.
-
-Review shows missing identity and permits conversational correction or addition
-before initial acceptance; existing direct fact controls remain a fallback. It does not block partial output or create repeated
-completion questions. B6 combines reviewed identity and result, explicitly
-marking missing identity/result, with both facts' source trace retained. Other
-missing details stay blank with their existing omission reasons. Corrections
-address the same stable test ID and leave other fields and tests unchanged.
-
-Browser state v9 adds empty test identity facts to validated v7/v8 drafts,
-retaining all combined legacy result text and its history verbatim. It never
-splits that text into inferred clinical facts. New direct entries offer separate
-identity/result controls and permit partial information.
-
-Issue192 adds prompt v19 guidance for explicitly supplied collection-time
-context on an identified observation. A known calendar date remains known;
-its existing qualifier carries the exact supplied time wording, with both
-passages cited. If no known date is supplied, context may qualify a supplied
-known test name or result while an explicitly unavailable date remains unknown.
-Never fabricate a date or timestamp, infer a collection time, or transfer the
-context to another observation. The existing B6 row/field context projection
-prints reviewed qualifiers in Additional comments. This is a bounded extraction
-instruction, not runtime omission detection or verified general model coverage.
-The captured provider omission and authored expected-response regressions remain
-separate; live efficacy requires its own bounded evidence on the PR preview.
-
-### Stable entity identity
-
-The application owns stable opaque case entity IDs. On opening input, the model
-may group mentions under response-local product or relevant-test references;
-the model boundary validates those groups and assigns case IDs before proposals
-reach `applyCaseCommand`. A later model input receives the relevant reviewed
-product and test IDs, including explicitly labelled pending interpretations,
-and uses those IDs for supported updates. It may declare a genuinely additional
-or wholly omitted test using a response-local reference; code assigns its stable
-ID. An exact supplied ID echoed in the declaration list still links to the
-existing observation and never allocates another entity. It must not declare a
-new response-local identity to correct an existing observation. Later product
-declarations remain unsupported and are quarantined locally.
-Stable identity is never derived from medicine or test name, list position,
-fixture data, or a PDF row. The model proposes mention linkage; it does not own
-case identity.
-
-### Source and change records
-
-A source records only its ID, input ID, input type, exact clinician excerpt and
-offsets when applicable, actor, and time recorded. A change records only its
-command ID and type, affected entity/fact IDs, source IDs, prior and resulting
-revision, and any supersession or resolution.
-
-This is an in-session explanation trail, not a compliance audit graph or an
-event source from which the case must replay.
-
-## Authoritative write boundary
-
-Every consequential change uses one server-side `applyCaseCommand`. Browser,
-model, projection, and future input paths cannot mutate a case directly. The
-first experiment needs only commands to:
-
-- attach grounded proposals from one clinician input;
-- review proposals by accepting, correcting, or rejecting semantic groups;
-- record a clinician answer or direct correction;
-- record incompatible evidence as a conflict; and
-- resolve a conflict explicitly; and
-- withdraw one reviewed product or relevant test without deleting its history.
-
-Each command includes an expected case revision and command ID. It applies at
-most once and either commits the complete new case plus change entry or changes
-nothing.
-
-The boundary enforces:
-
-1. A model proposal cannot become resolved without clinician review.
-2. Every proposed or resolved material value identifies its source.
-3. Every fact belongs to an existing, type-compatible stable entity.
-4. A correction supersedes rather than silently overwrites the active value.
-5. Incompatible accepted evidence creates a conflict with no resolved value.
-6. Known, unknown, absent, inapplicable, and declined remain exclusive.
-7. Stale or duplicate commands cannot duplicate entities or reverse later work.
-8. Read views, projections, and adapters cannot mutate the case.
-
-A natural-language correction identified by the model is still a proposal. The
-old value remains active until the clinician explicitly accepts the correction;
-the accepted command then activates the new value and retains the old value as
-superseded history.
-
-Issue #66 adds no second correction boundary. Multiple typed changes drafted
-inside one opening proposal group are submitted together to the existing group
-review command. Once a group is reviewed, direct typed additions and corrections
-use `record-clinician-facts`; the server derives fact versus correction intent
-from the current fact, and a correction retains the previous resolved value as
-superseded history. Report type and reporter facts use this same path. The UI's
-explicit field-control registry supplies labels and input shapes only; the
-domain-owned target/value contract remains authoritative.
-
-One narrow automated source-boundary assertion must show that application
-routes and UI modules cannot import lower-level mutation helpers. It may be a
-focused test under the ordinary test command; no general architectural test
-framework is required.
-
-## Model responsibility
-
-The model may propose typed patient, event, product, and relevant-test facts,
-mention grouping or links to application-supplied entities, qualifiers,
-supporting passage references, and the presence of a correction or unresolved
-alternative. It may not propose reporter identity or contact facts. It may not:
-
-- confirm, overwrite, or resolve case knowledge;
-- choose among conflicting evidence;
-- determine report completion;
-- choose PDF widget identifiers; or
-- create the Form 3500 projection.
-
-A model may propose `unknown`, `explicitly absent`, `inapplicable`, or `declined`
-only when the current clinician input states that meaning explicitly and the
-proposal cites it. Those proposals remain unaccepted until ordinary review.
-Absence of a proposal remains empty and never acquires one of those meanings.
-
-The provider receives generated target/value guidance from the same domain-owned
-value contract used by local decoding and the final command boundary. The
-provider wire remains the simple proposal shape already exercised successfully;
-provider guidance improves yield but is not accepted-case authority. A medicine
-or other product named only as treatment administered in response to the event
-belongs in the event treatment fact. It is proposed as a report product only
-when the clinician separately describes it as suspect, concomitant, or
-otherwise involved in the report.
-
-For later relevant-test proposals, correction intent requires an application-
-supplied existing test ID, including a still-pending or unnamed observation. A
-response-local declaration cannot turn an unmatched correction reference into a
-new observation. That declaration's dependent facts are quarantined with their
-source excerpts; independent valid observations remain reviewable. This is
-allocation containment, not clinical identity matching or proof that the model
-selected the right valid ID. Genuine additions still use separate fact or
-alternative proposals. A new observation and a correction against its own local
-reference in the same response are not accepted through this path; the supplied
-wording remains visible for restatement. The provider wire stays unchanged.
-
-For later inputs, the model's review-group label is scoped to each validated
-target entity kind and stable ID. Reusing one label for event history and a
-medication therefore creates separate review groups; different labels within
-one entity remain separate. This is mechanical group assembly, not clinical
-reinterpretation: targets, values, qualifiers, intents and evidence are unchanged.
-Opening patient/event groups are code-owned and do not use model group labels;
-reused labels cannot merge those review units. Product/test declaration linkage
-and distinct declared-entity groups remain required, and
-the assembled groups are checked again to contain only one entity. Every group
-still requires explicit acceptance; an unresolved target is quarantined rather
-than assigned an entity from its group label. This bounded repair does not solve
-incorrect model attribution or conversational test identity.
-
-The interpretation contract distinguishes patient manifestations (symptoms) from
-actual product-quality complaints (problemDescription), including reports with
-both. Compatible manifestations and specific denials form one symptoms list;
-a specific denial is not whole-list absence. Supplied medication count/form
-wording and stated total are retained together in dose, independently of strength,
-without arithmetic. These instructions guide extraction, not runtime clinical
-normalization. Known-value qualifiers remain visible during review, and B5
-symptom/product-complaint and D6 dose/strength output carries their accepted
-qualifiers. Existing accepted facts are not silently reinterpreted or repaired.
-Non-carried symptoms and product-complaint facts are individually disclosed in
-output omissions, including absent, unknown, unmentioned and conflicted states;
-they are not invented as positive B5 narrative. The contract guidance has bounded
-synthetic evidence, not an established reliability rate; clinician review remains
-necessary. Qualifier output for other field families and individual omissions for
-other non-known B5 narrative fields remain follow-up #115.
-
-The runtime model boundary classifies mechanically decidable contract faults
-before review. Response-level faults reject the complete response and leave
-accepted knowledge unchanged:
-
-- the provider did not complete normally;
-- returned content is not valid structured output;
-- a proposal omits the minimum response-local identity, group or target needed
-  to identify and display a truthful quarantine notice;
-- proposal or source identities are duplicated or internally inconsistent; or
-- every proposal is unrepresentable.
-
-A response that preserves that minimum may contain a proposal-local
-representation, target, resolved-identity, or source-reference fault. That
-proposal is quarantined before source or proposal identity is created and never
-enters the semantic case or Form FDA 3500. The remaining valid proposals attach
-in one atomic command, and the clinician sees the omitted target, the exact text
-resolved from its selected references (or a notice that supporting text could
-not be identified), and a plain-language reason in a concise expandable
-disclosure throughout the disposable tab session. Restating missing information
-through Clinical update is available during understanding, clarification and
-output; a wholly omitted test can be recovered without restarting. Declarations that lose every proposal are pruned, including product
-declarations beyond the supported three-product limit. No value is coerced,
-repaired, guessed, or retried.
-
-Issue #91's approved partial-observation support supersedes the former
-required-result pruning rule. A relevant-test declaration survives when at
-least one supported detail remains, even if identity and result are both
-missing: for example, an independently grounded test date stays attributable
-and repairable with its source. Tests must prove that the invalid proposal
-stays quarantined, surviving facts do not gain inferred identity/result, and
-B6 explicitly marks both missing details rather than silently losing the date.
-A declaration with no surviving detail is still pruned. This can consume one
-of the bounded eight test rows; the clinician can repair or withdraw it.
-Historical `incomplete-relevant-test` notices remain readable when restoring
-older preview state but are no longer emitted by current extraction.
-
-### Code-owned source references and initial-review recovery (Issue #96)
-
-The application preserves the original input and segments it into sentence
-passages with code-assigned references and offsets. The model receives the
-ordered passage text and returns one or more references per proposal. Code
-resolves them against that same original input and builds the existing Source
-records with exact slices and offsets. Repeated wording has distinct references;
-missing, duplicate or invented references quarantine only the affected proposal.
-Multiple passages preserve subjects, shared dates, negation and corrections that
-span sentences. A sentence may contain several claims; reference selection and
-clinical attribution still need clinician review.
-
-These are finite input checks, not a hallucination guard. A valid reference
-proves source existence, not semantic support. Values are never unconditionally
-decoded, normalized or clinically repaired. The model no longer reproduces
-supporting quotations or computes offsets. Source-reference tables are transient
-extraction inputs; stored excerpts, sources, review history and PDF machinery
-retain their existing representation. Valid legacy drafts remain readable.
-
-During initial understanding review, conversational updates receive stable IDs
-and explicitly labelled pending values as linkage context, never as current
-input evidence or accepted truth. Review update groups before the remaining
-opening groups. Accepting a correction supersedes the older pending interpretation
-of that fact without accepting it, retaining its value and source history.
-Rejecting the update leaves the original proposal available. Other facts on the
-same entity remain unchanged. A new test retains the normal proposed-entity
-review and eight-test capacity bound; excess additions do not discard valid
-siblings. Source references do not establish overall extraction reliability.
-
-The runtime boundary must not compare live proposals with an experiment's
-expected proposal set, values, or source clauses. A structurally valid but
-incorrect, omitted, unexpected, or unsupported proposal whose evidence anchors
-successfully remains visibly proposed for operator review and cannot become
-resolved without the ordinary clinician-review command. External semantic
-oracles and human scoring determine whether an experiment run passes.
-
-The supported medication adverse-event path (originally verified with adult cases) uses one bounded,
-deterministic completion policy. After opening proposals are reviewed, it asks
-in order about missing suspect-product indications, unestablished serious
-outcomes, death date only when death applies, missing relevant tests and medical
-history, medication treatment history, and reporter details. Accepted narrative facts suppress matching
-questions; related outcome and clinical-context needs are grouped; every group
-has authored wording and a plain-language reason. Unknown, declined,
-explicitly-absent, and inapplicable answers close the recorded need without a
-loop. A later reviewed correction may reopen a need only for a newly applicable
-semantic target. Direct answers use `applyCaseCommand` without a model call.
-This is not a generic follow-up planner, and model-generated question wording
-remains deferred.
-
-The Layer 2 generalization keeps that medication ordering unchanged. A selected
-adverse-event report with one suspect device skips medication-indication needs
-but retains applicable serious-outcome, clinical-context, and direct-reporter
-needs. A selected product-problem-only report skips adverse-event and
-medication-specific clarification and proceeds to direct reporter details once
-its proposals are reviewed. Product availability is accepted as a semantic
-report fact and projected to Section C. These are two bounded applicability
-branches, not a general report-completion rules engine.
-
-Layer 3 retains that ordering and adds two bounded branches. A clinician may
-select adverse event and product problem together as one reviewed semantic
-report-type value; both Form 3500 boxes then derive from that value, and the
-adverse-event completion needs remain applicable. For one resolved suspect
-device, an accepted implanted value makes empty implant and explant dates one
-authored device-detail question, and accepted reprocessed-single-use status
-makes an empty reprocessor identity part of the same question. Unknown,
-inapplicable, and declined answers close those targets without a loop. A later
-device correction or incompatible alternative continues to use its stable
-opaque product ID and the existing supersession/conflict invariants. This is
-not a generic device completion planner.
-
-## Views and Form 3500 projection
-
-All user-visible knowledge and output derive from one revision:
-
-```text
-Case revision
-  -> understanding / clarification / review views
-  -> semantic Form 3500 projection + source trace + omissions
-  -> versioned PDF widget adapter
-  -> PDF bytes
-```
-
-The semantic projection knows Form 3500 concepts but not PDF widget names,
-coordinates, checkbox encodings, or library details. Only the final versioned
-adapter knows those. A projection or rendering error leaves the case unchanged.
-
-The production seed replaces the authored Experiment 1 sequence with
-state-derived work. Pending opening proposals require review; the next
-applicable bounded need requires clarification; a proposed correction or
-conflict requires attention; otherwise the reviewed projection is inspectable.
-The UI may offer actions only for semantic targets represented in the current
-revision. It may not infer the stage from fixture input, product names, expected
-values, or a fixed turn number.
-
-For the bounded directly-correctable paths, typed controls cover the existing
-text, age, date, boolean, enum, string-list, weight, reporter-destination, and
-resolved missing-value shapes. A proposed product or relevant test may be
-rejected during opening review. A reviewed product or test may be withdrawn
-only after the case reaches output; it remains visible as inactive history and
-is omitted from subsequent projection and PDF generation.
-
-Issue208 below supersedes the third-non-device-suspect block with an actual
-additional native form copy. The original issue126 contract aligned readiness
-with the bounded PDF's two non-device suspect slots
-and one concomitant slot. Exceeding either blocks export with an explicit
-capacity notice while retaining every product, fact, source and history entry.
-Readiness and the adapter share these output limits; the adapter guards remain.
-Issue210 supersedes the one-suspect-device export block with native E-only
-copies. Issue212 below supersedes the concomitant-device and single-F-row gates.
-Only an explicit clinician change can alter roles or withdraw products; capacity
-checks never make those changes. This is limitation disclosure, not continuation
-pages or complete overflow support.
-
-Output readiness is application-owned and separate from question completion.
-For these bounded paths, output requires at least one retained product and at
-least one complete suspect product whose name, role, and category are known.
-Every retained incomplete product is named in the readiness explanation and
-navigable for repair. A direct repair that makes a clarification newly
-applicable returns the case to clarification with an explicit transition
-notice; it does not call the model or bypass the command boundary. Native E copies support multiple suspect devices (issue210). Native F rows
-include concomitant devices (issue212), without repurposing implant dates.
-
-A missing product category is never treated as implicitly non-device. The
-projection omits category-dependent Section D, E, and F fields until category is
-known. Once category is known, the reviewed-case card and semantic projection
-show the selected branch while retaining any accepted or historical facts from
-the other branch with an explicit not-carried-forward explanation. This keeps
-clinician evidence visible without silently projecting it into an inapplicable
-form section.
-
-For the selected medication, single-device adverse-event,
-product-problem-only, and bounded combined-report journeys, unresolved optional facts remain
-omitted and visible but do not block output after proposals, corrections, and
-applicable bounded needs have received their required review or direct answer.
-Conflicting alternatives never project. The semantic projection supplies
-omission reasons; the PDF adapter does not decide completion. A broader
-report-completion policy remains deferred.
-
-The approved authority is Form FDA 3500 (09/2025), OMB expiry 09-30-2027. The
-[official PDF](https://www.fda.gov/media/76299/download?attachment=) must be
-versioned and checksummed before adapter implementation. The
-[FDA instructions](https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500)
-are identified by authoritative URL and retrieval date before mapping evidence
-is accepted; the live guidance page is not a byte-consumed adapter input.
-
-## Browser-local persistence amendment — Issue #129
-
-The approved artificial-data target adds durable browser-local recovery of one
-active case, for one user per browser, without accounts, server storage or a
-cross-device requirement. All patient, reporter and contact information remains
-fictional. This amendment supersedes the blanket storage deferral below for
-that bounded target, not the real-data/security boundary.
-
-Issue129 established a native IndexedDB adapter with one active-case record,
-initially without UI wiring. Issue139 integrates that foundation as described
-below; prerequisites alone did not deliver end-user save/resume.
-A separate envelope version and storage generation surround the complete
-server-returned BrowserJourneyState and a separately versioned JSON draft
-container. Storage reads leave clinical state opaque/untrusted; integration
-uses the server restore boundary as follows:
-
-- Validate/migrate the complete clinical state and preserve its accepted facts,
-  evidence, proposals, conflicts and history. Retain migrations for every version
-  actually persisted by supported releases; do not drop them when the preview
-  version window advances. Unsupported versions must remain recoverable records.
-- Re-derive the current stage and snapshot after validation. The current preview
-  resume operation re-derives the snapshot after validation and migration, so
-  `assertStoredStage` does not reject valid saved cases when current policy
-  changes applicable questions. Actions still require stored-stage and expected-
-  revision equality; clients resume first, then issue any explicit action.
-  Resume explains a changed review stage, including newly required details
-  before PDF readiness, without altering clinical state.
-- Validate each typed UI draft before hydration and surface any invalidated draft
-  without silently losing the complete saved record.
-- Inner-state incompatibility, including rollback to an older deployment, must
-  preserve the record and visibly explain that a compatible release is needed.
-  Never reuse the current preview `loadJourney` discard-and-start-over path for
-  persisted data. Include the writing release/state-version provenance in the
-  integration envelope so recovery can identify the required compatible release.
-
-Issue137 delivers the stateless clinical-resume prerequisite: existing v7/v8/v9
-migrations remain alongside v10, resume validates and re-derives without a model
-call or semantic write, and each JourneyResponse adds provenance with the current
-state version and a strictly validated public 40-hex deployment commit (null when
-unavailable). Provenance is outside clinical state and is not authority or a
-claim that a record has been saved. Integration must capture that provenance in
-the durable envelope. The testing checkpoint must verify that the protected
-deployment actually reports its matching commit; a locally validated fallback
-is not deployed-release evidence. UI hydration, retained incompatible records and the
-remaining browser lifecycle requirements are still integration work. Storage
-never accepts facts or creates a second semantic write path.
-
-Each write uses a fresh opaque UUID generation identifier, so external database
-loss/recreation cannot reuse a counter that an old tab still holds. A native
-readwrite transaction compares the expected generation and commits
-the entire record atomically. Draft-only changes must also advance storage
-generation. Stale writers fail instead of overwriting newer work. Replacement
-is a distinct operation; clear preserves a generation tombstone rather than
-resetting it. This prevents a stale tab from matching a reused generation.
-Corrupt or future-version records are not silently erased or overwritten.
-Failures leave the previous committed record intact and are reported explicitly.
-The original foundation had no destructive recovery API. Issue139 adds an
-explicit, confirmed corrupt-record discard path with a full observed-record
-comparison inside its native transaction; explain the loss before clearing it. Preserve newer-version records/database versions after
-rollback rather than offering destructive replacement as ordinary recovery; use
-a compatible release. While recovery is blocked, users may continue with an
-explicitly unsaved in-memory case, with a persistent warning and no writes to or
-replacement of the retained record. Never silently fall back or claim it is saved.
-
-The adapter uses the browser default transaction durability. Transaction
-completion confirms an atomic browser commit, not guaranteed disk flush: an OS
-crash or power loss may lose the latest completed save. Integration saved-status
-wording must disclose this limit unless strict durability is implemented and
-verified on supported browsers. Native transaction commit is not an off-device
-backup or a guarantee against storage eviction, browser/profile/site-data loss
-or a changed origin.
-
-Later integration must capture opening text/report selection, clinical-update
-text, reporter drafts, direct field edits and every unfinished completion task
-(indications, outcomes, dates, tests/history, device and medication answers),
-keyed to stable case/entity/group/question identities. Preserve pending
-proposals, conflicts, source evidence and quarantines in the server state.
-Do not store derived readiness/projections as authority, PDF blob URLs, busy
-flags or replayable network actions. Restore must never resend model requests
-or automatically accept changes. Writes failing after a successful server
-response must retain that response in memory; retry storage, not the action.
-
-The integration slice must test real browser restart, saved/unsaved status,
-confirmed replacement, corrupt/incompatible/unavailable storage, typed-draft
-invalidation and same-browser multi-tab behavior before claiming resume works.
-Integration must serialize its own tab's saves, report saved status only after
-transaction completion, and retain unsaved work when handling a stale-write error.
-Generation checks protect storage commits; they are not a complete single-writer
-UI or prevention of simultaneous model requests. Integration must explicitly
-coordinate active tabs before issuing actions and surface stale work safely.
-A stable protected origin is a deployment prerequisite: storage does not follow
-changing preview hostnames. No origin/access or infrastructure change is made here.
-
-Issue #135 adds a controlled, case-scoped typed UI snapshot for opening/report
-selection, unsent updates, screen, reporter case drafts/dirty baseline, inline
-edits and every completion task. Stable entity/question scopes and prerequisite
-keys retain current invalidation behavior. Baseline fingerprints guard drafts;
-they never become authoritative facts. Qualifier-control visibility is captured
-with the card, so an empty or whitespace edit remains editable across remount;
-blank qualifiers are omitted only at explicit correction submission, as required
-by the existing command contract. The strict JSON codec distinguishes
-unsupported versions/tasks from corrupt or cross-case records without coercing
-empty/false/unselected values. Restore decoding occurs before React dispatch;
-a failed decode leaves the current owner and raw input intact. Expected internal
-draft validation failures retain the owner and surface a recoverable message
-rather than unmounting the journey. Issue135 alone was in-memory capture;
-Issue139 connects that owner to durable storage.
-
-Complete submitted opening/update words are retained separately as case-bound
-input history after successful acknowledgement; unsent drafts remain distinct.
-Case source excerpts contain selected spans and cannot reconstruct full input.
-Input-history entries are neither accepted knowledge nor replayable actions.
-The starting-description view reads its history entry; submitted updates have a
-collapsed history control. Legacy tab states without complete input history show
-only an explicitly labelled excerpt. Before persistent hydration, the validated
-clinical snapshot must also validate draft targets/dependencies and surface any
-invalidation without silently destroying the retained saved record.
-
-Reusable reporter details require a separate record/store and lifecycle. They
-must survive starting a new case, seed a draft rather than silently change an
-accepted case, and support explicit editing/forgetting. Case-specific report date,
-reporting destinations and disclosure choices stay with the case by default.
-No reporter profile persistence or portable backup is implemented by #129.
-
-
-### Reusable fictional reporter defaults — Issue141
-
-A separate `wilson-reporter-profile` IndexedDB database (version1, `reporter`
-store, `remembered` key) retains only the editable identity/contact strings,
-occupation and explicit health-professional boolean. Its strict versioned
-record has a fresh generation on every transaction, including Forget tombstones;
-atomic generation comparison rejects stale writers. Neither clinical state nor
-report date, destinations or disclosure choice can enter this record.
-
-The existing Reporter form remains the editor. Remember/update snapshots its
-fictional reusable fields; Use copies defaults into the current draft, with
-confirmation before replacing entered identity. These operations never accept
-facts or change case-specific choices. Normal Add/Save reporter details remains
-the only case acceptance action. Forget requires confirmation and leaves the
-current draft/accepted case untouched; New case preserves remembered defaults.
-
-Only a genuinely fresh case may receive automatic defaults, once per case in
-the current UI owner, after profile loading/saving settles and only if the
-reporter draft is pristine and no reporter facts are accepted. Restored cases
-and dirty drafts are not seeded. Automatic defaults become the draft baseline;
-unaccepted identity still warns the output workflow that reporter work remains.
-
-Profile operations live in a stable owner across case/Reporter remounts. Loading
-and readiness are scoped to acquired workspace ownership, so a formerly blocked
-tab reads current defaults after handoff. A failed pending profile intent retains
-its original comparison generation rather than silently advancing it on case reload. Failed
-writes retain their exact requested snapshot for explicit save-only retry;
-subsequent case-field edits are separate work. Stale/corrupt/future records are
-not replaced. Reload is explicit, with confirmation before discarding a failed
-profile change. Manual case entry remains available when profile storage fails.
-Pending profile writes/failed changes guard unload. Browser storage limits are
-the same as the active case; this is fictional-data convenience, not an account,
-backup, privacy-readiness claim or cross-origin/cross-device feature.
-
-### Integrated browser workspace — Issue139
-
-The active record now wraps the complete validated clinical state with a v1
-workspace container: response provenance, the v1 typed UI snapshot and separately
-retained invalidated drafts. Before hydration, resume validates/migrates clinical
-state and derives the snapshot; the workspace codec checks case, chronology and
-format identity. Target reconciliation checks current entities, fields, editor
-representations, question identities and prerequisite fingerprints. Incompatible
-records remain untouched. Invalidated supported drafts leave the editable owner
-and remain readable as historical reference in the same durable workspace.
-Only invalidated pending fields are retained; unaffected live edits are not
-duplicated. The wording does not claim they can never be applied explicitly
-later. A confirmed discard removes selected earlier edits without changing
-accepted facts, and retained work counts for New case/unload protection. Existing input
-history remains separate from facts; no saved action or model request is replayed.
-
-A native Web Locks exclusive lease precedes reads, writes and case actions. A
-second tab cannot issue competing case requests; it can retry after the owner
-closes. There is no forced takeover. In-flight native writes settle before a
-same-page owner releases its lease on unmount; cancelled pending acquisitions
-are registered before their first await, so StrictMode replacement effects wait
-for their own predecessor to finish without competing with it; generation CAS remains necessary
-for external/stale writers and browser storage recreation. Without coordination
-or storage, an explicitly chosen new unsaved case never writes/replaces retained
-work. This is not a simultaneous collaborative editor.
-
-A coalescing queue serializes complete atomic snapshots, retaining the newest
-unsaved state across failure. Saved status compares the latest rendered payload
-to its acknowledged transaction; an older acknowledgement cannot label newer
-typing saved. Clinical mutation controls are disabled during their pending action;
-the independent update composer stays editable and acknowledges only submitted
-text. Successful responses stay in memory before optional session mirroring or
-durable writes. Retry save never repeats the action. A stale-stage action can
-perform read-only resume and ask for explicit review/retry; it does not replay it.
-
-New case confirms loss of all unfinished work and uses explicit replacement.
-Known damaged records offer confirmed discard, comparing the exact observed JSON
-record transactionally; changed, now-valid and future records are not cleared.
-Unsupported non-JSON damage that cannot be safely compared stays retained and
-cannot use that discard path. Damaged inner payloads use full-envelope comparison
-as well as generation. A durable clear keeps a tombstone and suppresses legacy
-session reimport. Future database/state/UI versions require a compatible release;
-ordinary recovery does not erase them. Optional legacy session storage is only a
-one-time input when no durable record exists and a best-effort debugging mirror.
-The old `wilson-journey-state-v2` source key is never used for the new mirror;
-`wilson-current-case-debug-v1` is separate and is not loaded as authority. Normal
-New case/debug cleanup cannot erase old tab data, including during unsaved
-recovery. Only explicit confirmed damaged-legacy recovery removes that source.
-When a durable active case already exists, different earlier tab data stays
-unchanged with a notice rather than being imported over it. This transition is
-not a case-list feature. Neither adapter is persistence authority, and optional
-session failure cannot reject accepted work.
-
-Unsaved work warns before document unload. Browser-default durability still has
-the OS crash/power-loss limit above; site-data loss/eviction, private profiles and
-changed origins remain outside recovery. Closing a browser during an uncompleted
-action can leave an unobserved server/model result; saved text is retained and no
-action is automatically repeated. Native process-restart and failure acceptance,
-full regression checks and independent review are delivery gates. Reporter profile
-persistence is delivered separately by Issue141 above. Protected stable-origin
-deployment verification remains a milestone gate.
-
-### Reviewed context disclosure — Issue115 first slice
-
-This records the first-slice boundary. The later quantity and clinical-course
-subsections below amend the current supported representation for those facts.
-
-Projection omissions distinguish an entire fact not carried from a known base
-value carried without its reviewed qualifier. The latter records
-qualifier-not-included, exact qualifier wording, stable target and current
-resolved-value source IDs. It never promotes proposed, rejected, conflicted or
-superseded wording into a current qualifier. Existing symptom/problem and
-suspect dose/strength qualifier representations remain unchanged; no qualifiers
-are concatenated into date, boolean, enum or numeric controls by this slice.
-Mapped base values and the existing B5 treatment/outcome/discharge sentences,
-stop statements and applicable medication outcomes disclose their uncarried
-qualifiers. Non-known/conflicted treatment, outcome and discharge-date facts
-have individual omissions, without inventing narrative statements.
-
-A final completeness sweep covers every current known qualifier on active
-entities, including routing selectors, stopped=false, dose reduction/restart
-prerequisites, test availability and facts whose base values are wholly
-unsupported. It excludes the four actual qualifier-carrying paths and already
-disclosed targets. Rejected/withdrawn entities and non-current values stay history.
-Only directly mapped values/explicit B5 statements are labelled base-value-included;
-indirect or unsupported facts use a neutral context-not-included disclosure.
-Neither the sweep nor its label makes a clinical applicability decision.
-
-The existing coverage panel opens for partial qualifier omissions and quotes
-exact omitted wording with the entity/field label. Output and return-to-PDF
-messages distinguish supported PDF values from omitted context. The PDF content
-key remains a hash of actual output sections: a qualifier-only omission change
-updates the disclosure but does not pretend the PDF bytes changed. This is
-explicit partial-output disclosure, not faithful representation of that context
-inside the downloaded artifact. Issue115 remains open for the actual supported
-representation contract and the qualified-quantity unit decision.
-
-The existing fact editor can reveal its optional uncertainty/context control
-for any known editable value. Reveal alone accepts nothing; save still uses the
-same command boundary. Draft visibility/text follow the existing typed workspace
-owner; explicit remove/reopen/add preserves superseded context and source history.
-There is no new storage schema, model interpretation, causality assessment,
-clinical inference or layout system. Glyph/fit support is not expanded; the
-separate issue154 portable-appearance risk and issues151/153 remain open.
-
-### Native PDF representability — Issue128
-
-Supplied suspect-product route wording selects an actual FDA route option only
-by case/outer-space formatting equivalence. Otherwise the adapter selects Other
-and writes the original wording verbatim in the corresponding Other Route field.
-It never guesses an abbreviation or a more specific clinical category. Both
-suspect slots use the same encode/readback contract; unknown/declined facts stay
-non-known. Accepted blank/whitespace route, frequency, dose or strength wording
-has an explicit pre-export limitation and stays retained. Fresh form generation
-cannot retain stale Other wording after an explicit native-route correction.
-Accepted facts, identity, source and history are unchanged by output formatting.
-
-The PDF-owned product-text helper shares readiness/adapter encoding and limits.
-Other Route/Frequency text must fit the pinned native single-line rectangle at
-its unchanged8.5pt size, existing padding and current Helvetica appearance font.
-Native options and geometry are checked independently against both PDF slots.
-Longer, line-breaking or unsupported-glyph text stays accepted/projected but is
-blocked explicitly before export. Never shrink, clip, replace glyphs, shorten or
-silently normalize supplied wording to fit. Native field flags stay unchanged.
-[Issue153](https://github.com/warblersafety/wilson-next/issues/153) owns faithful
-support beyond these controls; this temporary limitation is not full support.
-
-The pinned native A3 controls offer only Male/Female. Issue151 supersedes the
-unconditional intersex export block with a field-linked Section A/block A3
-supplement for the existing explicitly reviewed `intersex` value. Both native
-boxes remain off; the exact supplied value and current known qualifier print at
-fixed10pt on numbered continuation pages. A pointer uses the A3 heading line, away from Male/Female labels. A clearly
-labelled opaque report reference uses the blank page-1 area below Section B;
-both are8.5pt. Native male/female
-values keep their existing sole checkbox; their current known qualifiers also
-travel in this A3 supplement. Unknown, declined, inapplicable, explicitly absent
-and unanswered values leave both boxes off without inventing a value or carrying
-a former qualifier. Fresh generation removes obsolete pages and pointers.
-
-FDA's A3 instructions request sex at birth. This representation preserves the
-existing `sex` fact and enum; it does not relabel that fact, infer sex at birth
-from identity/diagnosis/other facts, classify gender, or add arbitrary vocabulary.
-The intersex supplement explicitly identifies the reviewed value and explains
-that the native choices are unselected without a sex-at-birth inference. The
-normal conversation/review/correction and persisted-v24 state remain unchanged;
-resume re-derives readiness without mutating accepted facts, sources or history.
-
-Only known current sex context is carried, with normal source trace and no
-duplicate qualifier-omission disclosure. Unsupported A3 context glyphs stay
-retained and raise the existing exact `patient:patient:sex` readiness/adapter
-block; #154 portable-font work is not included. All writing remains before the
-outer single save; D/E-only copies have no A facts and acquire no duplicate A3
-supplement. Current official form/instructions, tests and independent readback/
-render evidence are in [issue151 evidence](../evidence/issue-151/README.md).
-
-
-## Application and data boundary
-
-```text
-browser UI + retained case/interaction state
-                    -> application commands and queries -> case domain
-                                                    |-> model adapter
-                                                    |-> FDA PDF adapter
-```
-
-Use stateless application routes on Vercel. The browser retains the latest
-server-returned case, revision and complete pending interaction state in the
-origin-scoped active IndexedDB workspace and supplies the clinical state with the
-next command or query. Session storage is an optional legacy/debugging adapter.
-The server validates the received shape, expected revision, command, and
-resulting case invariants before returning a complete next state. Browser code
-stores or discards that result; it does not edit semantic case values directly.
-
-PDF preview and download use the same state boundary. They are client-initiated
-non-GET requests carrying the complete versioned browser-held state; the server
-validates that state, derives a fresh semantic projection, and returns only the
-PDF response or a no-store error. The browser opens the returned bytes for
-preview or downloads them without putting case state in a URL. A static PDF
-link, cookie-derived case identity, server revision anchor, or process affinity
-may not stand in for the complete state. This request-shape change is limited to
-the synthetic preview and does not create a second write path: PDF generation
-remains a read-only projection of validated case knowledge.
-
-This is deliberately not a secure clinical persistence design. A reviewer can
-alter or delete their own browser storage. The same browser/profile/origin can
-resume the single active case; only one tab edits. Other browsers/devices and
-cleared/evicted site data cannot recover it. Vercel has no authoritative case
-repository, revision anchor or session affinity record; transient request/model/
-diagnostic processing remains subject to the existing synthetic-data policy.
-These limits are acceptable only because the preview is synthetic-only,
-access-restricted and non-production. Hosted persistence, cross-device recovery,
-tamper resistance, and any real-clinical-data boundary require a later
-architecture decision.
-
-Domain code has no model-provider, PDF-library, framework, or deployment
-imports. The browser-held state is a deployment adapter concern and does not
-change `applyCaseCommand` as the sole semantic write boundary.
-
-The browser-held interaction state also retains any proposal-quarantine notices
-with the complete browser workspace so an acknowledged omission cannot disappear
-after another review action. Those notices are not semantic case knowledge and
-cannot project to the form. The bounded three-product, eight-relevant-test, and
-ten-asked-need collection limits are domain-owned and enforced at the command
-boundary as well as during browser restore, so an accepted write cannot create
-unrestorable browser state.
-
-Live application-model selection is fail-closed at the deployment adapter.
-Explicit predetermined responses select the deterministic test adapter before
-any live-model decision and never construct the Anthropic adapter. Otherwise,
-the live adapter is available only when Vercel classifies the runtime as a
-preview and supplies matching GitHub provider, owner, repository name,
-immutable repository ID, non-`main` branch, and pull-request metadata for
-`warblersafety/wilson-next`. Local development, CI, production, non-Git,
-incomplete, and unknown contexts refuse before constructing Anthropic. This
-gate governs the assembled application route; a separately authorized operator
-model-evidence tool remains governed by its issue and Delivery's call controls.
-The Vercel project must keep **Automatically expose System Environment
-Variables** enabled for the preview; if those values are unavailable, the gate
-fails safely by refusing the live adapter.
-
-Vercel Authentication remains the access-control boundary for that preview;
-the application gate is defense in depth and does not attest to Vercel's
-independently mutable protection setting. Before any approved live preview
-call, the operator verifies that deployment protection still covers the exact
-deployment and that no public protection exception or project-wide bypass
-exists. A URL-scoped Vercel Shareable Link is permitted only when an owning
-issue names the external-review purpose, exact deployment, synthetic-data and
-call limits, secret-handling boundary, and platform-enforced expiry. Issue #83
-authorizes one such link for the exact verified cofounder-review deployment
-with a 604800-second TTL. Its ordinary URL stays protected, its bearer secret
-is not durable evidence, and the exception conveys no production or general
-external access authority. Any broader requirement for
-application-verifiable request authorization would reopen the security
-architecture rather than treating Git or environment metadata as an
-authentication claim.
-
-Experiment 1 accepts synthetic data only. It has no analytics, session replay,
-audio capture, or retained deployed case state. For the fixed, protected,
-operator-driven experiment, Vercel Runtime Logs are the single diagnostic
-location and may contain the complete relevant synthetic request, model output,
-proposal, evidence, validation, command, state-transition, response, and caught-
-error content needed to reconstruct a run. Events are emitted as each phase
-occurs, correlated by one browser-run identifier and one request-operation
-identifier, and need not wait for a final journey state. This narrow diagnostic
-exception does not authorize real clinical data or another store. Authorization
-headers, cookies, API or deployment tokens, environment values, protection
-bypasses, and other credential-bearing material are never logged. PDF bytes are
-also excluded because they do not help explain model or control-flow behavior.
-Each case-route response also emits one in-request reconstruction checkpoint
-containing the already-sanitized events from that operation. Immediate phase
-events still expose an early crash; the checkpoint makes a completed operation
-reconstructable when Vercel's live Runtime Log stream omits individual lines.
-It exists only in function memory until that final log call and is not a second
-diagnostic or case store.
-Browser reporting uses the same pattern within each operation: every event is
-sent immediately, while each later report also carries the browser events that
-preceded it. A received response or browser-side failure can therefore explain
-both the initiating action and what the browser observed even if Vercel omits
-one earlier line. This trace exists only in the reporting closure for that
-request. Issue #118 makes browser reporting best effort and non-blocking:
-report delivery never gates useful request dispatch, accepted-response handling
-or error feedback. Each fetch has a one-second abort deadline to release network
-resources. Timeout, offline state, navigation and browser keepalive payload/in-flight
-quotas can drop reports; completion is
-not acknowledged by the UI. Reports may arrive out of order, so correlation,
-sequence and cumulative trace remain necessary. This is not a durable log queue
-or a guarantee that runtime logs contain every browser event.
-
-Diagnostic classification follows the phase that actually occurred. A provider
-or transport failure emits a model-response failure and no schema/domain
-rejection. Once returned model content exists, diagnostics emit the returned
-content before the precise provider-stop, JSON parse, structured-schema, or
-domain-boundary rejection. An outer route catch may record route and response
-failure, but it may not relabel a model/transport failure as schema/domain
-rejection. This ordering applies at both the model-service and case-route
-boundaries and preserves the same credential and synthetic-only content rules.
-
-Vercel Hobby's one-hour Runtime Log retention is accepted for this immediate
-operator inspection. Logs are not drained, copied into a longer-lived
-diagnostic system, or treated as case persistence. Any later real-data boundary
-must replace this synthetic-only logging policy before use.
-
-## Deferred architecture
-
-- Generic claim/evidence graphs, ontologies, event replay, messaging, separate
-  read stores, multiple services, or synchronization.
-- Hosted sessions, cross-device recovery, accounts, collaboration and a saved-case
-  manager. Browser-local recovery of one active artificial-data case is selected
-  above; full case/draft integration is still pending.
-- General import or deterministic-derivation frameworks.
-- Full FHIR or ICH E2B compatibility.
-- Comprehensive question planning, full Form 3500 coverage, multiple devices,
-  concomitant-role device projection, and device-depth behavior beyond the
-  selected Layer 3 applicability and correction facts.
-- Large package taxonomies or a reusable internal platform.
-
-## Falsification
-
-Stop expansion and reopen the owning premise if:
-
-- a domain fact requires a PDF widget identifier;
-- correction or conflict behavior differs by input surface;
-- repeated products require positional identity or special projection state;
-- conflicting alternatives can both resolve or reach the PDF;
-- browser code creates or mutates semantic case values outside a complete
-  server-returned `applyCaseCommand` result;
-- any consequential write can bypass `applyCaseCommand`; or
-- implementation requires duplicated authority, a weakened invariant, hidden
-  fallback, or user-visible behavior absent from the approved product and
-  experiment.
-
-Experiment 1 evidence supports retaining the semantic case, single write
-boundary, and case-to-projection separation as hypotheses worth testing again.
-It does not automatically authorize their Experiment 2 generalization or
-production use. Any follow-on experiment must name the retained and changed
-architecture explicitly and still does not authorize real clinical data,
-production deployment, full Form 3500 coverage, or deferred mechanisms.
-
-Issue #62 supplies that named bounded follow-on for one device adverse event and
-one product-quality-only report. Its deterministic evidence may support those
-selected paths without establishing live extraction reliability, comprehensive
-device coverage, real-data readiness, or production use.
-
-Issue #64 supplies the next bounded follow-on for one combined device report,
-one applicable-detail path, and one stable-device correction/conflict path. Its
-deterministic evidence may support only those single-device paths and does not
-establish multiple-device behavior, live extraction reliability, comprehensive
-device coverage, real-data readiness, or production use.
-
-### Qualified suspect quantities — Issue115 second slice
-
-Suspect dose and strength project raw reviewed wording and qualifier separately.
-The adapter splits only an existing supported numeric-plus-literal-unit shape;
-it never calculates a total or extracts an amount from compound wording.
-Qualified quantities carry their full raw value and exact context in B5,
-labelled with the actual suspect-product slot and Dose/Strength. B5 source trace
-includes the current quantity sources. This is relevant clinical/product-use
-context under the FDA B5 instructions; it is not causality or chronology inference.
-No pending, conflicted or superseded qualifier becomes accepted output.
-
-Native amount/unit controls retain the formatting-only split with a visible
-(see B5) pointer appended to qualified amounts. If that pointer and literal
-amount do not fit together, the text control uses See B5 and a blank unit. Qualified compound
-wording that exceeds the narrow amount control uses See B5 with a blank unit;
-its full wording remains in B5. A qualifier correction changes the output content
-key because B5 now changes. Removal removes that current narrative entry while
-accepted history stays intact. Quantity notes alone cannot satisfy the existing
-base event-description readiness requirement.
-
-Snapshot and adapter always preflight the full B5 text, including cases
-without quantity qualifiers: supported existing Helvetica glyphs, native4000-character limit, native
-8.5pt size and pinned rectangle. Unrepresentable wording stays accepted but blocks
-new export. Base narrative failure points to its actual contributing event and
-stopped-product facts; only failure introduced by added quantity notes points
-to those quantity facts. Removing a qualifier cannot disable this B5 guard. No font shrinking, glyph substitution, new pages or continuation
-capacity is introduced. This is bounded quantity support, not general qualifier
-or portable-glyph completion;115/151/153/154 remain open and150 remains paused.
-
-### B5 clinical-course context — Issue115 third slice
-
-Current known treatment, event-outcome and discharge-date qualifiers are carried
-verbatim beside their own existing B5 statements with the established parenthetical
-formatter. Their partial qualifier omissions are removed only because that exact
-context now reaches the artifact. Other qualifiers remain explicitly disclosed.
-Non-known, proposed, conflicted and superseded values are not promoted; conflict
-resolution carries only the chosen current value/context through the same boundary.
-
-This preserves supplied treatment-list order, existing B5 statement order and
-existing date display formatting. The labelled statements are a presentation
-order, not an inferred clinical timeline. Explicit clinician timing uncertainty
-remains exact; no causal links, dates, ordering or clinical conclusions are added.
-B5 source trace continues to reference current facts. Context correction/removal/
-re-add changes actual B5 content and its output key while preserving history.
-The existing full-B5 glyph/fit/capacity guard applies, including accepted context.
-
-FDA B5 instructions cover clinical course, treatment and outcome. No new field,
-font, continuation, UI, model/provider/schema or persistence design is introduced.
-B6/B7, other patient/product/device/reporter context, selector/prerequisite context
-and broader chronology representation remain separate.115 remains open;150paused,
-151/153/154/157 retain their existing scopes.
-
-### B6/B7 reviewed context — Issue115 fourth slice
-
-Qualifiers on current known test name, result/stated units, lower/upper reference
-limit and date are carried verbatim in the native B6 Additional comments box.
-Each note identifies the actual current B6 table row and its specific fact field.
-This row reference follows the PDF's existing visible row mapping, not UI display
-ordinals or inferred test identity. Withdrawals regenerate both table and context
-from current active entities; notes never attach to withdrawn or different tests.
-The grid's identity/result strings, units, ranges and dates remain unchanged.
-No units, trends, dates, order, significance or clinical judgment are derived.
-
-B7 remains the raw accepted scalar history text followed by an explicitly labelled
-History context line when a current qualifier exists. This does not change whole-
-list treatment/symptom scope or159. Source trace carries the exact current fact
-sources; correction/removal/re-add changes actual output. Proposed, conflicted,
-non-known and superseded context is not promoted. Only now-carried partial
-qualifier omissions are removed; selectors/prerequisites retain their old scope.
-
-Official B6 instructions and the native tooltip designate Additional comments
-for test/lab information; B7 owns other relevant history, including time courses.
-Both native boxes retain8pt/2000characters and their fixed geometry. The existing
-B5 multiline font/fit algorithm is shared unchanged for these fields. B7 is always
-checked, including without qualifiers; unsupported base wording cannot bypass
-protection by removing context. B6 checks protect the newly populated comments;
-other native test-grid glyph/fit support remains154. Unrepresentable text stays
-accepted and blocks fresh export, with field/entity-linked readiness issues and
-adapter defense. No shrinking, truncation, glyph substitution, continuation or
-new storage/model/provider/schema is introduced.157 retains diagnostic precision;
-115 remains open for other fact context and broader chronology;150 stays paused.
-
-### Explicit ongoing therapy (issue 176)
-
-Product therapyOngoing is the explicitly supplied current D3 ongoing-therapy
-answer, independent of historical stopped/restarted facts and supplied dates.
-Missing dates never establish status; accepting or correcting status never
-clears or rewrites dates. Apparently inconsistent clinician statements retain
-their exact sources and qualifiers without automatic reconciliation.
-Only known booleans map to the respective Yes/No native checkbox for the first
-two suspect non-device products. Other response states remain distinct and
-blank; pending/conflicting values cannot print. Context that cannot fit the
-checkbox is disclosed as omitted. Issue243 now carries accepted concomitant medication ongoing status on a linked F supplement. Device routing retains the fact with an explicit no-destination disclosure. This adds no completion question,
-clinical judgment or visual redesign. v16 strictly validates v7–v15 historical
-states before adding only an empty ongoing fact per existing product; all other
-facts and unfinished drafts retain their identities. Prompt/mock checks do not
-prove live-model compliance. Dose-reduction dates and duration remain outside
-this slice.
-
-The narrow explicit combination stopped=true, restarted=false and
-therapyOngoing=true receives a visible review and save-disclosure notice.
-This notice changes no facts, dates or download policy and makes no inference
-from missing answers or dates. A supplied restart=true does not trigger it.
-Native readback inspects both ongoing boxes even for an expected blank and
-rejects contradictory native selections.
-
-### Explicit complete dose-reduction date (issue 178)
-
-Product doseReductionDate retains the clinician-supplied complete Gregorian
-date independently of doseReduced, ongoing status, start/stop dates and event
-dates. Accepting a date never establishes that a reduction happened, rewrites
-another fact or resolves a contradictory report. The shared complete-calendar
-predicate retains the existing DOB alias; no unrelated legacy-date validation
-is widened (issue164 remains open).
-
-The existing date editor supports a strict complete-date text draft for this
-field: partial/impossible values survive reload with a visible explanation and
-disabled acceptance. Model/API/accepted-state/PDF boundaries reject those values
-without inventing missing components. If the model emits an unsupported conversational date proposal, the boundary
-retains its evidence in the existing unrepresented-information path. A model
-that omits an unsupported partial date before proposing it may leave only the
-generic coverage disclosure; case-specific live behavior remains unverified (issue180). A complete
-explicitly estimated date retains its qualifier; native omission of that
-qualifier is disclosed rather than hidden.
-
-Both D3 suspect non-device slots map to their native TherapyReduceDate fields.
-Other response states and unresolved alternatives stay blank. A supplied
-settled date alongside explicitly false/absent/inapplicable doseReduced gets a
-visible review/save notice without changing facts, dates or download policy.
-Issue243 now carries accepted concomitant medication reduction dates on linked F supplements. Device routing retains reviewed knowledge with a no-destination disclosure. v17 strictly validates genuine v7–v16 state before adding only empty
-date facts per existing product, retaining sources/history and unfinished edits.
-
-Coverage checklist: complete supplied reduction dates are implemented; partial
-reduction dates and dose-count/compound/range durations remain unsupported, alongside existing
-other-category, purchase, representation and narrative gaps. A warning is not
-completed field support. Prompt/mock checks are not live-model verification.
-
-
-When a reviewed reduction date contradicts explicit no-stop/no-reduction
-answers, D7 stays blank instead of deriving Does not apply from those answers.
-The omission references the date and prerequisite sources and is visibly
-disclosed. Supplied date/answers and outcome history stay unchanged; this
-projection-only rule adds no question or download gate.
-
-### Explicit D3 duration and print alternative (issue 181)
-
-treatmentDuration is one supplied positive decimal spelling plus a native time
-unit (minutes, hours, days, weeks, months, years). No arithmetic, date subtraction,
-unit conversion/default, rounding or inferred quantity occurs. Amount/unit
-drafts may be incomplete and survive reload; accepted facts are strictly
-validated. Native width limits are checked without truncation. Dose counts,
-compound/range durations and unsupported units remain explicit coverage gaps.
-
-FDA D3 presents dates OR duration. Both supplied alternatives stay in knowledge;
-when both are known, clinician-only d3Value chooses which to print. A missing
-choice or an unavailable chosen alternative produces a clear review issue,
-following A2's existing print-choice pattern. The preference may be cleared
-without changing facts or unfinished edits. It is excluded from model targets.
-No numerical comparison of dates and duration is attempted. Review/save notices
-explain that retained alternatives have not been reconciled. Unselected facts,
-sources and qualifiers remain retained with output omission disclosure.
-
-Both native suspect slots receive amount and unit together; native display
-appearance is generated from the unit label and the FDA export ID retained.
-Issue243 carries accepted concomitant medication duration on a linked F supplement; its D3 print preference and other routing retain the existing no-destination disclosure. v18 strictly
-validates genuine v7–v17 states before adding only empty duration and D3 choice
-facts. Existing runtime coverage and this inventory mark only the bounded
-native-time duration path implemented; #180 and every other gap remain open.
-Prompt/mock checks are not live-model verification.
-
-D3 choice notices and the editable choice row are limited to accepted suspect
-non-device paths, matching readiness. A retained preference on another route
-remains in knowledge and receives a no-destination disclosure, never a prompt
-to choose a control that cannot affect that route. Returning to D3 restores the
-retained preference. Untouched native duration-unit widgets remain unset; export
-ID conversion applies only to duration dropdowns actually written or cleared.
-
-
-### Explicit Section D purchase dates (issue183)
-
-An optional product purchaseDate holds only an explicitly supplied complete valid
-Gregorian YYYY-MM-DD date. It is independent of every therapy, expiration,
-event, report and return date; none implies another. Conversation proposes with
-source/qualifier, clinician acceptance establishes knowledge, and correction
-retains history. Existing product cards provide the date editor without another
-mandatory completion question. Invalid/partial edits remain unfinished and
-survive reload. No calendar arithmetic, component filling or clinical judgment.
-
-The reviewed date projects to each Section D purchase block. Native slot two
-uses FDA's original Pdt2PurchaseDate name, distinct from slot one's
-Prod1PurchaseDate. Dates retained on device/concomitant routes remain knowledge
-with the existing no-destination disclosure; no purchase date is moved into
-therapy or narrative fields. Qualifier omission uses the existing truthful
-disclosure contract; no qualifier is silently treated as printed.
-
-Browser state v19 strictly validates genuine v7–v18 before adding only empty
-purchase facts. Existing saved facts, sources, revisions, history and compatible
-unfinished edits remain unchanged. Prompt v15/schema v25 add this target.
-Purchase place/address/website, partial purchase dates, other D5 categories and
-all existing inventory gaps remain unfinished. Mock evidence does not establish
-live-model compliance.
-
-
-### Explicit D5 cosmetic choice (issue185)
-
-The official 09/2025 Form3500 D5 heading says Check all that apply, while the
-Cosmetics subgroup explicitly says Select One. A single optional cosmeticUse
-fact represents Cosmetics for professional use only or Cosmetics sold on a
-retail basis. There is no default, inferred use/sale classification or automatic
-category change from a product name, brand, seller or operator. Drug-label
-facts remain independent; the subgroup's Select One does not impose blanket
-exclusivity across the whole D5 block. Contradictory explicitly supplied cosmetic
-alternatives stay conflicted until clinician resolution, not simultaneous ticks.
-
-Current reviewed suspect non-device categories route Section D, including
-explicit Other products for cosmetics. Cosmetic selection does not set the
-routing category. Unknown category stays unknown; device/concomitant routes
-retain cosmetic knowledge and existing no-destination disclosure. Existing
-product cards supply the optional choice without another required question.
-Corrections affect only the choice and retain sources, qualifiers and history;
-qualifier omission follows the existing truthful disclosure policy.
-
-Each native slot's exact professional/retail controls are set mutually
-exclusively; untouched blank controls remain untouched. Independent native
-readback never reconstructs the choice from the expected projection. Browser
-state v20 strictly validates genuine v7–v19 before adding only empty cosmetic
-facts; compatible existing and unselected cosmetic drafts survive reload.
-Promptv16/schemav26 add the explicit proposal target. Mock tests establish only
-mock behavior, not live-model compliance.
-
-D5 cannabinoid hemp and Other controls are now implemented in issue205; purchase place/address/website in issue188. Partial
-dates (#180 visibility), wider category/detail coverage and all prior inventory
-gaps remain unfinished. This is not full cosmetic or Form3500 functionality.
-
-
-### Native Section D purchase metadata issue188
-
-Seven independent optional reviewed text facts capture seller/place name, address,
-city, region, postal code, country and website for each suspect product. Existing
-purchaseDate stays independent. The seller is never inferred from manufacturer,
-reprocessor or reporter; no address component, country, site or identity is
-derived from another field. Websites are plain reviewed text, never fetched.
-Product cards retain the current interaction; no new mandatory question.
-
-Country is a blank text entry with explicit native-country suggestions, not a
-default or geography/alias conversion. Downstream case/outer-space equivalence
-selects the exact native display label, while raw case facts/source/history stay
-unchanged. Native UNKNOWN is excluded from known-country suggestions and matching;
-explicit unknown information uses the existing Unknown status, not a known literal. Raw unmatched wording remains accepted
-knowledge with history and source; it does not become a guessed dropdown
-selection. Both native country lists are equal and independently checked.
-Strict per-slot width/font/native MaxLen, single-line, blank, glyph and country
-guards keep unsupported words intact and prevent unsupported fresh output.
-This is bounded native support, not full supplemental representation or a request
-to change clinical facts to fit. The approved release cut still requires faithful
-field-linked supplements for valid exceptions; D5 hemp/Other, devices/overflow,
-pictures, broader partial dates and all prior gaps remain unfinished.
-
-Native metadata and widget names belong to the PDF helper. Human labels and
-explicit country suggestions carry no widget IDs into case authority. Both
-seller blocks preserve native geometry/options/appearances and untouched blanks;
-actual readback is from generated controls. Correction changes only named facts;
-withdrawal/regenerated slot assignment follows stable product identity.
-Other routes retain metadata under the existing no-destination disclosure.
-Uncarried qualifiers retain the existing exact-wording disclosure; this does not
-claim that all context is printed.
-
-Browser statev21 strictly validates genuine v7–v20 before adding only empty
-metadata facts. Existing state/source/history/revision and unfinished edits
-remain; no model action replays on resume. Promptv18/schemav27 add only explicit
-seller targets and preserve the prior cosmetic wording; #187 remains unverified.
-No live application-model evidence is claimed.
-
-
-Actual issue188 Opus B1 exposed third-suspect seller details indexing beyond the
-two native slots during readiness. The original seller checks inspected only
-available native positions; its over-capacity notice blocked
-output, retains every third-product fact and permits explicit repair/resume.
-Issue208 now checks the third product against its actual extra-copy native slot
-and exports it rather than relying on that capacity notice. F1/F2 clarification
-adds only country display-format equivalence and distinct unknown status.
-
-### Shared B5-B7 narrative continuation (issue190)
-
-The approved practical completion cut permits exact reviewed narrative on
-section/block-linked attachment pages. FDA's general instructions allow narrative
-continuations, with numbered attachments, the section and block identified, and
-"continued" at the end of the native field. For the pinned09/2025 form, this
-supersedes the native-capacity-only blocking contract for B5 event description,
-B6 additional context, and B7 history. Native-fitting content is unchanged.
-
-The PDF-owned continuation planner uses the existing native geometry/MaxLen fit
-checks. On overflow it puts a precise attachment-page reference ending in
-"continued" in that native box and carries the entire current projected text on
-letter-sized attachment pages, in B5/B6/B7 order. Every page names Section B and
-its block and is numbered within the attachment set. Native pointers and every
-attachment header share an opaque report reference derived from the case ID and current projected
-content (stable when only revision/source history changes). This is export metadata, not a new clinical identifier or assertion. A1 is
-not copied or coerced, so its length/glyph limits cannot corrupt a header.
-Paragraph wrapping advances by index without copying the remaining paragraph
-after each line. Body text is fixed10pt with
-14pt leading; word wrapping, explicit blank lines, spaces and long-token splits
-preserve all original characters. No font shrinking, truncation or clinical
-rewriting. B6's existing current table-row/field attribution stays intact. Native
-PDF readback reports the actual marker, not a reconstruction from expected case
-values; independent page-content inspection verifies the attachment text.
-
-Only reviewed current projection content enters this renderer. It cannot promote
-pending/conflicting/nonknown, rejected, superseded or withdrawn facts, nor does it
-dump source history. No new fact/model/state schema or UI is needed: existing
-conversation, explicit correction and durable resume remain the semantic path.
-New PDF generations recompute attachments, so shortening or withdrawing content
-removes obsolete pages. Existing collection and export readiness rules remain.
-
-This foundation uses the existing Helvetica character set and still fails before
-output on unsupported glyphs/control characters. Portable clinical glyphs154,
-reviewed field-linked exception notes, general additional comments, test-grid
-row overflow, required extraD/E copies, pictures and the broader115/151/153
-representation gaps remain unfinished. No broad release-completion claim follows
-from capacity support alone. No new font/dependency or live-model route is added.
-
-### Explicit patient involvement and A1 (issue196)
-
-Patient `involvement` is a reviewed semantic fact, separate from identity and
-demographics: known `present` means explicitly involved; known `none` means
-explicitly no patient involved. Unknown, declined, inapplicable, explicitly
-absent wrapper status and unmentioned/empty remain distinct; none of those
-wrappers asserts no patient. Do not infer participation from identifier, missing
-demographics, product type/report type, unused packaging or absent symptoms.
-FDA's A1 instruction requires literal `none` when no patient was involved:
-https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500
-Only accepted explicit no-patient status can produce downloadable A1 `none`;
-unknown/missing participation does not replace a known identifier. Literal
-`none` retained in the identifier (including legacy cases) is not reinterpreted
-as involvement: output blocks for explicit correction of identity/participation.
-
-Prompt v20 (`wilson-patient-involvement-v20`) and schema v28 add this one target
-to the stable v19 base; the unmerged PR195 general prompt candidate is excluded.
-Conversation, ordinary proposal/update review, direct field correction, source
-trace, history, conflicts and saved drafts use existing contracts. Native A1
-`none` is traced to involvement's accepted source, never a fictional identifier.
-A1 otherwise preserves an accepted known identifier. Qualifiers retain existing
-exact omitted-context disclosure; this slice adds no generic context carrier.
-
-FDA B1 adverse-event reporting describes an adverse outcome in a patient.
-Accepted no-patient status plus an explicit report type including adverse event
-also blocks for human correction, without changing either selection. This checks
-only two explicit statuses, never infers participation from clinical details.
-
-No-patient status plus current known identifier, age, DOB, race/ethnicity, sex or
-weight is a deterministic output contradiction, including known alternatives
-in conflicted demographics. All facts stay visible and
-retained; no inferred status, auto-clearing, hidden demographics or guessed
-clinical resolution. Correct participation or the explicitly identified facts
-through existing controls. Pending or conflicted involvement cannot establish none. Pending proposals
-block output; existing conflicted involvement remains disclosed partial output
-without an A1 no-patient claim. Known conflicting demographics block that claim. Positive patient
-involvement with unknown identifier remains a patient with unknown identity.
-
-Browser state v22 strictly validates genuine v7-v21 before adding only an empty
-involvement fact. Earlier accepted/pending/history/source/revision and unfinished
-field drafts remain unchanged; no source reinterpretation or model replay on
-resume. A genuine captured fictional v21 product-problem state is retained in
-tests, including source no-patient wording that must not be inferred on migration.
-Mocked conversation and actual PDF readback/render evidence verify the paths;
-no new live application-model efficacy evidence or completeness claim is made.
-Other narrative omissions remain ordinary clinician review/correction, and
-native unsupported context/partial dates remain separate release-cut work.
-
-### Explicit no-patient versus B2 outcomes (issue198)
-
-FDA B2 records outcomes attributed to an adverse event, and A1 none means no
-patient was involved. The same explicit consistency check now covers death,
-life-threatening, hospitalized, disability, required intervention, congenital
-anomaly and other serious outcome answers. The native B2 field list is shared
-by completion, action validation and this domain guard.
-
-Only current accepted known no-patient status activates the check. A current
-known true outcome, or a known true alternative in an unresolved outcome
-conflict, blocks export and suppresses the definitive A1 none projection. Both
-sides, their exact source/history and all other facts remain retained. The B2
-values are not cleared or reclassified. Existing controls let the clinician
-explicitly correct participation, correct an outcome or resolve its conflict.
-Conflict guidance names this requirement rather than suggesting the blocked
-case may export unresolved. The output warning names the positive outcomes;
-choosing a still-conflicting value keeps export blocked. The same accurate
-conflict hint covers known demographic disagreements. Independent B2 versus B1
-report-type consistency is tracked separately in issue200. Known false, unknown, declined, inapplicable,
-explicitly-absent, unmentioned and historical positives never imply a patient
-or activate the guard. Unaccepted proposals retain the ordinary review gate.
-
-This checks typed answers, never risk/clinical narrative or severity/causality;
-no automatic patient selection, clinical judgment or broad consistency engine.
-Patient-present and unknown participation remain distinct from no-patient, and
-ordinary native B2 printing otherwise stays unchanged. Schema/prompt/browser
-state versions are unchanged; existing v22 cases resume with all facts intact
-and readiness recomputed, not silently repaired. FDA authority checked2026-10-16:
-https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500
-
-
-### Whole-list context scope (issue159)
-
-Symptoms and treatments each store one qualifier on the entire list fact, not
-on individual items. Review, pending updates, conflict choices, unsaved edits
-and history now label that text as "Context for this list". The separate
-reference-only Earlier unfinished edits panel uses the same list label without
-applying or exporting those drafts. B5 uses a separate
-"Symptoms list context" or "Treatment list context" statement after the list.
-The exact qualifier and item order are unchanged. Even context mentioning only
-one item is never parsed, redistributed or expanded into inferred item claims.
-Unqualified list wording is unchanged; scalar and native-choice qualifiers keep
-their existing display. Pending/accepted/conflicted/non-known/history semantics,
-projection provenance, omission notices and PDF glyph/capacity/continuation
-checks are unchanged. No schema, browser version, prompt or question changes.
-
-FDA B5 requests event/clinical-course/treatment detail, and general instructions
-allow section-linked narrative continuation. Authority checked 2026-10-16:
-https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500
-This is presentation fidelity, with no judgment about medical attribution.
-
-
-### Independent general Additional comments (issue202; completion row B06)
-
-An optional event additionalComments text fact holds explicitly supplied general
-report comments independently of symptoms, product problems, treatment/outcome,
-B6 tests, B7 history and reporter/product facts. Existing conversation/update
-review, correction/conflict, source/history and non-known states apply. No new
-mandatory question is added. The existing card provides a multiline editor and
-preserves line breaks in review, unsaved edits and history. Nothing is inferred,
-automatically copied from other facts or recovered from unrepresented source
-text; an explicitly requested overlapping comment still retains its wording.
-Comments never satisfy the separate base event-description requirement.
-
-FDA B6 permits other information in the Additional comments box. The existing
-projection field relevantTestContext remains the PDF-owned legacy aggregate
-name: native AdditionalComments now combines existing labelled per-row test
-context, followed by a separate "Additional comments" statement and, if present,
-"Additional comments context". Raw text/qualifier, test order and all contributors'
-source IDs remain separate in authority and combined truthfully for export.
-Known comments alone print normally even when no tests were supplied. Unresolved
-or current non-known comments omit only their text and retain/disclose status;
-prior comments never reappear. These are literal clinician-selected statuses,
-not a neutral withdrawal action; optional comment withdrawal is tracked separately
-in issue204. Generic unsupported-field wording is removed
-only for the newly supported general comments, not Section C pictures.
-
-Shared B6 glyph/fit planning and section-linked continuation carry the entire
-aggregate. General comments do not overwrite table context or move into B5/B7.
-Overflow uses the existing numbered attachment/reference convention; no arbitrary
-truncation, font shrinking or clinical summary. Unsupported glyphs retain facts
-and block fresh PDF; diagnostic targets identify offending B6 contributors,
-including the independent comments fact. Wider portable glyph support remains
-separate. Native field values/readback shape are unchanged for cases without comments.
-The B6 continuation heading now names both general comments and test context;
-cases without general comments gain no comment text.
-
-Browser statev23 strictly validates genuine v22 before adding only an empty
-comments fact. Earlier versions retain the existing strict staged migrations;
-source, history, revision, statuses and compatible unfinished edits are unchanged,
-with no model replay or automatic acceptance. Older declared case versions reject
-new comments fields; malformed current states do not masquerade as legacy input.
-Promptv21/schemav29 add only the explicit comments field/contract, with no general
-source-accounting or completeness mechanism. Existing accepted legacy dates and
-all unrelated field validation remain unchanged. FDA authority checked2026-10-16:
-https://www.fda.gov/safety/medwatch-forms-fda-safety-reporting/instructions-completing-form-fda-3500
-
-
-### Explicit D5 Other product types (issue205 / approved D07)
-
-The pinned FDA Form3500 (09/2025), pages4–5, labels D5 Check all that apply;
-only its cosmetics subgroup says Select One. Independent otherProductTypes
-accepts a nonempty unique set of cannabinoid-hemp and/or other, explicitly
-supplied by the clinician. Routing productType, role, drug labels and the
-single cosmeticUse selection remain independent. A CBD name, ingredient,
-generic Other routing, missing labels or unselected boxes never supplies this
-fact. No clinical classification or automatic combination-component split.
-
-The existing conversation proposal/review, direct correction, conflict choice,
-history and saved-draft paths expose these choices. An empty Known selection
-is unfinished; Unknown, Not present, Not applicable and Declined keep their
-literal statuses. Whole-set qualifiers are labelled Context for these selections.
-Current known qualifiers print exactly as Suspect product #N D5 Other product
-types context in B5 through the shared continuation foundation. Source IDs and
-stable product identity follow current slot allocation; context cannot satisfy
-the separate base event-description gate. Unsupported glyphs identify the
-actual D5 contributor and block fresh PDF without deleting accepted knowledge.
-
-Native mapping explicitly handles the asymmetric Prod1Cannabi/Prod1PdtOther and
-Pdt2Cannabi/Pdt2PdtOther checkbox names. Both D slots clear unselected checkboxes;
-no prior/conflicted/pending selection resurfaces. Device/concomitant/unknown
-routes retain facts and truthful existing no-destination/classification gates,
-without printing stray D5 context. Issue208 adds a native copy for the third D
-suspect. Explicit withdrawal reallocates by identity, including linked context
-ordinals. Additional E copies and broader capacity (E02), plus combination
-components (X01), remain unfinished.
-
-Browser statev24 strictly validates genuine v23 and earlier before adding only
-empty product otherProductTypes facts; existing known comments, source/history,
-revision and compatible unfinished drafts survive without model replay or
-reinterpretation. A genuine pre-change v23 fixture provides migration evidence.
-Older-version fixtures remove the new field rather than weakening validation.
-Promptv22/schemav30 add only the explicit fact and independence constraints.
-Synthetic/mock verification is not live extraction-completeness acceptance.
-
-
-### Third suspect on an additional native Section D form copy (issue208 / E02 first vertical)
-
-FDA general instructions require an additional Form3500 copy with only SectionD
-filled for each suspect beyond the first two. This slice connects the existing
-third retained product to a complete additional copy of the pinned09/2025 native
-form (eight pages), using its first D block. Initial two D blocks remain native
-and editable. Additional copy fields use the same validated native writer and
-fixed generated appearances, then the library's documented flatten/copyPages
-workflow to avoid duplicate AcroForm identities. Correct the third product in
-Wilson and regenerate. Native FDA artwork/labels/controls remain; no generic
-supplement replaces the required form. Non-D fields and the second D block of
-the added copy remain blank. No source facts are duplicated into those sections.
-
-Matching nonclinical report references link the initial native D page, added
-copy and any B5-B7 narrative attachments. Export metadata explicitly identifies
-global suspect#3 as the extra copy's first native block and directs quantity/
-D5 context to the main report B5. Exact qualifiers remain field/product linked
-there, including shared continuation; they cannot satisfy the separate base
-clinical-description gate. Copy ordering follows retained resolved suspect
-identity/order. Role/category correction and withdrawal recompute copies,
-ordinals, fields and content identity without deleting facts/history/drafts.
-
-The native writer receives the full report narrative for quantity-context
-validation while writing blank B fields on the D-only copy. Purchase limits use
-the actual local native slot (slot1 for the extra copy), so invalid country,
-glyph or line/width limits still identify the third product and block new output.
-All existing quantity/date/duration/category validation applies to the copy.
-Independent serialized PDF text/positions and PDFKit renders verify actual copied
-appearances; the adapter's pre-copy semantic readback alone is not sufficient.
-The generated-PDF residual encryption marker prevents this library reloading
-its own output; copying stays within approved in-memory documents. No encryption
-removal, bypass, dependency or credential change was introduced.
-
-Retained case capacity stays three. PDF D capacity is now three through actual
-native copies; a fourth projected suspect is rejected. Multiple suspect devices,
-concomitant capacity and test overflow keep their current truthful gates. Issue210 now delivers multiple devices with native E-only copies within three
-retained entities. Broader capacity remains a separate vertical, not an arbitrary
-capacity bump or unconnected collection. No persisted structures, migrations,
-model/prompt changes, automatic category attribution or component inference.
-
-
-### Multiple native Section E copies (issue210 / E02 next vertical)
-
-FDA general instructions require one additional form with only E filled for each
-suspect device beyond the first. E.suspectDevices is an ordered derived array,
-replacing the former singular projection which discarded subsequent devices.
-Each item retains its stable productId and indexed source trace. No case fact,
-persisted shape/version, source/history or compatible saved draft changes.
-
-The existing complete native E writer prints the first device in the main form;
-each further device uses its own complete native eight-page form, only E filled.
-The supported in-memory flatten/copyPages foundation preserves fixed appearances
-and avoids field identity collisions; first E stays editable. Correct additional
-copy details in Wilson and regenerate. Matching report reference/global device
-ordinal above each filled E block links it to the main report and any narrative
-continuation. All other fields remain blank on each additional E-only form.
-
-Explicit qualifiers for supported E fields print exactly as field/device-linked
-main B5 context, with source trace and shared continuation. Pending/conflicting/
-non-known/superseded values are never reused. Context never satisfies the base
-event-description gate. Unsupported context glyphs block fresh output at the
-actual device-field contributor. Withdrawals and explicit category/role changes
-recompute arrays, copy allocation, ordinals and context without pruning history
-or inventing attribution. Native D-copy support continues to work in mixed cases.
-
-The case still retains at most three products; the adapter rejects a fourth
-projected device. Concomitant devices and excess F rows/test capacity remain
-separate. The opening help text also reflects multiple devices within the case bound.
-The prompt adjustment removes two stale single-device scope
-phrases and bumps its identifier to wilson-native-e-copies-v23; schema/grounding and all other rules remain,
-including deferred unmerged PR195. No live extraction-completeness claim.
-
-The same per-device completion key is scoped by its applicable product targets:
-an earlier answered device does not suppress later devices, and unknown,
-inapplicable or declined facts settle their own questions. Existing target-scoped
-saved drafts and answer/history storage remain authoritative. Native E text
-appearance checks cover all ten text controls using independently verified pinned
-widget geometry, font size, multiline flags and max lengths. Readiness reports
-the exact device/field; the adapter repeats the checks before flattening. Values
-are retained for explicit correction, never silently truncated or substituted.
-The two-device reference is singular; three-device references retain the range.
-
-### Native Section F rows and exact field continuation (issue212)
-
-FDA F1 explicitly includes devices alongside drugs/biologics used at the time of
-the event, excluding products used to treat the event. Only explicit clinician
-role/category/therapy dates determine F output; implant/explant dates never
-become therapy dates. All ten pinned native F rows have distinct field mappings
-(rows3–10 end dates are Cell4). The retained-case limit stays3; native adapter
-capacity is10. More retained products and beyond-ten row continuation remain
-separate scope. No case facts, browser-state version or reporter schema change.
-
-F projection retains stable ordered productId, indexed field provenance and exact
-current fieldContext. Unknown native names/dates and conflicted/pending/superseded values do not print. Issue243 additionally retains current explicit non-known medication answers as labelled supplement text, leaving native controls blank.
-Native fields carry fitting names and supplied complete therapy dates. Overlong
-or multiline names print an explicit native row pointer; their full text and
-qualifiers print on a labelled Section F continuation at fixed10pt, using the
-existing exact wrapping primitive. A report reference and native row ordinals
-link every supplement. Every continuation page repeats its starting row/field
-so a detached dense page remains attributable. No shortening, font shrinking, date inference or role
-change occurs. F context does not replace or satisfy the base B5 description.
-Native name fit uses independently verified198.766pt width/8.5pt appearance.
-Unsupported glyphs retain facts and block output at the precise field, both in
-readiness and the adapter. Portable fonts remain issue154.
-
-The adapter readback honestly reports native F pointer text when a name is in a
-supplement; it does not echo the semantic full name as though it read a widget.
-Independent pypdf/readback and PDFKit inspection verify the actual supplemental
-text. Existing native D/E copies contain no duplicated F facts/supplements.
-Concomitant-device cards use the existing therapy-date editors, including empty
-fields; all other accepted device details remain retained with truthful omission
-disclosure for their current F role. All correction/review/draft/withdrawal
-operations use the existing authority boundaries.
-
-The native writer now returns the in-memory document without serializing it.
-Only the outer writer saves after adding every D/E heading/copy and F note: an
-intermediate save cached a page6 content stream and dropped subsequent E headings
-when F had already drawn there. Independent mixed E/F readback/render covers the
-actual main cross-reference, not only the extra copy header.
-
-### International reporter country/address and defaults (issue214)
-
-The existing reporter panel uses editable native-country suggestions, a neutral
-state/province/region label and multiline address entry. Raw stated country
-wording survives draft/profile/case storage. Only case and outer-space display
-equivalence selects a pinned native country label; no aliases or geography are
-inferred. Unmatched country wording prints exactly in a G1 supplement with the
-native country unselected. G's275 options equal the274 purchase options plus
-blank; UNKNOWN is a missing-value option, not an inferred country choice.
-
-The eight G1 text controls have independently pinned widths/font/max lengths.
-Fitting values stay native; long/multiline or max-length-exceeding values use a
-capacity-safe Continued marker and exact10pt G1 continuation. Every page repeats
-the current field and shared report reference. Current known G1 qualifiers print
-as field context; non-known/conflicted/pending/superseded values do not. The
-adapter readback reports native markers/canonical country labels honestly; actual
-supplemental wording is independently read/rendered. Unsupported glyphs retain
-facts with precise field limitations; portable-font work154 remains separate.
-Only the main report carries reporter facts/supplements; native D/E copies stay
-blank there, using the existing single-save assembly.
-
-Reporter-profile record v2 permits raw country strings. Genuine v1 US/Canada/
-blank records and tombstones decode in memory with the same generation, without
-an eager write. An explicit remember/update/forget writes v2 with a fresh
-generation. Older applications see v2 as incompatible and preserve it; existing
-stale-writer, failed-intent and one-tab guards remain. IndexedDB's database version
-stays1; case/browser-state v24 and existing reporter drafts are unchanged.
-Remember/use/new-case prefilling establishes draft defaults only. Explicit Save
-reporter details separately accepts case facts; date/destinations/disclosure stay
-case-specific. Corrections retain history; no account or credential management.
-
-Reporter panel saves preserve a current known qualifier when its base value is
-unchanged. A base-value correction retains prior context in history and does not
-attach it to the new value. This slice exposes base reporter text editing, not
-reporter qualifier editing; the reporter has no Review details card. Qualifiers
-from validated imported/API state remain preserved rather than being silently
-cleared by an unrelated panel save. Reporter entry does not preset a country;
-accepted facts or explicitly remembered defaults may prefill it.
-
-Issue217 separately tracks the pre-existing Sex control/birth-basis guidance
-premise. Issue151 does not relabel stored facts or select a new demographic
-contract while providing faithful output for the existing reviewed values.
-
-Calendar validity (#164): new known date facts use the shared complete Gregorian
-validator at the model and authoritative command boundaries, including conflict
-selection. No date arithmetic, repair, or missing component inference is performed.
-Legacy shape-only date fields retain their existing browser-state schemas: current,
-pending, conflicting and historical values restore without rewriting the case.
-A resolved invalid date on a retained entity produces a targeted export blocker;
-explicit clinician correction preserves the old value in history. The PDF adapter
-also checks dates before native formatting. Date fact editors retain unfinished
-partial/impossible text drafts. This is calendar validity only: #180 remains the
-required field-linked representation and source-visibility path for partial dates.
-
-Legacy invalid pending date proposals can be corrected during their existing group
-review without discarding other supplied details. Invalid original proposals are
-retained in history. Invalid conflict alternatives cannot be selected; an explicit
-supplied date/status correction can resolve only this invalid-date exception and
-keeps every alternative in history. Recovery drafts have a typed case-owned UI
-record, preserve unfinished text on reload, and become retained earlier edits if
-their review changes; they never become clinical authority automatically. This
-does not reopen general semantic correction #150. Model schema description
-revision is `wilson-grounded-proposals-v31-calendar-validity`; no provider or live
-model call is introduced.
-A newly supplied invalid-date conflict correction cites only its clinician
-correction source. The impossible alternatives keep their original sources in
-history; those sources are not presented as support for the new date/status.
-
-### Expiration precision and source visibility (issue219; first #180 slice)
-
-The existing expirationDate fact accepts either the existing complete Gregorian
-ISO string or a typed partial value: precision month/year, explicit four-digit
-year, optional explicit two-digit month, and exact nonblank supplied wording.
-Year-only values cannot contain a month. No day field exists in the partial
-shape; no missing component or chronology is inferred. Qualifiers stay on the
-same known fact. Invalid full dates remain invalid under #164.
-
-Browser state v25 extends only expiration values. Genuine v24 validates against
-its frozen schema before upgrading unchanged; older migrations retain their
-existing steps. Complete and legacy impossible strings, pending/conflicts,
-history, sources and identities are not rewritten. UI drafts accept raw empty or
-invalid partial components so unfinished work survives reload without authority.
-
-Reviewed partial values create separately derived expiration notes. Their native
-D6/E4 full-date values remain absent; the actual native control says D6/E4
-continued. F1 row-linked notes preserve concomitant expiration wording even
-though F has no native expiration control. Continuations keep exact raw wording,
-explicit supplied precision and qualifier at fixed10pt, repeated block/product
-ordinal and opaque report reference, with numbered pages. Extra D/E copies own
-their notes once and use global product/device ordinals. No intermediate PDF save
-or encryption workaround is introduced. Unsupported glyphs remain retained and
-block export with the exact expiration target (#154 remains separate).
-
-Model schema revision v32-expiration-precision requests explicit partial facts
-instead of omission. The boundary also requires the claimed exact wording to be
-present in the cited source passage. Structural mock tests do not claim universal
-live model recognition. Review details exposes retained complete submitted
-accounts and read-back; the ordinary product editor lets the clinician explicitly
-add missed expiration wording. Legacy cases lacking full accounts disclose that
-only source excerpts remain. There is no arbitrary automatic omission detector.
-Other partial date targets/source gaps remain under #180; #150 remains paused.
-
-Issue219 review remediation: generated report content keys include current expiration continuation text, official block and ordinal, so partial-only corrections and withdrawal invalidate old PDFs. Source IDs alone do not change printed content. Non-carried Section F notices are decided per stable product fact before display formatting, never removed by matching names. This bounded slice carries partial expiration wording in F1 supplements; complete concomitant expirations retain their existing explicit non-carried disclosure, with no claim that all F facts are printable. Broader field-linked F exception representation remains release work. Direct expiration source records use readable clinician-entry summaries; legacy source records are not presented as verbatim conversation. Prompt revision is wilson-expiration-precision-v24. Model partial years must appear explicitly in the cited exact wording; abbreviated/ambiguous dates stay quarantined for explicit clinician entry rather than century inference. This does not claim arbitrary date-language validation.
-
-Issue219 detached-page references likewise include current expiration note block/ordinal/text, preventing an earlier partial-expiration supplement from sharing a reference with a revised report. Reports without expiration continuations keep the existing reference hash input; source-only changes remain irrelevant.
-
-### Issue221: shared supplied product-date precision
-
-Purchase, therapy start/stop and dose-reduction dates now share the explicit complete-string or month/year/year-only value contract with expiration. `date-precision.ts` owns strict shape validation and exact wording formatting; `DatePrecisionEditor` is shared by ordinary fact edits and the medication stop-date question. No missing component, chronology, duration, ongoing status or dose reduction is derived. Model proposals require cited exact wording and an explicit four-digit year; normalization of month remains subject to clinician review, without a general date-language parser.
-
-Browser v26 freezes the genuine v25 schema, validates it before a lossless upgrade, and widens only these four product fields. Historical start/stop shape-only invalid complete dates remain retained and blocked as before. Purchase/reduction complete-string storage retains its existing strict calendar validation. Raw partial drafts and qualifiers remain separate from accepted facts. Other patient/event/device/test dates are unchanged.
-
-Projection applies existing D3 print alternatives before creating field-linked `productDateNotes`; selecting duration never restores suppressed dates. D1 purchase and the three D3 date meanings stay separate; Native F1 supports only therapy start/stop. Issue243 additionally carries accepted medication regimen/history and reduction-date wording on labelled F supplements; other unsupported facts remain disclosed as non-carried. Current reduction/ongoing notices and D7 prerequisites stay unchanged. Only resolved eligible values carry notes; source IDs/target fields remain stable. Current note text, block, ordinal and field participate in generated-PDF keys and detached-page references, while source-only changes do not alter printed content.
-
-The shared product-date continuation adapter also retains existing expiration behavior. It selects native controls using stable product IDs and actual local copy slots; global ordinal labels remain on extra D copies. Full dates retain native DD-MMM-YYYY. Partial D1/D3/F1 controls contain short continuation markers, never fabricated dates; exact wording/qualifier prints at fixed10pt on linked numbered sheets. Glyph guards target the actual field. Readback recognizes only the explicit continuation markers as non-dates. No arbitrary free-text field bypass or general-date enablement is introduced.
-
-Issue221 independent review remediation: non-empty unfinished stop-date drafts disable bulk Unknown/Declined so they cannot be overwritten by a bulk answer. Individual status selection remains explicit. The PDF writer also rejects duration together with partial D3 notes as its own second-line guard, including extra-copy routing. Unfinished date labels are generic, and mixed product/expiration copy headers mention both kinds of wording.
-
-Issue223 extends the existing supplied-date contract only to device implant/explant dates. Browser v27 strictly validates frozen v26 before migration, preserving legacy complete strings/history; invalid legacy calendar values remain blocked from fresh output. Partial notes route by stable device ID to E6a/E6b, including copy-local native markers and global device ordinals. No implantation/removal, chronology, duration or date component is derived. The device-details task stores unfinished precision drafts separately from accepted facts.
-
-Issue225 adds only B6 observation-date precision using the existing supplied-date validator/editor and B6 additional-comments/pagination path. Native date cells show B6 comments, with exact wording/context linked to the current table row and stable test ID in source trace; complete dates stay native. Browser v28 validates frozen v27 before lossless migration; invalid legacy dates remain stored and block fresh output. No collection time, test identity/result, chronology or date component is inferred. Existing section content hashes/references invalidate revised exports without another date-note engine. Optional clinical-context date drafts stay raw until explicit acceptance.
-
-Issue227 widens only onset/death/discharge date values to supplied precision; browser v29 validates frozen v28 before lossless migration. B3/B2 partial native dates point to labelled B5 context; complete dates remain native, including their separately carried qualifiers. B2 date output still requires explicit death=true; non-carried known dates remain disclosed. New onset/death supplements do not satisfy the substantive event-description gate. Discharge uses its existing B5 course path with labelled partial wording. Existing B5 pagination/content keys/references/glyph attribution apply. No death, hospitalization, chronology, age or missing components are inferred; report/return/DOB contracts stay unchanged.
-
-Issue229 widens only C1 productReturnDate to supplied precision; browser v30 strictly validates frozen v29 before lossless migration. Partial native C1 dates point to labelled C1 wording in existing Additional comments/B6 pagination, sharing content keys/references and field-specific glyph guards with independent tests/general comments. Full native dates remain formatted and their qualifiers carry labelled context. Return-date output requires explicit returned-to-manufacturer availability; other/unknown/disputed availability retains and discloses the date without printing it. No return, individual-product attribution, chronology, clinical narrative or test observation is inferred. DOB/A2 and B4 remain unchanged.
-
-Issue231 supports explicit month/year/year-only DOB using the existing birth-date editor and supplied-date contract. Browser v31 strictly validates frozen v30 before widening; invalid DOB remains rejected as before. A2 partial DOB points to labelled Additional comments/B6 pagination; complete dates and exact qualifier context remain linked. Explicit A2 age selection suppresses every DOB output/context without erasing it; both known without selection blocks, and selected-but-unavailable DOB never falls back to age. DOB/age/patient involvement/chronology are never derived. Shared content hashes, source trace, glyph attribution and conflict/status gates apply; no new note engine or questions.
-
-### D2 long and multiline route/frequency (Issue #233, bounded #153)
-
-Reviewed route and frequency remain exact strings. Their existing review controls
-now preserve line breaks in display, correction, history and unfinished drafts.
-Native dropdown/Other output is unchanged when wording fits the pinned geometry.
-An overflowing or multiline value uses Other / `D2 supplement`, with its exact
-wording on a fixed 10pt, 14pt-leading D2 continuation. No abbreviation expansion,
-clinical normalization, truncation or font shrinking occurs. Each continuation
-page repeats the global suspect-product ordinal, field, report reference and
-page count; the native product slot points to the supplement. The third suspect's
-D-only native copy carries its own continuation and global product #3 identity.
-Route/frequency qualifiers also use field-linked D2 context, even for native-sized
-values. Source traces, authoritative facts, pending/conflict handling and explicit
-correction semantics remain unchanged. Content keys/reference include this context.
-Unsupported glyphs/control characters and blank accepted text remain export
-limitations at both readiness and adapter boundaries; broader glyphs stay #154.
-#153 is only complete for long/multiline wording within current glyph support.
-#180 ordinary precision implementation is complete; integrated source/readback/
-manual-recovery acceptance remains pending. This is not overall release readiness.
-
-### Unqualified quantity appearance fidelity (Issue #235)
-
-Dose/strength stay literal reviewed strings. Existing formatting-only native
-amount/unit pairs and qualified B5 preservation remain unchanged. Unqualified
-amount text that exceeds the actual pinned native width or contains line breaks
-uses a readable `D1 supplement` for strength or `D2 supplement` for dose amount pointer with blank native unit; the full
-literal value appears on the existing fixed-size, global-product/field-linked
-D1/D2 continuation. No compound/range meaning is split or converted and no unit is
-inferred. Dose/strength review/display/history/raw-draft controls support lines.
-Actual native appearances contain the pointer, independently checked alongside
-stored values and continuation text. Unsupported output glyphs/control characters
-are explicit readiness and adapter blocks, preserving facts for correction.
-Quantity supplement entries participate in content keys so an older clipped
-artifact cannot remain current. No font/dependency or system asset is added.
-Broader glyphs #154, non-native duration shapes, unusual age/weight wording,
-#180 integrated acceptance and attachments/package lifecycle remain outstanding.
-
-
-### Issue243: accepted concomitant medication context retention
-
-Saved fictional A07/A11 cases demonstrated that accepted concomitant regimen facts were omitted from F export, requiring duplicate manual Additional comments. The pinned official FDA 3500 (09/2025), page6, F1 has only product name and therapy-date controls; page7 permits additional pages (<https://www.fda.gov/media/76299/download>). Keep those native semantics and the conversation-first UI. Automatically carry existing current resolved medication dose, strength, frequency, route, indication, ongoing status, reduction date, duration and explicit stop/reduction/restart history on the existing row-linked F continuation. This narrowly supersedes earlier concomitant no-destination statements for these fields only. No model/schema/browser version, new question, new clinical inference, or dependency.
-
-Only reviewed concomitant drug-or-biologic products are eligible. Device and `other` product regimen facts keep their existing non-carried disclosures; expanding those routes is deferred. Pending/conflicted/withdrawn/superseded values do not print. Current explicit Unknown/Declined/Explicitly absent/Does-not-apply answers remain distinct labelled text, never invented native values. Temporal improvement and recurrence answers require the same known applicable withdrawal/restart prerequisites as D7/D8; unresolved or false applicability withholds those outcome labels and retains omission disclosure. No inferred Does-not-apply is added to F. This preserves the existing applicability rule without changing semantic facts or history.
-
-Exact wording, multiline values, qualifiers and current source IDs remain field-linked. Complete reduction dates use shared DD-MMM-YYYY display; partial dates use the existing exact supplied wording/precision and no-missing-component statement. Legacy invalid complete dates remain retained and export-blocked. Every continuation page repeats its starting row and field label so a detached dense page stays attributable. Fixed10pt pagination, report reference, glyph blocking and exact contributing-field targets reuse the existing F adapter. Projection metadata stays outside native Section F controls and participates in report keys/references; extra native D/E copies do not duplicate F supplements.
-
-Corrections and explicit status changes regenerate current content without resurrecting old values or changing sibling products, event facts or manually supplied comments. Existing comments remain independently accepted content, even when overlapping. There is no automatic semantic deduplication or general omission detector. The focused frozen outcome/D7 live check is separate acceptance evidence, not an extraction change or a claim that prior issue241 failures are fixed. Issue150 and age-wording PR240 remain paused.
-
-### Issue245: read-only clinical gaps and one primary clinical input
-
-The details-screen Information still needed panel renders current unanswered needs without mounting a CompletionTask or any direct answer controls. Clinical update remains the existing text/native-dictation entry path and uses the unchanged grounded proposal/review/acceptance boundary. Existing clinicalNeedParts separates pending proposals from missing accepted knowledge and defers conditional medication questions while stopping/restart proposals await review. Current needs are no longer omitted from the list merely because their former form was displayed. Navigation for remaining clinical answers focuses the existing Clinical update textarea; proposal review and secondary field corrections remain separate.
-
-Remove retired direct clinical form components, including MedicationTask, so visiting a gap no longer creates medication-answer drafts. Preserve the frozen typed draft decoder and storage envelope: earlier indication, serious-outcome, death-date, clinical-context, medication-history and device-detail records remain valid. Reconciliation removes these retired records from active editors and retains nonempty raw work once, with an explicit Clinical update explanation; it neither applies answers nor compares them away as redundant. Subsequent reconciliation/reload preserves the retained record without duplication. Reporter, secondary card edits, date-recovery records, complete conversation and unsent update text keep existing protection. No semantic case migration, browser-state version bump, completion-policy change, model/prompt, PDF or save/resume visibility change is introduced. Existing server answer actions remain supported for saved-state/domain compatibility, but the gap panel supplies no competing submission path.
+The clinician's knowledge is primary. PDF widget names/coordinates/encodings stay
+inside the adapter, never organizing upstream facts. The semantic projection
+knows form concepts and carries sources/omissions. Output failure leaves the case
+unchanged. Browser retention stores complete server results, never creates a
+second semantic mutation path. This remains synthetic-only and non-production.
+
+## Semantic case and changes
+
+The case contains stable patient/event/product/test entities, direct reporter
+facts, bounded need history, input/source records, and accepted changes. Products
+have independent category and suspect/concomitant role. Relevant tests keep name,
+result, ranges, date and stated context together under one stable identity.
+
+A fact is empty, proposed, resolved or conflicted, with proposed values, at most
+one resolved value, conflict alternatives, source IDs and superseded history.
+Resolved meanings are known(value, optional qualifier/precision), unknown,
+explicitly absent, inapplicable or declined. These are exclusive; empty does not
+mean unknown or negative. Asked-needs history is interaction state, not truth.
+Pending corrections leave the prior accepted value active until explicit review.
+Acceptance supersedes it; conflict has no resolved value until human resolution.
+
+Application-owned opaque IDs are not medicine/test names, list positions, fixture
+keys or PDF rows. Opening model references are response-local grouping hints;
+validated groups receive code-owned IDs. Later input receives relevant stable
+IDs, including explicitly labelled pending interpretations. Genuine new or wholly
+omitted tests can be declared locally; later product declarations are unsupported.
+A declaration echoing an exact supplied test ID links to that existing test,
+never allocating another. An unmatched correction reference cannot allocate a
+new test; dependent proposals are quarantined, valid siblings remain reviewable.
+A new test plus correction to its local reference in one response is unsupported;
+retain its wording for restatement. This is containment, not proof of correct
+clinical matching or a solution to paused semantic-targeting work.
+
+Reviewed entities may be withdrawn, retaining IDs, sources/facts and history.
+Completion, model context and PDF exclude them. Rejecting an earlier product
+never renumbers later UI labels. Quarantined/incomplete reviewed products remain
+visible for repair; no automatic deletion or guessed category. With zero retained
+products the action is New case, not navigation to a missing card.
+
+Sources retain ID/input ID/type, exact excerpt and applicable offsets, actor and
+recorded time. Changes retain command/type, affected fact/entity/source IDs,
+prior/resulting revisions and supersession/resolution. This is an explanation
+trail, not a compliance graph or event-replay system.
+
+Every consequential write uses server-side `applyCaseCommand`, with expected
+revision and command ID. It applies at most once and commits the entire next
+case/change or nothing. It enforces explicit review, material source evidence,
+type-compatible existing entities, supersession, exclusive missing states,
+conflicts without accepted alternatives, and stale/duplicate protection.
+Routes, UI and read adapters cannot import lower-level mutation helpers; retain
+the narrow automated source-boundary assertion. Typed group edits use the same
+review command; reviewed additions/corrections use `record-clinician-facts` with
+server-derived intent. UI registries supply labels/input shapes, not value authority.
+
+## Interpretation and source grounding
+
+The model proposes facts, mention linkage, qualifiers, correction/alternative
+intent and supporting passage references. It cannot accept/overwrite knowledge,
+resolve conflict, determine completion, choose PDF fields, construct a projection
+or propose reporter identity/contact details. A non-known meaning may be proposed
+only when the current input explicitly states and cites it. No proposal stays
+empty, never automatically unknown/absent. Event-response treatment belongs in
+treatment, not as a report product unless independently described as involved.
+Symptoms and product-quality complaints are distinct; a specific denial is not
+whole-list absence. Dose count/form/total wording stays literal, independently
+of strength; no arithmetic or clinical normalization.
+
+Code preserves complete input and assigns ordered sentence passages with offsets.
+The model selects references, not copied quotations/offsets; code resolves exact
+slices. Repeated wording gets distinct references. Multiple passages can support
+negation, subjects, shared dates and corrections. Reference validity proves text
+existence, not semantic entailment. A sentence can contain several claims;
+clinical attribution still requires review. Source tables are transient inputs;
+stored sources/history keep their representation. Never compare live proposals
+with fixture/oracle expected facts or source clauses in runtime.
+
+Generated provider guidance, local decoding and command validation share the
+domain-owned target/value contract. Keep the provider wire simple. Reject the
+whole response on incomplete provider termination, invalid structured output,
+missing minimum displayable identity/group/target, duplicate/inconsistent proposal
+or source identities, or no representable proposal. With truthful minimum identity,
+representation/target/entity/source faults quarantine only the affected proposal
+before creating source/proposal identity. Attach valid siblings atomically; prune
+declarations with no surviving details. Do not coerce, repair, guess or retry.
+The user sees omitted target, exact referenced wording or unavailable-source
+notice and plain-language reason; notices survive workspace recovery.
+
+A partial test survives if any supported detail remains, even without name/result;
+B6 explicitly marks missing identity/result and retains the grounded date/ranges.
+Never infer clinical vocabulary, units, normal ranges, date or specimen. Genuine
+additions use ordinary review and capacity guards. Unfamiliar dictated terms stay
+verbatim. Explicit collection-time uncertainty qualifies the named observation's
+known date, or known name/result if date is unavailable; never fabricate a time,
+transfer it to another test or treat a prompt instruction as omission detection.
+Captured provider failures and authored expected-response mocks remain distinct.
+
+Later review-group labels are scoped to validated entity kind/ID; shared labels
+cannot merge medication/event/test groups. Labels within an entity remain separate.
+Opening patient/event groups are code-owned. Unresolved targets are quarantined,
+not inferred from group labels; all groups still require acceptance. During initial
+review, review update groups before remaining opening groups. Accepting a correction
+supersedes the older pending interpretation without accepting it; rejection leaves
+that original available. Other facts on the entity remain unchanged.
+
+## Clinical interaction and readiness
+
+The details-screen gap panel is read-only. Clinical update typing/native dictation
+is the primary clinical-answer path, followed by grounded proposal review and
+acceptance. Pending proposals are not missing accepted answers; stopping/restart
+proposals defer dependent gaps until review. Remaining-answer navigation focuses
+Clinical update. Secondary field corrections and direct Reporter entry remain.
+No competing direct clinical-answer forms or medication draft creation path.
+
+Retain frozen decoders for earlier indication/outcome/death/context/medication/
+device task drafts. Reconcile nonempty retired raw work into readable unapplied
+retained work exactly once, without redundancy-based removal or replay. Existing
+server answer actions remain supported for saved-state/domain compatibility; they
+are not a new UI submission path. Reporter/secondary edits, date recovery, submitted
+history and unsent updates retain protection. This UI contract changes no model,
+completion policy, PDF or state version ([issue245](../evidence/issue-245/README.md)).
+
+The bounded deterministic completion policy earns turns only for consequential
+missing/applicable facts. Its medication ordering covers suspect indications,
+unestablished serious outcomes, applicable death date, relevant tests/history,
+medication history and Reporter. Product-problem-only skips adverse-event/
+medication needs; combined reports retain adverse-event needs. Device needs key
+applicable implant/explant/reprocessor targets per stable product, so answering
+one never suppresses a later device. Related needs share authored wording/reason;
+settled supplied facts suppress questions. Unknown/declined/absent/inapplicable
+close their own needs without a loop; prerequisite corrections can reopen only
+newly applicable targets. No generic planner or model-authored questions.
+
+Output readiness is independent of question completion: pending groups/corrections
+need attention, conflicts cannot print competing values, retained incomplete
+products are individually navigable for repair. Require at least one retained
+product and one complete known suspect name/role/category. Optional unresolved
+facts remain disclosed partial output where supported. Repair can return to
+clarification with a notice; no model call or hidden acceptance. Unknown category
+never implies non-device. Role/category changes retain other-branch knowledge
+with a truthful not-carried explanation. Collection limits are domain-owned:
+[limits.ts](../src/domain/case/limits.ts) currently permits three products, eight
+tests and 24 asked needs, enforced at writes and restore. Storage headroom is not
+a question budget. Larger connected capacity requires a separate decision/slice.
+
+## Patient and reporter semantics
+
+Patient involvement is separate from identity/demographics: explicit known none
+alone supports FDA A1 `none`. Empty, unknown, declined, inapplicable or wrapper
+absence do not assert no patient. Do not infer it from unused packaging, symptoms,
+report type or missing demographics. A literal `none` identifier (including legacy)
+requires explicit correction, never migration into participation. Explicit no-patient
+plus adverse-event report type, known demographic values (including known conflicted
+alternatives), or a true B2 outcome/alternative blocks definitive A1 none/export.
+Retain both sides for correction; never clear, infer or clinically reconcile them.
+Historical/non-known/false outcomes do not activate the guard. Unknown participation
+is not no-patient. The separate blanket B1/B2 consistency proposal remains unresolved.
+
+A2 age is atomic: legacy numeric 0–150 means whole years; supplied whole months,
+weeks/days are nonnegative safe integers with unit, retaining legacy `ageYears`
+target identity. No conversion, rounding, DOB arithmetic or reinterpretation as
+gestational/corrected/postmenstrual age. Fractional/compound wording remains a
+limitation. Native age prints one exact value/unit within guarded geometry.
+DOB is independent and uses shared complete/explicit partial-date contracts.
+Clinician-only A2 print preference is not model-proposed. One known value with
+no preference prints alone; both known without preference, or an unavailable
+selected value, blocks fresh output. No fallback or comparison of age/DOB.
+Unselected values/context stay retained with omissions and independent drafts.
+
+The existing sex fact preserves reviewed male/female/intersex values; FDA A3 asks
+sex at birth, but no relabelling, classification or inference is authorized.
+Intersex leaves native boxes off and prints exact A3-linked wording/context plus
+an explanation that birth basis was not inferred. Known male/female context also
+uses that supplement; non-known states leave boxes off without old context.
+Only the main form has A facts. Birth-basis guidance is a separate open decision.
+
+A5 race/ethnicity accepts an explicit unique nonempty list of native categories,
+including Middle Eastern or North African. Never infer from appearance/name,
+geography, nationality, ancestry/language or map an unsupported identity to a
+broader category. PDF uses canonical native order without changing fact order.
+Unchecked means unselected, not denied. Empty known selection is an invalid draft;
+non-known meanings remain distinct with blank boxes. Extra identity/negative or
+partially unknown wording remains whole-list context and disclosed where uncarried.
+
+Reporter identity is direct clinician entry through commands, never model-derived.
+Report date is direct, visibly defaults to local browser date on the Reporter
+step, records only on explicit provided/declined submission and can be cleared;
+PDF generation never updates it. It is not derived from another date.
+G1 raw country/address strings survive case/profile/drafts. Native country matching
+permits only case/outer-space display equivalence, never aliases/geography.
+Unmatched countries and overlong/multiline G1 text use exact field-linked
+continuation with a native marker; no preset country or guessed choice. Known
+G1 context prints there; other meanings do not acquire text. Unchanged reporter
+base values preserve existing qualifiers on panel save; changing a base leaves
+prior context in history, not on the new value. Reporter context editing is not
+implemented by the base-entry panel. Occupation exceptions/glyphs remain bounded.
+
+## Product, event and field-linked representation
+
+### Medication and product facts
+
+Dose and strength are independent literal text with units. Only supported simple
+numeric-plus-literal-unit formatting splits into native amount/unit controls;
+never calculate totals, extract compound amounts or convert units. Qualified
+suspect quantities carry full wording/context in B5 with a pointer; if pointer
+and amount cannot fit, native text says See B5 with unit blank. Unqualified
+long/multiline dose/strength use D2/D1 exact supplements and blank native unit.
+Route/frequency native matching uses formatting equivalence only. Other wording
+stays verbatim; long/multiline text uses Other / D2 supplement and exact labelled
+continuation. Qualifiers also carry D2-linked context. Never abbreviate, normalize,
+shrink, clip or substitute glyphs to make a value fit. Blank accepted quantity/
+route/frequency wording is retained with explicit export limitation.
+
+Medication labels (brand, generic/biosimilar, OTC, compounded) are independent
+explicit flags, including combinations, never inferred from molecule name.
+D5 Check all applies broadly; only cosmetic professional/retail choice is Select
+One. Cosmetic choice, routing category and explicit cannabinoid-hemp/Other set
+remain independent. No automatic classification, routing change or component
+split. Empty known sets are drafts, not negative responses. D5 Other-set context
+is whole-set B5 wording tied to current suspect slot; other unsupported selector
+context remains disclosed. No context alone satisfies base event-description readiness.
+
+NDC/Unique ID preserves zeros, punctuation and spacing without lookup/coercion;
+it is distinct from lot/serial/catalog/UDI. Seller name/address/city/region/postal/
+country/website are independent reviewed text, not derived from manufacturer or
+reporter. Websites are not fetched. Native purchase country matching is display
+format equivalence only; UNKNOWN is a missing-value option, never a known-country
+suggestion. Raw unmatched seller wording stays accepted but native limitations
+block fresh export; G1's supplement support does not imply D1 seller exceptions.
+All per-slot text/choice/glyph/geometry limits remain adapter-owned.
+
+Current therapyOngoing is explicit and independent of stopped/restarted/dates.
+Dates never imply it, and status changes do not clear dates. Supplied reduction
+date likewise does not establish reduction or rewrite another fact. Contradictions
+receive visible review/save notices without automatic resolution: stopped=true,
+restarted=false, ongoing=true; or reduction date with explicit no reduction.
+D7 requires explicit improvement/no improvement after known stop/reduction;
+known neither supports Doesn't apply, except a contradictory supplied reduction
+date withholds that derived answer and discloses its sources. D8 requires known
+restart and explicit recurrence/no recurrence; never restarted supports Doesn't
+apply. Unresolved/declined prerequisites/outcomes leave native boxes blank with
+disclosure. Acceptance of false/inapplicable prerequisites invalidates a known
+dependent outcome into superseded history; unknown/declined outcomes remain.
+Changing back never resurrects it. These are observations, not causality judgments.
+
+D3 duration preserves a supplied positive decimal spelling/native time unit or
+explicit supplied dose-count/range/compound wording on exact linked supplements.
+No subtraction, conversion, inferred unit, rounding or dose-count-to-time mapping.
+D3 dates OR duration uses an explicit clinician-only print preference if both
+alternatives are known. Missing choice/unavailable selected alternative blocks;
+clearing preference changes no facts/drafts. Unselected alternatives are retained
+and disclosed, not reconciled. Preference control applies only to suspect non-device
+D3 routes; elsewhere retained preference has a no-destination disclosure.
+
+### Dates and source-account recovery
+
+New known complete dates use strict Gregorian validation (years 0001–9999),
+including explicit conflict selection. No date repair, relative-date arithmetic
+or inferred components. Legacy shape-only invalid accepted/pending/conflict/history
+dates restore unchanged under frozen schemas; resolved invalid dates block output.
+Correct invalid proposals in their original group; invalid conflict alternatives
+cannot be selected. Explicit date/status recovery resolves only that invalid-date
+exception, keeping prior alternatives/history; the new value cites its new
+clinician source, not invalid alternatives. Raw impossible/partial drafts survive
+reload and become readable earlier work if their context changes. No general
+semantic-correction authorization follows.
+
+Supplied month/year/year-only values have typed precision, explicit four-digit
+year, optional month and exact nonblank cited wording; year-only has no month and
+neither shape has a day. Claimed wording/year must appear in cited input; no
+century inference for abbreviated/ambiguous dates. These supported families are
+expiration; purchase/therapy start/stop/reduction; implant/explant; test dates;
+event onset/death/discharge; product return; DOB. Full dates remain native
+DD-MMM-YYYY where applicable. Partial controls use precise continuation markers
+and exact wording/qualifier plus precision/no-missing-component explanation on
+field-linked pages, not fabricated native dates. Print-choice suppression applies
+before notes. B4 stays direct report date, not a general partial-date target.
+
+Partial test notes follow current B6 row/field, not inferred test identity.
+Event timing goes into labelled B5 statements; death date still requires explicit
+death applicability. Return date/context requires explicit returned-to-manufacturer
+availability; otherwise retain/disclose without projecting. Device dates remain
+implant/explant, never therapy dates. Purchase dates keep their own meaning/routes.
+Partial F expiration has row-linked notes; complete concomitant expiration retains
+its existing no-native-destination disclosure. Other F date destinations are therapy
+start/stop, plus the narrowly supported medication-history supplements below.
+
+Review retains complete submitted accounts/read-back, not just selected sources;
+ordinary editors can explicitly recover missed supplied wording. Legacy missing
+accounts show labelled excerpts. This is manual source recovery, not an arbitrary
+automatic omission detector or proof of model completeness. Ordinary precision
+implementation is delivered; integrated source/readback/recovery acceptance is not.
+
+### Narrative, comments and context
+
+B5 carries accepted symptoms/product complaints, clinical course, treatment,
+outcome/discharge context and applicable product context without inferred temporal
+order or causal links. Symptoms/treatments use one qualifier on the entire list:
+review/history/edits say Context for this list; B5 labels Symptoms/Treatment list
+context separately. Preserve item order and exact context; never distribute it
+into per-item claims. Scalar facts retain their own context. Non-known/conflicted
+facts are individually disclosed, never converted to positive narrative.
+
+B6 lab grid preserves reviewed name/result/units/ranges/dates, explicitly marking
+missing identity/result. Qualifiers print in Additional comments under current
+row and specific field; withdrawal recomputes both without moving context to a
+sibling. B7 is raw accepted history plus labelled History context. Independent
+general additionalComments is its own optional text fact, not automatic source
+recovery or a substitute for B5 description. Native B6 Additional comments combines
+labelled row context, general comments and comments context in that order with
+separate provenance. Explicit overlapping comments stay; no automatic semantic
+deduplication. Literal statuses are not neutral withdrawal (separate open work).
+
+Omissions distinguish an entire unsupported fact from a printed base with omitted
+qualifier, quoting exact current wording and target/source IDs. A final sweep
+covers active current known qualifiers, including routing/prerequisite/availability
+context. Never promote pending/conflicted/rejected/superseded/withdrawn wording.
+Indirect support uses neutral context-not-included labels, not a claim the base
+printed. A generic warning or available source is disclosure, not representation.
+Known editors may reveal context controls without accepting anything; explicit
+correction/removal keeps history. A qualifier-only omitted-context change updates
+disclosures, not a false assertion that PDF bytes changed.
+
+## PDF assembly and fidelity
+
+The versioned adapter consumes the pinned [FDA source](../assets/fda/README.md),
+checking hash before filling. Projection, readiness and adapter share supported
+limits/encoding; adapter defenses repeat validation. Preserve native labels,
+options, geometry, flags and blank controls; generate correct native appearances
+while retaining FDA export IDs. Native readback reports actual widget values or
+pointers, never reconstructs expected full text. Independent parser/page-content
+readback and second-viewer/render inspection verify serialized output; pre-copy
+semantic readback alone is insufficient.
+
+B5/B6/B7 overflow uses exact section/block-linked numbered pages and a native
+attachment pointer ending continued. Pinned native fit/glyph/MaxLen checks decide
+when; fitting content stays native. Supplements use fixed 10pt/14pt-leading
+wrapping that retains spaces, line breaks, blank lines and long-token characters.
+Each page has block/field, current global product/device/row attribution and a
+shared opaque report reference derived from case ID plus actual projected content.
+This reference is export metadata, not A1 or clinical identity. Note text/block/
+ordinal participate in keys/references; source/history-only changes do not change
+printed content. New generation removes obsolete pages/pointers. Only current
+reviewed eligible content prints, never a dump of sources or draft history.
+Unsupported glyph/control characters block fresh export while retaining facts;
+no shrinking, truncation, glyph substitution or forced clinical edits. Native text
+guards and field-targeted diagnostics remain even when no qualifier is present.
+
+The first two D suspects use the native main form. A third uses a complete
+additional eight-page native form with only D filled in its first block. Each
+suspect device beyond the first uses another complete native form with only E
+filled; first E remains editable. Extra forms use fixed appearances and the
+approved in-memory flatten/copyPages path to avoid duplicate AcroForm identities;
+correct in Wilson and regenerate. Nonselected sections stay blank. Main references,
+extra headings and supplements share global ordinals and current report reference.
+Actual local slot geometry governs checks (third D uses local slot one), while
+source/history/withdrawal/role changes retain stable identity and regenerate copies.
+E qualifiers carry exact field/device-linked main B5 context. Save only once after
+all headings/copies/notes: an intermediate save can cache streams and lose headings.
+No encryption workaround or dependency change is authorized.
+
+F includes explicit concomitant devices and drugs/biologics used at event time,
+excluding event treatment. Native adapter has ten distinct name/start/end rows,
+but the semantic case still retains only three products. Native F dates are
+therapy dates, not implantation. Long/multiline names/context use exact row/field
+supplements and truthful native pointers. Each page repeats its starting row/field
+for detached attribution; extra D/E forms do not duplicate F facts/supplements.
+
+Accepted concomitant drug/biologic dose, strength, route/frequency, indication,
+ongoing status, reduction date, duration and stop/reduction/restart history print
+automatically on linked F supplements. Explicit non-known answers keep distinct
+labelled text, never invented native values. Improvement/recurrence labels require
+the same settled applicable prerequisites as D7/D8; withhold/disclose otherwise,
+without inferred Doesn't apply. Other/device regimen expansion remains deferred.
+Qualifiers, multiline wording and exact date precision stay linked; unrelated
+comments remain independent. No model/schema change or general omission detection
+is implied ([issue243](../evidence/issue-243/README.md)).
+
+A3, G1, partial-date and D1/D2/D3 supplements obey these same provenance, fixed-size,
+reference and unsupported-glyph rules. All factual contributors participate in
+freshness/content identity where their printed text changes. An earlier artifact
+cannot be labelled current after a material correction, shortening or withdrawal.
+
+## Browser-local workspace
+
+The origin-scoped active IndexedDB record contains complete validated server
+state, release/state-version provenance, typed UI drafts and retained invalidated
+work. One user/browser, one active case; no account, backup, case list or cross-device
+storage. Separate envelope and UI versions surround clinical state. A fresh opaque
+UUID generation changes on every atomic snapshot/draft save and tombstone;
+transactional expected-generation comparison rejects stale writers, including
+external store recreation. Serialized/coalesced writes keep the newest unsaved
+payload. Saved status requires the latest rendered payload's transaction acknowledgement,
+not an older completed save. Browser commit is not guaranteed disk flush.
+
+Before hydration, server resume strictly validates/migrates clinical state and
+re-derives stage/snapshot without model/semantic writes; draft codec then validates
+case/chronology/targets, representation and prerequisite fingerprints. Resume can
+explain changed readiness; actions require expected revision/stored-stage equality
+and explicit retry, never replay. Retain every supported persisted-version migration,
+validating genuine historical schemas before widening, never relabelling malformed
+current data as legacy. New fields start empty, preserving facts, sources, IDs,
+revision/history and compatible unfinished work. [browser-state.ts](../src/server/case/browser-state.ts)
+is the exact current version/migration source; migrations never reinterpret old
+clinical text or infer newly available facts.
+
+Invalid supported drafts remain readable earlier work, not active authority;
+retain only invalidated pending fields, not duplicate unaffected edits. Confirmed
+selective discard leaves accepted facts unchanged and retained work counts for
+New case/unload guards. Unsupported/corrupt/cross-case decoding fails visibly
+without destroying raw records or unmounting the current editable owner. Preserve
+unfinished false/empty/unselected values and context-control visibility; blank
+context is omitted only on explicit correction. Retain all opening/report selection,
+update text, inline edits, Reporter and legacy task drafts by stable scopes.
+Complete acknowledged submitted input history is separate from excerpts/unsent
+text; legacy absent history is labelled. No saved network actions, PDF blob URLs,
+busy flags or derived projections become persistence authority.
+
+An exclusive native Web Lock precedes storage and case actions. Other tabs cannot
+issue competing requests or force takeover; retry only after owner release.
+In-flight writes settle before release; cancelled acquisitions register before
+await so StrictMode replacements wait for predecessors. Generation comparison
+still protects external/stale writers. Without storage/coordination, explicitly
+chosen unsaved work never replaces retained work. Successful server responses
+remain in memory before optional mirroring/writes; retry storage only, not action.
+The composer stays editable during a request and acknowledges only submitted text;
+mutation controls disable their pending action.
+
+New case confirms all unfinished-work loss and uses explicit replacement. Confirmed
+known-damaged discard compares the entire observed record in its transaction;
+changed/now-valid/future records are never cleared. Uncomparable damage stays
+retained. Future database/state/UI versions after rollback require a compatible
+release, not destructive ordinary recovery. Clear retains a tombstone and prevents
+legacy session reimport. Optional legacy session data is one-time input only if
+no durable record; a distinct debug mirror is never loaded as authority. Normal
+New case/debug cleanup cannot erase old tab data. Explicit confirmed damaged-legacy
+recovery alone may remove it; different earlier data remains with a notice when
+a durable case already exists. Optional session failure cannot reject accepted work.
+
+Unsent work warns before unload. Closing mid-request can leave an unobserved
+server/model result; saved words remain and no request repeats automatically.
+Storage loss/eviction/private profiles, changed origins and OS crash/power loss
+remain honest limits; a stable protected origin and actual restart/failure checks
+are milestone requirements. Same-origin upgrade/rollback evidence is bounded by
+its actual tested versions, not a universal compatibility promise.
+
+### Separate reporter defaults
+
+`wilson-reporter-profile` database version 1 has independent versioned reusable
+identity/contact/occupation/explicit health-professional fields; no case state,
+report date, destinations or disclosure. Profile record v2 permits raw country
+wording; genuine v1 records/tombstones decode in memory with unchanged generation,
+no eager write. Explicit remember/update/forget writes v2/new generation; older
+apps preserve incompatible records. Forget has confirmation/tombstone and does
+not change current draft/accepted case; New case preserves defaults.
+
+Use copies into a draft, confirming replacement of entered identity; normal
+Reporter Save alone accepts case facts. Automatic defaults apply once per genuinely
+fresh case after loading settles, only to pristine/unaccepted Reporter drafts;
+never seed restored or dirty work. Seeding becomes the baseline, not acceptance.
+Stable profile owner survives remounts; ownership handoff rereads current defaults.
+Failed intent keeps its original generation/exact requested snapshot for save-only
+retry; later field edits are separate. Stale/corrupt/future data is not overwritten.
+Reload is explicit with confirmation before losing a failed change; manual case
+entry stays available. Pending/failed profile writes guard unload. No clinical
+privacy-readiness or cross-origin/cross-device claim follows from convenience.
+
+## Data, deployment and diagnostics
+
+Case commands and PDF operations are non-GET complete-state requests, reject
+mismatched Origin and return no-store state/error/PDF responses. Pages use noindex/
+nofollow, which is not access control. PDF bytes live only in ephemeral browser
+memory/object URLs, revoked after use; no state in URLs, retained blob URLs or
+static PDF endpoint substitutes for the state boundary. A user can alter their
+own storage; this is not secure clinical persistence or tamper-resistant authority.
+
+Explicit predetermined test responses select the mock adapter before constructing
+Anthropic. Otherwise live application-model creation fails closed unless Vercel
+Preview provides matching GitHub owner/repository/immutable ID, non-main branch
+and PR metadata. Local/CI/production/non-Git/incomplete contexts refuse. System
+environment exposure is required for the preview gate; metadata is defense in
+depth, not authentication. Vercel Authentication covers exact deployments; verify
+protection/no public exception or project-wide bypass before any approved live call.
+An issue-scoped expiring Shareable Link is a bounded purpose/deployment/data/call/
+secret-handling grant, not general external participation or production authority.
+See [Operations](OPERATIONS.md) for procedures and [Delivery](DELIVERY.md) for limits.
+
+There is no analytics, session replay, audio capture or hosted retained case store.
+The existing narrow synthetic diagnostic exception permits relevant request/model/
+proposal/evidence/validation/command/state/response/error content in Vercel Runtime
+Logs only, correlated by run/operation IDs. Never log auth headers, cookies,
+API/deployment tokens, environment values, bypass secrets, browser storage, SDK
+secret configuration or PDF bytes. Immediate phase events and a final sanitized
+in-request reconstruction checkpoint remain request-memory only before logging.
+Browser reports send immediately and include cumulative operation events; best-effort
+non-blocking delivery has a one-second abort deadline, no UI acknowledgment or durable
+queue. Reports can drop or arrive out of order; sequence/correlation remain necessary.
+Provider/transport failures are not schema/domain rejections. Returned content logs
+before precise stop/JSON/schema/domain rejection; an outer catch must not relabel it.
+Hobby one-hour log retention supports immediate inspection, not raw-log export,
+a drain or another diagnostic store. Real-data use requires replacing this policy.
+
+## Deferred mechanisms and stop conditions
+
+No hosted sessions/database/cache/worker/queue/object store, accounts/collaboration,
+saved-case manager/cross-device sync, generic claim graphs/event replay/ontology,
+FHIR/E2B platform, derivation framework or broad question planner. Full form coverage
+remains the product target, not a delivered architecture fact. Capacity, pictures,
+portable fonts and combination representation retain their separate decisions.
+
+Legacy Wilson stays read-only unless separately authorized; preserve its Git/issue/
+PR/gate evidence and private originals. A donor must be independent of the legacy
+field-keyed record, revalidated against current external/product authority, carry
+no field-centric API upstream, and be cheaper than rebuilding. Do not reuse Agenda,
+field-state/proposal/ask/derive/gate orchestration, correction/conflict machinery,
+field-based completion or coupled legacy UI/tests. Nightjar supplies no lifecycle,
+workflow, dependency or authority: read only named historical Wilson evidence;
+copy nothing into it. Do not publish private research/transcripts or reuse legacy
+credentials. Legacy rename/cutover/archival remains a separate operational decision.
+
+Stop expansion/reopen the owning premise if domain facts require widget IDs,
+correction/conflict differs by input surface, repeated entities require positional
+identity, conflicting alternatives print/resolve together, browser code mutates
+semantic values, writes bypass commands, or delivery needs duplicated authority,
+weakened invariants, hidden fallback or unapproved behavior. Historical experiment
+success does not authorize broader implementation, real data or production use.

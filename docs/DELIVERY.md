@@ -1,7 +1,6 @@
 # Wilson delivery and independent review
 
-**Status:** Approved by Steve through 2026-09-10, including standing authority
-for bounded agent work through objective, autonomous merge
+**Status:** Standing approved delivery policy; consolidation does not expand authority
 
 **Owns:** Work items, branches, pull requests, verification, independent review,
 execution authority, merge controls, stop-and-reconcile, and durable trace
@@ -185,28 +184,12 @@ step. If Claude is unavailable, record the limitation and stop rather than
 silently substituting another reviewer. Claude cannot edit, post to GitHub, or
 merge.
 
-### Standing host approval on Steve’s workstation
+### Host review procedure
 
-Steve reconfirmed routine external-review authorization on 2026-09-21 and
-explicitly requested the persistent Codex rule. The installed user-level
-`~/.codex/rules/wilson-review.rules` allows only the fixed
-`~/.local/libexec/wilson-review` command's `review`, `recheck` and `check`
-operations. Run `~/.local/libexec/wilson-review review --issue NUMBER` for a
-standard review; the command prints a run ID for a later targeted
-`recheck --run RUN_ID`. `check` verifies local repository/subscription preflight
-without a model call. Invoke the absolute executable directly so the rule can
-match, rather than wrapping it in a shell or Python invocation.
-
-The runner accepts the fixed Wilson repository, committed tracked files,
-read-only issue context and subscription Claude Opus high. It excludes
-credential/config paths and symlinks, removes inherited write credentials,
-and scopes the reviewer's only tool (`Read`) to the copied payload. It provides
-no arbitrary prompt, provider, model or repository override. Expanded review
-continues to require its existing separate authorization. This host-local rule
-supplements the standing process authority; it does not change general sandbox
-or approval settings. Codex loads user rules at startup, so restart/reload is
-needed for new rules in an already-running app. Keep the runner's local
-configuration outside the application repository.
+Use the installed fixed read-only subscription reviewer and its clean-checkout
+preflight as described in [Operations](OPERATIONS.md#subscription-review). Its
+user-level allow rule supplements standing process authority without changing
+general sandbox or approval settings. Keep runner configuration outside the repo.
 
 ### Standard review
 
@@ -335,41 +318,16 @@ release step.
 - **Active documents:** one owner for every lasting decision.
 - **CI and retained experiment artifacts:** reproducible evidence.
 
-### Effort and value record
+### Evidence proportionality
 
-Experiment 2 keeps one compact stage ledger at
-`evidence/experiment-2/effort-ledger.json`. Commit one entry at each meaningful
-stage or decision boundary and link it from the existing PR. Record start and
-finish time; cumulative Codex task tokens at start and finish plus the delta;
-external model input/output tokens, latency, cost, and call count when exposed;
-review model and effort; concrete result; and durable value as product code,
-decision evidence, or process-only work. Mark unavailable measurements rather
-than estimating them.
+Keep concise scope, results, costs/limits and dispositions in their canonical
+issue/PR. Do not duplicate routine narration across active guides and evidence.
+Completed Experiment 2's [effort ledger](../evidence/experiment-2/effort-ledger.json)
+is historical evidence, not a new per-turn bookkeeping requirement.
 
-This is a retrospective 80/20 aid, not per-turn narration, product analytics,
-time tracking infrastructure, or a reason to continue low-value work. The final
-outcome identifies stages whose effort did not proportionally improve the code
-or decision so later work can remove them.
-
-Fold routine review, publication, retries, and process corrections into the
-stage entry they served. Do not create separate ledger entries or commits for
-bookkeeping that does not change the product or decision.
-
-## Experiment 1 process disposition
-
-Experiment 1 retained useful signal from isolated issues/branches, protected
-main, focused deterministic checks, fresh-context review of consequential
-premises, and exact deployed evidence. Keep those controls for Experiment 2;
-replace its historical human merge decisions with the objective controls above.
-
-Recursive review, repeated live runs without a new decision question, runner
-ceremony that obscures the product result, and attempts to convert the fixed
-oracle into runtime validation did not improve confidence proportionally. Do
-not carry them forward. One originating independent review may cover its
-bounded remediation under the proportional-closure rule above; evidence-only
-updates do not trigger another review or live run.
-
-This section records the required post-Experiment 1 reassessment. At merge or
-falsification, leave one concise outcome note. Post-merge review is reserved for
-escaped defects, incidents, or contradicted premises; a standard Opus review
-needed for that bounded work remains covered by standing authority.
+Retain the useful controls from earlier experiments: isolated branches, protected
+main, focused deterministic checks, independent premise challenge and exact
+deployed evidence. Do not repeat live runs without a new decision question or
+convert an external semantic oracle into runtime validation. At merge or
+falsification leave one concise outcome note. Post-merge review is for escaped
+defects, incidents or contradicted premises, not routine reassurance.

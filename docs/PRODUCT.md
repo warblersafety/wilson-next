@@ -1,37 +1,23 @@
 # Wilson product and experience
 
-**Status:** Product baseline consolidated 2026-09-05; artificial-data completion
-target amended in [Issue #124](https://github.com/warblersafety/wilson-next/issues/124)
-on 2026-10-14
+Owns the product promise, users, interaction contract, scope, quality floor and
+unacceptable outcomes. [Coverage](COVERAGE.md) records implementation boundaries
+and acceptance limits; it does not redefine this target.
 
-**Owns:** Product promise, users, scope, interaction contract, quality floor,
-and unacceptable outcomes
+## Selected completion target
 
-## Current delivery status and completion target — 14 October 2026
+Full Form FDA 3500 functionality for healthcare professionals using **fictional
+data throughout**, including reporter identity/contact details. Conversation
+remains primary, with secondary direct correction and the existing visual design.
+One user per browser has one active case, browser-local save/resume and separate
+reusable editable reporter details. No accounts/login, case manager, portable
+backup or cross-device requirement. Persistence and reporter reuse are
+implemented within [Architecture's recovery contract](ARCHITECTURE.md#browser-local-workspace);
+these are not real-data privacy/security approval.
 
-The existing application is a protected synthetic preview after PR #123. Its
-bounded medication, device and product-problem capabilities are not complete
-Form 3500 coverage or proof of general interpretation reliability.
-
-The selected next milestone is full Form 3500 functionality for healthcare
-professionals using artificial data throughout, including fictional reporter
-identity and contact details. Conversation remains primary,
-with direct editing as support and the existing visual design retained.
-Browser-local save/resume of one active case and separate reusable editable
-reporter details are required. Reporter reuse replaces the temporary fictional
-population shortcut. Assume one user per browser; no accounts/login,
-cross-device requirement, case manager or portable backup feature is included.
-These requirements supersede the earlier interrupted-session recovery and
-storage exclusions for this artificial-data milestone; they are not delivered
-capabilities or approval for real-patient-data production, real personal-data
-entry or new external review sessions. Existing synthetic-only access controls
-remain in force. The persistence slice must reconcile its design in Architecture
-before implementation, including storage/versioning, recovery and multi-tab
-behavior; reusable reporter storage remains separate from the active case.
-
-See [the completion assessment](ASSESSMENT-2026-10-14.md) for current technical
-gaps and verification limits. Implement and verify each extension as a bounded
-slice through the existing semantic authority and delivery controls.
+The artificial-data milestone supersedes earlier blanket storage exclusions.
+Development-preview protection remains required. Full functionality is the
+target, not a claim that the current bounded implementation is complete.
 
 ## Product promise
 
@@ -99,6 +85,14 @@ navigation.
 6. **Download or begin again:** download the form without submitting it, or
    start a blank case. Starting over during unfinished work requires clear
    confirmation; there is no Delete case concept.
+
+Information still needed is a concise read-only gap list. Supply clinical answers
+by typing or device-native dictation in Clinical update, then review and accept
+proposals. Pending proposals are not labelled missing; conditional treatment
+gaps recalculate after review. Secondary case-field corrections and Reporter
+details remain available. The gap panel has no competing direct answer forms.
+Genuine earlier clinical-answer drafts remain readable, unapplied work; never
+silently discard or replay them. Unsent updates and accepted facts stay protected.
 
 Correction may return the user to clarification or review. A model or output
 failure must leave accepted knowledge intact and present an understandable,
@@ -223,53 +217,3 @@ category list into product code. FDA describes Form 3500 as the voluntary form
 for health professionals and separately supports consumer reporting through
 Form 3500B. Wilson's clinical focus is a product choice, not a claim that only
 clinicians may report.
-
-## Practical completion checklist — 16 October 2026
-
-This tracks the approved artificial-data release cut by category. A bounded
-implementation is not final integrated acceptance. Keep existing conversation,
-review/correction, browser-local case/reporter persistence and visual design.
-
-| Completion category | Current coverage and remaining work |
-|---|---|
-| Patient and reporter | Explicit participation/A1 and no-patient consistency delivered in PR197/199; age/weight/race native paths exist. International reporter country/address/profile paths are delivered in issue214 within current glyph support. The existing supplied intersex sex choice now has an exact A3-linked supplement (issue151), without forcing a native checkbox or inferring sex at birth. Exact occupation exceptions and broader glyph support remain. |
-| Clinical narrative and context | B5-B7 context and narrative continuation exist (PR158/160, issue190). Whole-list context scope is implemented in issue159. Independent general Additional comments are implemented in issue202, including shared B6 continuation. Source omissions and faithful field-linked exception support remain. |
-| Product details and categories | Native purchase date/seller/address/website are implemented (issues183/188), alongside NDC, expiry, duration and cosmetic choice. Explicit hemp/Other D5 selections and field-linked qualifier context are implemented in issue205. Explicit month/year and year-only expiration wording now has field-linked D6/E4/F1 continuation and source-account recovery (issue219, first #180 slice). Shared purchase and therapy/reduction precision paths are implemented in issue221 for D1/D3/F1; B6 test month/year and year-only date wording is supported through row-linked additional comments (issue225). Event onset/death/discharge precision now uses labelled B5 wording (issue227), retaining the explicit B2 death prerequisite. C1 return-date precision uses labelled Additional comments in issue229, retaining the explicit return prerequisite. Partial DOB precision uses A2-linked Additional comments in issue231, preserving explicit age-versus-DOB print choice; arbitrary test date expressions outside supported precision, and device wording beyond explicit month/year/year-only precision (implant/explant E6a/E6b delivered in issue223), unusual durations and unsupported wording still need faithful representation. |
-| Devices, concomitants and capacity | The retained third non-device suspect now exports on an additional native D-only Form3500 copy (issue208). Up to three suspect devices now use a main E block plus additional native E-only copies (issue210), with explicit field-linked context. Native F rows include concomitant devices and linked name/context continuation within that bound (issue212). Accepted concomitant medication regimen/history now exports automatically on row-linked F supplements without duplicate Additional comments (issue243), preserving explicit applicability and uncertainty; other-product/device regimen expansion remains deferred. Broader test/product capacity remains. |
-| Pictures and portable export | Narrative attachments exist. Actual picture/file lifecycle, complete export package, portable glyphs and remaining field-linked supplements are unfinished. |
-| Integrity and final acceptance | Preserve accepted/pending/conflict/source/history, draft/resume and one-case controls in every slice. Neutral optional-comment withdrawal (#204) remains separate. Semantic correction issue150 stays paused; current cross-category, hosted/keyboard/accessibility and bounded live first-response acceptance remain. |
-
-Issue200's proposed blanket B1/B2 gate is not implemented: FDA's life-threatening
-criterion includes prospective continued-use risk, and product-problem reporting
-also includes dangerous malfunctions. Current booleans cannot establish a universal
-literal contradiction without interpreting clinical context. Keep the question
-open with its official-source evidence; never infer causality or force a report
-classification. PR195's general prompt experiment remains unmerged.
-
-Approved row E02 is sequenced vertically: issue208 delivers a third suspect on
-a complete additional native D-only form within the existing three-product
-case bound. Issue210 delivers additional native E copies for multiple devices within that bound.
-Both preserve stable identity/order, reviewed details and linked context; broader
-retained-product capacity and combination-component work (X01) remain.
-
-Native concomitant rows within the retained-case bound are implemented in issue212.
-Broader case capacity and test overflow still need connected support. See the
-[concrete remaining practical-cut work](REMAINING-PRACTICAL-CUT.md).
-
-D2 route and frequency preserve exact long/multiline wording and uncertainty in
-product/field-linked readable supplements (#233, bounded #153), including review,
-correction and browser resume. Native wording that fits keeps existing output.
-No clinical normalization, inference or shortened wording is used. Broader glyph
-support remains #154; unsupported characters remain explicit export limitations.
-
-Unqualified dose/strength wording that cannot fit native controls now prints
-exactly on product/field-linked supplements: D1 for strength and D2 for dose (#235); existing qualified B5
-context and native quantity/unit formatting remain. Multiline edits/drafts resume
-without accepted-fact changes. No totals, clinical units or interpretations are
-inferred. Broader glyphs and non-native duration shapes remain separate work.
-
-### Approved clinical input simplification — 17 October 2026, issue245
-
-Information still needed is a concise read-only gap list. Supply clinical answers by typing or native dictation in the existing Clinical update, then review and accept the resulting proposals. Information awaiting proposal acceptance is not labelled missing; conditional treatment gaps are recalculated after review. Remove separate direct clinical-answer forms from this panel. Secondary case-field corrections and Reporter details remain available, with the current visual design retained.
-
-Retire the competing medication-answer draft creation path. Preserve genuine earlier clinical-answer drafts as readable, unapplied work; never silently discard or replay them. Existing unsent Clinical update text, secondary edits and saved case knowledge remain protected. Save/resume visibility changes are deferred, as are model/prompt and PDF changes based on the Ali retest. Issue150 and PR240 remain paused. This approves only the bounded input-flow simplification and its regression verification.
