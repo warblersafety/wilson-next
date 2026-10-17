@@ -36,7 +36,7 @@ async function edit(page: Page, field: string) {
     let row = card.locator(`[data-field="${field}"]`);
     if (!await row.count())
         await card.getByRole('button', { name: /^Show more fields/ }).click();
-    await row.getByRole('button', { name: 'Change', exact: true }).click();
+    await row.getByRole('button', { name: /^(Add|Change)$/ }).click();
     return row;
 }
 async function pdf(page: Page, path: string) {
@@ -103,20 +103,20 @@ test('event dates preserve exact wording through conversational review, resume, 
 });
 test('death follow-up saves an invalid partial draft and accepts only explicit corrected precision without other clinical inference', async ({ page }, info) => {
     const c = missingDeathDateCase(), noModel = await seed(page, c);
-    await directAnswers(page);
-    await page.getByLabel('Date of death precision', { exact: true }).selectOption('month');
-    await page.getByLabel('Date of death year', { exact: true }).fill('2029');
-    await page.getByLabel('Date of death month', { exact: true }).fill('13');
-    await page.getByLabel('Exact supplied date of death wording', { exact: true }).fill('Death reported in March 2029');
-    await expect(page.getByRole('button', { name: 'Add date', exact: true })).toBeDisabled();
+    let row = await edit(page,'deathDate');
+    await row.getByLabel('Date of death precision', { exact: true }).selectOption('month');
+    await row.getByLabel('Date of death year', { exact: true }).fill('2029');
+    await row.getByLabel('Date of death month', { exact: true }).fill('13');
+    await row.getByLabel('Exact supplied date of death wording', { exact: true }).fill('Death reported in March 2029');
+    await expect(row.getByRole('button', { name: /^(Add fact|Apply correction)$/ })).toBeDisabled();
     await saved(page);
     await page.reload();
     await saved(page);
-    await directAnswers(page);
-    await expect(page.getByLabel('Date of death month', { exact: true })).toHaveValue('13');
+    await goTo(page,'Review details');row=page.locator('#case-card-event [data-field="deathDate"]');
+    await expect(row.getByLabel('Date of death month', { exact: true })).toHaveValue('13');
     expect((await storedState(page)).case).toEqual(c);
-    await page.getByLabel('Date of death month', { exact: true }).fill('03');
-    await serverAction(page, () => page.getByRole('button', { name: 'Add date', exact: true }).click());
+    await row.getByLabel('Date of death month', { exact: true }).fill('03');
+    await serverAction(page, () => row.getByRole('button', { name: /^(Add fact|Apply correction)$/ }).click());
     const after = (await storedState(page)).case;
     expect(after.event.facts.deathDate.resolvedValue?.value).toMatchObject({ kind: 'known', value: { precision: 'month', year: '2029', month: '03', wording: 'Death reported in March 2029' } });
     for (const field of Object.keys(c.event.facts))

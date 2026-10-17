@@ -1,3 +1,4 @@
+import {readOnlyGapScenario} from "../fixtures/read-only-gaps";
 import{fMedicationScenario}from'../fixtures/f-medication-context';
 import {nativeFScenario} from "../fixtures/native-f-rows";
 import {nativeEScenario} from "../fixtures/native-e-copies";
@@ -624,6 +625,7 @@ const priorScenarios = Object.fromEntries(Object.entries(quotedScenarios).map(([
 const omitted = sourceReferenceOutput();
 omitted.proposals.filter(({ target }) => target.entity === "test" && target.testReference === "t3").forEach((proposal) => { proposal.evidenceReferences = ["missing"]; });
 export const predeterminedResponseScenarios = {
+  readOnlyGaps: readOnlyGapScenario,
   ...priorScenarios,
   ...medicationScenarios,
   serial105: [{ identityScope: "issue105", turn: "correction" as const, output: serialOutput(serialCorrectionText) }],

@@ -5,15 +5,15 @@ import {
 } from "../e2e/build-predetermined-responses";
 
 describe("predetermined E2E scenario ownership", () => {
-  it("assembles the exact attributable 83-call queue from one authored source", () => {
+  it("assembles the exact attributable 86-call queue from one authored source", () => {
     const scenarios = Object.values(predeterminedResponseScenarios) as ReadonlyArray<
       ReadonlyArray<{ identityScope: string }>
     >;
     const assembled = scenarios.flat();
 
-    expect(scenarios).toHaveLength(50);
+    expect(scenarios).toHaveLength(51);
     expect(scenarios.every((responses) => responses.length > 0)).toBe(true);
-    expect(assembled).toHaveLength(83);
+    expect(assembled).toHaveLength(86);
     expect(predeterminedModelResponses).toEqual(assembled);
     const serialStart = assembled.indexOf(predeterminedResponseScenarios.serial105[0]);
     expect(assembled.slice(serialStart, serialStart + 3).map(({ identityScope }) => identityScope)).toEqual(["issue105", "issue105-mixed", "issue105-invalid"]);
@@ -22,6 +22,6 @@ describe("predetermined E2E scenario ownership", () => {
     expect(predeterminedResponseScenarios.draft4Navigation).toBe(predeterminedResponseScenarios.issue92Sparse);
     expect(predeterminedResponseScenarios.draft4Correction).toBe(predeterminedResponseScenarios.issue92Two);
     expect(assembled.slice(-20).map(({ identityScope }) => identityScope)).toEqual(["issue106", "issue106-update", "issue109-update", "narrative-continuation", "test-time", "test-time-update", "patient-involvement", "patient-present", "patient-unknown", "patient-age-disputed", "list-context", "list-context-dispute", "additional-comments", "comments-dispute", "d5-other", "d5-other-correction", "native-d-copy", "native-e-correction", "f-medication-context", "native-f-correction"]);
-    expect(new Set(assembled.map(({ identityScope }) => identityScope)).size).toBe(78);
+    expect(new Set(assembled.map(({ identityScope }) => identityScope)).size).toBe(81);
   });
 });

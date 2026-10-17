@@ -59,10 +59,14 @@ export function reconcileWorkspace(data: WorkspaceData, state: BrowserJourneySta
       else if (hasDraftWork(record)) retained.push({reason:"These unfinished date corrections refer to a review that has changed; they were not applied.",record});
       continue;
     }
+    // Legacy direct clinical-answer forms have been replaced by Clinical update.
+    // Keep their raw unfinished work readable, once, without applying or replaying it.
+    if (record.kind !== "card" && record.kind !== "reporter") {
+      if (hasDraftWork(record)) retained.push({ reason: "These earlier unfinished answers were kept when clinical answers moved to Clinical update. They have not been applied.", record });
+      continue;
+    }
     if (record.kind !== "card") {
-      const applicable = record.kind === "reporter"
-        ? record.scope === "case" && record.dependency === reporterDraftKey(snapshot)
-        : snapshot.clarification?.kind === record.kind && record.scope === snapshot.clarification.key && record.dependency === clinicalDraftKey(snapshot);
+      const applicable = record.scope === "case" && record.dependency === reporterDraftKey(snapshot);
       if (applicable) records[key] = record;
       else if (hasDraftWork(record)) retained.push({ reason: "These unfinished answers need review because their question or accepted details changed.", record });
       continue;

@@ -13,7 +13,7 @@ export async function goTo(page: Page, name: "Describe" | "Review details" | "Re
 }
 export async function directAnswers(page: Page) {
   await goTo(page, "Review details");
-  await expect(page.locator("#clinical-question")).toBeVisible();
+  await expect(page.getByLabel("Clinical update", { exact: true })).toBeVisible();
 }
 /** Explicit navigation used by older regression paths; navigation is never a case action. */
 export async function showActiveTask(page: Page) {
