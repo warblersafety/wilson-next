@@ -1,3 +1,4 @@
+import {isStatedAge} from "./age";
 import {isStatedDuration} from "./duration";
 import {isEventDateField,isProductDateField} from "./date-precision";
 import {isPartialExpiration} from "./expiration";
@@ -243,6 +244,10 @@ export function parseModelProposalEnvelope(
     if (!evidence) {
       unrepresented.push(quarantineProposal(rawProposal, "invalid-source-reference"));
       continue;
+    }
+    if(target.entity==="patient" && target.field==="ageYears" && proposal.value.kind==="known" && isStatedAge(proposal.value.value)) {
+      const wording = proposal.value.value.wording;
+      if(!evidence.some(p=>input.text.slice(p.start,p.end).includes(wording))) { unrepresented.push(quarantineProposal(rawProposal,"evidence-not-found")); continue; }
     }
     if(target.entity==="product" && target.field==="treatmentDuration" && proposal.value.kind==="known" && isStatedDuration(proposal.value.value) && !evidence.some(p=>input.text.slice(p.start,p.end).includes(proposal.value.kind==="known"&&isStatedDuration(proposal.value.value)?proposal.value.value.wording:""))) {
       unrepresented.push(quarantineProposal(rawProposal,"evidence-not-found"));continue;

@@ -121,7 +121,7 @@ function editableTarget(entity: string, field: string, value: CaseValue<unknown>
     case "supplied-date":
     case "product-date":
     case "expiration": return typeof raw === "string" || Boolean(raw && typeof raw === "object" && "precision" in raw && "wording" in raw);
-    case "age": return (typeof raw === "number" && Number.isFinite(raw)) || Boolean(raw && typeof raw === "object" && "value" in raw && typeof raw.value === "number" && Number.isFinite(raw.value) && "unit" in raw && ["months", "weeks", "days"].includes(String(raw.unit)));
+    case "age": return Boolean(raw && typeof raw === "object" && "wording" in raw && typeof raw.wording === "string") || (typeof raw === "number" && Number.isFinite(raw)) || Boolean(raw && typeof raw === "object" && "value" in raw && ((typeof raw.value === "number" && Number.isFinite(raw.value)) || typeof raw.value === "string") && "unit" in raw && ["", "years", "months", "weeks", "days"].includes(String(raw.unit)));
     case "boolean": return typeof raw === "boolean";
     case "weight": return Boolean(raw && typeof raw === "object" && "value" in raw && typeof raw.value === "number" && Number.isFinite(raw.value) && "unit" in raw && ["kg", "lb"].includes(String(raw.unit)));
     case "list": return Array.isArray(raw) && raw.every(item => typeof item === "string");

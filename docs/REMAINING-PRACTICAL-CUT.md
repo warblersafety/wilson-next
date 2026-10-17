@@ -17,7 +17,7 @@ still get separate PRs. Existing containment is not faithful representation.
 | Portable readable glyphs | Common clinical/reporter symbols and non-Latin text survive stored values, appearance streams, printing and a second viewer. No `?` replacement or forced fact edits; #154/X04. Native E/F guards only prevent corruption. |
 | Sex outside native boxes | Existing reviewed intersex value and current known sex qualifiers use explicit A3-linked continuation (#151/A03); no false native selection or sex-at-birth inference. Broader glyphs remain #154 and existing birth-basis guidance is #217; no new demographic vocabulary is selected. |
 | Calendar validation, partial dates and source visibility | Calendar validity/recovery delivered in PR218 (#164); expiration month/year/year-only continuation and source-account recovery delivered in PR220; shared partial purchase/therapy/reduction date path delivered in PR222; implant/explant E6a/E6b precision delivered in PR224; B6 test date precision delivered in PR226; event onset/death/discharge precision delivered in PR228; C1 return-date precision delivered in PR230. Partial DOB/A2 precision delivered and verified in PR232 (issue231), preserving explicit print choice and exact source wording without an invented day; A02/B01/D02/D04/D08/X03. |
-| Long route/frequency and non-native quantities/durations | Long/multiline route/frequency within current glyph support implemented in #233 after its gates; broader glyphs #154. Remaining dose-count/compound/range duration and unusual stated age/weight wording on appropriate supplements. Preserve print alternatives; never convert or calculate to fit; A02/A04/D03/D04. |
+| Long route/frequency and non-native quantities/durations | Long/multiline route/frequency (#233), unqualified dose/strength overflow (#235), and exact dose-count/compound/range duration (#237) are implemented within current glyph support. #239 implements exact supplied chronological age wording and selected uncertainty on A2, preserving explicit age/DOB choice without calculation. Unusual weight wording and broader glyphs #154 remain; A02/A04/D03/D04. |
 | Remaining field-linked context/exception paths | Carry reviewed qualifiers/prerequisites for the remaining C/D/category fields, or explicitly reviewed exact supplemental wording. Preserve the complete original account and read-back; generic warnings or note availability alone do not pass #115/#180. No promise of arbitrary automatic omission detection. |
 | Larger product/test cases and overflow | Connect retained-product capacity to native D/E copies, all F rows and beyond-native F continuation; retain >8 tests and produce readable grid continuation with stable identity. An explicit resource bound is still needed; do not silently raise caps or drop facts; B04/B05/E02/F01/X04. |
 | Correction identity and neutral withdrawal | Stable serial-test display references (#148); semantic target confirmation/reliability (#150 remains paused); neutral optional-comment withdrawal (#204); reordered explicit selection sets must not cause false conflicts (#207). No invented clinical value to remove a note; X02. |
@@ -61,3 +61,12 @@ language perfection is not part of this cut. Remaining necessary priorities are
 unusual stated age/weight, portable glyph representation#154, integrated
 source/readback/manual-recovery acceptance#180, and actual attachments/export
 packaging (fflate unapproved). Overall release is not ready;#150 stays paused.
+
+#239 implements the bounded exact supplied fractional/compound/range chronological
+age-at-event wording path, selected age uncertainty and native overflow on A2
+supplements. Strict native ages, explicit age/DOB choice and frozen v32-to-v33
+resume remain. No conversion, DOB arithmetic or gestational/corrected-age
+interpretation. Unusual weight remains a separate slice. Broader glyphs#154,
+integrated source/readback/manual-recovery acceptance#180 and attachments/export
+packaging (fflate unapproved) remain necessary. Overall release is not ready;
+#150 stays paused. Final slice gates are recorded canonically on its PR.

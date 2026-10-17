@@ -13,8 +13,8 @@ import { durationLimitation,durationNeedsSupplement,appendDurationContinuations,
 import { isCompleteCalendarDate } from "../../domain/case/calendar-date";
 import { raceEthnicityOptions, isRaceEthnicitySelections } from "../../domain/case/race-ethnicity";
 import { isCompleteBirthDate } from "../../domain/case/birth-date";
-import { patientAgeParts, type PatientAge } from "../../domain/case/age";
-import { patientAgeLimitation } from "./patient-age";
+import { isNativePatientAge, patientAgeParts, type PatientAge } from "../../domain/case/age";
+import { ageNeedsSupplement, ageTextLimitation, appendAgeContinuations, patientAgeLimitation } from "./patient-age";
 import { createHash } from "node:crypto";
 import { maximumForm3500ConcomitantProducts, maximumForm3500SuspectProducts, nativeForm3500SuspectSlots, maximumForm3500SuspectDevices } from "../../domain/case/limits";
 import { PDFDocument, PDFName, StandardFonts } from "@cantoo/pdf-lib";
@@ -345,8 +345,9 @@ async function fillNativeForm3500Projection(
   if (A.dateOfBirthInComments || A.dateOfBirth !== undefined || form.getTextField(fields.dateOfBirth).getText()) setText(form, fields.dateOfBirth, A.dateOfBirthInComments ? "B6 comments" : A.dateOfBirth ? formatDate(A.dateOfBirth) : "");
   const ageLimit = patientAgeLimitation(A.ageYears);
   if (ageLimit) throw new Error(`The reviewed patient age ${ageLimit}`);
-  const age = A.ageYears !== undefined ? patientAgeParts(A.ageYears) : undefined;
-  setText(form, fields.ageValue, age?.value.toString());
+  const age = A.ageYears !== undefined && isNativePatientAge(A.ageYears) && !ageNeedsSupplement(A.ageYears) ? patientAgeParts(A.ageYears) : undefined;
+  setText(form, fields.ageValue, A.ageYears !== undefined && ageNeedsSupplement(A.ageYears) ? "A2+" : age?.value.toString());
+  const ageContextLimit = await ageTextLimitation(projection); if(ageContextLimit)throw new Error(`The reviewed patient age ${ageContextLimit}`);
   setChecked(form, fields.ageYears, age?.unit === "years");
   // Preserve unset native controls on the legacy years path; still clear any
   // previously selected unit rather than allowing contradictory marks.
@@ -541,6 +542,7 @@ async function fillNativeForm3500Projection(
     dropdown.acroField.dict.set(PDFName.of("V"), option.value);
   }
   await appendNarrativeContinuations(document, continuations);
+  await appendAgeContinuations(document,projection,reportNarrative);
   await appendSexContinuations(document,projection,reportNarrative);
   await appendConcomitantContinuations(document,projection,reportNarrative);
   await appendReporterContinuations(document,projection,reportNarrative);
@@ -658,6 +660,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
   const readAge = (): PatientAge | undefined => {
     const units = (["years", "months", "weeks", "days"] as const).filter(unit => form.getCheckBox(unit === "years" ? fields.ageYears : unit === "months" ? fields.ageMonths : unit === "weeks" ? fields.ageWeeks : fields.ageDays).isChecked());
     if (units.length > 1) throw new Error("Form 3500 age has contradictory or unsupported units");
+    if (form.getTextField(fields.ageValue).getText() === "A2+") {if(units.length || A.ageYears===undefined || !ageNeedsSupplement(A.ageYears))throw new Error("Unreadable A2 age pointer");return A.ageYears;}
     if (!units.length) return undefined;
     const value = Number(form.getTextField(fields.ageValue).getText());
     return units[0] === "years" ? value : { value, unit: units[0] };
@@ -739,6 +742,7 @@ function readProjectionForm(document: PDFDocument, projection: Form3500Projectio
       A: compact({
         patientIdentifier: form.getTextField(fields.patientIdentifier).getText(),
         ageYears: readAge(),
+        ageContext: A.ageContext,
         dateOfBirth: parseDate(form.getTextField(fields.dateOfBirth).getText()),
         dateOfBirthInComments:form.getTextField(fields.dateOfBirth).getText()==="B6 comments"?true:undefined,
         raceEthnicity: A.raceEthnicity !== undefined ? raceEthnicityOptions.filter(option => form.getCheckBox(`topmostSubform[0].Page1[0].SecA_Patient[0].${option.widget}[0]`).isChecked()).map(option => option.value) : undefined,

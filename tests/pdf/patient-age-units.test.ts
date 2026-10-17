@@ -43,12 +43,12 @@ it("corrects amounts/units atomically without conversion, retains qualifier/hist
   let c = fixture({ value: 24, unit: "months" });
   c = setContextFact(c, "patient:patient:ageYears", { kind: "known", value: { value: 24, unit: "days" }, qualifier: "caregiver estimate" });
   let result = await inspect(c); expect(result.fields[`${prefix}Value[0]`]).toBe("24"); expect(checked(result.fields,"Days")).toBe(true);
-  expect(result.projection.omissions).toContainEqual(expect.objectContaining({ target: "patient:patient:ageYears", reason: "qualifier-not-included", qualifier: "caregiver estimate", baseValueIncluded: true }));
+  expect(result.projection.sections.A.ageContext).toBe("caregiver estimate");
   c = setContextFact(c, "patient:patient:ageYears", { kind: "known", value: 24 });
   const restored = parseBrowserJourneyState(JSON.parse(JSON.stringify({ version: browserStateVersion, stage: "output", case: c, unrepresented: [] }))).case;
   result = await inspect(restored); expect(result.fields[`${prefix}Value[0]`]).toBe("24"); expect(checked(result.fields,"Years")).toBe(true);
   expect(checked(result.fields,"Months")).toBe(false); expect(checked(result.fields,"Days")).toBe(false);
-  expect(restored.patient.facts.ageYears.supersededValues.some(v => v.value.kind === "known" && typeof v.value.value === "object" && v.value.value.unit === "months")).toBe(true);
+  expect(restored.patient.facts.ageYears.supersededValues.some(v => v.value.kind === "known" && typeof v.value.value === "object" && "unit" in v.value.value && v.value.value.unit === "months")).toBe(true);
   expect(restored.patient.facts.ageYears.supersededValues.some(v => v.value.kind === "known" && v.value.qualifier === "caregiver estimate")).toBe(true);
 });
 it.each(["unknown", "declined", "explicitly-absent", "inapplicable"] as const)("clears every native age control for current %s without resurrecting older units", async kind => {
@@ -66,14 +66,14 @@ it("keeps pending/mixed-unit conflicts unpromoted until explicit resolution", as
   const resolved = applyCaseCommand(conflict, { type: "resolve-conflict", commandId: "resolve-age", expectedRevision: conflict.revision, target: { entity: "patient", entityId: "patient", field: "ageYears" }, chosenValueId: "age-alt-0", source: contextSource("choose-weeks") }).case;
   const result = await inspect(resolved); expect(result.fields[`${prefix}Value[0]`]).toBe("6"); expect(checked(result.fields,"Weeks")).toBe(true);
 });
-it.each(["days", "weeks"] as const)("blocks an accepted %s age beyond native width without losing the value, including both API modes", async unit => {
+it.each(["days", "weeks"] as const)("prints an accepted %s age beyond native width on a readable supplement, including both API modes", async unit => {
   const c = fixture({ value: Number.MAX_SAFE_INTEGER, unit }), before = structuredClone(c);
   const snapshot = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: c }), c.id);
-  expect(snapshot.downloadReady).toBe(false); expect(snapshot.outputIssues).toContainEqual(expect.objectContaining({ code: "unsupported-patient-age", targets: ["patient:patient:ageYears"] }));
-  await expect(fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")), snapshot.projection)).rejects.toThrow("age");
+  expect(snapshot.downloadReady).toBe(true); expect(snapshot.outputIssues.some(i=>i.code==="unsupported-patient-age")).toBe(false);
+  const checkedAge=await inspect(c);expect(checkedAge.fields[`${prefix}Value[0]`]).toBe("A2+");for(const u of ["Years","Months","Weeks","Days"])expect(checked(checkedAge.fields,u)).toBe(false);
   for (const mode of ["preview","download"]) {
     const r = await pdfPost(new NextRequest("http://wilson.test/api/case/pdf", { method: "POST", headers: { host: "wilson.test", origin: "http://wilson.test", "content-type": "application/json" }, body: JSON.stringify({ mode, state: { version: browserStateVersion, stage: "output", case: c, unrepresented: [] } }) }));
-    expect(r.status).toBe(409); expect(await r.json()).toMatchObject({ code: "pdf-not-ready" });
+    expect(r.status).toBe(200); expect(r.headers.get("content-type")).toContain("application/pdf");
   }
   expect(c).toEqual(before);
 });
@@ -90,7 +90,7 @@ it("pins native age geometry and preserves the old years bounds without acceptin
 it("retains a qualified week age through unit-only corrections, source/history and numeric years without conversion",async()=>{
   let c=fixture({value:6,unit:"weeks"});
   c=setContextFact(c,"patient:patient:ageYears",{kind:"known",value:{value:6,unit:"weeks"},qualifier:"caregiver estimate"});
-  const qualified=await inspect(c);expect(qualified.projection.omissions).toContainEqual(expect.objectContaining({target:"patient:patient:ageYears",reason:"qualifier-not-included",qualifier:"caregiver estimate",baseValueIncluded:true}));
+  const qualified=await inspect(c);expect(qualified.projection.sections.A.ageContext).toBe("caregiver estimate");
   expect(qualified.fields[`${prefix}Value[0]`]).toBe("6");expect(checked(qualified.fields,"Weeks")).toBe(true);
   for(const value of [{value:6,unit:"days"} as const,{value:6,unit:"months"} as const,6]){
     c=setContextFact(c,"patient:patient:ageYears",{kind:"known",value});
