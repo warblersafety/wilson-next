@@ -1,7 +1,7 @@
 import { narrativeGlyphLimitation } from "./narrative-continuation";
 import { quantityContextEntries, type Form3500Projection } from "../../domain/case/projection";
 import type { ProjectedQuantity } from "../../domain/case/projection";
-import { nativeSingleLineTextLimitation } from "./product-text";
+import { appearanceTextGlyphLimitation, nativeSingleLineTextLimitation } from "./product-text";
 
 export const quantityTextGeometry = {
   dose: { width: 208.709, fontSize: 8.5 },
@@ -23,9 +23,14 @@ function literalQuantityParts(quantity: ProjectedQuantity): { amount: string; un
   return { amount, unit: match ? units[match[2].toLowerCase()] : " " };
 }
 
+/** Qualified quantities already carry the exact value/context in existing B5. */
+export function quantityNeedsSupplement(quantity: ProjectedQuantity, field: "dose" | "strength"): boolean {
+  const g = quantityTextGeometry[field];
+  return quantity.qualifier === undefined && Boolean(nativeSingleLineTextLimitation(literalQuantityParts(quantity).amount, g.width, g.fontSize, "quantity text control"));
+}
 export function quantityParts(quantity: ProjectedQuantity, field: "dose" | "strength"): { amount: string; unit: string } {
   const parts = literalQuantityParts(quantity);
-  if (quantity.qualifier === undefined) return parts;
+  if (quantity.qualifier === undefined) return quantityNeedsSupplement(quantity, field) ? { amount: field === "strength" ? "D1 supplement" : "D2 supplement", unit: " " } : parts;
   const { width, fontSize } = quantityTextGeometry[field];
   // The full raw value and context are carried in B5. Never clip a compound
   // quantity or infer an amount/unit from its words to fill this narrow control.
@@ -35,7 +40,11 @@ export function quantityParts(quantity: ProjectedQuantity, field: "dose" | "stre
 }
 
 export function quantityLimitation(_field: "dose" | "strength", quantity: ProjectedQuantity | undefined): string | undefined {
-  return quantity !== undefined && !quantity.value.trim() ? "has no non-blank wording" : undefined;
+  if(quantity === undefined) return undefined;
+  if(!quantity.value.trim()) return "has no non-blank wording";
+  // Literal native amount/unit formatting is retained (including existing microgram aliases).
+  // Unsupported raw compound wording must never reach a substituting appearance.
+  return quantity.qualifier === undefined ? appearanceTextGlyphLimitation(literalQuantityParts(quantity).amount) : undefined;
 }
 
 // Independent native metadata: Page2 DescEvent, 531.102 x520.574, border0,

@@ -43,3 +43,11 @@ accounts/login, cross-device cases and real-patient-data production are excluded
 #233 delivers the long/multiline route and frequency cut within existing glyph support. Broader portable glyphs stay #154. Next necessary work includes faithful non-native quantities/durations and integrated source/readback/manual-recovery acceptance. Actual pictures/export packaging remains necessary but must respect the unapproved fflate boundary; capacity/component decisions must not be hacked around.
 
 #233 implements bounded #153 long/multiline route and frequency within existing glyph support. #153 remains open for broader glyph representation (#154). #180 ordinary precision implementation is complete; representative integrated source/readback/manual-recovery acceptance remains pending. Overall release is not declared ready. Remaining necessary work includes unusual non-native quantities/durations, attachments/package lifecycle (fflate unapproved), and integrated acceptance.
+
+#235 closes unqualified dose/strength native overflow/line-break loss within the
+existing glyph set using exact D1/D2 supplements; qualified B5 behavior is retained.
+Remaining quantity/duration work includes dose-count/compound/range duration and
+unusual age/weight wording. Broader portable glyphs #154 require separately
+approved font/dependency work; no installation is authorized by this slice.
+#180 integrated source/readback/manual-recovery acceptance and attachments/package
+lifecycle (fflate unapproved) remain outstanding. Overall release is not ready.

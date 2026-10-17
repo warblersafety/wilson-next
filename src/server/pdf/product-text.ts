@@ -98,6 +98,11 @@ export function needsD2Supplement(field: "route" | "frequency", value: string): 
   const g = otherTextGeometry[field];
   return other !== undefined && Boolean(nativeSingleLineTextLimitation(other, g.width, g.fontSize, "Other text control"));
 }
+/** Charset of the actual existing appearance; linefeeds are supported on continuations. */
+export function appearanceTextGlyphLimitation(text: string): string | undefined {
+  return Array.from(text).some(c => c !== "\n" && (!appearanceCharacters.has(c.codePointAt(0)!) || /[\u0000-\u001f\u007f]/.test(c)))
+    ? "contains characters the current PDF appearance font cannot represent" : undefined;
+}
 /** A PDF-owned representation limit: never shorten text or shrink native type. */
 export function productTextLimitation(field: ProductTextField, value: string): string | undefined {
   if (!value.trim()) return "has no non-blank wording";
@@ -106,8 +111,7 @@ export function productTextLimitation(field: ProductTextField, value: string): s
   const other = field === "route" ? encodeForm3500Route(value).other : encodeForm3500Frequency(value).other;
   if (other === undefined) return undefined;
   // Long/multiline wording uses the same charset on a fixed-size supplement.
-  if (Array.from(other).some(c => c !== "\n" && (!appearanceCharacters.has(c.codePointAt(0)!) || /[\u0000-\u001f\u007f]/.test(c)))) return "contains characters the current PDF appearance font cannot represent";
-  return undefined;
+  return appearanceTextGlyphLimitation(other);
 }
 
 /** Same metrics/charset used by the existing generated Helvetica appearance. */
