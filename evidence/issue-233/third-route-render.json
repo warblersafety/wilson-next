@@ -1,0 +1,22 @@
+{
+  "capturedPages": [
+    {
+      "page": 12,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-233/third-route-page-12.png"
+    },
+    {
+      "page": 17,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-233/third-route-page-17.png"
+    }
+  ],
+  "manualInspectionRequired": [
+    "Exact route/frequency text and uncertainty readable at fixed size",
+    "Native pointer and link do not overlap form header",
+    "Global product ordinal, field, reference and pagination intact"
+  ],
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-233/third-route.pdf"
+}

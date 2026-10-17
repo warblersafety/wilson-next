@@ -25,7 +25,7 @@ describe("reviewed sex and native PDF representability", () => {
     }
     expect(current).toEqual(before);
   });
-  it.each((["route", "frequency"] as const).flatMap(field => ["W".repeat(100), "supplied\nwording", "静脉"].map(value => ({ field, value }))))("retains unrepresentable Other $field and blocks before generating: $value", async ({ field, value }) => {
+  it.each((["route", "frequency"] as const).flatMap(field => ["静脉", "supplied\twording"].map(value => ({ field, value }))))("retains unrepresentable Other $field and blocks before generating: $value", async ({ field, value }) => {
     const current = correctCapacityProduct(productCapacityCase(), 0, { [field]: { kind: "known", value } });
     const snapshot = await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: current }), current.id);
     expect(snapshot.downloadReady).toBe(false);

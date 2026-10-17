@@ -1,3 +1,4 @@
+import {appendD2Continuations, d2TextIssues, d2NativeText} from "./d2-continuation";
 import {appendProductDateContinuations} from "./product-date-continuation";
 import {appendSexContinuations, sexTextLimitation} from "./patient-sex";
 import {reporterGeometry,reporterNativeText,appendReporterContinuations,reporterTextIssues,reporterCountryLabel} from "./reporter-text";
@@ -323,6 +324,8 @@ async function fillNativeForm3500Projection(
     throw new Error("The approved Form 3500 adapter supports at most eight relevant tests");
   }
 
+  const d2Issues = await d2TextIssues(projection);
+  if(d2Issues.length) throw new Error(`The reviewed D2 ${d2Issues[0].field} ${d2Issues[0].limitation}`);
   const continuations = await planNarrativeContinuations(projection, reportNarrative);
   const document = await loadForm(source);
   const form = document.getForm();
@@ -521,6 +524,7 @@ async function fillNativeForm3500Projection(
   setChecked(form, fields.reporterPacker, reporter.reportedTo?.includes("packer") === true);
   setChecked(form, fields.reporterIdentityNo, reporter.doNotDiscloseIdentity === true);
 
+  await appendD2Continuations(document,projection,reportNarrative);
   await appendProductDateContinuations(document,projection,reportNarrative);
   form.updateFieldAppearances();
   // pdf-lib selects display labels. Preserve the generated label appearance,
@@ -619,13 +623,13 @@ function writeSuspectProduct(
   writeQuantity(form, names.dose, names.doseUnit, product.dose);
   writeQuantity(form, names.strength, names.strengthUnit, product.strength);
   if (product.frequency) {
-    const encoded = encodeForm3500Frequency(product.frequency);
+    const encoded = encodeForm3500Frequency(d2NativeText("frequency",product.frequency));
     form.getDropdown(names.frequency).select(encoded.option);
     setText(form, names.otherFrequency, encoded.other);
   }
   if (product.route !== undefined) {
     const dropdown = form.getDropdown(names.route);
-    const encoded = encodeForm3500Route(product.route, dropdown.getOptions());
+    const encoded = encodeForm3500Route(d2NativeText("route",product.route), dropdown.getOptions());
     dropdown.select(encoded.option);
     setText(form, names.otherRoute, encoded.other);
   }

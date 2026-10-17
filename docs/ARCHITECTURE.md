@@ -1893,3 +1893,23 @@ Issue227 widens only onset/death/discharge date values to supplied precision; br
 Issue229 widens only C1 productReturnDate to supplied precision; browser v30 strictly validates frozen v29 before lossless migration. Partial native C1 dates point to labelled C1 wording in existing Additional comments/B6 pagination, sharing content keys/references and field-specific glyph guards with independent tests/general comments. Full native dates remain formatted and their qualifiers carry labelled context. Return-date output requires explicit returned-to-manufacturer availability; other/unknown/disputed availability retains and discloses the date without printing it. No return, individual-product attribution, chronology, clinical narrative or test observation is inferred. DOB/A2 and B4 remain unchanged.
 
 Issue231 supports explicit month/year/year-only DOB using the existing birth-date editor and supplied-date contract. Browser v31 strictly validates frozen v30 before widening; invalid DOB remains rejected as before. A2 partial DOB points to labelled Additional comments/B6 pagination; complete dates and exact qualifier context remain linked. Explicit A2 age selection suppresses every DOB output/context without erasing it; both known without selection blocks, and selected-but-unavailable DOB never falls back to age. DOB/age/patient involvement/chronology are never derived. Shared content hashes, source trace, glyph attribution and conflict/status gates apply; no new note engine or questions.
+
+### D2 long and multiline route/frequency (Issue #233, bounded #153)
+
+Reviewed route and frequency remain exact strings. Their existing review controls
+now preserve line breaks in display, correction, history and unfinished drafts.
+Native dropdown/Other output is unchanged when wording fits the pinned geometry.
+An overflowing or multiline value uses Other / `D2 supplement`, with its exact
+wording on a fixed 10pt, 14pt-leading D2 continuation. No abbreviation expansion,
+clinical normalization, truncation or font shrinking occurs. Each continuation
+page repeats the global suspect-product ordinal, field, report reference and
+page count; the native product slot points to the supplement. The third suspect's
+D-only native copy carries its own continuation and global product #3 identity.
+Route/frequency qualifiers also use field-linked D2 context, even for native-sized
+values. Source traces, authoritative facts, pending/conflict handling and explicit
+correction semantics remain unchanged. Content keys/reference include this context.
+Unsupported glyphs/control characters and blank accepted text remain export
+limitations at both readiness and adapter boundaries; broader glyphs stay #154.
+#153 is only complete for long/multiline wording within current glyph support.
+#180 ordinary precision implementation is complete; integrated source/readback/
+manual-recovery acceptance remains pending. This is not overall release readiness.

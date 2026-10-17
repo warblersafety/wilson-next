@@ -90,8 +90,13 @@ export function encodeForm3500Frequency(value: string): { option: string; other?
   return option ? { option } : { option: "Other", other: value };
 }
 export function encodeForm3500Route(value: string, options: readonly string[] = nativeRouteOptions): { option: string; other?: string } {
-  const matched = options.find(option => option.trim() && option.toLowerCase() === value.trim().toLowerCase());
+  const matched = /[\r\n\t]/.test(value) ? undefined : options.find(option => option.trim() && option.toLowerCase() === value.trim().toLowerCase());
   return matched && matched !== "Other" ? { option: matched } : { option: "Other", other: value };
+}
+export function needsD2Supplement(field: "route" | "frequency", value: string): boolean {
+  const other = field === "route" ? encodeForm3500Route(value).other : encodeForm3500Frequency(value).other;
+  const g = otherTextGeometry[field];
+  return other !== undefined && Boolean(nativeSingleLineTextLimitation(other, g.width, g.fontSize, "Other text control"));
 }
 /** A PDF-owned representation limit: never shorten text or shrink native type. */
 export function productTextLimitation(field: ProductTextField, value: string): string | undefined {
@@ -100,8 +105,9 @@ export function productTextLimitation(field: ProductTextField, value: string): s
   if (field === "ndcOrUniqueId") return nativeSingleLineTextLimitation(value, identifierGeometry.width, identifierGeometry.fontSize, "NDC number or Unique ID control");
   const other = field === "route" ? encodeForm3500Route(value).other : encodeForm3500Frequency(value).other;
   if (other === undefined) return undefined;
-  const { width, fontSize } = otherTextGeometry[field];
-  return nativeSingleLineTextLimitation(other, width, fontSize, "Other text control");
+  // Long/multiline wording uses the same charset on a fixed-size supplement.
+  if (Array.from(other).some(c => c !== "\n" && (!appearanceCharacters.has(c.codePointAt(0)!) || /[\u0000-\u001f\u007f]/.test(c)))) return "contains characters the current PDF appearance font cannot represent";
+  return undefined;
 }
 
 /** Same metrics/charset used by the existing generated Helvetica appearance. */

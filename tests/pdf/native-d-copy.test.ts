@@ -22,7 +22,7 @@ it("third suspect is printed on a complete additional native FDA form, only D fi
 });
 
 it("third-product representation errors stay linked to that entity; native geometry and glyph gates do not disappear on overflow",async()=>{
- for(const [field,value,code] of [["purchaseSellerCountry","UK","unsupported-purchase-detail"],["purchaseSellerAddress","β fictional address","unsupported-purchase-detail"],["route","x".repeat(500),"unsupported-product-route"]]as const){const c=setContextFact(nativeDCopyCase(),`product:product-lisinopril:${field}`,{kind:"known",value}),s=await getJourneySnapshot(new InMemoryCaseRepository({initialCase:c}),c.id);expect(s.downloadReady).toBe(false);expect(s.outputIssues).toContainEqual(expect.objectContaining({code,targets:[`product:product-lisinopril:${field}`]}));}
+ for(const [field,value,code] of [["purchaseSellerCountry","UK","unsupported-purchase-detail"],["purchaseSellerAddress","β fictional address","unsupported-purchase-detail"],["route","β fictional route","unsupported-product-route"]]as const){const c=setContextFact(nativeDCopyCase(),`product:product-lisinopril:${field}`,{kind:"known",value}),s=await getJourneySnapshot(new InMemoryCaseRepository({initialCase:c}),c.id);expect(s.downloadReady).toBe(false);expect(s.outputIssues).toContainEqual(expect.objectContaining({code,targets:[`product:product-lisinopril:${field}`]}));}
 });
 it("fourth projected suspect is rejected instead of silently losing or pooling native copies",async()=>{const p=projectForm3500(nativeDCopyCase());p.sections.D.suspectProducts.push({...p.sections.D.suspectProducts[2],productId:"fourth"});await expect(fillForm3500Projection(new Uint8Array(await readFile("assets/fda/form-fda-3500-09-2025.pdf")),p)).rejects.toThrow("at most 3");});
 
