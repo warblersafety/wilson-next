@@ -36,7 +36,7 @@ export interface PatientFacts {
   involvement: Fact<"present" | "none">;
   identifier: Fact<string>;
   ageYears: Fact<PatientAge>;
-  dateOfBirth: Fact<string>;
+  dateOfBirth: Fact<SuppliedDate>;
   raceEthnicity: Fact<RaceEthnicity[]>;
   a2Value: Fact<"age" | "date-of-birth">;
   sex: Fact<"female" | "male" | "intersex">;

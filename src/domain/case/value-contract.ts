@@ -4,7 +4,6 @@ import { isOtherProductTypes } from "./other-product-types";
 import { isTreatmentDuration } from "./duration";
 import { isRaceEthnicitySelections, raceEthnicityValues } from "./race-ethnicity";
 import { isCompleteCalendarDate } from "./calendar-date";
-import { isCompleteBirthDate } from "./birth-date";
 import { isPatientAge } from "./age";
 import type {
   CaseValue,
@@ -196,7 +195,7 @@ export function knownValueMismatch(target: FactTarget, value: CaseValue<unknown>
     case "expiration": return isExpirationValue(actual) ? undefined : "expirationDate requires a complete valid ISO calendar date or explicit month/year or year-only precision with exact supplied wording";
     case "duration": return isTreatmentDuration(actual) ? undefined : "treatmentDuration requires an explicit positive decimal string amount and supported unit";
     case "calendar-date": return isCompleteCalendarDate(actual) ? undefined : `${target.field} requires a complete valid ISO calendar date (YYYY-MM-DD), year 0001–9999`;
-    case "birth-date": return isCompleteBirthDate(actual) ? undefined : "dateOfBirth requires a complete valid ISO calendar date (YYYY-MM-DD), year 0001–9999";
+    case "birth-date": return isSuppliedDate(actual) ? undefined : "dateOfBirth requires a complete valid ISO calendar date (YYYY-MM-DD), or explicit supplied precision and exact wording";
     case "patient-age": return isPatientAge(actual) ? undefined : `${target.field} requires a valid age: whole years 0–150, or an explicit nonnegative whole number with unit months, weeks or days`;
     case "string":
       if (target.entity === "event" && target.field === "additionalComments" && typeof actual === "string" && !actual.trim()) return "additionalComments requires explicitly supplied nonblank text";
@@ -275,7 +274,7 @@ function describeContract(contract: KnownValueContract): string {
     case "expiration": return "a complete valid Gregorian YYYY-MM-DD string, or {precision: month,year: YYYY,month: MM,wording: exact supplied text} or {precision: year,year: YYYY,wording: exact supplied text}; never invent day/month or judge expiry";
     case "duration": return "an object {value: positive plain decimal string, unit: minutes|hours|days|weeks|months|years}, preserving spelling; never calculate from dates or invent units";
     case "calendar-date": return "a complete valid Gregorian ISO calendar date YYYY-MM-DD, year 0001–9999; never infer or repair a supplied date";
-    case "birth-date": return "a complete valid Gregorian ISO calendar date YYYY-MM-DD, year 0001–9999; never invent missing components or derive age";
+    case "birth-date": return "a complete valid Gregorian ISO calendar date YYYY-MM-DD, or explicit {precision: month,year: YYYY,month: MM,wording: exact supplied text} or {precision: year,year: YYYY,wording: exact supplied text}; never invent components, derive age or select A2 print choice";
     case "patient-age": return "an integer 0–150 for years, or an object {value: nonnegative safe integer, unit: months, weeks or days} for explicit non-year patient age (legacy target ageYears)";
     case "string": return "a string";
     case "iso-date": return "a complete valid Gregorian ISO calendar date YYYY-MM-DD, year 0001–9999; never infer missing components or repair an impossible date";

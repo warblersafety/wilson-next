@@ -316,8 +316,8 @@ export async function performJourneyAction(
           expectedRevision: current.revision,
           source: fullSource(
             intent === "correction" ? "correction" : "answer",
-            ((target.entity === "event" && isEventDateField(target.field)) || (target.entity === "test" && target.field === "date") || (target.entity === "product" && (target.field === "expirationDate" || isProductDateField(target.field))))
-              ? `Clinician supplied ${target.entity === "event" && isEventDateField(target.field) ? eventDateLabels[target.field].toLowerCase() : target.entity === "test" ? "test date" : target.field === "expirationDate" ? "expiration" : isProductDateField(target.field) ? productDateLabels[target.field].toLowerCase() : "date"} information: ${displayValue(action.value, target)}${action.value.kind === "known" && !isPartialExpiration(action.value.value) && action.value.qualifier ? `; context: ${action.value.qualifier}` : ""}.`
+            ((target.entity === "patient" && target.field === "dateOfBirth") || (target.entity === "event" && isEventDateField(target.field)) || (target.entity === "test" && target.field === "date") || (target.entity === "product" && (target.field === "expirationDate" || isProductDateField(target.field))))
+              ? `Clinician supplied ${target.entity === "patient" && target.field === "dateOfBirth" ? "date of birth" : target.entity === "event" && isEventDateField(target.field) ? eventDateLabels[target.field].toLowerCase() : target.entity === "test" ? "test date" : target.field === "expirationDate" ? "expiration" : isProductDateField(target.field) ? productDateLabels[target.field].toLowerCase() : "date"} information: ${displayValue(action.value, target)}${action.value.kind === "known" && !isPartialExpiration(action.value.value) && action.value.qualifier ? `; context: ${action.value.qualifier}` : ""}.`
               : target.entity === "patient" && target.field === "raceEthnicity"
               ? `Clinician supplied the patient race and/or ethnicity: ${displayValue(action.value, target)}${action.value.kind === "known" && action.value.qualifier ? `; context: ${action.value.qualifier}` : ""}.`
               : `Clinician ${intent === "correction" ? "corrected this value directly" : "added this value directly"}.`,
@@ -864,6 +864,7 @@ function displayValue(value: CaseValue<unknown>, target?: FactTarget): string {
   if (target?.entity === "patient" && target.field === "ageYears" && isPatientAge(value.value)) { const age = patientAgeParts(value.value); return `${age.value} ${age.unit}`; }
   if (target?.entity === "patient" && target.field === "a2Value" && value.value === "date-of-birth") return "date of birth";
   if (target?.entity === "patient" && target.field === "raceEthnicity" && Array.isArray(value.value)) return value.value.map(item => raceEthnicityOptions.find(option => option.value === item)?.label ?? String(item)).join(" and ");
+  if (isPartialExpiration(value.value) && target?.entity === "patient" && target.field === "dateOfBirth")return suppliedDateText(value.value,"date of birth",value.qualifier);
   if (isPartialExpiration(value.value) && target?.entity === "event" && isEventDateField(target.field))return suppliedDateText(value.value,eventDateLabels[target.field].toLowerCase(),value.qualifier);
   if (isPartialExpiration(value.value) && target?.entity === "test" && target.field === "date") return suppliedDateText(value.value,"test date",value.qualifier);
   if (isPartialExpiration(value.value)) return target?.entity === "product" && isProductDateField(target.field) ? suppliedDateText(value.value,productDateLabels[target.field].toLowerCase(),value.qualifier) : expirationText(value.value,value.qualifier);
