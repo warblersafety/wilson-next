@@ -1,0 +1,15 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "local/ali-mock-report.pdf",
+  "pagesInspected": [
+    1,
+    2,
+    3,
+    4,
+    7,
+    9
+  ],
+  "inspection": "Native A/B/D/G content is legible and aligned. CK observations retain distinct dates and ranges. D3 stop date and D7/D8 choices match accepted mock facts; Section F continuation preserves the named lisinopril regimen and ongoing status. Form identity is unchanged.",
+  "liveApplicationModelCalls": 0
+}
