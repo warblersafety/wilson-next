@@ -8,7 +8,7 @@ import { listWithContext } from "../src/domain/case/list-context";
 
 import { useEffect, useRef, useState, useId } from "react";
 import { isCompleteBirthDate } from "../src/domain/case/birth-date";
-import { isPatientAge } from "../src/domain/case/age";
+import { patientAgeText, isPatientAge } from "../src/domain/case/age";
 import { testDisplayLabel } from "../src/domain/case/test-label";
 import { productDisplayLabel } from "../src/domain/case/product-label";
 import type { CaseValue, ReportType } from "../src/domain/case/types";
@@ -308,7 +308,7 @@ export function JourneyBody() {
         </section>
         <section data-screen="details" hidden={screen !== "details"}>
           <h1>Review the case details</h1>
-          <details className={styles.caseCard} open={sourceAccountOpen} onToggle={e=>setSourceAccountOpen(e.currentTarget.open)}><summary>Your supplied account and date wording</summary>{sourceAccountOpen && screen === "details" && <div><p>Compare your complete submitted words with the proposed details. If date of birth, product return, event, death, discharge, test, purchase, therapy, device implant/explant or expiration wording was missed, add its stated precision and exact wording in the corresponding patient, event, test or product date field. If supplied treatment duration was missed, add its exact wording and uncertainty in Treatment duration and review the D3 value to print. Wilson does not detect every omission automatically.</p>{uiDrafts.conversation.length ? uiDrafts.conversation.map(input=><p className={styles.originalAccount} key={input.id}>{input.text}</p>) : <><p>Only retained source records are available for this earlier case; the complete account was not stored. Direct edits are recorded as clinician-entry summaries, not verbatim conversation.</p>{browserState?.case.sources.filter(s=>["narrative","correction","answer"].includes(s.inputType)).map(s=><p className={styles.originalAccount} key={s.id}>{s.excerpt}</p>)}</>}</div>}</details>
+          <details className={styles.caseCard} open={sourceAccountOpen} onToggle={e=>setSourceAccountOpen(e.currentTarget.open)}><summary>Your supplied account and date wording</summary>{sourceAccountOpen && screen === "details" && <div><p>Compare your complete submitted words with the proposed details. If date of birth, product return, event, death, discharge, test, purchase, therapy, device implant/explant or expiration wording was missed, add its stated precision and exact wording in the corresponding patient, event, test or product date field. If supplied age wording was missed, add its exact wording and uncertainty in Age and review the A2 value to print. If supplied treatment duration was missed, add its exact wording and uncertainty in Treatment duration and review the D3 value to print. Wilson does not detect every omission automatically.</p>{uiDrafts.conversation.length ? uiDrafts.conversation.map(input=><p className={styles.originalAccount} key={input.id}>{input.text}</p>) : <><p>Only retained source records are available for this earlier case; the complete account was not stored. Direct edits are recorded as clinician-entry summaries, not verbatim conversation.</p>{browserState?.case.sources.filter(s=>["narrative","correction","answer"].includes(s.inputType)).map(s=><p className={styles.originalAccount} key={s.id}>{s.excerpt}</p>)}</>}</div>}</details>
           {representationLimited && <p className={styles.notice} role="status">This PDF cannot represent every reviewed value. Your reviewed details are retained. Review & save explains the limitation.</p>}
           {capacityIssues.length > 0 && <p className={styles.notice} role="status">This case exceeds the preview’s PDF capacity. Your reviewed details are retained. Review & save explains the supported limits.</p>}
           {clinicalAction?.kind === "proposals" && <p className={styles.lead}>Check each proposed group. Change incorrect values before accepting.</p>}
@@ -1132,6 +1132,12 @@ function CaseCard({ pendingUpdates = [], domId, title, eyebrow, entity, entityId
   </article>;
 }
 
+function ageEditValue(amount:string,unit:string):EditableCaseValue {
+  if(amount!=="" && unit==="years")return {kind:"known",value:Number(amount)};
+  if(amount!=="" && ["months","weeks","days"].includes(unit))return {kind:"known",value:{value:Number(amount),unit:unit as "months"|"weeks"|"days"}};
+  return {kind:"known",value:{value:amount,unit}};
+}
+
 function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQualifier, onChange: emitChange }: { label: string; control: FactControl; value: EditableCaseValue; hasQualifierControl: boolean; onRevealQualifier: () => void; onChange: (value: EditableCaseValue) => void }) {
   const suggestionsId = useId();
   const precisionLabel=control.shape === "expiration" ? "Expiration" : label;
@@ -1155,12 +1161,13 @@ function FactValueEditor({ label, control, value, hasQualifierControl, onRevealQ
     {value.kind === "known" && (control.shape === "expiration" || control.shape === "product-date" || control.shape === "supplied-date" || control.shape === "birth-date") && <DatePrecisionEditor label={precisionLabel} completeLabel={`New ${label}`} value={(known??"") as SuppliedDate} onChange={next=>onChange({kind:"known",value:next})}/>}
     {value.kind === "known" && control.shape === "text" && control.multiline && <textarea aria-label={`New ${label}`} rows={4} value={String(known ?? "")} onChange={event => onChange({ kind: "known", value: event.target.value })} />}
     {value.kind === "known" && control.shape === "text" && !control.multiline && <><input aria-label={`New ${label}`} list={control.options ? suggestionsId : undefined} value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />{control.options && <datalist id={suggestionsId}>{control.options.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</datalist>}</>}
-    {value.kind === "known" && control.shape === "age" && <div className={styles.measurement}>
-      <input aria-label={`New ${label}`} type="number" min="0" step="1" max={typeof known === "number" ? 150 : undefined} value={String(typeof known === "number" ? known : typeof known === "object" && known && "value" in known ? known.value : "")} onChange={(event) => onChange({ kind: "known", value: typeof known === "object" && known && "unit" in known && (known.unit === "months" || known.unit === "weeks" || known.unit === "days") ? { value: Number(event.target.value), unit: known.unit } : Number(event.target.value) })} />
-      <select aria-label={`${label} unit`} value={typeof known === "number" ? "years" : typeof known === "object" && known && "unit" in known ? known.unit : "years"} onChange={(event) => {
-        const amount = typeof known === "number" ? known : typeof known === "object" && known && "value" in known && typeof known.value === "number" ? known.value : 0;
-        onChange({ kind: "known", value: event.target.value === "years" ? amount : { value: amount, unit: event.target.value as "months" | "weeks" | "days" } });
-      }}><option value="years">Years</option><option value="months">Months</option><option value="weeks">Weeks</option><option value="days">Days</option></select>
+    {value.kind === "known" && control.shape === "age" && <div>
+      <select aria-label="Age representation" value={known && typeof known === "object" && "wording" in known ? "wording" : "native"} onChange={e=>onChange({kind:"known",value:e.target.value==="wording"?{wording:""}:{value:"",unit:""}})}><option value="native">Whole value and supplied unit</option><option value="wording">Exact supplied wording</option></select>
+      {known && typeof known === "object" && "wording" in known ? <textarea aria-label="Exact supplied age wording" rows={4} value={String(known.wording)} onChange={e=>onChange({kind:"known",value:{wording:e.target.value}})}/> : <div className={styles.measurement}>
+      <input aria-label={`New ${label}`} type="number" min="0" step="1" max={typeof known === "number" ? 150 : undefined} value={String(typeof known === "number" ? known : typeof known === "object" && known && "value" in known ? known.value : "")} onChange={e=>onChange(ageEditValue(e.target.value,typeof known==="number"?"years":typeof known==="object"&&known&&"unit"in known?String(known.unit):""))}/>
+      <select aria-label={`${label} unit`} value={typeof known==="number"?"years":typeof known==="object"&&known&&"unit"in known?String(known.unit):""} onChange={e=>onChange(ageEditValue(String(typeof known==="number"?known:typeof known==="object"&&known&&"value"in known?known.value:""),e.target.value))}><option value="">Choose supplied unit</option><option value="years">Years</option><option value="months">Months</option><option value="weeks">Weeks</option><option value="days">Days</option></select>
+      </div>}
+      {!isPatientAge(known) && <p role="status">A supported whole-unit age or exact nonblank age wording is required. This unfinished edit is retained.</p>}
     </div>}
     {value.kind === "known" && control.completeDate && <><input aria-label={`New ${label}`} type="text" placeholder="YYYY-MM-DD" value={String(known ?? "")} onChange={event => onChange({ kind: "known", value: event.target.value })} />{!isCompleteBirthDate(known) && <p role="status">A complete valid calendar date is required (YYYY-MM-DD). This unfinished edit is retained; no missing component is inferred.</p>}</>}
     {value.kind === "known" && control.shape === "date" && !control.completeDate && <input aria-label={`New ${label}`} type="date" value={String(known ?? "")} onChange={(event) => onChange({ kind: "known", value: event.target.value })} />}
@@ -1273,7 +1280,8 @@ function formatFactValue(value: CaseValue<unknown> | undefined, control?: FactCo
     inapplicable: "Not applicable",
     declined: "Prefer not to answer",
   }[value.kind];
-  if (control?.shape === "age" && typeof value.value === "number") return `${value.value} years`;
+  if (control?.shape === "age" && isPatientAge(value.value)) return patientAgeText(value.value);
+  if (control?.shape === "age" && typeof value.value === "object" && value.value && "wording" in value.value) return String(value.value.wording) || "Age wording unfinished";
   if (typeof value.value === "object" && value.value && "precision" in value.value) {
     const raw=value.value as Record<string,unknown>;
     return `${String(raw.wording??"") || "Date wording unfinished"} (${raw.precision === "month" ? (String(raw.year??"")||"year unfinished")+"-"+(String(raw.month??"")||"month unfinished") : String(raw.year??"")||"year unfinished"}; ${raw.precision === "month" ? "month and year only" : "year only"})`;

@@ -16,8 +16,8 @@ import { d3ChoiceIssue, d3Eligible, isTreatmentDuration,durationText } from "../
 import { durationLimitation,durationContextIssues } from "../pdf/duration";
 import { raceEthnicityOptions } from "../../domain/case/race-ethnicity";
 import { patientA2ChoiceIssue } from "../../domain/case/birth-date";
-import { isPatientAge, patientAgeParts } from "../../domain/case/age";
-import { patientAgeLimitation } from "../pdf/patient-age";
+import { isPatientAge, patientAgeText } from "../../domain/case/age";
+import { ageTextLimitation, patientAgeLimitation } from "../pdf/patient-age";
 import { createHash, randomUUID } from "node:crypto";
 import { testHistoryLimitations } from "../pdf/test-history";
 import { productTextLimitation } from "../pdf/product-text";
@@ -123,6 +123,8 @@ export async function getJourneySnapshot(
   const projection = projectForm3500(caseState);
   const outputIssues = outputReadinessIssues(caseState, projection);
   for(const problem of await productDateTextIssues(projection)) outputIssues.push({code:"unsupported-product-text",message:`The reviewed ${problem.field === "expirationDate" ? "expiration wording" : productDateLabels[problem.field]} ${problem.limitation}. It is retained; no new PDF is generated.`,targets:[`product:${problem.productId}:${problem.field}`],entityIds:[problem.productId]});
+  const ageContextLimit = await ageTextLimitation(projection);
+  if(ageContextLimit)outputIssues.push({code:"unsupported-patient-age",message:`The reviewed patient age ${ageContextLimit}. It is retained; no new PDF is generated.`,targets:["patient:patient:ageYears"],entityIds:["patient"]});
   const sexLimit = await sexTextLimitation(projection);
   if (sexLimit) outputIssues.push({code:"unsupported-patient-sex",message:`The reviewed patient sex context ${sexLimit}. It is retained; no new PDF is generated.`,targets:["patient:patient:sex"],entityIds:["patient"]});
   for (const device of projection.sections.E.suspectDevices) for (const field of deviceTextFields) {
@@ -864,7 +866,7 @@ function displayValue(value: CaseValue<unknown>, target?: FactTarget): string {
   if (target?.entity === "patient" && target.field === "a2Value" && value.kind !== "known") return "no print preference";
   if (target?.entity === "patient" && target.field === "raceEthnicity" && value.kind === "explicitly-absent") return "none of the listed categories explicitly reported";
   if (value.kind !== "known") return value.kind.replaceAll("-", " ");
-  if (target?.entity === "patient" && target.field === "ageYears" && isPatientAge(value.value)) { const age = patientAgeParts(value.value); return `${age.value} ${age.unit}`; }
+  if (target?.entity === "patient" && target.field === "ageYears" && isPatientAge(value.value)) return patientAgeText(value.value);
   if (target?.entity === "patient" && target.field === "a2Value" && value.value === "date-of-birth") return "date of birth";
   if (target?.entity === "patient" && target.field === "raceEthnicity" && Array.isArray(value.value)) return value.value.map(item => raceEthnicityOptions.find(option => option.value === item)?.label ?? String(item)).join(" and ");
   if (isPartialExpiration(value.value) && target?.entity === "patient" && target.field === "dateOfBirth")return suppliedDateText(value.value,"date of birth",value.qualifier);

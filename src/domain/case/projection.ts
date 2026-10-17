@@ -33,7 +33,7 @@ export interface Form3500Projection {
   caseId: string;
   revision: number;
   sections: {
-    A: { patientIdentifier?: string; ageYears?: PatientAge; dateOfBirth?: string; dateOfBirthInComments?: boolean; raceEthnicity?: RaceEthnicity[]; sex?: "female" | "male" | "intersex"; sexContext?: string; weight?: { value: number; unit: "kg" | "lb" } };
+    A: { patientIdentifier?: string; ageYears?: PatientAge; ageContext?: string; dateOfBirth?: string; dateOfBirthInComments?: boolean; raceEthnicity?: RaceEthnicity[]; sex?: "female" | "male" | "intersex"; sexContext?: string; weight?: { value: number; unit: "kg" | "lb" } };
     B: {
       reportType?: ReportType;
       reportDate?: string;
@@ -178,7 +178,6 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     sourceTrace: {},
     omissions: [],
     notIncluded: [
-      "Patient fractional or compound ages and partial date of birth",
       "Patient race/ethnicity detail outside the seven A5 categories",
       "Section C product pictures",
       "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
@@ -195,7 +194,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     projection.sections.A.patientIdentifier = "none";
     projection.sourceTrace["sections.A.patientIdentifier"] = known(caseState.patient.facts.involvement)!.sourceIds;
   }
-  assign(projection, "sections.A.ageYears", "patient age", "patient:patient:ageYears", caseState.patient.facts.ageYears, projection.sections.A, "ageYears");
+  assign(projection, "sections.A.ageYears", "patient age", "patient:patient:ageYears", caseState.patient.facts.ageYears, projection.sections.A, "ageYears",value=>value,true);
   const dob = known(caseState.patient.facts.dateOfBirth);
   if(dob && isPartialDate(dob.value)){projection.sections.A.dateOfBirthInComments=true;projection.sourceTrace["sections.A.dateOfBirthInComments"]=dob.sourceIds;}
   else assign(projection, "sections.A.dateOfBirth", "patient date of birth", "patient:patient:dateOfBirth", caseState.patient.facts.dateOfBirth, projection.sections.A, "dateOfBirth",value=>value as string,true);
@@ -210,6 +209,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
     if (omitted) projection.omissions.push({ concept: unselected === "ageYears" ? "patient age" : "patient date of birth", target: `patient:patient:${unselected}`, reason: "a2-alternative-not-selected", sourceIds: omitted.sourceIds });
     for (const item of projection.omissions) if (item.target === `patient:patient:${unselected}` && item.reason === "qualifier-not-included") item.baseValueIncluded = false;
   }
+  if(projection.sections.A.ageYears !== undefined) {const age=known(caseState.patient.facts.ageYears);if(age?.qualifier)projection.sections.A.ageContext=age.qualifier;}
   assign(projection, "sections.A.raceEthnicity", "patient race and/or ethnicity", "patient:patient:raceEthnicity", caseState.patient.facts.raceEthnicity, projection.sections.A, "raceEthnicity", values => raceEthnicityOptions.filter(option => values.includes(option.value)).map(option => option.value));
   assign(projection, "sections.A.sex", "patient sex", "patient:patient:sex", caseState.patient.facts.sex, projection.sections.A, "sex", value => value, true);
   const suppliedSex = known(caseState.patient.facts.sex);
@@ -382,6 +382,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   // Completeness boundary: selectors, prerequisites and unsupported whole facts
   // can bypass assign(). Their current context must still never disappear.
   const carriedQualifierTargets = new Set(["patient:patient:sex", "event:event:symptoms", "event:event:problemDescription", "event:event:treatments", "event:event:outcome", "event:event:dischargeDate", "event:event:relevantHistory", "event:event:additionalComments"]);
+  if(projection.sections.A.ageYears !== undefined)carriedQualifierTargets.add("patient:patient:ageYears");
   for (const product of projection.sections.D.suspectProducts) {
     for (const field of ["dose", "strength", "route", "frequency"]) carriedQualifierTargets.add(`product:${product.productId}:${field}`);
     if(product.treatmentDuration)carriedQualifierTargets.add(`product:${product.productId}:treatmentDuration`);

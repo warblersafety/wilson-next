@@ -1,0 +1,22 @@
+{
+  "capturedPages": [
+    {
+      "page": 1,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-239/age-9-page-1.png"
+    },
+    {
+      "page": 9,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-239/age-9-page-9.png"
+    }
+  ],
+  "manualInspectionRequired": [
+    "A2 pointer/native age and selected unit readable; no invented unit for wording",
+    "A2 and A3 page1 references do not overlap",
+    "Dense first/final lines, exact supplied uncertainty, reference and pagination readable"
+  ],
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-239/age-9.pdf"
+}
