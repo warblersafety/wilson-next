@@ -1,0 +1,27 @@
+{
+  "capturedPages": [
+    {
+      "page": 4,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-237/wording-36-page-4.png"
+    },
+    {
+      "page": 5,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-237/wording-36-page-5.png"
+    },
+    {
+      "page": 10,
+      "rendered": true,
+      "screenshot": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-237/wording-36-page-10.png"
+    }
+  ],
+  "manualInspectionRequired": [
+    "D3 native pointer and blank unit are readable; dates do not leak into duration selection",
+    "Exact supplied wording and uncertainty appear with global product identity and report reference",
+    "Dense continuation first/final lines and repeated pagination stay within fixed body area"
+  ],
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "/Users/sofa-claude/code/warblersafety/wilson-next/evidence/issue-237/wording-36.pdf"
+}

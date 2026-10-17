@@ -1,3 +1,4 @@
+import {durationNeedsSupplement} from "./duration";
 import {quantityNeedsSupplement} from "./quantity";
 import {PDFDocument, StandardFonts} from "@cantoo/pdf-lib";
 import type {Form3500Projection} from "../../domain/case/projection";
@@ -32,13 +33,6 @@ export function d2SupplementEntries(projection:Form3500Projection) {
 export async function appendD2Continuations(document:PDFDocument,projection:Form3500Projection,referenceProjection=projection) {
   const entries=d2SupplementEntries(projection); if(!entries.length)return;
   const font=await document.embedFont(StandardFonts.Helvetica),reference=form3500ReportReference(referenceProjection);
-  for(const [slot,product]of projection.sections.D.suspectProducts.entries()) {
-    if(entries.some(entry=>entry.productId===product.productId)) {
-      const ordinal=referenceProjection.sections.D.suspectProducts.findIndex(p=>p.productId===product.productId)+1;
-      const blocks=[...new Set(entries.filter(e=>e.productId===product.productId).map(e=>e.field==="strength"?"D1":"D2"))].sort().join("/");
-      document.getPages()[slot+3].drawText(`Report ${reference} - ${blocks} product #${ordinal} supplements follow.`,{x:44,y:750,size:8,font});
-    }
-  }
   for(const {productId,field,text} of entries) {
     const ordinal=referenceProjection.sections.D.suspectProducts.findIndex(p=>p.productId===productId)+1;
     if(ordinal===0)throw new Error("D2 supplement product is missing from report identity");
@@ -51,6 +45,19 @@ export async function appendD2Continuations(document:PDFDocument,projection:Form
       page.drawText(heading,{x:42,y:730,size:10,font});page.drawText(`Report reference: ${reference}`,{x:42,y:714,size:8.5,font});
       lines.slice(start,start+count).forEach((line,i)=>{if(line.text)page.drawText(line.text,{x:42,y:continuationGeometry.bodyTop-i*continuationGeometry.lineHeight,size:10,font});});
       page.drawText(`${heading} - page ${n} of ${total}`,{x:42,y:32,size:9,font});
+    }
+  }
+}
+
+/** One readable native margin link for all selected D1-D3 supplements. */
+export async function appendProductSupplementLinks(document:PDFDocument,projection:Form3500Projection,referenceProjection=projection) {
+  const entries=d2SupplementEntries(projection);
+  const font=await document.embedFont(StandardFonts.Helvetica),reference=form3500ReportReference(referenceProjection);
+  for(const [slot,product]of projection.sections.D.suspectProducts.entries()) {
+    if(entries.some(entry=>entry.productId===product.productId) || (product.treatmentDuration && (durationNeedsSupplement(product.treatmentDuration) || product.durationContext!==undefined))) {
+      const ordinal=referenceProjection.sections.D.suspectProducts.findIndex(p=>p.productId===product.productId)+1;
+      const blocks=[...new Set([...entries.filter(e=>e.productId===product.productId).map(e=>e.field==="strength"?"D1":"D2"),...(product.treatmentDuration && (durationNeedsSupplement(product.treatmentDuration)||product.durationContext!==undefined)?["D3"]:[])])].sort().join("/");
+      document.getPages()[slot+3].drawText(`Report ${reference} - ${blocks} product #${ordinal} supplements follow.`,{x:44,y:750,size:8,font});
     }
   }
 }

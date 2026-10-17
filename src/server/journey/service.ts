@@ -12,8 +12,8 @@ import { seriousOutcomeLabels } from "../../domain/case/serious-outcomes";
 import { hasReservedNoPatientIdentifier, noPatientConflictingTargets, noPatientOutcomeConflictingTargets } from "../../domain/case/patient-involvement";
 import {purchaseDetailFields,purchaseDetailLabels} from "../../domain/case/purchase-details";
 import {purchaseDetailLimitation} from "../pdf/purchase-details";
-import { d3ChoiceIssue, d3Eligible, isTreatmentDuration } from "../../domain/case/duration";
-import { durationLimitation } from "../pdf/duration";
+import { d3ChoiceIssue, d3Eligible, isTreatmentDuration,durationText } from "../../domain/case/duration";
+import { durationLimitation,durationContextIssues } from "../pdf/duration";
 import { raceEthnicityOptions } from "../../domain/case/race-ethnicity";
 import { patientA2ChoiceIssue } from "../../domain/case/birth-date";
 import { isPatientAge, patientAgeParts } from "../../domain/case/age";
@@ -131,6 +131,7 @@ export async function getJourneySnapshot(
     const limitation = await deviceTextLimitation(field.projected,value);
     if (limitation) outputIssues.push({code:"unsupported-product-text",message:`${productLabel(caseState,device.productId)}: the reviewed Section E ${field.label} ${limitation}. The wording is retained; no new PDF is generated.`,targets:[`product:${device.productId}:${field.fact}`],entityIds:[device.productId]});
   }
+  for(const problem of await durationContextIssues(projection))outputIssues.push({code:"unsupported-treatment-duration",message:`${productLabel(caseState,problem.productId)}: the reviewed D3 duration context ${problem.limitation}; no new PDF is generated.`,targets:[`product:${problem.productId}:treatmentDuration`],entityIds:[problem.productId]});
   for (const problem of await d2TextIssues(projection)) outputIssues.push({code:"unsupported-product-text",message:`${productLabel(caseState,problem.productId)}: the reviewed D2 ${problem.field} ${problem.limitation}. The wording is retained; no new PDF is generated.`,targets:[`product:${problem.productId}:${problem.field}`],entityIds:[problem.productId]});
   for (const problem of await concomitantTextIssues(projection)) outputIssues.push({code:"unsupported-product-text", message:`${productLabel(caseState,problem.productId)}: the reviewed Section F ${concomitantFieldLabel(problem.field)} ${problem.limitation}. The wording is retained; no new PDF is generated.`, targets:[`product:${problem.productId}:${problem.field}`], entityIds:[problem.productId]});
   for (const problem of await reporterTextIssues(projection)) outputIssues.push({code:"unsupported-product-text",message:`The reviewed reporter ${reporterTextLabels[problem.field]} ${problem.limitation}. The wording is retained; no new PDF is generated.`,targets:[`reporter:reporter:${problem.field}`],entityIds:["reporter"]});
@@ -859,7 +860,7 @@ function knownValue<T>(fact: Fact<T> | undefined): T | undefined {
 
 function displayValue(value: CaseValue<unknown>, target?: FactTarget): string {
   if (target?.entity === "product" && target.field === "d3Value" && value.kind !== "known") return "no print preference";
-  if (target?.field === "treatmentDuration" && value.kind === "known" && isTreatmentDuration(value.value)) return `${value.value.value} ${value.value.unit}`;
+  if (target?.field === "treatmentDuration" && value.kind === "known" && isTreatmentDuration(value.value)) return durationText(value.value);
   if (target?.entity === "patient" && target.field === "a2Value" && value.kind !== "known") return "no print preference";
   if (target?.entity === "patient" && target.field === "raceEthnicity" && value.kind === "explicitly-absent") return "none of the listed categories explicitly reported";
   if (value.kind !== "known") return value.kind.replaceAll("-", " ");

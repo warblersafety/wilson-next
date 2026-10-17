@@ -11,6 +11,7 @@ const caseValueSchema = z.discriminatedUnion("kind", [
     kind: z.literal("known"),
     value: z.union([
       z.object({precision:z.enum(["month","year"]),year:z.string(),month:z.string().optional(),wording:z.string()}).strict(),
+      z.object({ wording: z.string() }).strict(),
       z.string(),
       z.number(),
       z.boolean(),
