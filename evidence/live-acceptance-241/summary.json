@@ -1,0 +1,178 @@
+{
+  "status": "Fixed corpus executed; qualified completion, not full release acceptance",
+  "corpusCommit": "9e0fc0ac7d78fba60e4e9ef40f1e4e48c1cb39cb",
+  "corpusSHA256": "8201e383722e02953ed4c00e898cd79b6b78d5750371cf9f33933b726d55ab6c",
+  "baselineMain": "7b86b273949be5652533108ebc3c6de6801c4bd8",
+  "servedRelease": "4bcabdbe6a1edf6296e555235f8de79a1dd65614",
+  "equivalentApplicationTree": "9b929054924b52541d801967b10acb7ae9d6d984",
+  "model": "claude-sonnet-5",
+  "prompt": "wilson-duration-wording-v31",
+  "schema": "wilson-grounded-proposals-v39-duration-wording",
+  "distinctCases": 12,
+  "actualModelCalls": 15,
+  "automaticModelRetries": 0,
+  "estimatedApplicationCostUsd": 0.878292,
+  "costMeaning": "application estimator, not invoice or independently verified current tariff",
+  "actualFinalPDFs": 12,
+  "PDFPagesRendered": 96,
+  "caseResults": [
+    {
+      "id": "A01",
+      "family": "medication",
+      "extraction": "material source facts retained",
+      "recovery": [],
+      "transport": "API client response received",
+      "PDF": "generated and independently read back/rendered after review",
+      "liveCalls": 1,
+      "estimatedUsd": 0.050336
+    },
+    {
+      "id": "A02",
+      "family": "medication",
+      "extraction": "material source facts retained",
+      "recovery": [],
+      "transport": "API client response received",
+      "PDF": "generated and independently read back/rendered after review",
+      "liveCalls": 1,
+      "estimatedUsd": 0.056224
+    },
+    {
+      "id": "A03",
+      "family": "medication",
+      "extraction": "general improving outcome omitted; improved-after-change true proposed without an explicit after-change relation",
+      "recovery": [
+        "Corrected proposed D7 to unknown before acceptance; general improving outcome added explicitly"
+      ],
+      "transport": "API client response received",
+      "PDF": "generated and independently read back/rendered after review",
+      "liveCalls": 2,
+      "estimatedUsd": 0.107926
+    },
+    {
+      "id": "A04",
+      "family": "multiple-medications",
+      "extraction": "general resolved outcome omitted; improved-after-change true proposed from stopped-and-resolved wording",
+      "recovery": [
+        "Corrected proposed D7 to unknown before acceptance; general resolved outcome added explicitly"
+      ],
+      "transport": "API client read timeout; exact original successful server response body/usage recovered from original operation; no uninterrupted-journey pass",
+      "PDF": "generated and independently read back/rendered after review",
+      "liveCalls": 2,
+      "estimatedUsd": 0.11021
+    },
+    {
+      "id": "A05",
+      "family": "device",
+      "extraction": "health-professional operator category retained but registered-nurse detail omitted; no-other-serious statement not expanded to all outcome fields",
+      "recovery": [
+        "Exact RN operator qualifier restored during review; no-other-outcome answers reconfirmed from source",
+        "Exact not-implanted/operator/applicability source sentence added as reviewed comments because native E has no not-implanted field"
+      ],
+      "transport": "API client response received",
+      "PDF": "generated and independently read back/rendered after review",
+      "liveCalls": 1,
+      "estimatedUsd": 0.06862
+    },
+    {
+      "id": "A06",
+      "family": "medication-quality",
+      "extraction": "no-patient/no-adverse-event semantics, strength and lot retained; unopened/not-administered context absent from problem prose",
+      "recovery": [
+        "Problem prose corrected during review using exact original unopened/not-administered/no-event source"
+      ],
+      "transport": "API client response received; original reporter UI subtest inconclusive due harness race/dialog handling; later response-witness draft-reuse check passed",
+      "PDF": "generated and independently read back/rendered after review",
+      "liveCalls": 1,
+      "estimatedUsd": 0.05142
+    },
+    {
+      "id": "A07",
+      "family": "mixed-device-medication",
+      "extraction": "two product identities/regimen and event/device details retained; device removal omitted",
+      "recovery": [
+        "Device stopped/removed added explicitly",
+        "Accepted concomitant regimen and implantation context disclosed as not included in native output; exact source added as explicitly reviewed comments"
+      ],
+      "transport": "API client read interruption; exact original successful server response body/usage recovered from original operation; no uninterrupted-journey pass",
+      "PDF": "generated and independently read back/rendered after review",
+      "liveCalls": 1,
+      "estimatedUsd": 0.087146
+    },
+    {
+      "id": "A08",
+      "family": "device-quality",
+      "extraction": "device identity/problem, no symptoms, implanted/reprocessed and unknown dates/reprocessor retained; no invented patient demographics",
+      "recovery": [
+        "Exact no-event/implanted/unknown-date/reprocessor wording added as reviewed comments to preserve context outside native fields"
+      ],
+      "transport": "actual browser-form opening received",
+      "PDF": "generated and independently read back/rendered after review",
+      "liveCalls": 1,
+      "estimatedUsd": 0.055178
+    },
+    {
+      "id": "A09",
+      "family": "device",
+      "extraction": "device identity/problem/no symptoms and applicability retained; no invented patient demographics",
+      "recovery": [
+        "Exact no-event/not-implanted/applicability wording added as reviewed comments"
+      ],
+      "transport": "actual browser-form opening received",
+      "PDF": "generated and independently read back/rendered after review",
+      "liveCalls": 1,
+      "estimatedUsd": 0.046816
+    },
+    {
+      "id": "A10",
+      "family": "cosmetic-quality",
+      "extraction": "cosmetic retail routing, lot, seller fields, purchase date and no-patient/no-event retained; unopened/unused context omitted",
+      "recovery": [
+        "Problem prose corrected during review using exact original unopened/unused/no-patient/no-event source"
+      ],
+      "transport": "actual browser-form opening received",
+      "PDF": "generated and independently read back/rendered after review",
+      "liveCalls": 1,
+      "estimatedUsd": 0.060268
+    },
+    {
+      "id": "A11",
+      "family": "multiple-medications",
+      "extraction": "material supplied medication/test facts retained, including INR-only collection-time qualifier; no timestamp guessed",
+      "recovery": [
+        "Accepted concomitant regimen and unchanged-use details outside F native fields added as explicitly reviewed source comments"
+      ],
+      "transport": "actual browser-form opening and correction received",
+      "PDF": "generated and independently read back/rendered after review",
+      "liveCalls": 2,
+      "estimatedUsd": 0.147772
+    },
+    {
+      "id": "A12",
+      "family": "sparse-medication",
+      "extraction": "all sparse source facts including severe dizziness retained; missing required details explicitly answered unknown",
+      "recovery": [],
+      "transport": "actual browser-form opening received",
+      "PDF": "generated and independently read back/rendered after review",
+      "liveCalls": 1,
+      "estimatedUsd": 0.036376
+    }
+  ],
+  "browserBoundary": "A01\u2013A07 openings/A03\u2013A04 corrections and most review/completion actions used same protected application API; A08\u2013A12 openings and A11 correction used actual UI form. Returned states were also installed in ordinary IndexedDB records and restored through app with exact-case comparison. This is not twelve uninterrupted UI journeys.",
+  "persistence": "Assigned A01/A05/A10/A11 API resume compared exactly; browser restore checks also retained case; A11 naturally typed unsent correction draft survived reload with accepted case unchanged.",
+  "reporterReuse": "A10 fresh report: remembered identity/professional fields explicitly saved through UI, per-case date/disclosure separately reviewed; clinical values unchanged. A02/A06/A12 later existing-report unsent-draft replacement via remembered details and UI save left accepted cases exactly unchanged. A06 earlier harness failure remains recorded, not a product failure.",
+  "transportFailures": [
+    "A04 API client timeout",
+    "A07 API client interruption"
+  ],
+  "transportReconciliation": "Original server200 response bodies, provider usage/provenance recovered from exact original operations; no model regeneration. Harness route switched to actual form for remaining openings. Root cause of API-client transport interruptions not established.",
+  "harnessLimitations": [
+    "Delayed diagnostic ingestion reconciled without model retry",
+    "A03 old opening group used once to accept update: server400/no mutation, corrected using actual attention group; one local harness response file overwritten during restore; tool transcript retains rejected attempt; sequence allocation fixed",
+    "A06 reporter save read before completion and accumulated dialog handlers caused harness exit; stopped path, later bounded response-witness checks; no product defect inferred",
+    "One browser-control handoff automatic approval review timed out before execution; verified no request sent and retried exactly once successfully"
+  ],
+  "releaseClaim": "No unrecoverable ordinary text-case completion/PDF blocker observed after explicit review and recovery. Extraction omissions, disclosed native-context limits and transport/harness limitations prevent calling this twelve clean end-to-end passes or full Form3500 coverage.",
+  "remainingBound": "Evidence review/CI closure and triage of two observed source/context clusters; zero to two targeted product slices only if needed for the chosen practical release cut. No further feature work is authorized by this report. Age PR240 remains paused; issue150 remains paused. Pictures/broader glyphs/unusual age/capacity increases were not needed for these cases.",
+  "runtimePromptAccessSharedPreviewChanged": false,
+  "agePR240": "paused/unmerged; exact-head CI passed; hosted/final review/mainCI not performed"
+}

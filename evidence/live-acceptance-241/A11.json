@@ -1,0 +1,1445 @@
+{
+  "id": "A11",
+  "family": "multiple-medications",
+  "testedRelease": {
+    "stateVersion": "wilson-browser-state-v32",
+    "release": "4bcabdbe6a1edf6296e555235f8de79a1dd65614"
+  },
+  "source": "Entirely fictional evaluation. Entirely fictional case LIVE-MULTI-57: a 57-year-old man weighing 70 kg developed a rash on 03 September 2026. He took warfarin 5 mg by mouth daily from 01 August 2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours from 01 September 2026 for pain. Warfarin is suspect; acetaminophen is concomitant. Warfarin was stopped on 04 September 2026, the rash improved after stopping, and warfarin was never restarted. Acetaminophen was not stopped or reduced. He was hospitalized; no other serious outcomes apply. INR was 4.8 on 03 September 2026 with reference limits 0.8 and 1.2; ALT was 67 U/L on 03 September 2026 with reference limits 7 and 56. The INR collection time was not recorded. No additional relevant history applies. This is an adverse-event report, and the product is not available for evaluation. These two products are explicitly medications.",
+  "correction": "Correction to this fictional case: only the INR result collected 03 September 2026 was 4.3, not 4.8. Leave ALT 67 U/L and its 03 September 2026 date unchanged. The exact INR collection time is still unknown.",
+  "expectedMaterialFacts": [
+    "Review all proposals against entire original account before acceptance",
+    "Two products retain distinct roles/doses/frequencies/dates; no inferred strength or cause",
+    "Two named observations remain separate; correction changes existing INR only after explicit review",
+    "Exact uncertainty stays field-linked and retained in PDF",
+    "Save/reload preserves accepted case and unfinished explicit draft; compare actual accepted facts to independent native/page PDF readback and render",
+    "age57 male weight70kg",
+    "rash onset2026-09-03 hospitalized only",
+    "warfarin5mg oral daily start2026-08-01 AF suspect stopped2026-09-04 improved never restarted",
+    "acetaminophen650mg oral every6hours start2026-09-01 pain concomitant not stopped/reduced",
+    "INR initially4.8 then4.3 range0.8\u20131.2 date2026-09-03 collection time not recorded",
+    "ALT67 U/L range7\u201356 date2026-09-03 unchanged",
+    "no additional history; unavailable"
+  ],
+  "observations": {
+    "extraction": "material supplied medication/test facts retained, including INR-only collection-time qualifier; no timestamp guessed",
+    "recovery": [
+      "Accepted concomitant regimen and unchanged-use details outside F native fields added as explicitly reviewed source comments"
+    ],
+    "transport": "actual browser-form opening and correction received"
+  },
+  "firstResponseFacts": {
+    "patient": {
+      "ageYears": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": 57
+            },
+            "groupId": "patient",
+            "sourceIds": [
+              "source-d237898c-375a-478e-9579-09decf5752f2"
+            ]
+          }
+        ]
+      },
+      "sex": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "male"
+            },
+            "groupId": "patient",
+            "sourceIds": [
+              "source-d237898c-375a-478e-9579-09decf5752f2"
+            ]
+          }
+        ]
+      },
+      "weight": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": {
+                "value": 70,
+                "unit": "kg"
+              }
+            },
+            "groupId": "patient",
+            "sourceIds": [
+              "source-d237898c-375a-478e-9579-09decf5752f2"
+            ]
+          }
+        ]
+      }
+    },
+    "event": {
+      "reportType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "adverse-event"
+        },
+        "proposed": []
+      },
+      "symptoms": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": [
+                "rash"
+              ]
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-d237898c-375a-478e-9579-09decf5752f2"
+            ]
+          }
+        ]
+      },
+      "onsetDate": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "2026-09-03"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-d237898c-375a-478e-9579-09decf5752f2"
+            ]
+          }
+        ]
+      },
+      "death": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-5294740e-a438-458f-b7b9-41a403601a60"
+            ]
+          }
+        ]
+      },
+      "lifeThreatening": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-5294740e-a438-458f-b7b9-41a403601a60"
+            ]
+          }
+        ]
+      },
+      "hospitalized": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": true
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-5294740e-a438-458f-b7b9-41a403601a60"
+            ]
+          }
+        ]
+      },
+      "disability": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-5294740e-a438-458f-b7b9-41a403601a60"
+            ]
+          }
+        ]
+      },
+      "requiredIntervention": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-5294740e-a438-458f-b7b9-41a403601a60"
+            ]
+          }
+        ]
+      },
+      "congenitalAnomaly": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-5294740e-a438-458f-b7b9-41a403601a60"
+            ]
+          }
+        ]
+      },
+      "otherSerious": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-5294740e-a438-458f-b7b9-41a403601a60"
+            ]
+          }
+        ]
+      },
+      "relevantHistory": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "explicitly-absent"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-81011d37-f636-4de3-ba2d-fc43bddf144b"
+            ]
+          }
+        ]
+      },
+      "productAvailability": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "not-available"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-2fe95877-c041-4a58-a06a-9b109a3abeea"
+            ]
+          }
+        ]
+      }
+    },
+    "reporter": {},
+    "product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd": {
+      "name": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "warfarin"
+            },
+            "groupId": "group-533238cb-cf6a-478e-af11-6d0f4fef0446",
+            "sourceIds": [
+              "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+            ]
+          }
+        ]
+      },
+      "productType": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "drug-or-biologic"
+            },
+            "groupId": "group-533238cb-cf6a-478e-af11-6d0f4fef0446",
+            "sourceIds": [
+              "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7",
+              "source-12ec0ce6-5484-4f8a-bcfc-0a6545fb4483"
+            ]
+          }
+        ]
+      },
+      "role": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "suspect"
+            },
+            "groupId": "group-533238cb-cf6a-478e-af11-6d0f4fef0446",
+            "sourceIds": [
+              "source-c5bfb084-720e-4748-9762-62712edc8ac4"
+            ]
+          }
+        ]
+      },
+      "dose": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "5 mg"
+            },
+            "groupId": "group-533238cb-cf6a-478e-af11-6d0f4fef0446",
+            "sourceIds": [
+              "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+            ]
+          }
+        ]
+      },
+      "frequency": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "daily"
+            },
+            "groupId": "group-533238cb-cf6a-478e-af11-6d0f4fef0446",
+            "sourceIds": [
+              "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+            ]
+          }
+        ]
+      },
+      "route": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "oral"
+            },
+            "groupId": "group-533238cb-cf6a-478e-af11-6d0f4fef0446",
+            "sourceIds": [
+              "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+            ]
+          }
+        ]
+      },
+      "startDate": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "2026-08-01"
+            },
+            "groupId": "group-533238cb-cf6a-478e-af11-6d0f4fef0446",
+            "sourceIds": [
+              "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+            ]
+          }
+        ]
+      },
+      "stopDate": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "2026-09-04"
+            },
+            "groupId": "group-533238cb-cf6a-478e-af11-6d0f4fef0446",
+            "sourceIds": [
+              "source-7454cecd-ef89-4f5b-a130-20bd82b1ee7b"
+            ]
+          }
+        ]
+      },
+      "indication": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "atrial fibrillation"
+            },
+            "groupId": "group-533238cb-cf6a-478e-af11-6d0f4fef0446",
+            "sourceIds": [
+              "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+            ]
+          }
+        ]
+      },
+      "stopped": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": true
+            },
+            "groupId": "group-533238cb-cf6a-478e-af11-6d0f4fef0446",
+            "sourceIds": [
+              "source-7454cecd-ef89-4f5b-a130-20bd82b1ee7b"
+            ]
+          }
+        ]
+      },
+      "improvedAfterChange": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": true
+            },
+            "groupId": "group-533238cb-cf6a-478e-af11-6d0f4fef0446",
+            "sourceIds": [
+              "source-7454cecd-ef89-4f5b-a130-20bd82b1ee7b"
+            ]
+          }
+        ]
+      },
+      "restarted": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "group-533238cb-cf6a-478e-af11-6d0f4fef0446",
+            "sourceIds": [
+              "source-7454cecd-ef89-4f5b-a130-20bd82b1ee7b"
+            ]
+          }
+        ]
+      }
+    },
+    "product-1a877467-bc4f-4d24-8356-8b3bf8cb247d": {
+      "name": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "acetaminophen"
+            },
+            "groupId": "group-6f020317-7e4f-4d70-9d58-47a565dd014c",
+            "sourceIds": [
+              "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+            ]
+          }
+        ]
+      },
+      "productType": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "drug-or-biologic"
+            },
+            "groupId": "group-6f020317-7e4f-4d70-9d58-47a565dd014c",
+            "sourceIds": [
+              "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7",
+              "source-12ec0ce6-5484-4f8a-bcfc-0a6545fb4483"
+            ]
+          }
+        ]
+      },
+      "role": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "concomitant"
+            },
+            "groupId": "group-6f020317-7e4f-4d70-9d58-47a565dd014c",
+            "sourceIds": [
+              "source-c5bfb084-720e-4748-9762-62712edc8ac4"
+            ]
+          }
+        ]
+      },
+      "dose": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "650 mg"
+            },
+            "groupId": "group-6f020317-7e4f-4d70-9d58-47a565dd014c",
+            "sourceIds": [
+              "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+            ]
+          }
+        ]
+      },
+      "frequency": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "every six hours"
+            },
+            "groupId": "group-6f020317-7e4f-4d70-9d58-47a565dd014c",
+            "sourceIds": [
+              "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+            ]
+          }
+        ]
+      },
+      "route": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "oral"
+            },
+            "groupId": "group-6f020317-7e4f-4d70-9d58-47a565dd014c",
+            "sourceIds": [
+              "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+            ]
+          }
+        ]
+      },
+      "startDate": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "2026-09-01"
+            },
+            "groupId": "group-6f020317-7e4f-4d70-9d58-47a565dd014c",
+            "sourceIds": [
+              "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+            ]
+          }
+        ]
+      },
+      "indication": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "pain"
+            },
+            "groupId": "group-6f020317-7e4f-4d70-9d58-47a565dd014c",
+            "sourceIds": [
+              "source-da108403-f206-42bb-a59e-5ce7f9a7fdf7"
+            ]
+          }
+        ]
+      },
+      "stopped": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "group-6f020317-7e4f-4d70-9d58-47a565dd014c",
+            "sourceIds": [
+              "source-157e5899-8217-4705-b7ef-34c20007fcbf"
+            ]
+          }
+        ]
+      },
+      "doseReduced": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "group-6f020317-7e4f-4d70-9d58-47a565dd014c",
+            "sourceIds": [
+              "source-157e5899-8217-4705-b7ef-34c20007fcbf"
+            ]
+          }
+        ]
+      }
+    },
+    "test-c570a949-acc7-4cf8-95b1-2a1b08be8f21": {
+      "testName": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "INR"
+            },
+            "groupId": "group-318a9cc0-fc49-44ad-9d88-e66414bff0ed",
+            "sourceIds": [
+              "source-0bb1e490-2a94-4993-a066-a82083b2bfcb"
+            ]
+          }
+        ]
+      },
+      "testResult": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "4.8"
+            },
+            "groupId": "group-318a9cc0-fc49-44ad-9d88-e66414bff0ed",
+            "sourceIds": [
+              "source-0bb1e490-2a94-4993-a066-a82083b2bfcb"
+            ]
+          }
+        ]
+      },
+      "lowRange": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "0.8"
+            },
+            "groupId": "group-318a9cc0-fc49-44ad-9d88-e66414bff0ed",
+            "sourceIds": [
+              "source-0bb1e490-2a94-4993-a066-a82083b2bfcb"
+            ]
+          }
+        ]
+      },
+      "highRange": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "1.2"
+            },
+            "groupId": "group-318a9cc0-fc49-44ad-9d88-e66414bff0ed",
+            "sourceIds": [
+              "source-0bb1e490-2a94-4993-a066-a82083b2bfcb"
+            ]
+          }
+        ]
+      },
+      "date": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "2026-09-03",
+              "qualifier": "collection time was not recorded"
+            },
+            "groupId": "group-318a9cc0-fc49-44ad-9d88-e66414bff0ed",
+            "sourceIds": [
+              "source-0bb1e490-2a94-4993-a066-a82083b2bfcb",
+              "source-9ba377ff-03b0-4679-b9b6-01d7e499fb1d"
+            ]
+          }
+        ]
+      }
+    },
+    "test-f94a98a1-edf4-4ad5-a9f8-4a4f7e830809": {
+      "testName": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "ALT"
+            },
+            "groupId": "group-1b643bb8-f0c9-4f68-a41f-3be96aa3f9ea",
+            "sourceIds": [
+              "source-0bb1e490-2a94-4993-a066-a82083b2bfcb"
+            ]
+          }
+        ]
+      },
+      "testResult": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "67 U/L"
+            },
+            "groupId": "group-1b643bb8-f0c9-4f68-a41f-3be96aa3f9ea",
+            "sourceIds": [
+              "source-0bb1e490-2a94-4993-a066-a82083b2bfcb"
+            ]
+          }
+        ]
+      },
+      "lowRange": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "7"
+            },
+            "groupId": "group-1b643bb8-f0c9-4f68-a41f-3be96aa3f9ea",
+            "sourceIds": [
+              "source-0bb1e490-2a94-4993-a066-a82083b2bfcb"
+            ]
+          }
+        ]
+      },
+      "highRange": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "56"
+            },
+            "groupId": "group-1b643bb8-f0c9-4f68-a41f-3be96aa3f9ea",
+            "sourceIds": [
+              "source-0bb1e490-2a94-4993-a066-a82083b2bfcb"
+            ]
+          }
+        ]
+      },
+      "date": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "2026-09-03"
+            },
+            "groupId": "group-1b643bb8-f0c9-4f68-a41f-3be96aa3f9ea",
+            "sourceIds": [
+              "source-0bb1e490-2a94-4993-a066-a82083b2bfcb"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "finalAcceptedFacts": {
+    "patient": {
+      "ageYears": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": 57
+        },
+        "proposed": []
+      },
+      "sex": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "male"
+        },
+        "proposed": []
+      },
+      "weight": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": {
+            "value": 70,
+            "unit": "kg"
+          }
+        },
+        "proposed": []
+      }
+    },
+    "event": {
+      "reportType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "adverse-event"
+        },
+        "proposed": []
+      },
+      "reportDate": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-10-17"
+        },
+        "proposed": []
+      },
+      "symptoms": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": [
+            "rash"
+          ]
+        },
+        "proposed": []
+      },
+      "onsetDate": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-09-03"
+        },
+        "proposed": []
+      },
+      "death": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "lifeThreatening": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "hospitalized": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      },
+      "disability": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "requiredIntervention": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "congenitalAnomaly": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "otherSerious": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "relevantHistory": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "productAvailability": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "not-available"
+        },
+        "proposed": []
+      },
+      "additionalComments": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Acetaminophen 650 mg by mouth every six hours from 01 September 2026 for pain is concomitant. Acetaminophen was not stopped or reduced."
+        },
+        "proposed": []
+      }
+    },
+    "reporter": {
+      "lastName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Fiction"
+        },
+        "proposed": []
+      },
+      "firstName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Alex"
+        },
+        "proposed": []
+      },
+      "address": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "city": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "state": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "postalCode": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "country": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "phone": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "email": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "alex.fiction@example.invalid"
+        },
+        "proposed": []
+      },
+      "healthProfessional": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      },
+      "occupation": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Physician"
+        },
+        "proposed": []
+      },
+      "reportedTo": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": []
+        },
+        "proposed": []
+      },
+      "doNotDiscloseIdentity": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      }
+    },
+    "product-e5c9acef-0a69-4def-a4e5-8fa4a0de6ecd": {
+      "name": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "warfarin"
+        },
+        "proposed": []
+      },
+      "productType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "drug-or-biologic"
+        },
+        "proposed": []
+      },
+      "role": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "suspect"
+        },
+        "proposed": []
+      },
+      "dose": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "5 mg"
+        },
+        "proposed": []
+      },
+      "frequency": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "daily"
+        },
+        "proposed": []
+      },
+      "route": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "oral"
+        },
+        "proposed": []
+      },
+      "startDate": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-08-01"
+        },
+        "proposed": []
+      },
+      "stopDate": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-09-04"
+        },
+        "proposed": []
+      },
+      "indication": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "atrial fibrillation"
+        },
+        "proposed": []
+      },
+      "stopped": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      },
+      "improvedAfterChange": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      },
+      "restarted": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      }
+    },
+    "product-1a877467-bc4f-4d24-8356-8b3bf8cb247d": {
+      "name": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "acetaminophen"
+        },
+        "proposed": []
+      },
+      "productType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "drug-or-biologic"
+        },
+        "proposed": []
+      },
+      "role": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "concomitant"
+        },
+        "proposed": []
+      },
+      "dose": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "650 mg"
+        },
+        "proposed": []
+      },
+      "frequency": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "every six hours"
+        },
+        "proposed": []
+      },
+      "route": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "oral"
+        },
+        "proposed": []
+      },
+      "startDate": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-09-01"
+        },
+        "proposed": []
+      },
+      "indication": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "pain"
+        },
+        "proposed": []
+      },
+      "stopped": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "doseReduced": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      }
+    },
+    "test-c570a949-acc7-4cf8-95b1-2a1b08be8f21": {
+      "testName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "INR"
+        },
+        "proposed": []
+      },
+      "testResult": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "4.3"
+        },
+        "proposed": []
+      },
+      "lowRange": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "0.8"
+        },
+        "proposed": []
+      },
+      "highRange": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "1.2"
+        },
+        "proposed": []
+      },
+      "date": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-09-03",
+          "qualifier": "collection time was not recorded"
+        },
+        "proposed": []
+      }
+    },
+    "test-f94a98a1-edf4-4ad5-a9f8-4a4f7e830809": {
+      "testName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "ALT"
+        },
+        "proposed": []
+      },
+      "testResult": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "67 U/L"
+        },
+        "proposed": []
+      },
+      "lowRange": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "7"
+        },
+        "proposed": []
+      },
+      "highRange": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "56"
+        },
+        "proposed": []
+      },
+      "date": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-09-03"
+        },
+        "proposed": []
+      }
+    }
+  },
+  "finalProjectionDisclosures": [
+    "Patient fractional or compound ages and partial date of birth",
+    "Patient race/ethnicity detail outside the seven A5 categories",
+    "Section C product pictures",
+    "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
+    "Product date wording outside complete dates or explicit month/year/year-only precision",
+    "acetaminophen \u2014 Dose remains in reviewed knowledge but is not included in Section F for the current product type and role.",
+    "acetaminophen \u2014 Frequency remains in reviewed knowledge but is not included in Section F for the current product type and role.",
+    "acetaminophen \u2014 Route remains in reviewed knowledge but is not included in Section F for the current product type and role.",
+    "acetaminophen \u2014 Indication remains in reviewed knowledge but is not included in Section F for the current product type and role.",
+    "acetaminophen \u2014 Dose reduced remains in reviewed knowledge but is not included in Section F for the current product type and role."
+  ],
+  "actualPDF": {
+    "sha256": "d9b5efccf40eb4c5cdee63936f0222439a793d8551355d1ccbf11be22c8e6887",
+    "pageCount": 8,
+    "namedFields": {
+      "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "57",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Congenital[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Death[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Disability[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].EventDate[0]": "03-SEP-2026",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Hospital[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].LifeThreaten[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].OtherEvents[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "17-OCT-2026",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].ReqdInter[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].WeightKG[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].WeightLB[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].WeightValue[0]": "70",
+      "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Symptoms: rash. Products stopped: warfarin.",
+      "topmostSubform[0].Page3[0].AdditionalComments[0]": "B6 table row 1 - Test date context: collection time was not recorded\nAdditional comments: Acetaminophen 650 mg by mouth every six hours from 01 September 2026 for pain is concomitant. Acetaminophen was not stopped or reduced.",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalNo[0]": "/1",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalRetd[0]": "/Off",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/Off",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TDate1[0]": "03-SEP-2026",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].THighRange1[0]": "1.2",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TLowRange1[0]": "0.8",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row1[0].TestData1[0]": "INR: 4.3",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TDate2[0]": "03-SEP-2026",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].THighRange2[0]": "56",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TLowRange2[0]": "7",
+      "topmostSubform[0].Page3[0].TestDataTable[0].Row2[0].TestData2[0]": "ALT: 67 U/L",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedNA[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedNo[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedYes[0]": "/1",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Brand[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Compounded[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Diagnosis[0]": "atrial fibrillation",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1DoseUnit[0]": "25",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]": "5",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Freq[0]": "Daily",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Generic[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "warfarin",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1OTC[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearNA[0]": "/1",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearNo[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearYes[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Route[0]": "Oral",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1TherapyStartDate[0]": "01-AUG-2026",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1TherapyStopDate[0]": "04-SEP-2026",
+      "topmostSubform[0].Page6[0].SecF_Other[0].Table1[0].Row1[0].Prod1[0]": "acetaminophen",
+      "topmostSubform[0].Page6[0].SecF_Other[0].Table1[0].Row1[0].Start1[0]": "01-SEP-2026",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].DistImp[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]": "alex.fiction@example.invalid",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].FirstName[0]": "Alex",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]": "/1",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].LastName[0]": "Fiction",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ManuComp[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Occupation[0]": "Physician",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Packer[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ProNo[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ProYes[0]": "/1",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].UserFac[0]": "/Off"
+    },
+    "independentReader": "pypdf 6.16.2",
+    "PDFKitRenderedPages": 8,
+    "renderHashes": {
+      "report-page-1.png": "5fe4744bede9af92dd533c8332a8f14f8fb8d1f28b229a8219bd09a857ac3e94",
+      "report-page-2.png": "6bc2417ed68606d4d7fdd9f309f370e004c92b69c48aacded1c20925e4856b20",
+      "report-page-3.png": "3267d7c5791a54d39c0cfe978efac26c6b24a9fa836a1c57614ac79d2cf84285",
+      "report-page-4.png": "51b3f0d8e71e7fffbffb2a5e156f7a7f0cee61bd7ad6d04574000c9b1e0f5b3f",
+      "report-page-5.png": "b40ae700e0beecee93f06058a4eca8eaf66f80c4443ed9462fd0462257763062",
+      "report-page-6.png": "2bf648f94c926d919d8e8eb8e02419ae0c1a8f8b6b84d0315f0d9a8a3f8a38c5",
+      "report-page-7.png": "706c0041f286c008bf1a7724dad36ca0a5b9019199ace1f9c90dedf0448113d8",
+      "report-page-8.png": "a4e65444ae4ad5265e47291918036d36a004842f064a4ecdef833ea7a64b38de"
+    },
+    "visualInspection": "selected filled pages inspected; not a claim that all 96 page images were manually inspected"
+  },
+  "modelCalls": [
+    {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 13349,
+      "outputTokens": 7406,
+      "latencyMs": 54775,
+      "estimatedCostUsd": 0.100758
+    },
+    {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 14647,
+      "outputTokens": 1772,
+      "latencyMs": 19140,
+      "estimatedCostUsd": 0.047014
+    }
+  ],
+  "checks": {
+    "correction-diff.json": {
+      "test-c570a949-acc7-4cf8-95b1-2a1b08be8f21:testResult": {
+        "before": {
+          "kind": "known",
+          "value": "4.8"
+        },
+        "after": {
+          "kind": "known",
+          "value": "4.3"
+        }
+      }
+    },
+    "unfinished-draft.json": {
+      "text": "Correction to this fictional case: only the INR result collected 03 September 2026 was 4.3, not 4.8. Leave ALT 67 U/L and its 03 September 2026 date unchanged. The exact INR collection time is still unknown.",
+      "preserved": true,
+      "caseExact": true
+    },
+    "resume-check.json": {
+      "exactCase": true
+    }
+  },
+  "finalOutcome": "PDF generated after explicit source review and documented manual recovery; not a clean extraction/native-projection/uninterrupted-UI pass"
+}

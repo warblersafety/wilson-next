@@ -1,0 +1,677 @@
+{
+  "id": "A10",
+  "family": "cosmetic-quality",
+  "testedRelease": {
+    "stateVersion": "wilson-browser-state-v32",
+    "release": "4bcabdbe6a1edf6296e555235f8de79a1dd65614"
+  },
+  "source": "Entirely fictional evaluation. Entirely fictional product-problem report: an unopened bottle of Example Meadow lotion, explicitly a cosmetic sold on a retail basis, lot FICTION-17, contained visible foreign particles. It was not used and no patient or adverse event was involved. I identify this cosmetic as the suspect product. It was purchased on 12 August 2026 from Fictional Seller Alpha,1 Example Lane,Example City,region Example Region,postal 00 A 001,country United Kingdom. The purchase website supplied on the receipt is https://seller.example.invalid. This is seller information, not manufacturer information. The bottle is available for evaluation.",
+  "correction": null,
+  "expectedMaterialFacts": [
+    "Observe whether ordinary explicit cosmetic wording produces reviewable SectionD routing without guessing use/category",
+    "Explicit retail cosmetic choice, lot, seller details and purchase date remain separate from manufacturer/reporter",
+    "No-patient and product-problem report semantics; no website request",
+    "Save/resume and independent PDF comparison; record omissions or required manual recovery distinctly from model pass",
+    "Example Meadow lotion retail cosmetic lotFICTION-17",
+    "visible particles unopened unused no patient/no event",
+    "purchase2026-08-12 Fictional Seller Alpha",
+    "seller1 Example Lane/Example City/Example Region/00 A 001/United Kingdom/https://seller.example.invalid",
+    "available; no manufacturer inference"
+  ],
+  "observations": {
+    "extraction": "cosmetic retail routing, lot, seller fields, purchase date and no-patient/no-event retained; unopened/unused context omitted",
+    "recovery": [
+      "Problem prose corrected during review using exact original unopened/unused/no-patient/no-event source"
+    ],
+    "transport": "actual browser-form opening received"
+  },
+  "firstResponseFacts": {
+    "patient": {
+      "involvement": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "none"
+            },
+            "groupId": "patient",
+            "sourceIds": [
+              "source-aa75632a-d4c9-4042-b6de-197c9b7ac3a7"
+            ]
+          }
+        ]
+      }
+    },
+    "event": {
+      "reportType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "product-problem"
+        },
+        "proposed": []
+      },
+      "problemDescription": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "contained visible foreign particles"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-8b6e9af2-865d-42ad-9d97-d2bfba1787b1"
+            ]
+          }
+        ]
+      },
+      "symptoms": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "explicitly-absent"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-aa75632a-d4c9-4042-b6de-197c9b7ac3a7"
+            ]
+          }
+        ]
+      },
+      "productAvailability": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "available"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-a9ba9a98-a247-4dae-84c9-afc04397e804"
+            ]
+          }
+        ]
+      }
+    },
+    "reporter": {},
+    "product-78130ab1-5ff0-4a38-bf03-eaa94926f150": {
+      "name": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "Example Meadow lotion"
+            },
+            "groupId": "group-3ec2faff-90d7-4651-ad26-c8b7c2951a23",
+            "sourceIds": [
+              "source-8b6e9af2-865d-42ad-9d97-d2bfba1787b1"
+            ]
+          }
+        ]
+      },
+      "productType": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "other"
+            },
+            "groupId": "group-3ec2faff-90d7-4651-ad26-c8b7c2951a23",
+            "sourceIds": [
+              "source-8b6e9af2-865d-42ad-9d97-d2bfba1787b1"
+            ]
+          }
+        ]
+      },
+      "role": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "suspect"
+            },
+            "groupId": "group-3ec2faff-90d7-4651-ad26-c8b7c2951a23",
+            "sourceIds": [
+              "source-9525bf3f-278e-4031-83c1-e82e26fac759"
+            ]
+          }
+        ]
+      },
+      "lotNumber": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "FICTION-17"
+            },
+            "groupId": "group-3ec2faff-90d7-4651-ad26-c8b7c2951a23",
+            "sourceIds": [
+              "source-8b6e9af2-865d-42ad-9d97-d2bfba1787b1"
+            ]
+          }
+        ]
+      },
+      "cosmeticUse": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "retail"
+            },
+            "groupId": "group-3ec2faff-90d7-4651-ad26-c8b7c2951a23",
+            "sourceIds": [
+              "source-8b6e9af2-865d-42ad-9d97-d2bfba1787b1"
+            ]
+          }
+        ]
+      },
+      "purchaseDate": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "2026-08-12"
+            },
+            "groupId": "group-3ec2faff-90d7-4651-ad26-c8b7c2951a23",
+            "sourceIds": [
+              "source-221d50cc-0866-4ce5-be56-8d9c54674c1a"
+            ]
+          }
+        ]
+      },
+      "purchaseSellerName": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "Fictional Seller Alpha"
+            },
+            "groupId": "group-3ec2faff-90d7-4651-ad26-c8b7c2951a23",
+            "sourceIds": [
+              "source-221d50cc-0866-4ce5-be56-8d9c54674c1a"
+            ]
+          }
+        ]
+      },
+      "purchaseSellerAddress": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "1 Example Lane"
+            },
+            "groupId": "group-3ec2faff-90d7-4651-ad26-c8b7c2951a23",
+            "sourceIds": [
+              "source-221d50cc-0866-4ce5-be56-8d9c54674c1a"
+            ]
+          }
+        ]
+      },
+      "purchaseSellerCity": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "Example City"
+            },
+            "groupId": "group-3ec2faff-90d7-4651-ad26-c8b7c2951a23",
+            "sourceIds": [
+              "source-221d50cc-0866-4ce5-be56-8d9c54674c1a"
+            ]
+          }
+        ]
+      },
+      "purchaseSellerRegion": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "Example Region"
+            },
+            "groupId": "group-3ec2faff-90d7-4651-ad26-c8b7c2951a23",
+            "sourceIds": [
+              "source-221d50cc-0866-4ce5-be56-8d9c54674c1a"
+            ]
+          }
+        ]
+      },
+      "purchaseSellerPostalCode": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "00 A 001"
+            },
+            "groupId": "group-3ec2faff-90d7-4651-ad26-c8b7c2951a23",
+            "sourceIds": [
+              "source-221d50cc-0866-4ce5-be56-8d9c54674c1a"
+            ]
+          }
+        ]
+      },
+      "purchaseSellerCountry": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "United Kingdom"
+            },
+            "groupId": "group-3ec2faff-90d7-4651-ad26-c8b7c2951a23",
+            "sourceIds": [
+              "source-221d50cc-0866-4ce5-be56-8d9c54674c1a"
+            ]
+          }
+        ]
+      },
+      "purchaseWebsite": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "https://seller.example.invalid"
+            },
+            "groupId": "group-3ec2faff-90d7-4651-ad26-c8b7c2951a23",
+            "sourceIds": [
+              "source-d1c597b9-dbe9-436e-a47a-fddc9aba6206"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "finalAcceptedFacts": {
+    "patient": {
+      "involvement": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "none"
+        },
+        "proposed": []
+      }
+    },
+    "event": {
+      "reportType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "product-problem"
+        },
+        "proposed": []
+      },
+      "reportDate": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-10-17"
+        },
+        "proposed": []
+      },
+      "problemDescription": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "An unopened bottle of Example Meadow lotion, explicitly a cosmetic sold on a retail basis, lot FICTION-17, contained visible foreign particles. It was not used and no patient or adverse event was involved."
+        },
+        "proposed": []
+      },
+      "symptoms": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "productAvailability": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "available"
+        },
+        "proposed": []
+      }
+    },
+    "reporter": {
+      "lastName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Fiction"
+        },
+        "proposed": []
+      },
+      "firstName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Alex"
+        },
+        "proposed": []
+      },
+      "address": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "city": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "state": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "postalCode": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "country": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "phone": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "email": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "alex.fiction@example.invalid"
+        },
+        "proposed": []
+      },
+      "healthProfessional": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      },
+      "occupation": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Physician"
+        },
+        "proposed": []
+      },
+      "reportedTo": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": []
+        },
+        "proposed": []
+      },
+      "doNotDiscloseIdentity": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      }
+    },
+    "product-78130ab1-5ff0-4a38-bf03-eaa94926f150": {
+      "name": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Example Meadow lotion"
+        },
+        "proposed": []
+      },
+      "productType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "other"
+        },
+        "proposed": []
+      },
+      "role": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "suspect"
+        },
+        "proposed": []
+      },
+      "lotNumber": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "FICTION-17"
+        },
+        "proposed": []
+      },
+      "cosmeticUse": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "retail"
+        },
+        "proposed": []
+      },
+      "purchaseSellerName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Fictional Seller Alpha"
+        },
+        "proposed": []
+      },
+      "purchaseSellerAddress": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "1 Example Lane"
+        },
+        "proposed": []
+      },
+      "purchaseSellerCity": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Example City"
+        },
+        "proposed": []
+      },
+      "purchaseSellerRegion": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Example Region"
+        },
+        "proposed": []
+      },
+      "purchaseSellerPostalCode": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "00 A 001"
+        },
+        "proposed": []
+      },
+      "purchaseSellerCountry": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "United Kingdom"
+        },
+        "proposed": []
+      },
+      "purchaseWebsite": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "https://seller.example.invalid"
+        },
+        "proposed": []
+      },
+      "purchaseDate": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-08-12"
+        },
+        "proposed": []
+      }
+    }
+  },
+  "finalProjectionDisclosures": [
+    "Patient fractional or compound ages and partial date of birth",
+    "Patient race/ethnicity detail outside the seven A5 categories",
+    "Section C product pictures",
+    "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
+    "Product date wording outside complete dates or explicit month/year/year-only precision"
+  ],
+  "actualPDF": {
+    "sha256": "8235b0f23a866679d0b0b99a277d2c51cf1e13eb0ebc4aafca9e6dabe1b9e791",
+    "pageCount": 8,
+    "namedFields": {
+      "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Congenital[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Death[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Disability[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Hospital[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].LifeThreaten[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].OtherEvents[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]": "none",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "17-OCT-2026",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].ReqdInter[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].WeightKG[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].WeightLB[0]": "/Off",
+      "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Problem detail: An unopened bottle of Example Meadow lotion, explicitly a cosmetic sold on a retail basis, lot FICTION-17, contained visible foreign particles. It was not used and no patient or adverse event was involved..",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalNo[0]": "/Off",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalRetd[0]": "/Off",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/1",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedNA[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedNo[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedYes[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Address[0]": "1 Example Lane",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Brand[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1City[0]": "Example City",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Compounded[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1CosRetail[0]": "/1",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Country[0]": "UNITED KINGDOM",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Generic[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1LotNum[0]": "FICTION-17",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "Example Meadow lotion",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1OTC[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1PlaceName[0]": "Fictional Seller Alpha",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1PurchaseDate[0]": "12-AUG-2026",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearNA[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearNo[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearYes[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1State[0]": "Example Region",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Website[0]": "https://seller.example.invalid",
+      "topmostSubform[0].Page4[0].Prod1[0].ZipCode[0]": "00 A 001",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].DistImp[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]": "alex.fiction@example.invalid",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].FirstName[0]": "Alex",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]": "/1",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].LastName[0]": "Fiction",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ManuComp[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Occupation[0]": "Physician",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Packer[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ProNo[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ProYes[0]": "/1",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].UserFac[0]": "/Off"
+    },
+    "independentReader": "pypdf 6.16.2",
+    "PDFKitRenderedPages": 8,
+    "renderHashes": {
+      "report-page-1.png": "4108ee77657f952cdd859f729d702bd61a19f496bfe6817377ee3a5c36feef68",
+      "report-page-2.png": "2e3b3630f121fcf3551484df6dedc8f4c506d449efb729c3110ddc077fe59a6c",
+      "report-page-3.png": "98416ffecb5f6ec3ee66e22aeeaeded93443cbd518f632e92f4a4c6795773bc5",
+      "report-page-4.png": "7e40c2fa74959fb085e0b960bca36d377371688b8de5781de4249744e832df28",
+      "report-page-5.png": "b40ae700e0beecee93f06058a4eca8eaf66f80c4443ed9462fd0462257763062",
+      "report-page-6.png": "621d0636a7ed3475e8a785a4df7572a7d2c52f762109f3041108cb983c609206",
+      "report-page-7.png": "706c0041f286c008bf1a7724dad36ca0a5b9019199ace1f9c90dedf0448113d8",
+      "report-page-8.png": "a4e65444ae4ad5265e47291918036d36a004842f064a4ecdef833ea7a64b38de"
+    },
+    "visualInspection": "selected filled pages inspected; not a claim that all 96 page images were manually inspected"
+  },
+  "modelCalls": [
+    {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 13174,
+      "outputTokens": 3392,
+      "latencyMs": 27334,
+      "estimatedCostUsd": 0.060268
+    }
+  ],
+  "checks": {
+    "reporter-reuse-comparison.json": {
+      "patient": true,
+      "products": true,
+      "relevantTests": true,
+      "eventExceptReportDate": true,
+      "correctReporter": true
+    },
+    "resume-check.json": {
+      "exactCase": true
+    }
+  },
+  "finalOutcome": "PDF generated after explicit source review and documented manual recovery; not a clean extraction/native-projection/uninterrupted-UI pass"
+}

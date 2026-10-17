@@ -1,0 +1,784 @@
+{
+  "id": "A01",
+  "family": "medication",
+  "testedRelease": {
+    "stateVersion": "wilson-browser-state-v32",
+    "release": "4bcabdbe6a1edf6296e555235f8de79a1dd65614"
+  },
+  "source": "Entirely fictional evaluation. Patient TEST-68 is a 68-year-old man. He began cephalexin 500 mg by mouth twice daily on 01-Aug-2026 for cellulitis. On 04-Aug-2026 he developed diffuse hives and facial swelling and was hospitalized. Cephalexin was stopped, he was treated with epinephrine and diphenhydramine, and he recovered and was discharged on 05-Aug-2026. I suspect cephalexin.",
+  "correction": null,
+  "expectedMaterialFacts": [
+    "TEST-68",
+    "68 years",
+    "male",
+    "cephalexin 500 mg oral twice daily",
+    "start 2026-08-01",
+    "onset 2026-08-04",
+    "hives and facial swelling",
+    "hospitalized",
+    "stopped cephalexin",
+    "epinephrine and diphenhydramine",
+    "recovered",
+    "discharged 2026-08-05"
+  ],
+  "observations": {
+    "extraction": "material source facts retained",
+    "recovery": [],
+    "transport": "API client response received"
+  },
+  "firstResponseFacts": {
+    "patient": {
+      "identifier": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "TEST-68"
+            },
+            "groupId": "patient",
+            "sourceIds": [
+              "source-d7b18eb4-0292-48db-95d4-15025a7c0ac8"
+            ]
+          }
+        ]
+      },
+      "ageYears": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": 68
+            },
+            "groupId": "patient",
+            "sourceIds": [
+              "source-d7b18eb4-0292-48db-95d4-15025a7c0ac8"
+            ]
+          }
+        ]
+      },
+      "sex": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "male"
+            },
+            "groupId": "patient",
+            "sourceIds": [
+              "source-d7b18eb4-0292-48db-95d4-15025a7c0ac8"
+            ]
+          }
+        ]
+      }
+    },
+    "event": {
+      "reportType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "adverse-event"
+        },
+        "proposed": []
+      },
+      "symptoms": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": [
+                "diffuse hives",
+                "facial swelling"
+              ]
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-d67be6db-c66d-4c3d-88cb-252f60fe9984"
+            ]
+          }
+        ]
+      },
+      "onsetDate": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "2026-08-04"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-d67be6db-c66d-4c3d-88cb-252f60fe9984"
+            ]
+          }
+        ]
+      },
+      "hospitalized": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": true
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-d67be6db-c66d-4c3d-88cb-252f60fe9984"
+            ]
+          }
+        ]
+      },
+      "treatments": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": [
+                "epinephrine",
+                "diphenhydramine"
+              ]
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-557cdedc-0fd5-49a7-813b-61ad33547934"
+            ]
+          }
+        ]
+      },
+      "outcome": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "recovered"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-557cdedc-0fd5-49a7-813b-61ad33547934"
+            ]
+          }
+        ]
+      },
+      "dischargeDate": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "2026-08-05"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-557cdedc-0fd5-49a7-813b-61ad33547934"
+            ]
+          }
+        ]
+      }
+    },
+    "reporter": {},
+    "product-202ec34f-fb52-40bf-8950-6a995b8c2493": {
+      "name": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "cephalexin"
+            },
+            "groupId": "group-ea614e7f-1c1d-4548-a251-5ef150ee1128",
+            "sourceIds": [
+              "source-12effd89-47d7-43a0-8166-0e237cb2b3b5"
+            ]
+          }
+        ]
+      },
+      "productType": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "drug-or-biologic"
+            },
+            "groupId": "group-ea614e7f-1c1d-4548-a251-5ef150ee1128",
+            "sourceIds": [
+              "source-12effd89-47d7-43a0-8166-0e237cb2b3b5"
+            ]
+          }
+        ]
+      },
+      "role": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "suspect"
+            },
+            "groupId": "group-ea614e7f-1c1d-4548-a251-5ef150ee1128",
+            "sourceIds": [
+              "source-20366d3a-5533-4317-af62-3011e295d212"
+            ]
+          }
+        ]
+      },
+      "dose": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "500 mg"
+            },
+            "groupId": "group-ea614e7f-1c1d-4548-a251-5ef150ee1128",
+            "sourceIds": [
+              "source-12effd89-47d7-43a0-8166-0e237cb2b3b5"
+            ]
+          }
+        ]
+      },
+      "frequency": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "twice daily"
+            },
+            "groupId": "group-ea614e7f-1c1d-4548-a251-5ef150ee1128",
+            "sourceIds": [
+              "source-12effd89-47d7-43a0-8166-0e237cb2b3b5"
+            ]
+          }
+        ]
+      },
+      "route": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "oral"
+            },
+            "groupId": "group-ea614e7f-1c1d-4548-a251-5ef150ee1128",
+            "sourceIds": [
+              "source-12effd89-47d7-43a0-8166-0e237cb2b3b5"
+            ]
+          }
+        ]
+      },
+      "startDate": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "2026-08-01"
+            },
+            "groupId": "group-ea614e7f-1c1d-4548-a251-5ef150ee1128",
+            "sourceIds": [
+              "source-12effd89-47d7-43a0-8166-0e237cb2b3b5"
+            ]
+          }
+        ]
+      },
+      "indication": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "cellulitis"
+            },
+            "groupId": "group-ea614e7f-1c1d-4548-a251-5ef150ee1128",
+            "sourceIds": [
+              "source-12effd89-47d7-43a0-8166-0e237cb2b3b5"
+            ]
+          }
+        ]
+      },
+      "stopped": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": true
+            },
+            "groupId": "group-ea614e7f-1c1d-4548-a251-5ef150ee1128",
+            "sourceIds": [
+              "source-557cdedc-0fd5-49a7-813b-61ad33547934"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "finalAcceptedFacts": {
+    "patient": {
+      "identifier": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "TEST-68"
+        },
+        "proposed": []
+      },
+      "ageYears": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": 68
+        },
+        "proposed": []
+      },
+      "sex": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "male"
+        },
+        "proposed": []
+      }
+    },
+    "event": {
+      "reportType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "adverse-event"
+        },
+        "proposed": []
+      },
+      "reportDate": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-10-17"
+        },
+        "proposed": []
+      },
+      "symptoms": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": [
+            "diffuse hives",
+            "facial swelling"
+          ]
+        },
+        "proposed": []
+      },
+      "onsetDate": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-08-04"
+        },
+        "proposed": []
+      },
+      "death": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "lifeThreatening": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "hospitalized": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      },
+      "disability": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "requiredIntervention": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "congenitalAnomaly": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "otherSerious": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "relevantTestsAvailable": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "relevantHistory": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "treatments": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": [
+            "epinephrine",
+            "diphenhydramine"
+          ]
+        },
+        "proposed": []
+      },
+      "outcome": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "recovered"
+        },
+        "proposed": []
+      },
+      "dischargeDate": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-08-05"
+        },
+        "proposed": []
+      }
+    },
+    "reporter": {
+      "lastName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Fiction"
+        },
+        "proposed": []
+      },
+      "firstName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Alex"
+        },
+        "proposed": []
+      },
+      "address": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "city": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "state": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "postalCode": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "country": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "phone": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "email": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "alex.fiction@example.invalid"
+        },
+        "proposed": []
+      },
+      "healthProfessional": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      },
+      "occupation": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Physician"
+        },
+        "proposed": []
+      },
+      "reportedTo": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": []
+        },
+        "proposed": []
+      },
+      "doNotDiscloseIdentity": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      }
+    },
+    "product-202ec34f-fb52-40bf-8950-6a995b8c2493": {
+      "name": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "cephalexin"
+        },
+        "proposed": []
+      },
+      "productType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "drug-or-biologic"
+        },
+        "proposed": []
+      },
+      "role": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "suspect"
+        },
+        "proposed": []
+      },
+      "dose": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "500 mg"
+        },
+        "proposed": []
+      },
+      "frequency": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "twice daily"
+        },
+        "proposed": []
+      },
+      "route": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "oral"
+        },
+        "proposed": []
+      },
+      "startDate": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-08-01"
+        },
+        "proposed": []
+      },
+      "stopDate": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "indication": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "cellulitis"
+        },
+        "proposed": []
+      },
+      "stopped": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      },
+      "improvedAfterChange": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "restarted": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      }
+    }
+  },
+  "finalProjectionDisclosures": [
+    "Patient fractional or compound ages and partial date of birth",
+    "Patient race/ethnicity detail outside the seven A5 categories",
+    "Section C product pictures",
+    "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
+    "Product date wording outside complete dates or explicit month/year/year-only precision"
+  ],
+  "actualPDF": {
+    "sha256": "5a5f131870380087c8554e9bacd8ccb5e69880943c8244d74bc41fa93a1b873e",
+    "pageCount": 8,
+    "namedFields": {
+      "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "68",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Congenital[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Death[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Disability[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].EventDate[0]": "04-AUG-2026",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Hospital[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].LifeThreaten[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].OtherEvents[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]": "TEST-68",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "17-OCT-2026",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].ReqdInter[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].WeightKG[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].WeightLB[0]": "/Off",
+      "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Symptoms: diffuse hives and facial swelling. Treatment: epinephrine; diphenhydramine. Outcome: recovered. Discharged 5-Aug-2026. Products stopped: cephalexin.",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalNo[0]": "/Off",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalRetd[0]": "/Off",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedNA[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedNo[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedYes[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Brand[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Compounded[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Diagnosis[0]": "cellulitis",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1DoseUnit[0]": "25",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Dose[0]": "500",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Freq[0]": "BID",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Generic[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "cephalexin",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1OTC[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearNA[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearNo[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearYes[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Route[0]": "Oral",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1TherapyStartDate[0]": "01-AUG-2026",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].DistImp[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]": "alex.fiction@example.invalid",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].FirstName[0]": "Alex",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]": "/1",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].LastName[0]": "Fiction",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ManuComp[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Occupation[0]": "Physician",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Packer[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ProNo[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ProYes[0]": "/1",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].UserFac[0]": "/Off"
+    },
+    "independentReader": "pypdf 6.16.2",
+    "PDFKitRenderedPages": 8,
+    "renderHashes": {
+      "report-page-1.png": "630f3237a2d99d188a8b1460f3802fb30c2e9a460d9049533909ea34eb376639",
+      "report-page-2.png": "0f4903ad7d74c79ecbcaadd70ca54c355816b63fb574ce988dabe00c9ffa7c6c",
+      "report-page-3.png": "87fd98c4cdd46a266178c88d5af8e8fdcec1da283abdfe6d92066332332f383d",
+      "report-page-4.png": "431fef59dc99a6fa301a8fa6cdf25fb3dcb5fbd43e8334c06af3a44269754746",
+      "report-page-5.png": "b40ae700e0beecee93f06058a4eca8eaf66f80c4443ed9462fd0462257763062",
+      "report-page-6.png": "621d0636a7ed3475e8a785a4df7572a7d2c52f762109f3041108cb983c609206",
+      "report-page-7.png": "706c0041f286c008bf1a7724dad36ca0a5b9019199ace1f9c90dedf0448113d8",
+      "report-page-8.png": "a4e65444ae4ad5265e47291918036d36a004842f064a4ecdef833ea7a64b38de"
+    },
+    "visualInspection": "selected filled pages inspected; not a claim that all 96 page images were manually inspected"
+  },
+  "modelCalls": [
+    {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 13083,
+      "outputTokens": 2417,
+      "latencyMs": 22735,
+      "estimatedCostUsd": 0.050336
+    }
+  ],
+  "checks": {
+    "resume-check.json": {
+      "exactCase": true
+    }
+  },
+  "finalOutcome": "PDF generated after explicit source review and documented manual recovery; not a clean extraction/native-projection/uninterrupted-UI pass"
+}

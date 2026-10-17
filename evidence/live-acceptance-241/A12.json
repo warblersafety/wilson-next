@@ -1,0 +1,509 @@
+{
+  "id": "A12",
+  "family": "sparse-medication",
+  "testedRelease": {
+    "stateVersion": "wilson-browser-state-v32",
+    "release": "4bcabdbe6a1edf6296e555235f8de79a1dd65614"
+  },
+  "source": "Entirely fictional evaluation. Patient TEST-26 is a 26-year-old man. He developed severe dizziness while taking propranolol. I suspect propranolol.",
+  "correction": null,
+  "expectedMaterialFacts": [
+    "TEST-26",
+    "26 years",
+    "male",
+    "severe dizziness",
+    "propranolol suspect medication",
+    "all unprovided details explicitly unknown rather than inferred"
+  ],
+  "observations": {
+    "extraction": "all sparse source facts including severe dizziness retained; missing required details explicitly answered unknown",
+    "recovery": [],
+    "transport": "actual browser-form opening received"
+  },
+  "firstResponseFacts": {
+    "patient": {
+      "identifier": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "TEST-26"
+            },
+            "groupId": "patient",
+            "sourceIds": [
+              "source-9b45e826-8afa-4d48-a317-6ac69ad34886"
+            ]
+          }
+        ]
+      },
+      "ageYears": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": 26
+            },
+            "groupId": "patient",
+            "sourceIds": [
+              "source-9b45e826-8afa-4d48-a317-6ac69ad34886"
+            ]
+          }
+        ]
+      },
+      "sex": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "male"
+            },
+            "groupId": "patient",
+            "sourceIds": [
+              "source-9b45e826-8afa-4d48-a317-6ac69ad34886"
+            ]
+          }
+        ]
+      }
+    },
+    "event": {
+      "reportType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "adverse-event"
+        },
+        "proposed": []
+      },
+      "symptoms": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": [
+                "severe dizziness"
+              ]
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-d0c46223-f0ec-4c85-9c99-df3546240565"
+            ]
+          }
+        ]
+      }
+    },
+    "reporter": {},
+    "product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c": {
+      "name": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "propranolol"
+            },
+            "groupId": "group-06a1ba91-fa7e-4b85-b163-58ddc29c2a39",
+            "sourceIds": [
+              "source-d0c46223-f0ec-4c85-9c99-df3546240565"
+            ]
+          }
+        ]
+      },
+      "productType": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "drug-or-biologic"
+            },
+            "groupId": "group-06a1ba91-fa7e-4b85-b163-58ddc29c2a39",
+            "sourceIds": [
+              "source-d0c46223-f0ec-4c85-9c99-df3546240565"
+            ]
+          }
+        ]
+      },
+      "role": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "suspect"
+            },
+            "groupId": "group-06a1ba91-fa7e-4b85-b163-58ddc29c2a39",
+            "sourceIds": [
+              "source-ff2ef972-24dc-42d2-b44d-854d75de0de5"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "finalAcceptedFacts": {
+    "patient": {
+      "identifier": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "TEST-26"
+        },
+        "proposed": []
+      },
+      "ageYears": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": 26
+        },
+        "proposed": []
+      },
+      "sex": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "male"
+        },
+        "proposed": []
+      }
+    },
+    "event": {
+      "reportType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "adverse-event"
+        },
+        "proposed": []
+      },
+      "reportDate": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-10-17"
+        },
+        "proposed": []
+      },
+      "symptoms": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": [
+            "severe dizziness"
+          ]
+        },
+        "proposed": []
+      },
+      "death": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "lifeThreatening": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "hospitalized": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "disability": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "requiredIntervention": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "congenitalAnomaly": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "otherSerious": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "relevantTestsAvailable": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "relevantHistory": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      }
+    },
+    "reporter": {
+      "lastName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Fiction"
+        },
+        "proposed": []
+      },
+      "firstName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Alex"
+        },
+        "proposed": []
+      },
+      "address": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "city": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "state": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "postalCode": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "country": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "phone": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "email": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "alex.fiction@example.invalid"
+        },
+        "proposed": []
+      },
+      "healthProfessional": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      },
+      "occupation": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Physician"
+        },
+        "proposed": []
+      },
+      "reportedTo": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": []
+        },
+        "proposed": []
+      },
+      "doNotDiscloseIdentity": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      }
+    },
+    "product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c": {
+      "name": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "propranolol"
+        },
+        "proposed": []
+      },
+      "productType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "drug-or-biologic"
+        },
+        "proposed": []
+      },
+      "role": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "suspect"
+        },
+        "proposed": []
+      },
+      "indication": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "stopped": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      },
+      "doseReduced": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "unknown"
+        },
+        "proposed": []
+      }
+    }
+  },
+  "finalProjectionDisclosures": [
+    "Patient fractional or compound ages and partial date of birth",
+    "Patient race/ethnicity detail outside the seven A5 categories",
+    "Section C product pictures",
+    "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
+    "Product date wording outside complete dates or explicit month/year/year-only precision"
+  ],
+  "actualPDF": {
+    "sha256": "cc00ee50442dc1fa760279f69a1d16f226a2aacd9fd16ac47ea7f7126d685403",
+    "pageCount": 8,
+    "namedFields": {
+      "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "26",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Congenital[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Death[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Disability[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Hospital[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].LifeThreaten[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].OtherEvents[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]": "TEST-26",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "17-OCT-2026",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].ReqdInter[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].WeightKG[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].WeightLB[0]": "/Off",
+      "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Symptoms: severe dizziness.",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalNo[0]": "/Off",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalRetd[0]": "/Off",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedNA[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedNo[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1AbatedYes[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Brand[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Compounded[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Generic[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1Name[0]": "propranolol",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1OTC[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearNA[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearNo[0]": "/Off",
+      "topmostSubform[0].Page4[0].Prod1[0].Prod1ReappearYes[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].DistImp[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]": "alex.fiction@example.invalid",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].FirstName[0]": "Alex",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]": "/1",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].LastName[0]": "Fiction",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ManuComp[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Occupation[0]": "Physician",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Packer[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ProNo[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ProYes[0]": "/1",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].UserFac[0]": "/Off"
+    },
+    "independentReader": "pypdf 6.16.2",
+    "PDFKitRenderedPages": 8,
+    "renderHashes": {
+      "report-page-1.png": "e6e882d9af33e94613466e95fab88c140e80bbf250b5abed2cec00129c0bb215",
+      "report-page-2.png": "3079cc8a6e6cb653964706e7686a35e5a4e150675ab61a8c5b039283aedd2ba9",
+      "report-page-3.png": "87fd98c4cdd46a266178c88d5af8e8fdcec1da283abdfe6d92066332332f383d",
+      "report-page-4.png": "3cb1f92651a2e8430c282ff8aef5fdc766b88b1487daee921b901e32bb969e81",
+      "report-page-5.png": "b40ae700e0beecee93f06058a4eca8eaf66f80c4443ed9462fd0462257763062",
+      "report-page-6.png": "621d0636a7ed3475e8a785a4df7572a7d2c52f762109f3041108cb983c609206",
+      "report-page-7.png": "706c0041f286c008bf1a7724dad36ca0a5b9019199ace1f9c90dedf0448113d8",
+      "report-page-8.png": "a4e65444ae4ad5265e47291918036d36a004842f064a4ecdef833ea7a64b38de"
+    },
+    "visualInspection": "selected filled pages inspected; not a claim that all 96 page images were manually inspected"
+  },
+  "modelCalls": [
+    {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 12948,
+      "outputTokens": 1048,
+      "latencyMs": 8862,
+      "estimatedCostUsd": 0.036376
+    }
+  ],
+  "checks": {
+    "reporter-reuse-comparison.json": {
+      "exactAcceptedCaseUnchanged": true,
+      "draftReplacedViaRememberedDetails": true,
+      "saveResponseWitnessed": true,
+      "test": "Reuse remembered identity over unsent reporter draft in existing accepted case; not fresh-case initial reuse"
+    }
+  },
+  "finalOutcome": "PDF generated after explicit source review and documented manual recovery; not a clean extraction/native-projection/uninterrupted-UI pass"
+}
