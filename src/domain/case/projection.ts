@@ -56,6 +56,7 @@ export interface Form3500Projection {
     C: {
       productAvailability?: "available" | "not-available" | "returned-to-manufacturer";
       productReturnDate?: string;
+      productReturnDateInComments?: boolean;
     };
     D: { suspectProducts: ProjectedProduct[] };
     E: { suspectDevices: ProjectedDevice[] };
@@ -227,7 +228,13 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   assign(projection, "sections.B.relevantHistory", "relevant medical history", "event:event:relevantHistory", caseState.event.facts.relevantHistory, projection.sections.B, "relevantHistory", value => known(caseState.event.facts.relevantHistory)?.qualifier ? `${value}\nHistory context: ${known(caseState.event.facts.relevantHistory)!.qualifier}` : value, true);
   assign(projection, "sections.C.productAvailability", "product availability", "event:event:productAvailability", caseState.event.facts.productAvailability, projection.sections.C, "productAvailability");
   if (known(caseState.event.facts.productAvailability)?.value === "returned-to-manufacturer") {
-    assign(projection, "sections.C.productReturnDate", "product return date", "event:event:productReturnDate", caseState.event.facts.productReturnDate, projection.sections.C, "productReturnDate");
+    const date=known(caseState.event.facts.productReturnDate);
+    if(date&&isPartialDate(date.value))projection.sections.C.productReturnDateInComments=true;
+    else assign(projection, "sections.C.productReturnDate", "product return date", "event:event:productReturnDate", caseState.event.facts.productReturnDate, projection.sections.C, "productReturnDate",value=>value as string,true);
+  }
+  if(known(caseState.event.facts.productAvailability)?.value!=="returned-to-manufacturer"&&known(caseState.event.facts.productReturnDate)){
+    projection.notIncluded.push("Product return date remains in the case but is not printed because return to manufacturer is not explicitly selected.");
+    projection.omissions.push({concept:"product return date",target:"event:event:productReturnDate",reason:"inapplicable",sourceIds:caseState.event.facts.productReturnDate.sourceIds});
   }
 
   for (const test of caseState.relevantTests.filter(({ state }) => state === "resolved")) {
@@ -378,6 +385,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   for (const product of projection.sections.F.concomitantProducts) for (const context of product.fieldContext ?? []) carriedQualifierTargets.add(`product:${product.productId}:${context.field}`);
   for (const context of projection.sections.G.reporter.fieldContext??[]) carriedQualifierTargets.add(`reporter:reporter:${context.field}`);
   for (const entry of eventDateContextEntries(caseState))carriedQualifierTargets.add(entry.target);
+  for (const entry of returnDateContextEntries(caseState))carriedQualifierTargets.add(entry.target);
   for (const entry of relevantTestContextEntries(caseState)) carriedQualifierTargets.add(entry.target);
   for(const note of projection.productDateNotes??[])carriedQualifierTargets.add(`product:${note.productId}:${note.field}`);
   for(const note of projection.expirationNotes??[])carriedQualifierTargets.add(`product:${note.productId}:expirationDate`);
@@ -651,6 +659,7 @@ export function additionalCommentsEntries(caseState: SemanticCase) {
   const comment = known(caseState.event.facts.additionalComments);
   return [
     ...relevantTestContextEntries(caseState),
+    ...returnDateContextEntries(caseState),
     ...(comment ? [{ text: `Additional comments: ${comment.value}${comment.qualifier ? `\nAdditional comments context: ${comment.qualifier}` : ""}`, target: "event:event:additionalComments", sourceIds: comment.sourceIds, testId: undefined }] : []),
   ];
 }
@@ -682,4 +691,14 @@ export function deviceContextEntries(caseState: SemanticCase, projection: Form35
 /** Supplemental date wording does not replace substantive event description. */
 export function eventDateContextEntries(caseState:SemanticCase){
  return (["onsetDate","deathDate"] as const).flatMap(field=>{const fact=known(caseState.event.facts[field]);if(!fact||(field==="deathDate"&&known(caseState.event.facts.death)?.value!==true))return [];const block=field==="onsetDate"?"B3":"B2";return isPartialDate(fact.value)||fact.qualifier?[{text:isPartialDate(fact.value)?`${block} ${eventDateLabels[field].toLowerCase()} wording:\n${suppliedDateText(fact.value,eventDateLabels[field].toLowerCase(),fact.qualifier)}`:`${block} ${eventDateLabels[field].toLowerCase()} context: ${fact.qualifier}`,target:`event:event:${field}`,sourceIds:fact.sourceIds}]:[];});
+}
+
+/** C1 date alone does not establish return or individual-product attribution. */
+export function returnDateContextEntries(caseState: SemanticCase) {
+  const date = known(caseState.event.facts.productReturnDate);
+  if (!date || known(caseState.event.facts.productAvailability)?.value !== "returned-to-manufacturer") return [];
+  const text = isPartialDate(date.value)
+    ? `C1 product return date wording:\n${suppliedDateText(date.value, "product return date", date.qualifier)}`
+    : date.qualifier ? `C1 product return date context: ${date.qualifier}` : undefined;
+  return text ? [{ text, target: "event:event:productReturnDate", sourceIds: date.sourceIds, testId: undefined }] : [];
 }

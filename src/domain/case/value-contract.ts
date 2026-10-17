@@ -82,7 +82,7 @@ export const caseValueContracts = {
       values: ["available", "not-available", "returned-to-manufacturer"],
       mismatch: "productAvailability requires a supported availability state",
     },
-    productReturnDate: { shape: "iso-date" },
+    productReturnDate: { shape: "supplied-date" },
   },
   product: {
     name: { shape: "string" },

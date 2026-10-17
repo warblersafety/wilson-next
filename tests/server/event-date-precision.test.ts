@@ -19,11 +19,11 @@ it.each(eventDateFields)('grounds %s exact supplied precision without clinical i
         }
     }
 });
-it('rejects malformed partials and keeps report/return/DOB contracts unchanged', () => {
+it('rejects malformed partials and keeps report/DOB contracts unchanged', () => {
     for (const field of eventDateFields)
         for (const value of [{ ...eventDates.onsetDate, month: '13' }, { ...eventDates.onsetDate, year: '0000' }, { ...eventDates.onsetDate, wording: '' }, { ...eventDates.onsetDate, day: '01' }, '2028-01', '2028-02-30'])
             expect(knownValueMismatch({ entity: 'event', entityId: 'event', field }, { kind: 'known', value })).toBeTruthy();
-    for (const field of ['reportDate', 'productReturnDate'] as const)
+    for (const field of ['reportDate'] as const)
         expect(knownValueMismatch({ entity: 'event', entityId: 'event', field }, { kind: 'known', value: eventDates.onsetDate })).toBeTruthy();
     expect(knownValueMismatch({ entity: 'patient', entityId: 'patient', field: 'dateOfBirth' }, { kind: 'known', value: eventDates.onsetDate })).toBeTruthy();
 });

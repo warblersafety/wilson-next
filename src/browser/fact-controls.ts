@@ -81,7 +81,7 @@ const event = {
     ["not-available", "Not available for evaluation"],
     ["returned-to-manufacturer", "Returned to manufacturer"],
   ) },
-  productReturnDate: { label: "Returned to manufacturer", shape: "date", completeDate: true },
+  productReturnDate: { label: "Returned to manufacturer", shape: "supplied-date" },
 } as const satisfies Record<EventFactKey, FactControl>;
 
 const product = {
