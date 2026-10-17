@@ -267,3 +267,9 @@ exactly on product/field-linked supplements: D1 for strength and D2 for dose (#2
 context and native quantity/unit formatting remain. Multiline edits/drafts resume
 without accepted-fact changes. No totals, clinical units or interpretations are
 inferred. Broader glyphs and non-native duration shapes remain separate work.
+
+### Approved clinical input simplification — 17 October 2026, issue245
+
+Information still needed is a concise read-only gap list. Supply clinical answers by typing or native dictation in the existing Clinical update, then review and accept the resulting proposals. Information awaiting proposal acceptance is not labelled missing; conditional treatment gaps are recalculated after review. Remove separate direct clinical-answer forms from this panel. Secondary case-field corrections and Reporter details remain available, with the current visual design retained.
+
+Retire the competing medication-answer draft creation path. Preserve genuine earlier clinical-answer drafts as readable, unapplied work; never silently discard or replay them. Existing unsent Clinical update text, secondary edits and saved case knowledge remain protected. Save/resume visibility changes are deferred, as are model/prompt and PDF changes based on the Ali retest. Issue150 and PR240 remain paused. This approves only the bounded input-flow simplification and its regression verification.

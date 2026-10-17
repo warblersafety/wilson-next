@@ -22,9 +22,8 @@ import {
   requestJourneyJson,
   requestJourneyPdf,
 } from "./browser-diagnostics";
-import { MedicationTask } from "./medication-task";
 import styles from "./page.module.css";
-import { editValueForSubmission, clinicalDraftKey, reporterDraftKey, factVersions as captureFactVersions, invalidatedCardFields } from "../src/browser/ui-drafts";
+import { editValueForSubmission, reporterDraftKey, factVersions as captureFactVersions, invalidatedCardFields } from "../src/browser/ui-drafts";
 import { JourneyDraftProvider, useJourneyDrafts, useCaseDraft, draftFieldSetter } from "./journey-drafts";
 import { canSaveReporter, clinicalNeedParts, needFieldLabel, nextClinicalAction, singleEntityGroup } from "./clinical-guidance";
 import { isTreatmentDuration,durationText, d3DateFields } from "../src/domain/case/duration";
@@ -111,7 +110,7 @@ export function JourneyBody() {
     const next = nextClinicalAction(snapshot);
     if (next?.kind === "updates") target = document.getElementById("update-review-title");
     else if (next?.kind === "proposals") target = document.querySelector<HTMLElement>("[data-proposal-review] h3");
-    else if (next?.kind === "questions") target = document.getElementById("clinical-question");
+    else if (next?.kind === "questions") target = document.getElementById("later-update");
     target ??= document.getElementById("case-title");
     target?.focus({ preventScroll: true });
     target?.scrollIntoView({ block: "start" });
@@ -127,7 +126,7 @@ export function JourneyBody() {
     const questions = nextClinicalAction(snapshot)?.kind === "questions";
     const target = snapshot.stage === "review-update" ? document.getElementById("update-review-title")
       : card?.querySelector<HTMLElement>("h3")
-        ?? (questions ? document.getElementById(request.directQuestion ? "clinical-question" : "clinical-panel-title") : null)
+        ?? (questions ? document.getElementById("later-update") : null)
         ?? document.querySelector<HTMLElement>("[data-conflict-review]") ?? document.getElementById("case-title");
     target?.focus({ preventScroll: true });
     target?.scrollIntoView({ block: "start" });
@@ -321,8 +320,7 @@ export function JourneyBody() {
           <CaseCards key={browserState?.case.id} snapshot={snapshot} busy={busy} act={act} />
           <section className={styles.invitation} aria-label="Information still needed" hidden={!clinicalNeedParts(snapshot).some(({ missing, recheckAfterReview }) => missing.length > 0 && !recheckAfterReview)}>
             <h2 id="clinical-panel-title" tabIndex={-1}>Information still needed</h2>
-            {clinicalAction?.kind !== "questions" && <p>Finish proposal review before answering the remaining questions.</p>}
-            {snapshot.clarification && snapshot.clarification.kind !== "reporter" && <div id="direct-clinical-question" className={styles.directQuestions} hidden={clinicalAction?.kind !== "questions"}><div id="clinical-question" tabIndex={-1}><CompletionTask key={clinicalDraftKey(snapshot)} snapshot={snapshot} busy={busy || snapshot.stage !== "clarify"} act={act} /></div></div>}
+            <p>Use Clinical update below to supply these details in your own words. Say if something is unknown or you prefer not to answer.</p>
             <ClinicalNeeds snapshot={snapshot} remainingOnly />
           </section>
           {uiDrafts.conversation.some(input => input.kind === "update") && <details className={styles.caseCard}>
@@ -474,61 +472,6 @@ function UnrepresentedNotice({ items }: { items: JourneySnapshot["unrepresented"
   </section>;
 }
 
-type IndicationChoice = "known" | "unknown" | "declined";
-
-function CompletionTask(props: { snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean> }) {
-  const question = props.snapshot.clarification;
-  if (!question) return null;
-  return <>
-    <p className={styles.hint}>{question.reason}</p>
-    {question.kind === "medication-history" && <MedicationTask {...props} />}
-    {question.kind === "indications" && <IndicationTask {...props} />}
-    {question.kind === "serious-outcomes" && <SeriousOutcomesTask {...props} />}
-    {question.kind === "death-date" && <DeathDateTask {...props} />}
-    {question.kind === "clinical-context" && <ClinicalContextTask {...props} />}
-    {question.kind === "device-details" && <DeviceDetailsTask {...props} />}
-    {question.kind === "reporter" && <ReporterTask {...props} />}
-  </>;
-}
-
-function IndicationTask({ snapshot, busy, act }: {
-  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
-}) {
-  const productIds = snapshot.clarification?.kind === "indications" ? snapshot.clarification.productIds : [];
-  const [draft, setDraft] = useCaseDraft("indications", snapshot.clarification?.key ?? "none", clinicalDraftKey(snapshot), () => ({ choices: {}, texts: {} }));
-  const { choices, texts } = draft;
-  const setChoices = draftFieldSetter(setDraft, "choices");
-  const setTexts = draftFieldSetter(setDraft, "texts");
-  const products = productIds.map((id) => snapshot.understanding.products.find((product) => product.id === id)).filter(Boolean);
-  const complete = products.every((product) => {
-    const choice = choices[product!.id];
-    return choice === "unknown" || choice === "declined" || (choice === "known" && Boolean(texts[product!.id]?.trim()));
-  });
-  return <>
-    <h1 id="task-title">{snapshot.clarification?.question}</h1>
-    <p>Answer each labelled product separately, or record that the information is unknown or declined.</p>
-    {products.map((product) => {
-      const name = productViewLabel(product!);
-      return <fieldset disabled={busy} className={styles.answerGroup} key={product!.id}>
-        <legend>{name}</legend>
-        <label><input type="radio" name={`choice-${product!.id}`} checked={choices[product!.id] === "known"} onChange={() => setChoices({ ...choices, [product!.id]: "known" })} /> Known</label>
-        <input aria-label={`${name} indication`} value={texts[product!.id] ?? ""} onChange={(event) => { setChoices({ ...choices, [product!.id]: "known" }); setTexts({ ...texts, [product!.id]: event.target.value }); }} />
-        <label><input type="radio" name={`choice-${product!.id}`} checked={choices[product!.id] === "unknown"} onChange={() => setChoices({ ...choices, [product!.id]: "unknown" })} /> Unknown</label>
-        <label><input type="radio" name={`choice-${product!.id}`} checked={choices[product!.id] === "declined"} onChange={() => setChoices({ ...choices, [product!.id]: "declined" })} /> Prefer not to answer</label>
-      </fieldset>;
-    })}
-    <button disabled={busy || !complete} onClick={() => void act({
-      action: "answer-indications",
-      answers: products.map((product) => ({
-        productId: product!.id,
-        value: choices[product!.id] === "known"
-          ? { kind: "known", value: texts[product!.id].trim() }
-          : { kind: choices[product!.id] as "unknown" | "declined" },
-      })),
-    })}>Add these answers</button>
-  </>;
-}
-
 const seriousOutcomeLabels = {
   death: "Death",
   lifeThreatening: "Life-threatening",
@@ -538,166 +481,6 @@ const seriousOutcomeLabels = {
   congenitalAnomaly: "Congenital anomaly or birth defect",
   otherSerious: "Other serious or important medical event",
 } as const;
-type SeriousOutcomeKey = keyof typeof seriousOutcomeLabels;
-
-function SeriousOutcomesTask({ snapshot, busy, act }: {
-  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
-}) {
-  const question = snapshot.clarification;
-  const missing = question?.kind === "serious-outcomes" ? new Set(question.targetIds.map((target) => target.split(":")[2])) : new Set<string>();
-  const [draft, setDraft] = useCaseDraft("serious-outcomes", snapshot.clarification?.key ?? "none", clinicalDraftKey(snapshot), () => ({ selected: [] }));
-  const { selected } = draft;
-  const setSelected = draftFieldSetter(setDraft, "selected");
-  const existing = Object.fromEntries(Object.keys(seriousOutcomeLabels).map((field) => {
-    const value = activeValue(snapshot.understanding.event[field]);
-    return [field, value?.kind === "known" && value.value === true];
-  }));
-  return <>
-    <h1 id="task-title">{question?.question}</h1>
-    <p>Select every additional outcome that applies. Leaving an available outcome unchecked records that it did not apply. Accepted outcomes are shown and will not be asked again.</p>
-    <fieldset disabled={busy} className={styles.answerGroup}>
-      <legend>Serious outcomes</legend>
-      {(Object.entries(seriousOutcomeLabels) as Array<[SeriousOutcomeKey, string]>).map(([field, label]) => <label key={field}>
-        <input type="checkbox" checked={Boolean(existing[field]) || selected.includes(field)} disabled={Boolean(existing[field]) || !missing.has(field)} onChange={(event) => setSelected(event.target.checked ? [...selected, field] : selected.filter((item) => item !== field))} /> {label}{existing[field] ? " — already recorded" : ""}
-      </label>)}
-    </fieldset>
-    <div className={styles.decisionActions}>
-      <button disabled={busy} onClick={() => void act({ action: "answer-serious-outcomes", selected, disposition: "known" })}>Confirm outcomes</button>
-      <button disabled={busy} onClick={() => void act({ action: "answer-serious-outcomes", selected: [], disposition: "unknown" })}>I don’t know</button>
-      <button disabled={busy} onClick={() => void act({ action: "answer-serious-outcomes", selected: [], disposition: "declined" })}>Prefer not to answer</button>
-    </div>
-  </>;
-}
-
-function DeathDateTask({ snapshot, busy, act }: {
-  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
-}) {
-  const [draft, setDraft] = useCaseDraft("death-date", snapshot.clarification?.key ?? "none", clinicalDraftKey(snapshot), () => ({ date: "" }));
-  const { date } = draft;
-  const setDate = draftFieldSetter(setDraft, "date");
-  return <>
-    <h1 id="task-title">{snapshot.clarification?.question}</h1>
-    <p>This detail is asked only because death is recorded as an outcome.</p>
-    <fieldset disabled={busy}><DatePrecisionEditor label="Date of death" completeLabel="Date of death" value={date} onChange={setDate}/></fieldset>
-    <div className={styles.decisionActions}>
-      <button disabled={busy || !isExpirationValue(date)} onClick={() => void act({ action: "answer-death-date", value: { kind: "known", value: date } })}>Add date</button>
-      <button disabled={busy} onClick={() => void act({ action: "answer-death-date", value: { kind: "unknown" } })}>Unknown</button>
-      <button disabled={busy} onClick={() => void act({ action: "answer-death-date", value: { kind: "declined" } })}>Prefer not to answer</button>
-    </div>
-  </>;
-}
-
-type ContextChoice = "known" | "explicitly-absent" | "unknown" | "declined";
-type ClinicalHistoryValue = Extract<JourneyAction, { action: "answer-clinical-context" }>["history"];
-
-function ClinicalContextTask({ snapshot, busy, act }: {
-  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
-}) {
-  const question = snapshot.clarification?.kind === "clinical-context" ? snapshot.clarification : undefined;
-  const [draft, setDraft] = useCaseDraft("clinical-context", snapshot.clarification?.key ?? "none", clinicalDraftKey(snapshot), () => ({ testName: "", testResult: "", lowRange: "", highRange: "", testDate: "", history: "" }));
-  const { testChoice, historyChoice, testName, testResult, lowRange, highRange, testDate, history } = draft;
-  const setTestChoice = draftFieldSetter(setDraft, "testChoice");
-  const setHistoryChoice = draftFieldSetter(setDraft, "historyChoice");
-  const setTestName = draftFieldSetter(setDraft, "testName");
-  const setTestResult = draftFieldSetter(setDraft, "testResult");
-  const setLowRange = draftFieldSetter(setDraft, "lowRange");
-  const setHighRange = draftFieldSetter(setDraft, "highRange");
-  const setTestDate = draftFieldSetter(setDraft, "testDate");
-  const setHistory = draftFieldSetter(setDraft, "history");
-  const testComplete = !question?.askTests || (testChoice && (testChoice !== "known" || Boolean(testName.trim() || testResult.trim()) && (!testDate || isExpirationValue(testDate))));
-  const historyComplete = !question?.askHistory || (historyChoice && (historyChoice !== "known" || Boolean(history.trim())));
-  const contextValue = (choice: ContextChoice | undefined, text: string): ClinicalHistoryValue => choice === "known"
-    ? { kind: "known", value: typeof text==="string"?text.trim():text }
-    : choice ? { kind: choice } : undefined;
-  return <>
-    <h1 id="task-title">{question?.question}</h1>
-    <p>Add only context that is relevant to understanding this event. Unknown, none, and refusal are retained and will not trigger the same question again.</p>
-    {question?.askTests && <fieldset disabled={busy} className={styles.answerGroup}>
-      <legend>Relevant tests or laboratory results</legend>
-      <label><input type="radio" name="test-choice" checked={testChoice === "known"} onChange={() => setTestChoice("known")} /> Add one relevant result</label>
-      {testChoice === "known" && <>
-        <p>Enter the details you know. Leave missing units or dates blank; do not guess clinical terms.</p>
-        <label>Test identity <input aria-label="Test identity" value={testName} onChange={(event) => setTestName(event.target.value)} /></label>
-        <label>Result and stated units <input aria-label="Result and stated units" value={testResult} onChange={(event) => setTestResult(event.target.value)} /></label>
-        <label>Low range (optional) <input aria-label="Low range" value={lowRange} onChange={(event) => setLowRange(event.target.value)} /></label>
-        <label>High range (optional) <input aria-label="High range" value={highRange} onChange={(event) => setHighRange(event.target.value)} /></label>
-        <div><p>Date (optional)</p><DatePrecisionEditor label="Test date" completeLabel="Test date" value={testDate} onChange={setTestDate} optional/></div>
-      </>}
-      <label><input type="radio" name="test-choice" checked={testChoice === "explicitly-absent"} onChange={() => setTestChoice("explicitly-absent")} /> No relevant tests to add</label>
-      <label><input type="radio" name="test-choice" checked={testChoice === "unknown"} onChange={() => setTestChoice("unknown")} /> Unknown</label>
-      <label><input type="radio" name="test-choice" checked={testChoice === "declined"} onChange={() => setTestChoice("declined")} /> Prefer not to answer</label>
-    </fieldset>}
-    {question?.askHistory && <fieldset disabled={busy} className={styles.answerGroup}>
-      <legend>Other relevant medical history</legend>
-      <label><input type="radio" name="history-choice" checked={historyChoice === "known"} onChange={() => setHistoryChoice("known")} /> Add relevant history</label>
-      {historyChoice === "known" && <textarea aria-label="Relevant medical history" rows={4} value={history} onChange={(event) => setHistory(event.target.value)} />}
-      <label><input type="radio" name="history-choice" checked={historyChoice === "explicitly-absent"} onChange={() => setHistoryChoice("explicitly-absent")} /> No relevant history to add</label>
-      <label><input type="radio" name="history-choice" checked={historyChoice === "unknown"} onChange={() => setHistoryChoice("unknown")} /> Unknown</label>
-      <label><input type="radio" name="history-choice" checked={historyChoice === "declined"} onChange={() => setHistoryChoice("declined")} /> Prefer not to answer</label>
-    </fieldset>}
-    <button disabled={busy || !testComplete || !historyComplete} onClick={() => void act({
-      action: "answer-clinical-context",
-      test: question?.askTests ? testChoice === "known" ? { kind: "known", testName: testName.trim() || undefined, testResult: testResult.trim() || undefined, lowRange: lowRange.trim() || undefined, highRange: highRange.trim() || undefined, date: testDate || undefined } : { kind: testChoice as Exclude<ContextChoice, "known"> } : undefined,
-      history: question?.askHistory ? contextValue(historyChoice, history) : undefined,
-    })}>Add this context</button>
-  </>;
-}
-
-type DeviceDetailChoice = "known" | "unknown" | "inapplicable" | "declined";
-type DeviceDetailValue = Extract<JourneyAction, { action: "answer-device-details" }>["implantDate"];
-
-function DeviceDetailsTask({ snapshot, busy, act }: {
-  snapshot: JourneySnapshot; busy: boolean; act: (action: JourneyAction) => Promise<boolean>;
-}) {
-  const question = snapshot.clarification?.kind === "device-details" ? snapshot.clarification : undefined;
-  const [draft, setDraft] = useCaseDraft("device-details", snapshot.clarification?.key ?? "none", clinicalDraftKey(snapshot), () => ({ implantDate: "", explantDate: "", reprocessor: "" }));
-  const { implantChoice, explantChoice, reprocessorChoice, implantDate, explantDate, reprocessor } = draft;
-  const setImplantChoice = draftFieldSetter(setDraft, "implantChoice");
-  const setExplantChoice = draftFieldSetter(setDraft, "explantChoice");
-  const setReprocessorChoice = draftFieldSetter(setDraft, "reprocessorChoice");
-  const setImplantDate = draftFieldSetter(setDraft, "implantDate");
-  const setExplantDate = draftFieldSetter(setDraft, "explantDate");
-  const setReprocessor = draftFieldSetter(setDraft, "reprocessor");
-  const completeChoice = (asked: boolean | undefined, choice: DeviceDetailChoice | undefined, value: SuppliedDate) => !asked
-    || Boolean(choice && (choice !== "known" || (typeof value==="string"?Boolean(value.trim()):isExpirationValue(value))));
-  const complete = (!question?.askImplantDate || implantChoice!=="known" || isExpirationValue(implantDate)) && (!question?.askExplantDate || explantChoice!=="known" || isExpirationValue(explantDate)) && completeChoice(question?.askImplantDate, implantChoice, implantDate)
-    && completeChoice(question?.askExplantDate, explantChoice, explantDate)
-    && completeChoice(question?.askReprocessor, reprocessorChoice, reprocessor);
-  const value = (choice: DeviceDetailChoice | undefined, text: SuppliedDate): DeviceDetailValue => choice === "known"
-    ? { kind: "known", value: typeof text==="string"?text.trim():text }
-    : choice ? { kind: choice } : undefined;
-  const choices = (name: string, choice: DeviceDetailChoice | undefined, setChoice: (choice: DeviceDetailChoice) => void, allowInapplicable: boolean) => <>
-    <label><input type="radio" name={name} checked={choice === "known"} onChange={() => setChoice("known")} /> Known</label>
-    <label><input type="radio" name={name} checked={choice === "unknown"} onChange={() => setChoice("unknown")} /> Unknown</label>
-    {allowInapplicable && <label><input type="radio" name={name} checked={choice === "inapplicable"} onChange={() => setChoice("inapplicable")} /> Not applicable</label>}
-    <label><input type="radio" name={name} checked={choice === "declined"} onChange={() => setChoice("declined")} /> Prefer not to answer</label>
-  </>;
-  return <>
-    <h1 id="task-title">{question?.question}</h1>
-    <p>These details are asked only because the reviewed device facts make them applicable. Unknown, not applicable, and refusal close the detail without a repeat.</p>
-    {question?.askImplantDate && <fieldset disabled={busy} className={styles.answerGroup}>
-      <legend>Implant date</legend>
-      {choices("implant-date-choice", implantChoice, setImplantChoice, false)}
-      {implantChoice === "known" && <DatePrecisionEditor label="Device implant date" completeLabel="Device implant date" value={implantDate} onChange={setImplantDate}/>}
-    </fieldset>}
-    {question?.askExplantDate && <fieldset disabled={busy} className={styles.answerGroup}>
-      <legend>Explant date</legend>
-      {choices("explant-date-choice", explantChoice, setExplantChoice, true)}
-      {explantChoice === "known" && <DatePrecisionEditor label="Device explant date" completeLabel="Device explant date" value={explantDate} onChange={setExplantDate}/>}
-    </fieldset>}
-    {question?.askReprocessor && <fieldset disabled={busy} className={styles.answerGroup}>
-      <legend>Reprocessor</legend>
-      {choices("reprocessor-choice", reprocessorChoice, (choice) => setReprocessorChoice(choice as Exclude<DeviceDetailChoice, "inapplicable">), false)}
-      {reprocessorChoice === "known" && <input aria-label="Device reprocessor" value={reprocessor} onChange={(event) => setReprocessor(event.target.value)} />}
-    </fieldset>}
-    <button disabled={busy || !complete} onClick={() => void act({
-      action: "answer-device-details",
-      implantDate: question?.askImplantDate ? value(implantChoice, implantDate) : undefined,
-      explantDate: question?.askExplantDate ? value(explantChoice, explantDate) : undefined,
-      reprocessor: question?.askReprocessor ? reprocessorChoice === "known" ? {kind:"known",value:reprocessor.trim()} : reprocessorChoice ? {kind:reprocessorChoice} : undefined : undefined,
-    })}>Add device details</button>
-  </>;
-}
 
 function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate, continueClinicalReview, profile, freshCaseId, caseId }: {
   profile?: ReporterProfileController; freshCaseId?: string; caseId?: string;
@@ -799,10 +582,8 @@ function ReporterTask({ snapshot, busy, act, onDirtyChange, navigate, continueCl
 }
 
 function ClinicalNeeds({ snapshot, compact = false, remainingOnly = false }: { snapshot: JourneySnapshot; compact?: boolean; remainingOnly?: boolean }) {
-  const current = snapshot.stage === "clarify" ? snapshot.clarification : null;
   const parts = clinicalNeedParts(snapshot).filter(({ need, missing, recheckAfterReview }) => {
-    if (remainingOnly) return !recheckAfterReview && missing.length > 0
-      && !(current?.key === need.key && JSON.stringify(current.targetIds) === JSON.stringify(need.targetIds));
+    if (remainingOnly) return !recheckAfterReview && missing.length > 0;
     return !compact || recheckAfterReview || missing.length > 0;
   });
   if (!parts.length) return null;
@@ -814,8 +595,8 @@ function ClinicalNeeds({ snapshot, compact = false, remainingOnly = false }: { s
       {!recheckAfterReview && missing.length > 0 && <p>Still needs an answer: {joinList(missing.map(label))}.</p>}
     </li>)}</ul>;
   return <div className={styles.caseGuidance}>
-    {!compact && !remainingOnly && <p>Answer what you know; use unknown or decline where offered.</p>}
-    {remainingOnly && current ? <details><summary>Other information still needed</summary>{contents}</details> : contents}
+    {!compact && !remainingOnly && <p>Use Clinical update to answer what you know, or say that details are unknown or declined.</p>}
+    {contents}
   </div>;
 }
 

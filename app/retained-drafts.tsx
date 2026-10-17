@@ -48,7 +48,7 @@ function rows(item: RetainedDraft, snapshot: JourneySnapshot): Array<[string, st
 }
 export function RetainedDrafts({ items, snapshot, busy, discard }: { items: RetainedDraft[]; snapshot: JourneySnapshot; busy: boolean; discard(index: number): void }) {
   if (!items.length) return null;
-  return <aside className={styles.notice} aria-label="Retained unfinished work"><p>Earlier unfinished edits were set aside when case details changed. They are kept below for reference and are never applied automatically.</p>
+  return <aside className={styles.notice} aria-label="Retained unfinished work"><p>Earlier unfinished edits are kept below for reference and are never applied automatically.</p>
     <details><summary>Read earlier unfinished edits</summary>{items.map((item, index) => <section key={index}><h2>{titles[item.record.kind]}</h2><p>{item.reason}</p><dl>{rows(item, snapshot).map(([label, text], row) => <div key={row}><dt>{label}</dt><dd style={{ whiteSpace: "pre-wrap" }}>{text}</dd></div>)}</dl><button disabled={busy} onClick={() => discard(index)}>Discard these earlier edits</button></section>)}</details>
   </aside>;
 }
