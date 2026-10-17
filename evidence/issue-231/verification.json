@@ -5,9 +5,15 @@
   "build": "passed",
   "focusedBrowser": 2,
   "fullBrowser": "running169",
-  "distinctPDFs": 7,
+  "distinctPDFs": 6,
   "PDFKitCaptures": 16,
   "structuredDobDraftRestore": "fixed and browser recurrence passed",
   "review": "authorized independent Codex pending",
-  "liveApplicationModelProviderCalls": 0
+  "liveApplicationModelProviderCalls": 0,
+  "generatedPDFReports": 7,
+  "ageOnlyExportsByteIdentical": true,
+  "partialCorrectionOnlyChangesComments": true,
+  "ageChoiceOnlyChangesA2AndComments": true,
+  "nativeCompleteBaselineVerified": true,
+  "dateWidgetActions": false
 }
