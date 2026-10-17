@@ -1,0 +1,666 @@
+{
+  "products": [
+    {
+      "id": "product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d",
+      "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24"
+    },
+    {
+      "id": "product-a876a5bd-7cae-4229-8e6d-9331290e999c",
+      "groupId": "group-f2987d0a-09de-4430-bb61-d37b8d5217bc"
+    }
+  ],
+  "relevantTests": [
+    {
+      "id": "test-0d44503b-6d4b-4957-b154-328766a9762f",
+      "groupId": "group-66f72867-c306-4cc9-bfc2-b1e09affae8f"
+    }
+  ],
+  "sources": [
+    {
+      "id": "source-beb67817-d4ab-4f7c-8504-dbfe87db97fe",
+      "inputId": "input-0635f5c4-5547-47f0-b35d-5440080828ad",
+      "inputType": "narrative",
+      "excerpt": "Patient TEST-47 is a 47-year-old man. ",
+      "start": 31,
+      "end": 69,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:46:01.216Z"
+    },
+    {
+      "id": "source-042e133e-cc3a-4701-9ba2-f273bd9aadda",
+      "inputId": "input-0635f5c4-5547-47f0-b35d-5440080828ad",
+      "inputType": "narrative",
+      "excerpt": "He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026. ",
+      "start": 69,
+      "end": 212,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:46:01.216Z"
+    },
+    {
+      "id": "source-ac20f962-7b22-4b07-a875-fe32044cf559",
+      "inputId": "input-0635f5c4-5547-47f0-b35d-5440080828ad",
+      "inputType": "narrative",
+      "excerpt": "Warfarin is suspect; acetaminophen is concomitant. ",
+      "start": 212,
+      "end": 263,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:46:01.216Z"
+    },
+    {
+      "id": "source-4f17b622-f7a9-43d2-a0f6-90f34276692f",
+      "inputId": "input-0635f5c4-5547-47f0-b35d-5440080828ad",
+      "inputType": "narrative",
+      "excerpt": "Warfarin was stopped and the symptoms resolved.",
+      "start": 420,
+      "end": 467,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:46:01.216Z"
+    },
+    {
+      "id": "source-292f3ec0-6fb9-42f7-8da4-cbd91a108938",
+      "inputId": "input-0635f5c4-5547-47f0-b35d-5440080828ad",
+      "inputType": "narrative",
+      "excerpt": "On 08-Aug-2026 he developed epistaxis and easy bruising. ",
+      "start": 263,
+      "end": 320,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:46:01.216Z"
+    },
+    {
+      "id": "source-9c4270b6-4834-4c50-a7f3-d9affc641e79",
+      "inputId": "input-0635f5c4-5547-47f0-b35d-5440080828ad",
+      "inputType": "narrative",
+      "excerpt": "No serious outcomes applied. ",
+      "start": 348,
+      "end": 377,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:46:01.216Z"
+    },
+    {
+      "id": "source-d213497e-f3f5-4e57-8cb5-862e1d4defca",
+      "inputId": "input-0635f5c4-5547-47f0-b35d-5440080828ad",
+      "inputType": "narrative",
+      "excerpt": "No other relevant medical history applies. ",
+      "start": 377,
+      "end": 420,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:46:01.216Z"
+    },
+    {
+      "id": "source-4dfb2f90-96a8-4dac-a08a-eeb672932ae5",
+      "inputId": "input-0635f5c4-5547-47f0-b35d-5440080828ad",
+      "inputType": "narrative",
+      "excerpt": "INR was 4.8 on 08-Aug-2026. ",
+      "start": 320,
+      "end": 348,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:46:01.216Z"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "proposal-9148b112-2154-429f-b01a-b238f77f5001",
+      "groupId": "patient",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "entityId": "patient",
+        "field": "identifier"
+      },
+      "value": {
+        "kind": "known",
+        "value": "TEST-47"
+      },
+      "sourceIds": [
+        "source-beb67817-d4ab-4f7c-8504-dbfe87db97fe"
+      ]
+    },
+    {
+      "proposalId": "proposal-9f8fc7b7-9b06-44b5-a82c-f70678d9977b",
+      "groupId": "patient",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "entityId": "patient",
+        "field": "ageYears"
+      },
+      "value": {
+        "kind": "known",
+        "value": 47
+      },
+      "sourceIds": [
+        "source-beb67817-d4ab-4f7c-8504-dbfe87db97fe"
+      ]
+    },
+    {
+      "proposalId": "proposal-25eebc3c-13b6-4b80-b83b-2392333305d2",
+      "groupId": "patient",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "entityId": "patient",
+        "field": "sex"
+      },
+      "value": {
+        "kind": "known",
+        "value": "male"
+      },
+      "sourceIds": [
+        "source-beb67817-d4ab-4f7c-8504-dbfe87db97fe"
+      ]
+    },
+    {
+      "proposalId": "proposal-beed5050-7f70-4b79-b5fa-c9be50f1e9ef",
+      "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d",
+        "field": "name"
+      },
+      "value": {
+        "kind": "known",
+        "value": "warfarin"
+      },
+      "sourceIds": [
+        "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+      ]
+    },
+    {
+      "proposalId": "proposal-6d46b7b7-e9e0-420b-9934-4a54a0d6fc74",
+      "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d",
+        "field": "productType"
+      },
+      "value": {
+        "kind": "known",
+        "value": "drug-or-biologic"
+      },
+      "sourceIds": [
+        "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+      ]
+    },
+    {
+      "proposalId": "proposal-10b65138-8541-4779-b9f3-84bbecc04914",
+      "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d",
+        "field": "role"
+      },
+      "value": {
+        "kind": "known",
+        "value": "suspect"
+      },
+      "sourceIds": [
+        "source-ac20f962-7b22-4b07-a875-fe32044cf559"
+      ]
+    },
+    {
+      "proposalId": "proposal-575ae3f4-5f30-4c85-9399-6cf5c787589a",
+      "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d",
+        "field": "dose"
+      },
+      "value": {
+        "kind": "known",
+        "value": "5 mg"
+      },
+      "sourceIds": [
+        "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+      ]
+    },
+    {
+      "proposalId": "proposal-6ae2ef74-6df9-456e-a500-ff4e823b16fc",
+      "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d",
+        "field": "frequency"
+      },
+      "value": {
+        "kind": "known",
+        "value": "daily"
+      },
+      "sourceIds": [
+        "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+      ]
+    },
+    {
+      "proposalId": "proposal-4f9e0379-76c0-4c68-8f82-a8d0d1c3da29",
+      "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d",
+        "field": "route"
+      },
+      "value": {
+        "kind": "known",
+        "value": "oral"
+      },
+      "sourceIds": [
+        "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+      ]
+    },
+    {
+      "proposalId": "proposal-4e7492fa-fd79-4dc4-95ef-a39ad9135754",
+      "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d",
+        "field": "startDate"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-08-01"
+      },
+      "sourceIds": [
+        "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+      ]
+    },
+    {
+      "proposalId": "proposal-bd3cbc18-d096-4376-a24e-ab3bc5eedd6a",
+      "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d",
+        "field": "indication"
+      },
+      "value": {
+        "kind": "known",
+        "value": "atrial fibrillation"
+      },
+      "sourceIds": [
+        "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+      ]
+    },
+    {
+      "proposalId": "proposal-9ab6e294-f753-410f-a70c-2fd4adeea1ad",
+      "groupId": "group-6705c7dd-f336-4b8d-a349-fb81b0d67d24",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-6b6c90a8-c181-45fa-ab51-7245f9a2b65d",
+        "field": "stopped"
+      },
+      "value": {
+        "kind": "known",
+        "value": true
+      },
+      "sourceIds": [
+        "source-4f17b622-f7a9-43d2-a0f6-90f34276692f"
+      ]
+    },
+    {
+      "proposalId": "proposal-a9ba656c-f3f5-48ee-88b9-482927e23bca",
+      "groupId": "group-f2987d0a-09de-4430-bb61-d37b8d5217bc",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-a876a5bd-7cae-4229-8e6d-9331290e999c",
+        "field": "name"
+      },
+      "value": {
+        "kind": "known",
+        "value": "acetaminophen"
+      },
+      "sourceIds": [
+        "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+      ]
+    },
+    {
+      "proposalId": "proposal-df281976-488e-4c3f-b4a1-38ff10636d3f",
+      "groupId": "group-f2987d0a-09de-4430-bb61-d37b8d5217bc",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-a876a5bd-7cae-4229-8e6d-9331290e999c",
+        "field": "productType"
+      },
+      "value": {
+        "kind": "known",
+        "value": "drug-or-biologic"
+      },
+      "sourceIds": [
+        "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+      ]
+    },
+    {
+      "proposalId": "proposal-7ab362ab-544b-44e0-bedd-384adb1889cf",
+      "groupId": "group-f2987d0a-09de-4430-bb61-d37b8d5217bc",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-a876a5bd-7cae-4229-8e6d-9331290e999c",
+        "field": "role"
+      },
+      "value": {
+        "kind": "known",
+        "value": "concomitant"
+      },
+      "sourceIds": [
+        "source-ac20f962-7b22-4b07-a875-fe32044cf559"
+      ]
+    },
+    {
+      "proposalId": "proposal-0878f2d4-fd0a-4a8a-a068-0af5fdd16e7c",
+      "groupId": "group-f2987d0a-09de-4430-bb61-d37b8d5217bc",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-a876a5bd-7cae-4229-8e6d-9331290e999c",
+        "field": "dose"
+      },
+      "value": {
+        "kind": "known",
+        "value": "650 mg"
+      },
+      "sourceIds": [
+        "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+      ]
+    },
+    {
+      "proposalId": "proposal-c1acd10b-b395-47a2-addd-05958d033422",
+      "groupId": "group-f2987d0a-09de-4430-bb61-d37b8d5217bc",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-a876a5bd-7cae-4229-8e6d-9331290e999c",
+        "field": "frequency"
+      },
+      "value": {
+        "kind": "known",
+        "value": "every six hours"
+      },
+      "sourceIds": [
+        "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+      ]
+    },
+    {
+      "proposalId": "proposal-dcde5bcb-289b-4904-a5b0-9f926c147d11",
+      "groupId": "group-f2987d0a-09de-4430-bb61-d37b8d5217bc",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-a876a5bd-7cae-4229-8e6d-9331290e999c",
+        "field": "route"
+      },
+      "value": {
+        "kind": "known",
+        "value": "oral"
+      },
+      "sourceIds": [
+        "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+      ]
+    },
+    {
+      "proposalId": "proposal-2d71b4c2-20a9-410b-8d9b-fafaa8f6a475",
+      "groupId": "group-f2987d0a-09de-4430-bb61-d37b8d5217bc",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-a876a5bd-7cae-4229-8e6d-9331290e999c",
+        "field": "startDate"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-08-02"
+      },
+      "sourceIds": [
+        "source-042e133e-cc3a-4701-9ba2-f273bd9aadda"
+      ]
+    },
+    {
+      "proposalId": "proposal-a72b6dae-58e3-4141-b761-1def2c6db8c7",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "symptoms"
+      },
+      "value": {
+        "kind": "known",
+        "value": [
+          "epistaxis",
+          "easy bruising"
+        ]
+      },
+      "sourceIds": [
+        "source-292f3ec0-6fb9-42f7-8da4-cbd91a108938"
+      ]
+    },
+    {
+      "proposalId": "proposal-08c817a2-ceea-4b7d-b7d4-a98808d9fb11",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "onsetDate"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-08-08"
+      },
+      "sourceIds": [
+        "source-292f3ec0-6fb9-42f7-8da4-cbd91a108938"
+      ]
+    },
+    {
+      "proposalId": "proposal-a05c8c2e-c323-4280-a3af-fdf997083e4d",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "death"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "sourceIds": [
+        "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+      ]
+    },
+    {
+      "proposalId": "proposal-5ebaf203-50a6-4a88-beae-67f863995845",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "lifeThreatening"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "sourceIds": [
+        "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+      ]
+    },
+    {
+      "proposalId": "proposal-bd2c6bbe-78e4-4b27-b92c-56eda5547966",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "hospitalized"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "sourceIds": [
+        "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+      ]
+    },
+    {
+      "proposalId": "proposal-b3d7a5c1-13fd-4cdc-b538-2ca6ed8bd585",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "disability"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "sourceIds": [
+        "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+      ]
+    },
+    {
+      "proposalId": "proposal-76f7b0e0-8d82-4a22-b0ed-569181fdc538",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "requiredIntervention"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "sourceIds": [
+        "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+      ]
+    },
+    {
+      "proposalId": "proposal-25e9e34e-c50f-4f52-8325-88c64acddeb7",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "congenitalAnomaly"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "sourceIds": [
+        "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+      ]
+    },
+    {
+      "proposalId": "proposal-bc3c6f5b-163e-4760-bea8-13fb7fa1afe8",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "otherSerious"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "sourceIds": [
+        "source-9c4270b6-4834-4c50-a7f3-d9affc641e79"
+      ]
+    },
+    {
+      "proposalId": "proposal-f12dc574-f88b-498c-b842-b98141c73183",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "relevantHistory"
+      },
+      "value": {
+        "kind": "explicitly-absent"
+      },
+      "sourceIds": [
+        "source-d213497e-f3f5-4e57-8cb5-862e1d4defca"
+      ]
+    },
+    {
+      "proposalId": "proposal-4655ed81-a715-4f01-8724-634e7171e6b3",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "outcome"
+      },
+      "value": {
+        "kind": "known",
+        "value": "resolved"
+      },
+      "sourceIds": [
+        "source-4f17b622-f7a9-43d2-a0f6-90f34276692f"
+      ]
+    },
+    {
+      "proposalId": "proposal-df86b406-9fc5-44cf-a1f5-9d3f849b6d8f",
+      "groupId": "group-66f72867-c306-4cc9-bfc2-b1e09affae8f",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "entityId": "test-0d44503b-6d4b-4957-b154-328766a9762f",
+        "field": "testName"
+      },
+      "value": {
+        "kind": "known",
+        "value": "INR"
+      },
+      "sourceIds": [
+        "source-4dfb2f90-96a8-4dac-a08a-eeb672932ae5"
+      ]
+    },
+    {
+      "proposalId": "proposal-debee44d-1748-4d85-994a-20fb028b5de5",
+      "groupId": "group-66f72867-c306-4cc9-bfc2-b1e09affae8f",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "entityId": "test-0d44503b-6d4b-4957-b154-328766a9762f",
+        "field": "testResult"
+      },
+      "value": {
+        "kind": "known",
+        "value": "4.8"
+      },
+      "sourceIds": [
+        "source-4dfb2f90-96a8-4dac-a08a-eeb672932ae5"
+      ]
+    },
+    {
+      "proposalId": "proposal-7c679e74-fb0c-4bda-8da5-e00ec5f3ea53",
+      "groupId": "group-66f72867-c306-4cc9-bfc2-b1e09affae8f",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "entityId": "test-0d44503b-6d4b-4957-b154-328766a9762f",
+        "field": "date"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-08-08"
+      },
+      "sourceIds": [
+        "source-4dfb2f90-96a8-4dac-a08a-eeb672932ae5"
+      ]
+    }
+  ],
+  "unrepresented": []
+}

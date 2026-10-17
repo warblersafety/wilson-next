@@ -26,7 +26,7 @@ async function pdf(c = dobPrecisionCase()) {
 }
 it.each([monthDob, { precision: 'year' as const, year: '1970', wording: 'Birth year supplied as 1970' }])('selected partial DOB %j prints exact A2-linked wording/qualifier/source and clears all age controls without deriving age', async (value) => {
     const c = setContextFact(dobPrecisionCase(), 'patient:patient:dateOfBirth', { kind: 'known', value, qualifier: 'Fictional caregiver estimate' }), before = structuredClone(c), { x, p } = await pdf(c);
-    expect(x.pageCount).toBe(8);
+    expect(x.pageCount).toBe(9);
     expect(x.namedFields[date]).toBe('B6 comments');
     for (const k of ageKeys)
         expect([undefined, '', '/Off']).toContain(x.namedFields[k]);
@@ -109,8 +109,8 @@ it('dense DOB wording preserves general/test context with existing B6 pagination
     const b = dobPrecisionCase(), wording = Array.from({ length: 110 }, (_, i) => `Fictional birth date line ${i + 1}: during 1969, exact month/day unavailable.`).join('\n'), c = setContextFact(setContextFact(setContextFact(b, `test:${b.relevantTests[0].id}:lowRange`, { kind: 'known', value: '4.0', qualifier: 'Fictional assay context' }), 'event:event:additionalComments', { kind: 'known', value: 'Fictional general comment' }), 'patient:patient:dateOfBirth', { kind: 'known', value: { precision: 'year', year: '1969', wording } }), { x } = await pdf(c);
     expect(x.pageCount).toBeGreaterThan(9);
     for (const text of ['Fictional birth date line 110', 'Fictional assay context', 'Fictional general comment'])
-        expect(x.pageTexts.slice(8).join('\n')).toContain(text);
-    for (const page of x.pageTexts.slice(8))
+        expect(x.pageTexts.slice(8).filter((text:string)=>!text.startsWith("Form FDA 3500 (09/2025) - Section F continuation")).join('\n')).toContain(text);
+    for (const page of x.pageTexts.slice(8).filter((text:string)=>!text.startsWith("Form FDA 3500 (09/2025) - Section F continuation")))
         expect(page).toContain(form3500ReportReference(projectForm3500(c)));
     const glyph = setContextFact(b, 'patient:patient:dateOfBirth', { kind: 'known', value: { ...monthDob, wording: 'Birth during February 1969 漢' } });
     expect((await getJourneySnapshot(new InMemoryCaseRepository({ initialCase: glyph }), glyph.id)).outputIssues.some(i => i.targets.includes('patient:patient:dateOfBirth'))).toBe(true);

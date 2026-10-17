@@ -1,0 +1,16 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "report.pdf",
+  "inspectedPages": [
+    9,
+    10,
+    11
+  ],
+  "checks": [
+    "All three dense F pages readable without overlap/clipping",
+    "Detached pages 10/11 start with F row 1 - Indication",
+    "Final exact supplied indication line 100 visible"
+  ],
+  "limitation": "Only listed pages visually inspected; pypdf independently parses the full PDF."
+}

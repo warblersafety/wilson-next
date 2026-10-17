@@ -1,0 +1,13 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "report.pdf",
+  "inspectedPages": [
+    9
+  ],
+  "checks": [
+    "A11 650 mg/every six hours/oral/pain and explicit No stop/reduction readable",
+    "F row and Dose header readable"
+  ],
+  "limitation": "Only listed pages visually inspected; pypdf independently parses the full PDF."
+}

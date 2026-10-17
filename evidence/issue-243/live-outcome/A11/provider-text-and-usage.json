@@ -1,0 +1,818 @@
+{
+  "model": "claude-sonnet-5",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 13349,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "output_tokens": 7515,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 3398
+    }
+  },
+  "output": {
+    "products": [
+      {
+        "productReference": "prod1",
+        "groupReference": "g1"
+      },
+      {
+        "productReference": "prod2",
+        "groupReference": "g2"
+      }
+    ],
+    "tests": [
+      {
+        "testReference": "test1",
+        "groupReference": "g3"
+      },
+      {
+        "testReference": "test2",
+        "groupReference": "g4"
+      }
+    ],
+    "proposals": [
+      {
+        "proposalReference": "pr1",
+        "groupReference": "patient",
+        "intent": "fact",
+        "target": {
+          "entity": "patient",
+          "field": "ageYears"
+        },
+        "value": {
+          "kind": "known",
+          "value": 57
+        },
+        "evidenceReferences": [
+          "p2"
+        ]
+      },
+      {
+        "proposalReference": "pr2",
+        "groupReference": "patient",
+        "intent": "fact",
+        "target": {
+          "entity": "patient",
+          "field": "weight"
+        },
+        "value": {
+          "kind": "known",
+          "value": {
+            "value": 70,
+            "unit": "kg"
+          }
+        },
+        "evidenceReferences": [
+          "p2"
+        ]
+      },
+      {
+        "proposalReference": "pr3",
+        "groupReference": "patient",
+        "intent": "fact",
+        "target": {
+          "entity": "patient",
+          "field": "sex"
+        },
+        "value": {
+          "kind": "known",
+          "value": "male"
+        },
+        "evidenceReferences": [
+          "p2"
+        ]
+      },
+      {
+        "proposalReference": "pr4",
+        "groupReference": "event",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "symptoms"
+        },
+        "value": {
+          "kind": "known",
+          "value": [
+            "rash"
+          ]
+        },
+        "evidenceReferences": [
+          "p2"
+        ]
+      },
+      {
+        "proposalReference": "pr5",
+        "groupReference": "event",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "onsetDate"
+        },
+        "value": {
+          "kind": "known",
+          "value": "2026-09-03"
+        },
+        "evidenceReferences": [
+          "p2"
+        ]
+      },
+      {
+        "proposalReference": "pr6",
+        "groupReference": "event",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "hospitalized"
+        },
+        "value": {
+          "kind": "known",
+          "value": true
+        },
+        "evidenceReferences": [
+          "p7"
+        ]
+      },
+      {
+        "proposalReference": "pr7",
+        "groupReference": "event",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "death"
+        },
+        "value": {
+          "kind": "known",
+          "value": false
+        },
+        "evidenceReferences": [
+          "p7"
+        ]
+      },
+      {
+        "proposalReference": "pr8",
+        "groupReference": "event",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "lifeThreatening"
+        },
+        "value": {
+          "kind": "known",
+          "value": false
+        },
+        "evidenceReferences": [
+          "p7"
+        ]
+      },
+      {
+        "proposalReference": "pr9",
+        "groupReference": "event",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "disability"
+        },
+        "value": {
+          "kind": "known",
+          "value": false
+        },
+        "evidenceReferences": [
+          "p7"
+        ]
+      },
+      {
+        "proposalReference": "pr10",
+        "groupReference": "event",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "requiredIntervention"
+        },
+        "value": {
+          "kind": "known",
+          "value": false
+        },
+        "evidenceReferences": [
+          "p7"
+        ]
+      },
+      {
+        "proposalReference": "pr11",
+        "groupReference": "event",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "congenitalAnomaly"
+        },
+        "value": {
+          "kind": "known",
+          "value": false
+        },
+        "evidenceReferences": [
+          "p7"
+        ]
+      },
+      {
+        "proposalReference": "pr12",
+        "groupReference": "event",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "otherSerious"
+        },
+        "value": {
+          "kind": "known",
+          "value": false
+        },
+        "evidenceReferences": [
+          "p7"
+        ]
+      },
+      {
+        "proposalReference": "pr13",
+        "groupReference": "event",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "relevantHistory"
+        },
+        "value": {
+          "kind": "explicitly-absent"
+        },
+        "evidenceReferences": [
+          "p10"
+        ]
+      },
+      {
+        "proposalReference": "pr14",
+        "groupReference": "event",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "productAvailability"
+        },
+        "value": {
+          "kind": "known",
+          "value": "not-available"
+        },
+        "evidenceReferences": [
+          "p11"
+        ]
+      },
+      {
+        "proposalReference": "pr15",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "name"
+        },
+        "value": {
+          "kind": "known",
+          "value": "warfarin"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr16",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "productType"
+        },
+        "value": {
+          "kind": "known",
+          "value": "drug-or-biologic"
+        },
+        "evidenceReferences": [
+          "p12"
+        ]
+      },
+      {
+        "proposalReference": "pr17",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "role"
+        },
+        "value": {
+          "kind": "known",
+          "value": "suspect"
+        },
+        "evidenceReferences": [
+          "p4"
+        ]
+      },
+      {
+        "proposalReference": "pr18",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "dose"
+        },
+        "value": {
+          "kind": "known",
+          "value": "5 mg"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr19",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "route"
+        },
+        "value": {
+          "kind": "known",
+          "value": "oral"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr20",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "frequency"
+        },
+        "value": {
+          "kind": "known",
+          "value": "daily"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr21",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "startDate"
+        },
+        "value": {
+          "kind": "known",
+          "value": "2026-08-01"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr22",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "indication"
+        },
+        "value": {
+          "kind": "known",
+          "value": "atrial fibrillation"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr23",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "stopped"
+        },
+        "value": {
+          "kind": "known",
+          "value": true
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      },
+      {
+        "proposalReference": "pr24",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "stopDate"
+        },
+        "value": {
+          "kind": "known",
+          "value": "2026-09-04"
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      },
+      {
+        "proposalReference": "pr25",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "improvedAfterChange"
+        },
+        "value": {
+          "kind": "known",
+          "value": true
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      },
+      {
+        "proposalReference": "pr26",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "restarted"
+        },
+        "value": {
+          "kind": "known",
+          "value": false
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      },
+      {
+        "proposalReference": "pr27",
+        "groupReference": "g2",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod2",
+          "field": "name"
+        },
+        "value": {
+          "kind": "known",
+          "value": "acetaminophen"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr28",
+        "groupReference": "g2",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod2",
+          "field": "productType"
+        },
+        "value": {
+          "kind": "known",
+          "value": "drug-or-biologic"
+        },
+        "evidenceReferences": [
+          "p12"
+        ]
+      },
+      {
+        "proposalReference": "pr29",
+        "groupReference": "g2",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod2",
+          "field": "role"
+        },
+        "value": {
+          "kind": "known",
+          "value": "concomitant"
+        },
+        "evidenceReferences": [
+          "p4"
+        ]
+      },
+      {
+        "proposalReference": "pr30",
+        "groupReference": "g2",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod2",
+          "field": "dose"
+        },
+        "value": {
+          "kind": "known",
+          "value": "650 mg"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr31",
+        "groupReference": "g2",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod2",
+          "field": "route"
+        },
+        "value": {
+          "kind": "known",
+          "value": "oral"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr32",
+        "groupReference": "g2",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod2",
+          "field": "frequency"
+        },
+        "value": {
+          "kind": "known",
+          "value": "every six hours"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr33",
+        "groupReference": "g2",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod2",
+          "field": "startDate"
+        },
+        "value": {
+          "kind": "known",
+          "value": "2026-09-01"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr34",
+        "groupReference": "g2",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod2",
+          "field": "indication"
+        },
+        "value": {
+          "kind": "known",
+          "value": "pain"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr35",
+        "groupReference": "g2",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod2",
+          "field": "stopped"
+        },
+        "value": {
+          "kind": "known",
+          "value": false
+        },
+        "evidenceReferences": [
+          "p6"
+        ]
+      },
+      {
+        "proposalReference": "pr36",
+        "groupReference": "g2",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod2",
+          "field": "doseReduced"
+        },
+        "value": {
+          "kind": "known",
+          "value": false
+        },
+        "evidenceReferences": [
+          "p6"
+        ]
+      },
+      {
+        "proposalReference": "pr37",
+        "groupReference": "g3",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test1",
+          "field": "testName"
+        },
+        "value": {
+          "kind": "known",
+          "value": "INR"
+        },
+        "evidenceReferences": [
+          "p8"
+        ]
+      },
+      {
+        "proposalReference": "pr38",
+        "groupReference": "g3",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test1",
+          "field": "testResult"
+        },
+        "value": {
+          "kind": "known",
+          "value": "4.8"
+        },
+        "evidenceReferences": [
+          "p8"
+        ]
+      },
+      {
+        "proposalReference": "pr39",
+        "groupReference": "g3",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test1",
+          "field": "lowRange"
+        },
+        "value": {
+          "kind": "known",
+          "value": "0.8"
+        },
+        "evidenceReferences": [
+          "p8"
+        ]
+      },
+      {
+        "proposalReference": "pr40",
+        "groupReference": "g3",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test1",
+          "field": "highRange"
+        },
+        "value": {
+          "kind": "known",
+          "value": "1.2"
+        },
+        "evidenceReferences": [
+          "p8"
+        ]
+      },
+      {
+        "proposalReference": "pr41",
+        "groupReference": "g3",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test1",
+          "field": "date"
+        },
+        "value": {
+          "kind": "known",
+          "value": "2026-09-03",
+          "qualifier": "INR collection time was not recorded"
+        },
+        "evidenceReferences": [
+          "p8",
+          "p9"
+        ]
+      },
+      {
+        "proposalReference": "pr42",
+        "groupReference": "g4",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test2",
+          "field": "testName"
+        },
+        "value": {
+          "kind": "known",
+          "value": "ALT"
+        },
+        "evidenceReferences": [
+          "p8"
+        ]
+      },
+      {
+        "proposalReference": "pr43",
+        "groupReference": "g4",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test2",
+          "field": "testResult"
+        },
+        "value": {
+          "kind": "known",
+          "value": "67 U/L"
+        },
+        "evidenceReferences": [
+          "p8"
+        ]
+      },
+      {
+        "proposalReference": "pr44",
+        "groupReference": "g4",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test2",
+          "field": "lowRange"
+        },
+        "value": {
+          "kind": "known",
+          "value": "7"
+        },
+        "evidenceReferences": [
+          "p8"
+        ]
+      },
+      {
+        "proposalReference": "pr45",
+        "groupReference": "g4",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test2",
+          "field": "highRange"
+        },
+        "value": {
+          "kind": "known",
+          "value": "56"
+        },
+        "evidenceReferences": [
+          "p8"
+        ]
+      },
+      {
+        "proposalReference": "pr46",
+        "groupReference": "g4",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test2",
+          "field": "date"
+        },
+        "value": {
+          "kind": "known",
+          "value": "2026-09-03"
+        },
+        "evidenceReferences": [
+          "p8"
+        ]
+      }
+    ]
+  }
+}

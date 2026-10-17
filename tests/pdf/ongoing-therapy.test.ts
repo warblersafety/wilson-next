@@ -46,7 +46,7 @@ it("preserves explicit contradictory dates and status without silently choosing 
 });
 it("preserves knowledge but discloses no D3 checkbox destination for concomitant products or devices",async()=>{
  let c=productCapacityCase();const id=c.products[0].id;c=setContextFact(c,`product:${id}:therapyOngoing`,{kind:"known",value:false});c=setContextFact(c,`product:${id}:role`,{kind:"known",value:"concomitant"});
- let p=projectForm3500(c);expect(p.notIncluded.join(" ")).toContain("Therapy ongoing remains in reviewed knowledge");
+ let p=projectForm3500(c);expect(p.concomitantMedicationNotes).toContainEqual(expect.objectContaining({productId:id,field:"therapyOngoing",text:"No"}));
  c=setContextFact(c,`product:${id}:role`,{kind:"known",value:"suspect"});c=setContextFact(c,`product:${id}:productType`,{kind:"known",value:"device"});p=projectForm3500(c);expect(p.notIncluded.join(" ")).toContain("Therapy ongoing remains in reviewed knowledge");
 });
 it("strictly upgrades a genuine v15 with only empty new facts while retaining A5, DOB, dates and history",()=>{

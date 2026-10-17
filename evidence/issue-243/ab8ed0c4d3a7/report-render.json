@@ -1,0 +1,13 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "report.pdf",
+  "inspectedPages": [
+    9
+  ],
+  "checks": [
+    "Complete supplied reduction date displays 18-SEP-2026",
+    "Explicit applicable stop/restart Yes support printed improvement Yes/recurrence No"
+  ],
+  "limitation": "Only listed pages visually inspected; pypdf independently parses the full PDF."
+}

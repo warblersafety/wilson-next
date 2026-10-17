@@ -1,0 +1,13 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "report.pdf",
+  "inspectedPages": [
+    9
+  ],
+  "checks": [
+    "Multiline amount and uncertainty readable",
+    "Unknown/Declined prerequisites retained; inapplicable or unresolved temporal outcome labels withheld"
+  ],
+  "limitation": "Only listed pages visually inspected; pypdf independently parses the full PDF."
+}

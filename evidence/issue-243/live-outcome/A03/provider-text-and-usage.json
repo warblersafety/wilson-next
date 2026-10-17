@@ -1,0 +1,638 @@
+{
+  "model": "claude-sonnet-5",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 13198,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "output_tokens": 4828,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard",
+    "output_tokens_details": {
+      "thinking_tokens": 1568
+    }
+  },
+  "output": {
+    "products": [
+      {
+        "productReference": "prod1",
+        "groupReference": "g1"
+      }
+    ],
+    "tests": [
+      {
+        "testReference": "test1",
+        "groupReference": "gt1"
+      },
+      {
+        "testReference": "test2",
+        "groupReference": "gt2"
+      },
+      {
+        "testReference": "test3",
+        "groupReference": "gt3"
+      }
+    ],
+    "proposals": [
+      {
+        "proposalReference": "pr1",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "patient",
+          "field": "identifier"
+        },
+        "value": {
+          "kind": "known",
+          "value": "TEST-51"
+        },
+        "evidenceReferences": [
+          "p2"
+        ]
+      },
+      {
+        "proposalReference": "pr2",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "patient",
+          "field": "ageYears"
+        },
+        "value": {
+          "kind": "known",
+          "value": 51
+        },
+        "evidenceReferences": [
+          "p2"
+        ]
+      },
+      {
+        "proposalReference": "pr3",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "patient",
+          "field": "sex"
+        },
+        "value": {
+          "kind": "known",
+          "value": "female"
+        },
+        "evidenceReferences": [
+          "p2"
+        ]
+      },
+      {
+        "proposalReference": "pr4",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "name"
+        },
+        "value": {
+          "kind": "known",
+          "value": "atorvastatin"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr5",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "productType"
+        },
+        "value": {
+          "kind": "known",
+          "value": "drug-or-biologic"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr6",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "role"
+        },
+        "value": {
+          "kind": "known",
+          "value": "suspect"
+        },
+        "evidenceReferences": [
+          "p9"
+        ]
+      },
+      {
+        "proposalReference": "pr7",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "dose"
+        },
+        "value": {
+          "kind": "known",
+          "value": "40 mg"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr8",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "frequency"
+        },
+        "value": {
+          "kind": "known",
+          "value": "daily"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr9",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "route"
+        },
+        "value": {
+          "kind": "known",
+          "value": "oral"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr10",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "startDate"
+        },
+        "value": {
+          "kind": "known",
+          "value": "2026-08-01"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr11",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "indication"
+        },
+        "value": {
+          "kind": "known",
+          "value": "hyperlipidemia"
+        },
+        "evidenceReferences": [
+          "p3"
+        ]
+      },
+      {
+        "proposalReference": "pr12",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "stopped"
+        },
+        "value": {
+          "kind": "known",
+          "value": true
+        },
+        "evidenceReferences": [
+          "p8"
+        ]
+      },
+      {
+        "proposalReference": "pr13",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "product",
+          "productReference": "prod1",
+          "field": "improvedAfterChange"
+        },
+        "value": {
+          "kind": "known",
+          "value": true
+        },
+        "evidenceReferences": [
+          "p8"
+        ]
+      },
+      {
+        "proposalReference": "pr14",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "onsetDate"
+        },
+        "value": {
+          "kind": "known",
+          "value": "2026-09-05"
+        },
+        "evidenceReferences": [
+          "p4"
+        ]
+      },
+      {
+        "proposalReference": "pr15",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "symptoms"
+        },
+        "value": {
+          "kind": "known",
+          "value": [
+            "muscle pain",
+            "weakness"
+          ]
+        },
+        "evidenceReferences": [
+          "p4"
+        ]
+      },
+      {
+        "proposalReference": "pr16",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "death"
+        },
+        "value": {
+          "kind": "explicitly-absent"
+        },
+        "evidenceReferences": [
+          "p6"
+        ]
+      },
+      {
+        "proposalReference": "pr17",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "lifeThreatening"
+        },
+        "value": {
+          "kind": "explicitly-absent"
+        },
+        "evidenceReferences": [
+          "p6"
+        ]
+      },
+      {
+        "proposalReference": "pr18",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "hospitalized"
+        },
+        "value": {
+          "kind": "explicitly-absent"
+        },
+        "evidenceReferences": [
+          "p6"
+        ]
+      },
+      {
+        "proposalReference": "pr19",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "disability"
+        },
+        "value": {
+          "kind": "explicitly-absent"
+        },
+        "evidenceReferences": [
+          "p6"
+        ]
+      },
+      {
+        "proposalReference": "pr20",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "requiredIntervention"
+        },
+        "value": {
+          "kind": "explicitly-absent"
+        },
+        "evidenceReferences": [
+          "p6"
+        ]
+      },
+      {
+        "proposalReference": "pr21",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "congenitalAnomaly"
+        },
+        "value": {
+          "kind": "explicitly-absent"
+        },
+        "evidenceReferences": [
+          "p6"
+        ]
+      },
+      {
+        "proposalReference": "pr22",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "otherSerious"
+        },
+        "value": {
+          "kind": "explicitly-absent"
+        },
+        "evidenceReferences": [
+          "p6"
+        ]
+      },
+      {
+        "proposalReference": "pr23",
+        "groupReference": "g1",
+        "intent": "fact",
+        "target": {
+          "entity": "event",
+          "field": "relevantHistory"
+        },
+        "value": {
+          "kind": "explicitly-absent"
+        },
+        "evidenceReferences": [
+          "p7"
+        ]
+      },
+      {
+        "proposalReference": "pr24",
+        "groupReference": "gt1",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test1",
+          "field": "testName"
+        },
+        "value": {
+          "kind": "known",
+          "value": "ALT"
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      },
+      {
+        "proposalReference": "pr25",
+        "groupReference": "gt1",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test1",
+          "field": "testResult"
+        },
+        "value": {
+          "kind": "known",
+          "value": "132 U/L"
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      },
+      {
+        "proposalReference": "pr26",
+        "groupReference": "gt1",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test1",
+          "field": "lowRange"
+        },
+        "value": {
+          "kind": "known",
+          "value": "7"
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      },
+      {
+        "proposalReference": "pr27",
+        "groupReference": "gt1",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test1",
+          "field": "highRange"
+        },
+        "value": {
+          "kind": "known",
+          "value": "56"
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      },
+      {
+        "proposalReference": "pr28",
+        "groupReference": "gt1",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test1",
+          "field": "date"
+        },
+        "value": {
+          "kind": "known",
+          "value": "2026-09-05"
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      },
+      {
+        "proposalReference": "pr29",
+        "groupReference": "gt2",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test2",
+          "field": "testName"
+        },
+        "value": {
+          "kind": "known",
+          "value": "AST"
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      },
+      {
+        "proposalReference": "pr30",
+        "groupReference": "gt2",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test2",
+          "field": "testResult"
+        },
+        "value": {
+          "kind": "known",
+          "value": "118 U/L"
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      },
+      {
+        "proposalReference": "pr31",
+        "groupReference": "gt2",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test2",
+          "field": "lowRange"
+        },
+        "value": {
+          "kind": "known",
+          "value": "10"
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      },
+      {
+        "proposalReference": "pr32",
+        "groupReference": "gt2",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test2",
+          "field": "highRange"
+        },
+        "value": {
+          "kind": "known",
+          "value": "40"
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      },
+      {
+        "proposalReference": "pr33",
+        "groupReference": "gt2",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test2",
+          "field": "date"
+        },
+        "value": {
+          "kind": "known",
+          "value": "2026-09-05"
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      },
+      {
+        "proposalReference": "pr34",
+        "groupReference": "gt3",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test3",
+          "field": "testName"
+        },
+        "value": {
+          "kind": "known",
+          "value": "total bilirubin"
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      },
+      {
+        "proposalReference": "pr35",
+        "groupReference": "gt3",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test3",
+          "field": "testResult"
+        },
+        "value": {
+          "kind": "known",
+          "value": "2.1 mg/dL"
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      },
+      {
+        "proposalReference": "pr36",
+        "groupReference": "gt3",
+        "intent": "fact",
+        "target": {
+          "entity": "test",
+          "testReference": "test3",
+          "field": "date"
+        },
+        "value": {
+          "kind": "known",
+          "value": "2026-09-05"
+        },
+        "evidenceReferences": [
+          "p5"
+        ]
+      }
+    ]
+  }
+}

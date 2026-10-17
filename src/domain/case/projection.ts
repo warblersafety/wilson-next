@@ -1,7 +1,7 @@
 import {eventDateLabels,deviceDateFields,productDateFields,productDateLabels,isPartialDate,suppliedDateText,type ProductDateField} from "./date-precision";
 import {isPartialExpiration,expirationText,type PartialExpiration} from "./expiration";
 import { isCalendarDateTarget, knownValueMismatch } from "./value-contract";
-import { isCompleteCalendarDate } from "./calendar-date";
+import { formatCompleteCalendarDate, isCompleteCalendarDate } from "./calendar-date";
 import { otherProductTypeValues, type OtherProductType } from "./other-product-types";
 import { listWithContext } from "./list-context";
 import { noPatientConflictingTargets, noPatientOutcomeConflictingTargets } from "./patient-involvement";
@@ -17,6 +17,10 @@ import type { Fact, ProductEntity, ProductFactKey, ReportType, SemanticCase } fr
 const sectionDProductFields = ["name", "manufacturer", "lotNumber", "ndcOrUniqueId", "expirationDate", "purchaseDate", ...purchaseDetailFields, "dose", "strength", "frequency", "route", "startDate", "stopDate", "therapyOngoing", "doseReductionDate", "treatmentDuration", "indication", "medicationType", "cosmeticUse", "otherProductTypes"] as const satisfies readonly ProductFactKey[];
 const sectionEProductFields = ["name", "commonName", "procode", "manufacturer", "modelNumber", "lotNumber", "catalogNumber", "expirationDate", "serialNumber", "udi", "deviceOperator", "implantDate", "explantDate", "reprocessedSingleUse", "reprocessor", "servicedByThirdParty"] as const satisfies readonly ProductFactKey[];
 const sectionFProductFields = ["name", "startDate", "stopDate"] as const satisfies readonly ProductFactKey[];
+/** Existing medication facts retained as exact Section F supplement text, never inferred. */
+export const concomitantMedicationFields = ["dose", "strength", "frequency", "route", "indication", "therapyOngoing", "doseReductionDate", "treatmentDuration", "stopped", "doseReduced", "improvedAfterChange", "restarted", "recurred"] as const satisfies readonly ProductFactKey[];
+export type ConcomitantMedicationField = typeof concomitantMedicationFields[number];
+export const concomitantMedicationLabels: Record<ConcomitantMedicationField,string> = {dose:"Dose",strength:"Strength",frequency:"Frequency",route:"Route",indication:"Indication",therapyOngoing:"Therapy/usage still ongoing",doseReductionDate:"Dose reduction date",treatmentDuration:"Stated duration",stopped:"Stopped",doseReduced:"Dose reduced",improvedAfterChange:"Improved after stopping or reducing",restarted:"Restarted",recurred:"Event returned after restarting"};
 const productSelectorOrSharedFields = new Set<ProductFactKey>(["productType", "role", "stopped"]);
 
 export interface ProjectionOmission {
@@ -63,6 +67,7 @@ export interface Form3500Projection {
     F: { concomitantProducts: ProjectedConcomitantProduct[] };
     G: { reporter: ProjectedReporter };
   };
+  concomitantMedicationNotes?: {productId:string;ordinal:number;field:ConcomitantMedicationField;text:string;sourceIds:string[]}[];
   productDateNotes?: {productId:string;field:ProductDateField;block:"D1"|"D3"|"E6a"|"E6b"|"F1";ordinal:number;text:string;sourceIds:string[]}[];
   expirationNotes?: {productId:string;block:"D6"|"E4"|"F1";ordinal:number;text:string;sourceIds:string[]}[];
   invalidCalendarDates?: { target: string; value: string }[];
@@ -335,8 +340,9 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
       }
     } else {
       const target = projection.sections.F.concomitantProducts;
-      target.push(projectConcomitantProduct(product, projection, target.length));
-      recordNonCarriedProductFacts(caseState, product, sectionFProductFields, "Section F", projection);
+      const projected = projectConcomitantProduct(product, projection, target.length);
+      target.push(projected);
+      recordNonCarriedProductFacts(caseState, product, [...sectionFProductFields,...(projection.concomitantMedicationNotes??[]).filter(d=>d.productId===product.id).map(d=>d.field)], "Section F", projection);
     }
   }
 
@@ -389,6 +395,7 @@ export function projectForm3500(caseState: SemanticCase): Form3500Projection {
   for (const entry of d5OtherTypeContextEntries(caseState, projection)) carriedQualifierTargets.add(entry.target);
   for (const entry of deviceContextEntries(caseState, projection)) carriedQualifierTargets.add(entry.target);
   for (const product of projection.sections.F.concomitantProducts) for (const context of product.fieldContext ?? []) carriedQualifierTargets.add(`product:${product.productId}:${context.field}`);
+  for(const detail of projection.concomitantMedicationNotes??[])carriedQualifierTargets.add(`product:${detail.productId}:${detail.field}`);
   for (const context of projection.sections.G.reporter.fieldContext??[]) carriedQualifierTargets.add(`reporter:reporter:${context.field}`);
   for (const entry of eventDateContextEntries(caseState))carriedQualifierTargets.add(entry.target);
   for (const entry of birthDateContextEntries(caseState))carriedQualifierTargets.add(entry.target);
@@ -536,6 +543,33 @@ function projectConcomitantProduct(
     assign(projection, `${prefix}.${field}`, `${field} for ${product.id}`, `product:${product.id}:${field}`, product.facts[field], result, field, value => value, true);
     const value = known(product.facts[field]);
     if (value?.qualifier) (result.fieldContext ??= []).push({field, text:value.qualifier});
+  }
+  if(known(product.facts.productType)?.value === "drug-or-biologic") {
+    for(const field of concomitantMedicationFields) {
+      const fact=product.facts[field];
+      if(fact.state!=="resolved" || !fact.resolvedValue)continue;
+      // Labels for temporal outcomes require the same explicit prerequisites as D7/D8.
+      // Withheld answers remain reviewed knowledge with the existing non-carried disclosure.
+      if(field === "improvedAfterChange" && withdrawalApplicability(product.facts) !== true)continue;
+      if(field === "recurred" && restartApplicability(product.facts) !== true)continue;
+      const value=fact.resolvedValue.value;
+      let text:string;
+      if(value.kind!=="known")text=({unknown:"Unknown",declined:"Declined","explicitly-absent":"Explicitly absent",inapplicable:"Does not apply"} as const)[value.kind];
+      else {
+        const raw=value.value;
+        if(field === "doseReductionDate" && isPartialDate(raw))text=suppliedDateText(raw,concomitantMedicationLabels[field]);
+        else if(field === "doseReductionDate" && isCompleteCalendarDate(raw))text=formatCompleteCalendarDate(raw);
+        else if(typeof raw==="boolean")text=raw?"Yes":"No";
+        else if(typeof raw==="string"||typeof raw==="number")text=String(raw);
+        else if(raw && typeof raw==="object" && "wording" in raw)text=String(raw.wording);
+        else if(raw && typeof raw==="object" && "value" in raw && "unit" in raw)text=`${raw.value} ${raw.unit}`;
+        else throw new Error("Unsupported accepted concomitant medication value");
+        if(value.qualifier)text+=`\nContext: ${value.qualifier}`;
+      }
+      const sourceIds=[...fact.resolvedValue.sourceIds];
+      (projection.concomitantMedicationNotes??=[]).push({productId:product.id,ordinal:index+1,field,text,sourceIds});
+      projection.sourceTrace[`concomitantMedicationNotes.${projection.concomitantMedicationNotes.length-1}`]=sourceIds;
+    }
   }
   return result;
 }

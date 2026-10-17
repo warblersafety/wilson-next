@@ -67,7 +67,7 @@ test('C1 conversational partial return date stays pending until review, resumes 
             expect(before.event.facts[f as keyof typeof c.event.facts]).toEqual(c.event.facts[f as keyof typeof c.event.facts]);
     await writeFile(info.outputPath('return-partial-state.json'), JSON.stringify(await storedState(page)));
     let x = await pdf(page, info.outputPath('return-partial-dates.pdf'));
-    expect(x.pageCount).toBe(8);
+    expect(x.pageCount).toBe(9);
     expect(x.namedFields[date]).toBe('B6 comments');
     expect(x.namedFields[comments]).toContain(monthReturnDate.wording);
     let row = await edit(page);

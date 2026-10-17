@@ -64,7 +64,7 @@ it("keeps pending duration alternatives unpromoted and conflicting values unprin
  state=applyCaseCommand(state,{type:"resolve-conflict",commandId:"resolve-duration",expectedRevision:state.revision,target:{entity:"product",entityId:id,field:"treatmentDuration"},chosenValueId:"duration-1",source:contextSource("choose-duration")}).case;expect(state.products[0].facts.treatmentDuration.resolvedValue!.value).toEqual({kind:"known",value:{value:"2",unit:"hours"}});
 });
 it("retains duration knowledge without a native destination after device/concomitant routing",()=>{
- let c=durationCase(),id=c.products[0].id;c=setContextFact(c,`product:${id}:role`,{kind:"known",value:"concomitant"});expect(projectForm3500(c).notIncluded.join(" ")).toContain("Treatment duration remains in reviewed knowledge");c=setContextFact(c,`product:${id}:role`,{kind:"known",value:"suspect"});c=setContextFact(c,`product:${id}:productType`,{kind:"known",value:"device"});expect(projectForm3500(c).notIncluded.join(" ")).toContain("Treatment duration remains in reviewed knowledge");
+ let c=durationCase(),id=c.products[0].id;c=setContextFact(c,`product:${id}:role`,{kind:"known",value:"concomitant"});expect(projectForm3500(c).concomitantMedicationNotes).toContainEqual(expect.objectContaining({productId:id,field:"treatmentDuration",text:"1.50 hours\nContext: explicitly supplied estimate"}));c=setContextFact(c,`product:${id}:role`,{kind:"known",value:"suspect"});c=setContextFact(c,`product:${id}:productType`,{kind:"known",value:"device"});expect(projectForm3500(c).notIncluded.join(" ")).toContain("Treatment duration remains in reviewed knowledge");
 });
 
 it("prints a sole known duration without inventing dates or requiring a default preference",async()=>{

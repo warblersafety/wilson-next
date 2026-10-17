@@ -1,0 +1,13 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "report.pdf",
+  "inspectedPages": [
+    9
+  ],
+  "checks": [
+    "Partial reduction precision and exact wording readable with no-missing-component statement",
+    "Explicit applicable temporal outcomes retained"
+  ],
+  "limitation": "Only listed pages visually inspected; pypdf independently parses the full PDF."
+}

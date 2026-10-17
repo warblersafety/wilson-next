@@ -1,0 +1,925 @@
+{
+  "products": [
+    {
+      "id": "product-998117fb-907d-4383-b1bd-16ef33e5356c",
+      "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453"
+    },
+    {
+      "id": "product-ef6d0c5b-1cfb-445f-90e6-ca69eb8910d0",
+      "groupId": "group-3f6dd073-e436-4af9-adf3-e313a71df3aa"
+    }
+  ],
+  "relevantTests": [
+    {
+      "id": "test-a8d15eca-460b-4dba-8adf-603c6faa3fba",
+      "groupId": "group-cd7502d8-32c4-4af3-8d40-00d3701e469e"
+    },
+    {
+      "id": "test-d561be4a-acbc-44f6-835b-27a2e4dde85f",
+      "groupId": "group-0f05ff6c-f54d-4a28-9e21-e53f939076a8"
+    }
+  ],
+  "sources": [
+    {
+      "id": "source-f474da8b-5d77-4340-b82d-101128c16aec",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "Entirely fictional case LIVE-MULTI-57: a 57-year-old man weighing 70 kg developed a rash on 03 September 2026. ",
+      "start": 31,
+      "end": 142,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-c12c427f-289e-4dec-b32a-42239f0ee508",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "He was hospitalized; no other serious outcomes apply. ",
+      "start": 510,
+      "end": 564,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-3ab4fe23-e182-4bda-8db0-7253e1ad5a28",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "No additional relevant history applies. ",
+      "start": 742,
+      "end": 782,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-398579c8-6ae2-4929-b6db-c2e34b9bc1a2",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "This is an adverse-event report, and the product is not available for evaluation. ",
+      "start": 782,
+      "end": 864,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-2e263655-e4f7-4b83-a483-43e719fafe6e",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "He took warfarin 5 mg by mouth daily from 01 August 2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours from 01 September 2026 for pain. ",
+      "start": 142,
+      "end": 306,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-b6793929-714a-430c-9eb9-420a065a8d71",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "These two products are explicitly medications.",
+      "start": 864,
+      "end": 910,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-fb70c717-c925-4b98-a96e-c68e16a7d14e",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "Warfarin is suspect; acetaminophen is concomitant. ",
+      "start": 306,
+      "end": 357,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-30f319d5-7b69-44cc-a9d5-7f29583f715a",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "Warfarin was stopped on 04 September 2026, the rash improved after stopping, and warfarin was never restarted. ",
+      "start": 357,
+      "end": 468,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-cfe2ea4e-5d71-4144-8feb-2fc6e25c446b",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "Acetaminophen was not stopped or reduced. ",
+      "start": 468,
+      "end": 510,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-448fb16f-59ec-4ef4-9226-b69e00f65e33",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "INR was 4.8 on 03 September 2026 with reference limits 0.8 and 1.2; ALT was 67 U/L on 03 September 2026 with reference limits 7 and 56. ",
+      "start": 564,
+      "end": 700,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    },
+    {
+      "id": "source-e656fc89-fd96-4d04-8064-2416ec55edcb",
+      "inputId": "input-e0d45422-f3c6-4b6f-9ebc-153b8ead60c3",
+      "inputType": "narrative",
+      "excerpt": "The INR collection time was not recorded. ",
+      "start": 700,
+      "end": 742,
+      "actor": "clinician",
+      "recordedAt": "2026-10-17T17:47:43.233Z"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "proposal-e502ef1d-6619-43e9-b7c7-1bf2ed0689c4",
+      "groupId": "patient",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "entityId": "patient",
+        "field": "ageYears"
+      },
+      "value": {
+        "kind": "known",
+        "value": 57
+      },
+      "sourceIds": [
+        "source-f474da8b-5d77-4340-b82d-101128c16aec"
+      ]
+    },
+    {
+      "proposalId": "proposal-22eba619-09a4-440e-8292-23a8eba7057d",
+      "groupId": "patient",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "entityId": "patient",
+        "field": "weight"
+      },
+      "value": {
+        "kind": "known",
+        "value": {
+          "value": 70,
+          "unit": "kg"
+        }
+      },
+      "sourceIds": [
+        "source-f474da8b-5d77-4340-b82d-101128c16aec"
+      ]
+    },
+    {
+      "proposalId": "proposal-b86ec17d-ae2f-4816-a539-7bbfcd188386",
+      "groupId": "patient",
+      "intent": "fact",
+      "target": {
+        "entity": "patient",
+        "entityId": "patient",
+        "field": "sex"
+      },
+      "value": {
+        "kind": "known",
+        "value": "male"
+      },
+      "sourceIds": [
+        "source-f474da8b-5d77-4340-b82d-101128c16aec"
+      ]
+    },
+    {
+      "proposalId": "proposal-9e8125b4-8c9d-40c5-a980-dc55210c8460",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "symptoms"
+      },
+      "value": {
+        "kind": "known",
+        "value": [
+          "rash"
+        ]
+      },
+      "sourceIds": [
+        "source-f474da8b-5d77-4340-b82d-101128c16aec"
+      ]
+    },
+    {
+      "proposalId": "proposal-e349fdfb-1496-49bb-be0b-6c40074528c2",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "onsetDate"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-09-03"
+      },
+      "sourceIds": [
+        "source-f474da8b-5d77-4340-b82d-101128c16aec"
+      ]
+    },
+    {
+      "proposalId": "proposal-12ebbf1e-dd0a-4f4e-8162-ecbc6be3fd5d",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "hospitalized"
+      },
+      "value": {
+        "kind": "known",
+        "value": true
+      },
+      "sourceIds": [
+        "source-c12c427f-289e-4dec-b32a-42239f0ee508"
+      ]
+    },
+    {
+      "proposalId": "proposal-d58a637e-fad2-43fd-9f1c-1cb21332d82d",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "death"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "sourceIds": [
+        "source-c12c427f-289e-4dec-b32a-42239f0ee508"
+      ]
+    },
+    {
+      "proposalId": "proposal-9af4311d-e91c-4164-9125-a1393ea788f1",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "lifeThreatening"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "sourceIds": [
+        "source-c12c427f-289e-4dec-b32a-42239f0ee508"
+      ]
+    },
+    {
+      "proposalId": "proposal-d6a4c9df-1774-4e73-abed-c7ee494a5200",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "disability"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "sourceIds": [
+        "source-c12c427f-289e-4dec-b32a-42239f0ee508"
+      ]
+    },
+    {
+      "proposalId": "proposal-bd5cf2aa-fcb2-4fee-8ab1-ccf22f13c35c",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "requiredIntervention"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "sourceIds": [
+        "source-c12c427f-289e-4dec-b32a-42239f0ee508"
+      ]
+    },
+    {
+      "proposalId": "proposal-61e86259-4caf-4a79-b8ab-21db0f856558",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "congenitalAnomaly"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "sourceIds": [
+        "source-c12c427f-289e-4dec-b32a-42239f0ee508"
+      ]
+    },
+    {
+      "proposalId": "proposal-9906ba09-41f7-4862-b883-28e4115491fb",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "otherSerious"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "sourceIds": [
+        "source-c12c427f-289e-4dec-b32a-42239f0ee508"
+      ]
+    },
+    {
+      "proposalId": "proposal-b7362959-d8fb-47dd-b22f-ff1bfc32c6dd",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "relevantHistory"
+      },
+      "value": {
+        "kind": "explicitly-absent"
+      },
+      "sourceIds": [
+        "source-3ab4fe23-e182-4bda-8db0-7253e1ad5a28"
+      ]
+    },
+    {
+      "proposalId": "proposal-c352349c-731d-4aed-8da2-0bff8ddcd06b",
+      "groupId": "event",
+      "intent": "fact",
+      "target": {
+        "entity": "event",
+        "entityId": "event",
+        "field": "productAvailability"
+      },
+      "value": {
+        "kind": "known",
+        "value": "not-available"
+      },
+      "sourceIds": [
+        "source-398579c8-6ae2-4929-b6db-c2e34b9bc1a2"
+      ]
+    },
+    {
+      "proposalId": "proposal-0c73ed65-d97f-4fa2-9ca3-1bcad6b598ec",
+      "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-998117fb-907d-4383-b1bd-16ef33e5356c",
+        "field": "name"
+      },
+      "value": {
+        "kind": "known",
+        "value": "warfarin"
+      },
+      "sourceIds": [
+        "source-2e263655-e4f7-4b83-a483-43e719fafe6e"
+      ]
+    },
+    {
+      "proposalId": "proposal-9251e7f2-f9ed-40ce-a7c2-c3bc388f6e90",
+      "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-998117fb-907d-4383-b1bd-16ef33e5356c",
+        "field": "productType"
+      },
+      "value": {
+        "kind": "known",
+        "value": "drug-or-biologic"
+      },
+      "sourceIds": [
+        "source-b6793929-714a-430c-9eb9-420a065a8d71"
+      ]
+    },
+    {
+      "proposalId": "proposal-173fe502-cad5-4b6a-aa5f-2f6fff205a4b",
+      "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-998117fb-907d-4383-b1bd-16ef33e5356c",
+        "field": "role"
+      },
+      "value": {
+        "kind": "known",
+        "value": "suspect"
+      },
+      "sourceIds": [
+        "source-fb70c717-c925-4b98-a96e-c68e16a7d14e"
+      ]
+    },
+    {
+      "proposalId": "proposal-1683d4ea-623f-4a89-83e5-bfd6d64c6826",
+      "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-998117fb-907d-4383-b1bd-16ef33e5356c",
+        "field": "dose"
+      },
+      "value": {
+        "kind": "known",
+        "value": "5 mg"
+      },
+      "sourceIds": [
+        "source-2e263655-e4f7-4b83-a483-43e719fafe6e"
+      ]
+    },
+    {
+      "proposalId": "proposal-48483c86-fcee-4449-b10a-ebed807640c4",
+      "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-998117fb-907d-4383-b1bd-16ef33e5356c",
+        "field": "route"
+      },
+      "value": {
+        "kind": "known",
+        "value": "oral"
+      },
+      "sourceIds": [
+        "source-2e263655-e4f7-4b83-a483-43e719fafe6e"
+      ]
+    },
+    {
+      "proposalId": "proposal-118d5e8c-670e-48f1-b181-789124ccff1c",
+      "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-998117fb-907d-4383-b1bd-16ef33e5356c",
+        "field": "frequency"
+      },
+      "value": {
+        "kind": "known",
+        "value": "daily"
+      },
+      "sourceIds": [
+        "source-2e263655-e4f7-4b83-a483-43e719fafe6e"
+      ]
+    },
+    {
+      "proposalId": "proposal-8915bdb7-1a1e-4868-b987-c815e9d65669",
+      "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-998117fb-907d-4383-b1bd-16ef33e5356c",
+        "field": "startDate"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-08-01"
+      },
+      "sourceIds": [
+        "source-2e263655-e4f7-4b83-a483-43e719fafe6e"
+      ]
+    },
+    {
+      "proposalId": "proposal-dbcb3f33-719b-485f-8211-bf516129349b",
+      "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-998117fb-907d-4383-b1bd-16ef33e5356c",
+        "field": "indication"
+      },
+      "value": {
+        "kind": "known",
+        "value": "atrial fibrillation"
+      },
+      "sourceIds": [
+        "source-2e263655-e4f7-4b83-a483-43e719fafe6e"
+      ]
+    },
+    {
+      "proposalId": "proposal-7aaf27c3-4450-43d8-a0be-6faffcb0c7d7",
+      "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-998117fb-907d-4383-b1bd-16ef33e5356c",
+        "field": "stopped"
+      },
+      "value": {
+        "kind": "known",
+        "value": true
+      },
+      "sourceIds": [
+        "source-30f319d5-7b69-44cc-a9d5-7f29583f715a"
+      ]
+    },
+    {
+      "proposalId": "proposal-033dcc17-eb03-483f-977f-d980ee84383d",
+      "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-998117fb-907d-4383-b1bd-16ef33e5356c",
+        "field": "stopDate"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-09-04"
+      },
+      "sourceIds": [
+        "source-30f319d5-7b69-44cc-a9d5-7f29583f715a"
+      ]
+    },
+    {
+      "proposalId": "proposal-9b019669-948d-4691-9dbf-58d87ba30d18",
+      "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-998117fb-907d-4383-b1bd-16ef33e5356c",
+        "field": "improvedAfterChange"
+      },
+      "value": {
+        "kind": "known",
+        "value": true
+      },
+      "sourceIds": [
+        "source-30f319d5-7b69-44cc-a9d5-7f29583f715a"
+      ]
+    },
+    {
+      "proposalId": "proposal-de4af8c2-b96b-4236-a8c3-61edf9dde364",
+      "groupId": "group-db791391-b6bc-415f-ace8-fbb4bddca453",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-998117fb-907d-4383-b1bd-16ef33e5356c",
+        "field": "restarted"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "sourceIds": [
+        "source-30f319d5-7b69-44cc-a9d5-7f29583f715a"
+      ]
+    },
+    {
+      "proposalId": "proposal-ecca70fd-ee07-4d1f-97b8-5adaa6760883",
+      "groupId": "group-3f6dd073-e436-4af9-adf3-e313a71df3aa",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-ef6d0c5b-1cfb-445f-90e6-ca69eb8910d0",
+        "field": "name"
+      },
+      "value": {
+        "kind": "known",
+        "value": "acetaminophen"
+      },
+      "sourceIds": [
+        "source-2e263655-e4f7-4b83-a483-43e719fafe6e"
+      ]
+    },
+    {
+      "proposalId": "proposal-fb74cb84-8a3e-4bf2-bbfa-609945638217",
+      "groupId": "group-3f6dd073-e436-4af9-adf3-e313a71df3aa",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-ef6d0c5b-1cfb-445f-90e6-ca69eb8910d0",
+        "field": "productType"
+      },
+      "value": {
+        "kind": "known",
+        "value": "drug-or-biologic"
+      },
+      "sourceIds": [
+        "source-b6793929-714a-430c-9eb9-420a065a8d71"
+      ]
+    },
+    {
+      "proposalId": "proposal-f542ae63-af28-4889-b449-236844f1f886",
+      "groupId": "group-3f6dd073-e436-4af9-adf3-e313a71df3aa",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-ef6d0c5b-1cfb-445f-90e6-ca69eb8910d0",
+        "field": "role"
+      },
+      "value": {
+        "kind": "known",
+        "value": "concomitant"
+      },
+      "sourceIds": [
+        "source-fb70c717-c925-4b98-a96e-c68e16a7d14e"
+      ]
+    },
+    {
+      "proposalId": "proposal-585dd935-2353-43e1-93c8-7f9c6125c696",
+      "groupId": "group-3f6dd073-e436-4af9-adf3-e313a71df3aa",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-ef6d0c5b-1cfb-445f-90e6-ca69eb8910d0",
+        "field": "dose"
+      },
+      "value": {
+        "kind": "known",
+        "value": "650 mg"
+      },
+      "sourceIds": [
+        "source-2e263655-e4f7-4b83-a483-43e719fafe6e"
+      ]
+    },
+    {
+      "proposalId": "proposal-a75a48e6-0e90-4f09-ba89-de9c3ff281e2",
+      "groupId": "group-3f6dd073-e436-4af9-adf3-e313a71df3aa",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-ef6d0c5b-1cfb-445f-90e6-ca69eb8910d0",
+        "field": "route"
+      },
+      "value": {
+        "kind": "known",
+        "value": "oral"
+      },
+      "sourceIds": [
+        "source-2e263655-e4f7-4b83-a483-43e719fafe6e"
+      ]
+    },
+    {
+      "proposalId": "proposal-ef49a1bd-8261-44aa-af6d-3d162e4b1ddc",
+      "groupId": "group-3f6dd073-e436-4af9-adf3-e313a71df3aa",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-ef6d0c5b-1cfb-445f-90e6-ca69eb8910d0",
+        "field": "frequency"
+      },
+      "value": {
+        "kind": "known",
+        "value": "every six hours"
+      },
+      "sourceIds": [
+        "source-2e263655-e4f7-4b83-a483-43e719fafe6e"
+      ]
+    },
+    {
+      "proposalId": "proposal-bf50e96b-22db-41d8-bca6-b1952db9dad1",
+      "groupId": "group-3f6dd073-e436-4af9-adf3-e313a71df3aa",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-ef6d0c5b-1cfb-445f-90e6-ca69eb8910d0",
+        "field": "startDate"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-09-01"
+      },
+      "sourceIds": [
+        "source-2e263655-e4f7-4b83-a483-43e719fafe6e"
+      ]
+    },
+    {
+      "proposalId": "proposal-8c15a1d0-fd09-4aed-85b7-53d1b00c22c3",
+      "groupId": "group-3f6dd073-e436-4af9-adf3-e313a71df3aa",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-ef6d0c5b-1cfb-445f-90e6-ca69eb8910d0",
+        "field": "indication"
+      },
+      "value": {
+        "kind": "known",
+        "value": "pain"
+      },
+      "sourceIds": [
+        "source-2e263655-e4f7-4b83-a483-43e719fafe6e"
+      ]
+    },
+    {
+      "proposalId": "proposal-6ab08727-918b-438d-8893-8c90d39bff29",
+      "groupId": "group-3f6dd073-e436-4af9-adf3-e313a71df3aa",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-ef6d0c5b-1cfb-445f-90e6-ca69eb8910d0",
+        "field": "stopped"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "sourceIds": [
+        "source-cfe2ea4e-5d71-4144-8feb-2fc6e25c446b"
+      ]
+    },
+    {
+      "proposalId": "proposal-8d7b3bef-48d0-4371-a285-fd47e9db3145",
+      "groupId": "group-3f6dd073-e436-4af9-adf3-e313a71df3aa",
+      "intent": "fact",
+      "target": {
+        "entity": "product",
+        "entityId": "product-ef6d0c5b-1cfb-445f-90e6-ca69eb8910d0",
+        "field": "doseReduced"
+      },
+      "value": {
+        "kind": "known",
+        "value": false
+      },
+      "sourceIds": [
+        "source-cfe2ea4e-5d71-4144-8feb-2fc6e25c446b"
+      ]
+    },
+    {
+      "proposalId": "proposal-9ef318fc-3a7f-44fd-a74a-af5ba90df7a8",
+      "groupId": "group-cd7502d8-32c4-4af3-8d40-00d3701e469e",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "entityId": "test-a8d15eca-460b-4dba-8adf-603c6faa3fba",
+        "field": "testName"
+      },
+      "value": {
+        "kind": "known",
+        "value": "INR"
+      },
+      "sourceIds": [
+        "source-448fb16f-59ec-4ef4-9226-b69e00f65e33"
+      ]
+    },
+    {
+      "proposalId": "proposal-3ea3e717-a1eb-485a-971e-11a4f4dfe03b",
+      "groupId": "group-cd7502d8-32c4-4af3-8d40-00d3701e469e",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "entityId": "test-a8d15eca-460b-4dba-8adf-603c6faa3fba",
+        "field": "testResult"
+      },
+      "value": {
+        "kind": "known",
+        "value": "4.8"
+      },
+      "sourceIds": [
+        "source-448fb16f-59ec-4ef4-9226-b69e00f65e33"
+      ]
+    },
+    {
+      "proposalId": "proposal-5ceb75e6-0705-4a11-8f09-0ffe9ab18976",
+      "groupId": "group-cd7502d8-32c4-4af3-8d40-00d3701e469e",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "entityId": "test-a8d15eca-460b-4dba-8adf-603c6faa3fba",
+        "field": "lowRange"
+      },
+      "value": {
+        "kind": "known",
+        "value": "0.8"
+      },
+      "sourceIds": [
+        "source-448fb16f-59ec-4ef4-9226-b69e00f65e33"
+      ]
+    },
+    {
+      "proposalId": "proposal-1ae3872e-7429-4600-bf2b-402b93947949",
+      "groupId": "group-cd7502d8-32c4-4af3-8d40-00d3701e469e",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "entityId": "test-a8d15eca-460b-4dba-8adf-603c6faa3fba",
+        "field": "highRange"
+      },
+      "value": {
+        "kind": "known",
+        "value": "1.2"
+      },
+      "sourceIds": [
+        "source-448fb16f-59ec-4ef4-9226-b69e00f65e33"
+      ]
+    },
+    {
+      "proposalId": "proposal-8ca9538b-d703-4e3b-b0d8-0aa6af54c1b0",
+      "groupId": "group-cd7502d8-32c4-4af3-8d40-00d3701e469e",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "entityId": "test-a8d15eca-460b-4dba-8adf-603c6faa3fba",
+        "field": "date"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-09-03",
+        "qualifier": "INR collection time was not recorded"
+      },
+      "sourceIds": [
+        "source-448fb16f-59ec-4ef4-9226-b69e00f65e33",
+        "source-e656fc89-fd96-4d04-8064-2416ec55edcb"
+      ]
+    },
+    {
+      "proposalId": "proposal-a7500021-421f-407f-9336-8b3cbcdb8866",
+      "groupId": "group-0f05ff6c-f54d-4a28-9e21-e53f939076a8",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "entityId": "test-d561be4a-acbc-44f6-835b-27a2e4dde85f",
+        "field": "testName"
+      },
+      "value": {
+        "kind": "known",
+        "value": "ALT"
+      },
+      "sourceIds": [
+        "source-448fb16f-59ec-4ef4-9226-b69e00f65e33"
+      ]
+    },
+    {
+      "proposalId": "proposal-97bf4098-97f9-4f42-81d3-2aadf564d8db",
+      "groupId": "group-0f05ff6c-f54d-4a28-9e21-e53f939076a8",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "entityId": "test-d561be4a-acbc-44f6-835b-27a2e4dde85f",
+        "field": "testResult"
+      },
+      "value": {
+        "kind": "known",
+        "value": "67 U/L"
+      },
+      "sourceIds": [
+        "source-448fb16f-59ec-4ef4-9226-b69e00f65e33"
+      ]
+    },
+    {
+      "proposalId": "proposal-9f09deb0-8cdc-4cd1-bde7-19c93282f772",
+      "groupId": "group-0f05ff6c-f54d-4a28-9e21-e53f939076a8",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "entityId": "test-d561be4a-acbc-44f6-835b-27a2e4dde85f",
+        "field": "lowRange"
+      },
+      "value": {
+        "kind": "known",
+        "value": "7"
+      },
+      "sourceIds": [
+        "source-448fb16f-59ec-4ef4-9226-b69e00f65e33"
+      ]
+    },
+    {
+      "proposalId": "proposal-fde9681f-2d72-4cdf-a553-5bb4c166fab6",
+      "groupId": "group-0f05ff6c-f54d-4a28-9e21-e53f939076a8",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "entityId": "test-d561be4a-acbc-44f6-835b-27a2e4dde85f",
+        "field": "highRange"
+      },
+      "value": {
+        "kind": "known",
+        "value": "56"
+      },
+      "sourceIds": [
+        "source-448fb16f-59ec-4ef4-9226-b69e00f65e33"
+      ]
+    },
+    {
+      "proposalId": "proposal-be5d2bb1-3e9a-4f5b-b71f-f65684eb5eac",
+      "groupId": "group-0f05ff6c-f54d-4a28-9e21-e53f939076a8",
+      "intent": "fact",
+      "target": {
+        "entity": "test",
+        "entityId": "test-d561be4a-acbc-44f6-835b-27a2e4dde85f",
+        "field": "date"
+      },
+      "value": {
+        "kind": "known",
+        "value": "2026-09-03"
+      },
+      "sourceIds": [
+        "source-448fb16f-59ec-4ef4-9226-b69e00f65e33"
+      ]
+    }
+  ],
+  "unrepresented": []
+}

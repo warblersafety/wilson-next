@@ -1,0 +1,13 @@
+{
+  "protocolCommit": "8530c088f4465276251d6f77c83024562d3faefd",
+  "protocolSha256": "ad7303bfddd1ee01cd11b11dc4f8b8b2051d8f64fbc5b3096307d8cb8bd00a4b",
+  "release": "23da51d3d31bbfbe091b809bce1d9aef71f8ac5f",
+  "deployment": "dpl_2WkY1KKP41UDT5NHf9GQJFfDdyFj",
+  "source": {
+    "id": "A11",
+    "opening": "Entirely fictional evaluation. Entirely fictional case LIVE-MULTI-57: a 57-year-old man weighing 70 kg developed a rash on 03 September 2026. He took warfarin 5 mg by mouth daily from 01 August 2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours from 01 September 2026 for pain. Warfarin is suspect; acetaminophen is concomitant. Warfarin was stopped on 04 September 2026, the rash improved after stopping, and warfarin was never restarted. Acetaminophen was not stopped or reduced. He was hospitalized; no other serious outcomes apply. INR was 4.8 on 03 September 2026 with reference limits 0.8 and 1.2; ALT was 67 U/L on 03 September 2026 with reference limits 7 and 56. The INR collection time was not recorded. No additional relevant history applies. This is an adverse-event report, and the product is not available for evaluation. These two products are explicitly medications.",
+    "reportType": "adverse-event",
+    "expected": "Explicit improved-after-stopping supports D7 Yes; no stronger causal/clinical claim, date calculation or invented outcome. INR uncertainty retained only on INR."
+  },
+  "startedAt": "2026-10-17T17:46:46.223Z"
+}

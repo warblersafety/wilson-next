@@ -1,0 +1,12 @@
+{
+  "renderer": "macOS PDFKit",
+  "source": "unknown.pdf",
+  "inspectedPages": [
+    9
+  ],
+  "checks": [
+    "Unknown dose replaces the old amount; other regimen remains readable",
+    "F row and Dose field header readable without overlap"
+  ],
+  "limitation": "Only page9 visually inspected; both actual browser downloads independently parsed by pypdf."
+}

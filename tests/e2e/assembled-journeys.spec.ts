@@ -793,7 +793,7 @@ async function downloadAndCheck(
   });
   expect(bytes.byteLength).toBeGreaterThan(100_000);
   const readback = await independentReadback(path);
-  expect(readback.pageCount).toBe(8);
+  expect(readback.pageCount).toBe(journey === "experiment-1-regression" ? 9 : 8);
   const semanticValues = [...readback.fieldValues];
   for (const [slot, pageNumber] of [[1, 4], [2, 5]]) {
     const prefix = `topmostSubform[0].Page${pageNumber}[0].Prod${slot}[0].Prod${slot}`;

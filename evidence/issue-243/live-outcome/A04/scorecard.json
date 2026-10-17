@@ -1,0 +1,12 @@
+{
+  "case": "A04",
+  "expectedFrozenCommit": "8530c088f4465276251d6f77c83024562d3faefd",
+  "servedRelease": "23da51d3d31bbfbe091b809bce1d9aef71f8ac5f",
+  "result": "PASS frozen targeted criteria",
+  "observations": [
+    "General outcome resolved is proposed independently in provider output and parsed state",
+    "No improvedAfterChange proposal for either product",
+    "All proposals remain unaccepted; no PDF generated for this extraction-only check"
+  ],
+  "limitation": "One sampled opening, not a general extraction guarantee"
+}

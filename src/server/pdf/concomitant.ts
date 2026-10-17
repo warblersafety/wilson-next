@@ -1,12 +1,13 @@
 import {PDFDocument, StandardFonts} from "@cantoo/pdf-lib";
-import type {Form3500Projection} from "../../domain/case/projection";
+import {concomitantMedicationLabels, type ConcomitantMedicationField, type Form3500Projection} from "../../domain/case/projection";
 import {maximumForm3500ConcomitantProducts} from "../../domain/case/limits";
 import {nativeSingleLineTextLimitation} from "./product-text";
 import {continuationGeometry, form3500ReportReference, narrativeGlyphLimitation, wrapContinuationText} from "./narrative-continuation";
 
 /** Pinned09/2025 native F controls: all ten rows share this width/font. */
 export const concomitantNameGeometry={width:198.766,fontSize:8.5};
-export function concomitantFieldLabel(field:"name"|"startDate"|"stopDate") {
+export function concomitantFieldLabel(field:"name"|"startDate"|"stopDate"|ConcomitantMedicationField) {
+  if(field in concomitantMedicationLabels)return concomitantMedicationLabels[field as ConcomitantMedicationField];
   return field==="name"?"Name":field==="startDate"?"Therapy start date":"Therapy end date";
 }
 export function concomitantRowFields(index:number) {
@@ -20,13 +21,14 @@ export function concomitantNativeName(name:string|undefined,index:number) {
 export function concomitantSupplementEntries(projection:Form3500Projection) {
   return projection.sections.F.concomitantProducts.flatMap((product,index)=>[
     ...(product.name!==undefined&&concomitantNativeName(product.name,index)!==product.name?[{index,field:"name" as const,heading:`F row ${index+1} - Name`,text:`F row ${index+1} Name: ${product.name}`}]:[]),
+    ...(projection.concomitantMedicationNotes??[]).filter(d=>d.productId===product.productId).map(detail=>({index,field:detail.field,heading:`F row ${index+1} - ${concomitantMedicationLabels[detail.field]}`,text:`F row ${index+1} - ${product.name??"Name not provided"} - ${concomitantMedicationLabels[detail.field]}: ${detail.text}`})),
     ...(product.fieldContext??[]).map(context=>({index,field:context.field,heading:`F row ${index+1} - ${concomitantFieldLabel(context.field)} context`,text:`F row ${index+1} ${concomitantFieldLabel(context.field)} context: ${context.text}`})),
   ]);
 }
 export async function concomitantTextIssues(projection:Form3500Projection) {
-  const issues:{productId:string;field:"name"|"startDate"|"stopDate";limitation:string}[]=[];
+  const issues:{productId:string;field:"name"|"startDate"|"stopDate"|ConcomitantMedicationField;limitation:string}[]=[];
   for(const product of projection.sections.F.concomitantProducts) {
-    for(const value of [...(product.name!==undefined?[{field:"name" as const,text:product.name}]:[]),...(product.fieldContext??[])]) {
+    for(const value of [...(product.name!==undefined?[{field:"name" as const,text:product.name}]:[]),...(product.fieldContext??[]),...(projection.concomitantMedicationNotes??[]).filter(d=>d.productId===product.productId)]) {
       const limitation=await narrativeGlyphLimitation(value.text,"Section F");
       if(limitation)issues.push({productId:product.productId,field:value.field,limitation});
     }

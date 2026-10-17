@@ -1,0 +1,14 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "report.pdf",
+  "inspectedPages": [
+    6,
+    9
+  ],
+  "checks": [
+    "A07 native F row retains Acetaminophen and readable supplement pointer",
+    "F Dose header and 500 mg/as needed/oral/headache readable"
+  ],
+  "limitation": "Only listed pages visually inspected; pypdf independently parses the full PDF."
+}

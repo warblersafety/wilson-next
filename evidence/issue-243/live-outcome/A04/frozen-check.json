@@ -1,0 +1,13 @@
+{
+  "protocolCommit": "8530c088f4465276251d6f77c83024562d3faefd",
+  "protocolSha256": "ad7303bfddd1ee01cd11b11dc4f8b8b2051d8f64fbc5b3096307d8cb8bd00a4b",
+  "release": "23da51d3d31bbfbe091b809bce1d9aef71f8ac5f",
+  "deployment": "dpl_2WkY1KKP41UDT5NHf9GQJFfDdyFj",
+  "source": {
+    "id": "A04",
+    "opening": "Entirely fictional evaluation. Patient TEST-47 is a 47-year-old man. He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026. Warfarin is suspect; acetaminophen is concomitant. On 08-Aug-2026 he developed epistaxis and easy bruising. INR was 4.8 on 08-Aug-2026. No serious outcomes applied. No other relevant medical history applies. Warfarin was stopped and the symptoms resolved.",
+    "reportType": "adverse-event",
+    "expected": "General improving/resolved outcome retained independently; no unqualified D7 Yes inferred only from stopped-and-outcome co-occurrence. An explicit uncertain/clarification proposal remains reviewable."
+  },
+  "startedAt": "2026-10-17T17:45:10.010Z"
+}

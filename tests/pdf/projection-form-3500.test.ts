@@ -29,7 +29,7 @@ describe("fixed semantic projection to Form FDA 3500", () => {
     const result = await fillForm3500Projection(source, projection);
 
     expect(projection.sections.D.suspectProducts[0].startDate).toBeUndefined();
-    expect(result.readback).toEqual({ pageCount: FORM_3500_PAGE_COUNT, sections: projection.sections });
+    expect(result.readback).toEqual({ pageCount: FORM_3500_PAGE_COUNT + 1, sections: projection.sections });
     const directory = await mkdtemp(join(tmpdir(), "wilson-slice-2-conflicted-"));
     const outputPath = join(directory, "conflicted-form.pdf");
     await writeFile(outputPath, result.output);
@@ -44,7 +44,7 @@ describe("fixed semantic projection to Form FDA 3500", () => {
     const projection = projectForm3500(completeResolvedCase());
     const source = new Uint8Array(await readFile(sourcePath));
     const { output, readback } = await fillForm3500Projection(source, projection);
-    expect(readback).toEqual({ pageCount: FORM_3500_PAGE_COUNT, sections: projection.sections });
+    expect(readback).toEqual({ pageCount: FORM_3500_PAGE_COUNT + 1, sections: projection.sections });
 
     const directory = await mkdtemp(join(tmpdir(), "wilson-slice-2-"));
     const outputPath = join(directory, "resolved-form.pdf");
@@ -58,7 +58,7 @@ describe("fixed semantic projection to Form FDA 3500", () => {
     };
 
     expect(independent.encrypted).toBe(false);
-    expect(independent.pageCount).toBe(FORM_3500_PAGE_COUNT);
+    expect(independent.pageCount).toBe(FORM_3500_PAGE_COUNT + 1);
     expect(independent.namedFields).toMatchObject({
       "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]": "TEST-57",
       "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "57",
