@@ -172,16 +172,19 @@ prior migrations, preserving all facts/IDs/sources/history/revisions/targets and
 numeric unfinished drafts unchanged. Current UI draft codec additionally retains
 month/week/day pairs, including unfinished invalid quantities without promoting them.
 
-### Complete date of birth and A2 choice (Issue #172)
+### Date of birth and A2 choice (Issues #172 and #231)
 
-The official A2 alternative accepts the explicitly supplied complete birth date
-or age at event onset. Date of birth is a separate reviewed patient fact, never
-calculated from age or used to calculate age. The native DateBirth field receives
-DD-MMM-YYYY from the retained ISO components without timezone/date arithmetic.
-Only complete Gregorian calendar dates in years0001–9999 are accepted. Partial,
-impossible or ambiguous dates are unsupported; the text editor retains invalid
-unfinished words across reload and disables Apply. Global legacy date cleanup
-remains #164, without retrospective changes to accepted values.
+The official A2 alternative accepts date of birth or age at event onset using
+the most precise information available. Date of birth is a separate reviewed
+patient fact, never calculated from age or used to calculate age. Complete
+Gregorian dates in years 0001–9999 populate native DateBirth as DD-MMM-YYYY
+without timezone/date arithmetic. Issue #231 extends the initial complete-date
+path with explicit month/year and year-only precision: A2 points to B6 comments,
+where the exact supplied wording and qualifier appear under an A2 date-of-birth
+label. No missing day, month or age is inferred. Impossible dates and unsupported
+unstructured wording remain invalid; unfinished editor input survives reload
+without replacing the accepted fact. Global legacy date cleanup remains #164,
+without retrospective changes to accepted values.
 
 An explicit clinician-only A2 value-to-print fact chooses Age or Date of birth.
 The model can propose both supplied facts but cannot choose the print preference.
