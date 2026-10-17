@@ -208,9 +208,9 @@
     },
     {
       "id": "A07",
-      "family": "device-combined",
+      "family": "mixed-device-medication",
       "reusedFrom": "tests/e2e/build-predetermined-responses.ts:layer3CombinedOpening",
-      "opening": "Entirely fictional evaluation. Patient TEST-67 is a 67-year-old woman. On 09-Sep-2026, an Acme ThermoPatch wearable monitor overheated after its adhesive backing split; it caused a blistering burn on her left arm. The device was removed, the burn was treated with cool compresses, and she recovered. No serious outcomes applied. No relevant tests or medical history apply. The suspect device is an Acme ThermoPatch, common name wearable temperature monitor, manufactured by Acme Medical, model TP-9, lot T-144, serial SN-8804. It was patient-operated, was not implanted, was not a reprocessed single-use device, and was not serviced by a third party. The device is available for evaluation.",
+      "opening": "Entirely fictional evaluation. Patient TEST-67 is a 67-year-old woman. On 09-Sep-2026, an Acme ThermoPatch wearable monitor overheated after its adhesive backing split; it caused a blistering burn on her left arm. The device was removed, the burn was treated with cool compresses, and she recovered. No serious outcomes applied. No relevant tests or medical history apply. The suspect device is an Acme ThermoPatch, common name wearable temperature monitor, manufactured by Acme Medical, model TP-9, lot T-144, serial SN-8804. It was patient-operated, was not implanted, was not a reprocessed single-use device, and was not serviced by a third party. The device is available for evaluation. Acetaminophen is an explicitly concomitant medication, 500 mg by mouth as needed for headache. It is not suspected.",
       "reportType": "adverse-event-and-product-problem",
       "expectedMaterialFacts": [
         "TEST-67",
@@ -224,7 +224,8 @@
         "blistering burn left arm onset2026-09-09",
         "removed; cool compresses; recovered",
         "no serious outcomes/tests/history",
-        "available"
+        "available",
+        "acetaminophen concomitant medication500mg oral as needed for headache; not suspect; stays distinct from device"
       ],
       "correction": null,
       "expectedCorrection": null,
@@ -239,12 +240,12 @@
       "opening": "Entirely fictional evaluation. An Acme PulseLine temporary pacing lead stopped sensing during an intraoperative function check after placement. No patient symptoms or adverse event occurred. The suspect device is an Acme PulseLine, common name temporary pacing lead, manufactured by Acme Medical, model PL-4, serial SN-4012. It was implanted and was a reprocessed single-use device. The implant and explant dates are not in the note, and the reprocessor is not identified. The device is available for evaluation.",
       "reportType": "product-problem",
       "expectedMaterialFacts": [
-        "PulseLine temporary pacing lead",
-        "all explicitly supplied implant/explant/reprocessor/operator facts",
-        "stopped sensing during intraoperative function check",
-        "no patient symptoms/adverse event",
-        "suspect device",
-        "no invented injury"
+        "PulseLine temporary pacing lead; Acme Medical; modelPL-4 serialSN-4012",
+        "stopped sensing during intraoperative function check after placement",
+        "no symptoms or adverse event",
+        "implanted and reprocessed single-use device",
+        "implant/explant dates unknown; reprocessor unidentified",
+        "available"
       ],
       "correction": null,
       "expectedCorrection": null,
@@ -257,12 +258,13 @@
       "family": "device",
       "reusedFrom": "tests/e2e/build-predetermined-responses.ts:layer3CorrectionOpening",
       "opening": "Entirely fictional evaluation. An Acme NeuroSense monitor displayed repeated false high readings during setup. No patient symptoms or adverse event occurred. The suspect device is an Acme NeuroSense, common name physiologic monitor, manufactured by Acme Medical, model NS-7, serial SN-1001. It was not implanted, was not a reprocessed single-use device, and was not serviced by a third party. The device is available for evaluation.",
-      "reportType": "adverse-event-and-product-problem",
+      "reportType": "product-problem",
       "expectedMaterialFacts": [
-        "all supplied NeuroSense device identifiers and operator/applicability facts",
-        "false high readings",
-        "all supplied patient symptoms/outcomes/dates",
-        "no invented test result or consequence"
+        "NeuroSense physiologic monitor; Acme Medical; modelNS-7 serialSN-1001",
+        "repeated false high readings during setup",
+        "no symptoms or adverse event",
+        "not implanted/reprocessed/third-party serviced",
+        "available"
       ],
       "correction": null,
       "expectedCorrection": null,
