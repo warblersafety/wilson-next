@@ -1157,26 +1157,35 @@
       "report-page-7.png": "706c0041f286c008bf1a7724dad36ca0a5b9019199ace1f9c90dedf0448113d8",
       "report-page-8.png": "a4e65444ae4ad5265e47291918036d36a004842f064a4ecdef833ea7a64b38de"
     },
-    "visualInspection": "selected filled pages inspected; not a claim that all 96 page images were manually inspected"
+    "visualInspection": "selected filled pages inspected; not a claim that all 96 page images were manually inspected",
+    "visuallyInspectedPages": [
+      3
+    ]
   },
   "modelCalls": [
     {
+      "callIndex": 3,
       "model": "claude-sonnet-5",
       "promptRevision": "wilson-duration-wording-v31",
       "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
       "inputTokens": 13198,
       "outputTokens": 5083,
       "latencyMs": 37118,
-      "estimatedCostUsd": 0.077226
+      "estimatedCostUsd": 0.077226,
+      "operationId": "1611abe4-7101-40b0-b7df-67ceb83a75fa",
+      "runId": "dd68720d-a645-4257-8155-4095712fb42c"
     },
     {
+      "callIndex": 4,
       "model": "claude-sonnet-5",
       "promptRevision": "wilson-duration-wording-v31",
       "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
       "inputTokens": 14255,
       "outputTokens": 219,
       "latencyMs": 2544,
-      "estimatedCostUsd": 0.0307
+      "estimatedCostUsd": 0.0307,
+      "operationId": "d0095979-dc61-4f36-95b5-9e2370e659ce",
+      "runId": "9551a1e6-2cc6-4159-bf75-589cc8842808"
     }
   ],
   "checks": {
@@ -1193,5 +1202,6 @@
       }
     }
   },
-  "finalOutcome": "PDF generated after explicit source review and documented manual recovery; not a clean extraction/native-projection/uninterrupted-UI pass"
+  "finalOutcome": "PDF generated after explicit source review and documented manual recovery; not a clean extraction/native-projection/uninterrupted-UI pass",
+  "retainedArtifacts": "artifacts/A03"
 }

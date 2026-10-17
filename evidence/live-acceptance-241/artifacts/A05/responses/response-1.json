@@ -1,0 +1,3146 @@
+{
+  "http": 200,
+  "operationId": "39b76bd9-57ec-49c0-ba48-930a55f01870",
+  "runId": "529b9faf-0223-400e-ba86-0674d29aa44a",
+  "state": {
+    "version": "wilson-browser-state-v32",
+    "stage": "understanding",
+    "case": {
+      "id": "case-dafd2f98-6831-4d6f-93c3-347fe67bd6ab",
+      "revision": 2,
+      "patient": {
+        "id": "patient",
+        "state": "proposed",
+        "facts": {
+          "identifier": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-625a1466-6d53-446d-b573-68b4303f6605",
+                "groupId": "patient",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "TEST-74"
+                },
+                "sourceIds": [
+                  "source-0ae421db-7f55-46fc-bffe-6e5ef80d58da"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-0ae421db-7f55-46fc-bffe-6e5ef80d58da"
+            ],
+            "supersededValues": []
+          },
+          "ageYears": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-51b34a26-46ce-43a2-864d-26a7b7475f21",
+                "groupId": "patient",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": 74
+                },
+                "sourceIds": [
+                  "source-0ae421db-7f55-46fc-bffe-6e5ef80d58da"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-0ae421db-7f55-46fc-bffe-6e5ef80d58da"
+            ],
+            "supersededValues": []
+          },
+          "raceEthnicity": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "dateOfBirth": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "a2Value": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "sex": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-312906ac-0d9b-48e7-bfc0-06448eea66fe",
+                "groupId": "patient",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "female"
+                },
+                "sourceIds": [
+                  "source-0ae421db-7f55-46fc-bffe-6e5ef80d58da"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-0ae421db-7f55-46fc-bffe-6e5ef80d58da"
+            ],
+            "supersededValues": []
+          },
+          "weight": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "involvement": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      "event": {
+        "id": "event",
+        "state": "proposed",
+        "facts": {
+          "reportType": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-88288a93-bca6-457e-b190-fd6985b9b2fc"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "value-report-type-52ad55f1-d3ff-4399-b15e-f110c7a87daa",
+              "groupId": "command-record-report-type-fdc3c654-14f0-4b81-a5fa-4a8b13037e5a",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "adverse-event-and-product-problem"
+              },
+              "sourceIds": [
+                "source-88288a93-bca6-457e-b190-fd6985b9b2fc"
+              ]
+            }
+          },
+          "reportDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "problemDescription": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-476660f4-dfa8-4807-b278-2e28804d5143",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "delivered fluid too rapidly after its alarm failed"
+                },
+                "sourceIds": [
+                  "source-41defa58-168a-49d9-863b-9d030bf9047f"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-41defa58-168a-49d9-863b-9d030bf9047f"
+            ],
+            "supersededValues": []
+          },
+          "symptoms": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-3d277e6d-6fda-4a30-8b68-81c43c9af32d",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": [
+                    "hypotension"
+                  ]
+                },
+                "sourceIds": [
+                  "source-41defa58-168a-49d9-863b-9d030bf9047f"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-41defa58-168a-49d9-863b-9d030bf9047f"
+            ],
+            "supersededValues": []
+          },
+          "onsetDate": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-6cdfb0d5-df0c-4712-98c5-42f76e6d9d1a",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "2026-09-08"
+                },
+                "sourceIds": [
+                  "source-41defa58-168a-49d9-863b-9d030bf9047f"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-41defa58-168a-49d9-863b-9d030bf9047f"
+            ],
+            "supersededValues": []
+          },
+          "death": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "deathDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "lifeThreatening": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "hospitalized": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-51a01d9b-8160-46db-8a52-4f25dc328e72",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": true
+                },
+                "sourceIds": [
+                  "source-41defa58-168a-49d9-863b-9d030bf9047f"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-41defa58-168a-49d9-863b-9d030bf9047f"
+            ],
+            "supersededValues": []
+          },
+          "disability": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "requiredIntervention": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "congenitalAnomaly": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "otherSerious": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-e7aa2692-649d-4532-9b62-5adf0c7a3cc0",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": false
+                },
+                "sourceIds": [
+                  "source-d28270db-efbd-4cce-862a-cbdce5d90ba0"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-d28270db-efbd-4cce-862a-cbdce5d90ba0"
+            ],
+            "supersededValues": []
+          },
+          "relevantTestsAvailable": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-1fc85fdd-e41a-42db-b581-f9a430a63de1",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": false
+                },
+                "sourceIds": [
+                  "source-eea1bb7b-437c-4cc6-ae3b-fd97990417b5"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-eea1bb7b-437c-4cc6-ae3b-fd97990417b5"
+            ],
+            "supersededValues": []
+          },
+          "relevantHistory": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-b1ea107e-bbd6-4958-aae2-eb70aeaef939",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "explicitly-absent"
+                },
+                "sourceIds": [
+                  "source-eea1bb7b-437c-4cc6-ae3b-fd97990417b5"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-eea1bb7b-437c-4cc6-ae3b-fd97990417b5"
+            ],
+            "supersededValues": []
+          },
+          "treatments": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-dcd60fe0-1a94-4645-9ef8-1f8793e24e0d",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": [
+                    "intravenous fluids"
+                  ]
+                },
+                "sourceIds": [
+                  "source-f3fbc54d-23bf-4abf-af59-33dcc7ca4ff3"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-f3fbc54d-23bf-4abf-af59-33dcc7ca4ff3"
+            ],
+            "supersededValues": []
+          },
+          "outcome": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-9cae25d4-3f83-4bf1-8d99-5a6b56001297",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "recovered"
+                },
+                "sourceIds": [
+                  "source-f3fbc54d-23bf-4abf-af59-33dcc7ca4ff3"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-f3fbc54d-23bf-4abf-af59-33dcc7ca4ff3"
+            ],
+            "supersededValues": []
+          },
+          "dischargeDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "productAvailability": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-86700c88-ab04-4b4d-bf75-7d2974948438",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "available"
+                },
+                "sourceIds": [
+                  "source-6dec8099-3236-4f16-9bf7-594a2ed1b5e4"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-6dec8099-3236-4f16-9bf7-594a2ed1b5e4"
+            ],
+            "supersededValues": []
+          },
+          "productReturnDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "additionalComments": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      "products": [
+        {
+          "id": "product-7d608213-ee35-46ed-9023-f5f5eaec489c",
+          "proposalGroupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+          "state": "proposed",
+          "facts": {
+            "name": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-d4984be1-6eae-4315-a379-89f98154f7d1",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "Acme FlowGuard"
+                  },
+                  "sourceIds": [
+                    "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+              ],
+              "supersededValues": []
+            },
+            "productType": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-26444e36-9377-4c0e-be54-7cd71e72868a",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "device"
+                  },
+                  "sourceIds": [
+                    "source-41defa58-168a-49d9-863b-9d030bf9047f",
+                    "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-41defa58-168a-49d9-863b-9d030bf9047f",
+                "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+              ],
+              "supersededValues": []
+            },
+            "role": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-d44a4c4c-751d-4a58-92dd-072a7bfc0aaa",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "suspect"
+                  },
+                  "sourceIds": [
+                    "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+              ],
+              "supersededValues": []
+            },
+            "manufacturer": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-074c7a26-693e-4e3e-b053-44a9f616ea3d",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "Acme Medical in Reno, Nevada"
+                  },
+                  "sourceIds": [
+                    "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+              ],
+              "supersededValues": []
+            },
+            "lotNumber": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-a8af144e-2348-4132-89cc-95a1592a1faf",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "L-904"
+                  },
+                  "sourceIds": [
+                    "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+              ],
+              "supersededValues": []
+            },
+            "ndcOrUniqueId": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "dose": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "strength": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "frequency": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "route": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "startDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "stopDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "therapyOngoing": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "indication": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "stopped": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-32f6778f-6e8d-497e-bdfb-f79451a6d746",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": true
+                  },
+                  "sourceIds": [
+                    "source-f3fbc54d-23bf-4abf-af59-33dcc7ca4ff3"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-f3fbc54d-23bf-4abf-af59-33dcc7ca4ff3"
+              ],
+              "supersededValues": []
+            },
+            "cosmeticUse": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "otherProductTypes": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "medicationType": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "doseReduced": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "doseReductionDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "treatmentDuration": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "d3Value": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "improvedAfterChange": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "restarted": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "recurred": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "commonName": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-de08bd91-6171-472e-a9b6-060b89caa6ab",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "infusion pump"
+                  },
+                  "sourceIds": [
+                    "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+              ],
+              "supersededValues": []
+            },
+            "procode": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "modelNumber": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-e8a02910-77bc-42ff-b436-d145eb4c45ec",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "FG-200"
+                  },
+                  "sourceIds": [
+                    "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+              ],
+              "supersededValues": []
+            },
+            "catalogNumber": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "expirationDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerName": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerAddress": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerCity": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerRegion": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerPostalCode": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerCountry": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseWebsite": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "serialNumber": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-123e6bcf-c6c1-4f9b-add7-f62256834690",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "SN-7721"
+                  },
+                  "sourceIds": [
+                    "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+              ],
+              "supersededValues": []
+            },
+            "udi": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-15fdcf08-83d6-4f9f-9923-0e40c57cf2b7",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "(01)00812345000017(21)SN7721"
+                  },
+                  "sourceIds": [
+                    "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-3ca01c59-543e-4014-a255-cc502edc6c31"
+              ],
+              "supersededValues": []
+            },
+            "deviceOperator": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-33f2367d-b095-4979-92fb-c2ce910d9776",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "health-professional"
+                  },
+                  "sourceIds": [
+                    "source-9a08327c-30b2-4a98-8496-d4f9d6ce06b0"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-9a08327c-30b2-4a98-8496-d4f9d6ce06b0"
+              ],
+              "supersededValues": []
+            },
+            "implanted": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-8341f1dc-cfbf-49ff-95a4-45b394e1b335",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": false
+                  },
+                  "sourceIds": [
+                    "source-9a08327c-30b2-4a98-8496-d4f9d6ce06b0"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-9a08327c-30b2-4a98-8496-d4f9d6ce06b0"
+              ],
+              "supersededValues": []
+            },
+            "implantDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "explantDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "reprocessedSingleUse": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-cf2998cc-4a0a-4e40-b198-7b8ba1a7ffdb",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": false
+                  },
+                  "sourceIds": [
+                    "source-9a08327c-30b2-4a98-8496-d4f9d6ce06b0"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-9a08327c-30b2-4a98-8496-d4f9d6ce06b0"
+              ],
+              "supersededValues": []
+            },
+            "reprocessor": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "servicedByThirdParty": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-644b2d96-e3e3-41bc-b924-aced4da512ca",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "no"
+                  },
+                  "sourceIds": [
+                    "source-9a08327c-30b2-4a98-8496-d4f9d6ce06b0"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-9a08327c-30b2-4a98-8496-d4f9d6ce06b0"
+              ],
+              "supersededValues": []
+            }
+          }
+        }
+      ],
+      "relevantTests": [],
+      "reporter": {
+        "id": "reporter",
+        "facts": {
+          "lastName": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "firstName": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "address": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "city": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "state": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "postalCode": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "country": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "phone": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "email": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "healthProfessional": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "occupation": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "reportedTo": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "doNotDiscloseIdentity": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      "askedNeeds": [],
+      "sources": [
+        {
+          "id": "source-0ae421db-7f55-46fc-bffe-6e5ef80d58da",
+          "inputId": "input-c3edabc9-e4c9-4cf8-b451-5979e338abed",
+          "inputType": "narrative",
+          "excerpt": "Patient TEST-74 is a 74-year-old woman. ",
+          "start": 31,
+          "end": 71,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:24:22.026Z"
+        },
+        {
+          "id": "source-41defa58-168a-49d9-863b-9d030bf9047f",
+          "inputId": "input-c3edabc9-e4c9-4cf8-b451-5979e338abed",
+          "inputType": "narrative",
+          "excerpt": "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. ",
+          "start": 71,
+          "end": 222,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:24:22.026Z"
+        },
+        {
+          "id": "source-f3fbc54d-23bf-4abf-af59-33dcc7ca4ff3",
+          "inputId": "input-c3edabc9-e4c9-4cf8-b451-5979e338abed",
+          "inputType": "narrative",
+          "excerpt": "The pump was stopped, she received intravenous fluids, and she recovered. ",
+          "start": 222,
+          "end": 296,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:24:22.026Z"
+        },
+        {
+          "id": "source-d28270db-efbd-4cce-862a-cbdce5d90ba0",
+          "inputId": "input-c3edabc9-e4c9-4cf8-b451-5979e338abed",
+          "inputType": "narrative",
+          "excerpt": "No other serious outcomes applied. ",
+          "start": 296,
+          "end": 331,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:24:22.026Z"
+        },
+        {
+          "id": "source-eea1bb7b-437c-4cc6-ae3b-fd97990417b5",
+          "inputId": "input-c3edabc9-e4c9-4cf8-b451-5979e338abed",
+          "inputType": "narrative",
+          "excerpt": "No relevant tests or medical history apply. ",
+          "start": 331,
+          "end": 375,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:24:22.026Z"
+        },
+        {
+          "id": "source-6dec8099-3236-4f16-9bf7-594a2ed1b5e4",
+          "inputId": "input-c3edabc9-e4c9-4cf8-b451-5979e338abed",
+          "inputType": "narrative",
+          "excerpt": "The device is available for evaluation.",
+          "start": 704,
+          "end": 743,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:24:22.026Z"
+        },
+        {
+          "id": "source-3ca01c59-543e-4014-a255-cc502edc6c31",
+          "inputId": "input-c3edabc9-e4c9-4cf8-b451-5979e338abed",
+          "inputType": "narrative",
+          "excerpt": "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. ",
+          "start": 375,
+          "end": 564,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:24:22.026Z"
+        },
+        {
+          "id": "source-9a08327c-30b2-4a98-8496-d4f9d6ce06b0",
+          "inputId": "input-c3edabc9-e4c9-4cf8-b451-5979e338abed",
+          "inputType": "narrative",
+          "excerpt": "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. ",
+          "start": 564,
+          "end": 704,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:24:22.026Z"
+        },
+        {
+          "id": "source-88288a93-bca6-457e-b190-fd6985b9b2fc",
+          "inputId": "input-13f19edf-3ca3-4b67-b490-01055e343515",
+          "inputType": "selection",
+          "excerpt": "Adverse event and product problem",
+          "start": 0,
+          "end": 33,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:24:22.034Z"
+        }
+      ],
+      "changes": [
+        {
+          "commandId": "command-attach-opening-467302da-0143-4800-b753-6846384c4c9f",
+          "type": "attach-grounded-proposals",
+          "affectedTargets": [
+            "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c",
+            "patient:patient:identifier",
+            "patient:patient:ageYears",
+            "patient:patient:sex",
+            "event:event:onsetDate",
+            "event:event:symptoms",
+            "event:event:problemDescription",
+            "event:event:hospitalized",
+            "event:event:treatments",
+            "event:event:outcome",
+            "event:event:otherSerious",
+            "event:event:relevantTestsAvailable",
+            "event:event:relevantHistory",
+            "event:event:productAvailability",
+            "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:productType",
+            "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:role",
+            "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:name",
+            "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:commonName",
+            "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:manufacturer",
+            "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:modelNumber",
+            "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:lotNumber",
+            "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:serialNumber",
+            "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:udi",
+            "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:deviceOperator",
+            "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:implanted",
+            "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:reprocessedSingleUse",
+            "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:servicedByThirdParty",
+            "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:stopped"
+          ],
+          "sourceIds": [
+            "source-0ae421db-7f55-46fc-bffe-6e5ef80d58da",
+            "source-41defa58-168a-49d9-863b-9d030bf9047f",
+            "source-f3fbc54d-23bf-4abf-af59-33dcc7ca4ff3",
+            "source-d28270db-efbd-4cce-862a-cbdce5d90ba0",
+            "source-eea1bb7b-437c-4cc6-ae3b-fd97990417b5",
+            "source-6dec8099-3236-4f16-9bf7-594a2ed1b5e4",
+            "source-3ca01c59-543e-4014-a255-cc502edc6c31",
+            "source-9a08327c-30b2-4a98-8496-d4f9d6ce06b0"
+          ],
+          "priorRevision": 0,
+          "resultingRevision": 1,
+          "supersessions": [],
+          "resolutions": []
+        },
+        {
+          "commandId": "command-record-report-type-fdc3c654-14f0-4b81-a5fa-4a8b13037e5a",
+          "type": "record-clinician-facts",
+          "affectedTargets": [
+            "event:event:reportType"
+          ],
+          "sourceIds": [
+            "source-88288a93-bca6-457e-b190-fd6985b9b2fc"
+          ],
+          "priorRevision": 1,
+          "resultingRevision": 2,
+          "supersessions": [],
+          "resolutions": []
+        }
+      ]
+    },
+    "unrepresented": []
+  },
+  "snapshot": {
+    "stage": "understanding",
+    "revision": 2,
+    "understanding": {
+      "revision": 2,
+      "patient": {
+        "identifier": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-625a1466-6d53-446d-b573-68b4303f6605",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "TEST-74"
+              },
+              "evidence": [
+                "Patient TEST-74 is a 74-year-old woman. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Patient TEST-74 is a 74-year-old woman. "
+          ]
+        },
+        "ageYears": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-51b34a26-46ce-43a2-864d-26a7b7475f21",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": 74
+              },
+              "evidence": [
+                "Patient TEST-74 is a 74-year-old woman. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Patient TEST-74 is a 74-year-old woman. "
+          ]
+        },
+        "raceEthnicity": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "dateOfBirth": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "a2Value": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "sex": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-312906ac-0d9b-48e7-bfc0-06448eea66fe",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "female"
+              },
+              "evidence": [
+                "Patient TEST-74 is a 74-year-old woman. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Patient TEST-74 is a 74-year-old woman. "
+          ]
+        },
+        "weight": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "involvement": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        }
+      },
+      "event": {
+        "reportType": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "adverse-event-and-product-problem"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Adverse event and product problem"
+          ]
+        },
+        "reportDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "problemDescription": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-476660f4-dfa8-4807-b278-2e28804d5143",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "delivered fluid too rapidly after its alarm failed"
+              },
+              "evidence": [
+                "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. "
+          ]
+        },
+        "symptoms": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-3d277e6d-6fda-4a30-8b68-81c43c9af32d",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": [
+                  "hypotension"
+                ]
+              },
+              "evidence": [
+                "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. "
+          ]
+        },
+        "onsetDate": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-6cdfb0d5-df0c-4712-98c5-42f76e6d9d1a",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "2026-09-08"
+              },
+              "evidence": [
+                "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. "
+          ]
+        },
+        "death": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "deathDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "lifeThreatening": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "hospitalized": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-51a01d9b-8160-46db-8a52-4f25dc328e72",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": true
+              },
+              "evidence": [
+                "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. "
+          ]
+        },
+        "disability": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "requiredIntervention": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "congenitalAnomaly": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "otherSerious": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-e7aa2692-649d-4532-9b62-5adf0c7a3cc0",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "evidence": [
+                "No other serious outcomes applied. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "No other serious outcomes applied. "
+          ]
+        },
+        "relevantTestsAvailable": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-1fc85fdd-e41a-42db-b581-f9a430a63de1",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "evidence": [
+                "No relevant tests or medical history apply. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "No relevant tests or medical history apply. "
+          ]
+        },
+        "relevantHistory": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-b1ea107e-bbd6-4958-aae2-eb70aeaef939",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "explicitly-absent"
+              },
+              "evidence": [
+                "No relevant tests or medical history apply. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "No relevant tests or medical history apply. "
+          ]
+        },
+        "treatments": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-dcd60fe0-1a94-4645-9ef8-1f8793e24e0d",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": [
+                  "intravenous fluids"
+                ]
+              },
+              "evidence": [
+                "The pump was stopped, she received intravenous fluids, and she recovered. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "The pump was stopped, she received intravenous fluids, and she recovered. "
+          ]
+        },
+        "outcome": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-9cae25d4-3f83-4bf1-8d99-5a6b56001297",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "recovered"
+              },
+              "evidence": [
+                "The pump was stopped, she received intravenous fluids, and she recovered. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "The pump was stopped, she received intravenous fluids, and she recovered. "
+          ]
+        },
+        "dischargeDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "productAvailability": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-86700c88-ab04-4b4d-bf75-7d2974948438",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "available"
+              },
+              "evidence": [
+                "The device is available for evaluation."
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "The device is available for evaluation."
+          ]
+        },
+        "productReturnDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "additionalComments": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        }
+      },
+      "products": [
+        {
+          "id": "product-7d608213-ee35-46ed-9023-f5f5eaec489c",
+          "ordinal": 1,
+          "proposalGroupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+          "state": "proposed",
+          "facts": {
+            "name": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-d4984be1-6eae-4315-a379-89f98154f7d1",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "Acme FlowGuard"
+                  },
+                  "evidence": [
+                    "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            },
+            "productType": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-26444e36-9377-4c0e-be54-7cd71e72868a",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "device"
+                  },
+                  "evidence": [
+                    "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. ",
+                    "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. ",
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            },
+            "role": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-d44a4c4c-751d-4a58-92dd-072a7bfc0aaa",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "suspect"
+                  },
+                  "evidence": [
+                    "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            },
+            "manufacturer": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-074c7a26-693e-4e3e-b053-44a9f616ea3d",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "Acme Medical in Reno, Nevada"
+                  },
+                  "evidence": [
+                    "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            },
+            "lotNumber": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-a8af144e-2348-4132-89cc-95a1592a1faf",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "L-904"
+                  },
+                  "evidence": [
+                    "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            },
+            "ndcOrUniqueId": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "dose": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "strength": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "frequency": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "route": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "startDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "stopDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "therapyOngoing": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "indication": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "stopped": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-32f6778f-6e8d-497e-bdfb-f79451a6d746",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": true
+                  },
+                  "evidence": [
+                    "The pump was stopped, she received intravenous fluids, and she recovered. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "The pump was stopped, she received intravenous fluids, and she recovered. "
+              ]
+            },
+            "cosmeticUse": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "otherProductTypes": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "medicationType": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "doseReduced": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "doseReductionDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "treatmentDuration": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "d3Value": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "improvedAfterChange": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "restarted": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "recurred": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "commonName": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-de08bd91-6171-472e-a9b6-060b89caa6ab",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "infusion pump"
+                  },
+                  "evidence": [
+                    "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            },
+            "procode": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "modelNumber": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-e8a02910-77bc-42ff-b436-d145eb4c45ec",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "FG-200"
+                  },
+                  "evidence": [
+                    "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            },
+            "catalogNumber": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "expirationDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerName": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerAddress": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerCity": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerRegion": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerPostalCode": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerCountry": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseWebsite": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "serialNumber": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-123e6bcf-c6c1-4f9b-add7-f62256834690",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "SN-7721"
+                  },
+                  "evidence": [
+                    "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            },
+            "udi": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-15fdcf08-83d6-4f9f-9923-0e40c57cf2b7",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "(01)00812345000017(21)SN7721"
+                  },
+                  "evidence": [
+                    "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            },
+            "deviceOperator": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-33f2367d-b095-4979-92fb-c2ce910d9776",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "health-professional"
+                  },
+                  "evidence": [
+                    "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. "
+              ]
+            },
+            "implanted": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-8341f1dc-cfbf-49ff-95a4-45b394e1b335",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": false
+                  },
+                  "evidence": [
+                    "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. "
+              ]
+            },
+            "implantDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "explantDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "reprocessedSingleUse": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-cf2998cc-4a0a-4e40-b198-7b8ba1a7ffdb",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": false
+                  },
+                  "evidence": [
+                    "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. "
+              ]
+            },
+            "reprocessor": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "servicedByThirdParty": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-644b2d96-e3e3-41bc-b924-aced4da512ca",
+                  "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "no"
+                  },
+                  "evidence": [
+                    "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. "
+              ]
+            }
+          }
+        }
+      ],
+      "relevantTests": [],
+      "reporter": {
+        "lastName": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "firstName": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "address": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "city": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "state": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "postalCode": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "country": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "phone": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "email": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "healthProfessional": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "occupation": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "reportedTo": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "doNotDiscloseIdentity": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        }
+      }
+    },
+    "review": {
+      "revision": 2,
+      "attention": [
+        {
+          "target": "patient:patient:identifier",
+          "groupId": "patient",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-625a1466-6d53-446d-b573-68b4303f6605",
+              "value": {
+                "kind": "known",
+                "value": "TEST-74"
+              },
+              "evidence": [
+                "Patient TEST-74 is a 74-year-old woman. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "patient:patient:ageYears",
+          "groupId": "patient",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-51b34a26-46ce-43a2-864d-26a7b7475f21",
+              "value": {
+                "kind": "known",
+                "value": 74
+              },
+              "evidence": [
+                "Patient TEST-74 is a 74-year-old woman. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "patient:patient:sex",
+          "groupId": "patient",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-312906ac-0d9b-48e7-bfc0-06448eea66fe",
+              "value": {
+                "kind": "known",
+                "value": "female"
+              },
+              "evidence": [
+                "Patient TEST-74 is a 74-year-old woman. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:problemDescription",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-476660f4-dfa8-4807-b278-2e28804d5143",
+              "value": {
+                "kind": "known",
+                "value": "delivered fluid too rapidly after its alarm failed"
+              },
+              "evidence": [
+                "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:symptoms",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-3d277e6d-6fda-4a30-8b68-81c43c9af32d",
+              "value": {
+                "kind": "known",
+                "value": [
+                  "hypotension"
+                ]
+              },
+              "evidence": [
+                "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:onsetDate",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-6cdfb0d5-df0c-4712-98c5-42f76e6d9d1a",
+              "value": {
+                "kind": "known",
+                "value": "2026-09-08"
+              },
+              "evidence": [
+                "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:hospitalized",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-51a01d9b-8160-46db-8a52-4f25dc328e72",
+              "value": {
+                "kind": "known",
+                "value": true
+              },
+              "evidence": [
+                "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:otherSerious",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-e7aa2692-649d-4532-9b62-5adf0c7a3cc0",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "evidence": [
+                "No other serious outcomes applied. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:relevantTestsAvailable",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-1fc85fdd-e41a-42db-b581-f9a430a63de1",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "evidence": [
+                "No relevant tests or medical history apply. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:relevantHistory",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-b1ea107e-bbd6-4958-aae2-eb70aeaef939",
+              "value": {
+                "kind": "explicitly-absent"
+              },
+              "evidence": [
+                "No relevant tests or medical history apply. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:treatments",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-dcd60fe0-1a94-4645-9ef8-1f8793e24e0d",
+              "value": {
+                "kind": "known",
+                "value": [
+                  "intravenous fluids"
+                ]
+              },
+              "evidence": [
+                "The pump was stopped, she received intravenous fluids, and she recovered. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:outcome",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-9cae25d4-3f83-4bf1-8d99-5a6b56001297",
+              "value": {
+                "kind": "known",
+                "value": "recovered"
+              },
+              "evidence": [
+                "The pump was stopped, she received intravenous fluids, and she recovered. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:productAvailability",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-86700c88-ab04-4b4d-bf75-7d2974948438",
+              "value": {
+                "kind": "known",
+                "value": "available"
+              },
+              "evidence": [
+                "The device is available for evaluation."
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:name",
+          "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-d4984be1-6eae-4315-a379-89f98154f7d1",
+              "value": {
+                "kind": "known",
+                "value": "Acme FlowGuard"
+              },
+              "evidence": [
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:productType",
+          "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-26444e36-9377-4c0e-be54-7cd71e72868a",
+              "value": {
+                "kind": "known",
+                "value": "device"
+              },
+              "evidence": [
+                "On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. ",
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:role",
+          "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-d44a4c4c-751d-4a58-92dd-072a7bfc0aaa",
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "evidence": [
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:manufacturer",
+          "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-074c7a26-693e-4e3e-b053-44a9f616ea3d",
+              "value": {
+                "kind": "known",
+                "value": "Acme Medical in Reno, Nevada"
+              },
+              "evidence": [
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:lotNumber",
+          "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-a8af144e-2348-4132-89cc-95a1592a1faf",
+              "value": {
+                "kind": "known",
+                "value": "L-904"
+              },
+              "evidence": [
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:stopped",
+          "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-32f6778f-6e8d-497e-bdfb-f79451a6d746",
+              "value": {
+                "kind": "known",
+                "value": true
+              },
+              "evidence": [
+                "The pump was stopped, she received intravenous fluids, and she recovered. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:commonName",
+          "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-de08bd91-6171-472e-a9b6-060b89caa6ab",
+              "value": {
+                "kind": "known",
+                "value": "infusion pump"
+              },
+              "evidence": [
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:modelNumber",
+          "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-e8a02910-77bc-42ff-b436-d145eb4c45ec",
+              "value": {
+                "kind": "known",
+                "value": "FG-200"
+              },
+              "evidence": [
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:serialNumber",
+          "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-123e6bcf-c6c1-4f9b-add7-f62256834690",
+              "value": {
+                "kind": "known",
+                "value": "SN-7721"
+              },
+              "evidence": [
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:udi",
+          "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-15fdcf08-83d6-4f9f-9923-0e40c57cf2b7",
+              "value": {
+                "kind": "known",
+                "value": "(01)00812345000017(21)SN7721"
+              },
+              "evidence": [
+                "The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:deviceOperator",
+          "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-33f2367d-b095-4979-92fb-c2ce910d9776",
+              "value": {
+                "kind": "known",
+                "value": "health-professional"
+              },
+              "evidence": [
+                "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:implanted",
+          "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-8341f1dc-cfbf-49ff-95a4-45b394e1b335",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "evidence": [
+                "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:reprocessedSingleUse",
+          "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-cf2998cc-4a0a-4e40-b198-7b8ba1a7ffdb",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "evidence": [
+                "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:servicedByThirdParty",
+          "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-644b2d96-e3e3-41bc-b924-aced4da512ca",
+              "value": {
+                "kind": "known",
+                "value": "no"
+              },
+              "evidence": [
+                "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. "
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "clarification": null,
+    "projection": {
+      "caseId": "case-dafd2f98-6831-4d6f-93c3-347fe67bd6ab",
+      "revision": 2,
+      "sections": {
+        "A": {},
+        "B": {
+          "relevantTests": [],
+          "reportType": "adverse-event-and-product-problem"
+        },
+        "C": {},
+        "D": {
+          "suspectProducts": []
+        },
+        "E": {
+          "suspectDevices": []
+        },
+        "F": {
+          "concomitantProducts": []
+        },
+        "G": {
+          "reporter": {}
+        }
+      },
+      "invalidCalendarDates": [],
+      "expirationNotes": [],
+      "productDateNotes": [],
+      "sourceTrace": {
+        "sections.B.reportType": [
+          "source-88288a93-bca6-457e-b190-fd6985b9b2fc"
+        ]
+      },
+      "omissions": [
+        {
+          "concept": "patient identifier",
+          "target": "patient:patient:identifier",
+          "reason": "empty",
+          "sourceIds": [
+            "source-0ae421db-7f55-46fc-bffe-6e5ef80d58da"
+          ]
+        },
+        {
+          "concept": "patient involvement",
+          "target": "patient:patient:involvement",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient age",
+          "target": "patient:patient:ageYears",
+          "reason": "empty",
+          "sourceIds": [
+            "source-0ae421db-7f55-46fc-bffe-6e5ef80d58da"
+          ]
+        },
+        {
+          "concept": "patient date of birth",
+          "target": "patient:patient:dateOfBirth",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient race and/or ethnicity",
+          "target": "patient:patient:raceEthnicity",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient sex",
+          "target": "patient:patient:sex",
+          "reason": "empty",
+          "sourceIds": [
+            "source-0ae421db-7f55-46fc-bffe-6e5ef80d58da"
+          ]
+        },
+        {
+          "concept": "patient weight",
+          "target": "patient:patient:weight",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "event date",
+          "target": "event:event:onsetDate",
+          "reason": "empty",
+          "sourceIds": [
+            "source-41defa58-168a-49d9-863b-9d030bf9047f"
+          ]
+        },
+        {
+          "concept": "date of this report",
+          "target": "event:event:reportDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "hospitalization outcome",
+          "target": "event:event:hospitalized",
+          "reason": "empty",
+          "sourceIds": [
+            "source-41defa58-168a-49d9-863b-9d030bf9047f"
+          ]
+        },
+        {
+          "concept": "death outcome",
+          "target": "event:event:death",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "lifeThreatening outcome",
+          "target": "event:event:lifeThreatening",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "disability outcome",
+          "target": "event:event:disability",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "requiredIntervention outcome",
+          "target": "event:event:requiredIntervention",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "congenitalAnomaly outcome",
+          "target": "event:event:congenitalAnomaly",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "otherSerious outcome",
+          "target": "event:event:otherSerious",
+          "reason": "empty",
+          "sourceIds": [
+            "source-d28270db-efbd-4cce-862a-cbdce5d90ba0"
+          ]
+        },
+        {
+          "concept": "relevant medical history",
+          "target": "event:event:relevantHistory",
+          "reason": "empty",
+          "sourceIds": [
+            "source-eea1bb7b-437c-4cc6-ae3b-fd97990417b5"
+          ]
+        },
+        {
+          "concept": "product availability",
+          "target": "event:event:productAvailability",
+          "reason": "empty",
+          "sourceIds": [
+            "source-6dec8099-3236-4f16-9bf7-594a2ed1b5e4"
+          ]
+        },
+        {
+          "concept": "relevant tests",
+          "target": "event:event:relevantTestsAvailable",
+          "reason": "empty",
+          "sourceIds": [
+            "source-eea1bb7b-437c-4cc6-ae3b-fd97990417b5"
+          ]
+        },
+        {
+          "concept": "symptoms",
+          "target": "event:event:symptoms",
+          "reason": "empty",
+          "sourceIds": [
+            "source-41defa58-168a-49d9-863b-9d030bf9047f"
+          ]
+        },
+        {
+          "concept": "product problem",
+          "target": "event:event:problemDescription",
+          "reason": "empty",
+          "sourceIds": [
+            "source-41defa58-168a-49d9-863b-9d030bf9047f"
+          ]
+        },
+        {
+          "concept": "treatment",
+          "target": "event:event:treatments",
+          "reason": "empty",
+          "sourceIds": [
+            "source-f3fbc54d-23bf-4abf-af59-33dcc7ca4ff3"
+          ]
+        },
+        {
+          "concept": "event outcome",
+          "target": "event:event:outcome",
+          "reason": "empty",
+          "sourceIds": [
+            "source-f3fbc54d-23bf-4abf-af59-33dcc7ca4ff3"
+          ]
+        },
+        {
+          "concept": "discharge date",
+          "target": "event:event:dischargeDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "additional comments",
+          "target": "event:event:additionalComments",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "event description",
+          "target": "event:event",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter lastName",
+          "target": "reporter:reporter:lastName",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter firstName",
+          "target": "reporter:reporter:firstName",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter address",
+          "target": "reporter:reporter:address",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter city",
+          "target": "reporter:reporter:city",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter state",
+          "target": "reporter:reporter:state",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter postalCode",
+          "target": "reporter:reporter:postalCode",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter country",
+          "target": "reporter:reporter:country",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter phone",
+          "target": "reporter:reporter:phone",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter email",
+          "target": "reporter:reporter:email",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter healthProfessional",
+          "target": "reporter:reporter:healthProfessional",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter occupation",
+          "target": "reporter:reporter:occupation",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter reportedTo",
+          "target": "reporter:reporter:reportedTo",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter doNotDiscloseIdentity",
+          "target": "reporter:reporter:doNotDiscloseIdentity",
+          "reason": "empty",
+          "sourceIds": []
+        }
+      ],
+      "notIncluded": [
+        "Patient fractional or compound ages and partial date of birth",
+        "Patient race/ethnicity detail outside the seven A5 categories",
+        "Section C product pictures",
+        "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
+        "Product date wording outside complete dates or explicit month/year/year-only precision"
+      ]
+    },
+    "downloadReady": false,
+    "clinicalNeeds": [],
+    "reportContentKey": "6f7fe965b6643e8bf00cb71ac0bb59ae713bddcdcef09ee485696e257153502c",
+    "outputIssues": [
+      {
+        "code": "pending-proposal-review",
+        "message": "Review every pending proposal before opening the form.",
+        "targets": [
+          "patient:patient:identifier",
+          "patient:patient:ageYears",
+          "patient:patient:sex",
+          "event:event:problemDescription",
+          "event:event:symptoms",
+          "event:event:onsetDate",
+          "event:event:hospitalized",
+          "event:event:otherSerious",
+          "event:event:relevantTestsAvailable",
+          "event:event:relevantHistory",
+          "event:event:treatments",
+          "event:event:outcome",
+          "event:event:productAvailability",
+          "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:name",
+          "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:productType",
+          "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:role",
+          "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:manufacturer",
+          "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:lotNumber",
+          "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:stopped",
+          "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:commonName",
+          "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:modelNumber",
+          "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:serialNumber",
+          "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:udi",
+          "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:deviceOperator",
+          "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:implanted",
+          "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:reprocessedSingleUse",
+          "product:product-7d608213-ee35-46ed-9023-f5f5eaec489c:servicedByThirdParty"
+        ],
+        "entityIds": []
+      },
+      {
+        "code": "no-retained-product",
+        "message": "No reviewed product remains in this bounded case. Use New case to begin again with a product Wilson can retain.",
+        "targets": [],
+        "entityIds": []
+      },
+      {
+        "code": "missing-event-description",
+        "message": "Accept at least one event or product-problem fact that contributes to the report description.",
+        "targets": [
+          "event:event:problemDescription",
+          "event:event:symptoms",
+          "event:event:treatments",
+          "event:event:outcome"
+        ],
+        "entityIds": [
+          "event"
+        ]
+      }
+    ],
+    "unrepresented": [],
+    "openingGroups": [
+      "patient",
+      "event",
+      "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0"
+    ]
+  },
+  "provenance": {
+    "stateVersion": "wilson-browser-state-v32",
+    "release": "4bcabdbe6a1edf6296e555235f8de79a1dd65614"
+  }
+}

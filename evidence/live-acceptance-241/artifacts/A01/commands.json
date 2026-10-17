@@ -1,0 +1,123 @@
+[
+  {
+    "operation": "act",
+    "expectedRevision": 0,
+    "action": {
+      "action": "submit-opening",
+      "text": "Entirely fictional evaluation. Patient TEST-68 is a 68-year-old man. He began cephalexin 500 mg by mouth twice daily on 01-Aug-2026 for cellulitis. On 04-Aug-2026 he developed diffuse hives and facial swelling and was hospitalized. Cephalexin was stopped, he was treated with epinephrine and diphenhydramine, and he recovered and was discharged on 05-Aug-2026. I suspect cephalexin.",
+      "reportType": "adverse-event"
+    },
+    "operationId": "2ba6a547-01ce-4426-a02e-9eb85b2d30f6",
+    "runId": "60f17237-2062-4beb-a953-8951db02889e",
+    "sequence": 1,
+    "originalCaptureFile": "request-1.json",
+    "stateSuppliedRevision": 0
+  },
+  {
+    "operation": "resume",
+    "operationId": "802aad71-6fdd-4ad0-b4f0-4f169a5ec3b9",
+    "runId": "5c69656e-618d-42f1-98c2-eec5d85cc462",
+    "sequence": 2,
+    "originalCaptureFile": "request-2.json",
+    "stateSuppliedRevision": 2
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 2,
+    "action": {
+      "action": "accept-understanding"
+    },
+    "operationId": "9f24c16d-cdc6-4b8c-9ea6-f5275089aa8b",
+    "runId": "1a1d395e-1bdc-444e-ba89-781e31072ffb",
+    "sequence": 3,
+    "originalCaptureFile": "request-3.json",
+    "stateSuppliedRevision": 2
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 3,
+    "action": {
+      "action": "answer-serious-outcomes",
+      "selected": [],
+      "disposition": "unknown"
+    },
+    "operationId": "c2ca5d60-e01b-45a9-a553-8ce959d3eaac",
+    "runId": "23d2faf6-7278-4490-86ec-110ec8930c30",
+    "sequence": 4,
+    "originalCaptureFile": "request-4.json",
+    "stateSuppliedRevision": 3
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 5,
+    "action": {
+      "action": "answer-clinical-context",
+      "test": {
+        "kind": "unknown"
+      },
+      "history": {
+        "kind": "unknown"
+      }
+    },
+    "operationId": "8e6e791b-3c39-44e1-a86d-32caba6c31dc",
+    "runId": "0b93d1d3-0ed3-4b87-a884-3bb7b4b03d37",
+    "sequence": 5,
+    "originalCaptureFile": "request-5.json",
+    "stateSuppliedRevision": 5
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 7,
+    "action": {
+      "action": "answer-medication-history",
+      "productId": "product-202ec34f-fb52-40bf-8950-6a995b8c2493",
+      "answers": {
+        "stopDate": {
+          "kind": "unknown"
+        },
+        "improvedAfterChange": {
+          "kind": "unknown"
+        },
+        "restarted": {
+          "kind": "unknown"
+        }
+      }
+    },
+    "operationId": "0f55b36b-cdf8-4d36-8089-635d44fdbeea",
+    "runId": "48e6aaf7-6893-4e32-93c1-2f848fc5ce21",
+    "sequence": 6,
+    "originalCaptureFile": "request-6.json",
+    "stateSuppliedRevision": 7
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 9,
+    "action": {
+      "action": "answer-reporter",
+      "reportDate": "2026-10-17",
+      "reporter": {
+        "kind": "provided",
+        "firstName": "Alex",
+        "lastName": "Fiction",
+        "email": "alex.fiction@example.invalid",
+        "healthProfessional": true,
+        "occupation": "Physician",
+        "reportedTo": [],
+        "doNotDiscloseIdentity": true
+      }
+    },
+    "operationId": "56ac3c39-39b0-4cac-94ed-fe892121d2da",
+    "runId": "64e10b8a-e673-4e5a-9b4b-55d63c5756b9",
+    "sequence": 7,
+    "originalCaptureFile": "request-7.json",
+    "stateSuppliedRevision": 9
+  },
+  {
+    "operation": "resume",
+    "operationId": "ae1fb236-27c6-47d1-9a65-5a719ded7b2b",
+    "runId": "40aa7ab7-2cc9-4be5-8df9-563a132c8004",
+    "sequence": 8,
+    "originalCaptureFile": "request-8.json",
+    "stateSuppliedRevision": 12
+  }
+]

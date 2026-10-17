@@ -1,0 +1,58 @@
+[
+  {
+    "operation": "act",
+    "expectedRevision": 0,
+    "action": {
+      "action": "submit-opening",
+      "text": "Entirely fictional evaluation. Entirely fictional product-problem report: an unopened bottle of Example Meadow lotion, explicitly a cosmetic sold on a retail basis, lot FICTION-17, contained visible foreign particles. It was not used and no patient or adverse event was involved. I identify this cosmetic as the suspect product. It was purchased on 12 August 2026 from Fictional Seller Alpha,1 Example Lane,Example City,region Example Region,postal 00 A 001,country United Kingdom. The purchase website supplied on the receipt is https://seller.example.invalid. This is seller information, not manufacturer information. The bottle is available for evaluation.",
+      "reportType": "product-problem"
+    },
+    "operationId": "7e05a50f-a34f-48a4-bfa9-94aed4977b64",
+    "runId": "63592470-51e6-4537-b5f0-696d8834dcb3",
+    "sequence": 1,
+    "originalCaptureFile": "request-1.json",
+    "stateSuppliedRevision": 0
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 2,
+    "action": {
+      "action": "review-opening-group",
+      "groupId": "event",
+      "corrections": [
+        {
+          "proposalId": "proposal-f0ef98d0-1b66-4b60-af75-2b41aa7b5a2e",
+          "value": {
+            "kind": "known",
+            "value": "An unopened bottle of Example Meadow lotion, explicitly a cosmetic sold on a retail basis, lot FICTION-17, contained visible foreign particles. It was not used and no patient or adverse event was involved."
+          }
+        }
+      ]
+    },
+    "operationId": "4e2b3dd7-8bd7-4067-b87f-f8a99f716d01",
+    "runId": "eadb2c3f-3875-4b5a-89be-eb60362d90a3",
+    "sequence": 2,
+    "originalCaptureFile": "request-2.json",
+    "stateSuppliedRevision": 2
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 3,
+    "action": {
+      "action": "accept-understanding"
+    },
+    "operationId": "945f8210-49a4-4c94-8060-a1769d80e7bf",
+    "runId": "6465670b-94f4-4d9d-a5f8-51b71d2c96f1",
+    "sequence": 3,
+    "originalCaptureFile": "request-3.json",
+    "stateSuppliedRevision": 3
+  },
+  {
+    "operation": "resume",
+    "operationId": "b27521b5-c05d-49bf-b085-3b825dcb76f0",
+    "runId": "f4939b7a-200d-450e-ad32-1170ff5961bd",
+    "sequence": 4,
+    "originalCaptureFile": "request-4.json",
+    "stateSuppliedRevision": 4
+  }
+]

@@ -169,10 +169,26 @@
     "Delayed diagnostic ingestion reconciled without model retry",
     "A03 old opening group used once to accept update: server400/no mutation, corrected using actual attention group; one local harness response file overwritten during restore; tool transcript retains rejected attempt; sequence allocation fixed",
     "A06 reporter save read before completion and accumulated dialog handlers caused harness exit; stopped path, later bounded response-witness checks; no product defect inferred",
-    "One browser-control handoff automatic approval review timed out before execution; verified no request sent and retried exactly once successfully"
+    "One browser-control handoff automatic approval review timed out before execution; verified no request sent and retried exactly once successfully",
+    "Final context-only A05/A07 request/response filenames are NaN from final restore without numeric sequence; one retained capture per case, no payload overwritten; commands preserve original names"
   ],
   "releaseClaim": "No unrecoverable ordinary text-case completion/PDF blocker observed after explicit review and recovery. Extraction omissions, disclosed native-context limits and transport/harness limitations prevent calling this twelve clean end-to-end passes or full Form3500 coverage.",
   "remainingBound": "Evidence review/CI closure and triage of two observed source/context clusters; zero to two targeted product slices only if needed for the chosen practical release cut. No further feature work is authorized by this report. Age PR240 remains paused; issue150 remains paused. Pictures/broader glyphs/unusual age/capacity increases were not needed for these cases.",
   "runtimePromptAccessSharedPreviewChanged": false,
-  "agePR240": "paused/unmerged; exact-head CI passed; hosted/final review/mainCI not performed"
+  "agePR240": "paused/unmerged; exact-head CI passed; hosted/final review/mainCI not performed",
+  "retainedArtifacts": {
+    "directory": "artifacts",
+    "finalPDFs": 12,
+    "beforeRecoveryPDFs": 3,
+    "inspectedPNGs": 17,
+    "fullRetainedResponseStatesAndSources": true,
+    "reviewAndRecoveryCommands": "per-case commands.json",
+    "modelOperationLedger": "operations.json",
+    "completeNetworkPacketCapture": false
+  },
+  "reviewFollowUps": [
+    "A06/A10 doubled B5 period is cosmetic; no runtime fix",
+    "API client/transport threshold hypothesis supported by latency association but not proven; original configured request timeout240seconds, provider latency not transport elapsed",
+    "Input provenance now lists common prefix, A06 explicit medication category and A07 concomitant addition"
+  ]
 }

@@ -547,19 +547,26 @@
       "report-page-7.png": "706c0041f286c008bf1a7724dad36ca0a5b9019199ace1f9c90dedf0448113d8",
       "report-page-8.png": "a4e65444ae4ad5265e47291918036d36a004842f064a4ecdef833ea7a64b38de"
     },
-    "visualInspection": "selected filled pages inspected; not a claim that all 96 page images were manually inspected"
+    "visualInspection": "selected filled pages inspected; not a claim that all 96 page images were manually inspected",
+    "visuallyInspectedPages": [
+      6
+    ]
   },
   "modelCalls": [
     {
+      "callIndex": 11,
       "model": "claude-sonnet-5",
       "promptRevision": "wilson-duration-wording-v31",
       "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
       "inputTokens": 13068,
       "outputTokens": 2068,
       "latencyMs": 15509,
-      "estimatedCostUsd": 0.046816
+      "estimatedCostUsd": 0.046816,
+      "operationId": "28c57de3-6cc3-4eb3-a21d-f352f12e53bc",
+      "runId": "b303f89a-9151-47f9-b560-ee99e5eb3bb1"
     }
   ],
   "checks": {},
-  "finalOutcome": "PDF generated after explicit source review and documented manual recovery; not a clean extraction/native-projection/uninterrupted-UI pass"
+  "finalOutcome": "PDF generated after explicit source review and documented manual recovery; not a clean extraction/native-projection/uninterrupted-UI pass",
+  "retainedArtifacts": "artifacts/A09"
 }

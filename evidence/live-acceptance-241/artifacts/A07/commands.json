@@ -1,0 +1,102 @@
+[
+  {
+    "operation": "act",
+    "expectedRevision": 0,
+    "action": {
+      "action": "submit-opening",
+      "text": "Entirely fictional evaluation. Patient TEST-67 is a 67-year-old woman. On 09-Sep-2026, an Acme ThermoPatch wearable monitor overheated after its adhesive backing split; it caused a blistering burn on her left arm. The device was removed, the burn was treated with cool compresses, and she recovered. No serious outcomes applied. No relevant tests or medical history apply. The suspect device is an Acme ThermoPatch, common name wearable temperature monitor, manufactured by Acme Medical, model TP-9, lot T-144, serial SN-8804. It was patient-operated, was not implanted, was not a reprocessed single-use device, and was not serviced by a third party. The device is available for evaluation. Acetaminophen is an explicitly concomitant medication, 500 mg by mouth as needed for headache. It is not suspected.",
+      "reportType": "adverse-event-and-product-problem"
+    },
+    "operationId": "eeed8b55-7f14-417e-a244-c7b8fc8a2f1e",
+    "runId": "7c376792-8671-4911-861a-bcc16f554edd",
+    "sequence": 1,
+    "originalCaptureFile": "request-1.json",
+    "stateSuppliedRevision": 0
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 2,
+    "action": {
+      "action": "accept-understanding"
+    },
+    "operationId": "ee2cb4af-7d68-4038-9d15-ea2acea74dd6",
+    "runId": "dd7f1dfe-0819-42a4-8b67-2156b42d1d56",
+    "sequence": 2,
+    "originalCaptureFile": "request-2.json",
+    "stateSuppliedRevision": 2
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 3,
+    "action": {
+      "action": "set-fact",
+      "target": "product:product-4793086b-adb6-479a-b322-ceadd535407e:stopped",
+      "value": {
+        "kind": "known",
+        "value": true
+      }
+    },
+    "operationId": "b02d273e-07c7-4e30-9010-c973688e4a57",
+    "runId": "3185e4e3-6aa5-4769-8d1d-f42e0f1e1bb5",
+    "sequence": 3,
+    "originalCaptureFile": "request-3.json",
+    "stateSuppliedRevision": 3
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 5,
+    "action": {
+      "action": "answer-reporter",
+      "reportDate": "2026-10-17",
+      "reporter": {
+        "kind": "provided",
+        "firstName": "Alex",
+        "lastName": "Fiction",
+        "email": "alex.fiction@example.invalid",
+        "healthProfessional": true,
+        "occupation": "Physician",
+        "reportedTo": [],
+        "doNotDiscloseIdentity": true
+      }
+    },
+    "operationId": "a124804a-7b90-4c96-ad11-b4c3114e7670",
+    "runId": "23e95b9f-4287-4d47-ace7-bfa161d9b614",
+    "sequence": 4,
+    "originalCaptureFile": "request-4.json",
+    "stateSuppliedRevision": 5
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 7,
+    "action": {
+      "action": "set-fact",
+      "target": "event:event:additionalComments",
+      "value": {
+        "kind": "known",
+        "value": "Acetaminophen is an explicitly concomitant medication, 500 mg by mouth as needed for headache. It is not suspected. The device was removed."
+      }
+    },
+    "operationId": "8f3695e6-46b7-4344-a2f6-10344f78a926",
+    "runId": "8c01abfa-868a-4b9d-9775-dc6f03462d1c",
+    "sequence": 5,
+    "originalCaptureFile": "request-5.json",
+    "stateSuppliedRevision": 7
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 8,
+    "action": {
+      "action": "set-fact",
+      "target": "event:event:additionalComments",
+      "value": {
+        "kind": "known",
+        "value": "Acetaminophen is an explicitly concomitant medication, 500 mg by mouth as needed for headache. It is not suspected. The device was removed. It was patient-operated, was not implanted, was not a reprocessed single-use device, and was not serviced by a third party."
+      }
+    },
+    "operationId": "832f150c-8113-4230-a8a7-99567371d026",
+    "runId": "6b824fe1-734a-4b86-9d2f-1bcb6c68d56b",
+    "sequence": "NaN",
+    "originalCaptureFile": "request-NaN.json",
+    "stateSuppliedRevision": 8
+  }
+]

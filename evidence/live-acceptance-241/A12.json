@@ -484,17 +484,23 @@
       "report-page-7.png": "706c0041f286c008bf1a7724dad36ca0a5b9019199ace1f9c90dedf0448113d8",
       "report-page-8.png": "a4e65444ae4ad5265e47291918036d36a004842f064a4ecdef833ea7a64b38de"
     },
-    "visualInspection": "selected filled pages inspected; not a claim that all 96 page images were manually inspected"
+    "visualInspection": "selected filled pages inspected; not a claim that all 96 page images were manually inspected",
+    "visuallyInspectedPages": [
+      2
+    ]
   },
   "modelCalls": [
     {
+      "callIndex": 15,
       "model": "claude-sonnet-5",
       "promptRevision": "wilson-duration-wording-v31",
       "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
       "inputTokens": 12948,
       "outputTokens": 1048,
       "latencyMs": 8862,
-      "estimatedCostUsd": 0.036376
+      "estimatedCostUsd": 0.036376,
+      "operationId": "b002c561-2f8a-4c66-b8bd-314424e1b4bf",
+      "runId": "9bfe6667-d876-417b-adff-2c075ef2a19f"
     }
   ],
   "checks": {
@@ -505,5 +511,6 @@
       "test": "Reuse remembered identity over unsent reporter draft in existing accepted case; not fresh-case initial reuse"
     }
   },
-  "finalOutcome": "PDF generated after explicit source review and documented manual recovery; not a clean extraction/native-projection/uninterrupted-UI pass"
+  "finalOutcome": "PDF generated after explicit source review and documented manual recovery; not a clean extraction/native-projection/uninterrupted-UI pass",
+  "retainedArtifacts": "artifacts/A12"
 }

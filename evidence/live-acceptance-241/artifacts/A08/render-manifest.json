@@ -1,0 +1,68 @@
+{
+  "renderer": "macOS PDFKit",
+  "scale": 2,
+  "source": "report.pdf",
+  "allPagesRendered": 8,
+  "inspectedPages": [
+    3
+  ],
+  "captures": [
+    {
+      "page": 1,
+      "rendered": true,
+      "file": "report-page-1.png",
+      "sha256": "ba5a495b10dc2c265eb9502b5d4f57c87e447fdb931173a64e130c6598956872",
+      "committed": false
+    },
+    {
+      "page": 2,
+      "rendered": true,
+      "file": "report-page-2.png",
+      "sha256": "2587863778185e400710163ef40d4c10c8697a88537de81d1b090d4dea8a3633",
+      "committed": false
+    },
+    {
+      "page": 3,
+      "rendered": true,
+      "file": "report-page-3.png",
+      "sha256": "777690dcf2e13667a62f15c195e2bc507080d94ce7194c875596d3808480e082",
+      "committed": true
+    },
+    {
+      "page": 4,
+      "rendered": true,
+      "file": "report-page-4.png",
+      "sha256": "597a3a1b56e69101e1e5f1d540a50d8f62ca8d45f320761547ad6fa0e9709236",
+      "committed": false
+    },
+    {
+      "page": 5,
+      "rendered": true,
+      "file": "report-page-5.png",
+      "sha256": "b40ae700e0beecee93f06058a4eca8eaf66f80c4443ed9462fd0462257763062",
+      "committed": false
+    },
+    {
+      "page": 6,
+      "rendered": true,
+      "file": "report-page-6.png",
+      "sha256": "48c90e24759378342afe298b9e5a19b5a865d2335ea2fda24441e5616d6c90ea",
+      "committed": false
+    },
+    {
+      "page": 7,
+      "rendered": true,
+      "file": "report-page-7.png",
+      "sha256": "706c0041f286c008bf1a7724dad36ca0a5b9019199ace1f9c90dedf0448113d8",
+      "committed": false
+    },
+    {
+      "page": 8,
+      "rendered": true,
+      "file": "report-page-8.png",
+      "sha256": "a4e65444ae4ad5265e47291918036d36a004842f064a4ecdef833ea7a64b38de",
+      "committed": false
+    }
+  ],
+  "metadataNote": "Source/capture paths normalized to relative artifact paths; no claim that uncommitted page images were manually inspected."
+}

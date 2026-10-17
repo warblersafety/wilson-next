@@ -1,0 +1,20 @@
+{
+  "id": "A08",
+  "family": "device-quality",
+  "reusedFrom": "tests/e2e/build-predetermined-responses.ts:layer3ConditionalOpening",
+  "opening": "Entirely fictional evaluation. An Acme PulseLine temporary pacing lead stopped sensing during an intraoperative function check after placement. No patient symptoms or adverse event occurred. The suspect device is an Acme PulseLine, common name temporary pacing lead, manufactured by Acme Medical, model PL-4, serial SN-4012. It was implanted and was a reprocessed single-use device. The implant and explant dates are not in the note, and the reprocessor is not identified. The device is available for evaluation.",
+  "reportType": "product-problem",
+  "expectedMaterialFacts": [
+    "PulseLine temporary pacing lead; Acme Medical; modelPL-4 serialSN-4012",
+    "stopped sensing during intraoperative function check after placement",
+    "no symptoms or adverse event",
+    "implanted and reprocessed single-use device",
+    "implant/explant dates unknown; reprocessor unidentified",
+    "available"
+  ],
+  "correction": null,
+  "expectedCorrection": null,
+  "resume": false,
+  "unfinishedDraftReload": false,
+  "reporterReuse": false
+}

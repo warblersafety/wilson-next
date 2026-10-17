@@ -1,0 +1,178 @@
+[
+  {
+    "operation": "act",
+    "expectedRevision": 0,
+    "action": {
+      "action": "submit-opening",
+      "text": "Entirely fictional evaluation. Patient TEST-47 is a 47-year-old man. He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026. Warfarin is suspect; acetaminophen is concomitant. On 08-Aug-2026 he developed epistaxis and easy bruising. INR was 4.8 on 08-Aug-2026. No serious outcomes applied. No other relevant medical history applies. Warfarin was stopped and the symptoms resolved.",
+      "reportType": "adverse-event"
+    },
+    "operationId": "f33b8890-6be8-4267-943b-56dfc74ad382",
+    "runId": "db95b7c5-0810-4cb6-98d8-6d4c5c187cf8",
+    "sequence": 1,
+    "originalCaptureFile": "request-1.json",
+    "stateSuppliedRevision": 0
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 2,
+    "action": {
+      "action": "review-opening-group",
+      "groupId": "group-b861690b-e605-49f4-acbb-b919dd668b88",
+      "corrections": [
+        {
+          "proposalId": "proposal-54b462f5-7c58-457f-8d81-479b0a084676",
+          "value": {
+            "kind": "unknown"
+          }
+        }
+      ]
+    },
+    "operationId": "ca4a330e-75c7-4521-8104-871a39a00e81",
+    "runId": "6eecec33-2e3b-46ec-b1b9-37a81b87650f",
+    "sequence": 2,
+    "originalCaptureFile": "request-2.json",
+    "stateSuppliedRevision": 2
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 3,
+    "action": {
+      "action": "accept-understanding"
+    },
+    "operationId": "10a42391-3c08-4d1b-a668-c2fa2193cd52",
+    "runId": "c761a261-e1c6-4fe7-9da5-0a5d7de61ac8",
+    "sequence": 3,
+    "originalCaptureFile": "request-3.json",
+    "stateSuppliedRevision": 3
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 4,
+    "action": {
+      "action": "set-fact",
+      "target": "event:event:outcome",
+      "value": {
+        "kind": "known",
+        "value": "symptoms resolved"
+      }
+    },
+    "operationId": "a0845b6f-674e-40c1-b2d3-3067527c88cb",
+    "runId": "39cd2a17-f7bb-4817-9b13-4b18c01a0210",
+    "sequence": 4,
+    "originalCaptureFile": "request-4.json",
+    "stateSuppliedRevision": 4
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 6,
+    "action": {
+      "action": "answer-medication-history",
+      "productId": "product-042e4804-6157-46c5-bb7e-4cd9800999d2",
+      "answers": {
+        "stopDate": {
+          "kind": "unknown"
+        },
+        "restarted": {
+          "kind": "unknown"
+        }
+      }
+    },
+    "operationId": "c361864f-5106-438c-a715-a530f6f83b62",
+    "runId": "79c37209-b333-4e2a-9d91-20b7577d2936",
+    "sequence": 5,
+    "originalCaptureFile": "request-5.json",
+    "stateSuppliedRevision": 6
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 7,
+    "action": {
+      "action": "answer-reporter",
+      "reportDate": "2026-10-17",
+      "reporter": {
+        "kind": "provided",
+        "firstName": "Alex",
+        "lastName": "Fiction",
+        "email": "alex.fiction@example.invalid",
+        "healthProfessional": true,
+        "occupation": "Physician",
+        "reportedTo": [],
+        "doNotDiscloseIdentity": true
+      }
+    },
+    "operationId": "16c34d0b-d0a5-49a1-9f5a-56f4c0a80633",
+    "runId": "014821cc-d567-4157-a295-aec309d6f725",
+    "sequence": 6,
+    "originalCaptureFile": "request-6.json",
+    "stateSuppliedRevision": 7
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 10,
+    "action": {
+      "action": "submit-update",
+      "text": "Correction: acetaminophen should be treated as a suspect product, not a concomitant product."
+    },
+    "operationId": "8ee3fc86-0c87-4f06-9d47-bfc462452b59",
+    "runId": "7a696b73-e9d6-457a-9b72-a8a671bb52d6",
+    "sequence": 7,
+    "originalCaptureFile": "request-7.json",
+    "stateSuppliedRevision": 10
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 11,
+    "action": {
+      "action": "review-update-group",
+      "groupId": "group-e0ccd723-685c-4194-8ec0-70005945eaff",
+      "decision": "accept"
+    },
+    "operationId": "29041930-82ea-401e-a99a-59ca0c535f34",
+    "runId": "000f2666-8325-499e-b8b6-db8b30aa9afb",
+    "sequence": 8,
+    "originalCaptureFile": "request-8.json",
+    "stateSuppliedRevision": 11
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 12,
+    "action": {
+      "action": "answer-indications",
+      "answers": [
+        {
+          "productId": "product-78e2f5c7-65d0-489a-8f8c-c53d02778d8a",
+          "value": {
+            "kind": "unknown"
+          }
+        }
+      ]
+    },
+    "operationId": "124d643b-086e-492a-be1b-152470bd7f54",
+    "runId": "4c4a62de-9728-4520-a47c-7c0029670140",
+    "sequence": 9,
+    "originalCaptureFile": "request-9.json",
+    "stateSuppliedRevision": 12
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 14,
+    "action": {
+      "action": "answer-medication-history",
+      "productId": "product-78e2f5c7-65d0-489a-8f8c-c53d02778d8a",
+      "answers": {
+        "stopped": {
+          "kind": "unknown"
+        },
+        "doseReduced": {
+          "kind": "unknown"
+        }
+      }
+    },
+    "operationId": "f8f5b74e-6640-4e6e-807f-1878d73691c7",
+    "runId": "a09bfae0-066b-4b4d-b855-32d8644ef188",
+    "sequence": 10,
+    "originalCaptureFile": "request-10.json",
+    "stateSuppliedRevision": 14
+  }
+]

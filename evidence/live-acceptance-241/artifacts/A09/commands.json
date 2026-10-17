@@ -1,0 +1,68 @@
+[
+  {
+    "operation": "act",
+    "expectedRevision": 0,
+    "action": {
+      "action": "submit-opening",
+      "text": "Entirely fictional evaluation. An Acme NeuroSense monitor displayed repeated false high readings during setup. No patient symptoms or adverse event occurred. The suspect device is an Acme NeuroSense, common name physiologic monitor, manufactured by Acme Medical, model NS-7, serial SN-1001. It was not implanted, was not a reprocessed single-use device, and was not serviced by a third party. The device is available for evaluation.",
+      "reportType": "product-problem"
+    },
+    "operationId": "28c57de3-6cc3-4eb3-a21d-f352f12e53bc",
+    "runId": "b303f89a-9151-47f9-b560-ee99e5eb3bb1",
+    "sequence": 1,
+    "originalCaptureFile": "request-1.json",
+    "stateSuppliedRevision": 0
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 2,
+    "action": {
+      "action": "accept-understanding"
+    },
+    "operationId": "fabb7d5b-694d-40a6-9298-ad91e5557e6d",
+    "runId": "72b811de-e7b0-455c-bb84-4ad8c090ae2f",
+    "sequence": 2,
+    "originalCaptureFile": "request-2.json",
+    "stateSuppliedRevision": 2
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 3,
+    "action": {
+      "action": "set-fact",
+      "target": "event:event:additionalComments",
+      "value": {
+        "kind": "known",
+        "value": "No patient symptoms or adverse event occurred. It was not implanted, was not a reprocessed single-use device, and was not serviced by a third party."
+      }
+    },
+    "operationId": "93c7bf10-3a64-4a42-8204-c305cb85a358",
+    "runId": "e9ef1a0f-6531-42a7-b0a8-d8d24aacbb2d",
+    "sequence": 3,
+    "originalCaptureFile": "request-3.json",
+    "stateSuppliedRevision": 3
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 5,
+    "action": {
+      "action": "answer-reporter",
+      "reportDate": "2026-10-17",
+      "reporter": {
+        "kind": "provided",
+        "firstName": "Alex",
+        "lastName": "Fiction",
+        "email": "alex.fiction@example.invalid",
+        "healthProfessional": true,
+        "occupation": "Physician",
+        "reportedTo": [],
+        "doNotDiscloseIdentity": true
+      }
+    },
+    "operationId": "3dccaf4b-ec51-4d26-b7cb-6352f5d6bfae",
+    "runId": "c3eae6df-eaec-4dba-ac12-5aca13800d1f",
+    "sequence": 4,
+    "originalCaptureFile": "request-4.json",
+    "stateSuppliedRevision": 5
+  }
+]

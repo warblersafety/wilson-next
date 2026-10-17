@@ -1,0 +1,137 @@
+[
+  {
+    "operation": "act",
+    "expectedRevision": 0,
+    "action": {
+      "action": "submit-opening",
+      "text": "Entirely fictional evaluation. Patient TEST-51 is a 51-year-old woman. She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia. On 05-Sep-2026 she developed muscle pain and weakness. ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. No serious outcomes applied. No other relevant medical history applies. Atorvastatin was stopped, and she was improving. I suspect atorvastatin.",
+      "reportType": "adverse-event"
+    },
+    "operationId": "1611abe4-7101-40b0-b7df-67ceb83a75fa",
+    "runId": "dd68720d-a645-4257-8155-4095712fb42c",
+    "sequence": 1,
+    "originalCaptureFile": "request-1.json",
+    "stateSuppliedRevision": 0
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 2,
+    "action": {
+      "action": "review-opening-group",
+      "groupId": "group-b0eb9ee3-ff1a-41d1-b27a-5585c85bba79",
+      "corrections": [
+        {
+          "proposalId": "proposal-80d1255e-638a-4242-9d9b-45a64ea4e167",
+          "value": {
+            "kind": "unknown"
+          }
+        }
+      ]
+    },
+    "operationId": "9464d1ae-c341-4f5c-9b87-81aa690cfd3a",
+    "runId": "dd2058b4-1bf5-449e-bc7f-24d8503eadca",
+    "sequence": 2,
+    "originalCaptureFile": "request-2.json",
+    "stateSuppliedRevision": 2
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 3,
+    "action": {
+      "action": "accept-understanding"
+    },
+    "operationId": "963a74b6-f5c6-4c0c-bf78-64b8ba7f8bdc",
+    "runId": "93bef25f-5d2c-4063-97f5-4df56a64a6aa",
+    "sequence": 3,
+    "originalCaptureFile": "request-3.json",
+    "stateSuppliedRevision": 3
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 4,
+    "action": {
+      "action": "set-fact",
+      "target": "event:event:outcome",
+      "value": {
+        "kind": "known",
+        "value": "improving"
+      }
+    },
+    "operationId": "a2c90c45-9951-4953-8fa7-16c613eaad08",
+    "runId": "782623d3-887c-4475-861d-25373c0c9057",
+    "sequence": 4,
+    "originalCaptureFile": "request-4.json",
+    "stateSuppliedRevision": 4
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 6,
+    "action": {
+      "action": "answer-medication-history",
+      "productId": "product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+      "answers": {
+        "stopDate": {
+          "kind": "unknown"
+        },
+        "restarted": {
+          "kind": "unknown"
+        }
+      }
+    },
+    "operationId": "23624754-228b-4475-a4b5-fa5eb83a530d",
+    "runId": "915f1e38-1ade-44ad-a85a-b0ff8236f2c0",
+    "sequence": 5,
+    "originalCaptureFile": "request-5.json",
+    "stateSuppliedRevision": 6
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 7,
+    "action": {
+      "action": "answer-reporter",
+      "reportDate": "2026-10-17",
+      "reporter": {
+        "kind": "provided",
+        "firstName": "Alex",
+        "lastName": "Fiction",
+        "email": "alex.fiction@example.invalid",
+        "healthProfessional": true,
+        "occupation": "Physician",
+        "reportedTo": [],
+        "doNotDiscloseIdentity": true
+      }
+    },
+    "operationId": "d286825b-6cfa-4321-b286-d816bdd1a1e7",
+    "runId": "dcdce2e8-8616-4d66-8565-3e277127f1d1",
+    "sequence": 6,
+    "originalCaptureFile": "request-6.json",
+    "stateSuppliedRevision": 7
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 10,
+    "action": {
+      "action": "submit-update",
+      "text": "Correction: the ALT result was 123 U/L, not 132 U/L."
+    },
+    "operationId": "d0095979-dc61-4f36-95b5-9e2370e659ce",
+    "runId": "9551a1e6-2cc6-4159-bf75-589cc8842808",
+    "sequence": 7,
+    "originalCaptureFile": "request-7.json",
+    "stateSuppliedRevision": 10
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 11,
+    "action": {
+      "action": "review-update-group",
+      "groupId": "group-eb13e7fd-bdb0-48a1-9585-b3259bea8325",
+      "decision": "accept"
+    },
+    "operationId": "38f279a0-e6b5-45a1-8fae-c25e039fb20b",
+    "runId": "e151d7ca-b989-4249-acc6-bd690f4b02ea",
+    "sequence": 8,
+    "originalCaptureFile": "request-8.json",
+    "stateSuppliedRevision": 11
+  }
+]

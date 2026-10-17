@@ -1105,26 +1105,35 @@
       "report-page-7.png": "706c0041f286c008bf1a7724dad36ca0a5b9019199ace1f9c90dedf0448113d8",
       "report-page-8.png": "a4e65444ae4ad5265e47291918036d36a004842f064a4ecdef833ea7a64b38de"
     },
-    "visualInspection": "selected filled pages inspected; not a claim that all 96 page images were manually inspected"
+    "visualInspection": "selected filled pages inspected; not a claim that all 96 page images were manually inspected",
+    "visuallyInspectedPages": [
+      5
+    ]
   },
   "modelCalls": [
     {
-      "model": "claude-sonnet-5",
-      "promptRevision": "wilson-duration-wording-v31",
-      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
-      "inputTokens": 14148,
-      "outputTokens": 159,
-      "latencyMs": 2164,
-      "estimatedCostUsd": 0.029886
-    },
-    {
+      "callIndex": 5,
       "model": "claude-sonnet-5",
       "promptRevision": "wilson-duration-wording-v31",
       "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
       "inputTokens": 13167,
       "outputTokens": 5399,
       "latencyMs": 40296,
-      "estimatedCostUsd": 0.080324
+      "estimatedCostUsd": 0.080324,
+      "operationId": "f33b8890-6be8-4267-943b-56dfc74ad382",
+      "runId": "db95b7c5-0810-4cb6-98d8-6d4c5c187cf8"
+    },
+    {
+      "callIndex": 6,
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 14148,
+      "outputTokens": 159,
+      "latencyMs": 2164,
+      "estimatedCostUsd": 0.029886,
+      "operationId": "8ee3fc86-0c87-4f06-9d47-bfc462452b59",
+      "runId": "7a696b73-e9d6-457a-9b72-a8a671bb52d6"
     }
   ],
   "checks": {
@@ -1141,5 +1150,6 @@
       }
     }
   },
-  "finalOutcome": "PDF generated after explicit source review and documented manual recovery; not a clean extraction/native-projection/uninterrupted-UI pass"
+  "finalOutcome": "PDF generated after explicit source review and documented manual recovery; not a clean extraction/native-projection/uninterrupted-UI pass",
+  "retainedArtifacts": "artifacts/A04"
 }

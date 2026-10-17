@@ -1,0 +1,3521 @@
+{
+  "http": 200,
+  "operationId": "d286825b-6cfa-4321-b286-d816bdd1a1e7",
+  "runId": "dcdce2e8-8616-4d66-8565-3e277127f1d1",
+  "state": {
+    "version": "wilson-browser-state-v32",
+    "stage": "output",
+    "case": {
+      "id": "case-609b2cc9-810c-4051-989f-1c72a2405fa4",
+      "revision": 10,
+      "patient": {
+        "id": "patient",
+        "state": "resolved",
+        "facts": {
+          "identifier": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "proposal-c2e9cdae-dd6c-4a5a-ba2b-0ad03599c0d1",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "TEST-51"
+              },
+              "sourceIds": [
+                "source-caed9ca5-e5f4-44fc-8b0f-5ddf9b3b79d4"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-caed9ca5-e5f4-44fc-8b0f-5ddf9b3b79d4"
+            ],
+            "supersededValues": []
+          },
+          "ageYears": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "proposal-1666c1c1-a1e5-44af-9681-7e669e8dcf39",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": 51
+              },
+              "sourceIds": [
+                "source-caed9ca5-e5f4-44fc-8b0f-5ddf9b3b79d4"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-caed9ca5-e5f4-44fc-8b0f-5ddf9b3b79d4"
+            ],
+            "supersededValues": []
+          },
+          "raceEthnicity": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "dateOfBirth": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "a2Value": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "sex": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "proposal-26cb21dd-a141-498f-a1ab-0a6c7e667700",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "female"
+              },
+              "sourceIds": [
+                "source-caed9ca5-e5f4-44fc-8b0f-5ddf9b3b79d4"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-caed9ca5-e5f4-44fc-8b0f-5ddf9b3b79d4"
+            ],
+            "supersededValues": []
+          },
+          "weight": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "involvement": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      "event": {
+        "id": "event",
+        "state": "resolved",
+        "facts": {
+          "reportType": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "value-report-type-c2ffbb21-f60d-4029-8b2c-93c49ab4d297",
+              "groupId": "command-record-report-type-c1f4c681-114b-42d2-80ba-0f16d3b5c69d",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "adverse-event"
+              },
+              "sourceIds": [
+                "source-a1414251-c869-41e7-b526-6f62677a2ccb"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-a1414251-c869-41e7-b526-6f62677a2ccb"
+            ],
+            "supersededValues": []
+          },
+          "reportDate": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-dcaff213-d7bc-448d-879c-8f8bd14acf2a"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "value-report-date-d38e4de4-1b57-4a22-b717-28172eeee9fa",
+              "groupId": "command-record-report-date-b12922fc-136d-42c6-b333-32d795d78ff4",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "2026-10-17"
+              },
+              "sourceIds": [
+                "source-dcaff213-d7bc-448d-879c-8f8bd14acf2a"
+              ]
+            }
+          },
+          "problemDescription": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "symptoms": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "proposal-ecd2b947-6a11-41c0-84bc-e746dc00f28c",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": [
+                  "muscle pain",
+                  "weakness"
+                ]
+              },
+              "sourceIds": [
+                "source-d08b7c66-98be-4a0c-afb5-975a9da53dec"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-d08b7c66-98be-4a0c-afb5-975a9da53dec"
+            ],
+            "supersededValues": []
+          },
+          "onsetDate": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "proposal-8a1937c2-e921-43c0-babd-990829aca042",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "2026-09-05"
+              },
+              "sourceIds": [
+                "source-d08b7c66-98be-4a0c-afb5-975a9da53dec"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-d08b7c66-98be-4a0c-afb5-975a9da53dec"
+            ],
+            "supersededValues": []
+          },
+          "death": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "proposal-37028af2-d067-4a67-bd25-738dba5d916f",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "sourceIds": [
+                "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+            ],
+            "supersededValues": []
+          },
+          "deathDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "lifeThreatening": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "proposal-f85d2893-f7c3-4854-a493-0134c0b8edfb",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "sourceIds": [
+                "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+            ],
+            "supersededValues": []
+          },
+          "hospitalized": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "proposal-423e1aa3-e73b-42eb-9164-2c414c3b43aa",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "sourceIds": [
+                "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+            ],
+            "supersededValues": []
+          },
+          "disability": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "proposal-893883fa-772e-42bc-807e-bfb8d4113f11",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "sourceIds": [
+                "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+            ],
+            "supersededValues": []
+          },
+          "requiredIntervention": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "proposal-244d31b1-3660-47c7-80a0-6ad35a3d63d8",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "sourceIds": [
+                "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+            ],
+            "supersededValues": []
+          },
+          "congenitalAnomaly": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "proposal-31a778ee-9e4f-4d70-97a2-0fb38de3eda3",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "sourceIds": [
+                "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+            ],
+            "supersededValues": []
+          },
+          "otherSerious": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "proposal-91256c7f-7a83-496a-9263-e913ce51dd60",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": false
+              },
+              "sourceIds": [
+                "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+            ],
+            "supersededValues": []
+          },
+          "relevantTestsAvailable": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "relevantHistory": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "proposal-6f292a8e-f7d1-477c-b06f-08dd8e8a49e6",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "explicitly-absent"
+              },
+              "sourceIds": [
+                "source-398e4887-bfed-40c7-b3a8-cdb1bf299ae6"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-398e4887-bfed-40c7-b3a8-cdb1bf299ae6"
+            ],
+            "supersededValues": []
+          },
+          "treatments": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "outcome": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "value-direct-fact-6b8b8c16-6346-4c25-aaa0-170122063966",
+              "groupId": "command-set-fact-d010e39c-7d74-44b5-9775-c67b737bc464",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "improving"
+              },
+              "sourceIds": [
+                "source-b068a859-6b8d-41e2-995d-52aa4ae5016d"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-b068a859-6b8d-41e2-995d-52aa4ae5016d"
+            ],
+            "supersededValues": []
+          },
+          "dischargeDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "productAvailability": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "productReturnDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "additionalComments": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      "products": [
+        {
+          "id": "product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "proposalGroupId": "group-b0eb9ee3-ff1a-41d1-b27a-5585c85bba79",
+          "state": "resolved",
+          "facts": {
+            "name": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-24e8d5cf-22d0-4921-838c-052a2c25b5ca",
+                "groupId": "group-b0eb9ee3-ff1a-41d1-b27a-5585c85bba79",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "atorvastatin"
+                },
+                "sourceIds": [
+                  "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+              ],
+              "supersededValues": []
+            },
+            "productType": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-c4b73df6-6ca0-4015-8f12-8aed93b3c649",
+                "groupId": "group-b0eb9ee3-ff1a-41d1-b27a-5585c85bba79",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                },
+                "sourceIds": [
+                  "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+              ],
+              "supersededValues": []
+            },
+            "role": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-c32524b4-c802-48b8-ab98-99c6e4d816ce",
+                "groupId": "group-b0eb9ee3-ff1a-41d1-b27a-5585c85bba79",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "suspect"
+                },
+                "sourceIds": [
+                  "source-fc6a86d7-919c-49ab-8c08-561625f13091"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-fc6a86d7-919c-49ab-8c08-561625f13091"
+              ],
+              "supersededValues": []
+            },
+            "manufacturer": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "lotNumber": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "ndcOrUniqueId": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "dose": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-54a4c93d-c1a6-4c9b-a3d2-5184a53d5ba5",
+                "groupId": "group-b0eb9ee3-ff1a-41d1-b27a-5585c85bba79",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "40 mg"
+                },
+                "sourceIds": [
+                  "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+              ],
+              "supersededValues": []
+            },
+            "strength": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "frequency": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-0710cd66-351a-4f2b-a6e1-be8a8d420db2",
+                "groupId": "group-b0eb9ee3-ff1a-41d1-b27a-5585c85bba79",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "daily"
+                },
+                "sourceIds": [
+                  "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+              ],
+              "supersededValues": []
+            },
+            "route": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-38466a4e-8560-46dc-b9cc-883c67768e00",
+                "groupId": "group-b0eb9ee3-ff1a-41d1-b27a-5585c85bba79",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "oral"
+                },
+                "sourceIds": [
+                  "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+              ],
+              "supersededValues": []
+            },
+            "startDate": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-5c7465ee-1416-452f-bc4f-8e204e8163ec",
+                "groupId": "group-b0eb9ee3-ff1a-41d1-b27a-5585c85bba79",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "2026-08-01"
+                },
+                "sourceIds": [
+                  "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+              ],
+              "supersededValues": []
+            },
+            "stopDate": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "value-medication-stopDate-f61b331a-48d7-46ff-9851-ca44ce7b1b03",
+                "groupId": "command-answer-medication-history-393fa49e-09a8-4092-bb3f-2d4f3f81658d",
+                "intent": "fact",
+                "value": {
+                  "kind": "unknown"
+                },
+                "sourceIds": [
+                  "source-594765f8-5594-4b2e-9ec0-3d79449478b2"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-594765f8-5594-4b2e-9ec0-3d79449478b2"
+              ],
+              "supersededValues": []
+            },
+            "therapyOngoing": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "indication": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-d111b66b-aedf-4ea5-a739-bb480abf69cb",
+                "groupId": "group-b0eb9ee3-ff1a-41d1-b27a-5585c85bba79",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "hyperlipidemia"
+                },
+                "sourceIds": [
+                  "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+              ],
+              "supersededValues": []
+            },
+            "stopped": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-fe6ef2a0-d8c9-478a-989e-fcc7132f0f6b",
+                "groupId": "group-b0eb9ee3-ff1a-41d1-b27a-5585c85bba79",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": true
+                },
+                "sourceIds": [
+                  "source-fe8fa389-2ed2-47aa-ab1d-d673b88e1453"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-fe8fa389-2ed2-47aa-ab1d-d673b88e1453"
+              ],
+              "supersededValues": []
+            },
+            "cosmeticUse": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "medicationType": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "doseReduced": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "doseReductionDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "treatmentDuration": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "d3Value": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "improvedAfterChange": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "value-corrected-d215b8a3-a432-4729-9514-a92dc789a0ca",
+                "groupId": "group-b0eb9ee3-ff1a-41d1-b27a-5585c85bba79",
+                "intent": "correction",
+                "value": {
+                  "kind": "unknown"
+                },
+                "sourceIds": [
+                  "source-de74fb27-5832-475f-bab3-beb68ec463a7"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-fe8fa389-2ed2-47aa-ab1d-d673b88e1453",
+                "source-de74fb27-5832-475f-bab3-beb68ec463a7"
+              ],
+              "supersededValues": []
+            },
+            "restarted": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "value-medication-restarted-f76de453-383e-4360-98eb-5a88d986aab0",
+                "groupId": "command-answer-medication-history-393fa49e-09a8-4092-bb3f-2d4f3f81658d",
+                "intent": "fact",
+                "value": {
+                  "kind": "unknown"
+                },
+                "sourceIds": [
+                  "source-594765f8-5594-4b2e-9ec0-3d79449478b2"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-594765f8-5594-4b2e-9ec0-3d79449478b2"
+              ],
+              "supersededValues": []
+            },
+            "recurred": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "commonName": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "procode": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "modelNumber": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "catalogNumber": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerName": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerAddress": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerCity": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerRegion": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerPostalCode": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerCountry": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseWebsite": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "expirationDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "serialNumber": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "udi": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "deviceOperator": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "implanted": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "implantDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "explantDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "reprocessedSingleUse": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "reprocessor": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "servicedByThirdParty": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "otherProductTypes": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            }
+          }
+        }
+      ],
+      "relevantTests": [
+        {
+          "id": "test-23fc5bfc-9d12-4772-b485-829b135cf8ac",
+          "proposalGroupId": "group-e3c4a227-a00b-4512-87fd-9fca236a96cd",
+          "state": "resolved",
+          "facts": {
+            "testName": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-55983ace-967d-4761-a031-f413450fe1af",
+                "groupId": "group-e3c4a227-a00b-4512-87fd-9fca236a96cd",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "ALT"
+                },
+                "sourceIds": [
+                  "source-25d35611-cdef-44e6-ad70-83575f718140"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-25d35611-cdef-44e6-ad70-83575f718140"
+              ],
+              "supersededValues": []
+            },
+            "testResult": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-3de3795c-df6e-43f9-821b-3c919286ef21",
+                "groupId": "group-e3c4a227-a00b-4512-87fd-9fca236a96cd",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "132 U/L"
+                },
+                "sourceIds": [
+                  "source-25d35611-cdef-44e6-ad70-83575f718140"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-25d35611-cdef-44e6-ad70-83575f718140"
+              ],
+              "supersededValues": []
+            },
+            "lowRange": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-bcd429f0-efa7-4bd2-b761-35ca8c0292d9",
+                "groupId": "group-e3c4a227-a00b-4512-87fd-9fca236a96cd",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "7"
+                },
+                "sourceIds": [
+                  "source-25d35611-cdef-44e6-ad70-83575f718140"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-25d35611-cdef-44e6-ad70-83575f718140"
+              ],
+              "supersededValues": []
+            },
+            "highRange": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-2b1ecde0-d0e6-47bf-a91f-e0a3fa2bc7d4",
+                "groupId": "group-e3c4a227-a00b-4512-87fd-9fca236a96cd",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "56"
+                },
+                "sourceIds": [
+                  "source-25d35611-cdef-44e6-ad70-83575f718140"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-25d35611-cdef-44e6-ad70-83575f718140"
+              ],
+              "supersededValues": []
+            },
+            "date": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-f547d088-ce0f-452e-aed5-473a05e657a8",
+                "groupId": "group-e3c4a227-a00b-4512-87fd-9fca236a96cd",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "2026-09-05"
+                },
+                "sourceIds": [
+                  "source-25d35611-cdef-44e6-ad70-83575f718140"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-25d35611-cdef-44e6-ad70-83575f718140"
+              ],
+              "supersededValues": []
+            }
+          }
+        },
+        {
+          "id": "test-9c51c0ee-37e7-45b3-9531-14530fdb97c0",
+          "proposalGroupId": "group-0e2a5c06-4758-4d90-95a1-ba5255d6bf57",
+          "state": "resolved",
+          "facts": {
+            "testName": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-1b0e6d13-b6cc-442d-8ec0-80248c860b0b",
+                "groupId": "group-0e2a5c06-4758-4d90-95a1-ba5255d6bf57",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "AST"
+                },
+                "sourceIds": [
+                  "source-25d35611-cdef-44e6-ad70-83575f718140"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-25d35611-cdef-44e6-ad70-83575f718140"
+              ],
+              "supersededValues": []
+            },
+            "testResult": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-269e8ebd-31da-4ae8-b6a5-4a9321e71524",
+                "groupId": "group-0e2a5c06-4758-4d90-95a1-ba5255d6bf57",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "118 U/L"
+                },
+                "sourceIds": [
+                  "source-25d35611-cdef-44e6-ad70-83575f718140"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-25d35611-cdef-44e6-ad70-83575f718140"
+              ],
+              "supersededValues": []
+            },
+            "lowRange": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-20019215-716f-444d-b58e-d3666922733c",
+                "groupId": "group-0e2a5c06-4758-4d90-95a1-ba5255d6bf57",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "10"
+                },
+                "sourceIds": [
+                  "source-25d35611-cdef-44e6-ad70-83575f718140"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-25d35611-cdef-44e6-ad70-83575f718140"
+              ],
+              "supersededValues": []
+            },
+            "highRange": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-c09cad17-9198-4fe9-bd90-117ba9a34008",
+                "groupId": "group-0e2a5c06-4758-4d90-95a1-ba5255d6bf57",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "40"
+                },
+                "sourceIds": [
+                  "source-25d35611-cdef-44e6-ad70-83575f718140"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-25d35611-cdef-44e6-ad70-83575f718140"
+              ],
+              "supersededValues": []
+            },
+            "date": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-e29d3141-a86b-44fe-a8aa-6fc4c417dc28",
+                "groupId": "group-0e2a5c06-4758-4d90-95a1-ba5255d6bf57",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "2026-09-05"
+                },
+                "sourceIds": [
+                  "source-25d35611-cdef-44e6-ad70-83575f718140"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-25d35611-cdef-44e6-ad70-83575f718140"
+              ],
+              "supersededValues": []
+            }
+          }
+        },
+        {
+          "id": "test-45ed645b-accc-4bc2-b60a-98eacd35d65e",
+          "proposalGroupId": "group-2e6270b4-804d-4b2c-9ba8-6c2fb863f138",
+          "state": "resolved",
+          "facts": {
+            "testName": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-29ae6eea-b682-4dde-9843-a1cc05a59e46",
+                "groupId": "group-2e6270b4-804d-4b2c-9ba8-6c2fb863f138",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "total bilirubin"
+                },
+                "sourceIds": [
+                  "source-25d35611-cdef-44e6-ad70-83575f718140"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-25d35611-cdef-44e6-ad70-83575f718140"
+              ],
+              "supersededValues": []
+            },
+            "testResult": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-70c657b7-8ac2-4c7e-a3f8-f6a1d5852237",
+                "groupId": "group-2e6270b4-804d-4b2c-9ba8-6c2fb863f138",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "2.1 mg/dL"
+                },
+                "sourceIds": [
+                  "source-25d35611-cdef-44e6-ad70-83575f718140"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-25d35611-cdef-44e6-ad70-83575f718140"
+              ],
+              "supersededValues": []
+            },
+            "lowRange": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "highRange": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "date": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-3d7fb41c-cc0d-4397-a29a-aec20eb39c90",
+                "groupId": "group-2e6270b4-804d-4b2c-9ba8-6c2fb863f138",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "2026-09-05"
+                },
+                "sourceIds": [
+                  "source-25d35611-cdef-44e6-ad70-83575f718140"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-25d35611-cdef-44e6-ad70-83575f718140"
+              ],
+              "supersededValues": []
+            }
+          }
+        }
+      ],
+      "reporter": {
+        "id": "reporter",
+        "facts": {
+          "lastName": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "value-reporter-lastName-cb698dbd-9eb6-4431-8a4e-c3a86e32d386",
+              "groupId": "command-answer-reporter-89a971c7-c525-486f-a2ca-310bbac3e12a",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "Fiction"
+              },
+              "sourceIds": [
+                "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+              ]
+            }
+          },
+          "firstName": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "value-reporter-firstName-a2d3a5e7-39e9-4bad-a730-2f8639fa055f",
+              "groupId": "command-answer-reporter-89a971c7-c525-486f-a2ca-310bbac3e12a",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "Alex"
+              },
+              "sourceIds": [
+                "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+              ]
+            }
+          },
+          "address": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "value-reporter-address-09b234c0-77b0-4221-a9e9-e156cc394771",
+              "groupId": "command-answer-reporter-89a971c7-c525-486f-a2ca-310bbac3e12a",
+              "intent": "fact",
+              "value": {
+                "kind": "explicitly-absent"
+              },
+              "sourceIds": [
+                "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+              ]
+            }
+          },
+          "city": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "value-reporter-city-52bdcc51-829c-4039-85b8-d5b2816cd8e0",
+              "groupId": "command-answer-reporter-89a971c7-c525-486f-a2ca-310bbac3e12a",
+              "intent": "fact",
+              "value": {
+                "kind": "explicitly-absent"
+              },
+              "sourceIds": [
+                "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+              ]
+            }
+          },
+          "state": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "value-reporter-state-c649b5be-bf65-4047-b4f8-433b4118ab15",
+              "groupId": "command-answer-reporter-89a971c7-c525-486f-a2ca-310bbac3e12a",
+              "intent": "fact",
+              "value": {
+                "kind": "explicitly-absent"
+              },
+              "sourceIds": [
+                "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+              ]
+            }
+          },
+          "postalCode": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "value-reporter-postalCode-e267cbec-0bd2-4686-a28e-7386a0a31385",
+              "groupId": "command-answer-reporter-89a971c7-c525-486f-a2ca-310bbac3e12a",
+              "intent": "fact",
+              "value": {
+                "kind": "explicitly-absent"
+              },
+              "sourceIds": [
+                "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+              ]
+            }
+          },
+          "country": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "value-reporter-country-0d4dcfab-8c0c-42d6-b428-456727f4a5ef",
+              "groupId": "command-answer-reporter-89a971c7-c525-486f-a2ca-310bbac3e12a",
+              "intent": "fact",
+              "value": {
+                "kind": "explicitly-absent"
+              },
+              "sourceIds": [
+                "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+              ]
+            }
+          },
+          "phone": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "value-reporter-phone-41ffdf34-b3fd-40bb-a6c2-176ef16cb0d3",
+              "groupId": "command-answer-reporter-89a971c7-c525-486f-a2ca-310bbac3e12a",
+              "intent": "fact",
+              "value": {
+                "kind": "explicitly-absent"
+              },
+              "sourceIds": [
+                "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+              ]
+            }
+          },
+          "email": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "value-reporter-email-ae1d5eb2-66d0-424d-b011-4f7fe85d0ba0",
+              "groupId": "command-answer-reporter-89a971c7-c525-486f-a2ca-310bbac3e12a",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "alex.fiction@example.invalid"
+              },
+              "sourceIds": [
+                "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+              ]
+            }
+          },
+          "healthProfessional": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "value-reporter-healthProfessional-9fca2e6a-609b-403d-ac68-2538ddb80baa",
+              "groupId": "command-answer-reporter-89a971c7-c525-486f-a2ca-310bbac3e12a",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": true
+              },
+              "sourceIds": [
+                "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+              ]
+            }
+          },
+          "occupation": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "value-reporter-occupation-906d51e8-8410-4f5c-8eaa-9afcddcf2d45",
+              "groupId": "command-answer-reporter-89a971c7-c525-486f-a2ca-310bbac3e12a",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "Physician"
+              },
+              "sourceIds": [
+                "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+              ]
+            }
+          },
+          "reportedTo": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "value-reporter-reportedTo-f7f00f2b-afa9-4eba-901c-5647e061b8d6",
+              "groupId": "command-answer-reporter-89a971c7-c525-486f-a2ca-310bbac3e12a",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": []
+              },
+              "sourceIds": [
+                "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+              ]
+            }
+          },
+          "doNotDiscloseIdentity": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "value-reporter-doNotDiscloseIdentity-ea229264-038d-47b4-9e9d-17be492b61ee",
+              "groupId": "command-answer-reporter-89a971c7-c525-486f-a2ca-310bbac3e12a",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": true
+              },
+              "sourceIds": [
+                "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+              ]
+            }
+          }
+        }
+      },
+      "askedNeeds": [
+        {
+          "key": "medication-history",
+          "targetIds": [
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:stopDate",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:restarted"
+          ],
+          "status": "answered"
+        },
+        {
+          "key": "reporter-details",
+          "targetIds": [
+            "reporter:reporter:lastName",
+            "reporter:reporter:firstName",
+            "reporter:reporter:phone",
+            "reporter:reporter:email",
+            "reporter:reporter:healthProfessional",
+            "reporter:reporter:occupation",
+            "reporter:reporter:reportedTo",
+            "reporter:reporter:doNotDiscloseIdentity"
+          ],
+          "status": "answered"
+        }
+      ],
+      "sources": [
+        {
+          "id": "source-caed9ca5-e5f4-44fc-8b0f-5ddf9b3b79d4",
+          "inputId": "input-0ebe0fcd-7e9b-424e-af0c-0f22acb1149d",
+          "inputType": "narrative",
+          "excerpt": "Patient TEST-51 is a 51-year-old woman. ",
+          "start": 31,
+          "end": 71,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:15:25.720Z"
+        },
+        {
+          "id": "source-d08b7c66-98be-4a0c-afb5-975a9da53dec",
+          "inputId": "input-0ebe0fcd-7e9b-424e-af0c-0f22acb1149d",
+          "inputType": "narrative",
+          "excerpt": "On 05-Sep-2026 she developed muscle pain and weakness. ",
+          "start": 150,
+          "end": 205,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:15:25.720Z"
+        },
+        {
+          "id": "source-8d8b2935-7b48-44c8-bff2-1124b14c542a",
+          "inputId": "input-0ebe0fcd-7e9b-424e-af0c-0f22acb1149d",
+          "inputType": "narrative",
+          "excerpt": "No serious outcomes applied. ",
+          "start": 368,
+          "end": 397,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:15:25.720Z"
+        },
+        {
+          "id": "source-398e4887-bfed-40c7-b3a8-cdb1bf299ae6",
+          "inputId": "input-0ebe0fcd-7e9b-424e-af0c-0f22acb1149d",
+          "inputType": "narrative",
+          "excerpt": "No other relevant medical history applies. ",
+          "start": 397,
+          "end": 440,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:15:25.720Z"
+        },
+        {
+          "id": "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4",
+          "inputId": "input-0ebe0fcd-7e9b-424e-af0c-0f22acb1149d",
+          "inputType": "narrative",
+          "excerpt": "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia. ",
+          "start": 71,
+          "end": 150,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:15:25.720Z"
+        },
+        {
+          "id": "source-fc6a86d7-919c-49ab-8c08-561625f13091",
+          "inputId": "input-0ebe0fcd-7e9b-424e-af0c-0f22acb1149d",
+          "inputType": "narrative",
+          "excerpt": "I suspect atorvastatin.",
+          "start": 489,
+          "end": 512,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:15:25.720Z"
+        },
+        {
+          "id": "source-fe8fa389-2ed2-47aa-ab1d-d673b88e1453",
+          "inputId": "input-0ebe0fcd-7e9b-424e-af0c-0f22acb1149d",
+          "inputType": "narrative",
+          "excerpt": "Atorvastatin was stopped, and she was improving. ",
+          "start": 440,
+          "end": 489,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:15:25.720Z"
+        },
+        {
+          "id": "source-25d35611-cdef-44e6-ad70-83575f718140",
+          "inputId": "input-0ebe0fcd-7e9b-424e-af0c-0f22acb1149d",
+          "inputType": "narrative",
+          "excerpt": "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. ",
+          "start": 205,
+          "end": 368,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:15:25.720Z"
+        },
+        {
+          "id": "source-a1414251-c869-41e7-b526-6f62677a2ccb",
+          "inputId": "input-2f197104-578c-4ed6-9ff7-29d6ae5a80e9",
+          "inputType": "selection",
+          "excerpt": "Adverse event",
+          "start": 0,
+          "end": 13,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:15:25.729Z"
+        },
+        {
+          "id": "source-de74fb27-5832-475f-bab3-beb68ec463a7",
+          "inputId": "input-025e8eff-6146-4d29-8b90-2dd71dba11bc",
+          "inputType": "correction",
+          "excerpt": "Clinician corrected this value during opening review.",
+          "start": 0,
+          "end": 53,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:16:29.983Z"
+        },
+        {
+          "id": "source-b068a859-6b8d-41e2-995d-52aa4ae5016d",
+          "inputId": "input-808ba84d-02ab-4338-aab9-cb4ecd18fa2c",
+          "inputType": "answer",
+          "excerpt": "Clinician added this value directly.",
+          "start": 0,
+          "end": 36,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:16:30.423Z"
+        },
+        {
+          "id": "source-594765f8-5594-4b2e-9ec0-3d79449478b2",
+          "inputId": "input-d2e2a7c4-95bf-4f91-8e1e-b884ba06161b",
+          "inputType": "answer",
+          "excerpt": "atorvastatin: stop date: unknown; restarted: unknown.",
+          "start": 0,
+          "end": 53,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:16:30.734Z"
+        },
+        {
+          "id": "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69",
+          "inputId": "input-6c21229e-5188-4bab-b3ac-657e4a4aac53",
+          "inputType": "reporter-entry",
+          "excerpt": "Reporter: Alex Fiction. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: alex.fiction@example.invalid. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes.",
+          "start": 0,
+          "end": 303,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:16:30.934Z"
+        },
+        {
+          "id": "source-dcaff213-d7bc-448d-879c-8f8bd14acf2a",
+          "inputId": "input-5784d216-2766-443a-b037-869607ce1621",
+          "inputType": "selection",
+          "excerpt": "Date of this report: 2026-10-17.",
+          "start": 0,
+          "end": 32,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:16:30.940Z"
+        }
+      ],
+      "changes": [
+        {
+          "commandId": "command-attach-opening-45ed6a2d-fe63-4667-a9f3-e641b6d2eb33",
+          "type": "attach-grounded-proposals",
+          "affectedTargets": [
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+            "test:test-23fc5bfc-9d12-4772-b485-829b135cf8ac",
+            "test:test-9c51c0ee-37e7-45b3-9531-14530fdb97c0",
+            "test:test-45ed645b-accc-4bc2-b60a-98eacd35d65e",
+            "patient:patient:identifier",
+            "patient:patient:ageYears",
+            "patient:patient:sex",
+            "event:event:symptoms",
+            "event:event:onsetDate",
+            "event:event:death",
+            "event:event:lifeThreatening",
+            "event:event:hospitalized",
+            "event:event:disability",
+            "event:event:requiredIntervention",
+            "event:event:congenitalAnomaly",
+            "event:event:otherSerious",
+            "event:event:relevantHistory",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:name",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:productType",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:role",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:dose",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:frequency",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:route",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:startDate",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:indication",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:stopped",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:improvedAfterChange",
+            "test:test-23fc5bfc-9d12-4772-b485-829b135cf8ac:testName",
+            "test:test-23fc5bfc-9d12-4772-b485-829b135cf8ac:testResult",
+            "test:test-23fc5bfc-9d12-4772-b485-829b135cf8ac:lowRange",
+            "test:test-23fc5bfc-9d12-4772-b485-829b135cf8ac:highRange",
+            "test:test-23fc5bfc-9d12-4772-b485-829b135cf8ac:date",
+            "test:test-9c51c0ee-37e7-45b3-9531-14530fdb97c0:testName",
+            "test:test-9c51c0ee-37e7-45b3-9531-14530fdb97c0:testResult",
+            "test:test-9c51c0ee-37e7-45b3-9531-14530fdb97c0:lowRange",
+            "test:test-9c51c0ee-37e7-45b3-9531-14530fdb97c0:highRange",
+            "test:test-9c51c0ee-37e7-45b3-9531-14530fdb97c0:date",
+            "test:test-45ed645b-accc-4bc2-b60a-98eacd35d65e:testName",
+            "test:test-45ed645b-accc-4bc2-b60a-98eacd35d65e:testResult",
+            "test:test-45ed645b-accc-4bc2-b60a-98eacd35d65e:date"
+          ],
+          "sourceIds": [
+            "source-caed9ca5-e5f4-44fc-8b0f-5ddf9b3b79d4",
+            "source-d08b7c66-98be-4a0c-afb5-975a9da53dec",
+            "source-8d8b2935-7b48-44c8-bff2-1124b14c542a",
+            "source-398e4887-bfed-40c7-b3a8-cdb1bf299ae6",
+            "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4",
+            "source-fc6a86d7-919c-49ab-8c08-561625f13091",
+            "source-fe8fa389-2ed2-47aa-ab1d-d673b88e1453",
+            "source-25d35611-cdef-44e6-ad70-83575f718140"
+          ],
+          "priorRevision": 0,
+          "resultingRevision": 1,
+          "supersessions": [],
+          "resolutions": []
+        },
+        {
+          "commandId": "command-record-report-type-c1f4c681-114b-42d2-80ba-0f16d3b5c69d",
+          "type": "record-clinician-facts",
+          "affectedTargets": [
+            "event:event:reportType"
+          ],
+          "sourceIds": [
+            "source-a1414251-c869-41e7-b526-6f62677a2ccb"
+          ],
+          "priorRevision": 1,
+          "resultingRevision": 2,
+          "supersessions": [],
+          "resolutions": []
+        },
+        {
+          "commandId": "command-review-opening-group-f6cc0cbf-b9d3-44e2-857f-ae7fdf985146",
+          "type": "review-proposal-groups",
+          "affectedTargets": [
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:name",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:productType",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:role",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:dose",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:frequency",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:route",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:startDate",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:indication",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:stopped",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:improvedAfterChange"
+          ],
+          "sourceIds": [
+            "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4",
+            "source-fc6a86d7-919c-49ab-8c08-561625f13091",
+            "source-fe8fa389-2ed2-47aa-ab1d-d673b88e1453",
+            "source-de74fb27-5832-475f-bab3-beb68ec463a7"
+          ],
+          "priorRevision": 2,
+          "resultingRevision": 3,
+          "supersessions": [],
+          "resolutions": []
+        },
+        {
+          "commandId": "command-review-opening-35dac85b-ca6b-433e-91b6-23cbe74f6aa6",
+          "type": "review-proposal-groups",
+          "affectedTargets": [
+            "patient:patient:identifier",
+            "patient:patient:ageYears",
+            "patient:patient:sex",
+            "event:event:symptoms",
+            "event:event:onsetDate",
+            "event:event:death",
+            "event:event:lifeThreatening",
+            "event:event:hospitalized",
+            "event:event:disability",
+            "event:event:requiredIntervention",
+            "event:event:congenitalAnomaly",
+            "event:event:otherSerious",
+            "event:event:relevantHistory",
+            "test:test-23fc5bfc-9d12-4772-b485-829b135cf8ac:testName",
+            "test:test-23fc5bfc-9d12-4772-b485-829b135cf8ac:testResult",
+            "test:test-23fc5bfc-9d12-4772-b485-829b135cf8ac:lowRange",
+            "test:test-23fc5bfc-9d12-4772-b485-829b135cf8ac:highRange",
+            "test:test-23fc5bfc-9d12-4772-b485-829b135cf8ac:date",
+            "test:test-9c51c0ee-37e7-45b3-9531-14530fdb97c0:testName",
+            "test:test-9c51c0ee-37e7-45b3-9531-14530fdb97c0:testResult",
+            "test:test-9c51c0ee-37e7-45b3-9531-14530fdb97c0:lowRange",
+            "test:test-9c51c0ee-37e7-45b3-9531-14530fdb97c0:highRange",
+            "test:test-9c51c0ee-37e7-45b3-9531-14530fdb97c0:date",
+            "test:test-45ed645b-accc-4bc2-b60a-98eacd35d65e:testName",
+            "test:test-45ed645b-accc-4bc2-b60a-98eacd35d65e:testResult",
+            "test:test-45ed645b-accc-4bc2-b60a-98eacd35d65e:date"
+          ],
+          "sourceIds": [
+            "source-caed9ca5-e5f4-44fc-8b0f-5ddf9b3b79d4",
+            "source-d08b7c66-98be-4a0c-afb5-975a9da53dec",
+            "source-8d8b2935-7b48-44c8-bff2-1124b14c542a",
+            "source-398e4887-bfed-40c7-b3a8-cdb1bf299ae6",
+            "source-25d35611-cdef-44e6-ad70-83575f718140"
+          ],
+          "priorRevision": 3,
+          "resultingRevision": 4,
+          "supersessions": [],
+          "resolutions": []
+        },
+        {
+          "commandId": "command-ask-medication-history-f57c4df7-8700-44b3-9f25-46fb7229d4b9",
+          "type": "record-asked-need",
+          "affectedTargets": [
+            "need:medication-history"
+          ],
+          "sourceIds": [],
+          "priorRevision": 4,
+          "resultingRevision": 5,
+          "supersessions": [],
+          "resolutions": []
+        },
+        {
+          "commandId": "command-set-fact-d010e39c-7d74-44b5-9775-c67b737bc464",
+          "type": "record-clinician-facts",
+          "affectedTargets": [
+            "event:event:outcome"
+          ],
+          "sourceIds": [
+            "source-b068a859-6b8d-41e2-995d-52aa4ae5016d"
+          ],
+          "priorRevision": 5,
+          "resultingRevision": 6,
+          "supersessions": [],
+          "resolutions": []
+        },
+        {
+          "commandId": "command-answer-medication-history-393fa49e-09a8-4092-bb3f-2d4f3f81658d",
+          "type": "record-clinician-facts",
+          "affectedTargets": [
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:stopDate",
+            "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:restarted",
+            "need:medication-history"
+          ],
+          "sourceIds": [
+            "source-594765f8-5594-4b2e-9ec0-3d79449478b2"
+          ],
+          "priorRevision": 6,
+          "resultingRevision": 7,
+          "supersessions": [],
+          "resolutions": []
+        },
+        {
+          "commandId": "command-ask-reporter-details-0c712231-667d-4779-8b64-e215e4e150bd",
+          "type": "record-asked-need",
+          "affectedTargets": [
+            "need:reporter-details"
+          ],
+          "sourceIds": [],
+          "priorRevision": 7,
+          "resultingRevision": 8,
+          "supersessions": [],
+          "resolutions": []
+        },
+        {
+          "commandId": "command-answer-reporter-89a971c7-c525-486f-a2ca-310bbac3e12a",
+          "type": "record-clinician-facts",
+          "affectedTargets": [
+            "reporter:reporter:lastName",
+            "reporter:reporter:firstName",
+            "reporter:reporter:phone",
+            "reporter:reporter:email",
+            "reporter:reporter:healthProfessional",
+            "reporter:reporter:occupation",
+            "reporter:reporter:reportedTo",
+            "reporter:reporter:doNotDiscloseIdentity",
+            "reporter:reporter:address",
+            "reporter:reporter:city",
+            "reporter:reporter:state",
+            "reporter:reporter:postalCode",
+            "reporter:reporter:country",
+            "need:reporter-details"
+          ],
+          "sourceIds": [
+            "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+          ],
+          "priorRevision": 8,
+          "resultingRevision": 9,
+          "supersessions": [],
+          "resolutions": []
+        },
+        {
+          "commandId": "command-record-report-date-b12922fc-136d-42c6-b333-32d795d78ff4",
+          "type": "record-clinician-facts",
+          "affectedTargets": [
+            "event:event:reportDate"
+          ],
+          "sourceIds": [
+            "source-dcaff213-d7bc-448d-879c-8f8bd14acf2a"
+          ],
+          "priorRevision": 9,
+          "resultingRevision": 10,
+          "supersessions": [],
+          "resolutions": []
+        }
+      ]
+    },
+    "unrepresented": []
+  },
+  "snapshot": {
+    "stage": "output",
+    "revision": 10,
+    "understanding": {
+      "revision": 10,
+      "patient": {
+        "identifier": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "TEST-51"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Patient TEST-51 is a 51-year-old woman. "
+          ]
+        },
+        "ageYears": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": 51
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Patient TEST-51 is a 51-year-old woman. "
+          ]
+        },
+        "raceEthnicity": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "dateOfBirth": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "a2Value": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "sex": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "female"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Patient TEST-51 is a 51-year-old woman. "
+          ]
+        },
+        "weight": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "involvement": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        }
+      },
+      "event": {
+        "reportType": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "adverse-event"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Adverse event"
+          ]
+        },
+        "reportDate": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "2026-10-17"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Date of this report: 2026-10-17."
+          ]
+        },
+        "problemDescription": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "symptoms": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": [
+              "muscle pain",
+              "weakness"
+            ]
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "On 05-Sep-2026 she developed muscle pain and weakness. "
+          ]
+        },
+        "onsetDate": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "2026-09-05"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "On 05-Sep-2026 she developed muscle pain and weakness. "
+          ]
+        },
+        "death": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": false
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "No serious outcomes applied. "
+          ]
+        },
+        "deathDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "lifeThreatening": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": false
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "No serious outcomes applied. "
+          ]
+        },
+        "hospitalized": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": false
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "No serious outcomes applied. "
+          ]
+        },
+        "disability": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": false
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "No serious outcomes applied. "
+          ]
+        },
+        "requiredIntervention": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": false
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "No serious outcomes applied. "
+          ]
+        },
+        "congenitalAnomaly": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": false
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "No serious outcomes applied. "
+          ]
+        },
+        "otherSerious": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": false
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "No serious outcomes applied. "
+          ]
+        },
+        "relevantTestsAvailable": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "relevantHistory": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "explicitly-absent"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "No other relevant medical history applies. "
+          ]
+        },
+        "treatments": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "outcome": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "improving"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Clinician added this value directly."
+          ]
+        },
+        "dischargeDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "productAvailability": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "productReturnDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "additionalComments": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        }
+      },
+      "products": [
+        {
+          "id": "product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "ordinal": 1,
+          "proposalGroupId": "group-b0eb9ee3-ff1a-41d1-b27a-5585c85bba79",
+          "state": "resolved",
+          "facts": {
+            "name": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "atorvastatin"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia. "
+              ]
+            },
+            "productType": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia. "
+              ]
+            },
+            "role": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "I suspect atorvastatin."
+              ]
+            },
+            "manufacturer": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "lotNumber": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "ndcOrUniqueId": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "dose": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "40 mg"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia. "
+              ]
+            },
+            "strength": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "frequency": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "daily"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia. "
+              ]
+            },
+            "route": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "oral"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia. "
+              ]
+            },
+            "startDate": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "2026-08-01"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia. "
+              ]
+            },
+            "stopDate": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "atorvastatin: stop date: unknown; restarted: unknown."
+              ]
+            },
+            "therapyOngoing": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "indication": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "hyperlipidemia"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia. "
+              ]
+            },
+            "stopped": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": true
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "Atorvastatin was stopped, and she was improving. "
+              ]
+            },
+            "cosmeticUse": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "medicationType": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "doseReduced": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "doseReductionDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "treatmentDuration": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "d3Value": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "improvedAfterChange": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "Atorvastatin was stopped, and she was improving. ",
+                "Clinician corrected this value during opening review."
+              ]
+            },
+            "restarted": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "unknown"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "atorvastatin: stop date: unknown; restarted: unknown."
+              ]
+            },
+            "recurred": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "commonName": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "procode": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "modelNumber": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "catalogNumber": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerName": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerAddress": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerCity": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerRegion": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerPostalCode": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerCountry": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseWebsite": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "expirationDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "serialNumber": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "udi": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "deviceOperator": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "implanted": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "implantDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "explantDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "reprocessedSingleUse": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "reprocessor": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "servicedByThirdParty": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "otherProductTypes": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            }
+          }
+        }
+      ],
+      "relevantTests": [
+        {
+          "id": "test-23fc5bfc-9d12-4772-b485-829b135cf8ac",
+          "proposalGroupId": "group-e3c4a227-a00b-4512-87fd-9fca236a96cd",
+          "state": "resolved",
+          "facts": {
+            "testName": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "ALT"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. "
+              ]
+            },
+            "testResult": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "132 U/L"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. "
+              ]
+            },
+            "lowRange": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "7"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. "
+              ]
+            },
+            "highRange": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "56"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. "
+              ]
+            },
+            "date": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-05"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. "
+              ]
+            }
+          }
+        },
+        {
+          "id": "test-9c51c0ee-37e7-45b3-9531-14530fdb97c0",
+          "proposalGroupId": "group-0e2a5c06-4758-4d90-95a1-ba5255d6bf57",
+          "state": "resolved",
+          "facts": {
+            "testName": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "AST"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. "
+              ]
+            },
+            "testResult": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "118 U/L"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. "
+              ]
+            },
+            "lowRange": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "10"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. "
+              ]
+            },
+            "highRange": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "40"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. "
+              ]
+            },
+            "date": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-05"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. "
+              ]
+            }
+          }
+        },
+        {
+          "id": "test-45ed645b-accc-4bc2-b60a-98eacd35d65e",
+          "proposalGroupId": "group-2e6270b4-804d-4b2c-9ba8-6c2fb863f138",
+          "state": "resolved",
+          "facts": {
+            "testName": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "total bilirubin"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. "
+              ]
+            },
+            "testResult": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "2.1 mg/dL"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. "
+              ]
+            },
+            "lowRange": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "highRange": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "date": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "2026-09-05"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. "
+              ]
+            }
+          }
+        }
+      ],
+      "reporter": {
+        "lastName": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "Fiction"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Reporter: Alex Fiction. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: alex.fiction@example.invalid. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes."
+          ]
+        },
+        "firstName": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "Alex"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Reporter: Alex Fiction. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: alex.fiction@example.invalid. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes."
+          ]
+        },
+        "address": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "explicitly-absent"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Reporter: Alex Fiction. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: alex.fiction@example.invalid. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes."
+          ]
+        },
+        "city": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "explicitly-absent"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Reporter: Alex Fiction. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: alex.fiction@example.invalid. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes."
+          ]
+        },
+        "state": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "explicitly-absent"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Reporter: Alex Fiction. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: alex.fiction@example.invalid. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes."
+          ]
+        },
+        "postalCode": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "explicitly-absent"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Reporter: Alex Fiction. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: alex.fiction@example.invalid. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes."
+          ]
+        },
+        "country": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "explicitly-absent"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Reporter: Alex Fiction. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: alex.fiction@example.invalid. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes."
+          ]
+        },
+        "phone": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "explicitly-absent"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Reporter: Alex Fiction. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: alex.fiction@example.invalid. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes."
+          ]
+        },
+        "email": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "alex.fiction@example.invalid"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Reporter: Alex Fiction. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: alex.fiction@example.invalid. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes."
+          ]
+        },
+        "healthProfessional": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": true
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Reporter: Alex Fiction. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: alex.fiction@example.invalid. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes."
+          ]
+        },
+        "occupation": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "Physician"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Reporter: Alex Fiction. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: alex.fiction@example.invalid. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes."
+          ]
+        },
+        "reportedTo": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": []
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Reporter: Alex Fiction. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: alex.fiction@example.invalid. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes."
+          ]
+        },
+        "doNotDiscloseIdentity": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": true
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Reporter: Alex Fiction. Address not provided. City not provided. State or region not provided. Postal code not provided. Country not provided. Phone not provided. Email: alex.fiction@example.invalid. Health professional: yes. Occupation: Physician. Also reported to: none. Do not disclose identity: yes."
+          ]
+        }
+      }
+    },
+    "review": {
+      "revision": 10,
+      "attention": []
+    },
+    "clarification": null,
+    "projection": {
+      "caseId": "case-609b2cc9-810c-4051-989f-1c72a2405fa4",
+      "revision": 10,
+      "sections": {
+        "A": {
+          "patientIdentifier": "TEST-51",
+          "ageYears": 51,
+          "sex": "female"
+        },
+        "B": {
+          "relevantTests": [
+            {
+              "testId": "test-23fc5bfc-9d12-4772-b485-829b135cf8ac",
+              "testResult": "ALT: 132 U/L",
+              "lowRange": "7",
+              "highRange": "56",
+              "date": "2026-09-05"
+            },
+            {
+              "testId": "test-9c51c0ee-37e7-45b3-9531-14530fdb97c0",
+              "testResult": "AST: 118 U/L",
+              "lowRange": "10",
+              "highRange": "40",
+              "date": "2026-09-05"
+            },
+            {
+              "testId": "test-45ed645b-accc-4bc2-b60a-98eacd35d65e",
+              "testResult": "total bilirubin: 2.1 mg/dL",
+              "date": "2026-09-05"
+            }
+          ],
+          "reportType": "adverse-event",
+          "eventDate": "2026-09-05",
+          "reportDate": "2026-10-17",
+          "hospitalized": false,
+          "death": false,
+          "lifeThreatening": false,
+          "disability": false,
+          "requiredIntervention": false,
+          "congenitalAnomaly": false,
+          "otherSerious": false,
+          "eventDescription": "Symptoms: muscle pain and weakness. Outcome: improving. Products stopped: atorvastatin."
+        },
+        "C": {},
+        "D": {
+          "suspectProducts": [
+            {
+              "productId": "product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+              "name": "atorvastatin",
+              "dose": {
+                "value": "40 mg"
+              },
+              "frequency": "daily",
+              "route": "oral",
+              "startDate": "2026-08-01",
+              "indication": "hyperlipidemia"
+            }
+          ]
+        },
+        "E": {
+          "suspectDevices": []
+        },
+        "F": {
+          "concomitantProducts": []
+        },
+        "G": {
+          "reporter": {
+            "lastName": "Fiction",
+            "firstName": "Alex",
+            "email": "alex.fiction@example.invalid",
+            "healthProfessional": true,
+            "occupation": "Physician",
+            "reportedTo": [],
+            "doNotDiscloseIdentity": true
+          }
+        }
+      },
+      "invalidCalendarDates": [],
+      "expirationNotes": [],
+      "productDateNotes": [],
+      "sourceTrace": {
+        "sections.A.patientIdentifier": [
+          "source-caed9ca5-e5f4-44fc-8b0f-5ddf9b3b79d4"
+        ],
+        "sections.A.ageYears": [
+          "source-caed9ca5-e5f4-44fc-8b0f-5ddf9b3b79d4"
+        ],
+        "sections.A.sex": [
+          "source-caed9ca5-e5f4-44fc-8b0f-5ddf9b3b79d4"
+        ],
+        "sections.B.reportType": [
+          "source-a1414251-c869-41e7-b526-6f62677a2ccb"
+        ],
+        "sections.B.eventDate": [
+          "source-d08b7c66-98be-4a0c-afb5-975a9da53dec"
+        ],
+        "sections.B.reportDate": [
+          "source-dcaff213-d7bc-448d-879c-8f8bd14acf2a"
+        ],
+        "sections.B.hospitalized": [
+          "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+        ],
+        "sections.B.death": [
+          "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+        ],
+        "sections.B.lifeThreatening": [
+          "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+        ],
+        "sections.B.disability": [
+          "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+        ],
+        "sections.B.requiredIntervention": [
+          "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+        ],
+        "sections.B.congenitalAnomaly": [
+          "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+        ],
+        "sections.B.otherSerious": [
+          "source-8d8b2935-7b48-44c8-bff2-1124b14c542a"
+        ],
+        "sections.B.relevantTests.0.testResult": [
+          "source-25d35611-cdef-44e6-ad70-83575f718140"
+        ],
+        "sections.B.relevantTests.0.lowRange": [
+          "source-25d35611-cdef-44e6-ad70-83575f718140"
+        ],
+        "sections.B.relevantTests.0.highRange": [
+          "source-25d35611-cdef-44e6-ad70-83575f718140"
+        ],
+        "sections.B.relevantTests.0.date": [
+          "source-25d35611-cdef-44e6-ad70-83575f718140"
+        ],
+        "sections.B.relevantTests.1.testResult": [
+          "source-25d35611-cdef-44e6-ad70-83575f718140"
+        ],
+        "sections.B.relevantTests.1.lowRange": [
+          "source-25d35611-cdef-44e6-ad70-83575f718140"
+        ],
+        "sections.B.relevantTests.1.highRange": [
+          "source-25d35611-cdef-44e6-ad70-83575f718140"
+        ],
+        "sections.B.relevantTests.1.date": [
+          "source-25d35611-cdef-44e6-ad70-83575f718140"
+        ],
+        "sections.B.relevantTests.2.testResult": [
+          "source-25d35611-cdef-44e6-ad70-83575f718140"
+        ],
+        "sections.B.relevantTests.2.date": [
+          "source-25d35611-cdef-44e6-ad70-83575f718140"
+        ],
+        "sections.B.eventDescription": [
+          "source-d08b7c66-98be-4a0c-afb5-975a9da53dec",
+          "source-b068a859-6b8d-41e2-995d-52aa4ae5016d",
+          "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4",
+          "source-fe8fa389-2ed2-47aa-ab1d-d673b88e1453"
+        ],
+        "sections.D.suspectProducts.0.name": [
+          "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+        ],
+        "sections.D.suspectProducts.0.dose": [
+          "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+        ],
+        "sections.D.suspectProducts.0.frequency": [
+          "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+        ],
+        "sections.D.suspectProducts.0.route": [
+          "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+        ],
+        "sections.D.suspectProducts.0.startDate": [
+          "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+        ],
+        "sections.D.suspectProducts.0.indication": [
+          "source-3fbd6e4f-18af-4b5a-b067-411d282cd0f4"
+        ],
+        "sections.G.reporter.lastName": [
+          "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+        ],
+        "sections.G.reporter.firstName": [
+          "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+        ],
+        "sections.G.reporter.email": [
+          "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+        ],
+        "sections.G.reporter.healthProfessional": [
+          "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+        ],
+        "sections.G.reporter.occupation": [
+          "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+        ],
+        "sections.G.reporter.reportedTo": [
+          "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+        ],
+        "sections.G.reporter.doNotDiscloseIdentity": [
+          "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+        ]
+      },
+      "omissions": [
+        {
+          "concept": "patient involvement",
+          "target": "patient:patient:involvement",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient date of birth",
+          "target": "patient:patient:dateOfBirth",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient race and/or ethnicity",
+          "target": "patient:patient:raceEthnicity",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient weight",
+          "target": "patient:patient:weight",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "relevant medical history",
+          "target": "event:event:relevantHistory",
+          "reason": "explicitly-absent",
+          "sourceIds": [
+            "source-398e4887-bfed-40c7-b3a8-cdb1bf299ae6"
+          ]
+        },
+        {
+          "concept": "product availability",
+          "target": "event:event:productAvailability",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "lowRange for test-45ed645b-accc-4bc2-b60a-98eacd35d65e",
+          "target": "test:test-45ed645b-accc-4bc2-b60a-98eacd35d65e:lowRange",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "highRange for test-45ed645b-accc-4bc2-b60a-98eacd35d65e",
+          "target": "test:test-45ed645b-accc-4bc2-b60a-98eacd35d65e:highRange",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "product problem",
+          "target": "event:event:problemDescription",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "treatment",
+          "target": "event:event:treatments",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "discharge date",
+          "target": "event:event:dischargeDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "additional comments",
+          "target": "event:event:additionalComments",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "manufacturer for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:manufacturer",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "lotNumber for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:lotNumber",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "ndcOrUniqueId for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:ndcOrUniqueId",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "expirationDate for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:expirationDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseDate for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:purchaseDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerName for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:purchaseSellerName",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerAddress for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:purchaseSellerAddress",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerCity for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:purchaseSellerCity",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerRegion for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:purchaseSellerRegion",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerPostalCode for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:purchaseSellerPostalCode",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerCountry for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:purchaseSellerCountry",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseWebsite for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:purchaseWebsite",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "strength for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:strength",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "stopDate for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:stopDate",
+          "reason": "unknown",
+          "sourceIds": [
+            "source-594765f8-5594-4b2e-9ec0-3d79449478b2"
+          ]
+        },
+        {
+          "concept": "therapyOngoing for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:therapyOngoing",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "doseReductionDate for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:doseReductionDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "treatmentDuration for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:treatmentDuration",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "medicationType for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:medicationType",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "cosmeticUse for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:cosmeticUse",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "otherProductTypes for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:otherProductTypes",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "Improvement after stopping or reducing for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:improvedAfterChange",
+          "reason": "unknown",
+          "sourceIds": [
+            "source-fe8fa389-2ed2-47aa-ab1d-d673b88e1453",
+            "source-de74fb27-5832-475f-bab3-beb68ec463a7"
+          ]
+        },
+        {
+          "concept": "Event recurrence after restart for product-709d7d14-5c9b-436a-8182-299c81de9a5d",
+          "target": "product:product-709d7d14-5c9b-436a-8182-299c81de9a5d:recurred",
+          "reason": "unknown",
+          "sourceIds": [
+            "source-594765f8-5594-4b2e-9ec0-3d79449478b2"
+          ]
+        },
+        {
+          "concept": "reporter address",
+          "target": "reporter:reporter:address",
+          "reason": "explicitly-absent",
+          "sourceIds": [
+            "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+          ]
+        },
+        {
+          "concept": "reporter city",
+          "target": "reporter:reporter:city",
+          "reason": "explicitly-absent",
+          "sourceIds": [
+            "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+          ]
+        },
+        {
+          "concept": "reporter state",
+          "target": "reporter:reporter:state",
+          "reason": "explicitly-absent",
+          "sourceIds": [
+            "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+          ]
+        },
+        {
+          "concept": "reporter postalCode",
+          "target": "reporter:reporter:postalCode",
+          "reason": "explicitly-absent",
+          "sourceIds": [
+            "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+          ]
+        },
+        {
+          "concept": "reporter country",
+          "target": "reporter:reporter:country",
+          "reason": "explicitly-absent",
+          "sourceIds": [
+            "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+          ]
+        },
+        {
+          "concept": "reporter phone",
+          "target": "reporter:reporter:phone",
+          "reason": "explicitly-absent",
+          "sourceIds": [
+            "source-b5ceb31f-eeef-4056-b05c-6eba1247ca69"
+          ]
+        }
+      ],
+      "notIncluded": [
+        "Patient fractional or compound ages and partial date of birth",
+        "Patient race/ethnicity detail outside the seven A5 categories",
+        "Section C product pictures",
+        "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
+        "Product date wording outside complete dates or explicit month/year/year-only precision"
+      ]
+    },
+    "downloadReady": true,
+    "clinicalNeeds": [],
+    "reportContentKey": "13ac29c142a481d8ce6966c7e807e841ad5aa0e2d2dbfd6321abe6163703ba19",
+    "outputIssues": [],
+    "unrepresented": [],
+    "openingGroups": []
+  },
+  "provenance": {
+    "stateVersion": "wilson-browser-state-v32",
+    "release": "4bcabdbe6a1edf6296e555235f8de79a1dd65614"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "A12",
+  "family": "sparse-medication",
+  "reusedFrom": "tests/e2e/build-predetermined-responses.ts:adaptiveSparseOpening",
+  "opening": "Entirely fictional evaluation. Patient TEST-26 is a 26-year-old man. He developed severe dizziness while taking propranolol. I suspect propranolol.",
+  "reportType": "adverse-event",
+  "expectedMaterialFacts": [
+    "TEST-26",
+    "26 years",
+    "male",
+    "severe dizziness",
+    "propranolol suspect medication",
+    "all unprovided details explicitly unknown rather than inferred"
+  ],
+  "correction": null,
+  "expectedCorrection": null,
+  "resume": false,
+  "unfinishedDraftReload": false,
+  "reporterReuse": true
+}

@@ -1,0 +1,12 @@
+{
+  "test-23fc5bfc-9d12-4772-b485-829b135cf8ac:testResult": {
+    "before": {
+      "kind": "known",
+      "value": "132 U/L"
+    },
+    "after": {
+      "kind": "known",
+      "value": "123 U/L"
+    }
+  }
+}

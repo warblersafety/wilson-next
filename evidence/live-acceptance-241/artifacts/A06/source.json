@@ -1,0 +1,20 @@
+{
+  "id": "A06",
+  "family": "medication-quality",
+  "reusedFrom": "tests/e2e/build-predetermined-responses.ts:layer2ProductQualityOpening",
+  "opening": "Entirely fictional evaluation. An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal. The product was not administered to a patient, and no adverse event occurred. The bottle is available for evaluation. I am reporting Cardiovex as the suspect product. Cardiovex is explicitly a medication.",
+  "reportType": "product-problem",
+  "expectedMaterialFacts": [
+    "Cardiovex20 mg tablets",
+    "lotCV-442",
+    "unopened; brown particles under seal",
+    "not administered/no patient/no adverse event",
+    "suspect medication",
+    "available"
+  ],
+  "correction": null,
+  "expectedCorrection": null,
+  "resume": false,
+  "unfinishedDraftReload": false,
+  "reporterReuse": true
+}

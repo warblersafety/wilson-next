@@ -1,0 +1,29 @@
+{
+  "id": "A03",
+  "family": "medication",
+  "reusedFrom": "tests/e2e/build-predetermined-responses.ts:layer1TestsOpening",
+  "opening": "Entirely fictional evaluation. Patient TEST-51 is a 51-year-old woman. She began atorvastatin 40 mg by mouth daily on 01-Aug-2026 for hyperlipidemia. On 05-Sep-2026 she developed muscle pain and weakness. ALT was 132 U/L (reference range 7 to 56) on 05-Sep-2026; AST was 118 U/L (reference range 10 to 40) on 05-Sep-2026; total bilirubin was 2.1 mg/dL on 05-Sep-2026. No serious outcomes applied. No other relevant medical history applies. Atorvastatin was stopped, and she was improving. I suspect atorvastatin.",
+  "reportType": "adverse-event",
+  "expectedMaterialFacts": [
+    "TEST-51",
+    "51 years",
+    "female",
+    "atorvastatin 40 mg oral daily",
+    "start 2026-08-01",
+    "hyperlipidemia",
+    "onset 2026-09-05",
+    "muscle pain and weakness",
+    "ALT initially 132 U/L then 123 U/L; range7 to56; date2026-09-05",
+    "AST118 U/L range10 to40 date2026-09-05 unchanged",
+    "bilirubin2.1 mg/dL date2026-09-05 unchanged",
+    "no serious outcomes",
+    "no additional history",
+    "stopped",
+    "improving"
+  ],
+  "correction": "Correction: the ALT result was 123 U/L, not 132 U/L.",
+  "expectedCorrection": "Only expressly corrected target changes; preserve all sibling facts, source, dates and context.",
+  "resume": false,
+  "unfinishedDraftReload": false,
+  "reporterReuse": false
+}

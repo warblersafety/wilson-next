@@ -1,0 +1,27 @@
+{
+  "id": "A05",
+  "family": "device",
+  "reusedFrom": "tests/e2e/build-predetermined-responses.ts:layer2DeviceOpening",
+  "opening": "Entirely fictional evaluation. Patient TEST-74 is a 74-year-old woman. On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. The pump was stopped, she received intravenous fluids, and she recovered. No other serious outcomes applied. No relevant tests or medical history apply. The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. The device is available for evaluation.",
+  "reportType": "adverse-event-and-product-problem",
+  "expectedMaterialFacts": [
+    "TEST-74",
+    "74 years",
+    "female",
+    "FlowGuard infusion pump; Acme Medical Reno Nevada",
+    "FG-200/L-904/SN-7721/UDI exact",
+    "registered nurse operator",
+    "not implanted/reprocessed/third-party serviced",
+    "alarm failure and excessive flow",
+    "hypotension onset2026-09-08",
+    "hospitalized only",
+    "stopped; IV fluids; recovered",
+    "no tests/history",
+    "available"
+  ],
+  "correction": null,
+  "expectedCorrection": null,
+  "resume": true,
+  "unfinishedDraftReload": false,
+  "reporterReuse": false
+}
