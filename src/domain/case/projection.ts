@@ -1,7 +1,7 @@
 import {eventDateLabels,deviceDateFields,productDateFields,productDateLabels,isPartialDate,suppliedDateText,type ProductDateField} from "./date-precision";
 import {isPartialExpiration,expirationText,type PartialExpiration} from "./expiration";
 import { isCalendarDateTarget, knownValueMismatch } from "./value-contract";
-import { isCompleteCalendarDate } from "./calendar-date";
+import { formatCompleteCalendarDate, isCompleteCalendarDate } from "./calendar-date";
 import { otherProductTypeValues, type OtherProductType } from "./other-product-types";
 import { listWithContext } from "./list-context";
 import { noPatientConflictingTargets, noPatientOutcomeConflictingTargets } from "./patient-involvement";
@@ -548,12 +548,18 @@ function projectConcomitantProduct(
     for(const field of concomitantMedicationFields) {
       const fact=product.facts[field];
       if(fact.state!=="resolved" || !fact.resolvedValue)continue;
+      // Labels for temporal outcomes require the same explicit prerequisites as D7/D8.
+      // Withheld answers remain reviewed knowledge with the existing non-carried disclosure.
+      if(field === "improvedAfterChange" && withdrawalApplicability(product.facts) !== true)continue;
+      if(field === "recurred" && restartApplicability(product.facts) !== true)continue;
       const value=fact.resolvedValue.value;
       let text:string;
       if(value.kind!=="known")text=({unknown:"Unknown",declined:"Declined","explicitly-absent":"Explicitly absent",inapplicable:"Does not apply"} as const)[value.kind];
       else {
         const raw=value.value;
-        if(typeof raw==="boolean")text=raw?"Yes":"No";
+        if(field === "doseReductionDate" && isPartialDate(raw))text=suppliedDateText(raw,concomitantMedicationLabels[field]);
+        else if(field === "doseReductionDate" && isCompleteCalendarDate(raw))text=formatCompleteCalendarDate(raw);
+        else if(typeof raw==="boolean")text=raw?"Yes":"No";
         else if(typeof raw==="string"||typeof raw==="number")text=String(raw);
         else if(raw && typeof raw==="object" && "wording" in raw)text=String(raw.wording);
         else if(raw && typeof raw==="object" && "value" in raw && "unit" in raw)text=`${raw.value} ${raw.unit}`;

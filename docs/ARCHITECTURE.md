@@ -280,7 +280,7 @@ recurrence/no recurrence; never restarted selects Doesn't apply. Unresolved,
 pending or declined applicability/outcomes leave corresponding checkboxes blank
 with disclosures. These are temporal observations, not causality judgments.
 Explicitly supplied supported facts can also project for non-device other
-products; concomitant support is unchanged.
+products. Issue243 adds only accepted concomitant medication regimen/history supplements; proactive medication questions remain unchanged.
 
 Authoritative acceptance invalidates a known outcome when its prerequisite
 becomes false/inapplicable, preserving it as superseded history. Unknown/declined
@@ -1231,8 +1231,7 @@ their exact sources and qualifiers without automatic reconciliation.
 Only known booleans map to the respective Yes/No native checkbox for the first
 two suspect non-device products. Other response states remain distinct and
 blank; pending/conflicting values cannot print. Context that cannot fit the
-checkbox is disclosed as omitted. Concomitant/device routing retains the fact
-with an explicit no-destination disclosure. This adds no completion question,
+checkbox is disclosed as omitted. Issue243 now carries accepted concomitant medication ongoing status on a linked F supplement. Device routing retains the fact with an explicit no-destination disclosure. This adds no completion question,
 clinical judgment or visual redesign. v16 strictly validates v7–v15 historical
 states before adding only an empty ongoing fact per existing product; all other
 facts and unfinished drafts retain their identities. Prompt/mock checks do not
@@ -1269,8 +1268,7 @@ Both D3 suspect non-device slots map to their native TherapyReduceDate fields.
 Other response states and unresolved alternatives stay blank. A supplied
 settled date alongside explicitly false/absent/inapplicable doseReduced gets a
 visible review/save notice without changing facts, dates or download policy.
-Concomitant/device routing retains reviewed knowledge with a no-destination
-disclosure. v17 strictly validates genuine v7–v16 state before adding only empty
+Issue243 now carries accepted concomitant medication reduction dates on linked F supplements. Device routing retains reviewed knowledge with a no-destination disclosure. v17 strictly validates genuine v7–v16 state before adding only empty
 date facts per existing product, retaining sources/history and unfinished edits.
 
 Coverage checklist: complete supplied reduction dates are implemented; partial
@@ -1305,7 +1303,7 @@ sources and qualifiers remain retained with output omission disclosure.
 
 Both native suspect slots receive amount and unit together; native display
 appearance is generated from the unit label and the FDA export ID retained.
-Other routing retains knowledge with no-destination disclosure. v18 strictly
+Issue243 carries accepted concomitant medication duration on a linked F supplement; its D3 print preference and other routing retain the existing no-destination disclosure. v18 strictly
 validates genuine v7–v17 states before adding only empty duration and D3 choice
 facts. Existing runtime coverage and this inventory mark only the bounded
 native-time duration path implemented; #180 and every other gap remain open.
@@ -1739,7 +1737,7 @@ capacity is10. More retained products and beyond-ten row continuation remain
 separate scope. No case facts, browser-state version or reporter schema change.
 
 F projection retains stable ordered productId, indexed field provenance and exact
-current fieldContext. Unknown/conflicted/pending/superseded values do not print.
+current fieldContext. Unknown native names/dates and conflicted/pending/superseded values do not print. Issue243 additionally retains current explicit non-known medication answers as labelled supplement text, leaving native controls blank.
 Native fields carry fitting names and supplied complete therapy dates. Overlong
 or multiline names print an explicit native row pointer; their full text and
 qualifiers print on a labelled Section F continuation at fixed10pt, using the
@@ -1878,7 +1876,7 @@ Purchase, therapy start/stop and dose-reduction dates now share the explicit com
 
 Browser v26 freezes the genuine v25 schema, validates it before a lossless upgrade, and widens only these four product fields. Historical start/stop shape-only invalid complete dates remain retained and blocked as before. Purchase/reduction complete-string storage retains its existing strict calendar validation. Raw partial drafts and qualifiers remain separate from accepted facts. Other patient/event/device/test dates are unchanged.
 
-Projection applies existing D3 print alternatives before creating field-linked `productDateNotes`; selecting duration never restores suppressed dates. D1 purchase and the three D3 date meanings stay separate; F1 supports only therapy start/stop, with other facts still disclosed as non-carried. Current reduction/ongoing notices and D7 prerequisites stay unchanged. Only resolved eligible values carry notes; source IDs/target fields remain stable. Current note text, block, ordinal and field participate in generated-PDF keys and detached-page references, while source-only changes do not alter printed content.
+Projection applies existing D3 print alternatives before creating field-linked `productDateNotes`; selecting duration never restores suppressed dates. D1 purchase and the three D3 date meanings stay separate; Native F1 supports only therapy start/stop. Issue243 additionally carries accepted medication regimen/history and reduction-date wording on labelled F supplements; other unsupported facts remain disclosed as non-carried. Current reduction/ongoing notices and D7 prerequisites stay unchanged. Only resolved eligible values carry notes; source IDs/target fields remain stable. Current note text, block, ordinal and field participate in generated-PDF keys and detached-page references, while source-only changes do not alter printed content.
 
 The shared product-date continuation adapter also retains existing expiration behavior. It selects native controls using stable product IDs and actual local copy slots; global ordinal labels remain on extra D copies. Full dates retain native DD-MMM-YYYY. Partial D1/D3/F1 controls contain short continuation markers, never fabricated dates; exact wording/qualifier prints at fixed10pt on linked numbered sheets. Glyph guards target the actual field. Readback recognizes only the explicit continuation markers as non-dates. No arbitrary free-text field bypass or general-date enablement is introduced.
 
@@ -1930,3 +1928,14 @@ Quantity supplement entries participate in content keys so an older clipped
 artifact cannot remain current. No font/dependency or system asset is added.
 Broader glyphs #154, non-native duration shapes, unusual age/weight wording,
 #180 integrated acceptance and attachments/package lifecycle remain outstanding.
+
+
+### Issue243: accepted concomitant medication context retention
+
+Saved fictional A07/A11 cases demonstrated that accepted concomitant regimen facts were omitted from F export, requiring duplicate manual Additional comments. The pinned official FDA 3500 (09/2025), page6, F1 has only product name and therapy-date controls; page7 permits additional pages (<https://www.fda.gov/media/76299/download>). Keep those native semantics and the conversation-first UI. Automatically carry existing current resolved medication dose, strength, frequency, route, indication, ongoing status, reduction date, duration and explicit stop/reduction/restart history on the existing row-linked F continuation. This narrowly supersedes earlier concomitant no-destination statements for these fields only. No model/schema/browser version, new question, new clinical inference, or dependency.
+
+Only reviewed concomitant drug-or-biologic products are eligible. Device and `other` product regimen facts keep their existing non-carried disclosures; expanding those routes is deferred. Pending/conflicted/withdrawn/superseded values do not print. Current explicit Unknown/Declined/Explicitly absent/Does-not-apply answers remain distinct labelled text, never invented native values. Temporal improvement and recurrence answers require the same known applicable withdrawal/restart prerequisites as D7/D8; unresolved or false applicability withholds those outcome labels and retains omission disclosure. No inferred Does-not-apply is added to F. This preserves the existing applicability rule without changing semantic facts or history.
+
+Exact wording, multiline values, qualifiers and current source IDs remain field-linked. Complete reduction dates use shared DD-MMM-YYYY display; partial dates use the existing exact supplied wording/precision and no-missing-component statement. Legacy invalid complete dates remain retained and export-blocked. Every continuation page repeats its starting row and field label so a detached dense page stays attributable. Fixed10pt pagination, report reference, glyph blocking and exact contributing-field targets reuse the existing F adapter. Projection metadata stays outside native Section F controls and participates in report keys/references; extra native D/E copies do not duplicate F supplements.
+
+Corrections and explicit status changes regenerate current content without resurrecting old values or changing sibling products, event facts or manually supplied comments. Existing comments remain independently accepted content, even when overlapping. There is no automatic semantic deduplication or general omission detector. The focused frozen outcome/D7 live check is separate acceptance evidence, not an extraction change or a claim that prior issue241 failures are fixed. Issue150 and age-wording PR240 remain paused.

@@ -6,9 +6,8 @@
     9
   ],
   "checks": [
-    "Native F name and supplement pointer readable (A07 page 6)",
-    "Exact accepted medication details and qualifiers readable at fixed 10pt",
-    "Dense continuation page boundaries and final line 100 visible; no overlap/clipping"
+    "A11 650 mg/every six hours/oral/pain and explicit No stop/reduction readable",
+    "F row and Dose header readable"
   ],
-  "limitation": "Only listed pages visually inspected; all PDF pages independently parsed by pypdf."
+  "limitation": "Only listed pages visually inspected; pypdf independently parses the full PDF."
 }

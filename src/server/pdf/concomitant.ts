@@ -21,7 +21,7 @@ export function concomitantNativeName(name:string|undefined,index:number) {
 export function concomitantSupplementEntries(projection:Form3500Projection) {
   return projection.sections.F.concomitantProducts.flatMap((product,index)=>[
     ...(product.name!==undefined&&concomitantNativeName(product.name,index)!==product.name?[{index,field:"name" as const,heading:`F row ${index+1} - Name`,text:`F row ${index+1} Name: ${product.name}`}]:[]),
-    ...(projection.concomitantMedicationNotes??[]).filter(d=>d.productId===product.productId).map(detail=>({index,field:detail.field,heading:`F row ${index+1} - accepted medication details`,text:`F row ${index+1} - ${product.name??"Name not provided"} - ${concomitantMedicationLabels[detail.field]}: ${detail.text}`})),
+    ...(projection.concomitantMedicationNotes??[]).filter(d=>d.productId===product.productId).map(detail=>({index,field:detail.field,heading:`F row ${index+1} - ${concomitantMedicationLabels[detail.field]}`,text:`F row ${index+1} - ${product.name??"Name not provided"} - ${concomitantMedicationLabels[detail.field]}: ${detail.text}`})),
     ...(product.fieldContext??[]).map(context=>({index,field:context.field,heading:`F row ${index+1} - ${concomitantFieldLabel(context.field)} context`,text:`F row ${index+1} ${concomitantFieldLabel(context.field)} context: ${context.text}`})),
   ]);
 }

@@ -10,7 +10,7 @@ import {purchaseDetailFields,purchaseCountryLabel} from "../../domain/case/purch
 import {purchaseNativeGeometry,purchaseDetailLimitation} from "./purchase-details";
 import { isTreatmentDuration,isNativeTreatmentDuration, durationNativeUnits, durationNativeLabels } from "../../domain/case/duration";
 import { durationLimitation,durationNeedsSupplement,appendDurationContinuations,durationContextIssues } from "./duration";
-import { isCompleteCalendarDate } from "../../domain/case/calendar-date";
+import { formatCompleteCalendarDate, isCompleteCalendarDate } from "../../domain/case/calendar-date";
 import { raceEthnicityOptions, isRaceEthnicitySelections } from "../../domain/case/race-ethnicity";
 import { isCompleteBirthDate } from "../../domain/case/birth-date";
 import { patientAgeParts, type PatientAge } from "../../domain/case/age";
@@ -841,14 +841,7 @@ function compact<T extends object>(value: T): T {
 
 const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
-function formatDate(value: string): string {
-  if (!isCompleteCalendarDate(value)) throw new Error(`Unsupported Form 3500 calendar date ${value}`);
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  if (!match) throw new Error(`Unsupported Form 3500 date ${value}`);
-  const month = months[Number(match[2]) - 1];
-  if (!month) throw new Error(`Unsupported Form 3500 date ${value}`);
-  return `${match[3]}-${month}-${match[1]}`;
-}
+const formatDate = formatCompleteCalendarDate;
 
 function parseDate(value: string | undefined): string | undefined {
   if (!value || value === "D6 continued" || value === "E4 continued" || ["D1 cont.","D3 cont.","E6a cont.","E6b cont.","F1 cont.","B6 comments","B5 wording"].includes(value)) return undefined;

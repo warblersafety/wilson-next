@@ -164,13 +164,7 @@
       "context-source-9-product:product-286e4e09-9eff-4698-a134-139c40719e8d:doseReduced"
     ],
     "concomitantMedicationNotes.6": [
-      "context-source-11-product:product-286e4e09-9eff-4698-a134-139c40719e8d:improvedAfterChange"
-    ],
-    "concomitantMedicationNotes.7": [
       "context-source-10-product:product-286e4e09-9eff-4698-a134-139c40719e8d:restarted"
-    ],
-    "concomitantMedicationNotes.8": [
-      "context-source-12-product:product-286e4e09-9eff-4698-a134-139c40719e8d:recurred"
     ],
     "sections.G.reporter.lastName": [
       "source-05a4e398-e16d-4a0a-aefb-60e581957b37"
@@ -356,7 +350,9 @@
     "Section C product pictures",
     "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
     "Product date wording outside complete dates or explicit month/year/year-only precision",
-    "Acme ThermoPatch — Implanted remains in reviewed knowledge but is not included in Section E for the current product type and role."
+    "Acme ThermoPatch — Implanted remains in reviewed knowledge but is not included in Section E for the current product type and role.",
+    "Acetaminophen — Improved after change remains in reviewed knowledge but is not included in Section F for the current product type and role.",
+    "Acetaminophen — Recurred remains in reviewed knowledge but is not included in Section F for the current product type and role."
   ],
   "concomitantMedicationNotes": [
     {
@@ -416,28 +412,10 @@
     {
       "productId": "product-286e4e09-9eff-4698-a134-139c40719e8d",
       "ordinal": 1,
-      "field": "improvedAfterChange",
-      "text": "Does not apply",
-      "sourceIds": [
-        "context-source-11-product:product-286e4e09-9eff-4698-a134-139c40719e8d:improvedAfterChange"
-      ]
-    },
-    {
-      "productId": "product-286e4e09-9eff-4698-a134-139c40719e8d",
-      "ordinal": 1,
       "field": "restarted",
       "text": "Declined",
       "sourceIds": [
         "context-source-10-product:product-286e4e09-9eff-4698-a134-139c40719e8d:restarted"
-      ]
-    },
-    {
-      "productId": "product-286e4e09-9eff-4698-a134-139c40719e8d",
-      "ordinal": 1,
-      "field": "recurred",
-      "text": "No",
-      "sourceIds": [
-        "context-source-12-product:product-286e4e09-9eff-4698-a134-139c40719e8d:recurred"
       ]
     }
   ]

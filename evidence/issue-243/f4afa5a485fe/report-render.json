@@ -8,9 +8,9 @@
     11
   ],
   "checks": [
-    "Native F name and supplement pointer readable (A07 page 6)",
-    "Exact accepted medication details and qualifiers readable at fixed 10pt",
-    "Dense continuation page boundaries and final line 100 visible; no overlap/clipping"
+    "All three dense F pages readable without overlap/clipping",
+    "Detached pages 10/11 start with F row 1 - Indication",
+    "Final exact supplied indication line 100 visible"
   ],
-  "limitation": "Only listed pages visually inspected; all PDF pages independently parsed by pypdf."
+  "limitation": "Only listed pages visually inspected; pypdf independently parses the full PDF."
 }
