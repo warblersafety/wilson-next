@@ -1,0 +1,9 @@
+{
+  "model": "claude-sonnet-5",
+  "promptRevision": "wilson-duration-wording-v31",
+  "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+  "inputTokens": 13162,
+  "outputTokens": 2990,
+  "latencyMs": 23214,
+  "estimatedCostUsd": 0.056224
+}

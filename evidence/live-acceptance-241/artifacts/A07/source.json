@@ -1,0 +1,27 @@
+{
+  "id": "A07",
+  "family": "mixed-device-medication",
+  "reusedFrom": "tests/e2e/build-predetermined-responses.ts:layer3CombinedOpening",
+  "opening": "Entirely fictional evaluation. Patient TEST-67 is a 67-year-old woman. On 09-Sep-2026, an Acme ThermoPatch wearable monitor overheated after its adhesive backing split; it caused a blistering burn on her left arm. The device was removed, the burn was treated with cool compresses, and she recovered. No serious outcomes applied. No relevant tests or medical history apply. The suspect device is an Acme ThermoPatch, common name wearable temperature monitor, manufactured by Acme Medical, model TP-9, lot T-144, serial SN-8804. It was patient-operated, was not implanted, was not a reprocessed single-use device, and was not serviced by a third party. The device is available for evaluation. Acetaminophen is an explicitly concomitant medication, 500 mg by mouth as needed for headache. It is not suspected.",
+  "reportType": "adverse-event-and-product-problem",
+  "expectedMaterialFacts": [
+    "TEST-67",
+    "67 years",
+    "female",
+    "ThermoPatch wearable monitor; Acme Medical",
+    "TP-9/T-144/SN-8804",
+    "patient operator",
+    "not implanted/reprocessed/third-party serviced",
+    "adhesive backing split and overheated",
+    "blistering burn left arm onset2026-09-09",
+    "removed; cool compresses; recovered",
+    "no serious outcomes/tests/history",
+    "available",
+    "acetaminophen concomitant medication500mg oral as needed for headache; not suspect; stays distinct from device"
+  ],
+  "correction": null,
+  "expectedCorrection": null,
+  "resume": false,
+  "unfinishedDraftReload": false,
+  "reporterReuse": false
+}

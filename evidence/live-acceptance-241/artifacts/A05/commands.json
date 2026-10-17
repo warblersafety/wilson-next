@@ -1,0 +1,113 @@
+[
+  {
+    "operation": "act",
+    "expectedRevision": 0,
+    "action": {
+      "action": "submit-opening",
+      "text": "Entirely fictional evaluation. Patient TEST-74 is a 74-year-old woman. On 08-Sep-2026, an Acme FlowGuard IV infusion pump delivered fluid too rapidly after its alarm failed; she developed hypotension and was hospitalized. The pump was stopped, she received intravenous fluids, and she recovered. No other serious outcomes applied. No relevant tests or medical history apply. The suspect device is an Acme FlowGuard, common name infusion pump, manufactured by Acme Medical in Reno, Nevada, model FG-200, lot L-904, serial SN-7721, UDI (01)00812345000017(21)SN7721. It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party. The device is available for evaluation.",
+      "reportType": "adverse-event-and-product-problem"
+    },
+    "operationId": "39b76bd9-57ec-49c0-ba48-930a55f01870",
+    "runId": "529b9faf-0223-400e-ba86-0674d29aa44a",
+    "sequence": 1,
+    "originalCaptureFile": "request-1.json",
+    "stateSuppliedRevision": 0
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 2,
+    "action": {
+      "action": "review-opening-group",
+      "groupId": "group-d2c27c4b-4c60-4227-a5f2-75f59a6498a0",
+      "corrections": [
+        {
+          "proposalId": "proposal-33f2367d-b095-4979-92fb-c2ce910d9776",
+          "value": {
+            "kind": "known",
+            "value": "health-professional",
+            "qualifier": "It was operated by a registered nurse"
+          }
+        }
+      ]
+    },
+    "operationId": "d8841a1a-a9b5-45e5-8294-c524b92c7e06",
+    "runId": "887ef7b7-23dd-497c-b46a-fb8e0460b51a",
+    "sequence": 2,
+    "originalCaptureFile": "request-2.json",
+    "stateSuppliedRevision": 2
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 3,
+    "action": {
+      "action": "accept-understanding"
+    },
+    "operationId": "7d9f8ad3-3aec-4e29-aa66-8dd6c27a1ff0",
+    "runId": "98ddd172-bc27-4d1d-af03-59720e96fb43",
+    "sequence": 3,
+    "originalCaptureFile": "request-3.json",
+    "stateSuppliedRevision": 3
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 4,
+    "action": {
+      "action": "answer-serious-outcomes",
+      "selected": [],
+      "disposition": "known"
+    },
+    "operationId": "61bb451f-058a-4c94-9d9c-5b630dd74886",
+    "runId": "1a4e71b7-fb84-4192-9761-18f1bcd834fe",
+    "sequence": 4,
+    "originalCaptureFile": "request-4.json",
+    "stateSuppliedRevision": 4
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 6,
+    "action": {
+      "action": "answer-reporter",
+      "reportDate": "2026-10-17",
+      "reporter": {
+        "kind": "provided",
+        "firstName": "Alex",
+        "lastName": "Fiction",
+        "email": "alex.fiction@example.invalid",
+        "healthProfessional": true,
+        "occupation": "Physician",
+        "reportedTo": [],
+        "doNotDiscloseIdentity": true
+      }
+    },
+    "operationId": "7ed54da4-0abb-429b-bfa6-4856bced3409",
+    "runId": "f8c83fb3-40d3-4655-8874-6025a2656d7d",
+    "sequence": 5,
+    "originalCaptureFile": "request-5.json",
+    "stateSuppliedRevision": 6
+  },
+  {
+    "operation": "resume",
+    "operationId": "b8e6e78d-68ab-4da7-b062-3d52fca81d35",
+    "runId": "408eaa62-d638-4c05-9ca5-afdcb21eae02",
+    "sequence": 6,
+    "originalCaptureFile": "request-6.json",
+    "stateSuppliedRevision": 9
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 9,
+    "action": {
+      "action": "set-fact",
+      "target": "event:event:additionalComments",
+      "value": {
+        "kind": "known",
+        "value": "It was operated by a registered nurse, was not implanted, was not a reprocessed single-use device, and was never serviced by a third party."
+      }
+    },
+    "operationId": "98c0a9d5-a943-493c-a705-9531746939f2",
+    "runId": "61ead983-0049-41a1-a4d0-a5c35755a1cf",
+    "sequence": "NaN",
+    "originalCaptureFile": "request-NaN.json",
+    "stateSuppliedRevision": 9
+  }
+]

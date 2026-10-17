@@ -1,0 +1,12 @@
+{
+  "product-78e2f5c7-65d0-489a-8f8c-c53d02778d8a:role": {
+    "before": {
+      "kind": "known",
+      "value": "concomitant"
+    },
+    "after": {
+      "kind": "known",
+      "value": "suspect"
+    }
+  }
+}

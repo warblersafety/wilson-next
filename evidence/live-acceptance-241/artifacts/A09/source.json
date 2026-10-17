@@ -1,0 +1,19 @@
+{
+  "id": "A09",
+  "family": "device",
+  "reusedFrom": "tests/e2e/build-predetermined-responses.ts:layer3CorrectionOpening",
+  "opening": "Entirely fictional evaluation. An Acme NeuroSense monitor displayed repeated false high readings during setup. No patient symptoms or adverse event occurred. The suspect device is an Acme NeuroSense, common name physiologic monitor, manufactured by Acme Medical, model NS-7, serial SN-1001. It was not implanted, was not a reprocessed single-use device, and was not serviced by a third party. The device is available for evaluation.",
+  "reportType": "product-problem",
+  "expectedMaterialFacts": [
+    "NeuroSense physiologic monitor; Acme Medical; modelNS-7 serialSN-1001",
+    "repeated false high readings during setup",
+    "no symptoms or adverse event",
+    "not implanted/reprocessed/third-party serviced",
+    "available"
+  ],
+  "correction": null,
+  "expectedCorrection": null,
+  "resume": false,
+  "unfinishedDraftReload": false,
+  "reporterReuse": false
+}

@@ -1,0 +1,23 @@
+{
+  "id": "A04",
+  "family": "multiple-medications",
+  "reusedFrom": "tests/e2e/build-predetermined-responses.ts:layer1RoleOpening",
+  "opening": "Entirely fictional evaluation. Patient TEST-47 is a 47-year-old man. He began warfarin 5 mg by mouth daily on 01-Aug-2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours on 02-Aug-2026. Warfarin is suspect; acetaminophen is concomitant. On 08-Aug-2026 he developed epistaxis and easy bruising. INR was 4.8 on 08-Aug-2026. No serious outcomes applied. No other relevant medical history applies. Warfarin was stopped and the symptoms resolved.",
+  "reportType": "adverse-event",
+  "expectedMaterialFacts": [
+    "TEST-47",
+    "47 years",
+    "male",
+    "warfarin 5 mg oral daily start2026-08-01 for atrial fibrillation suspect",
+    "acetaminophen650 mg oral every6hours start2026-08-02 concomitant then suspect",
+    "epistaxis and bruising onset2026-08-08",
+    "INR4.8 date2026-08-08",
+    "no serious outcomes/history",
+    "warfarin stopped; resolved"
+  ],
+  "correction": "Correction: acetaminophen should be treated as a suspect product, not a concomitant product.",
+  "expectedCorrection": "Only expressly corrected target changes; preserve all sibling facts, source, dates and context.",
+  "resume": false,
+  "unfinishedDraftReload": false,
+  "reporterReuse": false
+}

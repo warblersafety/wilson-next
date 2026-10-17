@@ -1,0 +1,29 @@
+{
+  "id": "A02",
+  "family": "medication",
+  "reusedFrom": "tests/e2e/build-predetermined-responses.ts:adaptiveRichOpening",
+  "opening": "Entirely fictional evaluation. Patient TEST-72 is a 72-year-old woman weighing 64 kg. She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. Her relevant history is a penicillin allergy. Amoxicillin was stopped, she received epinephrine, and she recovered. I suspect amoxicillin.",
+  "reportType": "adverse-event",
+  "expectedMaterialFacts": [
+    "TEST-72",
+    "72 years",
+    "female",
+    "64 kg",
+    "amoxicillin 500 mg oral twice daily",
+    "start 2026-09-01",
+    "sinusitis",
+    "onset 2026-09-03",
+    "rash and wheezing",
+    "life-threatening and hospitalized",
+    "tryptase 18 ng/mL; range 0 to 11.4; 2026-09-03",
+    "penicillin allergy",
+    "stopped",
+    "epinephrine",
+    "recovered"
+  ],
+  "correction": null,
+  "expectedCorrection": null,
+  "resume": false,
+  "unfinishedDraftReload": false,
+  "reporterReuse": true
+}

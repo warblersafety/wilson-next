@@ -1,0 +1,26 @@
+{
+  "id": "A11",
+  "family": "multiple-medications",
+  "reusedFrom": "prior saved live acceptance case pack: prior-multi",
+  "opening": "Entirely fictional evaluation. Entirely fictional case LIVE-MULTI-57: a 57-year-old man weighing 70 kg developed a rash on 03 September 2026. He took warfarin 5 mg by mouth daily from 01 August 2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours from 01 September 2026 for pain. Warfarin is suspect; acetaminophen is concomitant. Warfarin was stopped on 04 September 2026, the rash improved after stopping, and warfarin was never restarted. Acetaminophen was not stopped or reduced. He was hospitalized; no other serious outcomes apply. INR was 4.8 on 03 September 2026 with reference limits 0.8 and 1.2; ALT was 67 U/L on 03 September 2026 with reference limits 7 and 56. The INR collection time was not recorded. No additional relevant history applies. This is an adverse-event report, and the product is not available for evaluation. These two products are explicitly medications.",
+  "reportType": "adverse-event",
+  "expectedMaterialFacts": [
+    "Review all proposals against entire original account before acceptance",
+    "Two products retain distinct roles/doses/frequencies/dates; no inferred strength or cause",
+    "Two named observations remain separate; correction changes existing INR only after explicit review",
+    "Exact uncertainty stays field-linked and retained in PDF",
+    "Save/reload preserves accepted case and unfinished explicit draft; compare actual accepted facts to independent native/page PDF readback and render",
+    "age57 male weight70kg",
+    "rash onset2026-09-03 hospitalized only",
+    "warfarin5mg oral daily start2026-08-01 AF suspect stopped2026-09-04 improved never restarted",
+    "acetaminophen650mg oral every6hours start2026-09-01 pain concomitant not stopped/reduced",
+    "INR initially4.8 then4.3 range0.8–1.2 date2026-09-03 collection time not recorded",
+    "ALT67 U/L range7–56 date2026-09-03 unchanged",
+    "no additional history; unavailable"
+  ],
+  "correction": "Correction to this fictional case: only the INR result collected 03 September 2026 was 4.3, not 4.8. Leave ALT 67 U/L and its 03 September 2026 date unchanged. The exact INR collection time is still unknown.",
+  "expectedCorrection": "Only expressly corrected target changes; preserve all sibling facts, source, dates and context.",
+  "resume": true,
+  "unfinishedDraftReload": true,
+  "reporterReuse": false
+}

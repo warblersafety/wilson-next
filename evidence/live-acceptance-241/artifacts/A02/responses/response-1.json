@@ -1,0 +1,3131 @@
+{
+  "http": 200,
+  "operationId": "08d41cf9-6b11-4421-ad56-36f9c7d10a96",
+  "runId": "2d4c7f22-c799-4f27-b6aa-81d6ec465989",
+  "state": {
+    "version": "wilson-browser-state-v32",
+    "stage": "understanding",
+    "case": {
+      "id": "case-17d327b0-c951-49d6-9049-5a68f1dca8bf",
+      "revision": 2,
+      "patient": {
+        "id": "patient",
+        "state": "proposed",
+        "facts": {
+          "identifier": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-5d70f7c8-5339-4cdd-978b-63b05ba82599",
+                "groupId": "patient",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "TEST-72"
+                },
+                "sourceIds": [
+                  "source-4763e182-f4dc-4ebb-9171-42ae4dab8d0f"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-4763e182-f4dc-4ebb-9171-42ae4dab8d0f"
+            ],
+            "supersededValues": []
+          },
+          "ageYears": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-64cf749a-821b-438f-8dba-8c18db711493",
+                "groupId": "patient",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": 72
+                },
+                "sourceIds": [
+                  "source-4763e182-f4dc-4ebb-9171-42ae4dab8d0f"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-4763e182-f4dc-4ebb-9171-42ae4dab8d0f"
+            ],
+            "supersededValues": []
+          },
+          "raceEthnicity": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "dateOfBirth": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "a2Value": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "sex": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-e1bf181b-93e3-44ec-99c6-8b3fa3bc132c",
+                "groupId": "patient",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "female"
+                },
+                "sourceIds": [
+                  "source-4763e182-f4dc-4ebb-9171-42ae4dab8d0f"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-4763e182-f4dc-4ebb-9171-42ae4dab8d0f"
+            ],
+            "supersededValues": []
+          },
+          "weight": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-67ddb378-b636-4d29-91bb-55fe78637aaf",
+                "groupId": "patient",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": {
+                    "value": 64,
+                    "unit": "kg"
+                  }
+                },
+                "sourceIds": [
+                  "source-4763e182-f4dc-4ebb-9171-42ae4dab8d0f"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-4763e182-f4dc-4ebb-9171-42ae4dab8d0f"
+            ],
+            "supersededValues": []
+          },
+          "involvement": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      "event": {
+        "id": "event",
+        "state": "proposed",
+        "facts": {
+          "reportType": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-30b4cc4b-9a23-4abe-aef4-8f140fbcf185"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "value-report-type-5c75f0a1-9961-43b1-8598-97ecf19ac7e2",
+              "groupId": "command-record-report-type-fb07b254-f1ab-4321-8a6e-8792eb20906f",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "adverse-event"
+              },
+              "sourceIds": [
+                "source-30b4cc4b-9a23-4abe-aef4-8f140fbcf185"
+              ]
+            }
+          },
+          "reportDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "problemDescription": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "symptoms": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-23dfee8d-d81f-4995-aa50-bc366ffac67e",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": [
+                    "generalized rash",
+                    "wheezing"
+                  ]
+                },
+                "sourceIds": [
+                  "source-ca1cf7db-43ca-4b69-88e3-9f060b23dee8"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-ca1cf7db-43ca-4b69-88e3-9f060b23dee8"
+            ],
+            "supersededValues": []
+          },
+          "onsetDate": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-5acb0007-9b75-4a76-8e92-d38537b96626",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "2026-09-03"
+                },
+                "sourceIds": [
+                  "source-ca1cf7db-43ca-4b69-88e3-9f060b23dee8"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-ca1cf7db-43ca-4b69-88e3-9f060b23dee8"
+            ],
+            "supersededValues": []
+          },
+          "death": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "deathDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "lifeThreatening": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-fdb5a559-ed32-4912-b223-0875e20d5e72",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": true
+                },
+                "sourceIds": [
+                  "source-ca1cf7db-43ca-4b69-88e3-9f060b23dee8"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-ca1cf7db-43ca-4b69-88e3-9f060b23dee8"
+            ],
+            "supersededValues": []
+          },
+          "hospitalized": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-48c5875c-b7d3-4a9e-b1f3-7c593cc83c19",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": true
+                },
+                "sourceIds": [
+                  "source-ca1cf7db-43ca-4b69-88e3-9f060b23dee8"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-ca1cf7db-43ca-4b69-88e3-9f060b23dee8"
+            ],
+            "supersededValues": []
+          },
+          "disability": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "requiredIntervention": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "congenitalAnomaly": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "otherSerious": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "relevantTestsAvailable": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "relevantHistory": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-11a91bed-9f3b-425c-ac9e-3f83a0973589",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "penicillin allergy"
+                },
+                "sourceIds": [
+                  "source-e126098f-148e-452f-9ebe-e7da6f25af87"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-e126098f-148e-452f-9ebe-e7da6f25af87"
+            ],
+            "supersededValues": []
+          },
+          "treatments": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-a26379ca-cddd-48a7-b242-0bd796c9dd98",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": [
+                    "epinephrine"
+                  ]
+                },
+                "sourceIds": [
+                  "source-e9558457-f8b0-41eb-ade2-97e86f4e5198"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-e9558457-f8b0-41eb-ade2-97e86f4e5198"
+            ],
+            "supersededValues": []
+          },
+          "outcome": {
+            "state": "proposed",
+            "proposedValues": [
+              {
+                "id": "proposal-89b100e5-c50f-4c68-a0ba-cce21cda600f",
+                "groupId": "event",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "recovered"
+                },
+                "sourceIds": [
+                  "source-e9558457-f8b0-41eb-ade2-97e86f4e5198"
+                ]
+              }
+            ],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-e9558457-f8b0-41eb-ade2-97e86f4e5198"
+            ],
+            "supersededValues": []
+          },
+          "dischargeDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "productAvailability": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "productReturnDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "additionalComments": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      "products": [
+        {
+          "id": "product-60671b46-1f9b-4d04-8b67-7c48a8f3c424",
+          "proposalGroupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+          "state": "proposed",
+          "facts": {
+            "name": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-e15fb725-d318-4736-8b53-45c8fd3ea726",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "amoxicillin"
+                  },
+                  "sourceIds": [
+                    "source-323bb87a-5556-4d77-89a2-8067d0def095"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-323bb87a-5556-4d77-89a2-8067d0def095"
+              ],
+              "supersededValues": []
+            },
+            "productType": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-7a82c5cb-608d-4703-9130-0ab9cf7e10fa",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "drug-or-biologic"
+                  },
+                  "sourceIds": [
+                    "source-323bb87a-5556-4d77-89a2-8067d0def095"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-323bb87a-5556-4d77-89a2-8067d0def095"
+              ],
+              "supersededValues": []
+            },
+            "role": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-3ab70a0f-f188-48cb-a6b5-727d260f62ac",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "suspect"
+                  },
+                  "sourceIds": [
+                    "source-4b0f1dec-b4b1-4de4-8cd6-c02347d61151"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-4b0f1dec-b4b1-4de4-8cd6-c02347d61151"
+              ],
+              "supersededValues": []
+            },
+            "manufacturer": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "lotNumber": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "ndcOrUniqueId": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "dose": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-17113c30-f92d-402b-91a1-3f5a676258c3",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "500 mg"
+                  },
+                  "sourceIds": [
+                    "source-323bb87a-5556-4d77-89a2-8067d0def095"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-323bb87a-5556-4d77-89a2-8067d0def095"
+              ],
+              "supersededValues": []
+            },
+            "strength": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "frequency": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-be7cd9ac-ae37-4bfb-ac31-02aa8c03a050",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "twice daily"
+                  },
+                  "sourceIds": [
+                    "source-323bb87a-5556-4d77-89a2-8067d0def095"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-323bb87a-5556-4d77-89a2-8067d0def095"
+              ],
+              "supersededValues": []
+            },
+            "route": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-6d347560-dcca-4900-9a4b-0b2279784526",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "oral"
+                  },
+                  "sourceIds": [
+                    "source-323bb87a-5556-4d77-89a2-8067d0def095"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-323bb87a-5556-4d77-89a2-8067d0def095"
+              ],
+              "supersededValues": []
+            },
+            "startDate": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-abb7c426-009f-4bc4-84bc-6667331b5308",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "2026-09-01"
+                  },
+                  "sourceIds": [
+                    "source-323bb87a-5556-4d77-89a2-8067d0def095"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-323bb87a-5556-4d77-89a2-8067d0def095"
+              ],
+              "supersededValues": []
+            },
+            "stopDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "therapyOngoing": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "indication": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-edd4cd2d-6ba6-434c-beca-d3ad57e9f29c",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "sinusitis"
+                  },
+                  "sourceIds": [
+                    "source-323bb87a-5556-4d77-89a2-8067d0def095"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-323bb87a-5556-4d77-89a2-8067d0def095"
+              ],
+              "supersededValues": []
+            },
+            "stopped": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-17d1be7c-32e2-4ec5-bb3a-e196c6b66f04",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": true
+                  },
+                  "sourceIds": [
+                    "source-e9558457-f8b0-41eb-ade2-97e86f4e5198"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-e9558457-f8b0-41eb-ade2-97e86f4e5198"
+              ],
+              "supersededValues": []
+            },
+            "cosmeticUse": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "otherProductTypes": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "medicationType": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "doseReduced": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "doseReductionDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "treatmentDuration": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "d3Value": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "improvedAfterChange": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "restarted": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "recurred": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "commonName": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "procode": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "modelNumber": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "catalogNumber": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "expirationDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerName": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerAddress": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerCity": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerRegion": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerPostalCode": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerCountry": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseWebsite": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "serialNumber": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "udi": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "deviceOperator": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "implanted": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "implantDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "explantDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "reprocessedSingleUse": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "reprocessor": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "servicedByThirdParty": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            }
+          }
+        }
+      ],
+      "relevantTests": [
+        {
+          "id": "test-07afafae-b307-440f-9d9f-18e11d5c7af3",
+          "proposalGroupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+          "state": "proposed",
+          "facts": {
+            "testName": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-25c17938-4c69-4f9f-90e4-703df65a2cd0",
+                  "groupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "Serum tryptase"
+                  },
+                  "sourceIds": [
+                    "source-590fa074-05cd-4e55-9040-2154b0f89ae9"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-590fa074-05cd-4e55-9040-2154b0f89ae9"
+              ],
+              "supersededValues": []
+            },
+            "testResult": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-b483e9ac-b9e1-49a5-80ba-87e1f437fde9",
+                  "groupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "18 ng/mL"
+                  },
+                  "sourceIds": [
+                    "source-590fa074-05cd-4e55-9040-2154b0f89ae9"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-590fa074-05cd-4e55-9040-2154b0f89ae9"
+              ],
+              "supersededValues": []
+            },
+            "lowRange": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-e03b8f0c-758d-4bdf-8638-b684acb7b1ef",
+                  "groupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "0"
+                  },
+                  "sourceIds": [
+                    "source-590fa074-05cd-4e55-9040-2154b0f89ae9"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-590fa074-05cd-4e55-9040-2154b0f89ae9"
+              ],
+              "supersededValues": []
+            },
+            "highRange": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-39b770a8-bbea-4228-862a-f7db80f6130a",
+                  "groupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "11.4"
+                  },
+                  "sourceIds": [
+                    "source-590fa074-05cd-4e55-9040-2154b0f89ae9"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-590fa074-05cd-4e55-9040-2154b0f89ae9"
+              ],
+              "supersededValues": []
+            },
+            "date": {
+              "state": "proposed",
+              "proposedValues": [
+                {
+                  "id": "proposal-59074d13-6dcf-4db2-bb3b-cb7c78354e8e",
+                  "groupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "2026-09-03"
+                  },
+                  "sourceIds": [
+                    "source-590fa074-05cd-4e55-9040-2154b0f89ae9"
+                  ]
+                }
+              ],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-590fa074-05cd-4e55-9040-2154b0f89ae9"
+              ],
+              "supersededValues": []
+            }
+          }
+        }
+      ],
+      "reporter": {
+        "id": "reporter",
+        "facts": {
+          "lastName": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "firstName": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "address": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "city": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "state": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "postalCode": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "country": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "phone": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "email": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "healthProfessional": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "occupation": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "reportedTo": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "doNotDiscloseIdentity": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      "askedNeeds": [],
+      "sources": [
+        {
+          "id": "source-323bb87a-5556-4d77-89a2-8067d0def095",
+          "inputId": "input-7247ea16-d421-4e02-b894-22bce8a907d2",
+          "inputType": "narrative",
+          "excerpt": "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. ",
+          "start": 86,
+          "end": 166,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:13:35.032Z"
+        },
+        {
+          "id": "source-4b0f1dec-b4b1-4de4-8cd6-c02347d61151",
+          "inputId": "input-7247ea16-d421-4e02-b894-22bce8a907d2",
+          "inputType": "narrative",
+          "excerpt": "I suspect amoxicillin.",
+          "start": 473,
+          "end": 495,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:13:35.032Z"
+        },
+        {
+          "id": "source-e9558457-f8b0-41eb-ade2-97e86f4e5198",
+          "inputId": "input-7247ea16-d421-4e02-b894-22bce8a907d2",
+          "inputType": "narrative",
+          "excerpt": "Amoxicillin was stopped, she received epinephrine, and she recovered. ",
+          "start": 403,
+          "end": 473,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:13:35.032Z"
+        },
+        {
+          "id": "source-4763e182-f4dc-4ebb-9171-42ae4dab8d0f",
+          "inputId": "input-7247ea16-d421-4e02-b894-22bce8a907d2",
+          "inputType": "narrative",
+          "excerpt": "Patient TEST-72 is a 72-year-old woman weighing 64 kg. ",
+          "start": 31,
+          "end": 86,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:13:35.032Z"
+        },
+        {
+          "id": "source-ca1cf7db-43ca-4b69-88e3-9f060b23dee8",
+          "inputId": "input-7247ea16-d421-4e02-b894-22bce8a907d2",
+          "inputType": "narrative",
+          "excerpt": "On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. ",
+          "start": 166,
+          "end": 285,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:13:35.032Z"
+        },
+        {
+          "id": "source-e126098f-148e-452f-9ebe-e7da6f25af87",
+          "inputId": "input-7247ea16-d421-4e02-b894-22bce8a907d2",
+          "inputType": "narrative",
+          "excerpt": "Her relevant history is a penicillin allergy. ",
+          "start": 357,
+          "end": 403,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:13:35.032Z"
+        },
+        {
+          "id": "source-590fa074-05cd-4e55-9040-2154b0f89ae9",
+          "inputId": "input-7247ea16-d421-4e02-b894-22bce8a907d2",
+          "inputType": "narrative",
+          "excerpt": "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. ",
+          "start": 285,
+          "end": 357,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:13:35.032Z"
+        },
+        {
+          "id": "source-30b4cc4b-9a23-4abe-aef4-8f140fbcf185",
+          "inputId": "input-c2bada97-ce89-413d-8475-c6596a3c3dd5",
+          "inputType": "selection",
+          "excerpt": "Adverse event",
+          "start": 0,
+          "end": 13,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:13:35.044Z"
+        }
+      ],
+      "changes": [
+        {
+          "commandId": "command-attach-opening-6b2a40b3-fc70-49a3-98ab-0c6638fd6e84",
+          "type": "attach-grounded-proposals",
+          "affectedTargets": [
+            "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424",
+            "test:test-07afafae-b307-440f-9d9f-18e11d5c7af3",
+            "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:name",
+            "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:productType",
+            "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:role",
+            "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:dose",
+            "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:frequency",
+            "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:route",
+            "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:startDate",
+            "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:stopped",
+            "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:indication",
+            "patient:patient:ageYears",
+            "patient:patient:sex",
+            "patient:patient:weight",
+            "patient:patient:identifier",
+            "event:event:symptoms",
+            "event:event:onsetDate",
+            "event:event:lifeThreatening",
+            "event:event:hospitalized",
+            "event:event:relevantHistory",
+            "event:event:treatments",
+            "event:event:outcome",
+            "test:test-07afafae-b307-440f-9d9f-18e11d5c7af3:testName",
+            "test:test-07afafae-b307-440f-9d9f-18e11d5c7af3:testResult",
+            "test:test-07afafae-b307-440f-9d9f-18e11d5c7af3:lowRange",
+            "test:test-07afafae-b307-440f-9d9f-18e11d5c7af3:highRange",
+            "test:test-07afafae-b307-440f-9d9f-18e11d5c7af3:date"
+          ],
+          "sourceIds": [
+            "source-323bb87a-5556-4d77-89a2-8067d0def095",
+            "source-4b0f1dec-b4b1-4de4-8cd6-c02347d61151",
+            "source-e9558457-f8b0-41eb-ade2-97e86f4e5198",
+            "source-4763e182-f4dc-4ebb-9171-42ae4dab8d0f",
+            "source-ca1cf7db-43ca-4b69-88e3-9f060b23dee8",
+            "source-e126098f-148e-452f-9ebe-e7da6f25af87",
+            "source-590fa074-05cd-4e55-9040-2154b0f89ae9"
+          ],
+          "priorRevision": 0,
+          "resultingRevision": 1,
+          "supersessions": [],
+          "resolutions": []
+        },
+        {
+          "commandId": "command-record-report-type-fb07b254-f1ab-4321-8a6e-8792eb20906f",
+          "type": "record-clinician-facts",
+          "affectedTargets": [
+            "event:event:reportType"
+          ],
+          "sourceIds": [
+            "source-30b4cc4b-9a23-4abe-aef4-8f140fbcf185"
+          ],
+          "priorRevision": 1,
+          "resultingRevision": 2,
+          "supersessions": [],
+          "resolutions": []
+        }
+      ]
+    },
+    "unrepresented": []
+  },
+  "snapshot": {
+    "stage": "understanding",
+    "revision": 2,
+    "understanding": {
+      "revision": 2,
+      "patient": {
+        "identifier": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-5d70f7c8-5339-4cdd-978b-63b05ba82599",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "TEST-72"
+              },
+              "evidence": [
+                "Patient TEST-72 is a 72-year-old woman weighing 64 kg. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Patient TEST-72 is a 72-year-old woman weighing 64 kg. "
+          ]
+        },
+        "ageYears": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-64cf749a-821b-438f-8dba-8c18db711493",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": 72
+              },
+              "evidence": [
+                "Patient TEST-72 is a 72-year-old woman weighing 64 kg. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Patient TEST-72 is a 72-year-old woman weighing 64 kg. "
+          ]
+        },
+        "raceEthnicity": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "dateOfBirth": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "a2Value": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "sex": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-e1bf181b-93e3-44ec-99c6-8b3fa3bc132c",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "female"
+              },
+              "evidence": [
+                "Patient TEST-72 is a 72-year-old woman weighing 64 kg. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Patient TEST-72 is a 72-year-old woman weighing 64 kg. "
+          ]
+        },
+        "weight": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-67ddb378-b636-4d29-91bb-55fe78637aaf",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": {
+                  "value": 64,
+                  "unit": "kg"
+                }
+              },
+              "evidence": [
+                "Patient TEST-72 is a 72-year-old woman weighing 64 kg. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Patient TEST-72 is a 72-year-old woman weighing 64 kg. "
+          ]
+        },
+        "involvement": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        }
+      },
+      "event": {
+        "reportType": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "adverse-event"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Adverse event"
+          ]
+        },
+        "reportDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "problemDescription": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "symptoms": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-23dfee8d-d81f-4995-aa50-bc366ffac67e",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": [
+                  "generalized rash",
+                  "wheezing"
+                ]
+              },
+              "evidence": [
+                "On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. "
+          ]
+        },
+        "onsetDate": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-5acb0007-9b75-4a76-8e92-d38537b96626",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "2026-09-03"
+              },
+              "evidence": [
+                "On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. "
+          ]
+        },
+        "death": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "deathDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "lifeThreatening": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-fdb5a559-ed32-4912-b223-0875e20d5e72",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": true
+              },
+              "evidence": [
+                "On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. "
+          ]
+        },
+        "hospitalized": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-48c5875c-b7d3-4a9e-b1f3-7c593cc83c19",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": true
+              },
+              "evidence": [
+                "On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. "
+          ]
+        },
+        "disability": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "requiredIntervention": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "congenitalAnomaly": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "otherSerious": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "relevantTestsAvailable": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "relevantHistory": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-11a91bed-9f3b-425c-ac9e-3f83a0973589",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "penicillin allergy"
+              },
+              "evidence": [
+                "Her relevant history is a penicillin allergy. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Her relevant history is a penicillin allergy. "
+          ]
+        },
+        "treatments": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-a26379ca-cddd-48a7-b242-0bd796c9dd98",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": [
+                  "epinephrine"
+                ]
+              },
+              "evidence": [
+                "Amoxicillin was stopped, she received epinephrine, and she recovered. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Amoxicillin was stopped, she received epinephrine, and she recovered. "
+          ]
+        },
+        "outcome": {
+          "state": "proposed",
+          "proposals": [
+            {
+              "id": "proposal-89b100e5-c50f-4c68-a0ba-cce21cda600f",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "recovered"
+              },
+              "evidence": [
+                "Amoxicillin was stopped, she received epinephrine, and she recovered. "
+              ]
+            }
+          ],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Amoxicillin was stopped, she received epinephrine, and she recovered. "
+          ]
+        },
+        "dischargeDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "productAvailability": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "productReturnDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "additionalComments": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        }
+      },
+      "products": [
+        {
+          "id": "product-60671b46-1f9b-4d04-8b67-7c48a8f3c424",
+          "ordinal": 1,
+          "proposalGroupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+          "state": "proposed",
+          "facts": {
+            "name": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-e15fb725-d318-4736-8b53-45c8fd3ea726",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "amoxicillin"
+                  },
+                  "evidence": [
+                    "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+              ]
+            },
+            "productType": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-7a82c5cb-608d-4703-9130-0ab9cf7e10fa",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "drug-or-biologic"
+                  },
+                  "evidence": [
+                    "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+              ]
+            },
+            "role": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-3ab70a0f-f188-48cb-a6b5-727d260f62ac",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "suspect"
+                  },
+                  "evidence": [
+                    "I suspect amoxicillin."
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "I suspect amoxicillin."
+              ]
+            },
+            "manufacturer": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "lotNumber": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "ndcOrUniqueId": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "dose": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-17113c30-f92d-402b-91a1-3f5a676258c3",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "500 mg"
+                  },
+                  "evidence": [
+                    "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+              ]
+            },
+            "strength": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "frequency": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-be7cd9ac-ae37-4bfb-ac31-02aa8c03a050",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "twice daily"
+                  },
+                  "evidence": [
+                    "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+              ]
+            },
+            "route": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-6d347560-dcca-4900-9a4b-0b2279784526",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "oral"
+                  },
+                  "evidence": [
+                    "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+              ]
+            },
+            "startDate": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-abb7c426-009f-4bc4-84bc-6667331b5308",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "2026-09-01"
+                  },
+                  "evidence": [
+                    "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+              ]
+            },
+            "stopDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "therapyOngoing": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "indication": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-edd4cd2d-6ba6-434c-beca-d3ad57e9f29c",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "sinusitis"
+                  },
+                  "evidence": [
+                    "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+              ]
+            },
+            "stopped": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-17d1be7c-32e2-4ec5-bb3a-e196c6b66f04",
+                  "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": true
+                  },
+                  "evidence": [
+                    "Amoxicillin was stopped, she received epinephrine, and she recovered. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "Amoxicillin was stopped, she received epinephrine, and she recovered. "
+              ]
+            },
+            "cosmeticUse": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "otherProductTypes": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "medicationType": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "doseReduced": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "doseReductionDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "treatmentDuration": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "d3Value": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "improvedAfterChange": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "restarted": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "recurred": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "commonName": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "procode": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "modelNumber": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "catalogNumber": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "expirationDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerName": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerAddress": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerCity": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerRegion": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerPostalCode": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerCountry": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseWebsite": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "serialNumber": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "udi": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "deviceOperator": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "implanted": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "implantDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "explantDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "reprocessedSingleUse": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "reprocessor": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "servicedByThirdParty": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            }
+          }
+        }
+      ],
+      "relevantTests": [
+        {
+          "id": "test-07afafae-b307-440f-9d9f-18e11d5c7af3",
+          "proposalGroupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+          "state": "proposed",
+          "facts": {
+            "testName": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-25c17938-4c69-4f9f-90e4-703df65a2cd0",
+                  "groupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "Serum tryptase"
+                  },
+                  "evidence": [
+                    "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. "
+              ]
+            },
+            "testResult": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-b483e9ac-b9e1-49a5-80ba-87e1f437fde9",
+                  "groupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "18 ng/mL"
+                  },
+                  "evidence": [
+                    "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. "
+              ]
+            },
+            "lowRange": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-e03b8f0c-758d-4bdf-8638-b684acb7b1ef",
+                  "groupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "0"
+                  },
+                  "evidence": [
+                    "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. "
+              ]
+            },
+            "highRange": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-39b770a8-bbea-4228-862a-f7db80f6130a",
+                  "groupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "11.4"
+                  },
+                  "evidence": [
+                    "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. "
+              ]
+            },
+            "date": {
+              "state": "proposed",
+              "proposals": [
+                {
+                  "id": "proposal-59074d13-6dcf-4db2-bb3b-cb7c78354e8e",
+                  "groupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+                  "intent": "fact",
+                  "value": {
+                    "kind": "known",
+                    "value": "2026-09-03"
+                  },
+                  "evidence": [
+                    "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. "
+                  ]
+                }
+              ],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. "
+              ]
+            }
+          }
+        }
+      ],
+      "reporter": {
+        "lastName": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "firstName": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "address": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "city": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "state": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "postalCode": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "country": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "phone": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "email": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "healthProfessional": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "occupation": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "reportedTo": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "doNotDiscloseIdentity": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        }
+      }
+    },
+    "review": {
+      "revision": 2,
+      "attention": [
+        {
+          "target": "patient:patient:identifier",
+          "groupId": "patient",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-5d70f7c8-5339-4cdd-978b-63b05ba82599",
+              "value": {
+                "kind": "known",
+                "value": "TEST-72"
+              },
+              "evidence": [
+                "Patient TEST-72 is a 72-year-old woman weighing 64 kg. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "patient:patient:ageYears",
+          "groupId": "patient",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-64cf749a-821b-438f-8dba-8c18db711493",
+              "value": {
+                "kind": "known",
+                "value": 72
+              },
+              "evidence": [
+                "Patient TEST-72 is a 72-year-old woman weighing 64 kg. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "patient:patient:sex",
+          "groupId": "patient",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-e1bf181b-93e3-44ec-99c6-8b3fa3bc132c",
+              "value": {
+                "kind": "known",
+                "value": "female"
+              },
+              "evidence": [
+                "Patient TEST-72 is a 72-year-old woman weighing 64 kg. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "patient:patient:weight",
+          "groupId": "patient",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-67ddb378-b636-4d29-91bb-55fe78637aaf",
+              "value": {
+                "kind": "known",
+                "value": {
+                  "value": 64,
+                  "unit": "kg"
+                }
+              },
+              "evidence": [
+                "Patient TEST-72 is a 72-year-old woman weighing 64 kg. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:symptoms",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-23dfee8d-d81f-4995-aa50-bc366ffac67e",
+              "value": {
+                "kind": "known",
+                "value": [
+                  "generalized rash",
+                  "wheezing"
+                ]
+              },
+              "evidence": [
+                "On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:onsetDate",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-5acb0007-9b75-4a76-8e92-d38537b96626",
+              "value": {
+                "kind": "known",
+                "value": "2026-09-03"
+              },
+              "evidence": [
+                "On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:lifeThreatening",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-fdb5a559-ed32-4912-b223-0875e20d5e72",
+              "value": {
+                "kind": "known",
+                "value": true
+              },
+              "evidence": [
+                "On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:hospitalized",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-48c5875c-b7d3-4a9e-b1f3-7c593cc83c19",
+              "value": {
+                "kind": "known",
+                "value": true
+              },
+              "evidence": [
+                "On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:relevantHistory",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-11a91bed-9f3b-425c-ac9e-3f83a0973589",
+              "value": {
+                "kind": "known",
+                "value": "penicillin allergy"
+              },
+              "evidence": [
+                "Her relevant history is a penicillin allergy. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:treatments",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-a26379ca-cddd-48a7-b242-0bd796c9dd98",
+              "value": {
+                "kind": "known",
+                "value": [
+                  "epinephrine"
+                ]
+              },
+              "evidence": [
+                "Amoxicillin was stopped, she received epinephrine, and she recovered. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "event:event:outcome",
+          "groupId": "event",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-89b100e5-c50f-4c68-a0ba-cce21cda600f",
+              "value": {
+                "kind": "known",
+                "value": "recovered"
+              },
+              "evidence": [
+                "Amoxicillin was stopped, she received epinephrine, and she recovered. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:name",
+          "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-e15fb725-d318-4736-8b53-45c8fd3ea726",
+              "value": {
+                "kind": "known",
+                "value": "amoxicillin"
+              },
+              "evidence": [
+                "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:productType",
+          "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-7a82c5cb-608d-4703-9130-0ab9cf7e10fa",
+              "value": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "evidence": [
+                "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:role",
+          "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-3ab70a0f-f188-48cb-a6b5-727d260f62ac",
+              "value": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "evidence": [
+                "I suspect amoxicillin."
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:dose",
+          "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-17113c30-f92d-402b-91a1-3f5a676258c3",
+              "value": {
+                "kind": "known",
+                "value": "500 mg"
+              },
+              "evidence": [
+                "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:frequency",
+          "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-be7cd9ac-ae37-4bfb-ac31-02aa8c03a050",
+              "value": {
+                "kind": "known",
+                "value": "twice daily"
+              },
+              "evidence": [
+                "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:route",
+          "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-6d347560-dcca-4900-9a4b-0b2279784526",
+              "value": {
+                "kind": "known",
+                "value": "oral"
+              },
+              "evidence": [
+                "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:startDate",
+          "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-abb7c426-009f-4bc4-84bc-6667331b5308",
+              "value": {
+                "kind": "known",
+                "value": "2026-09-01"
+              },
+              "evidence": [
+                "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:indication",
+          "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-edd4cd2d-6ba6-434c-beca-d3ad57e9f29c",
+              "value": {
+                "kind": "known",
+                "value": "sinusitis"
+              },
+              "evidence": [
+                "She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:stopped",
+          "groupId": "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-17d1be7c-32e2-4ec5-bb3a-e196c6b66f04",
+              "value": {
+                "kind": "known",
+                "value": true
+              },
+              "evidence": [
+                "Amoxicillin was stopped, she received epinephrine, and she recovered. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "test:test-07afafae-b307-440f-9d9f-18e11d5c7af3:testName",
+          "groupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-25c17938-4c69-4f9f-90e4-703df65a2cd0",
+              "value": {
+                "kind": "known",
+                "value": "Serum tryptase"
+              },
+              "evidence": [
+                "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "test:test-07afafae-b307-440f-9d9f-18e11d5c7af3:testResult",
+          "groupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-b483e9ac-b9e1-49a5-80ba-87e1f437fde9",
+              "value": {
+                "kind": "known",
+                "value": "18 ng/mL"
+              },
+              "evidence": [
+                "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "test:test-07afafae-b307-440f-9d9f-18e11d5c7af3:lowRange",
+          "groupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-e03b8f0c-758d-4bdf-8638-b684acb7b1ef",
+              "value": {
+                "kind": "known",
+                "value": "0"
+              },
+              "evidence": [
+                "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "test:test-07afafae-b307-440f-9d9f-18e11d5c7af3:highRange",
+          "groupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-39b770a8-bbea-4228-862a-f7db80f6130a",
+              "value": {
+                "kind": "known",
+                "value": "11.4"
+              },
+              "evidence": [
+                "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. "
+              ]
+            }
+          ]
+        },
+        {
+          "target": "test:test-07afafae-b307-440f-9d9f-18e11d5c7af3:date",
+          "groupId": "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333",
+          "kind": "proposal",
+          "values": [
+            {
+              "id": "proposal-59074d13-6dcf-4db2-bb3b-cb7c78354e8e",
+              "value": {
+                "kind": "known",
+                "value": "2026-09-03"
+              },
+              "evidence": [
+                "Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. "
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "clarification": null,
+    "projection": {
+      "caseId": "case-17d327b0-c951-49d6-9049-5a68f1dca8bf",
+      "revision": 2,
+      "sections": {
+        "A": {},
+        "B": {
+          "relevantTests": [],
+          "reportType": "adverse-event"
+        },
+        "C": {},
+        "D": {
+          "suspectProducts": []
+        },
+        "E": {
+          "suspectDevices": []
+        },
+        "F": {
+          "concomitantProducts": []
+        },
+        "G": {
+          "reporter": {}
+        }
+      },
+      "invalidCalendarDates": [],
+      "expirationNotes": [],
+      "productDateNotes": [],
+      "sourceTrace": {
+        "sections.B.reportType": [
+          "source-30b4cc4b-9a23-4abe-aef4-8f140fbcf185"
+        ]
+      },
+      "omissions": [
+        {
+          "concept": "patient identifier",
+          "target": "patient:patient:identifier",
+          "reason": "empty",
+          "sourceIds": [
+            "source-4763e182-f4dc-4ebb-9171-42ae4dab8d0f"
+          ]
+        },
+        {
+          "concept": "patient involvement",
+          "target": "patient:patient:involvement",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient age",
+          "target": "patient:patient:ageYears",
+          "reason": "empty",
+          "sourceIds": [
+            "source-4763e182-f4dc-4ebb-9171-42ae4dab8d0f"
+          ]
+        },
+        {
+          "concept": "patient date of birth",
+          "target": "patient:patient:dateOfBirth",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient race and/or ethnicity",
+          "target": "patient:patient:raceEthnicity",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient sex",
+          "target": "patient:patient:sex",
+          "reason": "empty",
+          "sourceIds": [
+            "source-4763e182-f4dc-4ebb-9171-42ae4dab8d0f"
+          ]
+        },
+        {
+          "concept": "patient weight",
+          "target": "patient:patient:weight",
+          "reason": "empty",
+          "sourceIds": [
+            "source-4763e182-f4dc-4ebb-9171-42ae4dab8d0f"
+          ]
+        },
+        {
+          "concept": "event date",
+          "target": "event:event:onsetDate",
+          "reason": "empty",
+          "sourceIds": [
+            "source-ca1cf7db-43ca-4b69-88e3-9f060b23dee8"
+          ]
+        },
+        {
+          "concept": "date of this report",
+          "target": "event:event:reportDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "hospitalization outcome",
+          "target": "event:event:hospitalized",
+          "reason": "empty",
+          "sourceIds": [
+            "source-ca1cf7db-43ca-4b69-88e3-9f060b23dee8"
+          ]
+        },
+        {
+          "concept": "death outcome",
+          "target": "event:event:death",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "lifeThreatening outcome",
+          "target": "event:event:lifeThreatening",
+          "reason": "empty",
+          "sourceIds": [
+            "source-ca1cf7db-43ca-4b69-88e3-9f060b23dee8"
+          ]
+        },
+        {
+          "concept": "disability outcome",
+          "target": "event:event:disability",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "requiredIntervention outcome",
+          "target": "event:event:requiredIntervention",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "congenitalAnomaly outcome",
+          "target": "event:event:congenitalAnomaly",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "otherSerious outcome",
+          "target": "event:event:otherSerious",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "relevant medical history",
+          "target": "event:event:relevantHistory",
+          "reason": "empty",
+          "sourceIds": [
+            "source-e126098f-148e-452f-9ebe-e7da6f25af87"
+          ]
+        },
+        {
+          "concept": "product availability",
+          "target": "event:event:productAvailability",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "relevant tests",
+          "target": "event:event:relevantTestsAvailable",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "symptoms",
+          "target": "event:event:symptoms",
+          "reason": "empty",
+          "sourceIds": [
+            "source-ca1cf7db-43ca-4b69-88e3-9f060b23dee8"
+          ]
+        },
+        {
+          "concept": "product problem",
+          "target": "event:event:problemDescription",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "treatment",
+          "target": "event:event:treatments",
+          "reason": "empty",
+          "sourceIds": [
+            "source-e9558457-f8b0-41eb-ade2-97e86f4e5198"
+          ]
+        },
+        {
+          "concept": "event outcome",
+          "target": "event:event:outcome",
+          "reason": "empty",
+          "sourceIds": [
+            "source-e9558457-f8b0-41eb-ade2-97e86f4e5198"
+          ]
+        },
+        {
+          "concept": "discharge date",
+          "target": "event:event:dischargeDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "additional comments",
+          "target": "event:event:additionalComments",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "event description",
+          "target": "event:event",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter lastName",
+          "target": "reporter:reporter:lastName",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter firstName",
+          "target": "reporter:reporter:firstName",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter address",
+          "target": "reporter:reporter:address",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter city",
+          "target": "reporter:reporter:city",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter state",
+          "target": "reporter:reporter:state",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter postalCode",
+          "target": "reporter:reporter:postalCode",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter country",
+          "target": "reporter:reporter:country",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter phone",
+          "target": "reporter:reporter:phone",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter email",
+          "target": "reporter:reporter:email",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter healthProfessional",
+          "target": "reporter:reporter:healthProfessional",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter occupation",
+          "target": "reporter:reporter:occupation",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter reportedTo",
+          "target": "reporter:reporter:reportedTo",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter doNotDiscloseIdentity",
+          "target": "reporter:reporter:doNotDiscloseIdentity",
+          "reason": "empty",
+          "sourceIds": []
+        }
+      ],
+      "notIncluded": [
+        "Patient fractional or compound ages and partial date of birth",
+        "Patient race/ethnicity detail outside the seven A5 categories",
+        "Section C product pictures",
+        "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
+        "Product date wording outside complete dates or explicit month/year/year-only precision"
+      ]
+    },
+    "downloadReady": false,
+    "clinicalNeeds": [],
+    "reportContentKey": "f8c433f498d62f0f7f931a7a75eadf5de9b9b298c2c9cdf753f32efb1bac6104",
+    "outputIssues": [
+      {
+        "code": "pending-proposal-review",
+        "message": "Review every pending proposal before opening the form.",
+        "targets": [
+          "patient:patient:identifier",
+          "patient:patient:ageYears",
+          "patient:patient:sex",
+          "patient:patient:weight",
+          "event:event:symptoms",
+          "event:event:onsetDate",
+          "event:event:lifeThreatening",
+          "event:event:hospitalized",
+          "event:event:relevantHistory",
+          "event:event:treatments",
+          "event:event:outcome",
+          "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:name",
+          "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:productType",
+          "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:role",
+          "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:dose",
+          "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:frequency",
+          "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:route",
+          "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:startDate",
+          "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:indication",
+          "product:product-60671b46-1f9b-4d04-8b67-7c48a8f3c424:stopped",
+          "test:test-07afafae-b307-440f-9d9f-18e11d5c7af3:testName",
+          "test:test-07afafae-b307-440f-9d9f-18e11d5c7af3:testResult",
+          "test:test-07afafae-b307-440f-9d9f-18e11d5c7af3:lowRange",
+          "test:test-07afafae-b307-440f-9d9f-18e11d5c7af3:highRange",
+          "test:test-07afafae-b307-440f-9d9f-18e11d5c7af3:date"
+        ],
+        "entityIds": []
+      },
+      {
+        "code": "no-retained-product",
+        "message": "No reviewed product remains in this bounded case. Use New case to begin again with a product Wilson can retain.",
+        "targets": [],
+        "entityIds": []
+      },
+      {
+        "code": "missing-event-description",
+        "message": "Accept at least one event or product-problem fact that contributes to the report description.",
+        "targets": [
+          "event:event:problemDescription",
+          "event:event:symptoms",
+          "event:event:treatments",
+          "event:event:outcome"
+        ],
+        "entityIds": [
+          "event"
+        ]
+      }
+    ],
+    "unrepresented": [],
+    "openingGroups": [
+      "patient",
+      "event",
+      "group-4e2847e8-f55e-4760-9eb3-84a68831d036",
+      "group-ed2f87e9-3dbb-4d1f-bfb3-97337f8b3333"
+    ]
+  },
+  "provenance": {
+    "stateVersion": "wilson-browser-state-v32",
+    "release": "4bcabdbe6a1edf6296e555235f8de79a1dd65614"
+  }
+}

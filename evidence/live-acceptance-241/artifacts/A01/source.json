@@ -1,0 +1,26 @@
+{
+  "id": "A01",
+  "family": "medication",
+  "reusedFrom": "tests/e2e/build-predetermined-responses.ts:richOpening",
+  "opening": "Entirely fictional evaluation. Patient TEST-68 is a 68-year-old man. He began cephalexin 500 mg by mouth twice daily on 01-Aug-2026 for cellulitis. On 04-Aug-2026 he developed diffuse hives and facial swelling and was hospitalized. Cephalexin was stopped, he was treated with epinephrine and diphenhydramine, and he recovered and was discharged on 05-Aug-2026. I suspect cephalexin.",
+  "reportType": "adverse-event",
+  "expectedMaterialFacts": [
+    "TEST-68",
+    "68 years",
+    "male",
+    "cephalexin 500 mg oral twice daily",
+    "start 2026-08-01",
+    "onset 2026-08-04",
+    "hives and facial swelling",
+    "hospitalized",
+    "stopped cephalexin",
+    "epinephrine and diphenhydramine",
+    "recovered",
+    "discharged 2026-08-05"
+  ],
+  "correction": null,
+  "expectedCorrection": null,
+  "resume": true,
+  "unfinishedDraftReload": false,
+  "reporterReuse": false
+}

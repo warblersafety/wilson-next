@@ -1,0 +1,23 @@
+{
+  "id": "A10",
+  "family": "cosmetic-quality",
+  "reusedFrom": "prior saved live acceptance case pack: prior-cosmetic",
+  "opening": "Entirely fictional evaluation. Entirely fictional product-problem report: an unopened bottle of Example Meadow lotion, explicitly a cosmetic sold on a retail basis, lot FICTION-17, contained visible foreign particles. It was not used and no patient or adverse event was involved. I identify this cosmetic as the suspect product. It was purchased on 12 August 2026 from Fictional Seller Alpha,1 Example Lane,Example City,region Example Region,postal 00 A 001,country United Kingdom. The purchase website supplied on the receipt is https://seller.example.invalid. This is seller information, not manufacturer information. The bottle is available for evaluation.",
+  "reportType": "product-problem",
+  "expectedMaterialFacts": [
+    "Observe whether ordinary explicit cosmetic wording produces reviewable SectionD routing without guessing use/category",
+    "Explicit retail cosmetic choice, lot, seller details and purchase date remain separate from manufacturer/reporter",
+    "No-patient and product-problem report semantics; no website request",
+    "Save/resume and independent PDF comparison; record omissions or required manual recovery distinctly from model pass",
+    "Example Meadow lotion retail cosmetic lotFICTION-17",
+    "visible particles unopened unused no patient/no event",
+    "purchase2026-08-12 Fictional Seller Alpha",
+    "seller1 Example Lane/Example City/Example Region/00 A 001/United Kingdom/https://seller.example.invalid",
+    "available; no manufacturer inference"
+  ],
+  "correction": null,
+  "expectedCorrection": null,
+  "resume": true,
+  "unfinishedDraftReload": false,
+  "reporterReuse": true
+}

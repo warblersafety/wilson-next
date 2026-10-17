@@ -1,0 +1,89 @@
+[
+  {
+    "operation": "act",
+    "expectedRevision": 0,
+    "action": {
+      "action": "submit-opening",
+      "text": "Entirely fictional evaluation. Patient TEST-72 is a 72-year-old woman weighing 64 kg. She began amoxicillin 500 mg by mouth twice daily on 01-Sep-2026 for sinusitis. On 03-Sep-2026 she developed a generalized rash and wheezing; the event was life-threatening and she was hospitalized. Serum tryptase was 18 ng/mL (reference range 0 to 11.4) on 03-Sep-2026. Her relevant history is a penicillin allergy. Amoxicillin was stopped, she received epinephrine, and she recovered. I suspect amoxicillin.",
+      "reportType": "adverse-event"
+    },
+    "operationId": "08d41cf9-6b11-4421-ad56-36f9c7d10a96",
+    "runId": "2d4c7f22-c799-4f27-b6aa-81d6ec465989",
+    "sequence": 1,
+    "originalCaptureFile": "request-1.json",
+    "stateSuppliedRevision": 0
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 2,
+    "action": {
+      "action": "accept-understanding"
+    },
+    "operationId": "3e34f0f7-f914-49fe-9777-821b37070163",
+    "runId": "c88d578f-196d-440c-a269-f5048507f049",
+    "sequence": 2,
+    "originalCaptureFile": "request-2.json",
+    "stateSuppliedRevision": 2
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 3,
+    "action": {
+      "action": "answer-serious-outcomes",
+      "selected": [],
+      "disposition": "unknown"
+    },
+    "operationId": "8b3ed2d1-09f6-43a5-886e-925bce93d119",
+    "runId": "f43306c9-20d6-46d6-8db2-2af28a438736",
+    "sequence": 3,
+    "originalCaptureFile": "request-3.json",
+    "stateSuppliedRevision": 3
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 5,
+    "action": {
+      "action": "answer-medication-history",
+      "productId": "product-60671b46-1f9b-4d04-8b67-7c48a8f3c424",
+      "answers": {
+        "stopDate": {
+          "kind": "unknown"
+        },
+        "improvedAfterChange": {
+          "kind": "unknown"
+        },
+        "restarted": {
+          "kind": "unknown"
+        }
+      }
+    },
+    "operationId": "7fb7a66f-34ad-47d6-b06e-7e8b992fd352",
+    "runId": "d1e67aed-4e34-4fee-8987-8fc8ce217bc4",
+    "sequence": 4,
+    "originalCaptureFile": "request-4.json",
+    "stateSuppliedRevision": 5
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 7,
+    "action": {
+      "action": "answer-reporter",
+      "reportDate": "2026-10-17",
+      "reporter": {
+        "kind": "provided",
+        "firstName": "Alex",
+        "lastName": "Fiction",
+        "email": "alex.fiction@example.invalid",
+        "healthProfessional": true,
+        "occupation": "Physician",
+        "reportedTo": [],
+        "doNotDiscloseIdentity": true
+      }
+    },
+    "operationId": "af1c1352-b454-4aec-bde6-0cc4b2fe958e",
+    "runId": "e9e4851d-cec3-4305-9fd4-c7d59ccfff8c",
+    "sequence": 5,
+    "originalCaptureFile": "request-5.json",
+    "stateSuppliedRevision": 7
+  }
+]

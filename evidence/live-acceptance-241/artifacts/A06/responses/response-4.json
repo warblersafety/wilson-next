@@ -1,0 +1,2156 @@
+{
+  "http": 200,
+  "operationId": "69f2fa65-f234-40c3-951d-c44cc8c462bf",
+  "runId": "b655f95b-d883-402c-bbe7-bf3afb81e856",
+  "state": {
+    "version": "wilson-browser-state-v32",
+    "stage": "clarify",
+    "case": {
+      "id": "case-3c7dc5ec-5e1b-486b-a208-653d4d5fe85d",
+      "revision": 4,
+      "patient": {
+        "id": "patient",
+        "state": "resolved",
+        "facts": {
+          "identifier": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "ageYears": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "raceEthnicity": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "dateOfBirth": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "a2Value": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "sex": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "weight": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "involvement": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "proposal-9100253e-ac1a-494d-b156-a8b2f05f4681",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "none"
+              },
+              "sourceIds": [
+                "source-9ca6033c-d07d-49f2-84d7-90c64360af6c"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-9ca6033c-d07d-49f2-84d7-90c64360af6c"
+            ],
+            "supersededValues": []
+          }
+        }
+      },
+      "event": {
+        "id": "event",
+        "state": "resolved",
+        "facts": {
+          "reportType": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "value-report-type-33f3f979-039c-4bcf-9bc1-408fb1c3c678",
+              "groupId": "command-record-report-type-66909c09-0c1c-47ff-adb5-7f9b647ad887",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "product-problem"
+              },
+              "sourceIds": [
+                "source-5db81ab3-937a-41e0-b627-fc8f12f7bf26"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-5db81ab3-937a-41e0-b627-fc8f12f7bf26"
+            ],
+            "supersededValues": []
+          },
+          "reportDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "problemDescription": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "value-corrected-46b12589-3eba-4e28-8141-059fc611801e",
+              "groupId": "event",
+              "intent": "correction",
+              "value": {
+                "kind": "known",
+                "value": "An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal. The product was not administered to a patient, and no adverse event occurred."
+              },
+              "sourceIds": [
+                "source-16d41ba4-2596-4a0f-b6f4-5997ec6ba967"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-552d4208-a72b-45a1-84a9-9411aa3b5396",
+              "source-16d41ba4-2596-4a0f-b6f4-5997ec6ba967"
+            ],
+            "supersededValues": []
+          },
+          "symptoms": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "proposal-f687a3eb-27f5-4749-8910-17170206bed1",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "explicitly-absent"
+              },
+              "sourceIds": [
+                "source-9ca6033c-d07d-49f2-84d7-90c64360af6c"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-9ca6033c-d07d-49f2-84d7-90c64360af6c"
+            ],
+            "supersededValues": []
+          },
+          "onsetDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "death": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "deathDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "lifeThreatening": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "hospitalized": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "disability": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "requiredIntervention": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "congenitalAnomaly": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "otherSerious": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "relevantTestsAvailable": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "relevantHistory": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "treatments": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "outcome": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "dischargeDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "productAvailability": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "proposal-4f1594da-cfd1-40ae-bdf2-591d18104924",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "available"
+              },
+              "sourceIds": [
+                "source-a49de397-cc23-47ef-89e6-0221563a5ec2"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-a49de397-cc23-47ef-89e6-0221563a5ec2"
+            ],
+            "supersededValues": []
+          },
+          "productReturnDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "additionalComments": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      "products": [
+        {
+          "id": "product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "proposalGroupId": "group-1ed935b4-9bff-4480-a9a2-b33ae52f4528",
+          "state": "resolved",
+          "facts": {
+            "name": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-e93f5957-ae78-4ce5-b118-cc50e7a5968a",
+                "groupId": "group-1ed935b4-9bff-4480-a9a2-b33ae52f4528",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "Cardiovex"
+                },
+                "sourceIds": [
+                  "source-552d4208-a72b-45a1-84a9-9411aa3b5396",
+                  "source-c98ebad6-0f4c-4058-8cd8-ddd0aba3ae98"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-552d4208-a72b-45a1-84a9-9411aa3b5396",
+                "source-c98ebad6-0f4c-4058-8cd8-ddd0aba3ae98"
+              ],
+              "supersededValues": []
+            },
+            "productType": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-d23e082a-591a-473a-90bf-e1c158f65427",
+                "groupId": "group-1ed935b4-9bff-4480-a9a2-b33ae52f4528",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                },
+                "sourceIds": [
+                  "source-22244de9-aa02-4da3-8f4a-c4eaadeffe4f"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-22244de9-aa02-4da3-8f4a-c4eaadeffe4f"
+              ],
+              "supersededValues": []
+            },
+            "role": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-2f15ce06-4065-45cb-baf1-5b866836a9ba",
+                "groupId": "group-1ed935b4-9bff-4480-a9a2-b33ae52f4528",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "suspect"
+                },
+                "sourceIds": [
+                  "source-c98ebad6-0f4c-4058-8cd8-ddd0aba3ae98"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-c98ebad6-0f4c-4058-8cd8-ddd0aba3ae98"
+              ],
+              "supersededValues": []
+            },
+            "manufacturer": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "lotNumber": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-1dec58a0-bea0-427a-a7af-6188dd5e437e",
+                "groupId": "group-1ed935b4-9bff-4480-a9a2-b33ae52f4528",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "CV-442"
+                },
+                "sourceIds": [
+                  "source-552d4208-a72b-45a1-84a9-9411aa3b5396"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-552d4208-a72b-45a1-84a9-9411aa3b5396"
+              ],
+              "supersededValues": []
+            },
+            "ndcOrUniqueId": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "dose": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "strength": {
+              "state": "resolved",
+              "proposedValues": [],
+              "resolvedValue": {
+                "id": "proposal-a1bb7ccb-9a3c-4fd5-b36b-30fe3a4eb450",
+                "groupId": "group-1ed935b4-9bff-4480-a9a2-b33ae52f4528",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "20 mg"
+                },
+                "sourceIds": [
+                  "source-552d4208-a72b-45a1-84a9-9411aa3b5396"
+                ]
+              },
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-552d4208-a72b-45a1-84a9-9411aa3b5396"
+              ],
+              "supersededValues": []
+            },
+            "frequency": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "route": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "startDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "stopDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "therapyOngoing": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "indication": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "stopped": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "cosmeticUse": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "medicationType": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "doseReduced": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "doseReductionDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "treatmentDuration": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "d3Value": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "improvedAfterChange": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "restarted": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "recurred": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "commonName": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "procode": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "modelNumber": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "catalogNumber": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerName": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerAddress": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerCity": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerRegion": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerPostalCode": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerCountry": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseWebsite": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "expirationDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "serialNumber": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "udi": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "deviceOperator": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "implanted": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "implantDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "explantDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "reprocessedSingleUse": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "reprocessor": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "servicedByThirdParty": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "otherProductTypes": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            }
+          }
+        }
+      ],
+      "relevantTests": [],
+      "reporter": {
+        "id": "reporter",
+        "facts": {
+          "lastName": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "firstName": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "address": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "city": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "state": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "postalCode": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "country": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "phone": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "email": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "healthProfessional": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "occupation": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "reportedTo": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "doNotDiscloseIdentity": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      "askedNeeds": [],
+      "sources": [
+        {
+          "id": "source-552d4208-a72b-45a1-84a9-9411aa3b5396",
+          "inputId": "input-1b31c559-ff52-4c9e-88d0-2e942b0fb69d",
+          "inputType": "narrative",
+          "excerpt": "An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal. ",
+          "start": 31,
+          "end": 140,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:25:54.696Z"
+        },
+        {
+          "id": "source-c98ebad6-0f4c-4058-8cd8-ddd0aba3ae98",
+          "inputId": "input-1b31c559-ff52-4c9e-88d0-2e942b0fb69d",
+          "inputType": "narrative",
+          "excerpt": "I am reporting Cardiovex as the suspect product. ",
+          "start": 258,
+          "end": 307,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:25:54.696Z"
+        },
+        {
+          "id": "source-22244de9-aa02-4da3-8f4a-c4eaadeffe4f",
+          "inputId": "input-1b31c559-ff52-4c9e-88d0-2e942b0fb69d",
+          "inputType": "narrative",
+          "excerpt": "Cardiovex is explicitly a medication.",
+          "start": 307,
+          "end": 344,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:25:54.696Z"
+        },
+        {
+          "id": "source-9ca6033c-d07d-49f2-84d7-90c64360af6c",
+          "inputId": "input-1b31c559-ff52-4c9e-88d0-2e942b0fb69d",
+          "inputType": "narrative",
+          "excerpt": "The product was not administered to a patient, and no adverse event occurred. ",
+          "start": 140,
+          "end": 218,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:25:54.696Z"
+        },
+        {
+          "id": "source-a49de397-cc23-47ef-89e6-0221563a5ec2",
+          "inputId": "input-1b31c559-ff52-4c9e-88d0-2e942b0fb69d",
+          "inputType": "narrative",
+          "excerpt": "The bottle is available for evaluation. ",
+          "start": 218,
+          "end": 258,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:25:54.696Z"
+        },
+        {
+          "id": "source-5db81ab3-937a-41e0-b627-fc8f12f7bf26",
+          "inputId": "input-1ecf8711-c1c9-4793-ad3b-bdf0613c3ea2",
+          "inputType": "selection",
+          "excerpt": "Product problem",
+          "start": 0,
+          "end": 15,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:25:54.700Z"
+        },
+        {
+          "id": "source-16d41ba4-2596-4a0f-b6f4-5997ec6ba967",
+          "inputId": "input-67e93518-0441-4ffb-8909-2e0298de5926",
+          "inputType": "correction",
+          "excerpt": "Clinician corrected this value during opening review.",
+          "start": 0,
+          "end": 53,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:26:32.672Z"
+        }
+      ],
+      "changes": [
+        {
+          "commandId": "command-attach-opening-76ab360e-2b22-4d9f-b366-4beff5b301a1",
+          "type": "attach-grounded-proposals",
+          "affectedTargets": [
+            "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+            "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:name",
+            "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:productType",
+            "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:role",
+            "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:lotNumber",
+            "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:strength",
+            "patient:patient:involvement",
+            "event:event:problemDescription",
+            "event:event:symptoms",
+            "event:event:productAvailability"
+          ],
+          "sourceIds": [
+            "source-552d4208-a72b-45a1-84a9-9411aa3b5396",
+            "source-c98ebad6-0f4c-4058-8cd8-ddd0aba3ae98",
+            "source-22244de9-aa02-4da3-8f4a-c4eaadeffe4f",
+            "source-9ca6033c-d07d-49f2-84d7-90c64360af6c",
+            "source-a49de397-cc23-47ef-89e6-0221563a5ec2"
+          ],
+          "priorRevision": 0,
+          "resultingRevision": 1,
+          "supersessions": [],
+          "resolutions": []
+        },
+        {
+          "commandId": "command-record-report-type-66909c09-0c1c-47ff-adb5-7f9b647ad887",
+          "type": "record-clinician-facts",
+          "affectedTargets": [
+            "event:event:reportType"
+          ],
+          "sourceIds": [
+            "source-5db81ab3-937a-41e0-b627-fc8f12f7bf26"
+          ],
+          "priorRevision": 1,
+          "resultingRevision": 2,
+          "supersessions": [],
+          "resolutions": []
+        },
+        {
+          "commandId": "command-review-opening-group-20c9125b-a8a6-4ec1-8f20-50dfda770c9d",
+          "type": "review-proposal-groups",
+          "affectedTargets": [
+            "event:event:problemDescription",
+            "event:event:symptoms",
+            "event:event:productAvailability"
+          ],
+          "sourceIds": [
+            "source-16d41ba4-2596-4a0f-b6f4-5997ec6ba967",
+            "source-9ca6033c-d07d-49f2-84d7-90c64360af6c",
+            "source-a49de397-cc23-47ef-89e6-0221563a5ec2"
+          ],
+          "priorRevision": 2,
+          "resultingRevision": 3,
+          "supersessions": [],
+          "resolutions": []
+        },
+        {
+          "commandId": "command-review-opening-86743b80-555e-42a5-ade2-82f9687cfd96",
+          "type": "review-proposal-groups",
+          "affectedTargets": [
+            "patient:patient:involvement",
+            "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:name",
+            "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:productType",
+            "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:role",
+            "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:lotNumber",
+            "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:strength"
+          ],
+          "sourceIds": [
+            "source-9ca6033c-d07d-49f2-84d7-90c64360af6c",
+            "source-552d4208-a72b-45a1-84a9-9411aa3b5396",
+            "source-c98ebad6-0f4c-4058-8cd8-ddd0aba3ae98",
+            "source-22244de9-aa02-4da3-8f4a-c4eaadeffe4f"
+          ],
+          "priorRevision": 3,
+          "resultingRevision": 4,
+          "supersessions": [],
+          "resolutions": []
+        }
+      ]
+    },
+    "unrepresented": []
+  },
+  "snapshot": {
+    "stage": "clarify",
+    "revision": 4,
+    "understanding": {
+      "revision": 4,
+      "patient": {
+        "identifier": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "ageYears": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "raceEthnicity": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "dateOfBirth": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "a2Value": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "sex": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "weight": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "involvement": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "none"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "The product was not administered to a patient, and no adverse event occurred. "
+          ]
+        }
+      },
+      "event": {
+        "reportType": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "product-problem"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Product problem"
+          ]
+        },
+        "reportDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "problemDescription": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal. The product was not administered to a patient, and no adverse event occurred."
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal. ",
+            "Clinician corrected this value during opening review."
+          ]
+        },
+        "symptoms": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "explicitly-absent"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "The product was not administered to a patient, and no adverse event occurred. "
+          ]
+        },
+        "onsetDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "death": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "deathDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "lifeThreatening": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "hospitalized": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "disability": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "requiredIntervention": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "congenitalAnomaly": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "otherSerious": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "relevantTestsAvailable": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "relevantHistory": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "treatments": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "outcome": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "dischargeDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "productAvailability": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "available"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "The bottle is available for evaluation. "
+          ]
+        },
+        "productReturnDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "additionalComments": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        }
+      },
+      "products": [
+        {
+          "id": "product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "ordinal": 1,
+          "proposalGroupId": "group-1ed935b4-9bff-4480-a9a2-b33ae52f4528",
+          "state": "resolved",
+          "facts": {
+            "name": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "Cardiovex"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal. ",
+                "I am reporting Cardiovex as the suspect product. "
+              ]
+            },
+            "productType": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "Cardiovex is explicitly a medication."
+              ]
+            },
+            "role": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "I am reporting Cardiovex as the suspect product. "
+              ]
+            },
+            "manufacturer": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "lotNumber": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "CV-442"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal. "
+              ]
+            },
+            "ndcOrUniqueId": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "dose": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "strength": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "20 mg"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal. "
+              ]
+            },
+            "frequency": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "route": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "startDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "stopDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "therapyOngoing": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "indication": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "stopped": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "cosmeticUse": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "medicationType": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "doseReduced": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "doseReductionDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "treatmentDuration": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "d3Value": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "improvedAfterChange": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "restarted": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "recurred": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "commonName": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "procode": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "modelNumber": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "catalogNumber": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerName": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerAddress": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerCity": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerRegion": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerPostalCode": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerCountry": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseWebsite": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "expirationDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "serialNumber": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "udi": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "deviceOperator": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "implanted": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "implantDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "explantDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "reprocessedSingleUse": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "reprocessor": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "servicedByThirdParty": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "otherProductTypes": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            }
+          }
+        }
+      ],
+      "relevantTests": [],
+      "reporter": {
+        "lastName": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "firstName": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "address": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "city": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "state": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "postalCode": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "country": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "phone": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "email": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "healthProfessional": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "occupation": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "reportedTo": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "doNotDiscloseIdentity": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        }
+      }
+    },
+    "review": {
+      "revision": 4,
+      "attention": []
+    },
+    "clarification": {
+      "kind": "reporter",
+      "targetIds": [
+        "reporter:reporter:lastName",
+        "reporter:reporter:firstName",
+        "reporter:reporter:phone",
+        "reporter:reporter:email",
+        "reporter:reporter:healthProfessional",
+        "reporter:reporter:occupation",
+        "reporter:reporter:reportedTo",
+        "reporter:reporter:doNotDiscloseIdentity"
+      ],
+      "question": "Add the reporter details for this report",
+      "reason": "Reporter information must come directly from you and cannot be inferred from the clinical account.",
+      "key": "reporter-details",
+      "status": "new"
+    },
+    "projection": {
+      "caseId": "case-3c7dc5ec-5e1b-486b-a208-653d4d5fe85d",
+      "revision": 4,
+      "sections": {
+        "A": {
+          "patientIdentifier": "none"
+        },
+        "B": {
+          "relevantTests": [],
+          "reportType": "product-problem",
+          "eventDescription": "Problem detail: An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal. The product was not administered to a patient, and no adverse event occurred.."
+        },
+        "C": {
+          "productAvailability": "available"
+        },
+        "D": {
+          "suspectProducts": [
+            {
+              "productId": "product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+              "name": "Cardiovex",
+              "lotNumber": "CV-442",
+              "strength": {
+                "value": "20 mg"
+              }
+            }
+          ]
+        },
+        "E": {
+          "suspectDevices": []
+        },
+        "F": {
+          "concomitantProducts": []
+        },
+        "G": {
+          "reporter": {}
+        }
+      },
+      "invalidCalendarDates": [],
+      "expirationNotes": [],
+      "productDateNotes": [],
+      "sourceTrace": {
+        "sections.A.patientInvolvement": [
+          "source-9ca6033c-d07d-49f2-84d7-90c64360af6c"
+        ],
+        "sections.A.patientIdentifier": [
+          "source-9ca6033c-d07d-49f2-84d7-90c64360af6c"
+        ],
+        "sections.B.reportType": [
+          "source-5db81ab3-937a-41e0-b627-fc8f12f7bf26"
+        ],
+        "sections.C.productAvailability": [
+          "source-a49de397-cc23-47ef-89e6-0221563a5ec2"
+        ],
+        "sections.B.eventDescription": [
+          "source-16d41ba4-2596-4a0f-b6f4-5997ec6ba967"
+        ],
+        "sections.D.suspectProducts.0.name": [
+          "source-552d4208-a72b-45a1-84a9-9411aa3b5396",
+          "source-c98ebad6-0f4c-4058-8cd8-ddd0aba3ae98"
+        ],
+        "sections.D.suspectProducts.0.lotNumber": [
+          "source-552d4208-a72b-45a1-84a9-9411aa3b5396"
+        ],
+        "sections.D.suspectProducts.0.strength": [
+          "source-552d4208-a72b-45a1-84a9-9411aa3b5396"
+        ]
+      },
+      "omissions": [
+        {
+          "concept": "patient identifier",
+          "target": "patient:patient:identifier",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient age",
+          "target": "patient:patient:ageYears",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient date of birth",
+          "target": "patient:patient:dateOfBirth",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient race and/or ethnicity",
+          "target": "patient:patient:raceEthnicity",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient sex",
+          "target": "patient:patient:sex",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient weight",
+          "target": "patient:patient:weight",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "event date",
+          "target": "event:event:onsetDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "date of this report",
+          "target": "event:event:reportDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "hospitalization outcome",
+          "target": "event:event:hospitalized",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "death outcome",
+          "target": "event:event:death",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "lifeThreatening outcome",
+          "target": "event:event:lifeThreatening",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "disability outcome",
+          "target": "event:event:disability",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "requiredIntervention outcome",
+          "target": "event:event:requiredIntervention",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "congenitalAnomaly outcome",
+          "target": "event:event:congenitalAnomaly",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "otherSerious outcome",
+          "target": "event:event:otherSerious",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "relevant medical history",
+          "target": "event:event:relevantHistory",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "relevant tests",
+          "target": "event:event:relevantTestsAvailable",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "symptoms",
+          "target": "event:event:symptoms",
+          "reason": "explicitly-absent",
+          "sourceIds": [
+            "source-9ca6033c-d07d-49f2-84d7-90c64360af6c"
+          ]
+        },
+        {
+          "concept": "treatment",
+          "target": "event:event:treatments",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "event outcome",
+          "target": "event:event:outcome",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "discharge date",
+          "target": "event:event:dischargeDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "additional comments",
+          "target": "event:event:additionalComments",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "manufacturer for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:manufacturer",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "ndcOrUniqueId for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:ndcOrUniqueId",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "expirationDate for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:expirationDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseDate for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:purchaseDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerName for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:purchaseSellerName",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerAddress for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:purchaseSellerAddress",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerCity for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:purchaseSellerCity",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerRegion for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:purchaseSellerRegion",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerPostalCode for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:purchaseSellerPostalCode",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerCountry for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:purchaseSellerCountry",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseWebsite for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:purchaseWebsite",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "dose for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:dose",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "frequency for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:frequency",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "route for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:route",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "startDate for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:startDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "stopDate for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:stopDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "therapyOngoing for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:therapyOngoing",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "doseReductionDate for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:doseReductionDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "treatmentDuration for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:treatmentDuration",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "indication for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:indication",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "medicationType for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:medicationType",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "cosmeticUse for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:cosmeticUse",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "otherProductTypes for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:otherProductTypes",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "Improvement after stopping or reducing for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:improvedAfterChange",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "Event recurrence after restart for product-21c3be6e-08b3-42f0-a170-79a432a9b714",
+          "target": "product:product-21c3be6e-08b3-42f0-a170-79a432a9b714:recurred",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter lastName",
+          "target": "reporter:reporter:lastName",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter firstName",
+          "target": "reporter:reporter:firstName",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter address",
+          "target": "reporter:reporter:address",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter city",
+          "target": "reporter:reporter:city",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter state",
+          "target": "reporter:reporter:state",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter postalCode",
+          "target": "reporter:reporter:postalCode",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter country",
+          "target": "reporter:reporter:country",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter phone",
+          "target": "reporter:reporter:phone",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter email",
+          "target": "reporter:reporter:email",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter healthProfessional",
+          "target": "reporter:reporter:healthProfessional",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter occupation",
+          "target": "reporter:reporter:occupation",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter reportedTo",
+          "target": "reporter:reporter:reportedTo",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter doNotDiscloseIdentity",
+          "target": "reporter:reporter:doNotDiscloseIdentity",
+          "reason": "empty",
+          "sourceIds": []
+        }
+      ],
+      "notIncluded": [
+        "Patient fractional or compound ages and partial date of birth",
+        "Patient race/ethnicity detail outside the seven A5 categories",
+        "Section C product pictures",
+        "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
+        "Product date wording outside complete dates or explicit month/year/year-only precision"
+      ]
+    },
+    "downloadReady": false,
+    "clinicalNeeds": [],
+    "reportContentKey": "1841146b1871c4ec008c3e049ae07c4d2254c6fe14df636d9f9485b55fafd2ff",
+    "outputIssues": [
+      {
+        "code": "open-clarification",
+        "message": "Answer or decline the open consequential question before opening the form.",
+        "targets": [
+          "reporter:reporter:lastName",
+          "reporter:reporter:firstName",
+          "reporter:reporter:phone",
+          "reporter:reporter:email",
+          "reporter:reporter:healthProfessional",
+          "reporter:reporter:occupation",
+          "reporter:reporter:reportedTo",
+          "reporter:reporter:doNotDiscloseIdentity"
+        ],
+        "entityIds": []
+      }
+    ],
+    "unrepresented": [],
+    "openingGroups": []
+  },
+  "provenance": {
+    "stateVersion": "wilson-browser-state-v32",
+    "release": "4bcabdbe6a1edf6296e555235f8de79a1dd65614"
+  }
+}

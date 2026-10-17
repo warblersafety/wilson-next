@@ -1,0 +1,111 @@
+[
+  {
+    "operation": "act",
+    "expectedRevision": 0,
+    "action": {
+      "action": "submit-opening",
+      "text": "Entirely fictional evaluation. Entirely fictional case LIVE-MULTI-57: a 57-year-old man weighing 70 kg developed a rash on 03 September 2026. He took warfarin 5 mg by mouth daily from 01 August 2026 for atrial fibrillation and acetaminophen 650 mg by mouth every six hours from 01 September 2026 for pain. Warfarin is suspect; acetaminophen is concomitant. Warfarin was stopped on 04 September 2026, the rash improved after stopping, and warfarin was never restarted. Acetaminophen was not stopped or reduced. He was hospitalized; no other serious outcomes apply. INR was 4.8 on 03 September 2026 with reference limits 0.8 and 1.2; ALT was 67 U/L on 03 September 2026 with reference limits 7 and 56. The INR collection time was not recorded. No additional relevant history applies. This is an adverse-event report, and the product is not available for evaluation. These two products are explicitly medications.",
+      "reportType": "adverse-event"
+    },
+    "operationId": "dc2e0939-b585-4424-b97d-471bfb3b0c93",
+    "runId": "c7f8098a-00c4-444d-a804-9cb6c14a0e9d",
+    "sequence": 1,
+    "originalCaptureFile": "request-1.json",
+    "stateSuppliedRevision": 0
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 2,
+    "action": {
+      "action": "accept-understanding"
+    },
+    "operationId": "fb2071e6-cb26-4a8d-a465-93114e9d73b5",
+    "runId": "04b68af0-5747-42ef-a2a8-f1efaf4ffb57",
+    "sequence": 2,
+    "originalCaptureFile": "request-2.json",
+    "stateSuppliedRevision": 2
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 3,
+    "action": {
+      "action": "set-fact",
+      "target": "event:event:additionalComments",
+      "value": {
+        "kind": "known",
+        "value": "Acetaminophen 650 mg by mouth every six hours from 01 September 2026 for pain is concomitant. Acetaminophen was not stopped or reduced."
+      }
+    },
+    "operationId": "3ef0d313-dae9-43ef-9ab5-5b49920c3409",
+    "runId": "8a42637c-5af8-4cb9-a356-5c9e9391cadb",
+    "sequence": 3,
+    "originalCaptureFile": "request-3.json",
+    "stateSuppliedRevision": 3
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 5,
+    "action": {
+      "action": "answer-reporter",
+      "reportDate": "2026-10-17",
+      "reporter": {
+        "kind": "provided",
+        "firstName": "Alex",
+        "lastName": "Fiction",
+        "email": "alex.fiction@example.invalid",
+        "healthProfessional": true,
+        "occupation": "Physician",
+        "reportedTo": [],
+        "doNotDiscloseIdentity": true
+      }
+    },
+    "operationId": "b3d5ec50-7f3d-4b9f-bcf1-e9ee3cdb01f3",
+    "runId": "9600f02d-0557-4581-9194-487ac409cd55",
+    "sequence": 4,
+    "originalCaptureFile": "request-4.json",
+    "stateSuppliedRevision": 5
+  },
+  {
+    "operation": "resume",
+    "operationId": "e493d359-ba09-41ce-b11d-7b57abe6242e",
+    "runId": "2c631c98-a7e4-4cd7-97b1-3e9ef48c85ec",
+    "sequence": 5,
+    "originalCaptureFile": "request-5.json",
+    "stateSuppliedRevision": 7
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 7,
+    "action": {
+      "action": "submit-update",
+      "text": "Correction to this fictional case: only the INR result collected 03 September 2026 was 4.3, not 4.8. Leave ALT 67 U/L and its 03 September 2026 date unchanged. The exact INR collection time is still unknown."
+    },
+    "operationId": "d314ca75-4b71-496d-891a-a8680748f91c",
+    "runId": "c7f8098a-00c4-444d-a804-9cb6c14a0e9d",
+    "sequence": 6,
+    "originalCaptureFile": "request-6.json",
+    "stateSuppliedRevision": 7
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 8,
+    "action": {
+      "action": "review-update-group",
+      "groupId": "group-7e79c20c-5b81-4c0f-a59a-0e7252c116dd",
+      "decision": "accept"
+    },
+    "operationId": "6d0252a9-21ea-4205-b181-dc5c1947ea9a",
+    "runId": "94df90e5-d872-4638-8b31-499ad4dd84b3",
+    "sequence": 7,
+    "originalCaptureFile": "request-7.json",
+    "stateSuppliedRevision": 8
+  },
+  {
+    "operation": "resume",
+    "operationId": "e016b2ba-fe01-416f-b681-0fa5c2585ec8",
+    "runId": "3b5441ce-a377-4ead-a98c-e479c8f9a4ff",
+    "sequence": 8,
+    "originalCaptureFile": "request-8.json",
+    "stateSuppliedRevision": 9
+  }
+]

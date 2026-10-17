@@ -1,0 +1,68 @@
+[
+  {
+    "operation": "act",
+    "expectedRevision": 0,
+    "action": {
+      "action": "submit-opening",
+      "text": "Entirely fictional evaluation. An Acme PulseLine temporary pacing lead stopped sensing during an intraoperative function check after placement. No patient symptoms or adverse event occurred. The suspect device is an Acme PulseLine, common name temporary pacing lead, manufactured by Acme Medical, model PL-4, serial SN-4012. It was implanted and was a reprocessed single-use device. The implant and explant dates are not in the note, and the reprocessor is not identified. The device is available for evaluation.",
+      "reportType": "product-problem"
+    },
+    "operationId": "d079fae3-223d-4cef-aec4-e12d1d961742",
+    "runId": "ead01af1-064b-48d6-b89e-7065ab262334",
+    "sequence": 1,
+    "originalCaptureFile": "request-1.json",
+    "stateSuppliedRevision": 0
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 2,
+    "action": {
+      "action": "accept-understanding"
+    },
+    "operationId": "a4b61791-235e-4ade-90f8-c75eca16333f",
+    "runId": "817ee0cd-fc91-4a88-9125-5ae837d947bf",
+    "sequence": 2,
+    "originalCaptureFile": "request-2.json",
+    "stateSuppliedRevision": 2
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 3,
+    "action": {
+      "action": "set-fact",
+      "target": "event:event:additionalComments",
+      "value": {
+        "kind": "known",
+        "value": "No patient symptoms or adverse event occurred. It was implanted and was a reprocessed single-use device. The implant and explant dates are not in the note, and the reprocessor is not identified."
+      }
+    },
+    "operationId": "c54a460d-05e0-4316-8970-383ff177cc29",
+    "runId": "aca3fa25-8866-4111-99d8-b066ab72dbb0",
+    "sequence": 3,
+    "originalCaptureFile": "request-3.json",
+    "stateSuppliedRevision": 3
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 5,
+    "action": {
+      "action": "answer-reporter",
+      "reportDate": "2026-10-17",
+      "reporter": {
+        "kind": "provided",
+        "firstName": "Alex",
+        "lastName": "Fiction",
+        "email": "alex.fiction@example.invalid",
+        "healthProfessional": true,
+        "occupation": "Physician",
+        "reportedTo": [],
+        "doNotDiscloseIdentity": true
+      }
+    },
+    "operationId": "aabc7afa-c966-49fd-b6b8-4f7a518c32f1",
+    "runId": "2e7a71b1-176e-4f92-96b7-98eeab15c4a3",
+    "sequence": 4,
+    "originalCaptureFile": "request-4.json",
+    "stateSuppliedRevision": 5
+  }
+]

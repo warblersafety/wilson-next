@@ -1,0 +1,1191 @@
+{
+  "id": "A07",
+  "family": "mixed-device-medication",
+  "testedRelease": {
+    "stateVersion": "wilson-browser-state-v32",
+    "release": "4bcabdbe6a1edf6296e555235f8de79a1dd65614"
+  },
+  "source": "Entirely fictional evaluation. Patient TEST-67 is a 67-year-old woman. On 09-Sep-2026, an Acme ThermoPatch wearable monitor overheated after its adhesive backing split; it caused a blistering burn on her left arm. The device was removed, the burn was treated with cool compresses, and she recovered. No serious outcomes applied. No relevant tests or medical history apply. The suspect device is an Acme ThermoPatch, common name wearable temperature monitor, manufactured by Acme Medical, model TP-9, lot T-144, serial SN-8804. It was patient-operated, was not implanted, was not a reprocessed single-use device, and was not serviced by a third party. The device is available for evaluation. Acetaminophen is an explicitly concomitant medication, 500 mg by mouth as needed for headache. It is not suspected.",
+  "correction": null,
+  "expectedMaterialFacts": [
+    "TEST-67",
+    "67 years",
+    "female",
+    "ThermoPatch wearable monitor; Acme Medical",
+    "TP-9/T-144/SN-8804",
+    "patient operator",
+    "not implanted/reprocessed/third-party serviced",
+    "adhesive backing split and overheated",
+    "blistering burn left arm onset2026-09-09",
+    "removed; cool compresses; recovered",
+    "no serious outcomes/tests/history",
+    "available",
+    "acetaminophen concomitant medication500mg oral as needed for headache; not suspect; stays distinct from device"
+  ],
+  "observations": {
+    "extraction": "two product identities/regimen and event/device details retained; device removal omitted",
+    "recovery": [
+      "Device stopped/removed added explicitly",
+      "Accepted concomitant regimen and implantation context disclosed as not included in native output; exact source added as explicitly reviewed comments"
+    ],
+    "transport": "API client read interruption; exact original successful server response body/usage recovered from original operation; no uninterrupted-journey pass"
+  },
+  "firstResponseFacts": {
+    "patient": {
+      "identifier": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "TEST-67"
+            },
+            "groupId": "patient",
+            "sourceIds": [
+              "source-116ca35d-61fc-4b3e-b646-3ff3f50a27f0"
+            ]
+          }
+        ]
+      },
+      "ageYears": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": 67
+            },
+            "groupId": "patient",
+            "sourceIds": [
+              "source-116ca35d-61fc-4b3e-b646-3ff3f50a27f0"
+            ]
+          }
+        ]
+      },
+      "sex": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "female"
+            },
+            "groupId": "patient",
+            "sourceIds": [
+              "source-116ca35d-61fc-4b3e-b646-3ff3f50a27f0"
+            ]
+          }
+        ]
+      }
+    },
+    "event": {
+      "reportType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "adverse-event-and-product-problem"
+        },
+        "proposed": []
+      },
+      "problemDescription": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "overheated after its adhesive backing split"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-17a528be-b5d2-4ba3-9118-b3cf0613cf46"
+            ]
+          }
+        ]
+      },
+      "symptoms": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": [
+                "blistering burn on left arm"
+              ]
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-17a528be-b5d2-4ba3-9118-b3cf0613cf46"
+            ]
+          }
+        ]
+      },
+      "onsetDate": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "2026-09-09"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-17a528be-b5d2-4ba3-9118-b3cf0613cf46"
+            ]
+          }
+        ]
+      },
+      "death": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-3a7455fb-fe60-4a00-89dd-53c9288c22a1"
+            ]
+          }
+        ]
+      },
+      "lifeThreatening": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-3a7455fb-fe60-4a00-89dd-53c9288c22a1"
+            ]
+          }
+        ]
+      },
+      "hospitalized": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-3a7455fb-fe60-4a00-89dd-53c9288c22a1"
+            ]
+          }
+        ]
+      },
+      "disability": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-3a7455fb-fe60-4a00-89dd-53c9288c22a1"
+            ]
+          }
+        ]
+      },
+      "requiredIntervention": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-3a7455fb-fe60-4a00-89dd-53c9288c22a1"
+            ]
+          }
+        ]
+      },
+      "congenitalAnomaly": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-3a7455fb-fe60-4a00-89dd-53c9288c22a1"
+            ]
+          }
+        ]
+      },
+      "otherSerious": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-3a7455fb-fe60-4a00-89dd-53c9288c22a1"
+            ]
+          }
+        ]
+      },
+      "relevantTestsAvailable": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-0178be8b-c858-4c6e-a791-0fc46deb22d7"
+            ]
+          }
+        ]
+      },
+      "relevantHistory": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "explicitly-absent"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-0178be8b-c858-4c6e-a791-0fc46deb22d7"
+            ]
+          }
+        ]
+      },
+      "treatments": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": [
+                "cool compresses"
+              ]
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-09165467-b05f-4900-9e27-3e6fc7835ddf"
+            ]
+          }
+        ]
+      },
+      "outcome": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "recovered"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-09165467-b05f-4900-9e27-3e6fc7835ddf"
+            ]
+          }
+        ]
+      },
+      "productAvailability": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "available"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-6157c316-3d9d-47e0-922d-c5246d085e59"
+            ]
+          }
+        ]
+      }
+    },
+    "reporter": {},
+    "product-4793086b-adb6-479a-b322-ceadd535407e": {
+      "name": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "Acme ThermoPatch"
+            },
+            "groupId": "group-69f62deb-1058-49c3-bef7-3bb4d3603a0d",
+            "sourceIds": [
+              "source-f3b23132-a5a6-49b7-bbfa-515ab21b7d9a"
+            ]
+          }
+        ]
+      },
+      "productType": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "device"
+            },
+            "groupId": "group-69f62deb-1058-49c3-bef7-3bb4d3603a0d",
+            "sourceIds": [
+              "source-17a528be-b5d2-4ba3-9118-b3cf0613cf46",
+              "source-f3b23132-a5a6-49b7-bbfa-515ab21b7d9a"
+            ]
+          }
+        ]
+      },
+      "role": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "suspect"
+            },
+            "groupId": "group-69f62deb-1058-49c3-bef7-3bb4d3603a0d",
+            "sourceIds": [
+              "source-17a528be-b5d2-4ba3-9118-b3cf0613cf46",
+              "source-f3b23132-a5a6-49b7-bbfa-515ab21b7d9a"
+            ]
+          }
+        ]
+      },
+      "manufacturer": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "Acme Medical"
+            },
+            "groupId": "group-69f62deb-1058-49c3-bef7-3bb4d3603a0d",
+            "sourceIds": [
+              "source-f3b23132-a5a6-49b7-bbfa-515ab21b7d9a"
+            ]
+          }
+        ]
+      },
+      "lotNumber": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "T-144"
+            },
+            "groupId": "group-69f62deb-1058-49c3-bef7-3bb4d3603a0d",
+            "sourceIds": [
+              "source-f3b23132-a5a6-49b7-bbfa-515ab21b7d9a"
+            ]
+          }
+        ]
+      },
+      "commonName": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "wearable temperature monitor"
+            },
+            "groupId": "group-69f62deb-1058-49c3-bef7-3bb4d3603a0d",
+            "sourceIds": [
+              "source-f3b23132-a5a6-49b7-bbfa-515ab21b7d9a"
+            ]
+          }
+        ]
+      },
+      "modelNumber": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "TP-9"
+            },
+            "groupId": "group-69f62deb-1058-49c3-bef7-3bb4d3603a0d",
+            "sourceIds": [
+              "source-f3b23132-a5a6-49b7-bbfa-515ab21b7d9a"
+            ]
+          }
+        ]
+      },
+      "serialNumber": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "SN-8804"
+            },
+            "groupId": "group-69f62deb-1058-49c3-bef7-3bb4d3603a0d",
+            "sourceIds": [
+              "source-f3b23132-a5a6-49b7-bbfa-515ab21b7d9a"
+            ]
+          }
+        ]
+      },
+      "deviceOperator": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "patient-consumer"
+            },
+            "groupId": "group-69f62deb-1058-49c3-bef7-3bb4d3603a0d",
+            "sourceIds": [
+              "source-ce826bf4-4a91-4830-9d02-b858da471e54"
+            ]
+          }
+        ]
+      },
+      "implanted": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "group-69f62deb-1058-49c3-bef7-3bb4d3603a0d",
+            "sourceIds": [
+              "source-ce826bf4-4a91-4830-9d02-b858da471e54"
+            ]
+          }
+        ]
+      },
+      "reprocessedSingleUse": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "group-69f62deb-1058-49c3-bef7-3bb4d3603a0d",
+            "sourceIds": [
+              "source-ce826bf4-4a91-4830-9d02-b858da471e54"
+            ]
+          }
+        ]
+      },
+      "servicedByThirdParty": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "no"
+            },
+            "groupId": "group-69f62deb-1058-49c3-bef7-3bb4d3603a0d",
+            "sourceIds": [
+              "source-ce826bf4-4a91-4830-9d02-b858da471e54"
+            ]
+          }
+        ]
+      }
+    },
+    "product-286e4e09-9eff-4698-a134-139c40719e8d": {
+      "name": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "Acetaminophen"
+            },
+            "groupId": "group-8d8f3416-2a2c-4c82-84a7-46f76a59535b",
+            "sourceIds": [
+              "source-478fee11-96e9-4a56-ab56-f0619173270c"
+            ]
+          }
+        ]
+      },
+      "productType": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "drug-or-biologic"
+            },
+            "groupId": "group-8d8f3416-2a2c-4c82-84a7-46f76a59535b",
+            "sourceIds": [
+              "source-478fee11-96e9-4a56-ab56-f0619173270c"
+            ]
+          }
+        ]
+      },
+      "role": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "concomitant"
+            },
+            "groupId": "group-8d8f3416-2a2c-4c82-84a7-46f76a59535b",
+            "sourceIds": [
+              "source-478fee11-96e9-4a56-ab56-f0619173270c",
+              "source-7ef139a0-bcca-402c-8b72-d2e723cfad45"
+            ]
+          }
+        ]
+      },
+      "dose": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "500 mg"
+            },
+            "groupId": "group-8d8f3416-2a2c-4c82-84a7-46f76a59535b",
+            "sourceIds": [
+              "source-478fee11-96e9-4a56-ab56-f0619173270c"
+            ]
+          }
+        ]
+      },
+      "frequency": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "as needed"
+            },
+            "groupId": "group-8d8f3416-2a2c-4c82-84a7-46f76a59535b",
+            "sourceIds": [
+              "source-478fee11-96e9-4a56-ab56-f0619173270c"
+            ]
+          }
+        ]
+      },
+      "route": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "oral"
+            },
+            "groupId": "group-8d8f3416-2a2c-4c82-84a7-46f76a59535b",
+            "sourceIds": [
+              "source-478fee11-96e9-4a56-ab56-f0619173270c"
+            ]
+          }
+        ]
+      },
+      "indication": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "headache"
+            },
+            "groupId": "group-8d8f3416-2a2c-4c82-84a7-46f76a59535b",
+            "sourceIds": [
+              "source-478fee11-96e9-4a56-ab56-f0619173270c"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "finalAcceptedFacts": {
+    "patient": {
+      "identifier": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "TEST-67"
+        },
+        "proposed": []
+      },
+      "ageYears": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": 67
+        },
+        "proposed": []
+      },
+      "sex": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "female"
+        },
+        "proposed": []
+      }
+    },
+    "event": {
+      "reportType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "adverse-event-and-product-problem"
+        },
+        "proposed": []
+      },
+      "reportDate": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-10-17"
+        },
+        "proposed": []
+      },
+      "problemDescription": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "overheated after its adhesive backing split"
+        },
+        "proposed": []
+      },
+      "symptoms": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": [
+            "blistering burn on left arm"
+          ]
+        },
+        "proposed": []
+      },
+      "onsetDate": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-09-09"
+        },
+        "proposed": []
+      },
+      "death": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "lifeThreatening": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "hospitalized": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "disability": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "requiredIntervention": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "congenitalAnomaly": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "otherSerious": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "relevantTestsAvailable": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "relevantHistory": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "treatments": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": [
+            "cool compresses"
+          ]
+        },
+        "proposed": []
+      },
+      "outcome": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "recovered"
+        },
+        "proposed": []
+      },
+      "productAvailability": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "available"
+        },
+        "proposed": []
+      },
+      "additionalComments": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Acetaminophen is an explicitly concomitant medication, 500 mg by mouth as needed for headache. It is not suspected. The device was removed. It was patient-operated, was not implanted, was not a reprocessed single-use device, and was not serviced by a third party."
+        },
+        "proposed": []
+      }
+    },
+    "reporter": {
+      "lastName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Fiction"
+        },
+        "proposed": []
+      },
+      "firstName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Alex"
+        },
+        "proposed": []
+      },
+      "address": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "city": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "state": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "postalCode": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "country": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "phone": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "email": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "alex.fiction@example.invalid"
+        },
+        "proposed": []
+      },
+      "healthProfessional": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      },
+      "occupation": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Physician"
+        },
+        "proposed": []
+      },
+      "reportedTo": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": []
+        },
+        "proposed": []
+      },
+      "doNotDiscloseIdentity": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      }
+    },
+    "product-4793086b-adb6-479a-b322-ceadd535407e": {
+      "name": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Acme ThermoPatch"
+        },
+        "proposed": []
+      },
+      "productType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "device"
+        },
+        "proposed": []
+      },
+      "role": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "suspect"
+        },
+        "proposed": []
+      },
+      "manufacturer": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Acme Medical"
+        },
+        "proposed": []
+      },
+      "lotNumber": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "T-144"
+        },
+        "proposed": []
+      },
+      "stopped": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      },
+      "commonName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "wearable temperature monitor"
+        },
+        "proposed": []
+      },
+      "modelNumber": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "TP-9"
+        },
+        "proposed": []
+      },
+      "serialNumber": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "SN-8804"
+        },
+        "proposed": []
+      },
+      "deviceOperator": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "patient-consumer"
+        },
+        "proposed": []
+      },
+      "implanted": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "reprocessedSingleUse": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "servicedByThirdParty": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "no"
+        },
+        "proposed": []
+      }
+    },
+    "product-286e4e09-9eff-4698-a134-139c40719e8d": {
+      "name": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Acetaminophen"
+        },
+        "proposed": []
+      },
+      "productType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "drug-or-biologic"
+        },
+        "proposed": []
+      },
+      "role": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "concomitant"
+        },
+        "proposed": []
+      },
+      "dose": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "500 mg"
+        },
+        "proposed": []
+      },
+      "frequency": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "as needed"
+        },
+        "proposed": []
+      },
+      "route": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "oral"
+        },
+        "proposed": []
+      },
+      "indication": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "headache"
+        },
+        "proposed": []
+      }
+    }
+  },
+  "finalProjectionDisclosures": [
+    "Patient fractional or compound ages and partial date of birth",
+    "Patient race/ethnicity detail outside the seven A5 categories",
+    "Section C product pictures",
+    "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
+    "Product date wording outside complete dates or explicit month/year/year-only precision",
+    "Acme ThermoPatch \u2014 Implanted remains in reviewed knowledge but is not included in Section E for the current product type and role.",
+    "Acetaminophen \u2014 Dose remains in reviewed knowledge but is not included in Section F for the current product type and role.",
+    "Acetaminophen \u2014 Frequency remains in reviewed knowledge but is not included in Section F for the current product type and role.",
+    "Acetaminophen \u2014 Route remains in reviewed knowledge but is not included in Section F for the current product type and role.",
+    "Acetaminophen \u2014 Indication remains in reviewed knowledge but is not included in Section F for the current product type and role."
+  ],
+  "actualPDF": {
+    "sha256": "00c66d15a33126de205668e111c908dadb8562959bdde4402b0b895d97887c8a",
+    "pageCount": 8,
+    "namedFields": {
+      "topmostSubform[0].Page1[0].SecA_Patient[0].AgeValue[0]": "67",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Congenital[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Death[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Disability[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].EventDate[0]": "09-SEP-2026",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Hospital[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].LifeThreaten[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].OtherEvents[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].PatientIdentifier[0]": "TEST-67",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "17-OCT-2026",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].ReqdInter[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].WeightKG[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].WeightLB[0]": "/Off",
+      "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Problem detail: overheated after its adhesive backing split. Symptoms: blistering burn on left arm. Treatment: cool compresses. Outcome: recovered. Products stopped: Acme ThermoPatch.",
+      "topmostSubform[0].Page3[0].AdditionalComments[0]": "Additional comments: Acetaminophen is an explicitly concomitant medication, 500 mg by mouth as needed for headache. It is not suspected. The device was removed. It was patient-operated, was not implanted, was not a reprocessed single-use device, and was not serviced by a third party.",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalNo[0]": "/Off",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalRetd[0]": "/Off",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/1",
+      "topmostSubform[0].Page6[0].SecE_Device[0].BrandName[0]": "Acme ThermoPatch",
+      "topmostSubform[0].Page6[0].SecE_Device[0].CommName[0]": "wearable temperature monitor",
+      "topmostSubform[0].Page6[0].SecE_Device[0].HealthPro[0]": "/Off",
+      "topmostSubform[0].Page6[0].SecE_Device[0].LotNum[0]": "T-144",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ManuName[0]": "Acme Medical",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ModelNum[0]": "TP-9",
+      "topmostSubform[0].Page6[0].SecE_Device[0].OperatorOther[0]": "/Off",
+      "topmostSubform[0].Page6[0].SecE_Device[0].PatientCons[0]": "/1",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ReuseNo[0]": "/1",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ReuseYes[0]": "/Off",
+      "topmostSubform[0].Page6[0].SecE_Device[0].SerialNum[0]": "SN-8804",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ServiceUnk[0]": "/Off",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ServicedNo[0]": "/1",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ServicedYes[0]": "/Off",
+      "topmostSubform[0].Page6[0].SecF_Other[0].Table1[0].Row1[0].Prod1[0]": "Acetaminophen",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].DistImp[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]": "alex.fiction@example.invalid",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].FirstName[0]": "Alex",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]": "/1",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].LastName[0]": "Fiction",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ManuComp[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Occupation[0]": "Physician",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Packer[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ProNo[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ProYes[0]": "/1",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].UserFac[0]": "/Off"
+    },
+    "independentReader": "pypdf 6.16.2",
+    "PDFKitRenderedPages": 8,
+    "renderHashes": {
+      "report-page-1.png": "0e90c780aed2d3892b28733e6759d5d77f697d7e654d1dc88c6d230c0855da39",
+      "report-page-2.png": "ff6ba789dd498793cf51103b4cef2bc4c6aee6e21a4c74b2706dc0b0aacf5e9c",
+      "report-page-3.png": "a943f7426d27955a40a403f0f332553d92b565a220fcd1bd62181469552dd034",
+      "report-page-4.png": "597a3a1b56e69101e1e5f1d540a50d8f62ca8d45f320761547ad6fa0e9709236",
+      "report-page-5.png": "b40ae700e0beecee93f06058a4eca8eaf66f80c4443ed9462fd0462257763062",
+      "report-page-6.png": "e339adb404e0812ef5ee67b11ee8f21c206d8caeb4b169762aa6ba7acd8963b0",
+      "report-page-7.png": "706c0041f286c008bf1a7724dad36ca0a5b9019199ace1f9c90dedf0448113d8",
+      "report-page-8.png": "a4e65444ae4ad5265e47291918036d36a004842f064a4ecdef833ea7a64b38de"
+    },
+    "visualInspection": "selected filled pages inspected; not a claim that all 96 page images were manually inspected",
+    "visuallyInspectedPages": [
+      3
+    ]
+  },
+  "modelCalls": [
+    {
+      "callIndex": 9,
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 13278,
+      "outputTokens": 6059,
+      "latencyMs": 45341,
+      "estimatedCostUsd": 0.087146,
+      "operationId": "eeed8b55-7f14-417e-a244-c7b8fc8a2f1e",
+      "runId": "7c376792-8671-4911-861a-bcc16f554edd"
+    }
+  ],
+  "checks": {},
+  "finalOutcome": "PDF generated after explicit source review and documented manual recovery; not a clean extraction/native-projection/uninterrupted-UI pass",
+  "retainedArtifacts": "artifacts/A07"
+}

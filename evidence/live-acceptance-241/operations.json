@@ -1,0 +1,244 @@
+[
+  {
+    "callIndex": 1,
+    "case": "A01",
+    "action": "submit-opening",
+    "operationId": "2ba6a547-01ce-4426-a02e-9eb85b2d30f6",
+    "runId": "60f17237-2062-4beb-a953-8951db02889e",
+    "metrics": {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 13083,
+      "outputTokens": 2417,
+      "latencyMs": 22735,
+      "estimatedCostUsd": 0.050336
+    }
+  },
+  {
+    "callIndex": 2,
+    "case": "A02",
+    "action": "submit-opening",
+    "operationId": "08d41cf9-6b11-4421-ad56-36f9c7d10a96",
+    "runId": "2d4c7f22-c799-4f27-b6aa-81d6ec465989",
+    "metrics": {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 13162,
+      "outputTokens": 2990,
+      "latencyMs": 23214,
+      "estimatedCostUsd": 0.056224
+    }
+  },
+  {
+    "callIndex": 3,
+    "case": "A03",
+    "action": "submit-opening",
+    "operationId": "1611abe4-7101-40b0-b7df-67ceb83a75fa",
+    "runId": "dd68720d-a645-4257-8155-4095712fb42c",
+    "metrics": {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 13198,
+      "outputTokens": 5083,
+      "latencyMs": 37118,
+      "estimatedCostUsd": 0.077226
+    }
+  },
+  {
+    "callIndex": 4,
+    "case": "A03",
+    "action": "submit-update",
+    "operationId": "d0095979-dc61-4f36-95b5-9e2370e659ce",
+    "runId": "9551a1e6-2cc6-4159-bf75-589cc8842808",
+    "metrics": {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 14255,
+      "outputTokens": 219,
+      "latencyMs": 2544,
+      "estimatedCostUsd": 0.0307
+    }
+  },
+  {
+    "callIndex": 5,
+    "case": "A04",
+    "action": "submit-opening",
+    "operationId": "f33b8890-6be8-4267-943b-56dfc74ad382",
+    "runId": "db95b7c5-0810-4cb6-98d8-6d4c5c187cf8",
+    "recoveredFromOriginalServer200": true,
+    "metrics": {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 13167,
+      "outputTokens": 5399,
+      "latencyMs": 40296,
+      "estimatedCostUsd": 0.080324
+    }
+  },
+  {
+    "callIndex": 6,
+    "case": "A04",
+    "action": "submit-update",
+    "operationId": "8ee3fc86-0c87-4f06-9d47-bfc462452b59",
+    "runId": "7a696b73-e9d6-457a-9b72-a8a671bb52d6",
+    "metrics": {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 14148,
+      "outputTokens": 159,
+      "latencyMs": 2164,
+      "estimatedCostUsd": 0.029886
+    }
+  },
+  {
+    "callIndex": 7,
+    "case": "A05",
+    "action": "submit-opening",
+    "operationId": "39b76bd9-57ec-49c0-ba48-930a55f01870",
+    "runId": "529b9faf-0223-400e-ba86-0674d29aa44a",
+    "metrics": {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 13240,
+      "outputTokens": 4214,
+      "latencyMs": 30321,
+      "estimatedCostUsd": 0.06862
+    }
+  },
+  {
+    "callIndex": 8,
+    "case": "A06",
+    "action": "submit-opening",
+    "operationId": "cc2e5247-8e40-44f0-902c-909f0d7a820f",
+    "runId": "5b68197e-cf71-49b7-bd96-1c9ce5b217f4",
+    "metrics": {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 13040,
+      "outputTokens": 2534,
+      "latencyMs": 23448,
+      "estimatedCostUsd": 0.05142
+    }
+  },
+  {
+    "callIndex": 9,
+    "case": "A07",
+    "action": "submit-opening",
+    "operationId": "eeed8b55-7f14-417e-a244-c7b8fc8a2f1e",
+    "runId": "7c376792-8671-4911-861a-bcc16f554edd",
+    "recoveredFromOriginalServer200": true,
+    "metrics": {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 13278,
+      "outputTokens": 6059,
+      "latencyMs": 45341,
+      "estimatedCostUsd": 0.087146
+    }
+  },
+  {
+    "callIndex": 10,
+    "case": "A08",
+    "action": "submit-opening",
+    "operationId": "d079fae3-223d-4cef-aec4-e12d1d961742",
+    "runId": "ead01af1-064b-48d6-b89e-7065ab262334",
+    "metrics": {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 13104,
+      "outputTokens": 2897,
+      "latencyMs": 23322,
+      "estimatedCostUsd": 0.055178
+    }
+  },
+  {
+    "callIndex": 11,
+    "case": "A09",
+    "action": "submit-opening",
+    "operationId": "28c57de3-6cc3-4eb3-a21d-f352f12e53bc",
+    "runId": "b303f89a-9151-47f9-b560-ee99e5eb3bb1",
+    "metrics": {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 13068,
+      "outputTokens": 2068,
+      "latencyMs": 15509,
+      "estimatedCostUsd": 0.046816
+    }
+  },
+  {
+    "callIndex": 12,
+    "case": "A10",
+    "action": "submit-opening",
+    "operationId": "7e05a50f-a34f-48a4-bfa9-94aed4977b64",
+    "runId": "63592470-51e6-4537-b5f0-696d8834dcb3",
+    "metrics": {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 13174,
+      "outputTokens": 3392,
+      "latencyMs": 27334,
+      "estimatedCostUsd": 0.060268
+    }
+  },
+  {
+    "callIndex": 13,
+    "case": "A11",
+    "action": "submit-opening",
+    "operationId": "dc2e0939-b585-4424-b97d-471bfb3b0c93",
+    "runId": "c7f8098a-00c4-444d-a804-9cb6c14a0e9d",
+    "metrics": {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 13349,
+      "outputTokens": 7406,
+      "latencyMs": 54775,
+      "estimatedCostUsd": 0.100758
+    }
+  },
+  {
+    "callIndex": 14,
+    "case": "A11",
+    "action": "submit-update",
+    "operationId": "d314ca75-4b71-496d-891a-a8680748f91c",
+    "runId": "c7f8098a-00c4-444d-a804-9cb6c14a0e9d",
+    "metrics": {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 14647,
+      "outputTokens": 1772,
+      "latencyMs": 19140,
+      "estimatedCostUsd": 0.047014
+    }
+  },
+  {
+    "callIndex": 15,
+    "case": "A12",
+    "action": "submit-opening",
+    "operationId": "b002c561-2f8a-4c66-b8bd-314424e1b4bf",
+    "runId": "9bfe6667-d876-417b-adff-2c075ef2a19f",
+    "metrics": {
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 12948,
+      "outputTokens": 1048,
+      "latencyMs": 8862,
+      "estimatedCostUsd": 0.036376
+    }
+  }
+]

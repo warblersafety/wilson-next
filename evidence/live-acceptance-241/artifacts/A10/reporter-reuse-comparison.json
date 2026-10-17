@@ -1,0 +1,7 @@
+{
+  "patient": true,
+  "products": true,
+  "relevantTests": true,
+  "eventExceptReportDate": true,
+  "correctReporter": true
+}

@@ -1,0 +1,98 @@
+[
+  {
+    "operation": "act",
+    "expectedRevision": 0,
+    "action": {
+      "action": "submit-opening",
+      "text": "Entirely fictional evaluation. An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal. The product was not administered to a patient, and no adverse event occurred. The bottle is available for evaluation. I am reporting Cardiovex as the suspect product. Cardiovex is explicitly a medication.",
+      "reportType": "product-problem"
+    },
+    "operationId": "cc2e5247-8e40-44f0-902c-909f0d7a820f",
+    "runId": "5b68197e-cf71-49b7-bd96-1c9ce5b217f4",
+    "sequence": 1,
+    "originalCaptureFile": "request-1.json",
+    "stateSuppliedRevision": 0
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 2,
+    "action": {
+      "action": "review-opening-group",
+      "groupId": "event",
+      "corrections": [
+        {
+          "proposalId": "proposal-cf0e257a-580d-4f79-8774-606a7862d8de",
+          "value": {
+            "kind": "known",
+            "value": "An unopened bottle of Cardiovex 20 mg tablets, lot CV-442, contained visible brown particles under the seal. The product was not administered to a patient, and no adverse event occurred."
+          }
+        }
+      ]
+    },
+    "operationId": "ebe080ed-4275-48dc-bf6c-d8ad435b5dda",
+    "runId": "840cd5fb-2f54-4c9b-961f-921d026abb02",
+    "sequence": 2,
+    "originalCaptureFile": "request-2.json",
+    "stateSuppliedRevision": 2
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 3,
+    "action": {
+      "action": "accept-understanding"
+    },
+    "operationId": "21a91f47-2e23-439a-ab4f-61d9d3b16f4f",
+    "runId": "a511291b-9284-4435-938d-c4cf2821f588",
+    "sequence": 3,
+    "originalCaptureFile": "request-3.json",
+    "stateSuppliedRevision": 3
+  },
+  {
+    "operation": "resume",
+    "operationId": "69f2fa65-f234-40c3-951d-c44cc8c462bf",
+    "runId": "b655f95b-d883-402c-bbe7-bf3afb81e856",
+    "sequence": 4,
+    "originalCaptureFile": "request-4.json",
+    "stateSuppliedRevision": 4
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 4,
+    "action": {
+      "action": "set-fact",
+      "target": "reporter:reporter:doNotDiscloseIdentity",
+      "value": {
+        "kind": "known",
+        "value": true
+      }
+    },
+    "operationId": "d95f07ed-b03f-43bc-8721-2686cad54efd",
+    "runId": "2af0e227-9d1e-455f-83c7-d30571f8e1d5",
+    "sequence": 5,
+    "originalCaptureFile": "request-5.json",
+    "stateSuppliedRevision": 4
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 6,
+    "action": {
+      "action": "answer-reporter",
+      "reportDate": "2026-10-17",
+      "reporter": {
+        "kind": "provided",
+        "firstName": "Alex",
+        "lastName": "Fiction",
+        "email": "alex.fiction@example.invalid",
+        "healthProfessional": true,
+        "occupation": "Physician",
+        "reportedTo": [],
+        "doNotDiscloseIdentity": true
+      }
+    },
+    "operationId": "89b4af8a-f1f4-4147-8fa3-4cf23ba76e36",
+    "runId": "0c6a72c0-c49b-41d0-a409-317ad26d8fd7",
+    "sequence": 6,
+    "originalCaptureFile": "request-6.json",
+    "stateSuppliedRevision": 6
+  }
+]

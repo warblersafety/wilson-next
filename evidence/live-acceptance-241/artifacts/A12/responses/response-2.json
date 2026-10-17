@@ -1,0 +1,2102 @@
+{
+  "http": 200,
+  "operationId": "cf62103e-e623-4696-be75-eabced39ecf7",
+  "runId": "171f4345-112e-4c93-84cf-8e3fd496fd9b",
+  "state": {
+    "version": "wilson-browser-state-v32",
+    "stage": "clarify",
+    "case": {
+      "id": "case-13fdcbb3-786b-41c2-aedb-d0e946fece39",
+      "revision": 3,
+      "patient": {
+        "id": "patient",
+        "state": "resolved",
+        "facts": {
+          "identifier": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-9b45e826-8afa-4d48-a317-6ac69ad34886"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "proposal-734e0e63-de40-47d9-96e5-bae9387e9851",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "TEST-26"
+              },
+              "sourceIds": [
+                "source-9b45e826-8afa-4d48-a317-6ac69ad34886"
+              ]
+            }
+          },
+          "ageYears": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-9b45e826-8afa-4d48-a317-6ac69ad34886"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "proposal-e5c33cbb-5d6a-420f-a0e7-5c331352053f",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": 26
+              },
+              "sourceIds": [
+                "source-9b45e826-8afa-4d48-a317-6ac69ad34886"
+              ]
+            }
+          },
+          "raceEthnicity": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "dateOfBirth": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "a2Value": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "sex": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-9b45e826-8afa-4d48-a317-6ac69ad34886"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "proposal-a5be1b5e-819a-4ae2-b01b-484cb84edfa4",
+              "groupId": "patient",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "male"
+              },
+              "sourceIds": [
+                "source-9b45e826-8afa-4d48-a317-6ac69ad34886"
+              ]
+            }
+          },
+          "weight": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "involvement": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      "event": {
+        "id": "event",
+        "state": "resolved",
+        "facts": {
+          "reportType": {
+            "state": "resolved",
+            "proposedValues": [],
+            "resolvedValue": {
+              "id": "value-report-type-2e5c2ace-cb28-4145-bd94-cec49a25bae3",
+              "groupId": "command-record-report-type-3302877b-ef7c-493b-9633-b6120c398ba6",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": "adverse-event"
+              },
+              "sourceIds": [
+                "source-f787a8ee-9f8c-4d31-8c44-0c7f62956aab"
+              ]
+            },
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-f787a8ee-9f8c-4d31-8c44-0c7f62956aab"
+            ],
+            "supersededValues": []
+          },
+          "reportDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "problemDescription": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "symptoms": {
+            "state": "resolved",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [
+              "source-d0c46223-f0ec-4c85-9c99-df3546240565"
+            ],
+            "supersededValues": [],
+            "resolvedValue": {
+              "id": "proposal-78816376-81ae-41da-ac7a-b0dce5903853",
+              "groupId": "event",
+              "intent": "fact",
+              "value": {
+                "kind": "known",
+                "value": [
+                  "severe dizziness"
+                ]
+              },
+              "sourceIds": [
+                "source-d0c46223-f0ec-4c85-9c99-df3546240565"
+              ]
+            }
+          },
+          "onsetDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "death": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "deathDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "lifeThreatening": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "hospitalized": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "disability": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "requiredIntervention": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "congenitalAnomaly": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "otherSerious": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "relevantTestsAvailable": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "relevantHistory": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "treatments": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "outcome": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "dischargeDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "productAvailability": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "productReturnDate": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "additionalComments": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      "products": [
+        {
+          "id": "product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "proposalGroupId": "group-06a1ba91-fa7e-4b85-b163-58ddc29c2a39",
+          "state": "resolved",
+          "facts": {
+            "name": {
+              "state": "resolved",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-d0c46223-f0ec-4c85-9c99-df3546240565"
+              ],
+              "supersededValues": [],
+              "resolvedValue": {
+                "id": "proposal-de760aea-1f77-4957-a60a-244974f04cee",
+                "groupId": "group-06a1ba91-fa7e-4b85-b163-58ddc29c2a39",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "propranolol"
+                },
+                "sourceIds": [
+                  "source-d0c46223-f0ec-4c85-9c99-df3546240565"
+                ]
+              }
+            },
+            "productType": {
+              "state": "resolved",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-d0c46223-f0ec-4c85-9c99-df3546240565"
+              ],
+              "supersededValues": [],
+              "resolvedValue": {
+                "id": "proposal-30702cc6-8676-423d-b4ee-97fce1b72abb",
+                "groupId": "group-06a1ba91-fa7e-4b85-b163-58ddc29c2a39",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "drug-or-biologic"
+                },
+                "sourceIds": [
+                  "source-d0c46223-f0ec-4c85-9c99-df3546240565"
+                ]
+              }
+            },
+            "role": {
+              "state": "resolved",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [
+                "source-ff2ef972-24dc-42d2-b44d-854d75de0de5"
+              ],
+              "supersededValues": [],
+              "resolvedValue": {
+                "id": "proposal-50236237-cabe-4d49-9b93-677e66ba234e",
+                "groupId": "group-06a1ba91-fa7e-4b85-b163-58ddc29c2a39",
+                "intent": "fact",
+                "value": {
+                  "kind": "known",
+                  "value": "suspect"
+                },
+                "sourceIds": [
+                  "source-ff2ef972-24dc-42d2-b44d-854d75de0de5"
+                ]
+              }
+            },
+            "manufacturer": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "lotNumber": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "ndcOrUniqueId": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "dose": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "strength": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "frequency": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "route": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "startDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "stopDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "therapyOngoing": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "indication": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "stopped": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "cosmeticUse": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "medicationType": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "doseReduced": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "doseReductionDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "treatmentDuration": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "d3Value": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "improvedAfterChange": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "restarted": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "recurred": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "commonName": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "procode": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "modelNumber": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "catalogNumber": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerName": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerAddress": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerCity": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerRegion": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerPostalCode": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseSellerCountry": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseWebsite": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "purchaseDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "expirationDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "serialNumber": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "udi": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "deviceOperator": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "implanted": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "implantDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "explantDate": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "reprocessedSingleUse": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "reprocessor": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "servicedByThirdParty": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            },
+            "otherProductTypes": {
+              "state": "empty",
+              "proposedValues": [],
+              "conflictingValues": [],
+              "sourceIds": [],
+              "supersededValues": []
+            }
+          }
+        }
+      ],
+      "relevantTests": [],
+      "reporter": {
+        "id": "reporter",
+        "facts": {
+          "lastName": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "firstName": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "address": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "city": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "state": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "postalCode": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "country": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "phone": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "email": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "healthProfessional": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "occupation": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "reportedTo": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          },
+          "doNotDiscloseIdentity": {
+            "state": "empty",
+            "proposedValues": [],
+            "conflictingValues": [],
+            "sourceIds": [],
+            "supersededValues": []
+          }
+        }
+      },
+      "askedNeeds": [],
+      "sources": [
+        {
+          "id": "source-9b45e826-8afa-4d48-a317-6ac69ad34886",
+          "inputId": "input-d4a11ac2-d61b-481e-994b-c2e3b4d9e8dc",
+          "inputType": "narrative",
+          "excerpt": "Patient TEST-26 is a 26-year-old man. ",
+          "start": 31,
+          "end": 69,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:39:29.312Z"
+        },
+        {
+          "id": "source-d0c46223-f0ec-4c85-9c99-df3546240565",
+          "inputId": "input-d4a11ac2-d61b-481e-994b-c2e3b4d9e8dc",
+          "inputType": "narrative",
+          "excerpt": "He developed severe dizziness while taking propranolol. ",
+          "start": 69,
+          "end": 125,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:39:29.312Z"
+        },
+        {
+          "id": "source-ff2ef972-24dc-42d2-b44d-854d75de0de5",
+          "inputId": "input-d4a11ac2-d61b-481e-994b-c2e3b4d9e8dc",
+          "inputType": "narrative",
+          "excerpt": "I suspect propranolol.",
+          "start": 125,
+          "end": 147,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:39:29.312Z"
+        },
+        {
+          "id": "source-f787a8ee-9f8c-4d31-8c44-0c7f62956aab",
+          "inputId": "input-951ca974-4397-4081-8e6a-38932aea62a9",
+          "inputType": "selection",
+          "excerpt": "Adverse event",
+          "start": 0,
+          "end": 13,
+          "actor": "clinician",
+          "recordedAt": "2026-10-17T05:39:29.317Z"
+        }
+      ],
+      "changes": [
+        {
+          "commandId": "command-attach-opening-239ea19f-c8df-4d67-8b02-b351f7b210b5",
+          "type": "attach-grounded-proposals",
+          "affectedTargets": [
+            "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+            "patient:patient:identifier",
+            "patient:patient:ageYears",
+            "patient:patient:sex",
+            "event:event:symptoms",
+            "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:name",
+            "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:productType",
+            "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:role"
+          ],
+          "sourceIds": [
+            "source-9b45e826-8afa-4d48-a317-6ac69ad34886",
+            "source-d0c46223-f0ec-4c85-9c99-df3546240565",
+            "source-ff2ef972-24dc-42d2-b44d-854d75de0de5"
+          ],
+          "priorRevision": 0,
+          "resultingRevision": 1,
+          "supersessions": [],
+          "resolutions": []
+        },
+        {
+          "commandId": "command-record-report-type-3302877b-ef7c-493b-9633-b6120c398ba6",
+          "type": "record-clinician-facts",
+          "affectedTargets": [
+            "event:event:reportType"
+          ],
+          "sourceIds": [
+            "source-f787a8ee-9f8c-4d31-8c44-0c7f62956aab"
+          ],
+          "priorRevision": 1,
+          "resultingRevision": 2,
+          "supersessions": [],
+          "resolutions": []
+        },
+        {
+          "commandId": "command-review-opening-e6ceeec3-78da-4a1f-8c77-082f6edcb52a",
+          "type": "review-proposal-groups",
+          "affectedTargets": [
+            "patient:patient:identifier",
+            "patient:patient:ageYears",
+            "patient:patient:sex",
+            "event:event:symptoms",
+            "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:name",
+            "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:productType",
+            "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:role"
+          ],
+          "sourceIds": [
+            "source-9b45e826-8afa-4d48-a317-6ac69ad34886",
+            "source-d0c46223-f0ec-4c85-9c99-df3546240565",
+            "source-ff2ef972-24dc-42d2-b44d-854d75de0de5"
+          ],
+          "priorRevision": 2,
+          "resultingRevision": 3,
+          "supersessions": [],
+          "resolutions": []
+        }
+      ]
+    },
+    "unrepresented": []
+  },
+  "snapshot": {
+    "stage": "clarify",
+    "revision": 3,
+    "understanding": {
+      "revision": 3,
+      "patient": {
+        "identifier": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "TEST-26"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Patient TEST-26 is a 26-year-old man. "
+          ]
+        },
+        "ageYears": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": 26
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Patient TEST-26 is a 26-year-old man. "
+          ]
+        },
+        "raceEthnicity": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "dateOfBirth": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "a2Value": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "sex": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "male"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Patient TEST-26 is a 26-year-old man. "
+          ]
+        },
+        "weight": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "involvement": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        }
+      },
+      "event": {
+        "reportType": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": "adverse-event"
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "Adverse event"
+          ]
+        },
+        "reportDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "problemDescription": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "symptoms": {
+          "state": "resolved",
+          "resolved": {
+            "kind": "known",
+            "value": [
+              "severe dizziness"
+            ]
+          },
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": [
+            "He developed severe dizziness while taking propranolol. "
+          ]
+        },
+        "onsetDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "death": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "deathDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "lifeThreatening": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "hospitalized": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "disability": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "requiredIntervention": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "congenitalAnomaly": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "otherSerious": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "relevantTestsAvailable": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "relevantHistory": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "treatments": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "outcome": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "dischargeDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "productAvailability": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "productReturnDate": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "additionalComments": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        }
+      },
+      "products": [
+        {
+          "id": "product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "ordinal": 1,
+          "proposalGroupId": "group-06a1ba91-fa7e-4b85-b163-58ddc29c2a39",
+          "state": "resolved",
+          "facts": {
+            "name": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "propranolol"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "He developed severe dizziness while taking propranolol. "
+              ]
+            },
+            "productType": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "drug-or-biologic"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "He developed severe dizziness while taking propranolol. "
+              ]
+            },
+            "role": {
+              "state": "resolved",
+              "resolved": {
+                "kind": "known",
+                "value": "suspect"
+              },
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": [
+                "I suspect propranolol."
+              ]
+            },
+            "manufacturer": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "lotNumber": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "ndcOrUniqueId": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "dose": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "strength": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "frequency": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "route": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "startDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "stopDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "therapyOngoing": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "indication": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "stopped": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "cosmeticUse": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "medicationType": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "doseReduced": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "doseReductionDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "treatmentDuration": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "d3Value": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "improvedAfterChange": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "restarted": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "recurred": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "commonName": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "procode": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "modelNumber": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "catalogNumber": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerName": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerAddress": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerCity": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerRegion": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerPostalCode": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseSellerCountry": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseWebsite": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "purchaseDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "expirationDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "serialNumber": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "udi": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "deviceOperator": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "implanted": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "implantDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "explantDate": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "reprocessedSingleUse": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "reprocessor": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "servicedByThirdParty": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            },
+            "otherProductTypes": {
+              "state": "empty",
+              "proposals": [],
+              "conflicts": [],
+              "history": [],
+              "evidence": []
+            }
+          }
+        }
+      ],
+      "relevantTests": [],
+      "reporter": {
+        "lastName": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "firstName": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "address": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "city": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "state": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "postalCode": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "country": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "phone": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "email": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "healthProfessional": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "occupation": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "reportedTo": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        },
+        "doNotDiscloseIdentity": {
+          "state": "empty",
+          "proposals": [],
+          "conflicts": [],
+          "history": [],
+          "evidence": []
+        }
+      }
+    },
+    "review": {
+      "revision": 3,
+      "attention": []
+    },
+    "clarification": {
+      "key": "suspect-product-indications",
+      "kind": "indications",
+      "status": "new",
+      "targetIds": [
+        "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:indication"
+      ],
+      "productIds": [
+        "product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c"
+      ],
+      "question": "What was propranolol being used for?",
+      "reason": "The indication explains why each suspect product was used and maps directly to the supported report."
+    },
+    "projection": {
+      "caseId": "case-13fdcbb3-786b-41c2-aedb-d0e946fece39",
+      "revision": 3,
+      "sections": {
+        "A": {
+          "patientIdentifier": "TEST-26",
+          "ageYears": 26,
+          "sex": "male"
+        },
+        "B": {
+          "relevantTests": [],
+          "reportType": "adverse-event",
+          "eventDescription": "Symptoms: severe dizziness."
+        },
+        "C": {},
+        "D": {
+          "suspectProducts": [
+            {
+              "productId": "product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+              "name": "propranolol"
+            }
+          ]
+        },
+        "E": {
+          "suspectDevices": []
+        },
+        "F": {
+          "concomitantProducts": []
+        },
+        "G": {
+          "reporter": {}
+        }
+      },
+      "invalidCalendarDates": [],
+      "expirationNotes": [],
+      "productDateNotes": [],
+      "sourceTrace": {
+        "sections.A.patientIdentifier": [
+          "source-9b45e826-8afa-4d48-a317-6ac69ad34886"
+        ],
+        "sections.A.ageYears": [
+          "source-9b45e826-8afa-4d48-a317-6ac69ad34886"
+        ],
+        "sections.A.sex": [
+          "source-9b45e826-8afa-4d48-a317-6ac69ad34886"
+        ],
+        "sections.B.reportType": [
+          "source-f787a8ee-9f8c-4d31-8c44-0c7f62956aab"
+        ],
+        "sections.B.eventDescription": [
+          "source-d0c46223-f0ec-4c85-9c99-df3546240565"
+        ],
+        "sections.D.suspectProducts.0.name": [
+          "source-d0c46223-f0ec-4c85-9c99-df3546240565"
+        ]
+      },
+      "omissions": [
+        {
+          "concept": "patient involvement",
+          "target": "patient:patient:involvement",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient date of birth",
+          "target": "patient:patient:dateOfBirth",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient race and/or ethnicity",
+          "target": "patient:patient:raceEthnicity",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "patient weight",
+          "target": "patient:patient:weight",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "event date",
+          "target": "event:event:onsetDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "date of this report",
+          "target": "event:event:reportDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "hospitalization outcome",
+          "target": "event:event:hospitalized",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "death outcome",
+          "target": "event:event:death",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "lifeThreatening outcome",
+          "target": "event:event:lifeThreatening",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "disability outcome",
+          "target": "event:event:disability",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "requiredIntervention outcome",
+          "target": "event:event:requiredIntervention",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "congenitalAnomaly outcome",
+          "target": "event:event:congenitalAnomaly",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "otherSerious outcome",
+          "target": "event:event:otherSerious",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "relevant medical history",
+          "target": "event:event:relevantHistory",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "product availability",
+          "target": "event:event:productAvailability",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "relevant tests",
+          "target": "event:event:relevantTestsAvailable",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "product problem",
+          "target": "event:event:problemDescription",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "treatment",
+          "target": "event:event:treatments",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "event outcome",
+          "target": "event:event:outcome",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "discharge date",
+          "target": "event:event:dischargeDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "additional comments",
+          "target": "event:event:additionalComments",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "manufacturer for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:manufacturer",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "lotNumber for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:lotNumber",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "ndcOrUniqueId for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:ndcOrUniqueId",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "expirationDate for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:expirationDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseDate for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:purchaseDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerName for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:purchaseSellerName",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerAddress for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:purchaseSellerAddress",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerCity for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:purchaseSellerCity",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerRegion for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:purchaseSellerRegion",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerPostalCode for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:purchaseSellerPostalCode",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseSellerCountry for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:purchaseSellerCountry",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "purchaseWebsite for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:purchaseWebsite",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "dose for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:dose",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "strength for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:strength",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "frequency for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:frequency",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "route for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:route",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "startDate for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:startDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "stopDate for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:stopDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "therapyOngoing for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:therapyOngoing",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "doseReductionDate for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:doseReductionDate",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "treatmentDuration for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:treatmentDuration",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "indication for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:indication",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "medicationType for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:medicationType",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "cosmeticUse for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:cosmeticUse",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "otherProductTypes for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:otherProductTypes",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "Improvement after stopping or reducing for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:improvedAfterChange",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "Event recurrence after restart for product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "target": "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:recurred",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter lastName",
+          "target": "reporter:reporter:lastName",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter firstName",
+          "target": "reporter:reporter:firstName",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter address",
+          "target": "reporter:reporter:address",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter city",
+          "target": "reporter:reporter:city",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter state",
+          "target": "reporter:reporter:state",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter postalCode",
+          "target": "reporter:reporter:postalCode",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter country",
+          "target": "reporter:reporter:country",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter phone",
+          "target": "reporter:reporter:phone",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter email",
+          "target": "reporter:reporter:email",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter healthProfessional",
+          "target": "reporter:reporter:healthProfessional",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter occupation",
+          "target": "reporter:reporter:occupation",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter reportedTo",
+          "target": "reporter:reporter:reportedTo",
+          "reason": "empty",
+          "sourceIds": []
+        },
+        {
+          "concept": "reporter doNotDiscloseIdentity",
+          "target": "reporter:reporter:doNotDiscloseIdentity",
+          "reason": "empty",
+          "sourceIds": []
+        }
+      ],
+      "notIncluded": [
+        "Patient fractional or compound ages and partial date of birth",
+        "Patient race/ethnicity detail outside the seven A5 categories",
+        "Section C product pictures",
+        "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
+        "Product date wording outside complete dates or explicit month/year/year-only precision"
+      ]
+    },
+    "downloadReady": false,
+    "clinicalNeeds": [
+      {
+        "key": "suspect-product-indications",
+        "kind": "indications",
+        "status": "new",
+        "targetIds": [
+          "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:indication"
+        ],
+        "productIds": [
+          "product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c"
+        ],
+        "question": "What was propranolol being used for?",
+        "reason": "The indication explains why each suspect product was used and maps directly to the supported report."
+      },
+      {
+        "kind": "serious-outcomes",
+        "targetIds": [
+          "event:event:death",
+          "event:event:lifeThreatening",
+          "event:event:hospitalized",
+          "event:event:disability",
+          "event:event:requiredIntervention",
+          "event:event:congenitalAnomaly",
+          "event:event:otherSerious"
+        ],
+        "question": "Which serious outcomes applied to this event?",
+        "reason": "Serious outcomes are a concise, material summary used directly in the supported report.",
+        "key": "serious-outcomes",
+        "status": "new"
+      },
+      {
+        "kind": "clinical-context",
+        "targetIds": [
+          "event:event:relevantTestsAvailable",
+          "event:event:relevantHistory"
+        ],
+        "askTests": true,
+        "askHistory": true,
+        "question": "Are there relevant tests or medical history to add?",
+        "reason": "Relevant tests and history can make the event understandable without asking for unrelated clinical detail.",
+        "key": "relevant-clinical-context",
+        "status": "new"
+      },
+      {
+        "key": "medication-history",
+        "kind": "medication-history",
+        "productId": "product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+        "status": "new",
+        "targetIds": [
+          "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:stopped",
+          "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:doseReduced"
+        ],
+        "question": "Treatment history for propranolol",
+        "reason": "Record whether treatment changed and what happened afterward. Answer only what you know; these observations do not establish causality."
+      }
+    ],
+    "reportContentKey": "16a3c097718204c087c110b1568933b283fccdd13889a63e6b7d8c7a0555fec3",
+    "outputIssues": [
+      {
+        "code": "open-clarification",
+        "message": "Answer or decline the open consequential question before opening the form.",
+        "targets": [
+          "product:product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c:indication"
+        ],
+        "entityIds": []
+      }
+    ],
+    "unrepresented": [],
+    "openingGroups": []
+  },
+  "provenance": {
+    "stateVersion": "wilson-browser-state-v32",
+    "release": "4bcabdbe6a1edf6296e555235f8de79a1dd65614"
+  }
+}

@@ -1,0 +1,124 @@
+[
+  {
+    "operation": "act",
+    "expectedRevision": 0,
+    "action": {
+      "action": "submit-opening",
+      "text": "Entirely fictional evaluation. Patient TEST-26 is a 26-year-old man. He developed severe dizziness while taking propranolol. I suspect propranolol.",
+      "reportType": "adverse-event"
+    },
+    "operationId": "b002c561-2f8a-4c66-b8bd-314424e1b4bf",
+    "runId": "9bfe6667-d876-417b-adff-2c075ef2a19f",
+    "sequence": 1,
+    "originalCaptureFile": "request-1.json",
+    "stateSuppliedRevision": 0
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 2,
+    "action": {
+      "action": "accept-understanding"
+    },
+    "operationId": "cf62103e-e623-4696-be75-eabced39ecf7",
+    "runId": "171f4345-112e-4c93-84cf-8e3fd496fd9b",
+    "sequence": 2,
+    "originalCaptureFile": "request-2.json",
+    "stateSuppliedRevision": 2
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 3,
+    "action": {
+      "action": "answer-indications",
+      "answers": [
+        {
+          "productId": "product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+          "value": {
+            "kind": "unknown"
+          }
+        }
+      ]
+    },
+    "operationId": "9a78ad9e-513d-407c-b01c-fd7c2fbdb1cb",
+    "runId": "eab9f17b-47c8-4dae-910d-c78e25bb6af6",
+    "sequence": 3,
+    "originalCaptureFile": "request-3.json",
+    "stateSuppliedRevision": 3
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 5,
+    "action": {
+      "action": "answer-serious-outcomes",
+      "selected": [],
+      "disposition": "unknown"
+    },
+    "operationId": "5dbc5bc2-be8e-4619-8efc-f16e26f0dd66",
+    "runId": "7876ae0f-ab9f-48f9-8926-e288cc51ba37",
+    "sequence": 4,
+    "originalCaptureFile": "request-4.json",
+    "stateSuppliedRevision": 5
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 7,
+    "action": {
+      "action": "answer-clinical-context",
+      "test": {
+        "kind": "unknown"
+      },
+      "history": {
+        "kind": "unknown"
+      }
+    },
+    "operationId": "7c98bd16-b40b-4e81-88bd-2ba00d30bc0a",
+    "runId": "0d5e24fa-e416-4834-9d04-6b3a64fe4f5c",
+    "sequence": 5,
+    "originalCaptureFile": "request-5.json",
+    "stateSuppliedRevision": 7
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 9,
+    "action": {
+      "action": "answer-medication-history",
+      "productId": "product-fd78885a-4bf1-4ff7-ba5a-f9a6ecc0ae9c",
+      "answers": {
+        "stopped": {
+          "kind": "unknown"
+        },
+        "doseReduced": {
+          "kind": "unknown"
+        }
+      }
+    },
+    "operationId": "fa003cd8-22d7-487c-8057-f0e1d6cafbfb",
+    "runId": "4341d8a4-5227-4643-bfaa-34364da332bf",
+    "sequence": 6,
+    "originalCaptureFile": "request-6.json",
+    "stateSuppliedRevision": 9
+  },
+  {
+    "operation": "act",
+    "expectedRevision": 11,
+    "action": {
+      "action": "answer-reporter",
+      "reportDate": "2026-10-17",
+      "reporter": {
+        "kind": "provided",
+        "firstName": "Alex",
+        "lastName": "Fiction",
+        "email": "alex.fiction@example.invalid",
+        "healthProfessional": true,
+        "occupation": "Physician",
+        "reportedTo": [],
+        "doNotDiscloseIdentity": true
+      }
+    },
+    "operationId": "361ef022-ba8f-46d5-b4b0-27d0fae5f515",
+    "runId": "dd359845-7120-4dca-8539-d672e0ea3ada",
+    "sequence": 7,
+    "originalCaptureFile": "request-7.json",
+    "stateSuppliedRevision": 11
+  }
+]

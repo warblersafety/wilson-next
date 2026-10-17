@@ -1,0 +1,6 @@
+{
+  "exactAcceptedCaseUnchanged": true,
+  "draftReplacedViaRememberedDetails": true,
+  "saveResponseWitnessed": true,
+  "test": "Reuse remembered identity over unsent reporter draft in existing accepted case; not fresh-case initial reuse"
+}

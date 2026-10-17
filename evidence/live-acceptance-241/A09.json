@@ -1,0 +1,572 @@
+{
+  "id": "A09",
+  "family": "device",
+  "testedRelease": {
+    "stateVersion": "wilson-browser-state-v32",
+    "release": "4bcabdbe6a1edf6296e555235f8de79a1dd65614"
+  },
+  "source": "Entirely fictional evaluation. An Acme NeuroSense monitor displayed repeated false high readings during setup. No patient symptoms or adverse event occurred. The suspect device is an Acme NeuroSense, common name physiologic monitor, manufactured by Acme Medical, model NS-7, serial SN-1001. It was not implanted, was not a reprocessed single-use device, and was not serviced by a third party. The device is available for evaluation.",
+  "correction": null,
+  "expectedMaterialFacts": [
+    "NeuroSense physiologic monitor; Acme Medical; modelNS-7 serialSN-1001",
+    "repeated false high readings during setup",
+    "no symptoms or adverse event",
+    "not implanted/reprocessed/third-party serviced",
+    "available"
+  ],
+  "observations": {
+    "extraction": "device identity/problem/no symptoms and applicability retained; no invented patient demographics",
+    "recovery": [
+      "Exact no-event/not-implanted/applicability wording added as reviewed comments"
+    ],
+    "transport": "actual browser-form opening received"
+  },
+  "firstResponseFacts": {
+    "patient": {},
+    "event": {
+      "reportType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "product-problem"
+        },
+        "proposed": []
+      },
+      "problemDescription": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "displayed repeated false high readings during setup"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-a4f405ae-7e47-4a29-b1f4-d4e9da5fa2e6"
+            ]
+          }
+        ]
+      },
+      "symptoms": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "explicitly-absent"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-eca15638-fdbc-47a7-84f4-eea9176eefca"
+            ]
+          }
+        ]
+      },
+      "productAvailability": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "available"
+            },
+            "groupId": "event",
+            "sourceIds": [
+              "source-fddf1826-4af5-4bcc-809b-db4fc6c997b6"
+            ]
+          }
+        ]
+      }
+    },
+    "reporter": {},
+    "product-bcc0b4f4-97be-44ba-be8b-85027a6c86fe": {
+      "name": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "Acme NeuroSense"
+            },
+            "groupId": "group-dd38edca-d13a-4325-be72-8bf82f2f54e6",
+            "sourceIds": [
+              "source-e8c19b0b-adda-431b-a738-c856690c1a5d"
+            ]
+          }
+        ]
+      },
+      "productType": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "device"
+            },
+            "groupId": "group-dd38edca-d13a-4325-be72-8bf82f2f54e6",
+            "sourceIds": [
+              "source-e8c19b0b-adda-431b-a738-c856690c1a5d"
+            ]
+          }
+        ]
+      },
+      "role": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "suspect"
+            },
+            "groupId": "group-dd38edca-d13a-4325-be72-8bf82f2f54e6",
+            "sourceIds": [
+              "source-e8c19b0b-adda-431b-a738-c856690c1a5d"
+            ]
+          }
+        ]
+      },
+      "manufacturer": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "Acme Medical"
+            },
+            "groupId": "group-dd38edca-d13a-4325-be72-8bf82f2f54e6",
+            "sourceIds": [
+              "source-e8c19b0b-adda-431b-a738-c856690c1a5d"
+            ]
+          }
+        ]
+      },
+      "commonName": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "physiologic monitor"
+            },
+            "groupId": "group-dd38edca-d13a-4325-be72-8bf82f2f54e6",
+            "sourceIds": [
+              "source-e8c19b0b-adda-431b-a738-c856690c1a5d"
+            ]
+          }
+        ]
+      },
+      "modelNumber": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "NS-7"
+            },
+            "groupId": "group-dd38edca-d13a-4325-be72-8bf82f2f54e6",
+            "sourceIds": [
+              "source-e8c19b0b-adda-431b-a738-c856690c1a5d"
+            ]
+          }
+        ]
+      },
+      "serialNumber": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "SN-1001"
+            },
+            "groupId": "group-dd38edca-d13a-4325-be72-8bf82f2f54e6",
+            "sourceIds": [
+              "source-e8c19b0b-adda-431b-a738-c856690c1a5d"
+            ]
+          }
+        ]
+      },
+      "implanted": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "group-dd38edca-d13a-4325-be72-8bf82f2f54e6",
+            "sourceIds": [
+              "source-768c21be-316c-4c1c-bc74-3b69febedf0f"
+            ]
+          }
+        ]
+      },
+      "reprocessedSingleUse": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": false
+            },
+            "groupId": "group-dd38edca-d13a-4325-be72-8bf82f2f54e6",
+            "sourceIds": [
+              "source-768c21be-316c-4c1c-bc74-3b69febedf0f"
+            ]
+          }
+        ]
+      },
+      "servicedByThirdParty": {
+        "state": "proposed",
+        "resolved": null,
+        "proposed": [
+          {
+            "value": {
+              "kind": "known",
+              "value": "no"
+            },
+            "groupId": "group-dd38edca-d13a-4325-be72-8bf82f2f54e6",
+            "sourceIds": [
+              "source-768c21be-316c-4c1c-bc74-3b69febedf0f"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "finalAcceptedFacts": {
+    "patient": {},
+    "event": {
+      "reportType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "product-problem"
+        },
+        "proposed": []
+      },
+      "reportDate": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "2026-10-17"
+        },
+        "proposed": []
+      },
+      "problemDescription": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "displayed repeated false high readings during setup"
+        },
+        "proposed": []
+      },
+      "symptoms": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "productAvailability": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "available"
+        },
+        "proposed": []
+      },
+      "additionalComments": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "No patient symptoms or adverse event occurred. It was not implanted, was not a reprocessed single-use device, and was not serviced by a third party."
+        },
+        "proposed": []
+      }
+    },
+    "reporter": {
+      "lastName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Fiction"
+        },
+        "proposed": []
+      },
+      "firstName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Alex"
+        },
+        "proposed": []
+      },
+      "address": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "city": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "state": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "postalCode": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "country": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "phone": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "explicitly-absent"
+        },
+        "proposed": []
+      },
+      "email": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "alex.fiction@example.invalid"
+        },
+        "proposed": []
+      },
+      "healthProfessional": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      },
+      "occupation": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Physician"
+        },
+        "proposed": []
+      },
+      "reportedTo": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": []
+        },
+        "proposed": []
+      },
+      "doNotDiscloseIdentity": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": true
+        },
+        "proposed": []
+      }
+    },
+    "product-bcc0b4f4-97be-44ba-be8b-85027a6c86fe": {
+      "name": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Acme NeuroSense"
+        },
+        "proposed": []
+      },
+      "productType": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "device"
+        },
+        "proposed": []
+      },
+      "role": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "suspect"
+        },
+        "proposed": []
+      },
+      "manufacturer": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "Acme Medical"
+        },
+        "proposed": []
+      },
+      "commonName": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "physiologic monitor"
+        },
+        "proposed": []
+      },
+      "modelNumber": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "NS-7"
+        },
+        "proposed": []
+      },
+      "serialNumber": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "SN-1001"
+        },
+        "proposed": []
+      },
+      "implanted": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "reprocessedSingleUse": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": false
+        },
+        "proposed": []
+      },
+      "servicedByThirdParty": {
+        "state": "resolved",
+        "resolved": {
+          "kind": "known",
+          "value": "no"
+        },
+        "proposed": []
+      }
+    }
+  },
+  "finalProjectionDisclosures": [
+    "Patient fractional or compound ages and partial date of birth",
+    "Patient race/ethnicity detail outside the seven A5 categories",
+    "Section C product pictures",
+    "Expiration precision outside complete dates or explicit month/year and year-only wording; purchase wording outside supported precision and native country/glyph/line/capacity limits",
+    "Product date wording outside complete dates or explicit month/year/year-only precision",
+    "Acme NeuroSense \u2014 Implanted remains in reviewed knowledge but is not included in Section E for the current product type and role."
+  ],
+  "actualPDF": {
+    "sha256": "ada980e426ae36eb2cb9dadbaeca15dcf72af3362f914d85946cdf207e37ec39",
+    "pageCount": 8,
+    "namedFields": {
+      "topmostSubform[0].Page1[0].SecA_Patient[0].AgeYears[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Congenital[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Death[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Defects[0]": "/1",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Disability[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].Hospital[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].LifeThreaten[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].OtherEvents[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].RepAdverse[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].ReportDate[0]": "17-OCT-2026",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].ReqdInter[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].SexF[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].SexM[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].WeightKG[0]": "/Off",
+      "topmostSubform[0].Page1[0].SecA_Patient[0].WeightLB[0]": "/Off",
+      "topmostSubform[0].Page2[0].SecB_Adverse[0].DescEvent[0]": "Problem detail: displayed repeated false high readings during setup.",
+      "topmostSubform[0].Page3[0].AdditionalComments[0]": "Additional comments: No patient symptoms or adverse event occurred. It was not implanted, was not a reprocessed single-use device, and was not serviced by a third party.",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalNo[0]": "/Off",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalRetd[0]": "/Off",
+      "topmostSubform[0].Page3[0].TestDataTable[0].EvalYes[0]": "/1",
+      "topmostSubform[0].Page6[0].SecE_Device[0].BrandName[0]": "Acme NeuroSense",
+      "topmostSubform[0].Page6[0].SecE_Device[0].CommName[0]": "physiologic monitor",
+      "topmostSubform[0].Page6[0].SecE_Device[0].HealthPro[0]": "/Off",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ManuName[0]": "Acme Medical",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ModelNum[0]": "NS-7",
+      "topmostSubform[0].Page6[0].SecE_Device[0].OperatorOther[0]": "/Off",
+      "topmostSubform[0].Page6[0].SecE_Device[0].PatientCons[0]": "/Off",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ReuseNo[0]": "/1",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ReuseYes[0]": "/Off",
+      "topmostSubform[0].Page6[0].SecE_Device[0].SerialNum[0]": "SN-1001",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ServiceUnk[0]": "/Off",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ServicedNo[0]": "/1",
+      "topmostSubform[0].Page6[0].SecE_Device[0].ServicedYes[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].DistImp[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Email[0]": "alex.fiction@example.invalid",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].FirstName[0]": "Alex",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].IdentityNo[0]": "/1",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].LastName[0]": "Fiction",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ManuComp[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Occupation[0]": "Physician",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].Packer[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ProNo[0]": "/Off",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].ProYes[0]": "/1",
+      "topmostSubform[0].Page7[0].SecG_Reporter[0].UserFac[0]": "/Off"
+    },
+    "independentReader": "pypdf 6.16.2",
+    "PDFKitRenderedPages": 8,
+    "renderHashes": {
+      "report-page-1.png": "ba5a495b10dc2c265eb9502b5d4f57c87e447fdb931173a64e130c6598956872",
+      "report-page-2.png": "0bf6d576b732a6cab92fd52df402f5fa17375e399f87980c3e540b6eb8b04615",
+      "report-page-3.png": "6bae5c5a80f4902e41fc0a56aac0795b58facff541f26db2d6e0d1866977d65c",
+      "report-page-4.png": "597a3a1b56e69101e1e5f1d540a50d8f62ca8d45f320761547ad6fa0e9709236",
+      "report-page-5.png": "b40ae700e0beecee93f06058a4eca8eaf66f80c4443ed9462fd0462257763062",
+      "report-page-6.png": "a6b641e3a4e42a630106b540cb70bcb0bb939fbf11e0526bc3df589a25a85793",
+      "report-page-7.png": "706c0041f286c008bf1a7724dad36ca0a5b9019199ace1f9c90dedf0448113d8",
+      "report-page-8.png": "a4e65444ae4ad5265e47291918036d36a004842f064a4ecdef833ea7a64b38de"
+    },
+    "visualInspection": "selected filled pages inspected; not a claim that all 96 page images were manually inspected",
+    "visuallyInspectedPages": [
+      6
+    ]
+  },
+  "modelCalls": [
+    {
+      "callIndex": 11,
+      "model": "claude-sonnet-5",
+      "promptRevision": "wilson-duration-wording-v31",
+      "schemaRevision": "wilson-grounded-proposals-v39-duration-wording",
+      "inputTokens": 13068,
+      "outputTokens": 2068,
+      "latencyMs": 15509,
+      "estimatedCostUsd": 0.046816,
+      "operationId": "28c57de3-6cc3-4eb3-a21d-f352f12e53bc",
+      "runId": "b303f89a-9151-47f9-b560-ee99e5eb3bb1"
+    }
+  ],
+  "checks": {},
+  "finalOutcome": "PDF generated after explicit source review and documented manual recovery; not a clean extraction/native-projection/uninterrupted-UI pass",
+  "retainedArtifacts": "artifacts/A09"
+}
