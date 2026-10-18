@@ -5,6 +5,10 @@ Use fictional clinical and reporter/contact information only. Read [Product](PRO
 [Coverage](COVERAGE.md) bounds what existing checks establish. This guide documents
 installed tooling, not authority to install dependencies or call live models.
 
+See the [test and eval catalog](../tests/README.md) for existing suite membership,
+expanded counts, coverage/discovery links, fixture selection and historical live
+evidence. It documents existing selections, not new execution tiers or weaker CI.
+
 ## Runtime and local application
 
 The exact runtime is pinned in [.node-version](../.node-version), [.nvmrc](../.nvmrc),

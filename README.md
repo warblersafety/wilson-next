@@ -44,6 +44,9 @@ npm run build
 npm run test:e2e
 ```
 
+For existing test layers, counts, fixture provenance, focused selections and live
+evidence limits, see the [test and eval catalog](tests/README.md).
+
 Local development refuses live application-model construction; the deterministic
 browser suite uses authored responses. Do not export application credentials
 into an ordinary development or subscription-review shell.
