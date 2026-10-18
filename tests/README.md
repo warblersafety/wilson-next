@@ -83,9 +83,12 @@ One existing paired selection is:
 WILSON_E2E_SCENARIOS=readOnlyGaps npm run test:e2e -- tests/e2e/aaaa-read-only-gaps.spec.ts
 ```
 
-It selects three existing tests; its queued opening/update pair comes from
-[read-only-gaps.ts](fixtures/read-only-gaps.ts). Some cases use local test-only
-request interception or seeded saved state rather than that ordered queue.
+It selects three existing tests and three ordered responses from
+[read-only-gaps.ts](fixtures/read-only-gaps.ts): the first test consumes the opening
+and update; the second seeds saved state but still consumes the third response
+for its unknown/declined update. Only the third test bypasses the queue by
+intercepting and aborting model requests. Seeded state alone does not imply zero
+queued responses.
 [clinical-update-answers.ts](e2e/clinical-update-answers.ts) authors expected answer
 proposals through the real boundary/service and UI acceptance; it does not test
 live interpretation. [draft4-helpers.ts](e2e/draft4-helpers.ts) includes explicit
@@ -137,7 +140,9 @@ review findings, source/state/response captures, hashes, PDFs and selected rende
 They are results/provenance, not automatically rerunnable suites. Keep them immutable.
 The package's `evidence:pdf`, `evidence:chromium` and `evidence:slice2:pdf-render`
 commands write historical tracked artifact paths; do not use them as scratch
-inspection commands. Use Development's independent-reader procedure for a scratch
+inspection commands. Some replay/PDF tests also have opt-in `WILSON_*_EVIDENCE`
+output switches; leave them unset for ordinary verification rather than inheriting
+a historical artifact destination. Use Development's independent-reader procedure for a scratch
 PDF and inspect each rendering helper's fixed inputs/outputs first.
 
 ## Frozen live protocols: scenarios are not trials
